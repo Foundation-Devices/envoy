@@ -1,0 +1,18 @@
+[package]
+name = "wallet-ffi"
+version = "0.1.0"
+authors = ["Igor Cota <igor@foundationdevices.com>"]
+edition = "2018"
+
+[lib]
+name = "wallet_ffi"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+bdk = {git = "https://github.com/icota/bdk", rev = "1e4f3fcb8595f00ffc501e613f511805af560ed3", features = ["electrum", "key-value-db", "compiler", "keys-bip39"]}
+sled = "0.34.7"
+base64 = "0.13.0"
+hex = "0.4.3"
+rand = "0.5.6"
+log ="0.4.14"
+bitcoin_hashes = "0.10.0"

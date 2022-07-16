@@ -1,0 +1,7 @@
+[workspace]
+members = ["packages/http_tor/native/*", "packages/tor/native/*", "packages/ur/native/*", "packages/wallet/native/*"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+debug = true

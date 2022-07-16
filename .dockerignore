@@ -1,0 +1,8 @@
+target
+Dockerfile
+justfile
+build
+.dockerignore
+.git
+.gitignore
+.dart_tool

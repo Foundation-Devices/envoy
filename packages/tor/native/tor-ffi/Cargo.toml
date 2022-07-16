@@ -1,0 +1,12 @@
+[package]
+name = "tor-ffi"
+version = "0.1.0"
+authors = ["Igor Cota <igor@foundationdevices.com>"]
+edition = "2018"
+
+[lib]
+name = "tor_ffi"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+libtor-sys = { git = "https://github.com/icota/libtor-sys", rev = "849a559dbdac17d04eb8ebe43db96c78e4bb9fd1", features = ["vendored-openssl"] }

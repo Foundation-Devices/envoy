@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Envoy
+Upstream-Contact: Igor Cota <hello@foundationdevices.com>
+Source: https://github.com/Foundation-Devices/envoy
+
+Files: *
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later

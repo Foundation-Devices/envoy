@@ -1,0 +1,16 @@
+[package]
+name = "ur-ffi"
+version = "0.1.0"
+authors = ["Igor Cota <igor@foundationdevices.com>"]
+edition = "2018"
+
+[lib]
+name = "ur_ffi"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+ur = { git = "https://github.com/icota/ur-rs", rev = "e26f994d9dcdc0adfba3ad35c171e2ee3bb0414d" }
+
+[dependencies.getrandom]
+version = "0.2.3"
+features = ["js"]

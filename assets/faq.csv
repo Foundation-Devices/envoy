@@ -1,0 +1,29 @@
+Question,Answer,Links
+What is Envoy?,"Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler. 
+
+Envoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet.",
+Why should I use Envoy?,"Unlike other more generic wallet software, Envoy was designed from the ground up to be Passport centric. As with everything we do at Foundation, Envoy is completely Open Source, so you can rest assured that the app makes interacting with your Bitcoin simple, safe and secure.
+
+Envoy was created to provide the best possible software wallet experience for your Passport, right on your mobile phone. This means you can receive straight to your secure cold storage from anywhere in the world.",
+What can Envoy do?,"Envoy is the perfect companion to your Passport. Get onboarded and set up with a new wallet in minutes. Receive a push notification when a new firmware update is available and install it right from your phone! You can use it to receive into your offline cold storage from anywhere in the world, or to facilitate spend transactions for authorisation by Passport. 
+
+Envoy will also notify you of company announcements such as blog posts, special offers, security patches or new hardware and software releases.",
+Do I need to pay for Envoy?,"No, Envoy’s core features will always be free to use. In the future we may introduce paid tiers or subscriptions.",
+Is Envoy Open Source?,"Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same {GPLv3} license as our Passport Firmware. For those wanting to check our source code, click {here}.","https://www.gnu.org/licenses/gpl-3.0.en.html
+
+Also to include Envoy repo link when public"
+Do I have to use Envoy to transact with Passport?,"No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials {here}.",https://docs.foundationdevices.com/en/user-manual/software-wallets
+Do I have to use Envoy to update the firmware on Passport?,"No, anyone is still free to manually download, verify and install new firmware. See {here} for more information.",https://docs.foundationdevices.com/en/firmware-update
+Can I manage more than one Passport with Envoy?,"Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy.",
+Can I manage multiple accounts from the same Passport?,"Yes, Envoy makes multi-account management simple.",
+How does Envoy communicate with Passport?,"Envoy communicates predominantly via QR codes, however firmware updates are passed from your phone via a microSD card. Passport Batch 2 includes microSD adapters for your phone.",
+Can I use Envoy in parallel to another piece of software like Sparrow Wallet?,"Yes, just be aware that any wallet-specific information, such as address or UTXO labeling, will not be copied to or from Envoy.",
+Can I manage other hardware wallets with Envoy?,"This may be possible as most QR enabled hardware wallets communicate in very similar ways, however this is not explicitly supported. As Envoy is open source, we welcome other QR-based hardware wallets to add support!",
+Is Envoy compatible with the Lightning Network?,At this time Envoy only works with ‘on-chain’ Bitcoin. We hope to support Lightning in the future.,
+What happens if I lose my phone with Envoy installed?,"The biggest risk is one of privacy, if your phone was stolen and the thief can break your device PIN to access Envoy, they could see the amount of Bitcoin stored within each connected Passport. Your funds are not at risk because any transactions must be authorized by the paired Passport device.",
+Is Envoy considered ‘Cold Storage’?,"Yes, Envoy acts as a ‘watch-only’ wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide.",
+Can I connect Envoy to my own Bitcoin node?,"Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.",
+How does Envoy protect my privacy?,"Downloading and installing Envoy requires zero personal information and, by default, Envoy connects to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely.",
+Does Envoy offer coin control?,At launch Envoy will not support coin control for spending. We plan to add this as an advanced feature in the near future. ,
+Does Envoy support Batch spends?,At this time Envoy does not support batch spending.,
+Does Envoy allow custom miner fee selection?,"Envoy has two fee settings for the user to choose from when spending, ‘Default’ and ‘Boost’. Default aims to get your transaction finalized within 60 minutes and Boost within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction.",
