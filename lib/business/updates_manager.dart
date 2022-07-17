@@ -66,4 +66,8 @@ class UpdatesManager {
     return ls
         .openFileBytes(ls.prefs.getString(LATEST_FIRMWARE_FILE_PATH_PREFS)!);
   }
+
+  String? getStoredFwVersion() {
+    return ls.prefs.getString(LATEST_FIRMWARE_VERSION_PREFS);
+  }
 }

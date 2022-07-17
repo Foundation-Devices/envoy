@@ -1,9 +1,13 @@
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:envoy/ui/pages/fw/fw_intro.dart';
 
 class DeviceListTile extends StatefulWidget {
   final void Function() onTap;
@@ -45,6 +49,21 @@ class _DeviceListTileState extends State<DeviceListTile> {
 
   @override
   Widget build(BuildContext context) {
+    bool fwUpdateAvailable = false;
+
+    // Just gen 1.2 for now
+    if (UpdatesManager().getStoredFwVersion() != null &&
+        widget.device.type == DeviceType.passportGen12) {
+      Version deviceFwVersion =
+          Version.parse(widget.device.firmwareVersion.replaceAll("v", ""));
+      Version currentFwVersion = Version.parse(
+          UpdatesManager().getStoredFwVersion()!.replaceAll("v", ""));
+
+      if (currentFwVersion > deviceFwVersion) {
+        fwUpdateAvailable = true;
+      }
+    }
+
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
@@ -118,14 +137,36 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    widget.device.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6!
-                                        .copyWith(
-                                          color: Colors.white,
-                                        ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        widget.device.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6!
+                                            .copyWith(
+                                              color: Colors.white,
+                                            ),
+                                      ),
+                                      fwUpdateAvailable
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: Text(
+                                                "FW " +
+                                                    widget
+                                                        .device.firmwareVersion,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .copyWith(
+                                                        color: Colors.white),
+                                              ),
+                                            )
+                                          : SizedBox.shrink()
+                                    ],
                                   ),
                                   SizedBox(
                                     height: 5,
@@ -144,13 +185,60 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                             .caption!
                                             .copyWith(color: Colors.white),
                                       ),
-                                      Text(
-                                        "FW " + widget.device.firmwareVersion,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .caption!
-                                            .copyWith(color: Colors.white),
-                                      )
+                                      fwUpdateAvailable
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return FwIntroPage();
+                                                }));
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
+                                                  border: Border.all(
+                                                      color:
+                                                          widget.device.color,
+                                                      width: 2,
+                                                      style: BorderStyle.solid),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                          "assets/fw.svg"),
+                                                      Text(
+                                                        " FW " +
+                                                            UpdatesManager()
+                                                                .getStoredFwVersion()!,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption!
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .white),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Text(
+                                              "FW " +
+                                                  widget.device.firmwareVersion,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .copyWith(
+                                                      color: Colors.white),
+                                            )
                                     ],
                                   ),
                                 ],
