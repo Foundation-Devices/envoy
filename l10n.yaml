@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 arb-dir: lib/l10n
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart

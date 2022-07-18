@@ -1,6 +1,8 @@
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// SPDX-FileCopyrightText: 2014 The Flutter Authors
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: BSD-3-Clause
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/material.dart';
 

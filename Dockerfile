@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 FROM ubuntu:22.04
 
 MAINTAINER Igor Cota <igor@foundationdevices.com>

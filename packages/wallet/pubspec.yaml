@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 name: wallet
 description: A Flutter plugin for handling bitcoin wallets
 version: 0.0.1

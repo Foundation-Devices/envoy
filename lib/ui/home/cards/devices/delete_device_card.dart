@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

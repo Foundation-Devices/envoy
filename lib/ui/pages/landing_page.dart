@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 // Idea here is to have a page to show nothing important and ask for biometrics

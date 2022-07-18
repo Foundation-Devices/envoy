@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

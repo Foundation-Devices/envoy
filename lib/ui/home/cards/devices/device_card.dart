@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';

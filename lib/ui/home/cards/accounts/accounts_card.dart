@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';

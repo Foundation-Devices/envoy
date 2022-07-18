@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
