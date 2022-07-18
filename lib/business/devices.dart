@@ -4,11 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'dart:convert';
-
 import 'package:envoy/util/color_serializer.dart';
-
 import 'account_manager.dart';
-
 part 'devices.g.dart';
 
 enum DeviceType { passportGen1, passportGen12, passportGen2 }
