@@ -4,16 +4,21 @@ docker-build:
     docker build -t {{docker_image}} .
 
 docker-build-android: docker-build
-    docker run -t {{docker_image}} /bin/bash -c "flutter build apk --release -P nosign && flutter build appbundle --release -P nosign"
+    mkdir -p release && \
+        docker run --mount type=bind,source="$(pwd)"/release,target=/release \
+        -t {{docker_image}} /bin/bash \
+        -c "flutter build apk --release -P nosign && flutter build appbundle --release -P nosign \
+        && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
+        && cp /root/build/app/outputs/bundle/release/app-release.aab /release"
 
 docker-build-android-sign: docker-build
-    docker run -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD -t {{docker_image}} /bin/bash -c "flutter build apk --release && flutter build appbundle --release"
-
-docker-get-apk:
-    docker cp $(docker create {{docker_image}}):/root/build/app/outputs/flutter-apk/app-release.apk .
-
-docker-get-aab:
-    docker cp $(docker create {{docker_image}}):/root/build/app/outputs/bundle/release/app-release.aab .
+    mkdir -p release && \
+        docker run --mount type=bind,source="$(pwd)"/release,target=/release \
+        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD \
+        -t {{docker_image}} /bin/bash \
+        -c "flutter build apk --release && flutter build appbundle --release \
+        && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
+        && cp /root/build/app/outputs/bundle/release/app-release.aab /release"
 
 docker-test: docker-build
     docker run -t {{docker_image}} flutter test

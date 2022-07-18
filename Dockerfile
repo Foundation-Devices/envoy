@@ -69,9 +69,6 @@ ENV PATH=/root/.cargo/bin:$PATH
 # Copy our files
 COPY . .
 
-# Workaround: before building FFI need to build an APK for gradle to fetch the correct NDK
-#RUN flutter build apk -P nosign
-
 # Build FFI
 ENV PATH=/root/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
 RUN chmod +x build_ffi.sh && ./build_ffi.sh

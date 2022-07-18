@@ -2,6 +2,7 @@ target
 Dockerfile
 justfile
 build
+release
 .dockerignore
 .git
 .gitignore
