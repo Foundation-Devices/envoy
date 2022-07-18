@@ -31,10 +31,7 @@ If you so prefer it is also possible to build Envoy for Android within a [Docker
 ````
 just docker-build-android
 ````
-To fetch the compiled `.apk` from the container:
-````
-just docker-get-apk
-````
+the `.apk` and `.aab` files will be in the `releases` folder.
 
 There are many other useful recipes in the `justfile`. If you are running an X11 based Linux distro you can even run Envoy on your desktop:
 ````
