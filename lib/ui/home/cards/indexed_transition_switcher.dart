@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:flutter/widgets.dart';
 
 // Adjusted from https://github.com/flutter/flutter/issues/56662#issuecomment-720678467

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # This script requires ditto-cli and jq
 # sudo npm install @dittowords/cli@2.1.2 -g
 # sudo apt install jq

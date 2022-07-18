@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 [package]
 name = "tor-ffi"
 version = "0.1.0"

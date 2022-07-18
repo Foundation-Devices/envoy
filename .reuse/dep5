@@ -3,6 +3,42 @@ Upstream-Name: Envoy
 Upstream-Contact: Igor Cota <hello@foundationdevices.com>
 Source: https://github.com/Foundation-Devices/envoy
 
-Files: *
+Files: assets/*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: lib/l10n/*.arb
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: ios/*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: linux/*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: web/*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: macos/*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: android/*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: google_fonts/*
+Copyright: 2022 Foundation Devices Inc.
+License: OFL-1.1
+
+Files: .*
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: *.lock
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';

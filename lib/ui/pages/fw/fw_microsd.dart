@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
