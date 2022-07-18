@@ -37,4 +37,4 @@ just docker-run
 
 ## Contributing
 
-Contributors are more than welcome. Fell free to submit a PR or an issue on this very repo.
+Contributors are more than welcome. Feel free to submit a PR or an issue on this very repo.
