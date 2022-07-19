@@ -8,6 +8,10 @@ import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScvResultOkPage extends StatelessWidget {
+  bool mustUpdateFirmware;
+
+  ScvResultOkPage({this.mustUpdateFirmware: true});
+
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
@@ -24,7 +28,7 @@ class ScvResultOkPage extends StatelessWidget {
             label: loc.envoy_scv_result_ok_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return PinIntroPage();
+                return PinIntroPage(mustUpdateFirmware: mustUpdateFirmware,);
               }));
             }),
       ],

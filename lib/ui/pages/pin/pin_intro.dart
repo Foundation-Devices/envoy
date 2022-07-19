@@ -6,8 +6,12 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
+import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 
 class PinIntroPage extends StatelessWidget {
+  bool mustUpdateFirmware;
+  PinIntroPage({this.mustUpdateFirmware: true});
+
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
@@ -24,7 +28,12 @@ class PinIntroPage extends StatelessWidget {
             label: loc.envoy_pin_intro_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwIntroPage();
+                if (mustUpdateFirmware) {
+                  return FwIntroPage();
+                }
+                else {
+                  return PpSetupIntroPage();
+                }
               }));
             }),
       ],

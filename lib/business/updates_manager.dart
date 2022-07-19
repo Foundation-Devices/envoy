@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
-
 import 'package:http_tor/http_tor.dart';
-
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:crypto/crypto.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
+import 'package:envoy/business/devices.dart';
 
 class UpdatesManager {
   HttpTor http = HttpTor(Tor());
@@ -33,7 +33,7 @@ class UpdatesManager {
 
     // Go fetch the latest from Server
     Server()
-        .fetchFirmwareUpdateInfo(2) // Just Gen2 for now
+        .fetchFirmwareUpdateInfo(1) // Just Gen2 for now
         .then((fw) => _processFw(fw))
         .catchError((e) {
       print("Couldn't fetch firmware: " + e.toString());
@@ -57,7 +57,7 @@ class UpdatesManager {
       }
 
       // Save to filesystem
-      final fileName = fw.deviceId.toString() + "_" + fw.version + ".bin";
+      final fileName = fw.deviceId.toString() + "_" + fw.version + "-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
 
       // Store to preferences
@@ -73,5 +73,19 @@ class UpdatesManager {
 
   String? getStoredFwVersion() {
     return ls.prefs.getString(LATEST_FIRMWARE_VERSION_PREFS);
+  }
+
+  bool shouldUpdate(String version, DeviceType type) {
+    if (getStoredFwVersion() != null && type == DeviceType.passportGen12) {
+      Version deviceFwVersion =
+      Version.parse(version.replaceAll("v", ""));
+      Version currentFwVersion = Version.parse(getStoredFwVersion()!.replaceAll("v", ""));
+
+      if (currentFwVersion > deviceFwVersion) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

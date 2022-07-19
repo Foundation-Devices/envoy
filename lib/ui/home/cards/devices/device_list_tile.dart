@@ -53,20 +53,8 @@ class _DeviceListTileState extends State<DeviceListTile> {
 
   @override
   Widget build(BuildContext context) {
-    bool fwUpdateAvailable = false;
-
-    // Just gen 1.2 for now
-    if (UpdatesManager().getStoredFwVersion() != null &&
-        widget.device.type == DeviceType.passportGen12) {
-      Version deviceFwVersion =
-          Version.parse(widget.device.firmwareVersion.replaceAll("v", ""));
-      Version currentFwVersion = Version.parse(
-          UpdatesManager().getStoredFwVersion()!.replaceAll("v", ""));
-
-      if (currentFwVersion > deviceFwVersion) {
-        fwUpdateAvailable = true;
-      }
-    }
+    bool fwUpdateAvailable = UpdatesManager()
+        .shouldUpdate(widget.device.firmwareVersion, widget.device.type);
 
     return GestureDetector(
       onTap: widget.onTap,

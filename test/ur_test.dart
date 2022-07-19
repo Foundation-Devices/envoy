@@ -189,8 +189,39 @@ void main() {
     ScvChallengeResponse scvResponse =
         response.objects[0] as ScvChallengeResponse;
 
+    assert(response.objects[1] is PassportModel);
+    PassportModel passportModel =
+    response.objects[1] as PassportModel;
+
     expect(scvResponse.responseWords, ["girl", "there", "gain", "shadow"]);
-    expect(scvResponse.id, "2");
+    expect(passportModel.model, 2);
+  });
+
+  test('crypto-response with device firwmare version decode test', () {
+    // UR received from Passport
+    String urFromPassport =
+        "ur:crypto-response/oxadtpdagdgohtntfhdygtgamkoeetpkhkurlkcmahaotaaostoxadioihiajljtjljnkkaoiohsjyjyjphsiajyaxihkpjtjyinjzaaihjzkpiajekkaxtaaottaoaataaxaxiheydmdydmeoeyfpmsss";
+    var reader = UniformResourceReader();
+    reader.receive(urFromPassport);
+
+    assert(reader.decoded is CryptoResponse);
+    CryptoResponse response = reader.decoded as CryptoResponse;
+
+    assert(response.objects[0] is ScvChallengeResponse);
+    ScvChallengeResponse scvResponse =
+    response.objects[0] as ScvChallengeResponse;
+
+    assert(response.objects[1] is PassportModel);
+    PassportModel passportModel =
+    response.objects[1] as PassportModel;
+
+    assert(response.objects[2] is PassportFirmwareVersion);
+    PassportFirmwareVersion passportFirmwareVersion =
+    response.objects[2] as PassportFirmwareVersion;
+
+    expect(scvResponse.responseWords, ["economy", "attract", "until", "lucky"]);
+    expect(passportModel.model, 2);
+    expect(passportFirmwareVersion.version, "2.0.3");
   });
 
   test('crypto-response UR type test', () {

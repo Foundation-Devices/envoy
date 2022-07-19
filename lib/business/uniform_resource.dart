@@ -4,12 +4,12 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:envoy/business/scv_server.dart';
 import 'package:typed_data/typed_data.dart';
 import 'package:ur/ur.dart';
 import 'package:uuid/uuid.dart';
+import 'package:envoy/business/devices.dart';
 
 abstract class CborObject {
   void appendToCryptoRequest(cbor.MapBuilder tlMap);
@@ -23,6 +23,14 @@ class UniformResourceWriter {
   UrEncoder? _urEncoder;
 
   int fragmentLength = 50;
+}
+
+class PassportModelRequest extends CborObject {
+  @override
+  void appendToCryptoRequest(cbor.MapBuilder tlMap) {
+    tlMap.writeTag(720);
+    tlMap.writeInt(0);
+  }
 }
 
 class FirmwareVersionRequest extends CborObject {
@@ -47,6 +55,15 @@ class PassportFirmwareVersion extends CborObject {
 
 class PassportModel extends CborObject {
   int model;
+
+  DeviceType get type {
+    if (model == 1) {
+      return DeviceType.passportGen1;
+    }
+    else {
+      return DeviceType.passportGen12;
+    }
+  }
 
   PassportModel(this.model);
 
@@ -89,15 +106,14 @@ class ScvChallengeRequest extends CborObject {
 }
 
 class ScvChallengeResponse extends CborObject {
-  String id;
   List<String> responseWords;
 
-  ScvChallengeResponse(this.id, this.responseWords);
+  ScvChallengeResponse(this.responseWords);
 
   @override
   void appendToCryptoRequest(cbor.MapBuilder tlMap) {
     tlMap.writeTag(711);
-    tlMap.writeMap({2: responseWords, 3: id});
+    tlMap.writeMap({2: responseWords});
   }
 }
 
@@ -232,15 +248,15 @@ class CryptoResponse extends UniformResourceWriter {
     payloadBuffer.addAll(payload);
 
     inst.decodeFromBuffer(payloadBuffer);
-
     var map = inst.getDecodedData()![0];
-
     uuid = map[1].toList();
 
-    if (map.length == 3) {
-      List<String> responseWords = map[2].values.toList().cast<String>();
-      String id = map[3].toString();
-      objects.add(ScvChallengeResponse(id, responseWords));
+    List<String> responseWords = map[2].values.toList().cast<String>();
+    objects.add(ScvChallengeResponse(responseWords));
+    objects.add(PassportModel(map[3].toInt()));
+
+    if (map.length == 4) {
+      objects.add(PassportFirmwareVersion(map[4].toString()));
     }
   }
 }

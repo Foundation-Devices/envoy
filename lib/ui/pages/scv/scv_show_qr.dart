@@ -22,6 +22,8 @@ class ScvShowQrPage extends StatelessWidget {
       _challenge = challenge;
       var request = CryptoRequest();
       request.objects.add(ScvChallengeRequest.fromServer(challenge));
+      request.objects.add(PassportModelRequest());
+      request.objects.add(FirmwareVersionRequest());
       return request;
     });
 

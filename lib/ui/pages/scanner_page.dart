@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
@@ -221,9 +222,17 @@ class _ScannerPageState extends State<ScannerPage> {
           .validate(widget.challengeToValidate!, scvResponse.responseWords)
           .then((validated) {
         if (validated) {
+          bool mustUpdateFirmware = true;
+
+          if(object.objects.length > 2) {
+            PassportModel model = object.objects[1] as PassportModel;
+            PassportFirmwareVersion version = object.objects[2] as PassportFirmwareVersion;
+            mustUpdateFirmware = UpdatesManager().shouldUpdate(version.version, model.type);
+          }
+
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
-            return ScvResultOkPage();
+            return ScvResultOkPage(mustUpdateFirmware: mustUpdateFirmware);
           }));
         } else {
           Navigator.of(context)
