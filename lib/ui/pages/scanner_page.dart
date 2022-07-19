@@ -154,11 +154,8 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   _onDetect(barcode, args) {
-    String scannedData = barcode.rawValue!.toLowerCase();
-    _checkIfMultipartUr(scannedData);
-
     if (widget._type == ScannerType.address) {
-      String address = scannedData.replaceFirst("bitcoin:", "");
+      String address = barcode.rawValue!.replaceFirst("bitcoin:", "");
 
       if (!Wallet.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -170,6 +167,9 @@ class _ScannerPageState extends State<ScannerPage> {
       }
       return;
     }
+
+    String scannedData = barcode.rawValue!.toLowerCase();
+    _checkIfMultipartUr(scannedData);
 
     if (widget._type == ScannerType.nodeUrl) {
       widget.callback!(scannedData);
