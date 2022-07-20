@@ -252,9 +252,12 @@ class CryptoResponse extends UniformResourceWriter {
 
     List<String> responseWords = map[2].values.toList().cast<String>();
     objects.add(ScvChallengeResponse(responseWords));
-    objects.add(PassportModel(map[3].toInt()));
 
-    if (map.length == 4) {
+    if (map.length > 2) {
+      objects.add(PassportModel(map[3].toInt()));
+    }
+
+    if (map.length > 3) {
       objects.add(PassportFirmwareVersion(map[4].toString()));
     }
   }
