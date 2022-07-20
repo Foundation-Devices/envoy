@@ -10,7 +10,6 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
 
 class DeviceListTile extends StatefulWidget {

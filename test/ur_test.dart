@@ -190,8 +190,7 @@ void main() {
         response.objects[0] as ScvChallengeResponse;
 
     assert(response.objects[1] is PassportModel);
-    PassportModel passportModel =
-    response.objects[1] as PassportModel;
+    PassportModel passportModel = response.objects[1] as PassportModel;
 
     expect(scvResponse.responseWords, ["girl", "there", "gain", "shadow"]);
     expect(passportModel.model, 2);
@@ -209,15 +208,14 @@ void main() {
 
     assert(response.objects[0] is ScvChallengeResponse);
     ScvChallengeResponse scvResponse =
-    response.objects[0] as ScvChallengeResponse;
+        response.objects[0] as ScvChallengeResponse;
 
     assert(response.objects[1] is PassportModel);
-    PassportModel passportModel =
-    response.objects[1] as PassportModel;
+    PassportModel passportModel = response.objects[1] as PassportModel;
 
     assert(response.objects[2] is PassportFirmwareVersion);
     PassportFirmwareVersion passportFirmwareVersion =
-    response.objects[2] as PassportFirmwareVersion;
+        response.objects[2] as PassportFirmwareVersion;
 
     expect(scvResponse.responseWords, ["economy", "attract", "until", "lucky"]);
     expect(passportModel.model, 2);

@@ -57,7 +57,8 @@ class UpdatesManager {
       }
 
       // Save to filesystem
-      final fileName = fw.deviceId.toString() + "_" + fw.version + "-passport.bin";
+      final fileName =
+          fw.deviceId.toString() + "_" + fw.version + "-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
 
       // Store to preferences
@@ -77,9 +78,9 @@ class UpdatesManager {
 
   bool shouldUpdate(String version, DeviceType type) {
     if (getStoredFwVersion() != null && type == DeviceType.passportGen12) {
-      Version deviceFwVersion =
-      Version.parse(version.replaceAll("v", ""));
-      Version currentFwVersion = Version.parse(getStoredFwVersion()!.replaceAll("v", ""));
+      Version deviceFwVersion = Version.parse(version.replaceAll("v", ""));
+      Version currentFwVersion =
+          Version.parse(getStoredFwVersion()!.replaceAll("v", ""));
 
       if (currentFwVersion > deviceFwVersion) {
         return true;

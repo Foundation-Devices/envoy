@@ -224,10 +224,12 @@ class _ScannerPageState extends State<ScannerPage> {
         if (validated) {
           bool mustUpdateFirmware = true;
 
-          if(object.objects.length > 2) {
+          if (object.objects.length > 2) {
             PassportModel model = object.objects[1] as PassportModel;
-            PassportFirmwareVersion version = object.objects[2] as PassportFirmwareVersion;
-            mustUpdateFirmware = UpdatesManager().shouldUpdate(version.version, model.type);
+            PassportFirmwareVersion version =
+                object.objects[2] as PassportFirmwareVersion;
+            mustUpdateFirmware =
+                UpdatesManager().shouldUpdate(version.version, model.type);
           }
 
           Navigator.of(context)

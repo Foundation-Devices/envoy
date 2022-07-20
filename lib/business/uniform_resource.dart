@@ -59,8 +59,7 @@ class PassportModel extends CborObject {
   DeviceType get type {
     if (model == 1) {
       return DeviceType.passportGen1;
-    }
-    else {
+    } else {
       return DeviceType.passportGen12;
     }
   }

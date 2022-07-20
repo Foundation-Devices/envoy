@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
 import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 
+//ignore: must_be_immutable
 class PinIntroPage extends StatelessWidget {
   bool mustUpdateFirmware;
   PinIntroPage({this.mustUpdateFirmware: true});
@@ -30,8 +31,7 @@ class PinIntroPage extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 if (mustUpdateFirmware) {
                   return FwIntroPage();
-                }
-                else {
+                } else {
                   return PpSetupIntroPage();
                 }
               }));
