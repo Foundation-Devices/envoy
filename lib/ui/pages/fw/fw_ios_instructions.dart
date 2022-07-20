@@ -9,7 +9,11 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+//ignore: must_be_immutable
 class FwIosInstructionsPage extends StatelessWidget {
+  bool returnHome;
+  FwIosInstructionsPage({this.returnHome: false});
+
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
@@ -31,7 +35,7 @@ class FwIosInstructionsPage extends StatelessWidget {
             onTap: () {
               fw.promptUserForFolderAccess();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage();
+                return FwMicrosdPage(returnHome: returnHome);
               }));
             }),
       ],

@@ -182,7 +182,9 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                 Navigator.of(context).push(
                                                     MaterialPageRoute(
                                                         builder: (context) {
-                                                  return FwIntroPage();
+                                                  return FwIntroPage(
+                                                    returnHome: true,
+                                                  );
                                                 }));
                                               },
                                               child: Container(
