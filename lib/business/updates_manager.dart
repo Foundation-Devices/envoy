@@ -74,7 +74,7 @@ class UpdatesManager {
     // Migration
     if (!file.path.endsWith("-passport.bin")) {
       File newFile = file.copySync(
-          dirname(file.path) + getStoredFwVersion()! + "-passport.bin");
+          dirname(file.path) + "/" + getStoredFwVersion()! + "-passport.bin");
       ls.prefs.setString(LATEST_FIRMWARE_FILE_PATH_PREFS, file.path);
       return newFile;
     }
