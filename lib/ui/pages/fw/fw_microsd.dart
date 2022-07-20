@@ -12,7 +12,11 @@ import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 
+//ignore: must_be_immutable
 class FwMicrosdPage extends StatelessWidget {
+  bool returnHome;
+  FwMicrosdPage({this.returnHome: false});
+
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
@@ -38,11 +42,14 @@ class FwMicrosdPage extends StatelessWidget {
                 } catch (e) {
                   print("SD: error " + e.toString());
                   if (Platform.isIOS) // TODO: this needs to be smarter
-                    return FwIosInstructionsPage();
+                    return FwIosInstructionsPage(returnHome: returnHome);
 
-                  if (Platform.isAndroid) return FwAndroidInstructionsPage();
+                  if (Platform.isAndroid)
+                    return FwAndroidInstructionsPage(returnHome: returnHome);
                 }
-                return FwPassportPage();
+                return FwPassportPage(
+                  returnHome: returnHome,
+                );
               }));
             }),
       ],

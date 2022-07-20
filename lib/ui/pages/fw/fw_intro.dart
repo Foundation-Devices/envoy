@@ -8,7 +8,11 @@ import 'package:envoy/ui/pages/fw/fw_microsd.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+//ignore: must_be_immutable
 class FwIntroPage extends StatelessWidget {
+  bool returnHome;
+  FwIntroPage({this.returnHome: false});
+
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
@@ -31,7 +35,9 @@ class FwIntroPage extends StatelessWidget {
             label: "Continue",
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage();
+                return FwMicrosdPage(
+                  returnHome: returnHome,
+                );
               }));
             }),
       ],

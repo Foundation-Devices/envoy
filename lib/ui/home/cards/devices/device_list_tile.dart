@@ -10,7 +10,6 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
 
 class DeviceListTile extends StatefulWidget {
@@ -53,20 +52,8 @@ class _DeviceListTileState extends State<DeviceListTile> {
 
   @override
   Widget build(BuildContext context) {
-    bool fwUpdateAvailable = false;
-
-    // Just gen 1.2 for now
-    if (UpdatesManager().getStoredFwVersion() != null &&
-        widget.device.type == DeviceType.passportGen12) {
-      Version deviceFwVersion =
-          Version.parse(widget.device.firmwareVersion.replaceAll("v", ""));
-      Version currentFwVersion = Version.parse(
-          UpdatesManager().getStoredFwVersion()!.replaceAll("v", ""));
-
-      if (currentFwVersion > deviceFwVersion) {
-        fwUpdateAvailable = true;
-      }
-    }
+    bool fwUpdateAvailable = UpdatesManager()
+        .shouldUpdate(widget.device.firmwareVersion, widget.device.type);
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -195,7 +182,9 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                 Navigator.of(context).push(
                                                     MaterialPageRoute(
                                                         builder: (context) {
-                                                  return FwIntroPage();
+                                                  return FwIntroPage(
+                                                    returnHome: true,
+                                                  );
                                                 }));
                                               },
                                               child: Container(

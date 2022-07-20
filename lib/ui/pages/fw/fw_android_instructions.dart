@@ -8,7 +8,11 @@ import 'package:envoy/ui/pages/fw/fw_microsd.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 
+//ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {
+  bool returnHome;
+  FwAndroidInstructionsPage({this.returnHome: false});
+
   @override
   Widget build(BuildContext context) {
     var fw = FwUploader(UpdatesManager().getStoredFw());
@@ -29,7 +33,7 @@ class FwAndroidInstructionsPage extends StatelessWidget {
             onTap: () {
               fw.getDirectoryContentPermission();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage();
+                return FwMicrosdPage(returnHome: returnHome);
               }));
             }),
       ],

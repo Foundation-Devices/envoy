@@ -9,9 +9,7 @@ What can Envoy do?,"Envoy is the perfect companion to your Passport. Get onboard
 
 Envoy will also notify you of company announcements such as blog posts, special offers, security patches or new hardware and software releases.",
 Do I need to pay for Envoy?,"No, Envoy’s core features will always be free to use. In the future we may introduce paid tiers or subscriptions.",
-Is Envoy Open Source?,"Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same {GPLv3} license as our Passport Firmware. For those wanting to check our source code, click {here}.","https://www.gnu.org/licenses/gpl-3.0.en.html
-
-Also to include Envoy repo link when public"
+Is Envoy Open Source?,"Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same {GPLv3} license as our Passport Firmware. For those wanting to check our source code, click {here}.","https://www.gnu.org/licenses/gpl-3.0.en.html","https://github.com/Foundation-Devices/envoy"
 Do I have to use Envoy to transact with Passport?,"No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials {here}.",https://docs.foundationdevices.com/en/user-manual/software-wallets
 Do I have to use Envoy to update the firmware on Passport?,"No, anyone is still free to manually download, verify and install new firmware. See {here} for more information.",https://docs.foundationdevices.com/en/firmware-update
 Can I manage more than one Passport with Envoy?,"Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy.",

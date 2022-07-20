@@ -89,14 +89,5 @@ class FwUploader {
 
   _androidUpload() {
     _saveFile();
-
-    // print("SD: trying to copy file to " + _sdCardPath);
-    // print("SD: file exists: " + fw.existsSync().toString());
-    //
-    // fw.length().then((value) {
-    //   print("FW: update size" + value.toString());
-    // });
-    //
-    // fw.copySync(_sdCardPath + '/' + basename(fw.path));
   }
 }

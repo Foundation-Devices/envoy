@@ -54,9 +54,10 @@ class Faq extends StatelessWidget {
                                 );
                               },
                               body: ListTile(
-                                title: FaqBodyText(e[1], onTap: () {
-                                  launchUrl(Uri.parse(e[2]));
-                                }),
+                                title: FaqBodyText(
+                                  e[1],
+                                  links: e.sublist(2),
+                                ),
                               ),
                               value: e[0],
                             ))
@@ -74,9 +75,9 @@ class Faq extends StatelessWidget {
 
 class FaqBodyText extends StatelessWidget {
   final String text;
-  final Function onTap;
+  final List<dynamic> links;
 
-  const FaqBodyText(this.text, {required this.onTap});
+  const FaqBodyText(this.text, {required this.links});
 
   @override
   Widget build(BuildContext context) {
@@ -87,17 +88,22 @@ class FaqBodyText extends StatelessWidget {
 
     var firstPass = text.split("{");
 
+    int linkIndex = 0;
     for (var span in firstPass) {
       if (!span.contains("}")) {
         spans.add(TextSpan(text: span));
       } else {
+        int index = linkIndex;
         spans.add(TextSpan(
             text: span.split("}")[0],
             style: linkStyle,
             recognizer: TapGestureRecognizer()
-              ..onTap = onTap as GestureTapCallback?));
+              ..onTap = () {
+                launchUrl(Uri.parse(links[index]));
+              }));
 
         spans.add(TextSpan(text: span.split("}")[1]));
+        linkIndex++;
       }
     }
 
