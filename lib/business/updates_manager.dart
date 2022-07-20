@@ -10,6 +10,7 @@ import 'package:crypto/crypto.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:path/path.dart';
 
 class UpdatesManager {
   HttpTor http = HttpTor(Tor());
@@ -57,8 +58,7 @@ class UpdatesManager {
       }
 
       // Save to filesystem
-      final fileName =
-          fw.deviceId.toString() + "_" + fw.version + "-passport.bin";
+      final fileName = fw.version + "-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
 
       // Store to preferences
@@ -68,8 +68,18 @@ class UpdatesManager {
   }
 
   File getStoredFw() {
-    return ls
-        .openFileBytes(ls.prefs.getString(LATEST_FIRMWARE_FILE_PATH_PREFS)!);
+    File file =
+        ls.openFileBytes(ls.prefs.getString(LATEST_FIRMWARE_FILE_PATH_PREFS)!);
+
+    // Migration
+    if (!file.path.endsWith("-passport.bin")) {
+      File newFile = file.copySync(
+          dirname(file.path) + getStoredFwVersion()! + "-passport.bin");
+      ls.prefs.setString(LATEST_FIRMWARE_FILE_PATH_PREFS, file.path);
+      return newFile;
+    }
+
+    return file;
   }
 
   String? getStoredFwVersion() {

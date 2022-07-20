@@ -10,7 +10,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 //ignore: must_be_immutable
 class ScvResultOkPage extends StatelessWidget {
   bool mustUpdateFirmware;
-
   ScvResultOkPage({this.mustUpdateFirmware: true});
 
   @override
