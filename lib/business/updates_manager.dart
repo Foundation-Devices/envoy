@@ -10,7 +10,6 @@ import 'package:crypto/crypto.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:path/path.dart';
 
 class UpdatesManager {
   HttpTor http = HttpTor(Tor());
@@ -73,9 +72,9 @@ class UpdatesManager {
 
     // Migration
     if (!file.path.endsWith("-passport.bin")) {
-      File newFile = file.copySync(
-          dirname(file.path) + "/" + getStoredFwVersion()! + "-passport.bin");
-      ls.prefs.setString(LATEST_FIRMWARE_FILE_PATH_PREFS, file.path);
+      final fileName = getStoredFwVersion()! + "-passport.bin";
+      var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
+      ls.prefs.setString(LATEST_FIRMWARE_FILE_PATH_PREFS, fileName);
       return newFile;
     }
 

@@ -84,6 +84,11 @@ class LocalStorage {
     return File(appSupportDir.path + '/' + name).writeAsBytes(content);
   }
 
+  File saveFileBytesSync(String name, List<int> content) {
+    var file = File(appSupportDir.path + '/' + name)..writeAsBytesSync(content);
+    return file;
+  }
+
   Future<List<int>> readFileBytes(String name) async {
     final file = File(appSupportDir.path + '/' + name);
     return file.readAsBytes();
