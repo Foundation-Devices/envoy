@@ -11,6 +11,11 @@ if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
+int generateVersionCode(String versionName, int versionCode) {
+    def parts = versionName.split("\\.").collect { it.toInteger() }
+    return parts[0] * 10000 + parts[1] * 1000 + parts[2] * 100 + versionCode
+}
+
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
@@ -41,7 +46,7 @@ android {
         applicationId "com.foundationdevices.envoy"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode flutterVersionCode.toInteger()
+        versionCode generateVersionCode(flutterVersionName, flutterVersionCode.toInteger())
         versionName flutterVersionName
 
         ndk {
