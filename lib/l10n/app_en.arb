@@ -44,7 +44,7 @@
   "envoy_scv_result_update_card2_subheading1": "A PIN will encrypt your Passport so that only you can access your Bitcoin.",
   "envoy_scv_result_update_os_clock": "4321",
   "envoy_scv_result_update_right_action": "Skip",
-  "envoy_scv_result_update_heading": "Your Passport is secure",
+  "envoy_scv_result_update_heading": "Your Passport is secure\nbut needs a firmware update",
   "envoy_scv_result_fail_os_clock": "4321",
   "envoy_scv_result_fail_right_action": "Skip",
   "envoy_scv_result_fail_heading": "Your Passport may be insecure",
@@ -232,7 +232,7 @@
   "single_envoy_import_pp_scan_os_clock": "9:41",
   "single_envoy_import_pp_scan_right_action": "Skip",
   "single_envoy_import_pp_scan_heading": "Scan the QR code that Passport generates",
-  "single_envoy_import_pp_scan_subheading": "This QR code contains the information required for Envoy to interact securley with Passport.",
+  "single_envoy_import_pp_scan_subheading": "This QR code contains the information required for Envoy to interact securely with Passport.",
   "single_envoy_import_pp_scan_cta": "Continue",
   "envoy_import_pp_scan_os_clock": "9:41",
   "envoy_import_pp_scan_right_action": "Skip",
@@ -339,6 +339,10 @@
   "envoy_fw_intro_os_clock": "9:41",
   "envoy_fw_intro_right_action": "Skip",
   "envoy_fw_intro_heading": "Next, let’s update Passport's firmware",
-  "envoy_fw_intro_subheading": "Envoy allows you to update your Passport from your phone, using the included microSD adapter.\n\nAdvanced users can {{click here}} to download and verify their own firmware on a computer.",
-  "envoy_fw_intro_cta": "Download Firmware"
+  "envoy_fw_intro_subheading": "Envoy allows you to update your Passport from your phone, using the included microSD adapter.\n\nAdvanced users can {{tap here}} to download and verify their own firmware on a computer.",
+  "envoy_fw_intro_cta": "Download Firmware",
+  "envoy_passport_tou_os_clock": "9:41",
+  "envoy_passport_tou_heading": "Please review the Terms of Service",
+  "envoy_passport_tou_subheading": "TOU to be inserted here.",
+  "envoy_passport_tou_cta": "I ACCEPT"
 }
