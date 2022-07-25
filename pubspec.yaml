@@ -64,8 +64,6 @@ dependencies:
   crypto: ^3.0.1
   flutter_secure_storage: ^5.0.2
   shared_preferences: ^2.0.11
-  firebase_messaging: ^11.4.2
-  firebase_core: ^1.5.0
   cbor: ^4.1.0
   uuid: ^3.0.5
   google_fonts: ^2.2.0

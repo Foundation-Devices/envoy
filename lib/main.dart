@@ -10,9 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:envoy/firebase_options.dart';
-import 'package:envoy/business/messaging.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:envoy/business/settings.dart';
@@ -22,24 +19,10 @@ import 'business/fees.dart';
 import 'business/scv_server.dart';
 import 'business/video_manager.dart';
 
-Messaging? messaging;
-
 Future<void> main() async {
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
-    // TODO: find an appropriate screen to ask for permission on iOS
-    messaging = Messaging();
-    await messaging!.requestPermission();
-  } catch (e) {
-    print('Failed to initialize Firebase');
-  }
+  WidgetsFlutterBinding.ensureInitialized();
 
   await initSingletons();
-
   runApp(MyApp());
 }
 
