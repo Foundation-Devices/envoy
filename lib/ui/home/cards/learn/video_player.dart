@@ -160,166 +160,175 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        color: Colors.black,
-        child: Stack(children: [
-          FutureBuilder(
-            future: _initializeVideoPlayerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Stack(children: [
-                  Center(
-                    child: _vlcPlayer,
-                  ),
-                  Center(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 50),
-                      reverseDuration: const Duration(milliseconds: 200),
-                      child: !_isPlaying
-                          ? Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                              size: 100.0,
-                              semanticLabel: 'Play',
-                            )
-                          : const SizedBox.shrink(),
+    return WillPopScope(
+      onWillPop: () {
+        exitPlayer(context);
+        return Future.value(true);
+      },
+      child: Material(
+          color: Colors.black,
+          child: Stack(children: [
+            FutureBuilder(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Stack(children: [
+                    Center(
+                      child: _vlcPlayer,
                     ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 100,
-                    bottom: 100,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isPlaying
-                              ? _controller!.pause()
-                              : _controller!.play();
-                          _isPlaying = !_isPlaying;
-                        });
-                      },
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                    child: Stack(alignment: Alignment.center, children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: LinearProgressIndicator(
-                            color: EnvoyColors.grey85,
-                            backgroundColor: Colors.white,
-                            value: _downloadProgress),
+                    Center(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 50),
+                        reverseDuration: const Duration(milliseconds: 200),
+                        child: !_isPlaying
+                            ? Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                                size: 100.0,
+                                semanticLabel: 'Play',
+                              )
+                            : const SizedBox.shrink(),
                       ),
-                      Slider(
-                        activeColor: EnvoyColors.darkTeal,
-                        inactiveColor: Colors.transparent,
-                        min: 0,
-                        value: _playerProgress,
-                        max: widget.video.duration.toDouble(),
-                        onChanged: (value) {
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 100,
+                      bottom: 100,
+                      child: GestureDetector(
+                        onTap: () {
                           setState(() {
-                            _playerProgress = value;
+                            _isPlaying
+                                ? _controller!.pause()
+                                : _controller!.play();
+                            _isPlaying = !_isPlaying;
                           });
                         },
-                        onChangeEnd: (double newValue) {
-                          if (_updatePositionTimer != null) {
-                            _updatePositionTimer!.cancel();
-                          }
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      left: 20,
+                      right: 20,
+                      child: Stack(alignment: Alignment.center, children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: LinearProgressIndicator(
+                              color: EnvoyColors.grey85,
+                              backgroundColor: Colors.white,
+                              value: _downloadProgress),
+                        ),
+                        Slider(
+                          activeColor: EnvoyColors.darkTeal,
+                          inactiveColor: Colors.transparent,
+                          min: 0,
+                          value: _playerProgress,
+                          max: widget.video.duration.toDouble(),
+                          onChanged: (value) {
+                            setState(() {
+                              _playerProgress = value;
+                            });
+                          },
+                          onChangeEnd: (double newValue) {
+                            if (_updatePositionTimer != null) {
+                              _updatePositionTimer!.cancel();
+                            }
 
-                          _controller!
-                              .setMediaFromFile(streamFile, hwAcc: HwAcc.full)
-                              .then((_) {
-                            Future.delayed(Duration(milliseconds: 250))
+                            _controller!
+                                .setMediaFromFile(streamFile, hwAcc: HwAcc.full)
                                 .then((_) {
-                              _controller!
-                                  .setPosition(newValue /
-                                      widget.video.duration.toDouble() /
-                                      _downloadProgress)
+                              Future.delayed(Duration(milliseconds: 250))
                                   .then((_) {
-                                periodicallyUpdatePosition();
+                                _controller!
+                                    .setPosition(newValue /
+                                        widget.video.duration.toDouble() /
+                                        _downloadProgress)
+                                    .then((_) {
+                                  periodicallyUpdatePosition();
+                                });
                               });
                             });
-                          });
-                        },
-                      ),
-                    ]),
-                  )
-                ]);
-              } else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                          color: EnvoyColors.darkTeal,
-                          value: _downloaded > 0
-                              ? (_downloaded / _playThreshold)
-                              : null),
-                      if (Tor().enabled)
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: AnimatedOpacity(
-                            duration: Duration(milliseconds: 1000),
-                            opacity: _showTorExplainer ? 1.0 : 0.0,
-                            child: Text(
-                              "Envoy is loading your video over the Tor Network",
-                              style: TextStyle(
-                                color: Colors.white70,
+                          },
+                        ),
+                      ]),
+                    )
+                  ]);
+                } else {
+                  // If the VideoPlayerController is still initializing, show a
+                  // loading spinner.
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                            color: EnvoyColors.darkTeal,
+                            value: _downloaded > 0
+                                ? (_downloaded / _playThreshold)
+                                : null),
+                        if (Tor().enabled)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: AnimatedOpacity(
+                              duration: Duration(milliseconds: 1000),
+                              opacity: _showTorExplainer ? 1.0 : 0.0,
+                              child: Text(
+                                "Envoy is loading your video over the Tor Network",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+            Positioned(
+                top: 20,
+                left: 20,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white70,
                   ),
-                );
-              }
-            },
-          ),
-          Positioned(
-              top: 20,
-              left: 20,
-              child: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white70,
-                ),
-                onPressed: () {
-                  if (_updatePositionTimer != null) {
-                    _updatePositionTimer!.cancel();
-                  }
-
-                  if (_controller != null) {
-                    _controller!.stop();
-                  }
-
-                  setState(() {
-                    _curtains = true;
-                  });
-
-                  setPortraitMode();
-
-                  Future.delayed(Duration(milliseconds: 400), () {
-                    Navigator.of(context).pop();
-                  });
-                },
-              )),
-          // Black curtains
-          Positioned.fill(
-            child: IgnorePointer(
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 200),
-                opacity: _curtains ? 1.0 : 0.0,
-                child: Container(
-                  color: Colors.black,
+                  onPressed: () {
+                    exitPlayer(context);
+                    Future.delayed(Duration(milliseconds: 400), () {
+                      Navigator.of(context).pop();
+                    });
+                  },
+                )),
+            // Black curtains
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 200),
+                  opacity: _curtains ? 1.0 : 0.0,
+                  child: Container(
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
-          )
-        ]));
+            )
+          ])),
+    );
+  }
+
+  void exitPlayer(BuildContext context) {
+    if (_updatePositionTimer != null) {
+      _updatePositionTimer!.cancel();
+    }
+
+    if (_controller != null) {
+      _controller!.stop();
+    }
+
+    setState(() {
+      _curtains = true;
+    });
+
+    setPortraitMode();
   }
 }
