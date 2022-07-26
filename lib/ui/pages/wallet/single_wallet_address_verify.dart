@@ -17,7 +17,6 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
     var loc = AppLocalizations.of(context)!;
     return OnboardingPage(
       key: Key("single_wallet_address_verify"),
-      clipArt: Image.asset("assets/address_verify.png"),
       qrCode: pairedWallet.getAddress(),
       text: [
         OnboardingText(

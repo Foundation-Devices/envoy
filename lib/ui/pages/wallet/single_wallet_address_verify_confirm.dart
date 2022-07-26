@@ -13,7 +13,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
     var loc = AppLocalizations.of(context)!;
     return OnboardingPage(
       key: Key("single_wallet_verify_confirm"),
-      clipArt: Image.asset("assets/shield_info.png"),
+      clipArt: Image.asset("assets/address_verify.png"),
       text: [
         OnboardingText(
             header: loc.single_envoy_wallet_address_verify_confirm_heading,

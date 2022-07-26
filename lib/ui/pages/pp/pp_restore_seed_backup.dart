@@ -13,6 +13,7 @@ class PpRestoreSeedBackupPage extends StatelessWidget {
     var loc = AppLocalizations.of(context)!;
     return OnboardingPage(
       key: Key("pp_restore_seed_backup"),
+      clipArt: Image.asset("assets/pp_seed_backup.png"),
       text: [
         OnboardingText(
             header: loc.envoy_pp_restore_seed_backup_heading,
