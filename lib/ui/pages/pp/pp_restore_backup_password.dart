@@ -13,6 +13,7 @@ class PpRestoreBackupPasswordPage extends StatelessWidget {
     var loc = AppLocalizations.of(context)!;
     return OnboardingPage(
       key: Key("pp_restore_backup_password"),
+      clipArt: Image.asset("assets/pp_encryption_words.png"),
       text: [
         OnboardingText(
             header: loc.envoy_pp_restore_backup_password_heading,
