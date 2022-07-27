@@ -6,12 +6,19 @@ library envoy.scv_server;
 
 import 'dart:convert';
 import 'package:http_tor/http_tor.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
+import 'package:envoy/business/local_storage.dart';
+
+// Generated
+part 'scv_server.g.dart';
 
 class ScvServer {
   static HttpTor http = HttpTor(Tor());
   static String serverAddress = "https://validate.foundationdevices.com";
 
+  LocalStorage _ls = LocalStorage();
+  static const String _SCV_CHALLENGE_PREFS = "scv_challenge";
   Challenge? storedChallenge;
 
   static final ScvServer _instance = ScvServer._internal();
@@ -28,10 +35,36 @@ class ScvServer {
   ScvServer._internal() {
     print("Instance of ScvServer created!");
 
-    // Go get the challenge from Server and store it
-    getChallenge().then((challenge) {
-      storedChallenge = challenge;
-    });
+    // Get the SCV challenge from storage
+    // If not there, get it from Server and store it
+    if (_restoreChallege() == false) {
+      getChallenge().then((challenge) {
+        _storeChallenge(challenge);
+      });
+    }
+  }
+
+  _storeChallenge(Challenge challenge) {
+    storedChallenge = challenge;
+    String json = jsonEncode(challenge.toJson());
+    _ls.prefs.setString(_SCV_CHALLENGE_PREFS, json);
+  }
+
+  bool _restoreChallege() {
+    if (_ls.prefs.containsKey(_SCV_CHALLENGE_PREFS)) {
+      var challenge =
+      jsonDecode(_ls.prefs.getString(_SCV_CHALLENGE_PREFS)!);
+      storedChallenge = Challenge.fromJson(challenge);
+      return true;
+    }
+
+    return false;
+  }
+
+  _clearChallenge() {
+    if (_ls.prefs.containsKey(_SCV_CHALLENGE_PREFS)) {
+      _ls.prefs.remove(_SCV_CHALLENGE_PREFS);
+    }
   }
 
   Future<Challenge> getChallenge() async {
@@ -43,7 +76,7 @@ class ScvServer {
 
     if (response.statusCode == 200) {
       Challenge challenge = Challenge.fromJson(jsonDecode(response.body));
-      storedChallenge = challenge;
+      _storeChallenge(challenge);
       return challenge;
     } else {
       throw Exception('Failed to get challenge');
@@ -52,9 +85,9 @@ class ScvServer {
 
   Future<bool> validate(Challenge challenge, List<String> responseWords) async {
     // Clear stored challenge and fetch it again
-    storedChallenge = null;
+    _clearChallenge();
     getChallenge().then((challenge) {
-      storedChallenge = challenge;
+      _storeChallenge(challenge);
     });
 
     final request = {
@@ -79,15 +112,18 @@ class ScvServer {
   }
 }
 
+@JsonSerializable()
 class Challenge {
+  @JsonKey(name: "challenge")
   final String id;
   final String signature;
   final String derSignature;
 
   Challenge(this.id, this.signature, this.derSignature);
 
-  factory Challenge.fromJson(Map<String, dynamic> json) {
-    return Challenge(
-        json['challenge'], json['signature'], json['derSignature']);
-  }
+  // Generated
+  factory Challenge.fromJson(Map<String, dynamic> json) =>
+      _$ChallengeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChallengeToJson(this);
 }
