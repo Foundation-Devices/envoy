@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
-//
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'notifications.dart';
