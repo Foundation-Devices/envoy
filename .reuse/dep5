@@ -42,3 +42,11 @@ License: GPL-3.0-or-later
 Files: *.lock
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later
+
+Files: lib/business/*.g.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: test/*.mocks.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
