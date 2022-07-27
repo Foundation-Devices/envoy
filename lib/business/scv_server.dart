@@ -52,8 +52,7 @@ class ScvServer {
 
   bool _restoreChallege() {
     if (_ls.prefs.containsKey(_SCV_CHALLENGE_PREFS)) {
-      var challenge =
-      jsonDecode(_ls.prefs.getString(_SCV_CHALLENGE_PREFS)!);
+      var challenge = jsonDecode(_ls.prefs.getString(_SCV_CHALLENGE_PREFS)!);
       storedChallenge = Challenge.fromJson(challenge);
       return true;
     }
