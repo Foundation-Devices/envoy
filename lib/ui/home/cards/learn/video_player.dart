@@ -60,11 +60,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     Future.delayed(Duration(milliseconds: 300), () {
       setFullScreenLandscapeMode();
-        if (Tor().enabled) {
-          setState(() {
-            _showTorExplainer = true;
-          });
-        }
+      if (Tor().enabled) {
+        setState(() {
+          _showTorExplainer = true;
+        });
+      }
     });
     final Completer _completer = new Completer();
 
