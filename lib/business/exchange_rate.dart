@@ -70,7 +70,7 @@ class ExchangeRate extends ChangeNotifier {
     setCurrency(Settings().selectedFiat!);
 
     // Refresh from time to time
-    Timer.periodic(Duration(seconds: 60), (_) {
+    Timer.periodic(Duration(seconds: 30), (_) {
       _getRate();
     });
   }
