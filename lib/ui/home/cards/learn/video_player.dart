@@ -272,7 +272,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                               duration: Duration(milliseconds: 1000),
                               opacity: _showTorExplainer ? 1.0 : 0.0,
                               child: Text(
-                                "Envoy is loading your video over the Tor Network",
+                                Tor().enabled && !Tor().circuitEstablished
+                                    ? "Connecting to the Tor Network"
+                                    : "Envoy is loading your video over the Tor Network",
                                 style: TextStyle(
                                   color: Colors.white70,
                                 ),

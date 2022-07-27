@@ -13,6 +13,7 @@ import 'dart:typed_data';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:tor/tor.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -95,7 +96,9 @@ class OnboardingPage extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Securely loading QR code"),
+                        child: Text(Tor().enabled && !Tor().circuitEstablished
+                            ? "Connecting to the Tor Network"
+                            : "Securely loading QR code"),
                       )
                     ],
                   );
