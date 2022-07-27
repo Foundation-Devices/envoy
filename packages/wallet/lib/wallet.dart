@@ -227,6 +227,9 @@ class Wallet {
   double feeRateFast = 0;
   double feeRateSlow = 0;
 
+  // Flipped the first time we sync
+  bool initialSyncCompleted = false;
+
   // Serialisation
   factory Wallet.fromJson(Map<String, dynamic> json) => _$WalletFromJson(json);
 
@@ -371,8 +374,9 @@ class Wallet {
       }
 
       _currentlySyncing = false;
+      initialSyncCompleted = true;
       return changed;
-    });
+    }).timeout(Duration(seconds: 30));
   }
 
   Future<Psbt> createPsbt(String sendTo, int amount, double feeRate) async {
