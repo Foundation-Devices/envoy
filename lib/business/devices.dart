@@ -67,6 +67,7 @@ class Devices extends ChangeNotifier {
 
     devices.add(device);
     storeDevices();
+    notifyListeners();
   }
 
   //ignore:unused_element
