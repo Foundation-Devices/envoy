@@ -143,6 +143,7 @@ class AccountManager extends ChangeNotifier {
 
     accounts.add(account);
     storeAccounts();
+    notifyListeners();
 
     syncAll();
     return account;
