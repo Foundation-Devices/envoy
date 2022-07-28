@@ -61,22 +61,24 @@ class AccountManager extends ChangeNotifier {
           account.wallet
               .sync(Settings().electrumAddress(), Tor().port)
               .then((changed) {
-            // This does away with amounts "ghosting" in UI
-            if (account.initialSyncCompleted == false) {
-              account.initialSyncCompleted = true;
-              notifyListeners();
+            if (changed != null) {
+              // This does away with amounts "ghosting" in UI
+              if (account.initialSyncCompleted == false) {
+                account.initialSyncCompleted = true;
+                notifyListeners();
+              }
+
+              // Update the Fees singleton
+              Fees().electrumFastRate = account.wallet.feeRateFast;
+              Fees().electrumSlowRate = account.wallet.feeRateSlow;
+
+              // Notify UI if txs or balance changed
+              if (changed) {
+                notifyListeners();
+              }
+
+              storeAccounts();
             }
-
-            // Update the Fees singleton
-            Fees().electrumFastRate = account.wallet.feeRateFast;
-            Fees().electrumSlowRate = account.wallet.feeRateSlow;
-
-            // Notify UI if txs or balance changed
-            if (changed) {
-              notifyListeners();
-            }
-
-            storeAccounts();
           });
         }
       }
