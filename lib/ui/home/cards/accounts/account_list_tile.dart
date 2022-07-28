@@ -11,6 +11,7 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/amount.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/ui/loader_ghost.dart';
 
 class AccountListTile extends StatefulWidget {
   final void Function() onTap;
@@ -157,24 +158,34 @@ class _AccountListTileState extends State<AccountListTile> {
                           children: [
                             FittedBox(
                               fit: BoxFit.fitWidth,
-                              child: Text(
-                                getFormattedAmount(
-                                    widget.account.wallet.balance,
-                                    includeUnit: true),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(color: EnvoyColors.grey),
-                              ),
+                              child: !widget.account.initialSyncCompleted
+                                  ? LoaderGhost(
+                                      width: 200,
+                                      height: 30,
+                                    )
+                                  : Text(
+                                      getFormattedAmount(
+                                          widget.account.wallet.balance,
+                                          includeUnit: true),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5!
+                                          .copyWith(color: EnvoyColors.grey),
+                                    ),
                             ),
-                            Text(
-                              ExchangeRate().getFormattedAmount(
-                                  widget.account.wallet.balance),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2!
-                                  .copyWith(color: EnvoyColors.grey),
-                            )
+                            !widget.account.initialSyncCompleted
+                                ? LoaderGhost(
+                                    width: 50,
+                                    height: 25,
+                                  )
+                                : Text(
+                                    ExchangeRate().getFormattedAmount(
+                                        widget.account.wallet.balance),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(color: EnvoyColors.grey),
+                                  )
                           ],
                         ),
                       ),
