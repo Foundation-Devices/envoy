@@ -315,9 +315,9 @@ class Wallet {
   }
 
   // Returns true if there have been changes
-  Future<bool> sync(String electrumAddress, int torPort) async {
+  Future<bool?> sync(String electrumAddress, int torPort) async {
     if (_currentlySyncing) {
-      return false;
+      return null;
     }
 
     _currentlySyncing = true;
