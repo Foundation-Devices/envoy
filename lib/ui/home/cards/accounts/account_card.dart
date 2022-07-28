@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
+import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,14 +77,22 @@ class _AccountCardState extends State<AccountCard> {
       Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: ListView.builder(
-            padding: EdgeInsets.zero,
-            itemCount: widget.account.wallet.transactions.length,
-            itemBuilder: (BuildContext context, int index) {
-              return TransactionListTile(
-                  transaction: widget.account.wallet.transactions[index]);
-            },
-          ),
+          child: !widget.account.initialSyncCompleted
+              ? ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: 4,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GhostListTile();
+                  },
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: widget.account.wallet.transactions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return TransactionListTile(
+                        transaction: widget.account.wallet.transactions[index]);
+                  },
+                ),
         ),
       ),
       Padding(
@@ -129,6 +138,53 @@ class _AccountCardState extends State<AccountCard> {
         ),
       )
     ]);
+  }
+}
+
+class GhostListTile extends StatelessWidget {
+  const GhostListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Padding(
+        padding: const EdgeInsets.only(top: 2, right: 50),
+        child: LoaderGhost(
+          width: 10,
+          height: 20,
+        ),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 3.0, right: 80),
+        child: LoaderGhost(
+          width: 30,
+          height: 20,
+        ),
+      ),
+      leading: LoaderGhost(
+        width: 50,
+        height: 50,
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          LoaderGhost(
+            width: 50,
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 3.0),
+            child: LoaderGhost(
+              width: 40,
+              height: 15,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 

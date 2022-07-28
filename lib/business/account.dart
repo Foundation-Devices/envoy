@@ -18,6 +18,12 @@ class Account {
   final DateTime dateAdded;
   final int number;
 
+  // Flipped the first time we sync
+  @JsonKey(
+      defaultValue:
+          true) // Ensure we don't show ghosting UI for accounts synced before introduction of this field
+  bool initialSyncCompleted = false;
+
   Color get color {
     int colorIndex = number % (EnvoyColors.listAccountTileColors.length);
     return EnvoyColors.listAccountTileColors[colorIndex];
