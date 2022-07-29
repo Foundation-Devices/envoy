@@ -17,48 +17,44 @@ class LoaderGhost extends StatefulWidget {
 
 class _LoaderGhostState extends State<LoaderGhost>
     with SingleTickerProviderStateMixin {
-  late AnimationController _circuitEstablishingAnimationController;
-  late Animation<double> _circuitEstablishingAnimation;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
   late void Function() _animationTickListener;
   late void Function(AnimationStatus) _animationStatusListener;
 
   @override
   initState() {
     super.initState();
-    _circuitEstablishingAnimationController =
+    _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
 
-    _circuitEstablishingAnimation = _circuitEstablishingAnimationController
-        .drive(Tween(begin: 0.8, end: 0.5));
+    _animation = _animationController.drive(Tween(begin: 0.8, end: 0.5));
 
     _animationTickListener = () {
       setState(() {});
     };
 
-    _circuitEstablishingAnimationController.addListener(_animationTickListener);
+    _animationController.addListener(_animationTickListener);
 
     _animationStatusListener = (status) {
       if (status == AnimationStatus.completed) {
-        _circuitEstablishingAnimationController.reverse();
+        _animationController.reverse();
       } else if (status == AnimationStatus.dismissed) {
-        _circuitEstablishingAnimationController.forward();
+        _animationController.forward();
       }
     };
 
-    _circuitEstablishingAnimationController
-        .addStatusListener(_animationStatusListener);
+    _animationController.addStatusListener(_animationStatusListener);
 
-    _circuitEstablishingAnimationController.forward();
+    _animationController.forward();
   }
 
   @override
   dispose() {
-    _circuitEstablishingAnimationController
-        .removeListener(_animationTickListener);
-    _circuitEstablishingAnimationController
-        .removeStatusListener(_animationStatusListener);
+    _animationController.removeListener(_animationTickListener);
+    _animationController.removeStatusListener(_animationStatusListener);
 
-    _circuitEstablishingAnimationController.dispose();
+    _animationController.dispose();
 
     super.dispose();
   }
@@ -66,7 +62,7 @@ class _LoaderGhostState extends State<LoaderGhost>
   @override
   Widget build(BuildContext context) {
     return Opacity(
-        opacity: _circuitEstablishingAnimation.value,
+        opacity: _animation.value,
         child: Container(
           width: widget.width,
           height: widget.height,
