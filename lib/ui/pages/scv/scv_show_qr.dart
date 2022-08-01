@@ -40,8 +40,9 @@ class ScvShowQrPage extends StatelessWidget {
             label: loc.envoy_scv_show_qr_cta,
             onTap: () {
               if (_challenge != null) {
+                // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
+                    .pushReplacement(MaterialPageRoute(builder: (context) {
                   return ScvScanQrPage(_challenge!);
                 }));
               }
