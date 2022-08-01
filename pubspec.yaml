@@ -73,7 +73,6 @@ dependencies:
   json_annotation: ^4.4.0
   animations: ^2.0.2
   share_plus: ^3.0.4
-  visibility_detector: ^0.2.2
   timeago: ^3.2.2
   csv: ^5.0.1
   webfeed: ^0.7.0

@@ -7,7 +7,6 @@ import 'dart:typed_data';
 
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:flutter/material.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'package:ur/ur.dart';
@@ -86,23 +85,12 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
 
   @override
   Widget build(BuildContext context) {
-    return VisibilityDetector(
-        key: Key('animated_qr_image'),
-        onVisibilityChanged: (visibilityInfo) {
-          if (visibilityInfo.visibleFraction < 0.5) {
-            _timer.cancel();
-          } else {
-            if (!_timer.isActive) {
-              startTimer();
-            }
-          }
-        },
-        child: QrImage(
-          data: widget.urEncoder != null
-              ? widget.urEncoder!.nextPart().toUpperCase()
-              : widget.cryptoRequest!.nextPart().toUpperCase(),
-          size: widget.size,
-          backgroundColor: Colors.transparent,
-        ));
+    return QrImage(
+      data: widget.urEncoder != null
+          ? widget.urEncoder!.nextPart().toUpperCase()
+          : widget.cryptoRequest!.nextPart().toUpperCase(),
+      size: widget.size,
+      backgroundColor: Colors.transparent,
+    );
   }
 }

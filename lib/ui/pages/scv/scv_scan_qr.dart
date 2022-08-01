@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/pages/scv/scv_show_qr.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,6 +27,13 @@ class ScvScanQrPage extends StatelessWidget {
       ],
       navigationDots: 3,
       navigationDotsIndex: 2,
+      leftFunction: (context) {
+        // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return ScvShowQrPage();
+        }));
+      },
       buttons: [
         OnboardingButton(
             label: loc.envoy_scv_scan_qr_cta,
