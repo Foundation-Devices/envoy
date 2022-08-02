@@ -2,87 +2,39 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Envoy
+name: Release
 
-on:
-  pull_request:
-    branches: [ main, dev-v0.1.0 ]
+on: workflow_dispatch
 
 jobs:
-  check:
+  build-android:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: extractions/setup-just@v1
 
       - uses: actions/checkout@v2
-      - name: REUSE Compliance Check
-        uses: fsfe/reuse-action@v1
 
-      - uses: actions-rs/toolchain@v1
+      - name: Build APK and AAB
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
+
+      - uses: actions/upload-artifact@v2
         with:
-          toolchain: stable
-          components: rustfmt, clippy
+          name: envoy-apk
+          path: release/app-release.apk
 
-      - uses: actions/setup-java@v1
+
+      - uses: actions/upload-artifact@v2
         with:
-          java-version: '12.x'
+          name: envoy-aab
+          path: release/app-release.aab
 
-      - uses: subosito/flutter-action@v1
-        with:
-          channel: 'stable'
-          flutter-version: '2.10.5'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Verify Dart formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Verify Rust formatting
-        run: cargo fmt --all -- --check
-
-      - name: Run Rust tests
-        run: cargo test
-
-      - name: Analyze Dart project source
-        run: flutter analyze
-
-      - name: Build Rust libs
-        run: cargo build
-
-      - name: Run Dart tests
-        run: flutter test
-
-#      - name: Build Rust libs for Android
-#        run: ./build_ffi_android.sh
-#
-#      - name: Build Android APK
-#        env:
-#          KEY_JKS: ${{ secrets.KEY_JKS }}
-#          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-#          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-#        run: echo -n $KEY_JKS | base64 -di > android/key.jks && flutter build apk --release
-#
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: envoy-apk
-#          path: build/app/outputs/flutter-apk/app-release.apk
-#
-#      - name: Build Android App Bundle
-#        env:
-#          KEY_JKS: ${{ secrets.KEY_JKS }}
-#          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-#          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-#        run: echo -n $KEY_JKS | base64 -di > android/key.jks && flutter build appbundle --release
-#
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: envoy-bundle
-#          path: build/app/outputs/bundle/release/app-release.aab
-
-  build-apple:
-    needs: check
+  build-ios:
+    needs: build-android
     runs-on: macos-latest
 
     steps:
