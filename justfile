@@ -35,6 +35,18 @@ docker-run: docker-build
 docker-console:
     docker run -it {{docker_image}} bash
 
+# run the APK through SHA256
+verify-sha sha:
+  #!/usr/bin/env bash
+  sha=$(shasum -a 256 release/app-release.apk | awk '{print $1}')
+  echo -e "Expected SHA:\t{{sha}}"
+  echo -e "Actual SHA:\t${sha}"
+  if [ "$sha" = "{{sha}}" ]; then
+    echo "Hashes match!"
+  else
+    echo "ERROR: Hashes DO NOT match!"
+  fi
+
 generate:
     flutter pub run build_runner build --delete-conflicting-outputs
 
