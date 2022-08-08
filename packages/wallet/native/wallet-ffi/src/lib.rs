@@ -41,6 +41,8 @@ use std::sync::Mutex;
 pub enum NetworkType {
     Mainnet,
     Testnet,
+    Signet,
+    Regtest,
 }
 
 #[repr(C)]
@@ -147,6 +149,8 @@ pub unsafe extern "C" fn wallet_init(
     let network = match network {
         NetworkType::Mainnet => Network::Bitcoin,
         NetworkType::Testnet => Network::Testnet,
+        NetworkType::Signet => Network::Signet,
+        NetworkType::Regtest => Network::Regtest,
     };
 
     let name = unwrap_or_return!(CStr::from_ptr(name).to_str(), null_mut());

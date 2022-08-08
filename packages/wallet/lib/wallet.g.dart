@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
-//
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'wallet.dart';
@@ -32,24 +28,32 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
     };
 
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
-    json['name'] as String,
-    json['testnet'] as bool,
-    json['externalDescriptor'] as String,
-    json['internalDescriptor'] as String)
-  ..transactions = (json['transactions'] as List<dynamic>)
-      .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
-      .toList()
-  ..balance = json['balance'] as int
-  ..feeRateFast = (json['feeRateFast'] as num).toDouble()
-  ..feeRateSlow = (json['feeRateSlow'] as num).toDouble();
+      json['name'] as String,
+      $enumDecodeNullable(_$NetworkEnumMap, json['network']) ?? Network.Mainnet,
+      json['externalDescriptor'] as String,
+      json['internalDescriptor'] as String,
+    )
+      ..transactions = (json['transactions'] as List<dynamic>)
+          .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..balance = json['balance'] as int
+      ..feeRateFast = (json['feeRateFast'] as num).toDouble()
+      ..feeRateSlow = (json['feeRateSlow'] as num).toDouble();
 
 Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
       'name': instance.name,
       'externalDescriptor': instance.externalDescriptor,
       'internalDescriptor': instance.internalDescriptor,
-      'testnet': instance.testnet,
+      'network': _$NetworkEnumMap[instance.network],
       'transactions': instance.transactions,
       'balance': instance.balance,
       'feeRateFast': instance.feeRateFast,
       'feeRateSlow': instance.feeRateSlow,
     };
+
+const _$NetworkEnumMap = {
+  Network.Mainnet: 'Mainnet',
+  Network.Testnet: 'Testnet',
+  Network.Signet: 'Signet',
+  Network.Regtest: 'Regtest',
+};

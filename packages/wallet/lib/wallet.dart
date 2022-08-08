@@ -12,7 +12,7 @@ import 'package:wallet/exceptions.dart';
 // Generated
 part 'wallet.g.dart';
 
-enum Network { Mainnet, Testnet }
+enum Network { Mainnet, Testnet, Signet, Regtest }
 
 @JsonSerializable()
 class Transaction {
@@ -218,7 +218,10 @@ class Wallet {
   final String externalDescriptor;
   final String internalDescriptor;
 
-  final bool testnet;
+  @JsonKey(
+      defaultValue:
+          Network.Mainnet) // Migration from binary main/testnet approach
+  final Network network;
 
   List<Transaction> transactions = [];
   int balance = 0;
@@ -280,7 +283,7 @@ class Wallet {
         .toDartString();
   }
 
-  Wallet(this.name, this.testnet, this.externalDescriptor,
+  Wallet(this.name, this.network, this.externalDescriptor,
       this.internalDescriptor);
 
   init(String dir) {
@@ -295,7 +298,7 @@ class Wallet {
         externalDescriptor.toNativeUtf8(),
         internalDescriptor.toNativeUtf8(),
         (dir + "/wallets/" + name).toNativeUtf8(),
-        testnet ? Network.Testnet.index : Network.Mainnet.index);
+        network.index);
 
     if (_self == nullptr) {
       throwRustException(_lib);

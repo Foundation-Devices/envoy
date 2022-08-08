@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import 'package:tor/tor.dart';
+import 'package:wallet/wallet.dart';
 
 // Generated
 part 'settings.g.dart';
@@ -28,7 +29,7 @@ class Settings extends ChangeNotifier {
       "ssl://mainnet.foundationdevices.com:50002";
 
   // FD testnet server
-  //static const String DEFAULT_ELECTRUM_SERVER = "tcp://137.184.134.236:50001";
+  static const String TESTNET_ELECTRUM_SERVER = "tcp://137.184.134.236:50001";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
@@ -67,7 +68,11 @@ class Settings extends ChangeNotifier {
   @JsonKey(defaultValue: true)
   bool usingDefaultElectrumServer = true;
 
-  String electrumAddress() {
+  String electrumAddress(Network network) {
+    if (network == Network.Testnet) {
+      return TESTNET_ELECTRUM_SERVER;
+    }
+
     if (usingDefaultElectrumServer) {
       return DEFAULT_ELECTRUM_SERVER;
     } else {
@@ -123,8 +128,6 @@ class Settings extends ChangeNotifier {
   }
 
   String nguServerAddress = "https://ngu.foundationdevices.com";
-
-  bool usingTestnet = false;
 
   static final Settings _instance = Settings._internal();
 

@@ -12,6 +12,7 @@ import 'package:envoy/ui/amount.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/loader_ghost.dart';
+import 'package:wallet/wallet.dart';
 
 class AccountListTile extends StatefulWidget {
   final void Function() onTap;
@@ -179,8 +180,11 @@ class _AccountListTileState extends State<AccountListTile> {
                                     height: 25,
                                   )
                                 : Text(
-                                    ExchangeRate().getFormattedAmount(
-                                        widget.account.wallet.balance),
+                                    widget.account.wallet.network ==
+                                            Network.Testnet
+                                        ? "TESTNET"
+                                        : ExchangeRate().getFormattedAmount(
+                                            widget.account.wallet.balance),
                                     style: Theme.of(context)
                                         .textTheme
                                         .subtitle2!

@@ -14,8 +14,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..usingDefaultElectrumServer =
       json['usingDefaultElectrumServer'] as bool? ?? true
   ..usingTor = json['usingTor'] as bool
-  ..nguServerAddress = json['nguServerAddress'] as String
-  ..usingTestnet = json['usingTestnet'] as bool;
+  ..nguServerAddress = json['nguServerAddress'] as String;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit],
@@ -25,7 +24,6 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,
       'usingTor': instance.usingTor,
       'nguServerAddress': instance.nguServerAddress,
-      'usingTestnet': instance.usingTestnet,
     };
 
 const _$DisplayUnitEnumMap = {

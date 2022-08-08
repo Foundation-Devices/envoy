@@ -12,7 +12,7 @@ void main() async {
     var dir = await getApplicationDocumentsDirectory();
     var wallet = Wallet(
         Random().nextInt(9999).toString(),
-        true,
+        Network.Testnet,
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/0/*)",
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)")
       ..init(dir.path);
@@ -28,7 +28,7 @@ void main() async {
     var dir = await getApplicationDocumentsDirectory();
     var wallet = Wallet(
         Random().nextInt(9999).toString(),
-        true,
+        Network.Testnet,
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/0/*)",
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)")
       ..init(dir.path);

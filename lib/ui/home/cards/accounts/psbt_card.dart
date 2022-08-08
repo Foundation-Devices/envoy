@@ -75,8 +75,11 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                       print(psbt);
                       account.wallet.decodePsbt(psbt).then((decoded) {
                         account.wallet
-                            .broadcastTx(Settings().electrumAddress(),
-                                Tor().port, decoded.rawTx)
+                            .broadcastTx(
+                                Settings()
+                                    .electrumAddress(account.wallet.network),
+                                Tor().port,
+                                decoded.rawTx)
                             .then((_) {
                           navigator!.pop(depth: 3);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(

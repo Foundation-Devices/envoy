@@ -59,7 +59,8 @@ class AccountManager extends ChangeNotifier {
       if (!Settings().torEnabled() || Tor().circuitEstablished) {
         for (Account account in accounts) {
           account.wallet
-              .sync(Settings().electrumAddress(), Tor().port)
+              .sync(Settings().electrumAddress(account.wallet.network),
+                  Tor().port)
               .then((changed) {
             if (changed != null) {
               // This does away with amounts "ghosting" in UI
@@ -249,8 +250,19 @@ class AccountManager extends ChangeNotifier {
 
   Future<Wallet> _initWallet(String fingerprint, String externalDescriptor,
       String internalDescriptor) async {
-    Wallet wallet = Wallet(fingerprint, Settings().usingTestnet,
-        externalDescriptor, internalDescriptor);
+    int publicKeyIndex = externalDescriptor.indexOf("]") + 1;
+    String publicKeyType =
+        externalDescriptor.substring(publicKeyIndex, publicKeyIndex + 4);
+
+    var network;
+    if (publicKeyType == "tpub") {
+      network = Network.Testnet;
+    } else {
+      network = Network.Mainnet;
+    }
+
+    Wallet wallet =
+        Wallet(fingerprint, network, externalDescriptor, internalDescriptor);
     wallet.init(LocalStorage().appDocumentsDir.path);
 
     return wallet;
