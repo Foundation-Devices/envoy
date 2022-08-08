@@ -159,7 +159,7 @@ class _ScannerPageState extends State<ScannerPage> {
     if (widget._type == ScannerType.address) {
       String address = barcode.rawValue!.replaceFirst("bitcoin:", "");
 
-      if (widget.walletToValidate!.validateAddress(address)) {
+      if (!widget.walletToValidate!.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Not a valid address"),
         ));
