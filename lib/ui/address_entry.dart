@@ -11,6 +11,7 @@ class AddressEntry extends StatelessWidget {
   final _controller = TextEditingController();
   final Function(bool)? onAddressChanged;
   final bool canEdit;
+  final Wallet wallet;
 
   String get text => _controller.text;
 
@@ -19,7 +20,10 @@ class AddressEntry extends StatelessWidget {
   }
 
   AddressEntry(
-      {String? initalAddress, this.onAddressChanged, this.canEdit: true}) {
+      {String? initalAddress,
+      this.onAddressChanged,
+      this.canEdit: true,
+      required this.wallet}) {
     if (initalAddress != null) {
       _controller.text = initalAddress;
     }
@@ -38,7 +42,7 @@ class AddressEntry extends StatelessWidget {
               enabled: canEdit,
               controller: _controller,
               validator: (value) {
-                if (value!.isEmpty || !Wallet.validateAddress(value)) {
+                if (value!.isEmpty || !wallet.validateAddress(value)) {
                   onAddressChanged!(false);
                 } else {
                   onAddressChanged!(true);
@@ -80,7 +84,7 @@ class AddressEntry extends StatelessWidget {
                               .push(MaterialPageRoute(builder: (context) {
                             return ScannerPage.address((result) {
                               _controller.text = result;
-                            });
+                            }, wallet);
                           }));
                         },
                       ),

@@ -37,7 +37,7 @@ class _SendCardState extends State<SendCard>
 
   int _amount = 0;
 
-  var _address = AddressEntry();
+  var _address;
   var _amountEntry = AmountEntry();
 
   @override
@@ -45,6 +45,7 @@ class _SendCardState extends State<SendCard>
     super.initState();
 
     _address = AddressEntry(
+        wallet: widget.account.wallet,
         initalAddress: widget.address,
         onAddressChanged: (valid) {
           Future.delayed(Duration.zero, () async {

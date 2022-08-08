@@ -495,9 +495,14 @@ pub unsafe extern "C" fn wallet_broadcast_tx(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn wallet_validate_address(address: *const c_char) -> bool {
+pub unsafe extern "C" fn wallet_validate_address(
+    wallet: *mut Mutex<Wallet<Tree>>,
+    address: *const c_char,
+) -> bool {
+    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), false);
+
     match Address::from_str(CStr::from_ptr(address).to_str().unwrap()) {
-        Ok(_) => true,
+        Ok(a) => wallet.network() == a.network, // Only valid if it's on same network
         Err(_) => false,
     }
 }
@@ -506,28 +511,4 @@ pub unsafe extern "C" fn wallet_validate_address(address: *const c_char) -> bool
 #[no_mangle]
 pub unsafe extern "C" fn wallet_hello() {
     println!("Hello wallet");
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::wallet_validate_address;
-    use std::ffi::CString;
-
-    #[test]
-    fn test_validate_valid_address() {
-        let address = CString::new("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5").unwrap();
-        unsafe {
-            let valid = wallet_validate_address(address.as_ptr());
-            assert_eq!(valid, true);
-        }
-    }
-
-    #[test]
-    fn test_validate_invalid_address() {
-        let address = CString::new("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc3").unwrap();
-        unsafe {
-            let valid = wallet_validate_address(address.as_ptr());
-            assert_eq!(valid, false);
-        }
-    }
 }

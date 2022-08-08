@@ -33,8 +33,9 @@ class ScannerPage extends StatefulWidget {
   ScannerPage(this._type,
       {this.walletToValidate, this.challengeToValidate, this.callback});
 
-  ScannerPage.address(Function(String) callback)
-      : this(ScannerType.address, callback: callback);
+  ScannerPage.address(Function(String) callback, Wallet walletToValidate)
+      : this(ScannerType.address,
+            callback: callback, walletToValidate: walletToValidate);
 
   ScannerPage.tx(Function(String) callback)
       : this(ScannerType.tx, callback: callback);
@@ -158,7 +159,7 @@ class _ScannerPageState extends State<ScannerPage> {
     if (widget._type == ScannerType.address) {
       String address = barcode.rawValue!.replaceFirst("bitcoin:", "");
 
-      if (!Wallet.validateAddress(address)) {
+      if (widget.walletToValidate!.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Not a valid address"),
         ));

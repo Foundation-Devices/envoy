@@ -49,7 +49,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
   bool _boostEnabled = false;
   int _amount = 0;
 
-  var address = AddressEntry();
+  var address;
 
   @override
   void initState() {
@@ -59,6 +59,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
     address = AddressEntry(
       initalAddress: widget.initialAddress,
       canEdit: false,
+      wallet: widget.account.wallet,
     );
 
     _getPsbts();

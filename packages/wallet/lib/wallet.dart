@@ -143,8 +143,10 @@ typedef WalletDecodePsbtRust = NativePsbt Function(
 typedef WalletDecodePsbtDart = NativePsbt Function(
     Pointer<Uint8> wallet, Pointer<Utf8> psbt);
 
-typedef WalletValidateAddressRust = Uint8 Function(Pointer<Utf8> address);
-typedef WalletValidateAddressDart = int Function(Pointer<Utf8> address);
+typedef WalletValidateAddressRust = Uint8 Function(
+    Pointer<Uint8> wallet, Pointer<Utf8> address);
+typedef WalletValidateAddressDart = int Function(
+    Pointer<Uint8> wallet, Pointer<Utf8> address);
 
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
@@ -509,13 +511,15 @@ class Wallet {
     });
   }
 
-  static bool validateAddress(String address) {
-    final lib = load(_libName);
-
-    final rustFunction = lib.lookup<NativeFunction<WalletValidateAddressRust>>(
+  bool validateAddress(String address) {
+    final rustFunction = _lib.lookup<NativeFunction<WalletValidateAddressRust>>(
         'wallet_validate_address');
     final dartFunction = rustFunction.asFunction<WalletValidateAddressDart>();
 
-    return dartFunction(address.toNativeUtf8()) == 1 ? true : false;
+    return dartFunction(
+                Pointer.fromAddress(_self.address), address.toNativeUtf8()) ==
+            1
+        ? true
+        : false;
   }
 }

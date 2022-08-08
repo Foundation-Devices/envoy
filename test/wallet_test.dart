@@ -53,12 +53,28 @@ void main() async {
     //     "010000000102b56f3725dee13bd639bb76bcfa48bf82093de146d6144af11b53833571dcc10000000000fdffffff0288130000000000001976a914344a0f48ca150ec2b903817660b9b68b13a6702688ac705e010000000000160014befe48687e7b714563a19df96cbc629ced41c24c00000000");
   });
 
-  test('Validate address', () {
-    expect(Wallet.validateAddress("tb1qghhpvphu6rd6ygwuurw3p9cg7se84taj2vssdu"),
+  test('Validate address', () async {
+    var dir = await getApplicationDocumentsDirectory();
+    var wallet = Wallet(
+        Random().nextInt(9999).toString(),
+        Network.Testnet,
+        "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/0/*)",
+        "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)")
+      ..init(dir.path);
+
+    expect(wallet.validateAddress("tb1qghhpvphu6rd6ygwuurw3p9cg7se84taj2vssdu"),
         true);
-    expect(Wallet.validateAddress("tb1q79crajpg7y838vmqngerx6eqv5tuytzlk7cx3n"),
+    expect(wallet.validateAddress("tb1q79crajpg7y838vmqngerx6eqv5tuytzlk7cx3n"),
         true);
-    expect(Wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5"), true);
-    expect(Wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc4"), false);
+
+    wallet = Wallet(
+        Random().nextInt(9999).toString(),
+        Network.Mainnet,
+        "wpkh([5d14cd2a/84h/1h/0h]xpub6DQrFKWSTE7e13Juxx8La4iAmAvdUjVGhaqNLSNqgVGkCWmtjt76YFmWsT4XYFaZAYCLWebNXHPCNkbC6Z4y3n3rPHra7CF35bLN8M4FzbQ/0/*)",
+        "wpkh([5d14cd2a/84h/1h/0h]xpub6DQrFKWSTE7e13Juxx8La4iAmAvdUjVGhaqNLSNqgVGkCWmtjt76YFmWsT4XYFaZAYCLWebNXHPCNkbC6Z4y3n3rPHra7CF35bLN8M4FzbQ/1/*)")
+      ..init(dir.path);
+
+    expect(wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5"), true);
+    expect(wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc4"), false);
   });
 }
