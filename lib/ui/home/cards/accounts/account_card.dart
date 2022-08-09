@@ -122,7 +122,7 @@ class _AccountCardState extends State<AccountCard> {
                     widget.navigator!.push(SendCard(widget.account,
                         address: address,
                         navigationCallback: widget.navigator));
-                  });
+                  }, widget.account.wallet);
                 }));
               },
             ),

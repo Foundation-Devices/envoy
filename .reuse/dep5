@@ -50,3 +50,7 @@ License: GPL-3.0-or-later
 Files: test/*.mocks.dart
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later
+
+Files: packages/wallet/lib/*.g.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
