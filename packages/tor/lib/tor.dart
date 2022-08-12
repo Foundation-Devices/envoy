@@ -130,7 +130,9 @@ class Tor {
             newControlPort.toString() +
             '\n' +
             'HashedControlPassword ' +
-            generatePasswordHash(newPassword);
+            generatePasswordHash(newPassword) +
+            '\n' +
+            'ClientRejectInternalAddresses 1';
 
         file.writeAsStringSync(torrc);
         if (dartFunction(file.path.toNativeUtf8())) {
