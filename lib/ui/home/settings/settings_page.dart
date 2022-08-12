@@ -58,7 +58,11 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SettingText("Tor Connectivity"),
-                SettingToggle(s.torEnabled, s.setTorEnabled),
+                SettingToggle(
+                  s.torEnabled,
+                  s.setTorEnabled,
+                  delay: 1,
+                ),
               ],
             ),
             Divider(),
