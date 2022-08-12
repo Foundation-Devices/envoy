@@ -47,6 +47,7 @@ class Tor {
 
   // Periodically check if circuit has been established
   Timer? _connectionChecker;
+  bool _shutdownInProgress = false;
 
   // This stream broadcast just the port for now (-1 if circuit not established)
   final StreamController events = StreamController.broadcast();
@@ -99,6 +100,7 @@ class Tor {
   }
 
   start() async {
+    if (_connectionChecker != null) _connectionChecker!.cancel();
     final rustFunction = _lib.lookup<NativeFunction<TorStartRust>>('tor_start');
     final dartFunction = rustFunction.asFunction<TorStartDart>();
 
@@ -188,30 +190,39 @@ class Tor {
   }
 
   Future _shutdown() async {
-    events.add(port);
+    if (!_shutdownInProgress) {
+      _shutdownInProgress = true;
+      print("Tor: shutting down! Control port is " + _controlPort.toString());
+      events.add(port);
 
-    if (_connectionChecker != null) _connectionChecker!.cancel();
+      if (_connectionChecker != null) _connectionChecker!.cancel();
 
-    // This will broadcast we are not using Tor anymore
-    if (_controlPort > 0) {
-      Socket? socket = await _connectToControl();
+      // This will broadcast we are not using Tor anymore
+      if (_controlPort > 0) {
+        Socket? socket = await _connectToControl(_controlPort);
 
-      if (socket == null) {
+        if (socket == null) {
+          _shutdownInProgress = false;
+          return;
+        } else {
+          _controlPort = -1;
+        }
+
+        // Wait for auth
+        await Future.delayed(Duration(seconds: 1));
+
+        // Shut down
+        socket.add(utf8.encode('SIGNAL SHUTDOWN\r\n'));
+        socket.close();
+
+        circuitEstablished = false;
+
+        // Give Tor a second to shut down
+        await Future.delayed(Duration(seconds: 1));
+        _shutdownInProgress = false;
         return;
       }
-
-      // Wait for auth
-      await Future.delayed(Duration(seconds: 1));
-
-      // Shut down
-      socket.add(utf8.encode('SIGNAL SHUTDOWN\r\n'));
-      socket.close();
-
-      circuitEstablished = false;
-
-      // Give Tor a second to shut down
-      await Future.delayed(Duration(seconds: 1));
-      return;
+      _shutdownInProgress = false;
     }
   }
 
@@ -227,7 +238,7 @@ class Tor {
   _checkIsCircuitEstablished() async {
     if (_controlPort > 0 && enabled && started) {
       print("Tor: connecting to control port " + _controlPort.toString());
-      Socket? socket = await _connectToControl();
+      Socket? socket = await _connectToControl(_controlPort);
 
       if (socket == null) {
         return;
@@ -251,13 +262,15 @@ class Tor {
     }
   }
 
-  Future<Socket?> _connectToControl() async {
+  Future<Socket?> _connectToControl(int port) async {
     // https://iphelix.medium.com/hacking-the-tor-control-protocol-fb844db6a606
 
     var socket;
     try {
-      socket = await Socket.connect('127.0.0.1', _controlPort);
+      print('Tor: trying to connect to control port ' + port.toString());
+      socket = await Socket.connect('127.0.0.1', port);
     } on Exception catch (_) {
+      print("Tor: couldn't connect to control port!");
       return null;
     }
 
