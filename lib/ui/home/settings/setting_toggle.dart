@@ -2,25 +2,37 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class SettingToggle extends StatefulWidget {
   final Function(bool) setter;
   final bool Function() getter;
+  final int delay;
 
-  SettingToggle(this.getter, this.setter);
+  SettingToggle(this.getter, this.setter, {this.delay: 0});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
 }
 
 class _SettingToggleState extends State<SettingToggle> {
+  late bool _toggleValue;
+  Timer? _timer;
+
+  @override
+  initState() {
+    super.initState();
+    _toggleValue = widget.getter();
+  }
+
   @override
   Widget build(BuildContext context) {
     return NeumorphicSwitch(
         height: 35,
-        value: widget.getter(),
+        value: _toggleValue,
         style: NeumorphicSwitchStyle(
             inactiveThumbColor: EnvoyColors.whitePrint,
             inactiveTrackColor: EnvoyColors.grey15,
@@ -29,7 +41,12 @@ class _SettingToggleState extends State<SettingToggle> {
             disableDepth: true),
         onChanged: (enabled) {
           setState(() {
-            widget.setter(enabled);
+            _toggleValue = enabled;
+          });
+          if (_timer != null) _timer!.cancel();
+          _timer = Timer(Duration(seconds: widget.delay), () {
+            widget.setter(_toggleValue);
+            _toggleValue = widget.getter();
           });
         });
   }
