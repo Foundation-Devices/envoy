@@ -53,4 +53,12 @@ void main() {
     var parsedUrl = parseNodeUrl(url);
     expect(bdkUrl, parsedUrl);
   });
+
+  test('Decode RoninDojo URL test', () {
+    var url = "http://lotsofrandomcharacters.onion";
+    var bdkUrl = "tcp://lotsofrandomcharacters.onion:50001";
+
+    var parsedUrl = parseNodeUrl(url);
+    expect(bdkUrl, parsedUrl);
+  });
 }
