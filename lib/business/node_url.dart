@@ -5,6 +5,9 @@
 const String TCP_PREFIX = "tcp://";
 const String SSL_PREFIX = "ssl://";
 
+const String HTTP_PREFIX = "http://";
+const String HTTPS_PREFIX = "https://";
+
 const String TCP_SUFFIX = ":t";
 const String SSL_SUFFIX = ":s";
 
@@ -31,6 +34,14 @@ String parseNodeUrl(String nodeUrl) {
 
     if (nodeUrl.endsWith(TCP_PORT)) {
       return TCP_PREFIX + nodeUrl;
+    }
+
+    if (nodeUrl.startsWith(HTTP_PREFIX)) {
+      return TCP_PREFIX + nodeUrl.substring(HTTP_PREFIX.length) + TCP_PORT;
+    }
+
+    if (nodeUrl.startsWith(HTTPS_PREFIX)) {
+      return SSL_PREFIX + nodeUrl.substring(HTTPS_PREFIX.length) + SSL_PORT;
     }
   }
 
