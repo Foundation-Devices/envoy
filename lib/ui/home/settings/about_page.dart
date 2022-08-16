@@ -4,7 +4,7 @@
 
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -31,7 +31,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("App Version"),
+                AboutText(S().envoy_about_app_version),
                 FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
                     builder: (context, snapshot) {
@@ -50,9 +50,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("Open Source Licences"),
+                AboutText(S().envoy_about_licences),
                 AboutButton(
-                  "Show",
+                  S().envoy_about_show,
                   onTap: () {
                     showLicensePage(
                         context: context,
@@ -75,9 +75,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("Terms of Use"),
+                AboutText(S().envoy_about_terms_of_use),
                 AboutButton(
-                  "Show",
+                  S().envoy_about_show,
                   onTap: () {
                     launchUrlString("https://foundationdevices.com/terms/");
                   },
@@ -88,9 +88,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("Privacy Policy"),
+                AboutText(S().envoy_about_privacy_policy),
                 AboutButton(
-                  "Show",
+                  S().envoy_about_show,
                   onTap: () {
                     launchUrlString("https://foundationdevices.com/privacy/");
                   },

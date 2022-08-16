@@ -4,6 +4,7 @@
 
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class SupportPage extends StatelessWidget {
   @override
@@ -21,7 +22,7 @@ class SupportPage extends StatelessWidget {
                 children: [
                   SizedBox(height: 50),
                   MenuOption(
-                    label: "Documentation",
+                    label: S().envoy_support_documentation,
                     onTap: () {
                       launchUrl(
                           Uri.parse("https://docs.foundationdevices.com"));
@@ -29,7 +30,7 @@ class SupportPage extends StatelessWidget {
                   ),
                   SizedBox(height: 50),
                   MenuOption(
-                    label: "Telegram",
+                    label: S().envoy_support_telegram,
                     onTap: () {
                       launchUrl(
                           Uri.parse("https://telegram.me/foundationdevices"),
@@ -38,7 +39,7 @@ class SupportPage extends StatelessWidget {
                   ),
                   SizedBox(height: 50),
                   MenuOption(
-                    label: "Email",
+                    label: S().envoy_support_email,
                     onTap: () {
                       final Uri emailUri = Uri(
                         scheme: 'mailto',

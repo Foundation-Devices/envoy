@@ -4,7 +4,7 @@
 
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 
 class FeeToggle extends StatefulWidget {
@@ -60,8 +60,8 @@ class _FeeToggleState extends State<FeeToggle> {
         FeeToggleButton(
             selected: _selectedIndex == 0,
             icon: Icons.timer,
-            label: "Standard",
-            topLabel: "60 min",
+            label: S().envoy_fee_standard,
+            topLabel: S().envoy_fee_60_min,
             bottomLabel: formatFee(widget.standardFee),
             onTap: () {
               setState(() {
@@ -78,8 +78,8 @@ class _FeeToggleState extends State<FeeToggle> {
         FeeToggleButton(
             selected: _selectedIndex != 0,
             icon: Icons.fast_forward,
-            label: "Boost",
-            topLabel: "10 min",
+            label: S().envoy_fee_boost,
+            topLabel: S().envoy_fee_10_min,
             bottomLabel: formatFee(widget.boostFee),
             onTap: () {
               setState(() {

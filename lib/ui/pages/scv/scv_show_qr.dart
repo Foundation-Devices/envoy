@@ -7,7 +7,7 @@ import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/pages/scv/scv_scan_qr.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 
 //ignore:must_be_immutable
 class ScvShowQrPage extends StatelessWidget {
@@ -15,8 +15,6 @@ class ScvShowQrPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loc = AppLocalizations.of(context)!;
-
     Future<CryptoRequest> cryptoRequest =
         ScvServer().getChallenge().then((challenge) {
       _challenge = challenge;
@@ -30,14 +28,14 @@ class ScvShowQrPage extends StatelessWidget {
       qrCodeUrCryptoRequest: cryptoRequest,
       text: [
         OnboardingText(
-            header: loc.envoy_scv_show_qr_heading,
-            text: loc.envoy_scv_show_qr_subheading)
+            header: S().envoy_scv_show_qr_heading,
+            text: S().envoy_scv_show_qr_subheading)
       ],
       navigationDots: 3,
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
-            label: loc.envoy_scv_show_qr_cta,
+            label: S().envoy_scv_show_qr_cta,
             onTap: () {
               if (_challenge != null) {
                 // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background

@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/business/devices.dart';
 
@@ -15,7 +15,7 @@ class DeleteDeviceCard extends StatefulWidget with NavigationCard {
   DeleteDeviceCard(this.device, {CardNavigator? navigationCallback}) {
     optionsWidget = null;
     modal = true;
-    title = "Devices".toUpperCase();
+    title = S().envoy_home_devices.toUpperCase();
     navigator = navigationCallback;
   }
 
@@ -29,7 +29,6 @@ class _DeleteDeviceCardState extends State<DeleteDeviceCard> {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
 
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Padding(

@@ -6,20 +6,19 @@ import 'package:envoy/ui/pages/pin/pin_intro.dart';
 import 'package:envoy/ui/pages/scv/scv_show_qr.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class ScvResultUpdatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var loc = AppLocalizations.of(context)!;
     return OnboardingPage(
       key: Key("scv_result_update"),
       clipArt: Image.asset("assets/shield_ok_info.png"),
       text: [
-        OnboardingText(header: loc.envoy_scv_result_update_heading),
+        OnboardingText(header: S().envoy_scv_result_update_heading),
         ActionText(
-          header: loc.envoy_scv_result_update_card1_subheading,
-          text: loc.envoy_scv_result_update_card1_subheading1,
+          header: S().envoy_scv_result_update_card1_subheading,
+          text: S().envoy_scv_result_update_card1_subheading1,
           action: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return PinIntroPage(); // TODO: Is this right?
@@ -27,8 +26,8 @@ class ScvResultUpdatePage extends StatelessWidget {
           },
         ),
         ActionText(
-          header: loc.envoy_scv_result_update_card2_subheading,
-          text: loc.envoy_scv_result_update_card2_subheading,
+          header: S().envoy_scv_result_update_card2_subheading,
+          text: S().envoy_scv_result_update_card2_subheading,
           action: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return PinIntroPage();
@@ -37,9 +36,9 @@ class ScvResultUpdatePage extends StatelessWidget {
         ),
       ],
       buttons: [
-        OnboardingButton(label: loc.envoy_scv_result_fail_cta, onTap: () {}),
+        OnboardingButton(label: S().envoy_scv_result_fail_cta, onTap: () {}),
         OnboardingButton(
-            label: loc.envoy_scv_result_fail_cta1,
+            label: S().envoy_scv_result_fail_cta1,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ScvShowQrPage();

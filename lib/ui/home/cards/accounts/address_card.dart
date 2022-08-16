@@ -7,7 +7,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -21,14 +21,14 @@ class AddressCard extends StatelessWidget with NavigationCard {
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = navigationCallback;
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
+
     return FutureBuilder<String>(
         future: account.wallet.getAddress(),
         builder: (context, snapshot) {
@@ -40,8 +40,7 @@ class AddressCard extends StatelessWidget with NavigationCard {
                     padding: const EdgeInsets.all(25.0),
                     child: QrTab(
                         title: account.name,
-                        subtitle:
-                            "For privacy, we create a new address each time you visit this screen.",
+                        subtitle: S().envoy_address_explainer,
                         account: account,
                         qr: QrImage(
                           data: snapshot.data!,
@@ -83,7 +82,7 @@ class AddressCard extends StatelessWidget with NavigationCard {
                           onTap: () {
                             navigator!.pop();
                           },
-                          label: "OK",
+                          label: S().component_ok,
                         ),
                         IconButton(
                             onPressed: () {
@@ -115,7 +114,7 @@ class AddressCard extends StatelessWidget with NavigationCard {
   void _copyAddressToClipboard(BuildContext context, String address) {
     Clipboard.setData(ClipboardData(text: address));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Address copied to clipboard!"),
+      content: Text(S().envoy_address_copied_clipboard),
     ));
   }
 }

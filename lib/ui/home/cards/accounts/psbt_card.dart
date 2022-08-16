@@ -7,7 +7,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/services.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
@@ -15,7 +15,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/account.dart';
 
@@ -28,20 +27,20 @@ class PsbtCard extends StatelessWidget with NavigationCard {
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = navigationCallback;
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
+
     return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       Padding(
           padding: const EdgeInsets.all(25.0),
           child: QrTab(
-            title: "Scan the QR on your Passport",
-            subtitle: "It contains the transaction for your Passport to sign.",
+            title: S().envoy_psbt_scan_qr,
+            subtitle: S().envoy_psbt_explainer,
             account: account,
             qr: AnimatedQrImage(
               base64Decode(psbt.base64),
@@ -59,7 +58,7 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: psbt.base64));
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("PSBT copied to clipboard!"),
+                    content: Text(S().envoy_psbt_copied_clipboard),
                   ));
                 },
                 icon: Icon(
@@ -83,7 +82,7 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                             .then((_) {
                           navigator!.pop(depth: 3);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Transaction sent!"),
+                            content: Text(S().envoy_psbt_transaction_sent),
                           ));
                         });
                       });
@@ -108,57 +107,5 @@ class PsbtCard extends StatelessWidget with NavigationCard {
         ),
       ),
     ]);
-  }
-}
-
-class PsbtTile extends StatelessWidget {
-  PsbtTile({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-        child: GestureDetector(
-      child: Container(
-          height: 100,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  EnvoyColors.listTileColorPairs[0].lighter,
-                  EnvoyColors.listTileColorPairs[0].darker,
-                ]),
-          ),
-          child: Stack(children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: LinesPainter(),
-              ),
-            ),
-            Center(
-                child: ListTile(
-              title: Text(
-                "Scan the QR on your Passport",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(color: Colors.white),
-              ),
-              subtitle: Text(
-                "It contains the transaction for your Passport to sign.",
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(color: Colors.white70),
-              ),
-              trailing: Icon(
-                Icons.info_outline,
-                color: Colors.white70,
-              ),
-            )),
-          ])),
-    ));
   }
 }

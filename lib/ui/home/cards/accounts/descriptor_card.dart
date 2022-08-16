@@ -7,7 +7,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
@@ -21,14 +21,13 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = navigationCallback;
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
 
     // Multipath specifier as per https://github.com/bitcoin/bitcoin/pull/22838
     // Not yet supported in BDK but showing it as such
@@ -40,8 +39,7 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
         padding: const EdgeInsets.all(25.0),
         child: QrTab(
           title: account.name,
-          subtitle:
-              "Make sure not to share this descriptor unless you are comfortable with your transactions being public.",
+          subtitle: S().envoy_descriptor_explainer,
           account: account,
           qr: QrImage(
             data: descriptor,
@@ -59,7 +57,7 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: descriptor));
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Descriptor copied to clipboard!"),
+                    content: Text(S().envoy_descriptor_copied_clipboard),
                   ));
                 },
                 icon: Icon(
@@ -71,7 +69,7 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
               onTap: () {
                 navigator!.pop();
               },
-              label: "OK",
+              label: S().component_ok,
             ),
             IconButton(
                 onPressed: () {

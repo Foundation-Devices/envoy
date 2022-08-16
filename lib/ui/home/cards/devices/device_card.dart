@@ -5,7 +5,7 @@
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -19,7 +19,7 @@ class DeviceCard extends StatefulWidget with NavigationCard {
   DeviceCard(this.device, {CardNavigator? navigationCallback})
       : super(key: UniqueKey()) {
     modal = false;
-    title = "Devices".toUpperCase();
+    title = S().envoy_home_devices.toUpperCase();
     navigator = navigationCallback;
     optionsWidget = DeviceOptions(
       device,
@@ -53,7 +53,7 @@ class _DeviceCardState extends State<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
@@ -63,11 +63,13 @@ class _DeviceCardState extends State<DeviceCard> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 18.0, left: 35.0),
-        child: Text("Serial: " + widget.device.serial),
+        child: Text(S().envoy_device_serial + ": " + widget.device.serial),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-        child: Text("Paired " + timeago.format(widget.device.datePaired)),
+        child: Text(S().envoy_device_paired +
+            " " +
+            timeago.format(widget.device.datePaired)),
       ),
     ]);
   }
@@ -102,7 +104,7 @@ class DeviceOptions extends StatelessWidget {
                   placeholder: device.name,
                 );
                 return EnvoyDialog(
-                  title: Text('Rename Device'),
+                  title: Text(S().envoy_device_rename),
                   content: textEntry,
                   actions: [
                     TextButton(
@@ -110,7 +112,7 @@ class DeviceOptions extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Cancel'.toUpperCase(),
+                        S().component_cancel.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkCopper),
                       ),
                     ),
@@ -120,7 +122,7 @@ class DeviceOptions extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Save'.toUpperCase(),
+                        S().component_save.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkTeal),
                       ),
                     ),
@@ -134,7 +136,7 @@ class DeviceOptions extends StatelessWidget {
           height: 10,
         ),
         GestureDetector(
-          child: Text("Delete".toUpperCase(),
+          child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             navigator!.hideOptions();
@@ -142,18 +144,15 @@ class DeviceOptions extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return EnvoyDialog(
-                  title: Text("Are you sure you want to disconnect " +
-                      device.name +
-                      "?"),
-                  content: Text(
-                      "This will remove the device from Envoy alongside any connected accounts."),
+                  title: Text(S().envoy_device_delete_are_you_sure),
+                  content: Text(S().envoy_device_delete_explainer),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Cancel'.toUpperCase(),
+                        S().component_cancel.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkCopper),
                       ),
                     ),
@@ -164,7 +163,7 @@ class DeviceOptions extends StatelessWidget {
                         navigator!.pop();
                       },
                       child: Text(
-                        'Delete'.toUpperCase(),
+                        S().component_delete.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkTeal),
                       ),
                     ),

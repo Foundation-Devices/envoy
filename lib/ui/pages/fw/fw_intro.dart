@@ -5,7 +5,7 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:envoy/ui/pages/fw/fw_microsd.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 //ignore: must_be_immutable
@@ -15,14 +15,13 @@ class FwIntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loc = AppLocalizations.of(context)!;
     return OnboardingPage(
       key: Key("fw_intro"),
       clipArt: Image.asset("assets/fw_intro.png"),
       text: [
-        OnboardingText(header: loc.envoy_fw_intro_heading),
+        OnboardingText(header: S().envoy_fw_intro_heading),
         OnboardingHelperText(
-            text: loc.envoy_fw_intro_subheading,
+            text: S().envoy_fw_intro_subheading,
             onTap: () {
               launchUrlString(
                   "https://github.com/Foundation-Devices/passport-firmware/releases");
