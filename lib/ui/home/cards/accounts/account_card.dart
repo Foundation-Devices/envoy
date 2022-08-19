@@ -17,7 +17,7 @@ import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/wallet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -36,7 +36,7 @@ class AccountCard extends StatefulWidget with NavigationCard {
       navigator: navigationCallback,
     );
     modal = false;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = navigationCallback;
   }
 
@@ -66,7 +66,7 @@ class _AccountCardState extends State<AccountCard> {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
+
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(20.0),
@@ -202,14 +202,16 @@ class TransactionListTile extends StatelessWidget {
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: transaction.txId));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Transaction ID copied to clipboard!"),
+          content: Text(S().envoy_account_transaction_copied_clipboard),
         ));
       },
       child: ListTile(
-        title: transaction.amount < 0 ? Text("Sent") : Text("Received"),
+        title: transaction.amount < 0
+            ? Text(S().envoy_account_sent)
+            : Text(S().envoy_account_received),
         subtitle: transaction.isConfirmed
             ? Text(timeago.format(transaction.date))
-            : Text("Awaiting confirmation"),
+            : Text(S().envoy_account_awaiting_confirmation),
         leading: transaction.amount < 0
             ? Icon(Icons.call_made)
             : Icon(Icons.call_received),
@@ -249,7 +251,7 @@ class AccountOptions extends StatelessWidget {
         ),
         GestureDetector(
           child: Text(
-            "Show Descriptor".toUpperCase(),
+            S().envoy_account_show_descriptor.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -264,7 +266,7 @@ class AccountOptions extends StatelessWidget {
         ),
         GestureDetector(
           child: Text(
-            "Edit account name".toUpperCase(),
+            S().envoy_account_edit_name.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -276,7 +278,7 @@ class AccountOptions extends StatelessWidget {
                   placeholder: account.name,
                 );
                 return EnvoyDialog(
-                  title: Text('Rename Account'),
+                  title: Text(S().envoy_account_rename),
                   content: textEntry,
                   actions: [
                     TextButton(
@@ -284,7 +286,7 @@ class AccountOptions extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Cancel'.toUpperCase(),
+                        S().component_cancel.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkCopper),
                       ),
                     ),
@@ -295,7 +297,7 @@ class AccountOptions extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Save'.toUpperCase(),
+                        S().component_save.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkTeal),
                       ),
                     ),
@@ -309,7 +311,7 @@ class AccountOptions extends StatelessWidget {
           height: 10,
         ),
         GestureDetector(
-          child: Text("Delete".toUpperCase(),
+          child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             navigator!.hideOptions();
@@ -317,15 +319,15 @@ class AccountOptions extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return EnvoyDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('This only removes the account from Envoy.'),
+                  title: Text(S().envoy_account_delete_are_you_sure),
+                  content: Text(S().envoy_account_delete_explainer),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Cancel'.toUpperCase(),
+                        S().component_cancel.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkCopper),
                       ),
                     ),
@@ -336,7 +338,7 @@ class AccountOptions extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Delete'.toUpperCase(),
+                        S().component_delete.toUpperCase(),
                         style: TextStyle(color: EnvoyColors.darkTeal),
                       ),
                     ),

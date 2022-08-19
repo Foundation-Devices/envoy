@@ -5,7 +5,7 @@
 import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/address_entry.dart';
@@ -32,7 +32,7 @@ class ConfirmationCard extends StatefulWidget with NavigationCard {
         super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = pushCallback;
   }
 
@@ -112,9 +112,6 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
-
     var _feeToggle = FeeToggle(
       standardFee: _currentPsbt.fee,
       boostFee: _currentPsbtBoost.fee,
@@ -152,7 +149,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                   navigationCallback: widget.navigator,
                 ));
               },
-              label: "Confirm"))
+              label: S().envoy_confirmation_confirm))
     ]);
   }
 }

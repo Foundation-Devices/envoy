@@ -8,7 +8,7 @@ import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/empty_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -64,7 +64,6 @@ class DevicesCardState extends State<DevicesCard>
   Widget build(BuildContext context) {
     super.build(context);
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
 
     final navigator = CardNavigator(push, pop, hideOptions);
 
@@ -102,7 +101,7 @@ class DevicesList extends StatefulWidget with NavigationCard {
       {required this.addDevicesFunction})
       : super(key: UniqueKey()) {
     modal = false;
-    title = "Devices".toUpperCase();
+    title = S().envoy_home_devices.toUpperCase();
     navigator = navigationCallback;
     optionsWidget = DevicesOptions(
       navigator: navigator,
@@ -138,21 +137,20 @@ class _DevicesListState extends State<DevicesList> {
         ? EmptyCard(
             widget.addDevicesFunction,
             buttons: [
-              EnvoyButton("Set up a new Passport", onTap: () {
+              EnvoyButton(S().envoy_devices_new_passport, onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return TouPage();
                 }));
               }),
               EnvoyButton(
-                "Connect an existing Passport",
+                S().envoy_devices_existing_passport,
                 onTap: widget.addDevicesFunction,
                 light: true,
               )
             ],
             helperText: EmptyCardHelperText(
-                text: "No devices are connected.\n"
-                    "Don’t have a Passport? {{Learn more.}}",
+                text: S().envoy_devices_no_devices,
                 onTap: () {
                   launchUrl(
                       Uri.parse("https://foundationdevices.com/passport"));
@@ -188,8 +186,6 @@ class DevicesOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -199,7 +195,7 @@ class DevicesOptions extends StatelessWidget {
         ),
         GestureDetector(
           child: Text(
-            "Connect an existing Passport".toUpperCase(),
+            S().envoy_devices_options_existing_passport.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -213,7 +209,7 @@ class DevicesOptions extends StatelessWidget {
           height: 10,
         ),
         GestureDetector(
-          child: Text(loc.envoy_welcome_cta.toUpperCase(),
+          child: Text(S().envoy_devices_options_new_passport.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             navigator!.hideOptions();

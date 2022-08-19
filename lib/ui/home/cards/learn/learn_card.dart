@@ -6,9 +6,8 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/learn/videos.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/learn/faq.dart';
-
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 //ignore: must_be_immutable
@@ -25,7 +24,7 @@ class LearnCardState extends State<LearnCard> with TopLevelNavigationCardState {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
+
     push(DefaultLearnCard());
 
     return AnimatedSwitcher(
@@ -57,10 +56,10 @@ class DefaultLearnCard extends StatelessWidget with NavigationCard {
                     labelColor: Colors.black,
                     tabs: [
                       Tab(
-                        text: "Videos",
+                        text: S().envoy_learn_videos,
                       ),
                       Tab(
-                        text: "FAQs",
+                        text: S().envoy_learn_faqs,
                       ),
                     ],
                   ),

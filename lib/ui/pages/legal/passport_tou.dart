@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/pages/scv/scv_intro.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -14,12 +14,11 @@ class TouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //ignore:unused_local_variable
-    var loc = AppLocalizations.of(context)!;
+
     return OnboardingPage(
-      key: Key("tos"),
+      key: Key("tou"),
       text: [
-        OnboardingText(
-            header: "Please review and accept the Passport Terms of Use"),
+        OnboardingText(header: S().envoy_passport_tou_heading),
         Expanded(
           flex: 5,
           child: SingleChildScrollView(
@@ -41,7 +40,7 @@ class TouPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            label: "I Accept",
+            label: S().envoy_passport_tou_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ScvIntroPage();

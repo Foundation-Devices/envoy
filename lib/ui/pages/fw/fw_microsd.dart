@@ -9,7 +9,7 @@ import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
 
 //ignore: must_be_immutable
@@ -19,22 +19,21 @@ class FwMicrosdPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loc = AppLocalizations.of(context)!;
     var fw = FwUploader(UpdatesManager().getStoredFw());
     return OnboardingPage(
       key: Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
       text: [
         OnboardingText(
-          header: loc.envoy_fw_microsd_heading,
-          text: loc.envoy_fw_microsd_subheading,
+          header: S().envoy_fw_microsd_heading,
+          text: S().envoy_fw_microsd_subheading,
         )
       ],
       navigationDots: 3,
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
-            label: loc.envoy_fw_microsd_cta,
+            label: S().envoy_fw_microsd_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 try {

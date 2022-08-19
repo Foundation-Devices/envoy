@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class SettingsMenu extends StatefulWidget {
   @override
@@ -72,21 +73,21 @@ class SettingsMenuWidget extends StatelessWidget {
                 children: [
                   SizedBox(height: 50),
                   MenuOption(
-                    label: "Settings",
+                    label: S().envoy_settings_menu_settings,
                     onTap: () {
                       callback(SettingsPage());
                     },
                   ),
                   SizedBox(height: 50),
                   MenuOption(
-                    label: "Support",
+                    label: S().envoy_settings_menu_support,
                     onTap: () {
                       callback(SupportPage());
                     },
                   ),
                   SizedBox(height: 50),
                   MenuOption(
-                    label: "About",
+                    label: S().envoy_settings_menu_about,
                     onTap: () {
                       callback(AboutPage());
                     },

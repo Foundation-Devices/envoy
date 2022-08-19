@@ -12,7 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double _optionsHeight = 0;
 
   int _tlCardIndex = 0;
-  String _appBarTitle = "Devices".toUpperCase();
+  String _appBarTitle = S().envoy_home_devices.toUpperCase();
 
   Function()? _leftAction;
   Function()? _rightAction;
@@ -81,9 +81,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   // TODO: Get the names from localisation
   final _tlCardList = [
-    HomePageCard(const Icon(EnvoyIcons.devices), "Devices", DevicesCard()),
-    HomePageCard(const Icon(EnvoyIcons.accounts), "Accounts", AccountsCard()),
-    HomePageCard(const Icon(EnvoyIcons.lightbulb), "Learn", LearnCard()),
+    HomePageCard(
+        const Icon(EnvoyIcons.devices), S().envoy_home_devices, DevicesCard()),
+    HomePageCard(const Icon(EnvoyIcons.accounts), S().envoy_home_accounts,
+        AccountsCard()),
+    HomePageCard(
+        const Icon(EnvoyIcons.lightbulb), S().envoy_home_learn, LearnCard()),
   ];
 
   void initState() {
@@ -170,9 +173,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     // ignore: unused_local_variable
     double _shieldGlowOffset = 30;
-
-    // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
 
     _leftAction ??= _toggleSettings;
 

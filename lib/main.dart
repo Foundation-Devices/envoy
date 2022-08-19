@@ -9,7 +9,6 @@ import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:envoy/business/settings.dart';
@@ -18,6 +17,7 @@ import 'package:envoy/business/notifications.dart';
 import 'business/fees.dart';
 import 'business/scv_server.dart';
 import 'business/video_manager.dart';
+import 'generated/l10n.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,15 +73,12 @@ class MyApp extends StatelessWidget {
 
     return NeumorphicApp(
         localizationsDelegates: [
-          AppLocalizations.delegate,
+          S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [
-          Locale('en', ''),
-          Locale('es', ''),
-        ],
+        supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: false,
         title: 'Envoy',
         themeMode: ThemeMode.light,

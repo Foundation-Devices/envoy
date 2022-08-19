@@ -197,7 +197,7 @@ class ElectrumServerFeatures {
 
   factory ElectrumServerFeatures.fromNative(NativeServerFeatures features) {
     List<int> genesisHash = List.from(features.genesisHash.asTypedList(32));
-    //malloc.free(features.genesisHash);
+    //malS().free(features.genesisHash);
 
     return ElectrumServerFeatures(
         features.serverVersion.cast<Utf8>().toDartString(),

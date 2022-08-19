@@ -10,7 +10,7 @@ import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/empty_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_card.dart';
@@ -65,7 +65,6 @@ class AccountsCardState extends State<AccountsCard>
   Widget build(BuildContext context) {
     super.build(context);
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
 
     final navigator = CardNavigator(push, pop, hideOptions);
 
@@ -100,7 +99,7 @@ class AccountsList extends StatefulWidget with NavigationCard {
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = false;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = navigationCallback;
     rightFunction = addAccountFunction;
   }
@@ -134,7 +133,7 @@ class _AccountsListState extends State<AccountsList> {
         ? EmptyCard(widget.rightFunction!,
             buttons: [
               EnvoyButton(
-                "Set up a new Passport",
+                S().envoy_accounts_new_passport,
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
@@ -143,14 +142,13 @@ class _AccountsListState extends State<AccountsList> {
                 },
               ),
               EnvoyButton(
-                "Connect an existing Passport",
+                S().envoy_accounts_existing_passport,
                 onTap: widget.rightFunction!,
                 light: true,
               )
             ],
             helperText: EmptyCardHelperText(
-                text: "No devices are connected.\n"
-                    "Don’t have a Passport? {{Learn more.}}",
+                text: S().envoy_accounts_no_devices,
                 onTap: () {
                   launchUrl(
                       Uri.parse("https://foundationdevices.com/passport"));

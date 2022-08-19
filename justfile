@@ -58,3 +58,6 @@ format:
 
 build-ffi:
     bash build_ffi.sh
+
+copy:
+    bash fetch_copy.sh

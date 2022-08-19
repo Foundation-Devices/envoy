@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
@@ -16,7 +16,7 @@ class RenameDeviceCard extends StatefulWidget with NavigationCard {
   RenameDeviceCard(this.device, {CardNavigator? navigationCallback}) {
     optionsWidget = null;
     modal = true;
-    title = "Devices".toUpperCase();
+    title = S().envoy_home_devices.toUpperCase();
     navigator = navigationCallback;
   }
 
@@ -30,7 +30,6 @@ class _RenameDeviceCardState extends State<RenameDeviceCard> {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
 
     var textEntry = TextEntry(
       placeholder: widget.device.name,

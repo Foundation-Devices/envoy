@@ -6,7 +6,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -20,14 +20,14 @@ class BroadcastCard extends StatelessWidget with NavigationCard {
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
-    title = "Accounts".toUpperCase();
+    title = S().envoy_home_accounts.toUpperCase();
     navigator = navigationCallback;
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final loc = AppLocalizations.of(context)!;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

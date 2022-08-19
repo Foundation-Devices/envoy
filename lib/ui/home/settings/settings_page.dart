@@ -8,6 +8,7 @@ import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText("Fiat Currency"),
+                SettingText(S().envoy_settings_fiat_currency),
                 SettingDropdown(supportedFiat.map((e) => e.code).toList(),
                     s.displayFiat, s.setDisplayFiat),
               ],
@@ -49,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText("View Amount in Sats"),
+                SettingText(S().envoy_settings_sat_amount),
                 SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
               ],
             ),
@@ -57,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText("Tor Connectivity"),
+                SettingText(S().envoy_settings_tor_connectivity),
                 SettingToggle(
                   s.torEnabled,
                   s.setTorEnabled,
@@ -69,7 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText("Custom Electrum Server"),
+                SettingText(S().envoy_settings_custom_electrum_server),
                 SettingToggle(() => _customElectrumServerVisible,
                     _customElectrumServerToggled),
               ],

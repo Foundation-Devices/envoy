@@ -17,4 +17,5 @@ ditto-cli pull
 # Clean and merge .jsons, output to l10n folder
 cd ditto
 jq 'with_entries(.key = "component_" + .key)' ditto-component-library.json > components.json
-jq -s '.[0] * .[1]' components.json 'Envoy + PP Clean Start.json' > ../lib/l10n/app_en.arb
+jq -s '.[0] * .[1] * .[2]' components.json 'Envoy + PP Clean Start.json' Envoy.json | \
+jq 'with_entries(.value = (.value | sub("\\\\n"; "\n")))' > ../lib/l10n/intl_en.arb
