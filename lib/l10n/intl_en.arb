@@ -364,6 +364,7 @@
   "envoy_psbt_explainer": "It contains the transaction for your Passport to sign.",
   "envoy_psbt_copied_clipboard": "PSBT copied to clipboard!",
   "envoy_psbt_transaction_sent": "Transaction sent!",
+  "envoy_psbt_transaction_not_sent": "Not able to broadcast transaction.",
   "envoy_fee_standard": "Standard",
   "envoy_fee_60_min": "60 min",
   "envoy_fee_boost": "Boost",

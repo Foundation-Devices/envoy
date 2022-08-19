@@ -3700,6 +3700,16 @@ class S {
     );
   }
 
+  /// `Not able to broadcast transaction.`
+  String get envoy_psbt_transaction_not_sent {
+    return Intl.message(
+      'Not able to broadcast transaction.',
+      name: 'envoy_psbt_transaction_not_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Standard`
   String get envoy_fee_standard {
     return Intl.message(

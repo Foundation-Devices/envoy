@@ -554,6 +554,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "It contains the transaction for your Passport to sign."),
         "envoy_psbt_scan_qr": MessageLookupByLibrary.simpleMessage(
             "Scan the QR on your Passport"),
+        "envoy_psbt_transaction_not_sent": MessageLookupByLibrary.simpleMessage(
+            "Not able to broadcast transaction."),
         "envoy_psbt_transaction_sent":
             MessageLookupByLibrary.simpleMessage("Transaction sent!"),
         "envoy_recovery_intro_card1_heading":

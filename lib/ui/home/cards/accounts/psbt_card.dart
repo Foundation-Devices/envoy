@@ -84,6 +84,10 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(S().envoy_psbt_transaction_sent),
                           ));
+                        }, onError: (_) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(S().envoy_psbt_transaction_not_sent),
+                          ));
                         });
                       });
                     });
