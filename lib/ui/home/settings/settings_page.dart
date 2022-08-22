@@ -30,6 +30,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     var s = Settings();
 
+    Map<String, String?> fiatMap = {
+      for (var fiat in supportedFiat) fiat.code: fiat.code
+    };
+
+    fiatMap.addAll({S().envoy_settings_fiat_currency_nah: null});
+
     return Container(
       color: Colors.black,
       child: Padding(
@@ -42,8 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SettingText(S().envoy_settings_fiat_currency),
-                SettingDropdown(supportedFiat.map((e) => e.code).toList(),
-                    s.displayFiat, s.setDisplayFiat),
+                SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
               ],
             ),
             Divider(),

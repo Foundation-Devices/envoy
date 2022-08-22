@@ -406,6 +406,7 @@
   "envoy_settings_sat_amount": "View Amount in Sats",
   "envoy_settings_tor_connectivity": "Tor Connectivity",
   "envoy_settings_custom_electrum_server": "Custom Electrum Server",
+  "envoy_settings_fiat_currency_nah": "Nah",
   "envoy_home_accounts": "Accounts",
   "envoy_home_learn": "Learn",
   "envoy_home_devices": "Devices",

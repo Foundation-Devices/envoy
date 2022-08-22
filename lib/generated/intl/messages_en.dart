@@ -738,6 +738,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Custom Electrum Server"),
         "envoy_settings_fiat_currency":
             MessageLookupByLibrary.simpleMessage("Fiat Currency"),
+        "envoy_settings_fiat_currency_nah":
+            MessageLookupByLibrary.simpleMessage("Nah"),
         "envoy_settings_menu_about":
             MessageLookupByLibrary.simpleMessage("About"),
         "envoy_settings_menu_settings":

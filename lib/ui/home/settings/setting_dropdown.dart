@@ -8,7 +8,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 class SettingDropdown extends StatefulWidget {
   final Function(String?) setter;
   final String? Function() getter;
-  final List<String> options;
+  final Map<String, String?> options;
 
   SettingDropdown(this.options, this.getter, this.setter);
 
@@ -30,11 +30,11 @@ class _SettingDropdownState extends State<SettingDropdown> {
       value: widget.getter(),
       onChanged: (value) {
         setState(() {
-          widget.setter(value.toString());
+          widget.setter(value as String?);
         });
       },
-      items: widget.options
-          .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+      items: widget.options.entries
+          .map((e) => DropdownMenuItem(value: e.value, child: Text(e.key)))
           .toList(),
     );
   }

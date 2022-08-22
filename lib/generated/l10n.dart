@@ -4120,6 +4120,16 @@ class S {
     );
   }
 
+  /// `Nah`
+  String get envoy_settings_fiat_currency_nah {
+    return Intl.message(
+      'Nah',
+      name: 'envoy_settings_fiat_currency_nah',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accounts`
   String get envoy_home_accounts {
     return Intl.message(

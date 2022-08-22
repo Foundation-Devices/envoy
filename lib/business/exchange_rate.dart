@@ -121,6 +121,10 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   String getFormattedAmount(int amountSats) {
+    if (Settings().selectedFiat == null) {
+      return "";
+    }
+
     NumberFormat currencyFormatter =
         NumberFormat.currency(name: _currency!.symbol);
     return currencyFormatter.format(_rate * amountSats / 100000000);
