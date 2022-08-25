@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -44,6 +45,7 @@ Future<void> initSingletons() async {
   AccountManager.init();
   Notifications.init();
   VideoManager.init();
+  ConnectivityManager.init();
 }
 
 class MyApp extends StatelessWidget {

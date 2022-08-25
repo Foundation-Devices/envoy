@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -13,7 +14,6 @@ import 'dart:typed_data';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -125,7 +125,8 @@ class OnboardingPage extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(Tor().enabled && !Tor().circuitEstablished
+                        child: Text(ConnectivityManager().torEnabled &&
+                                !ConnectivityManager().torCircuitEstablished
                             ? S().envoy_video_player_connecting_tor
                             : S().envoy_video_player_loading_tor),
                       )

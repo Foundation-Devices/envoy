@@ -49,24 +49,20 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
               container: true,
               explicitChildNodes: true,
               child: Align(
-                heightFactor: 1,
-                alignment: Alignment.center.add(Alignment(0, -0.6)),
-                child: Container(
-                  margin: EdgeInsets.only(top: 12),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: SafeArea(
-                      minimum: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: FadeTransition(
-                        opacity: _fade!,
-                        child: Card(
-                            elevation: _elevation?.value,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14)),
-                            child: dialogWidget),
-                      ),
+                alignment: Alignment.center,
+                child: Material(
+                  color: Colors.transparent,
+                  child: SafeArea(
+                    minimum: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: FadeTransition(
+                      opacity: _fade!,
+                      child: Card(
+                          elevation: _elevation?.value,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                          child: dialogWidget),
                     ),
                   ),
                 ),

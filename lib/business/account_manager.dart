@@ -17,9 +17,9 @@ import 'package:envoy/business/account.dart';
 import 'package:bip32/bip32.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/devices.dart';
-
-import 'fees.dart';
-import 'notifications.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -56,7 +56,8 @@ class AccountManager extends ChangeNotifier {
         _syncBlocked = false;
       });
 
-      if (!Settings().torEnabled() || Tor().circuitEstablished) {
+      if (!ConnectivityManager().torEnabled ||
+          ConnectivityManager().torCircuitEstablished) {
         for (Account account in accounts) {
           account.wallet
               .sync(Settings().electrumAddress(account.wallet.network),

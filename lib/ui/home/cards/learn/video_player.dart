@@ -13,6 +13,7 @@ import 'package:tor/tor.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:envoy/business/video.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
   final Video video;
@@ -60,7 +61,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     Future.delayed(Duration(milliseconds: 300), () {
       setFullScreenLandscapeMode();
-      if (Tor().enabled) {
+      if (ConnectivityManager().torEnabled) {
         setState(() {
           _showTorExplainer = true;
         });
@@ -267,14 +268,16 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                             value: _downloaded > 0
                                 ? (_downloaded / _playThreshold)
                                 : null),
-                        if (Tor().enabled)
+                        if (ConnectivityManager().torEnabled)
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: AnimatedOpacity(
                               duration: Duration(milliseconds: 1000),
                               opacity: _showTorExplainer ? 1.0 : 0.0,
                               child: Text(
-                                Tor().enabled && !Tor().circuitEstablished
+                                ConnectivityManager().torEnabled &&
+                                        !ConnectivityManager()
+                                            .torCircuitEstablished
                                     ? "Connecting to the Tor Network"
                                     : "Envoy is loading your video over the Tor Network",
                                 style: TextStyle(
