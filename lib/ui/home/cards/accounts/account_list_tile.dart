@@ -162,7 +162,7 @@ class _AccountListTileState extends State<AccountListTile> {
                               child: !widget.account.initialSyncCompleted
                                   ? LoaderGhost(
                                       width: 200,
-                                      height: 30,
+                                      height: 20,
                                     )
                                   : Text(
                                       getFormattedAmount(
@@ -177,7 +177,7 @@ class _AccountListTileState extends State<AccountListTile> {
                             !widget.account.initialSyncCompleted
                                 ? LoaderGhost(
                                     width: 50,
-                                    height: 25,
+                                    height: 15,
                                   )
                                 : Text(
                                     widget.account.wallet.network ==
