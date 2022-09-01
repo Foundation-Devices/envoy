@@ -57,6 +57,8 @@ class _ScannerPageState extends State<ScannerPage> {
   late UniformResourceReader _urDecoder;
   bool _processing = false;
 
+  bool _showIndeterminateSpinner = false;
+
   int _totalUrFraments = 0;
   int _currentUrFragment = 0;
 
@@ -134,23 +136,28 @@ class _ScannerPageState extends State<ScannerPage> {
             child: SizedBox(
                 height: 200,
                 width: 200,
-                child: TweenAnimationBuilder(
-                    duration: const Duration(milliseconds: 500),
-                    tween: Tween<double>(
-                        begin: 0.00,
-                        end: _totalUrFraments == 0
-                            ? 0.0
-                            : min(_currentUrFragment.toDouble(),
-                                    _totalUrFraments.toDouble() - 1) /
-                                _totalUrFraments.toDouble()),
-                    builder:
-                        (BuildContext context, double? value, Widget? child) {
-                      return CircularProgressIndicator(
-                        value: value,
+                child: _showIndeterminateSpinner
+                    ? CircularProgressIndicator(
                         color: EnvoyColors.white80,
                         strokeWidth: 5,
-                      );
-                    })))
+                      )
+                    : TweenAnimationBuilder(
+                        duration: const Duration(milliseconds: 500),
+                        tween: Tween<double>(
+                            begin: 0.00,
+                            end: _totalUrFraments == 0
+                                ? 0.0
+                                : min(_currentUrFragment.toDouble(),
+                                        _totalUrFraments.toDouble() - 1) /
+                                    _totalUrFraments.toDouble()),
+                        builder: (BuildContext context, double? value,
+                            Widget? child) {
+                          return CircularProgressIndicator(
+                            value: value,
+                            color: EnvoyColors.white80,
+                            strokeWidth: 5,
+                          );
+                        })))
       ],
     );
   }
@@ -219,9 +226,18 @@ class _ScannerPageState extends State<ScannerPage> {
     if (object is CryptoResponse) {
       ScvChallengeResponse scvResponse =
           object.objects[0] as ScvChallengeResponse;
+
+      setState(() {
+        _showIndeterminateSpinner = true;
+      });
+
       ScvServer()
           .validate(widget.challengeToValidate!, scvResponse.responseWords)
           .then((validated) {
+        setState(() {
+          _showIndeterminateSpinner = false;
+        });
+
         if (validated) {
           bool mustUpdateFirmware = true;
 
