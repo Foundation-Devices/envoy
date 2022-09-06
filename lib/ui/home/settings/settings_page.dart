@@ -34,8 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
       for (var fiat in supportedFiat) fiat.code: fiat.code
     };
 
-    fiatMap.addAll({S().envoy_settings_fiat_currency_nah: null});
-
     return Container(
       color: Colors.black,
       child: Padding(
@@ -47,9 +45,32 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText(S().envoy_settings_fiat_currency),
-                SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
+                SettingText(S().envoy_settings_show_fiat),
+                SettingToggle(() => s.displayFiat() != null, (enabled) {
+                  setState(() {
+                    s.setDisplayFiat(enabled ? "USD" : null);
+                  });
+                }),
               ],
+            ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              height: s.selectedFiat == null ? 0 : 16,
+              child: Divider(),
+            ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              height: s.selectedFiat == null ? 0 : 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.0),
+                    child: SettingText(S().envoy_settings_currency),
+                  ),
+                  SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
+                ],
+              ),
             ),
             Divider(),
             Row(

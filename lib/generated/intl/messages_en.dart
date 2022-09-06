@@ -734,6 +734,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_send_insufficient_funds":
             MessageLookupByLibrary.simpleMessage("Insufficient Funds"),
         "envoy_send_send_max": MessageLookupByLibrary.simpleMessage("Send Max"),
+        "envoy_settings_currency":
+            MessageLookupByLibrary.simpleMessage("Currency"),
         "envoy_settings_custom_electrum_server":
             MessageLookupByLibrary.simpleMessage("Custom Electrum Server"),
         "envoy_settings_fiat_currency":
@@ -748,6 +750,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Support"),
         "envoy_settings_sat_amount":
             MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
+        "envoy_settings_show_fiat":
+            MessageLookupByLibrary.simpleMessage("Show Fiat"),
         "envoy_settings_tor_connectivity":
             MessageLookupByLibrary.simpleMessage("Tor Connectivity"),
         "envoy_support_documentation":

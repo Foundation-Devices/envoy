@@ -4130,6 +4130,26 @@ class S {
     );
   }
 
+  /// `Show Fiat`
+  String get envoy_settings_show_fiat {
+    return Intl.message(
+      'Show Fiat',
+      name: 'envoy_settings_show_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currency`
+  String get envoy_settings_currency {
+    return Intl.message(
+      'Currency',
+      name: 'envoy_settings_currency',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accounts`
   String get envoy_home_accounts {
     return Intl.message(
