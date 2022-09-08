@@ -3,12 +3,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class LoaderGhost extends StatefulWidget {
   final double width;
   final double height;
+  final bool diagonal;
 
-  const LoaderGhost({Key? key, required this.width, required this.height})
+  const LoaderGhost(
+      {Key? key,
+      required this.width,
+      required this.height,
+      this.diagonal: false})
       : super(key: key);
 
   @override
@@ -28,7 +34,7 @@ class _LoaderGhostState extends State<LoaderGhost>
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
 
-    _animation = _animationController.drive(Tween(begin: 0.8, end: 0.5));
+    _animation = _animationController.drive(Tween(begin: 0.3, end: 0.1));
 
     _animationTickListener = () {
       setState(() {});
@@ -63,12 +69,29 @@ class _LoaderGhostState extends State<LoaderGhost>
   Widget build(BuildContext context) {
     return Opacity(
         opacity: _animation.value,
-        child: Container(
-          width: widget.width,
-          height: widget.height,
-          decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-        ));
+        child: widget.diagonal
+            ? SizedBox(
+                width: widget.width,
+                height: widget.height,
+                child: Center(
+                  child: Transform.rotate(
+                    angle: -pi / 4,
+                    child: Container(
+                      width: widget.width - 5,
+                      height: 10,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                    ),
+                  ),
+                ),
+              )
+            : Container(
+                width: widget.width,
+                height: widget.height,
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+              ));
   }
 }

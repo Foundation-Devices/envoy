@@ -153,19 +153,20 @@ class GhostListTile extends StatelessWidget {
         padding: const EdgeInsets.only(top: 2, right: 50),
         child: LoaderGhost(
           width: 10,
-          height: 20,
+          height: 15,
         ),
       ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 3.0, right: 80),
         child: LoaderGhost(
           width: 30,
-          height: 20,
+          height: 15,
         ),
       ),
       leading: LoaderGhost(
         width: 50,
         height: 50,
+        diagonal: true,
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +174,7 @@ class GhostListTile extends StatelessWidget {
         children: [
           LoaderGhost(
             width: 50,
-            height: 20,
+            height: 15,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 3.0),
