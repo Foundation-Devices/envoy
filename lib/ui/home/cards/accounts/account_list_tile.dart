@@ -124,23 +124,52 @@ class _AccountListTileState extends State<AccountListTile> {
                           Padding(
                             padding: const EdgeInsets.only(right: 12),
                             child: Container(
-                              width: containerHeight / 2.2,
-                              height: containerHeight / 2.2,
-                              decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.6),
-                                  borderRadius: BorderRadius.circular(
-                                      containerHeight / 2),
-                                  border: Border.all(
-                                      color: widget.account.color,
-                                      width: 3,
-                                      style: BorderStyle.solid)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SvgPicture.asset(
-                                  "assets/bitcoin.svg",
-                                ),
-                              ),
-                            ),
+                                width: widget.account.wallet.network ==
+                                        Network.Testnet
+                                    ? null
+                                    : containerHeight / 2.2,
+                                height: containerHeight / 2.2,
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.6),
+                                    borderRadius: BorderRadius.circular(
+                                        containerHeight / 2),
+                                    border: Border.all(
+                                        color: widget.account.color,
+                                        width: 3,
+                                        style: BorderStyle.solid)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      if (widget.account.wallet.network ==
+                                          Network.Testnet)
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8.0),
+                                          child: Text(
+                                            "Testnet",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2!
+                                                .copyWith(color: Colors.white),
+                                          ),
+                                        ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            right:
+                                                widget.account.wallet.network ==
+                                                        Network.Testnet
+                                                    ? 6.0
+                                                    : 0.0),
+                                        child: SvgPicture.asset(
+                                          "assets/bitcoin.svg",
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )),
                           ),
                         ],
                       ),
@@ -180,11 +209,8 @@ class _AccountListTileState extends State<AccountListTile> {
                                     height: 15,
                                   )
                                 : Text(
-                                    widget.account.wallet.network ==
-                                            Network.Testnet
-                                        ? "TESTNET"
-                                        : ExchangeRate().getFormattedAmount(
-                                            widget.account.wallet.balance),
+                                    ExchangeRate().getFormattedAmount(
+                                        widget.account.wallet.balance),
                                     style: Theme.of(context)
                                         .textTheme
                                         .subtitle2!
