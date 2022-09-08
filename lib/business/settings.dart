@@ -56,6 +56,8 @@ class Settings extends ChangeNotifier {
     if (selectedFiat != null) {
       ExchangeRate().setCurrency(selectedFiat!);
     }
+
+    notifyListeners();
   }
 
   Environment environment = Environment.production;

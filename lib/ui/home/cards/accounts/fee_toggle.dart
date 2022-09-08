@@ -6,6 +6,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/business/settings.dart';
 
 class FeeToggle extends StatefulWidget {
   final int standardFee;
@@ -31,10 +32,14 @@ class _FeeToggleState extends State<FeeToggle> {
   late Widget _mainRow;
 
   String formatFee(int fee) {
-    return fee.toString() +
-        " Sats" +
-        " ~ " +
-        ExchangeRate().getFormattedAmount(fee);
+    if (Settings().selectedFiat == null) {
+      return fee.toString() + " Sats";
+    } else {
+      return fee.toString() +
+          " Sats" +
+          " ~ " +
+          ExchangeRate().getFormattedAmount(fee);
+    }
   }
 
   @override
