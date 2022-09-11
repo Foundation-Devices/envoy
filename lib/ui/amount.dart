@@ -278,11 +278,11 @@ class NumpadButton extends StatelessWidget {
   }
 }
 
-String convertSatsToBtcString(int amountSats) {
+String convertSatsToBtcString(int amountSats, {bool trailingZeroes: false}) {
   final amountBtc = amountSats / 100000000;
 
   NumberFormat formatter = NumberFormat();
-  formatter.minimumFractionDigits = 0;
+  formatter.minimumFractionDigits = trailingZeroes ? 8 : 0;
   formatter.maximumFractionDigits = 8;
 
   return formatter.format(amountBtc);
@@ -307,7 +307,8 @@ String getFormattedAmount(int amountSats, {bool includeUnit: false}) {
   NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
 
   String text = Settings().displayUnit == DisplayUnit.btc
-      ? convertSatsToBtcString(amountSats) + (includeUnit ? " BTC" : "")
+      ? convertSatsToBtcString(amountSats, trailingZeroes: true) +
+          (includeUnit ? " BTC" : "")
       : satsFormatter.format(amountSats) + (includeUnit ? " SATS" : "");
 
   return text;
