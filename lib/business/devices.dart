@@ -95,6 +95,16 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
+  markAllUpdated(String firmwareVersion) {
+    for (var device in devices) {
+      if (device.type == DeviceType.passportGen12) {
+        device.firmwareVersion = firmwareVersion;
+      }
+    }
+
+    notifyListeners();
+  }
+
   deleteDevice(Device device) {
     // Delete connected accounts
     AccountManager().deleteDeviceAccounts(device);
