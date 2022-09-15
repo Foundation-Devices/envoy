@@ -141,22 +141,6 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                               color: Colors.white,
                                             ),
                                       ),
-                                      fwUpdateAvailable
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 5),
-                                              child: Text(
-                                                "FW " +
-                                                    widget
-                                                        .device.firmwareVersion,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(
-                                                        color: Colors.white),
-                                              ),
-                                            )
-                                          : SizedBox.shrink()
                                     ],
                                   ),
                                   SizedBox(
@@ -176,62 +160,73 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                             .caption!
                                             .copyWith(color: Colors.white),
                                       ),
-                                      fwUpdateAvailable
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                  return FwIntroPage(
-                                                    returnHome: true,
-                                                  );
-                                                }));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10)),
-                                                  color: Colors.black
-                                                      .withOpacity(0.6),
-                                                  border: Border.all(
-                                                      color:
-                                                          widget.device.color,
-                                                      width: 2,
-                                                      style: BorderStyle.solid),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return FwIntroPage(
+                                              returnHome: true,
+                                            );
+                                          }));
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            color:
+                                                Colors.black.withOpacity(0.6),
+                                            border: Border.all(
+                                                color: widget.device.color,
+                                                width: 2,
+                                                style: BorderStyle.solid),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Row(
+                                              children: [
+                                                if (fwUpdateAvailable)
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 4.0),
+                                                    child: Container(
+                                                      height: 8.0,
+                                                      width: 8.0,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                    ),
+                                                  ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 3.0),
+                                                  child: SvgPicture.asset(
+                                                      "assets/fw.svg"),
                                                 ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Row(
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                          "assets/fw.svg"),
-                                                      Text(
-                                                        " FW " +
-                                                            UpdatesManager()
-                                                                .getStoredFwVersion()!,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .caption!
-                                                            .copyWith(
-                                                                color: Colors
-                                                                    .white),
-                                                      ),
-                                                    ],
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 2.0),
+                                                  child: Text(
+                                                    " FW " +
+                                                        UpdatesManager()
+                                                            .getStoredFwVersion()!,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .caption!
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.white),
                                                   ),
                                                 ),
-                                              ),
-                                            )
-                                          : Text(
-                                              "FW " +
-                                                  widget.device.firmwareVersion,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ],
