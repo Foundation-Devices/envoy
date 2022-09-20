@@ -10,3 +10,4 @@ projects:
 
 format: flat
 components: true
+variants: true

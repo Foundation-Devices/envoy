@@ -3630,6 +3630,26 @@ class S {
     );
   }
 
+  /// `Establishing a private connection over Tor`
+  String get envoy_widgets_torloader_establishing_connection {
+    return Intl.message(
+      'Establishing a private connection over Tor',
+      name: 'envoy_widgets_torloader_establishing_connection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading over the Tor network\n`
+  String get envoy_widgets_torloader_loading {
+    return Intl.message(
+      'Loading over the Tor network\n',
+      name: 'envoy_widgets_torloader_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Send Max`
   String get envoy_send_send_max {
     return Intl.message(
@@ -4305,6 +4325,16 @@ class S {
     return Intl.message(
       'About',
       name: 'envoy_settings_menu_about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge.`
+  String get envoy_fw_passport_subheading_after_onboarding {
+    return Intl.message(
+      'Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge.',
+      name: 'envoy_fw_passport_subheading_after_onboarding',
       desc: '',
       args: [],
     );

@@ -357,6 +357,8 @@
   "envoy_passport_tou_heading": "Please review and accept the Passport Terms of Use",
   "envoy_passport_tou_subheading": "TOU to be inserted here.",
   "envoy_passport_tou_cta": "I Accept",
+  "envoy_widgets_torloader_establishing_connection": "Establishing a private connection over Tor",
+  "envoy_widgets_torloader_loading": "Loading over the Tor network\n",
   "envoy_send_send_max": "Send Max",
   "envoy_send_enter_valid_address": "Enter Valid Address",
   "envoy_send_insufficient_funds": "Insufficient Funds",
@@ -429,5 +431,6 @@
   "envoy_learn_faqs": "FAQs",
   "envoy_settings_menu_settings": "Settings",
   "envoy_settings_menu_support": "Support",
-  "envoy_settings_menu_about": "About"
+  "envoy_settings_menu_about": "About",
+  "envoy_fw_passport_subheading_after_onboarding": "Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge."
 }

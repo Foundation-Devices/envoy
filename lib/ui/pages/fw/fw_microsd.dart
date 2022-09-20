@@ -11,11 +11,13 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
+import 'package:envoy/business/devices.dart';
 
 //ignore: must_be_immutable
 class FwMicrosdPage extends StatelessWidget {
-  bool returnHome;
-  FwMicrosdPage({this.returnHome: false});
+  bool onboarding;
+
+  FwMicrosdPage({this.onboarding: true});
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +40,20 @@ class FwMicrosdPage extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 try {
                   fw.upload();
+
+                  // Here we assume user has updated all his devices
+                  Devices()
+                      .markAllUpdated(UpdatesManager().getStoredFwVersion()!);
                 } catch (e) {
                   print("SD: error " + e.toString());
                   if (Platform.isIOS) // TODO: this needs to be smarter
-                    return FwIosInstructionsPage(returnHome: returnHome);
+                    return FwIosInstructionsPage(onboarding: onboarding);
 
                   if (Platform.isAndroid)
-                    return FwAndroidInstructionsPage(returnHome: returnHome);
+                    return FwAndroidInstructionsPage(onboarding: onboarding);
                 }
                 return FwPassportPage(
-                  returnHome: returnHome,
+                  onboarding: onboarding,
                 );
               }));
             }),

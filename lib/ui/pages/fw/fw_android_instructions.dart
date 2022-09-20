@@ -10,8 +10,8 @@ import 'package:envoy/ui/templates/onboarding_page.dart';
 
 //ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {
-  bool returnHome;
-  FwAndroidInstructionsPage({this.returnHome: false});
+  bool onboarding;
+  FwAndroidInstructionsPage({this.onboarding: true});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class FwAndroidInstructionsPage extends StatelessWidget {
             onTap: () {
               fw.getDirectoryContentPermission();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage(returnHome: returnHome);
+                return FwMicrosdPage(onboarding: onboarding);
               }));
             }),
       ],
