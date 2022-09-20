@@ -9,8 +9,8 @@ import 'package:envoy/generated/l10n.dart';
 
 //ignore: must_be_immutable
 class FwPassportPage extends StatelessWidget {
-  bool returnHome;
-  FwPassportPage({this.returnHome: false});
+  bool onboarding;
+  FwPassportPage({this.onboarding: true});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,9 @@ class FwPassportPage extends StatelessWidget {
       text: [
         OnboardingText(
           header: S().envoy_fw_passport_heading,
-          text: S().envoy_fw_passport_subheading,
+          text: onboarding
+              ? S().envoy_fw_passport_subheading
+              : S().envoy_fw_passport_subheading_after_onboarding,
         )
       ],
       navigationDots: 3,
@@ -29,7 +31,7 @@ class FwPassportPage extends StatelessWidget {
         OnboardingButton(
             label: S().envoy_fw_passport_cta,
             onTap: () {
-              if (returnHome) {
+              if (!onboarding) {
                 OnboardingPage.goHome(context);
               } else {
                 Navigator.of(context)

@@ -10,8 +10,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 //ignore: must_be_immutable
 class FwIntroPage extends StatelessWidget {
-  bool returnHome;
-  FwIntroPage({this.returnHome: false});
+  bool onboarding;
+  FwIntroPage({this.onboarding: true});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class FwIntroPage extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return FwMicrosdPage(
-                  returnHome: returnHome,
+                  onboarding: onboarding,
                 );
               }));
             }),

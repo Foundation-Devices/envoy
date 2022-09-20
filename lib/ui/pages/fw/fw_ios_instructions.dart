@@ -11,8 +11,8 @@ import 'package:envoy/generated/l10n.dart';
 
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends StatelessWidget {
-  bool returnHome;
-  FwIosInstructionsPage({this.returnHome: false});
+  bool onboarding;
+  FwIosInstructionsPage({this.onboarding: true});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class FwIosInstructionsPage extends StatelessWidget {
             onTap: () {
               fw.promptUserForFolderAccess();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage(returnHome: returnHome);
+                return FwMicrosdPage(onboarding: onboarding);
               }));
             }),
       ],

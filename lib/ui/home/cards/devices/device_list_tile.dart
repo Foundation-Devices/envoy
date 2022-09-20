@@ -166,7 +166,7 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                               MaterialPageRoute(
                                                   builder: (context) {
                                             return FwIntroPage(
-                                              returnHome: true,
+                                              onboarding: true,
                                             );
                                           }));
                                         },

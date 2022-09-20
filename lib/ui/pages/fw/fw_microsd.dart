@@ -15,9 +15,9 @@ import 'package:envoy/business/devices.dart';
 
 //ignore: must_be_immutable
 class FwMicrosdPage extends StatelessWidget {
-  bool returnHome;
+  bool onboarding;
 
-  FwMicrosdPage({this.returnHome: false});
+  FwMicrosdPage({this.onboarding: true});
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +47,13 @@ class FwMicrosdPage extends StatelessWidget {
                 } catch (e) {
                   print("SD: error " + e.toString());
                   if (Platform.isIOS) // TODO: this needs to be smarter
-                    return FwIosInstructionsPage(returnHome: returnHome);
+                    return FwIosInstructionsPage(onboarding: onboarding);
 
                   if (Platform.isAndroid)
-                    return FwAndroidInstructionsPage(returnHome: returnHome);
+                    return FwAndroidInstructionsPage(onboarding: onboarding);
                 }
                 return FwPassportPage(
-                  returnHome: returnHome,
+                  onboarding: onboarding,
                 );
               }));
             }),

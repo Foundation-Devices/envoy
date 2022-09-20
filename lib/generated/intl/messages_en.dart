@@ -295,6 +295,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "envoy_fw_passport_subheading": MessageLookupByLibrary.simpleMessage(
             "Insert the microSD card into Passport and follow the instructions.\n\nEnsure Passport has adequate battery charge."),
+        "envoy_fw_passport_subheading_after_onboarding":
+            MessageLookupByLibrary.simpleMessage(
+                "Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge."),
         "envoy_home_accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
         "envoy_home_devices": MessageLookupByLibrary.simpleMessage("Devices"),
         "envoy_home_learn": MessageLookupByLibrary.simpleMessage("Learn"),
@@ -864,6 +867,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_os_clock": MessageLookupByLibrary.simpleMessage("4321"),
         "envoy_welcome_right_action":
             MessageLookupByLibrary.simpleMessage("Skip"),
+        "envoy_widgets_torloader_establishing_connection":
+            MessageLookupByLibrary.simpleMessage(
+                "Establishing a private connection over Tor"),
+        "envoy_widgets_torloader_loading": MessageLookupByLibrary.simpleMessage(
+            "Loading over the Tor network\n"),
         "single_envoy_import_pp_intro_card1_heading":
             MessageLookupByLibrary.simpleMessage("Connect Passport with Envoy"),
         "single_envoy_import_pp_intro_card1_subheading":
