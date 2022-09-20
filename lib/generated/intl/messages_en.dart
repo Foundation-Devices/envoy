@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(device) => "Are you sure you want to disconnect ${device}?";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "component_app_store_copyright": MessageLookupByLibrary.simpleMessage(
@@ -228,9 +230,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Descriptor copied to clipboard!"),
         "envoy_descriptor_explainer": MessageLookupByLibrary.simpleMessage(
             "Make sure not to share this descriptor unless you are comfortable with your transactions being public."),
-        "envoy_device_delete_are_you_sure":
-            MessageLookupByLibrary.simpleMessage(
-                "Are you sure you want to disconnect \${device.name}?"),
+        "envoy_device_delete_are_you_sure": m0,
         "envoy_device_delete_explainer": MessageLookupByLibrary.simpleMessage(
             "This will remove the device from Envoy alongside any connected accounts."),
         "envoy_device_edit_device_name":

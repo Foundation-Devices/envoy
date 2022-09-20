@@ -3930,13 +3930,13 @@ class S {
     );
   }
 
-  /// `Are you sure you want to disconnect ${device.name}?`
-  String get envoy_device_delete_are_you_sure {
+  /// `Are you sure you want to disconnect {device}?`
+  String envoy_device_delete_are_you_sure(Object device) {
     return Intl.message(
-      'Are you sure you want to disconnect \${device.name}?',
+      'Are you sure you want to disconnect $device?',
       name: 'envoy_device_delete_are_you_sure',
       desc: '',
-      args: [],
+      args: [device],
     );
   }
 

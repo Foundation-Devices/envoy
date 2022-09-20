@@ -387,7 +387,12 @@
   "envoy_account_delete_are_you_sure": "Are you sure?",
   "envoy_account_delete_explainer": "This only removes the account from Envoy.",
   "envoy_device_rename": "Rename Device",
-  "envoy_device_delete_are_you_sure": "Are you sure you want to disconnect ${device.name}?",
+  "envoy_device_delete_are_you_sure": "Are you sure you want to disconnect {device}?",
+  "@envoy_device_delete_are_you_sure": {
+    "device": {
+      "type": "String"
+    }
+  },
   "envoy_device_delete_explainer": "This will remove the device from Envoy alongside any connected accounts.",
   "envoy_device_serial": "Serial",
   "envoy_device_paired": "Paired",
