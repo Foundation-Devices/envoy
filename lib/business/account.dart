@@ -4,8 +4,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wallet/wallet.dart';
-import 'dart:ui';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:flutter/material.dart';
 
 part 'account.g.dart';
 
@@ -25,6 +25,11 @@ class Account {
   bool initialSyncCompleted = false;
 
   Color get color {
+    // Postmix accounts are pure red
+    if (number == 2147483646) {
+      return Colors.red;
+    }
+
     int colorIndex = number % (EnvoyColors.listAccountTileColors.length);
     return EnvoyColors.listAccountTileColors[colorIndex];
   }
