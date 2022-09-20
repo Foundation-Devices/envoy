@@ -144,7 +144,8 @@ class DeviceOptions extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return EnvoyDialog(
-                  title: Text(S().envoy_device_delete_are_you_sure),
+                  title:
+                      Text(S().envoy_device_delete_are_you_sure(device.name)),
                   content: Text(S().envoy_device_delete_explainer),
                   actions: [
                     TextButton(
