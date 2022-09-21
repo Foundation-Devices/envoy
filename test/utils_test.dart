@@ -17,4 +17,22 @@ void main() {
     var correctXfp = reverseXfpStringEndianness(wrongXfp);
     expect(correctXfp, "5d14cd0a");
   });
+
+  test("Test XFP endianness reverser -  passport big endian", () {
+    int xfpFromPassport = 2206109696;
+    var xfpString = xfpFromPassport.toRadixString(16);
+    expect(xfpString, "837e9000");
+
+    var correctXfp = reverseXfpStringEndianness(xfpString);
+    expect(correctXfp, "00907e83");
+  });
+
+  test("Test XFP endianness reverser -  way too few digits", () {
+    int xfpFromPassport = 9469571;
+    var xfpString = xfpFromPassport.toRadixString(16);
+    expect(xfpString, "907e83");
+
+    var correctXfp = reverseXfpStringEndianness(xfpString);
+    expect(correctXfp, "837e9000");
+  });
 }
