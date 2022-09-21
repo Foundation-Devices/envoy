@@ -140,10 +140,6 @@ class Settings extends ChangeNotifier {
   static Future<Settings> init() async {
     var singleton = Settings._instance;
 
-    if (singleton.selectedFiat == null) {
-      singleton.selectedFiat = getFiatFromLocale();
-    }
-
     return singleton;
   }
 

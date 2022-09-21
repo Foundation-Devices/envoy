@@ -67,7 +67,7 @@ class ExchangeRate extends ChangeNotifier {
     _restoreRate();
 
     // Double check that that's still the choice
-    setCurrency(Settings().selectedFiat!);
+    setCurrency(Settings().selectedFiat ?? "USD");
 
     // Refresh from time to time
     Timer.periodic(Duration(seconds: 30), (_) {
@@ -102,7 +102,7 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   _getRate() {
-    String currencyCode = Settings().selectedFiat!;
+    String currencyCode = Settings().selectedFiat ?? "USD";
     _http.get(_serverAddress + '/price/' + currencyCode).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
