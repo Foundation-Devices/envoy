@@ -4,6 +4,7 @@
 
 [workspace]
 members = ["packages/http_tor/native/*", "packages/tor/native/*", "packages/ur/native/*", "packages/wallet/native/*"]
+exclude = ["ditto/ditto-to-arb"]
 
 [profile.release]
 lto = true
