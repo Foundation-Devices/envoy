@@ -118,7 +118,7 @@ class _AccountCardState extends State<AccountCard> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage.address((address) {
+                  return ScannerPage.address((address, amount) {
                     widget.navigator!.push(SendCard(widget.account,
                         address: address,
                         navigationCallback: widget.navigator));

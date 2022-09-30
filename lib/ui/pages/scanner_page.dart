@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
@@ -29,13 +30,17 @@ class ScannerPage extends StatefulWidget {
   final Wallet? walletToValidate;
   final Challenge? challengeToValidate;
   final Function(String)? callback;
+  final Function(String, int)? addressCallback;
 
   ScannerPage(this._type,
-      {this.walletToValidate, this.challengeToValidate, this.callback});
+      {this.walletToValidate,
+      this.challengeToValidate,
+      this.callback,
+      this.addressCallback});
 
-  ScannerPage.address(Function(String) callback, Wallet walletToValidate)
+  ScannerPage.address(Function(String, int) callback, Wallet walletToValidate)
       : this(ScannerType.address,
-            callback: callback, walletToValidate: walletToValidate);
+            addressCallback: callback, walletToValidate: walletToValidate);
 
   ScannerPage.tx(Function(String) callback)
       : this(ScannerType.tx, callback: callback);
@@ -164,14 +169,30 @@ class _ScannerPageState extends State<ScannerPage> {
 
   _onDetect(barcode, args) {
     if (widget._type == ScannerType.address) {
-      String address = barcode.rawValue!.replaceFirst("bitcoin:", "");
+      String address = barcode.rawValue!;
+      int amount = 0;
+
+      // Try to decode with BIP21
+      try {
+        var bip21 = Bip21.decode(address);
+
+        address = bip21.address;
+
+        // BIP-21 amounts are in BTC
+        amount = (bip21.amount * 100000000.0) as int;
+      } catch (_) {
+        // TODO
+      }
+
+      // Remove bitcoin: prefix in case BIP-21 parsing failed
+      address = address.replaceFirst("bitcoin:", "");
 
       if (!widget.walletToValidate!.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Not a valid address"),
         ));
       } else {
-        widget.callback!(address);
+        widget.addressCallback!(address, amount);
         Navigator.of(context).pop();
       }
       return;
