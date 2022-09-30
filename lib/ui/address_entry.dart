@@ -82,8 +82,8 @@ class AddressEntry extends StatelessWidget {
 
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return ScannerPage.address((result) {
-                              _controller.text = result;
+                            return ScannerPage.address((address, amount) {
+                              _controller.text = address;
                             }, wallet);
                           }));
                         },
