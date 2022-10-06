@@ -73,6 +73,8 @@ class _ScannerPageState extends State<ScannerPage> {
   QRViewController? controller;
   final GlobalKey qrViewKey = GlobalKey(debugLabel: "qr_view");
 
+  String _lastCodeDetected = "";
+
   _ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
   }
@@ -133,7 +135,10 @@ class _ScannerPageState extends State<ScannerPage> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((barcode) {
-      _onDetect(barcode);
+      if (barcode.code != null && barcode.code != _lastCodeDetected) {
+        _lastCodeDetected = barcode.code!;
+        _onDetect(barcode.code!);
+      }
     });
   }
 
@@ -183,9 +188,9 @@ class _ScannerPageState extends State<ScannerPage> {
     );
   }
 
-  _onDetect(Barcode barcode) {
+  _onDetect(String code) {
     if (widget._type == ScannerType.address) {
-      String address = barcode.code!;
+      String address = code;
       int amount = 0;
 
       // Try to decode with BIP21
@@ -214,7 +219,7 @@ class _ScannerPageState extends State<ScannerPage> {
       return;
     }
 
-    String scannedData = barcode.code!.toLowerCase();
+    String scannedData = code.toLowerCase();
     _checkIfMultipartUr(scannedData);
 
     if (widget._type == ScannerType.nodeUrl) {
