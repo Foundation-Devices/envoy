@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.7+7
+version: 1.0.7+9
 
 
 environment:
@@ -42,10 +42,10 @@ dependencies:
   wallet:
     path: packages/wallet
 
-  # mobile_scanner fork
-  mobile_scanner:
+  # qr_code_scanner fork
+  qr_code_scanner:
     git:
-      url: https://github.com/icota/mobile_scanner.git
+      url: https://github.com/icota/qr_code_scanner.git
       ref: master
 
   # flutter_vlc_player fork
@@ -68,7 +68,7 @@ dependencies:
   email_validator: ^2.0.1
   json_annotation: ^4.4.0
   animations: ^2.0.2
-  share_plus: ^3.0.4
+  share_plus: ^4.5.0
   timeago: ^3.2.2
   csv: ^5.0.1
   webfeed: ^0.7.0

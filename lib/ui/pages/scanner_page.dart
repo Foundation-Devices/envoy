@@ -14,7 +14,7 @@ import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:wallet/utils.dart';
 import 'package:wallet/wallet.dart';
@@ -70,6 +70,11 @@ class _ScannerPageState extends State<ScannerPage> {
   Completer<void> _permissionsCompleter = Completer();
   late Future<void> _permissionsGranted;
 
+  QRViewController? controller;
+  final GlobalKey qrViewKey = GlobalKey(debugLabel: "qr_view");
+
+  String _lastCodeDetected = "";
+
   _ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
   }
@@ -101,6 +106,12 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -121,6 +132,16 @@ class _ScannerPageState extends State<ScannerPage> {
     );
   }
 
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((barcode) {
+      if (barcode.code != null && barcode.code != _lastCodeDetected) {
+        _lastCodeDetected = barcode.code!;
+        _onDetect(barcode.code!);
+      }
+    });
+  }
+
   Widget _buildQrView(BuildContext context) {
     return Stack(
       children: [
@@ -128,9 +149,9 @@ class _ScannerPageState extends State<ScannerPage> {
             future: _permissionsGranted,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return MobileScanner(
-                  allowDuplicates: false,
-                  onDetect: _onDetect,
+                return QRView(
+                  key: qrViewKey,
+                  onQRViewCreated: _onQRViewCreated,
                 );
               } else {
                 return SizedBox.shrink();
@@ -167,9 +188,9 @@ class _ScannerPageState extends State<ScannerPage> {
     );
   }
 
-  _onDetect(barcode, args) {
+  _onDetect(String code) {
     if (widget._type == ScannerType.address) {
-      String address = barcode.rawValue!;
+      String address = code;
       int amount = 0;
 
       // Try to decode with BIP21
@@ -198,7 +219,7 @@ class _ScannerPageState extends State<ScannerPage> {
       return;
     }
 
-    String scannedData = barcode.rawValue!.toLowerCase();
+    String scannedData = code.toLowerCase();
     _checkIfMultipartUr(scannedData);
 
     if (widget._type == ScannerType.nodeUrl) {

@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!LocalStorage().prefs.containsKey("onboarded")) {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return OnboardingWelcomePage();
@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     // After we render everything find out the options widgets height
-    SchedulerBinding.instance?.addPostFrameCallback(_getOptionsHeight);
+    SchedulerBinding.instance.addPostFrameCallback(_getOptionsHeight);
 
     double _screenHeight = MediaQuery.of(context).size.height;
     // ignore: unused_local_variable

@@ -20,6 +20,7 @@ part 'settings.g.dart';
 LocalStorage ls = LocalStorage();
 
 enum Environment { local, development, staging, production }
+
 enum DisplayUnit { btc, sat }
 
 @JsonSerializable()
