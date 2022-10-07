@@ -21,6 +21,7 @@ flutter build apk
 
 For iOS:
 ````
+brew install automake libtool
 ./build_ffi_ios.sh
 flutter build ipa
 ````
