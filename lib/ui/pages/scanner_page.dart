@@ -111,6 +111,16 @@ class _ScannerPageState extends State<ScannerPage> {
     super.dispose();
   }
 
+  // Fix hot reload
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller?.pauseCamera();
+    }
+    controller?.resumeCamera();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,6 +150,10 @@ class _ScannerPageState extends State<ScannerPage> {
         _onDetect(barcode.code!);
       }
     });
+
+    // ENV-252: hack to get camera on CalyxOS
+    controller.pauseCamera();
+    controller.resumeCamera();
   }
 
   Widget _buildQrView(BuildContext context) {
