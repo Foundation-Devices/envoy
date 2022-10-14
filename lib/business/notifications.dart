@@ -68,6 +68,7 @@ class Notifications {
   }
 
   _checkForNotificationsToAdd() {
+    bool _notificationsAdded = false;
     for (var account in AccountManager().accounts) {
       for (var tx in account.wallet.transactions) {
         if ((tx.date.isAfter(lastUpdated) || !tx.isConfirmed) &&
@@ -89,12 +90,16 @@ class Notifications {
                 tx.txId,
                 amount: tx.amount,
                 walletName: account.wallet.name));
+
+            _notificationsAdded = true;
           }
         }
       }
     }
 
-    lastUpdated = DateTime.now();
+    if (_notificationsAdded) {
+      lastUpdated = DateTime.now();
+    }
   }
 
   deleteFromAccount(Account account) {
