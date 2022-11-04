@@ -64,6 +64,7 @@ class _AccountCardState extends State<AccountCard> {
   void dispose() {
     super.dispose();
     AccountManager().removeListener(_redraw);
+    ExchangeRate().removeListener(_redraw);
   }
 
   @override
