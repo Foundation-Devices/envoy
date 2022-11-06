@@ -92,7 +92,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
       });
     } on InsufficientFunds catch (e) {
       // Get another one with correct amount
-      var fee = widget.amount - e.available;
+      var fee = e.needed - e.available;
       try {
         await widget.account.wallet
             .createPsbt(address.text, e.available - fee, feeRate)
