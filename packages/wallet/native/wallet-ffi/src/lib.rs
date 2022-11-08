@@ -32,7 +32,7 @@ use std::ptr::null_mut;
 use crate::electrum_client::Client;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
-use bdk::miniscript::psbt::finalize;
+use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
@@ -242,13 +242,14 @@ fn get_electrum_client(
             .build();
     }
 
-    electrum_client::Client::from_config(electrum_address, config)
+    Client::from_config(electrum_address, config)
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_get_balance(wallet: *mut Mutex<Wallet<Tree>>) -> u64 {
     let wallet = get_wallet_mutex(wallet).lock().unwrap();
-    wallet.get_balance().unwrap()
+    let balance = wallet.get_balance().unwrap();
+    balance.confirmed + balance.immature + balance.trusted_pending + balance.untrusted_pending
 }
 
 #[no_mangle]
@@ -424,6 +425,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
     let mut builder = wallet.build_tx();
     builder
         .ordering(TxOrdering::Shuffle)
+        .only_witness_utxo()
         .add_recipient(send_to.script_pubkey(), amount)
         .enable_rbf()
         .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
@@ -458,10 +460,10 @@ pub unsafe extern "C" fn wallet_decode_psbt(
     );
 
     match deserialize::<PartiallySignedTransaction>(&data) {
-        Ok(mut psbt) => {
+        Ok(psbt) => {
             let secp = Secp256k1::verification_only();
-            finalize(&mut psbt, &secp).unwrap();
-            psbt_extract_details(&wallet, &psbt)
+            let finalized_psbt = PsbtExt::finalize(psbt, &secp).unwrap();
+            psbt_extract_details(&wallet, &finalized_psbt)
         }
         Err(e) => {
             update_last_error(e);
