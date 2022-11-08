@@ -30,7 +30,8 @@ class Settings extends ChangeNotifier {
       "ssl://mainnet.foundationdevices.com:50002";
 
   // FD testnet server
-  static const String TESTNET_ELECTRUM_SERVER = "tcp://137.184.134.236:50001";
+  static const String TESTNET_ELECTRUM_SERVER =
+      "tcp://testnet.foundationdevices.com:50001";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
