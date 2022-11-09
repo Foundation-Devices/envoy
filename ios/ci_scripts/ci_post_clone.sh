@@ -19,6 +19,7 @@ brew install cocoapods automake libtool curl
 
 # Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+export PATH="$PATH:$HOME/.cargo/bin"
 
 # Build Rust libraries
 ./build_ffi_ios.sh
