@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:wallet/wallet.dart';
@@ -56,7 +57,6 @@ class AddressEntry extends StatelessWidget {
                 enabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
-
                 prefixIcon: Padding(
                   padding:
                       const EdgeInsets.only(left: 7.0, bottom: 6.0, right: 7.0),
@@ -67,26 +67,54 @@ class AddressEntry extends StatelessWidget {
                     BoxConstraints(minWidth: 0, minHeight: 0),
                 suffixIcon: !canEdit
                     ? null
-                    : IconButton(
-                        icon: Icon(
-                          Icons.qr_code,
-                          color: EnvoyColors.darkTeal,
-                        ),
-                        onPressed: () {
-                          // Maybe catch the result of pop instead of using callbacks?:
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Image.asset(
+                                "assets/paste_icon.png",
+                                color: EnvoyColors.darkTeal,
+                                width: 24,
+                                height: 24,
+                              ),
+                            ),
+                            onTap: () async {
+                              ClipboardData? cdata =
+                                  await Clipboard.getData(Clipboard.kTextPlain);
+                              String? text = cdata?.text ?? null;
+                              if (text != null) {
+                                _controller.text = text;
+                              }
+                            },
+                          ),
+                          InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Icon(
+                                Icons.qr_code,
+                                color: EnvoyColors.darkTeal,
+                              ),
+                            ),
+                            onTap: () {
+                              // Maybe catch the result of pop instead of using callbacks?:
 
-                          // final result = await Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
-                          // );
+                              // final result = await Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
+                              // );
 
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return ScannerPage.address((address, amount) {
-                              _controller.text = address;
-                            }, wallet);
-                          }));
-                        },
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return ScannerPage.address((address, amount) {
+                                  _controller.text = address;
+                                }, wallet);
+                              }));
+                            },
+                          )
+                        ],
                       ),
               )),
         ),
