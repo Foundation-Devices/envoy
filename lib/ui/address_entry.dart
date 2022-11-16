@@ -68,58 +68,59 @@ class AddressEntry extends StatelessWidget {
                 suffixIcon: !canEdit
                     ? null
                     : Wrap(
-                  direction:  Axis.horizontal,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  alignment: WrapAlignment.spaceBetween,
-                  runAlignment: WrapAlignment.center,
-                  children: [
-                    InkWell(
-                      // padding: EdgeInsets.all(0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Image.asset(
-                            "assets/paste_icon.png",
-                          color: EnvoyColors.darkTeal,
-                          width: 24,
-                          height: 24,
-                          //
-                          // color: EnvoyColors.darkTeal,
-                        ),
-                      ),
-                      onTap: () async {
-                        ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-                        String? text = cdata?.text ?? null;
-                        if(text != null ){
-                          _controller.text =text;
-                        }
-                      },
-                    ),
-                    InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.qr_code,
-                          color: EnvoyColors.darkTeal,
-                        ),
-                      ),
-                      onTap: () {
-                        // Maybe catch the result of pop instead of using callbacks?:
+                        direction: Axis.horizontal,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.spaceBetween,
+                        runAlignment: WrapAlignment.center,
+                        children: [
+                          InkWell(
+                            // padding: EdgeInsets.all(0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Image.asset(
+                                "assets/paste_icon.png",
+                                color: EnvoyColors.darkTeal,
+                                width: 24,
+                                height: 24,
+                                //
+                                // color: EnvoyColors.darkTeal,
+                              ),
+                            ),
+                            onTap: () async {
+                              ClipboardData? cdata =
+                                  await Clipboard.getData(Clipboard.kTextPlain);
+                              String? text = cdata?.text ?? null;
+                              if (text != null) {
+                                _controller.text = text;
+                              }
+                            },
+                          ),
+                          InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Icon(
+                                Icons.qr_code,
+                                color: EnvoyColors.darkTeal,
+                              ),
+                            ),
+                            onTap: () {
+                              // Maybe catch the result of pop instead of using callbacks?:
 
-                        // final result = await Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
-                        // );
+                              // final result = await Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
+                              // );
 
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return ScannerPage.address((address, amount) {
-                            _controller.text = address;
-                          }, wallet);
-                        }));
-                      },
-                    )
-                  ],
-                ),
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return ScannerPage.address((address, amount) {
+                                  _controller.text = address;
+                                }, wallet);
+                              }));
+                            },
+                          )
+                        ],
+                      ),
               )),
         ),
       ),
