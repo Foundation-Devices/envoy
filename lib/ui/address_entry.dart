@@ -67,14 +67,11 @@ class AddressEntry extends StatelessWidget {
                     BoxConstraints(minWidth: 0, minHeight: 0),
                 suffixIcon: !canEdit
                     ? null
-                    : Wrap(
-                        direction: Axis.horizontal,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.spaceBetween,
-                        runAlignment: WrapAlignment.center,
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           InkWell(
-                            // padding: EdgeInsets.all(0),
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Image.asset(
@@ -82,8 +79,6 @@ class AddressEntry extends StatelessWidget {
                                 color: EnvoyColors.darkTeal,
                                 width: 24,
                                 height: 24,
-                                //
-                                // color: EnvoyColors.darkTeal,
                               ),
                             ),
                             onTap: () async {
