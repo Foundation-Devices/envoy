@@ -207,204 +207,215 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               }
             });
           });
-
           return true;
         },
-        child: Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: AppBar(
-              // Get rid of the shadow
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              leading: AbsorbPointer(
-                  absorbing: _optionsShown,
-                  child: AnimatedOpacity(
-                    opacity: _optionsShown ? 0.0 : 1.0,
-                    duration: _animationsDuration,
-                    child: IconButton(
-                      icon: AnimatedRotation(
-                        duration: _animationsDuration,
-                        turns: _backgroundShown
-                            ? _leftAction == _toggleSettings ||
-                                    _notificationsShown
-                                ? 0.25 //Icons.arrow_upward
-                                : 0.0 //Icons.arrow_back
-                            : _leftAction == _toggleSettings
-                                ? -0.25 //Icons.arrow_downward
-                                : 0.0, //Icons.arrow_back,
-                        child: Icon(Icons.keyboard_arrow_left_sharp),
-                      ),
-                      onPressed: _leftAction,
-                    ),
-                  )),
-              title: Stack(children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: AnimatedSwitcher(
+        child: WillPopScope(
+          onWillPop: () async {
+            if (_backgroundShown) {
+              _leftAction?.call();
+              return false;
+            } else {
+              return true;
+            }
+          },
+          child: Scaffold(
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                // Get rid of the shadow
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                leading: AbsorbPointer(
+                    absorbing: _optionsShown,
+                    child: AnimatedOpacity(
+                      opacity: _optionsShown ? 0.0 : 1.0,
                       duration: _animationsDuration,
-                      child: Text(
-                        _appBarTitle,
-                        key: ValueKey<String>(_appBarTitle),
+                      child: IconButton(
+                        icon: AnimatedRotation(
+                          duration: _animationsDuration,
+                          turns: _backgroundShown
+                              ? _leftAction == _toggleSettings ||
+                                      _notificationsShown
+                                  ? 0.25 //Icons.arrow_upward
+                                  : 0.0 //Icons.arrow_back
+                              : _leftAction == _toggleSettings
+                                  ? -0.25 //Icons.arrow_downward
+                                  : 0.0, //Icons.arrow_back,
+                          child: Icon(Icons.keyboard_arrow_left_sharp),
+                        ),
+                        onPressed: _leftAction,
+                      ),
+                    )),
+                title: Stack(children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: AnimatedSwitcher(
+                        duration: _animationsDuration,
+                        child: Text(
+                          _appBarTitle,
+                          key: ValueKey<String>(_appBarTitle),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Center(child: SizedBox(height: 50, child: IndicatorShield()))
-              ]),
-              centerTitle: true,
-              actions: [
-                // Notifications
-                AnimatedSwitcher(
-                    duration: _animationsDuration,
-                    child: _tlCardIndex != 2
-                        ? buildNotificationAction()
-                        : IgnorePointer(
-                            child: IconButton(
-                            icon: Icon(null),
-                            onPressed: () {},
-                          ))),
-                // Right action
-                AnimatedSwitcher(
-                    duration: _animationsDuration,
-                    child: _tlCardIndex != 2
-                        ? buildRightAction()
-                        : buildNotificationAction())
-              ],
-            ),
-            body: // Something behind
-                Stack(
-              children: [
-                // Main background
-                AnimatedPositioned(
-                    top: 0,
-                    height:
-                        _backgroundShown ? _screenHeight + 1500 : _screenHeight,
-                    left: 0,
-                    right: 0,
-                    curve: Curves.easeIn,
-                    duration: Duration(
-                        milliseconds: _animationsDuration.inMilliseconds - 50),
-                    child: AppBackground()),
-                // Variable background
-                AnimatedSwitcher(
-                    duration: _animationsDuration, child: _background),
-                // Tab bar
-                Padding(
-                  padding: EdgeInsets.only(bottom: _bottomOffset),
-                  child: AnimatedOpacity(
+                  Center(child: SizedBox(height: 50, child: IndicatorShield()))
+                ]),
+                centerTitle: true,
+                actions: [
+                  // Notifications
+                  AnimatedSwitcher(
+                      duration: _animationsDuration,
+                      child: _tlCardIndex != 2
+                          ? buildNotificationAction()
+                          : IgnorePointer(
+                              child: IconButton(
+                              icon: Icon(null),
+                              onPressed: () {},
+                            ))),
+                  // Right action
+                  AnimatedSwitcher(
+                      duration: _animationsDuration,
+                      child: _tlCardIndex != 2
+                          ? buildRightAction()
+                          : buildNotificationAction())
+                ],
+              ),
+              body: // Something behind
+                  Stack(
+                children: [
+                  // Main background
+                  AnimatedPositioned(
+                      top: 0,
+                      height: _backgroundShown
+                          ? _screenHeight + 1500
+                          : _screenHeight,
+                      left: 0,
+                      right: 0,
+                      curve: Curves.easeIn,
                       duration: Duration(
                           milliseconds:
-                              _animationsDuration.inMilliseconds ~/ 2),
-                      opacity:
-                          _backgroundShown || (_modalShown || _optionsShown)
-                              ? 0
-                              : 1.0,
-                      child: Container(
-                        alignment: Alignment.bottomCenter,
-                        child: IgnorePointer(
-                          ignoring: _backgroundShown || _modalShown,
-                          child: TabBar(
-                            indicatorColor: Colors.white10,
-                            labelStyle: Theme.of(context).textTheme.bodyText1,
-                            unselectedLabelColor: Colors.black54,
-                            labelColor: EnvoyColors.darkTeal,
-                            controller: _tabController,
-                            onTap: (selectedIndex) {
-                              setState(() {
-                                _tlCardIndex = selectedIndex;
-                                _appBarTitle = _tlCardList[_tlCardIndex]
-                                    .label
-                                    .toUpperCase();
-
-                                if (_leftAction != null &&
-                                    _leftAction != _toggleSettings) {
-                                  _leftAction!();
-                                }
-                              });
-                            },
-                            tabs: _tlCardList
-                                .map((e) => Tab(
-                                      icon: e.icon,
-                                      text: e.label,
-                                    ))
-                                .toList(),
-                          ),
-                        ),
-                      )),
-                ),
-                // Glow
-                // AnimatedPositioned(
-                //   duration: _animationsDuration,
-                //   top: _backgroundShown
-                //       ? _screenHeight + 20
-                //       : _optionsShown
-                //           ? _shieldTopOptionsShown - _shieldGlowOffset
-                //           : _shieldTop - _shieldGlowOffset,
-                //   // Sized relative to screen height
-                //   height: _screenWidth,
-                //   left: 0,
-                //   right: 0,
-                //   child: Glow(
-                //     innerColor: EnvoyColors.glowInner,
-                //     middleColor: EnvoyColors.glowMiddle,
-                //     outerColor: EnvoyColors.glowOuter,
-                //     stops: [0.0, 0.5, 1.0],
-                //   ),
-                // ),
-                // Options
-                Positioned(
-                    top: _shieldTop - 20,
-                    left: 0,
-                    right: 0,
-                    child: IgnorePointer(
-                        ignoring: !_optionsShown,
-                        child: AnimatedOpacity(
-                            opacity: _optionsShown ? 1.0 : 0.0,
-                            duration: _animationsDuration,
-                            child: AnimatedSwitcher(
-                                duration: _animationsDuration,
-                                child: _options)))),
-                // Shield
-                AnimatedPositioned(
-                  duration: _animationsDuration,
-                  top: _backgroundShown
-                      ? _screenHeight + 20
-                      : _optionsShown
-                          ? _shieldTopOptionsShown
-                          : _shieldTop,
-                  height: _modalShown
-                      ? _shieldHeightModalShown
-                      : _optionsShown
-                          ? _shieldHeightOptionsShown
-                          : _shieldHeight,
-                  left: 5,
-                  right: 5,
-                  child: AnimatedOpacity(
-                    opacity: _backgroundShown ? 0.0 : 1.0,
-                    duration: _backgroundShown
-                        ? Duration(
+                              _animationsDuration.inMilliseconds - 50),
+                      child: AppBackground()),
+                  // Variable background
+                  AnimatedSwitcher(
+                      duration: _animationsDuration, child: _background),
+                  // Tab bar
+                  Padding(
+                    padding: EdgeInsets.only(bottom: _bottomOffset),
+                    child: AnimatedOpacity(
+                        duration: Duration(
                             milliseconds:
-                                _animationsDuration.inMilliseconds ~/ 2)
-                        : _animationsDuration,
-                    curve: _backgroundShown
-                        ? Curves.linear
-                        : ShieldFadeInAnimationCurve(),
-                    child: Hero(
-                      tag: "shield",
-                      child: Shield(
-                        child: TabBarView(
-                          // Don't scroll
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: _tabController,
-                          children: _tlCardList.map((e) => e.widget).toList(),
+                                _animationsDuration.inMilliseconds ~/ 2),
+                        opacity:
+                            _backgroundShown || (_modalShown || _optionsShown)
+                                ? 0
+                                : 1.0,
+                        child: Container(
+                          alignment: Alignment.bottomCenter,
+                          child: IgnorePointer(
+                            ignoring: _backgroundShown || _modalShown,
+                            child: TabBar(
+                              indicatorColor: Colors.white10,
+                              labelStyle: Theme.of(context).textTheme.bodyText1,
+                              unselectedLabelColor: Colors.black54,
+                              labelColor: EnvoyColors.darkTeal,
+                              controller: _tabController,
+                              onTap: (selectedIndex) {
+                                setState(() {
+                                  _tlCardIndex = selectedIndex;
+                                  _appBarTitle = _tlCardList[_tlCardIndex]
+                                      .label
+                                      .toUpperCase();
+
+                                  if (_leftAction != null &&
+                                      _leftAction != _toggleSettings) {
+                                    _leftAction!();
+                                  }
+                                });
+                              },
+                              tabs: _tlCardList
+                                  .map((e) => Tab(
+                                        icon: e.icon,
+                                        text: e.label,
+                                      ))
+                                  .toList(),
+                            ),
+                          ),
+                        )),
+                  ),
+                  // Glow
+                  // AnimatedPositioned(
+                  //   duration: _animationsDuration,
+                  //   top: _backgroundShown
+                  //       ? _screenHeight + 20
+                  //       : _optionsShown
+                  //           ? _shieldTopOptionsShown - _shieldGlowOffset
+                  //           : _shieldTop - _shieldGlowOffset,
+                  //   // Sized relative to screen height
+                  //   height: _screenWidth,
+                  //   left: 0,
+                  //   right: 0,
+                  //   child: Glow(
+                  //     innerColor: EnvoyColors.glowInner,
+                  //     middleColor: EnvoyColors.glowMiddle,
+                  //     outerColor: EnvoyColors.glowOuter,
+                  //     stops: [0.0, 0.5, 1.0],
+                  //   ),
+                  // ),
+                  // Options
+                  Positioned(
+                      top: _shieldTop - 20,
+                      left: 0,
+                      right: 0,
+                      child: IgnorePointer(
+                          ignoring: !_optionsShown,
+                          child: AnimatedOpacity(
+                              opacity: _optionsShown ? 1.0 : 0.0,
+                              duration: _animationsDuration,
+                              child: AnimatedSwitcher(
+                                  duration: _animationsDuration,
+                                  child: _options)))),
+                  // Shield
+                  AnimatedPositioned(
+                    duration: _animationsDuration,
+                    top: _backgroundShown
+                        ? _screenHeight + 20
+                        : _optionsShown
+                            ? _shieldTopOptionsShown
+                            : _shieldTop,
+                    height: _modalShown
+                        ? _shieldHeightModalShown
+                        : _optionsShown
+                            ? _shieldHeightOptionsShown
+                            : _shieldHeight,
+                    left: 5,
+                    right: 5,
+                    child: AnimatedOpacity(
+                      opacity: _backgroundShown ? 0.0 : 1.0,
+                      duration: _backgroundShown
+                          ? Duration(
+                              milliseconds:
+                                  _animationsDuration.inMilliseconds ~/ 2)
+                          : _animationsDuration,
+                      curve: _backgroundShown
+                          ? Curves.linear
+                          : ShieldFadeInAnimationCurve(),
+                      child: Hero(
+                        tag: "shield",
+                        child: Shield(
+                          child: TabBarView(
+                            // Don't scroll
+                            physics: NeverScrollableScrollPhysics(),
+                            controller: _tabController,
+                            children: _tlCardList.map((e) => e.widget).toList(),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            )));
+                ],
+              )),
+        ));
   }
 
   AbsorbPointer buildRightAction() {
