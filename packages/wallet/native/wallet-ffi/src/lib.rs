@@ -12,15 +12,16 @@ use std::ptr;
 extern crate rand;
 
 use std::cell::RefCell;
+use std::convert::TryFrom;
 use std::error::Error;
 
 use bdk::bitcoin::{Address, Network};
 use bdk::blockchain::ElectrumBlockchain;
-use bdk::database::ConfigurableDatabase;
+use bdk::database::{BatchDatabase, ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, SyncOptions};
+use bdk::{electrum_client, miniscript, SignOptions, SyncOptions};
 use bdk::{FeeRate, Wallet};
 use std::str::FromStr;
 
@@ -36,6 +37,12 @@ use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
+use bdk::bitcoin::util::bip32;
+use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
+use bdk::keys::bip39::{Language, Mnemonic};
+use bdk::keys::{DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey};
+use bdk::keys::DescriptorKey::Secret;
+use crate::miniscript::Segwitv0;
 
 #[repr(C)]
 pub enum NetworkType {
@@ -43,6 +50,17 @@ pub enum NetworkType {
     Testnet,
     Signet,
     Regtest,
+}
+
+impl Into<Network> for NetworkType {
+    fn into(self) -> Network {
+        match self {
+            NetworkType::Mainnet => Network::Bitcoin,
+            NetworkType::Testnet => Network::Testnet,
+            NetworkType::Signet => Network::Signet,
+            NetworkType::Regtest => Network::Regtest,
+        }
+    }
 }
 
 #[repr(C)]
@@ -138,6 +156,8 @@ macro_rules! unwrap_or_return {
     };
 }
 
+
+
 #[no_mangle]
 pub unsafe extern "C" fn wallet_init(
     name: *const c_char,
@@ -146,13 +166,6 @@ pub unsafe extern "C" fn wallet_init(
     data_dir: *const c_char,
     network: NetworkType,
 ) -> *mut Mutex<Wallet<Tree>> {
-    let network = match network {
-        NetworkType::Mainnet => Network::Bitcoin,
-        NetworkType::Testnet => Network::Testnet,
-        NetworkType::Signet => Network::Signet,
-        NetworkType::Regtest => Network::Regtest,
-    };
-
     let name = unwrap_or_return!(CStr::from_ptr(name).to_str(), null_mut());
     let external_descriptor =
         unwrap_or_return!(CStr::from_ptr(external_descriptor).to_str(), null_mut());
@@ -168,7 +181,7 @@ pub unsafe extern "C" fn wallet_init(
     let db = unwrap_or_return!(sled::Tree::from_config(&db_conf), null_mut());
 
     let wallet = Mutex::new(unwrap_or_return!(
-        Wallet::new(external_descriptor, Some(internal_descriptor), network, db),
+        Wallet::new(external_descriptor, Some(internal_descriptor), network.into(), db),
         null_mut()
     ));
 
@@ -361,7 +374,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
     }
 }
 
-fn psbt_extract_details(wallet: &Wallet<Tree>, psbt: &PartiallySignedTransaction) -> Psbt {
+fn psbt_extract_details<T: BatchDatabase>(wallet: &Wallet<T>, psbt: &PartiallySignedTransaction) -> Psbt {
     let tx = psbt.clone().extract_tx();
     let raw_tx = serialize::<bdk::bitcoin::Transaction>(&tx).to_hex();
 
@@ -506,6 +519,177 @@ pub unsafe extern "C" fn wallet_validate_address(
     match Address::from_str(CStr::from_ptr(address).to_str().unwrap()) {
         Ok(a) => wallet.network() == a.network, // Only valid if it's on same network
         Err(_) => false,
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_sign_offline(
+    psbt: *const c_char,
+    external_descriptor: *const c_char,
+    internal_descriptor: *const c_char,
+    network: NetworkType,
+) -> Psbt {
+    let error_return = Psbt {
+        sent: 0,
+        received: 0,
+        fee: 0,
+        base64: ptr::null(),
+        txid: ptr::null(),
+        raw_tx: ptr::null(),
+    };
+
+    let external_descriptor = CStr::from_ptr(external_descriptor).to_str().unwrap();
+    let internal_descriptor = CStr::from_ptr(internal_descriptor).to_str().unwrap();
+
+    let wallet = Wallet::new(
+        external_descriptor,
+        Some(internal_descriptor),
+        network.into(),
+        MemoryDatabase::new(),
+    )
+        .unwrap();
+
+    let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
+    let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
+
+    match wallet.sign(&mut psbt, SignOptions::default()) {
+        Ok(_) => {
+            psbt_extract_details(&wallet, &psbt)
+        }
+        Err(e) => {
+            update_last_error(e);
+            error_return
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_sign_psbt(
+    wallet: *mut Mutex<Wallet<Tree>>,
+    psbt: *const c_char,
+) -> Psbt {
+    let error_return = Psbt {
+        sent: 0,
+        received: 0,
+        fee: 0,
+        base64: ptr::null(),
+        txid: ptr::null(),
+        raw_tx: ptr::null(),
+    };
+
+    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+
+    let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
+    let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
+
+    match wallet.sign(&mut psbt, SignOptions::default()) {
+        Ok(_) => {
+            psbt_extract_details(&wallet, &psbt)
+        }
+        Err(e) => {
+            update_last_error(e);
+            error_return
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
+    let secp = Secp256k1::new();
+
+    let mut rng = rand::thread_rng();
+    let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 24).unwrap();
+
+    let mnemonic_string = mnemonic.to_string();
+
+    let xkey: ExtendedKey<miniscript::BareCtx> = mnemonic.into_extended_key().unwrap();
+    let xprv = xkey.into_xprv(network.into()).unwrap();
+
+    let fingerprint = xprv.fingerprint(&secp);
+
+    Seed {
+        mnemonic: CString::new(mnemonic_string).unwrap().into_raw(),
+        xprv: CString::new(xprv.to_string()).unwrap().into_raw(),
+        fingerprint: CString::new(fingerprint.to_string()).unwrap().into_raw(),
+    }
+}
+
+// #[no_mangle]
+// pub unsafe extern "C" fn wallet_get_seed_words(seed: *const u8) -> Seed {
+//     // let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 24).unwrap();
+//     // let mnemonic_string = mnemonic.to_string();
+//
+//     let xkey: ExtendedKey<miniscript::BareCtx> = mnemonic.into_extended_key().unwrap();
+//     let xprv = xkey.into_xprv(network.into()).unwrap();
+//
+//     let fingerprint = xprv.fingerprint(&secp);
+//
+//     Seed {
+//         mnemonic: CString::new(mnemonic_string).unwrap().into_raw(),
+//         xprv: CString::new(xprv.to_string()).unwrap().into_raw(),
+//         fingerprint: CString::new(fingerprint.to_string()).unwrap().into_raw(),
+//     }
+// }
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_get_xpub_desc_key(
+    xprv: *const c_char,
+    path: *const c_char,
+) -> *const c_char {
+    let secp = Secp256k1::new();
+
+    let xprv = ExtendedPrivKey::from_str(CStr::from_ptr(xprv).to_str().unwrap()).unwrap();
+    let path = DerivationPath::from_str(CStr::from_ptr(path).to_str().unwrap()).unwrap();
+
+    let derived_xprv = &xprv.derive_priv(&secp, &path).unwrap();
+
+    let origin: KeySource = (xprv.fingerprint(&secp), path);
+
+    let derived_xprv_desc_key: DescriptorKey<Segwitv0> = derived_xprv
+        .into_descriptor_key(Some(origin), DerivationPath::default())
+        .unwrap();
+
+    let derived_xpub_desc_key = match derived_xprv_desc_key {
+        DescriptorKey::Public(_, _, _) => {
+            panic!("Can't get public descriptor")
+        }
+        Secret(desc_seckey, _, _) => desc_seckey.to_public(&secp).unwrap().to_string(),
+    };
+
+    CString::new(derived_xpub_desc_key).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_generate_xkey_with_entropy(entropy: *const u8) -> *const c_char {
+    let entropy_slice = std::slice::from_raw_parts(entropy, 32);
+    let entropy_arr = <[u8; 32]>::try_from(entropy_slice).unwrap();
+    let xkey: GeneratedKey<ExtendedPrivKey, miniscript::Segwitv0> =
+        bip32::ExtendedPrivKey::generate_with_entropy_default(entropy_arr).unwrap();
+
+    CString::new(xkey.to_string()).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_get_seed_from_entropy(
+    network: NetworkType,
+    entropy: *const u8,
+) -> Seed {
+    let secp = Secp256k1::new();
+
+    let entropy = std::slice::from_raw_parts(entropy, 16);
+
+    let mnemonic = Mnemonic::from_entropy(entropy).unwrap();
+    let mnemonic_string = mnemonic.to_string();
+
+    let xkey: ExtendedKey = mnemonic.into_extended_key().unwrap();
+    let xprv = xkey.into_xprv(network.into()).unwrap();
+
+    let fingerprint = xprv.fingerprint(&secp);
+
+    Seed {
+        mnemonic: CString::new(mnemonic_string).unwrap().into_raw(),
+        xprv: CString::new(xprv.to_string()).unwrap().into_raw(),
+        fingerprint: CString::new(fingerprint.to_string()).unwrap().into_raw(),
     }
 }
 
