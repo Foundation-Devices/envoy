@@ -148,6 +148,38 @@ typedef WalletValidateAddressRust = Uint8 Function(
 typedef WalletValidateAddressDart = int Function(
     Pointer<Uint8> wallet, Pointer<Utf8> address);
 
+typedef WalletGenerateSeedRust = NativeSeed Function(Uint16 network);
+typedef WalletGenerateSeedDart = NativeSeed Function(int network);
+
+typedef WalletGetSeedWordsRust = NativeSeed Function(Pointer<Uint8> seed);
+typedef WalletGetSeedWordsDart = NativeSeed Function(Pointer<Uint8> seed);
+
+typedef WalletGetXpubDescKeyRust = Pointer<Utf8> Function(
+    Pointer<Utf8> xprv, Pointer<Utf8> path);
+typedef WalletGetXpubDescKeyDart = Pointer<Utf8> Function(
+    Pointer<Utf8> xprv, Pointer<Utf8> path);
+
+typedef WalletGenerateSeedWithEntropyRust = Pointer<Utf8> Function(
+    Pointer<Uint8> entropy);
+typedef WalletGenerateSeedWithEntropyDart = Pointer<Utf8> Function(
+    Pointer<Uint8> entropy);
+
+typedef WalletSignOfflineRust = Pointer<Utf8> Function(
+    Pointer<Utf8> psbt,
+    Pointer<Utf8> externalDescriptor,
+    Pointer<Utf8> internalDescriptor,
+    Uint16 network);
+typedef WalletSignOfflineDart = Pointer<Utf8> Function(
+    Pointer<Utf8> psbt,
+    Pointer<Utf8> externalDescriptor,
+    Pointer<Utf8> internalDescriptor,
+    int network);
+
+typedef WalletSignPsbtRust = Pointer<Utf8> Function(
+    Pointer<Uint8> wallet, Pointer<Utf8> psbt);
+typedef WalletSignPsbtDart = Pointer<Utf8> Function(
+    Pointer<Uint8> wallet, Pointer<Utf8> psbt);
+
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
     return DynamicLibrary.open('lib$name.so');
@@ -521,5 +553,95 @@ class Wallet {
             1
         ? true
         : false;
+  }
+
+  static String signOffline(String psbt, String externalDescriptor,
+      String internalDescriptor, bool testnet) {
+    final lib = load(_libName);
+
+    final rustFunction = lib
+        .lookup<NativeFunction<WalletSignOfflineRust>>('wallet_sign_offline');
+    final dartFunction = rustFunction.asFunction<WalletSignOfflineDart>();
+
+    return dartFunction(
+        psbt.toNativeUtf8(),
+        externalDescriptor.toNativeUtf8(),
+        internalDescriptor.toNativeUtf8(),
+        testnet ? Network.Testnet.index : Network.Mainnet.index)
+        .cast<Utf8>()
+        .toDartString();
+  }
+
+  static String generateSeed(bool testnet) {
+    final lib = load(_libName);
+
+    final rustFunction = lib
+        .lookup<NativeFunction<WalletGenerateSeedRust>>('wallet_generate_seed');
+    final dartFunction = rustFunction.asFunction<WalletGenerateSeedDart>();
+
+    NativeSeed seed =
+    dartFunction(testnet ? Network.Testnet.index : Network.Mainnet.index);
+
+    final xprv = seed.xprv.cast<Utf8>().toDartString();
+    return xprv;
+  }
+
+  static String getSeedWords(List<int> binarySeed) {
+    final lib = load(_libName);
+
+    final rustFunction = lib
+        .lookup<NativeFunction<WalletGetSeedWordsRust>>('wallet_get_seed_words');
+    final dartFunction = rustFunction.asFunction<WalletGetSeedWordsDart>();
+
+    final Pointer<Uint8> messagePointer = malloc.allocate<Uint8>(32);
+    final pointerList = messagePointer.asTypedList(32);
+    pointerList.setAll(0, binarySeed);
+
+    NativeSeed seed =
+    dartFunction(messagePointer);
+
+    final xprv = seed.xprv.cast<Utf8>().toDartString();
+    return xprv;
+  }
+
+
+  static String getXpubDescKey(String xprv, String path) {
+    final lib = load(_libName);
+
+    final rustFunction = lib.lookup<NativeFunction<WalletGetXpubDescKeyRust>>(
+        'wallet_get_xpub_desc_key');
+    final dartFunction = rustFunction.asFunction<WalletGetXpubDescKeyDart>();
+
+    return dartFunction(xprv.toNativeUtf8(), path.toNativeUtf8())
+        .cast<Utf8>()
+        .toDartString();
+  }
+
+  static String generateXKeyWithEntropy(Uint8List entropy) {
+    final lib = load(_libName);
+
+    final rustFunction =
+    lib.lookup<NativeFunction<WalletGenerateSeedWithEntropyRust>>(
+        'wallet_generate_xkey_with_entropy');
+    final dartFunction =
+    rustFunction.asFunction<WalletGenerateSeedWithEntropyDart>();
+
+    final Pointer<Uint8> messagePointer = malloc.allocate<Uint8>(32);
+    final pointerList = messagePointer.asTypedList(32);
+    pointerList.setAll(0, entropy);
+
+    String seed = dartFunction(messagePointer).cast<Utf8>().toDartString();
+
+    malloc.free(messagePointer);
+    return seed;
+  }
+
+  Future<String> signPsbt(String psbt) async {
+    final rustFunction =
+    _lib.lookup<NativeFunction<WalletSignPsbtRust>>('wallet_sign_psbt');
+    final dartFunction = rustFunction.asFunction<WalletSignPsbtDart>();
+
+    return Future(() =>
+        dartFunction(_self, psbt.toNativeUtf8()).cast<Utf8>().toDartString());
   }
 }

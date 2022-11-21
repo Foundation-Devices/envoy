@@ -6,6 +6,8 @@ import 'dart:math';
 import 'dart:io';
 import 'package:flutter/services.dart';
 
+import 'package:wallet/wallet.dart';
+
 import 'local_storage.dart';
 
 const String SEED_KEY = "seed";
@@ -15,27 +17,28 @@ const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
 
 const int SECRET_LENGTH_BYTES = 16;
 
-class SecretsManager {
+class EnvoySeed {
   // 12 words == 128 + 4 == 132 (4 bits are checksum)
   // 128 bits == 16 bytes
   // Checksum is first 4 bits of SHA-256 of 16 bytes
 
   static const _platform = MethodChannel('envoy');
 
-  createSeed(List<int> seedOtp) async {
-    final entropy = await createLocalSecret();
-    final seed = xorBytes(seedOtp, entropy);
+  Future create() async {
+    final randomSeed = Wallet.generateSeed(true);
+    await saveNonSecure(randomSeed, LOCAL_SECRET_FILE_NAME);
+    _platform.invokeMethod('data_changed');
 
-    LocalStorage().saveSecure(SEED_KEY, seed.toString());
+    await LocalStorage().saveSecure(SEED_KEY, randomSeed);
   }
 
-  Future<List<int>?> getSeed() async {
+  Future<String?> restoreSecure() async {
     if (!await LocalStorage().containsSecure(SEED_KEY)) {
       return null;
     }
 
     final seed = await LocalStorage().readSecure(SEED_KEY);
-    return convert(seed!);
+    return seed!;
   }
 
   // TODO: a function to return a watch-only (temporary hot wallet to sign?)
@@ -50,16 +53,19 @@ class SecretsManager {
     return List.generate(first.length, (index) => first[index] ^ second[index]);
   }
 
-  Future<File> saveNonSecure(List<int> data, String name) async {
-    return LocalStorage().saveFile(name, data.toString());
+  Future<File> saveNonSecure(String data, String name) async {
+    return LocalStorage().saveFile(name, data);
   }
 
-  Future<List<int>> restoreNonSecure(String name) async {
-    String contents = await LocalStorage().readFile(name);
-    return convert(contents);
+  Future<String?> restoreNonSecure(String name) async {
+    if (!await LocalStorage().fileExists(name)) {
+      return null;
+    }
+
+    return await LocalStorage().readFile(name);
   }
 
-  List<int> convert(String contents) {
+  List<int> convertFromString(String contents) {
     // Dart doesn't do nice serialization so reverse .toString() manually
     List<String> values = contents
         .substring(1, contents.length - 1) // Get rid of enclosing []
@@ -73,18 +79,15 @@ class SecretsManager {
     _platform.invokeMethod('show_settings');
   }
 
-  Future<List<int>> createLocalSecret() async {
-    final localBytes = getRandomBytes(SECRET_LENGTH_BYTES);
-    await saveNonSecure(localBytes, LOCAL_SECRET_FILE_NAME);
-    _platform.invokeMethod('data_changed');
-    return localBytes;
-  }
-
-  Future<List<int>> getLocalSecret() async {
+  Future<String?> getLocal() async {
     return await restoreNonSecure(LOCAL_SECRET_FILE_NAME);
   }
 
-  Future<DateTime> getLocalSecretLastBackupTimestamp() async {
+  Future<DateTime?> getLocalSecretLastBackupTimestamp() async {
+    if (!await LocalStorage().fileExists(LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME)) {
+      return null;
+    }
+
     String timestampString = await LocalStorage()
         .readFile(LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME);
     int timestamp =
