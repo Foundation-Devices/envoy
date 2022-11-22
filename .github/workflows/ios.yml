@@ -2,39 +2,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Release
+name: iOS build
 
 on: workflow_dispatch
 
 jobs:
-  build-android:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: extractions/setup-just@v1
-
-      - uses: actions/checkout@v2
-
-      - name: Build APK and AAB
-        env:
-          KEY_JKS: ${{ secrets.KEY_JKS }}
-          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: envoy-apk
-          path: release/app-release.apk
-
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: envoy-aab
-          path: release/app-release.aab
-
   build-ios:
-    needs: build-android
     runs-on: macos-12
 
     steps:
@@ -105,4 +78,3 @@ jobs:
           APP_STORE_CONNECT_PASSWORD: ${{ secrets.APP_STORE_CONNECT_PASSWORD }}
         run: |
           xcrun altool --upload-app -t ios -f build/ios/ipa/envoy.ipa -u "$APP_STORE_CONNECT_USERNAME" -p "$APP_STORE_CONNECT_PASSWORD"
-
