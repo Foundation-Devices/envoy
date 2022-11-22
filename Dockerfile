@@ -43,7 +43,8 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     xvfb \
     xdotool \
-    x11-utils
+    x11-utils \
+    libstdc++-12-dev
 
 # Install Android SDK
 RUN update-java-alternatives --set /usr/lib/jvm/java-1.8.0-openjdk-amd64
