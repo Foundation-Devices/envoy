@@ -14,10 +14,10 @@
 		78CFC73E291BC26900A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3761427F831DC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC73F291BC26D00A3AFDC /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3761227F831D5005559E4 /* libtor_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC740291BC27000A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3761027F831CA005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760E27F831B4005559E4 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		78CFC743291BC27D00A3AFDC /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760A27F831A3005559E4 /* libtor_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760827F83192005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760E27F831B4005559E4 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78CFC743291BC27D00A3AFDC /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760A27F831A3005559E4 /* libtor_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760827F83192005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
