@@ -8,8 +8,10 @@
 set -e
 
 # iOS
-rustup target add aarch64-apple-ios
-cargo build --target=aarch64-apple-ios
+rustup install 1.64.0
+rustup +1.64.0 target add aarch64-apple-ios
+cargo +1.64.0 build --target=aarch64-apple-ios
+cargo +1.64.0 build --target=aarch64-apple-ios --release
 
 # iOS simulator
 # (This'll work when https://github.com/alexcrichton/openssl-src-rs/pull/131 is merged/released)
