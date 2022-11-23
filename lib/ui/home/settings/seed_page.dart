@@ -3,12 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-
 import 'package:envoy/business/envoy_seed.dart';
+import 'dart:io' show Platform;
 
 class SeedPage extends StatefulWidget {
   @override
@@ -34,6 +31,7 @@ class _SeedPageState extends State<SeedPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                Divider(),
                 AboutButton(
                   "(Re)create Seed",
                   onTap: () {
@@ -48,37 +46,41 @@ class _SeedPageState extends State<SeedPage> {
                     future: seed.getLocal(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return AboutText(snapshot.data == null ? "NULL" : snapshot.data!);
+                        return AboutText(
+                            snapshot.data == null ? "NULL" : snapshot.data!);
                       } else {
                         return SizedBox.shrink();
                       }
                     }),
                 Divider(),
-                AboutText("Last Backup"),
+                AboutText(Platform.isAndroid ? "Last Backup" : "Last Restore"),
                 FutureBuilder<DateTime?>(
                     future: seed.getLocalSecretLastBackupTimestamp(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return AboutText(snapshot.data == null ? "NULL" : snapshot.data!.toIso8601String());
+                        return AboutText(snapshot.data == null
+                            ? "NULL"
+                            : snapshot.data!.toIso8601String());
                       } else {
                         return SizedBox.shrink();
                       }
                     }),
+                if (Platform.isAndroid) Divider(),
+                if (Platform.isAndroid)
+                  AboutButton(
+                    "Backup Settings",
+                    onTap: () {
+                      seed.showSettingsMenu();
+                    },
+                  ),
                 Divider(),
-                AboutButton(
-                  "Backup Settings",
-                  onTap: () {
-                    seed.showSettingsMenu();
-                  },
-                ),
-                Divider(),
-
                 AboutText("Secure Element"),
                 FutureBuilder<String?>(
                     future: seed.restoreSecure(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return AboutText(snapshot.data == null ? "NULL" : snapshot.data!);
+                        return AboutText(
+                            snapshot.data == null ? "NULL" : snapshot.data!);
                       } else {
                         return SizedBox.shrink();
                       }
@@ -125,10 +127,10 @@ class AboutText extends StatelessWidget {
   final bool dark;
 
   const AboutText(
-      this.label, {
-        this.dark: false,
-        Key? key,
-      }) : super(key: key);
+    this.label, {
+    this.dark: false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

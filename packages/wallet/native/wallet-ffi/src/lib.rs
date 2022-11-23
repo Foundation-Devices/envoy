@@ -31,18 +31,20 @@ use bdk::bitcoin::consensus::encode::serialize;
 use std::ptr::null_mut;
 
 use crate::electrum_client::Client;
+use crate::miniscript::Segwitv0;
 use bdk::bitcoin::secp256k1::Secp256k1;
+use bdk::bitcoin::util::bip32;
+use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
+use bdk::keys::bip39::{Language, Mnemonic};
+use bdk::keys::DescriptorKey::Secret;
+use bdk::keys::{
+    DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
+};
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
-use bdk::bitcoin::util::bip32;
-use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
-use bdk::keys::bip39::{Language, Mnemonic};
-use bdk::keys::{DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey};
-use bdk::keys::DescriptorKey::Secret;
-use crate::miniscript::Segwitv0;
 
 #[repr(C)]
 pub enum NetworkType {
@@ -156,8 +158,6 @@ macro_rules! unwrap_or_return {
     };
 }
 
-
-
 #[no_mangle]
 pub unsafe extern "C" fn wallet_init(
     name: *const c_char,
@@ -181,7 +181,12 @@ pub unsafe extern "C" fn wallet_init(
     let db = unwrap_or_return!(sled::Tree::from_config(&db_conf), null_mut());
 
     let wallet = Mutex::new(unwrap_or_return!(
-        Wallet::new(external_descriptor, Some(internal_descriptor), network.into(), db),
+        Wallet::new(
+            external_descriptor,
+            Some(internal_descriptor),
+            network.into(),
+            db
+        ),
         null_mut()
     ));
 
@@ -374,7 +379,10 @@ pub unsafe extern "C" fn wallet_get_transactions(
     }
 }
 
-fn psbt_extract_details<T: BatchDatabase>(wallet: &Wallet<T>, psbt: &PartiallySignedTransaction) -> Psbt {
+fn psbt_extract_details<T: BatchDatabase>(
+    wallet: &Wallet<T>,
+    psbt: &PartiallySignedTransaction,
+) -> Psbt {
     let tx = psbt.clone().extract_tx();
     let raw_tx = serialize::<bdk::bitcoin::Transaction>(&tx).to_hex();
 
@@ -547,15 +555,13 @@ pub unsafe extern "C" fn wallet_sign_offline(
         network.into(),
         MemoryDatabase::new(),
     )
-        .unwrap();
+    .unwrap();
 
     let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
 
     match wallet.sign(&mut psbt, SignOptions::default()) {
-        Ok(_) => {
-            psbt_extract_details(&wallet, &psbt)
-        }
+        Ok(_) => psbt_extract_details(&wallet, &psbt),
         Err(e) => {
             update_last_error(e);
             error_return
@@ -583,9 +589,7 @@ pub unsafe extern "C" fn wallet_sign_psbt(
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
 
     match wallet.sign(&mut psbt, SignOptions::default()) {
-        Ok(_) => {
-            psbt_extract_details(&wallet, &psbt)
-        }
+        Ok(_) => psbt_extract_details(&wallet, &psbt),
         Err(e) => {
             update_last_error(e);
             error_return

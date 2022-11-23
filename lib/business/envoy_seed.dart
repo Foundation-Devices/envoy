@@ -85,7 +85,8 @@ class EnvoySeed {
   }
 
   Future<DateTime?> getLocalSecretLastBackupTimestamp() async {
-    if (!await LocalStorage().fileExists(LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME)) {
+    if (!await LocalStorage()
+        .fileExists(LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME)) {
       return null;
     }
 
