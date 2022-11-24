@@ -8,7 +8,7 @@ version: 0.0.1
 publish_to: 'none'
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
   flutter: ">=1.20.0"
 
 dependencies:
@@ -21,8 +21,26 @@ dependencies:
 
 
 dev_dependencies:
+  ffigen: ^6.0.0
   flutter_test:
     sdk: flutter
+
+ffigen:
+  output: 'lib/generated_bindings.dart'
+  llvm-path:
+    - '/usr/lib/llvm-14/lib/libclang.so.1'
+  globals:
+    exclude:
+      - _.*
+  structs:
+    exclude:
+      - _.*
+  functions:
+    include:
+      - http_.*
+  headers:
+    entry-points:
+      - 'native/http-ffi/target/http-ffi.hpp'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

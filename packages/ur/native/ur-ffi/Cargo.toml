@@ -18,3 +18,6 @@ ur = { git = "https://github.com/icota/ur-rs", rev = "e26f994d9dcdc0adfba3ad35c1
 [dependencies.getrandom]
 version = "0.2.3"
 features = ["js"]
+
+[build-dependencies]
+cbindgen = "0.24.3"

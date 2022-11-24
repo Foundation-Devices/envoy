@@ -21,6 +21,15 @@ rustup target add x86_64-unknown-linux-gnu
 # Compile for desktop
 cargo build
 
+# Generate Dart FFI for each package
+cd packages
+for package in *; do
+  cd "$package"
+  dart run ffigen
+  cd ..
+done
+cd ..
+
 # Compile for Android
 ./build_ffi_android.sh
 ./build_ffi_android_x86.sh

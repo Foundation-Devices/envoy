@@ -14,3 +14,6 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 libtor-sys = { git = "https://github.com/icota/libtor-sys", rev = "849a559dbdac17d04eb8ebe43db96c78e4bb9fd1", features = ["vendored-openssl"] }
+
+[build-dependencies]
+cbindgen = "0.24.3"

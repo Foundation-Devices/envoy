@@ -21,8 +21,26 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.0.0
   json_serializable: ^6.0.1
+  ffigen: ^6.0.0
   flutter_test:
     sdk: flutter
+
+ffigen:
+  output: 'lib/generated_bindings.dart'
+  llvm-path:
+    - '/usr/lib/llvm-14/lib/libclang.so.1'
+  globals:
+    exclude:
+      - _.*
+  structs:
+    exclude:
+      - _.*
+  functions:
+    include:
+      - wallet_.*
+  headers:
+    entry-points:
+      - 'native/wallet-ffi/target/wallet-ffi.hpp'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
