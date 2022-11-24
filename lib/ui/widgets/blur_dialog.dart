@@ -126,7 +126,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 
     _fade = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _controller!,
+        parent: _controller,
         curve: const Interval(
           0.4,
           1.0,
@@ -137,7 +137,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 
     _elevation = Tween(begin: 8.0, end: 2.0).animate(
       CurvedAnimation(
-        parent: _controller!,
+        parent: _controller,
         curve: const Interval(
           0.0,
           1.0,
@@ -151,7 +151,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   Animation<double>? createBlurFilterAnimation() {
     return Tween(begin: 0.0, end: blur).animate(
       CurvedAnimation(
-        parent: _controller!,
+        parent: _controller,
         curve: const Interval(
           0.0,
           0.35,
@@ -179,7 +179,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
             begin: Colors.transparent, end: blurColor.withOpacity(0.26))
         .animate(
       CurvedAnimation(
-        parent: _controller!,
+        parent: _controller,
         curve: const Interval(
           0.0,
           0.35,
