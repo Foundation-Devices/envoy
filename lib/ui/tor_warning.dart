@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
