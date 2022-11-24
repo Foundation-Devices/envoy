@@ -25,7 +25,7 @@ dev_dependencies:
 ffigen:
   output: 'lib/generated_bindings.dart'
   llvm-path:
-    - '/usr/lib/llvm-15'
+    - '/usr/lib/llvm-14/lib/libclang.so.1'
   globals:
     exclude:
       - _.*
