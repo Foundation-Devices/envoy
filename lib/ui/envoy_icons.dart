@@ -6,11 +6,16 @@ import 'package:flutter/widgets.dart';
 
 class EnvoyIcons {
   static const IconData accounts =
-      IconData(0x0041, fontFamily: 'EnvoyIcons'); // A
+      IconData(0xE903, fontFamily: 'EnvoyIcons');
   static const IconData devices =
-      IconData(0x0042, fontFamily: 'EnvoyIcons'); // B
+      IconData(0xE906, fontFamily: 'EnvoyIcons');
   static const IconData lightbulb =
-      IconData(0x0043, fontFamily: 'EnvoyIcons'); // C
+      IconData(0xE900, fontFamily: 'EnvoyIcons');
   static const IconData qr_scan =
-      IconData(0x0044, fontFamily: 'EnvoyIcons'); // D
+      IconData(0xE904, fontFamily: 'EnvoyIcons');
+  static const IconData copy_paste =
+      IconData(0xE902, fontFamily: 'EnvoyIcons');
+  static const IconData exclamation_warning =
+      IconData(0xE901, fontFamily: 'EnvoyIcons');
+
 }
