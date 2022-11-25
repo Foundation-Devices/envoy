@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _TorWarningState extends State<TorWarning> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline_outlined,
+                    Icon(EnvoyIcons.exclamation_warning,
                         color: EnvoyColors.darkCopper, size: 84),
                     RichText(
                       textAlign: TextAlign.center,
