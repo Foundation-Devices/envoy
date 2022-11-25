@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/envoy_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
@@ -74,11 +75,9 @@ class AddressEntry extends StatelessWidget {
                           InkWell(
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
-                              child: Image.asset(
-                                "assets/paste_icon.png",
+                              child: Icon(
+                                EnvoyIcons.copy_paste,
                                 color: EnvoyColors.darkTeal,
-                                width: 24,
-                                height: 24,
                               ),
                             ),
                             onTap: () async {
