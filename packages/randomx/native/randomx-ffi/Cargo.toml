@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[package]
+name = "randomx-ffi"
+version = "0.1.0"
+authors = ["Igor Cota <igor@foundationdevices.com>"]
+edition = "2018"
+
+[lib]
+name = "tor_ffi"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+randomx-rs = "1.1.9"
+
+[build-dependencies]
+cbindgen = "0.24.3"
