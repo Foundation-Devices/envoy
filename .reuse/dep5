@@ -55,6 +55,22 @@ Files: packages/wallet/lib/*.g.dart
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later
 
+Files: packages/wallet/lib/generated_bindings.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/ur/lib/generated_bindings.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/http_tor/lib/generated_bindings.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/tor/lib/generated_bindings.dart
+Copyright: 2022 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
 Files: lib/generated/*
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later

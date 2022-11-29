@@ -44,7 +44,9 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     xdotool \
     x11-utils \
-    libstdc++-12-dev
+    libstdc++-12-dev \
+    llvm-14 \
+    libclang1-14
 
 # Install Android SDK
 RUN update-java-alternatives --set /usr/lib/jvm/java-1.8.0-openjdk-amd64
