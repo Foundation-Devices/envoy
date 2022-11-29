@@ -62,14 +62,41 @@ class OnboardingPage extends StatelessWidget {
       return FutureBuilder<String>(
           future: qrCode,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.hasData) {
-              return QrImage(
-                data: snapshot.data!,
-                backgroundColor: Colors.transparent,
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
+            return Container(
+              height: 350,
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  !snapshot.hasData ? CircularProgressIndicator() : SizedBox(),
+                  snapshot.hasData
+                      ? Expanded(
+                          child: QrImage(
+                            size: 320,
+                            data: snapshot.data!,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        )
+                      : SizedBox(),
+                  snapshot.hasData
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: Text(
+                            snapshot.data!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(
+                                    fontWeight: FontWeight.w600, fontSize: 13),
+                          ),
+                        )
+                      : SizedBox()
+                ],
+              ),
+            );
           });
     }
 
