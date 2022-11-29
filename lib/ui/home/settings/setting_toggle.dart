@@ -10,9 +10,11 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 class SettingToggle extends StatefulWidget {
   final Function(bool) setter;
   final bool Function() getter;
+  final Color inactiveColor;
   final int delay;
 
-  SettingToggle(this.getter, this.setter, {this.delay: 0});
+  SettingToggle(this.getter, this.setter,
+      {this.delay: 0, this.inactiveColor = EnvoyColors.grey15});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
@@ -35,7 +37,7 @@ class _SettingToggleState extends State<SettingToggle> {
         value: _toggleValue,
         style: NeumorphicSwitchStyle(
             inactiveThumbColor: EnvoyColors.whitePrint,
-            inactiveTrackColor: EnvoyColors.grey15,
+            inactiveTrackColor: widget.inactiveColor,
             activeThumbColor: EnvoyColors.whitePrint,
             activeTrackColor: EnvoyColors.darkTeal,
             disableDepth: true),
