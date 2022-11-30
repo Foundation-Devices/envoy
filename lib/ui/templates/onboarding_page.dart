@@ -73,24 +73,25 @@ class OnboardingPage extends StatelessWidget {
                   !snapshot.hasData ? CircularProgressIndicator() : SizedBox(),
                   snapshot.hasData
                       ? Expanded(
-                          child: QrImage(
-                            size: 320,
-                            data: snapshot.data!,
-                            backgroundColor: Colors.transparent,
+                          child: Center(
+                            child: QrImage(
+                              data: snapshot.data!,
+                              backgroundColor: Colors.transparent,
+                            ),
                           ),
                         )
                       : SizedBox(),
                   snapshot.hasData
                       ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 8),
+                          padding: const EdgeInsets.symmetric()
+                              .add(EdgeInsets.only(bottom: 48, top: 22)),
                           child: Text(
                             snapshot.data!,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2
                                 ?.copyWith(
-                                    fontWeight: FontWeight.w600, fontSize: 13),
+                                    fontWeight: FontWeight.w600, fontSize: 12),
                           ),
                         )
                       : SizedBox()
