@@ -15,7 +15,7 @@ use std::cell::RefCell;
 use std::error::Error;
 
 use bdk::bitcoin::{Address, Network};
-use bdk::blockchain::ElectrumBlockchain;
+use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::ConfigurableDatabase;
 use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
@@ -203,9 +203,7 @@ pub unsafe extern "C" fn wallet_sync(
 
     let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), ());
 
-    let client = unwrap_or_return!(get_electrum_client(tor_port, electrum_address), ());
-    let blockchain = ElectrumBlockchain::from(client);
-
+    let blockchain = unwrap_or_return!(get_electrum_blockchain(tor_port, electrum_address), ());
     unwrap_or_return!(wallet.sync(&blockchain, SyncOptions { progress: None }), ());
 }
 
@@ -215,6 +213,39 @@ unsafe fn get_wallet_mutex(wallet: *mut Mutex<Wallet<Tree>>) -> &'static mut Mut
         &mut *wallet
     };
     wallet
+}
+
+fn get_electrum_blockchain_config(
+    tor_port: i32,
+    electrum_address: &str,
+) -> ElectrumBlockchainConfig {
+    if tor_port > 0 {
+        ElectrumBlockchainConfig {
+            url: electrum_address.parse().unwrap(),
+            socks5: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
+            retry: 0,
+            timeout: None,
+            stop_gap: 50,
+            validate_domain: false,
+        }
+    } else {
+        ElectrumBlockchainConfig {
+            url: electrum_address.parse().unwrap(),
+            socks5: None,
+            retry: 0,
+            timeout: Some(5),
+            stop_gap: 50,
+            validate_domain: false,
+        }
+    }
+}
+
+fn get_electrum_blockchain(
+    tor_port: i32,
+    electrum_address: &str,
+) -> Result<ElectrumBlockchain, bdk::Error> {
+    let config = get_electrum_blockchain_config(tor_port, electrum_address);
+    ElectrumBlockchain::from_config(&config)
 }
 
 fn get_electrum_client(
