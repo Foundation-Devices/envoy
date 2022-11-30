@@ -101,62 +101,71 @@ class EnvoyToastState extends State<EnvoyToast> {
             constraints:
                 BoxConstraints(minWidth: MediaQuery.of(context).size.width),
             child: Row(
-              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                widget.icon != null
-                    ? IconButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        onPressed: null,
-                        icon: widget.icon!,
-                      )
-                    : SizedBox(width: 14.0),
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(left: 18, right: 6),
+                  child: widget.icon ?? Container(),
+                ),
                 Expanded(
-                    child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      child: Text(
-                        widget.message ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.white),
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(2)),
-                    InkWell(
-                      onTap: widget.onActionTap,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.actionButtonText ?? "",
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text(
+                            widget.message ?? "",
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
-                                ?.copyWith(color: EnvoyColors.darkTeal)),
+                                ?.copyWith(color: Colors.white, fontSize: 11),
+                          ),
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: 24,
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: InkWell(
+                          onTap: widget.onActionTap,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text(widget.actionButtonText ?? "",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        color: EnvoyColors.darkTeal,
+                                        fontSize: 11)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: 28,
                       width: 1,
-                      margin: EdgeInsets.only(right: 2),
                       child: VerticalDivider(
                         thickness: 1,
-                        color: Colors.white24,
+                        color: Colors.white,
                       ),
                     ),
+                    IconButton(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      onPressed: () {
+                        widget.envoyToastRoute.navigator?.pop();
+                      },
+                      icon: Icon(Icons.close, color: Colors.white),
+                    ),
                   ],
-                )),
-                IconButton(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  onPressed: () {
-                    widget.envoyToastRoute.navigator?.pop();
-                  },
-                  icon: Icon(Icons.close, color: Colors.white),
                 ),
               ],
             ),
