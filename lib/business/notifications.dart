@@ -63,6 +63,7 @@ class Notifications {
 
   add(EnvoyNotification notification) {
     notifications.add(notification);
+    notifications.sort((a, b) => b.date.compareTo(a.date));
     _storeNotifications();
     unread++;
   }
@@ -138,6 +139,7 @@ class Notifications {
 
       for (var notification in jsonMap["notifications"]) {
         notifications.add(EnvoyNotification.fromJson(notification));
+        notifications.sort((a, b) => b.date.compareTo(a.date));
       }
     }
 
