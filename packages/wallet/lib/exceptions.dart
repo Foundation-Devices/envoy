@@ -60,8 +60,8 @@ throwRustException(DynamicLibrary lib) {
 }
 
 String _lastErrorMessage(DynamicLibrary lib) {
-  final rustFunction =
-      lib.lookup<NativeFunction<LastErrorMessageRust>>('last_error_message');
+  final rustFunction = lib.lookup<NativeFunction<LastErrorMessageRust>>(
+      'wallet_last_error_message');
   final dartFunction = rustFunction.asFunction<LastErrorMessageDart>();
 
   return dartFunction().cast<Utf8>().toDartString();
