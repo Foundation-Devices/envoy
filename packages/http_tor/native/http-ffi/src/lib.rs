@@ -62,7 +62,7 @@ pub fn take_last_error() -> Option<Box<dyn Error>> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn last_error_message() -> *const c_char {
+pub unsafe extern "C" fn http_last_error_message() -> *const c_char {
     let last_error = match take_last_error() {
         Some(err) => err,
         None => return CString::new("").unwrap().into_raw(),
