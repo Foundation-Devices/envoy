@@ -40,22 +40,14 @@ class IndicatorShieldState extends State<IndicatorShield>
       }
     });
 
-    _connectivityStream = ConnectivityManager()
-        .events
-        .stream
-        .listen((ConnectivityManagerEvent event) {
-      // Update UI on Tor status changes
-      if (event == ConnectivityManagerEvent.TorStatusChange) {
-        setState(() {
-          _currentShield = _determineShield();
-        });
-
-        _checkIfNeedAnimate();
-
-        _currentShield = _determineShield();
-        _checkIfNeedAnimate();
-      }
+    _connectivityStream = ConnectivityManager().events.stream.listen((_) {
+      // Update UI on connectivity changes
+      setState(() {
+        _updateShield();
+      });
     });
+
+    _updateShield();
   }
 
   void _checkIfNeedAnimate() {
@@ -67,29 +59,29 @@ class IndicatorShieldState extends State<IndicatorShield>
     }
   }
 
+  void _updateShield() {
+    _currentShield = _determineShield();
+    _checkIfNeedAnimate();
+  }
+
   Widget _determineShield() {
-    if (!ConnectivityManager().torEnabled) {
+    if (!ConnectivityManager().torEnabled ||
+        ConnectivityManager().torTemporarilyDisabled) {
       // No shield
       return SizedBox.shrink(key: UniqueKey());
     } else {
-      if (ConnectivityManager().torCircuitEstablished) {
-        // Same image as below until we decide on all the colours/states
-        return Image.asset(
-          "assets/indicator_shield_teal.png",
-          key: UniqueKey(),
-        );
-      } else {
-        if (ConnectivityManager().usingDefaultServer) {
-          return Image.asset(
-            "assets/indicator_shield_teal.png",
-            key: UniqueKey(),
-          );
-        }
+      if (!ConnectivityManager().usingDefaultServer &&
+          !ConnectivityManager().electrumConnected) {
         return Image.asset(
           "assets/indicator_shield_red.png",
           key: UniqueKey(),
         );
       }
+
+      return Image.asset(
+        "assets/indicator_shield_teal.png",
+        key: UniqueKey(),
+      );
     }
   }
 

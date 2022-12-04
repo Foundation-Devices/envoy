@@ -6,7 +6,11 @@ import 'dart:async';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
-enum ConnectivityManagerEvent { TorStatusChange, TorConnectedDoesntWork }
+enum ConnectivityManagerEvent {
+  TorStatusChange,
+  TorConnectedDoesntWork,
+  ElectrumUnreachable
+}
 
 class ConnectivityManager {
   bool get torEnabled {
@@ -20,7 +24,7 @@ class ConnectivityManager {
   bool get torCircuitEstablished => Tor().circuitEstablished;
   bool get usingDefaultServer => Settings().usingDefaultElectrumServer;
 
-  bool electrumConnected = false;
+  bool electrumConnected = true;
   bool nguConnected = false;
 
   bool torTemporarilyDisabled = false;
@@ -46,6 +50,15 @@ class ConnectivityManager {
       // Nudge listeners
       events.add(ConnectivityManagerEvent.TorStatusChange);
     });
+  }
+
+  electrumSuccess() {
+    electrumConnected = true;
+  }
+
+  electrumFailure() {
+    electrumConnected = false;
+    events.add(ConnectivityManagerEvent.ElectrumUnreachable);
   }
 
   nguSuccess() {

@@ -64,6 +64,11 @@ class AccountManager extends ChangeNotifier {
                   Tor().port)
               .then((changed) {
             if (changed != null) {
+              // Let ConnectivityManager know that we've synced
+              if (account.wallet.network == Network.Mainnet) {
+                ConnectivityManager().electrumSuccess();
+              }
+
               // This does away with amounts "ghosting" in UI
               if (account.initialSyncCompleted == false) {
                 account.initialSyncCompleted = true;
@@ -80,6 +85,11 @@ class AccountManager extends ChangeNotifier {
               }
 
               storeAccounts();
+            }
+          }, onError: (_) {
+            // Let ConnectivityManager know that we can't reach Electrum
+            if (account.wallet.network == Network.Mainnet) {
+              ConnectivityManager().electrumFailure();
             }
           });
         }
