@@ -231,8 +231,12 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                                 right: 2.0),
                                                         child: Text(
                                                           " FW " +
-                                                              UpdatesManager()
-                                                                  .getStoredFwVersion()!,
+                                                              (fwUpdateAvailable
+                                                                  ? UpdatesManager()
+                                                                      .getStoredFwVersion()!
+                                                                  : widget
+                                                                      .device
+                                                                      .firmwareVersion),
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
