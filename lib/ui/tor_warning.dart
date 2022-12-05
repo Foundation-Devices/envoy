@@ -111,6 +111,7 @@ class _TorWarningState extends State<TorWarning> {
                   light: true,
                   onTap: () {
                     ConnectivityManager().torTemporarilyDisabled = true;
+                    Navigator.of(context).pop();
                   },
                 ),
                 Padding(
