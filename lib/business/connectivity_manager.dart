@@ -9,7 +9,8 @@ import 'package:envoy/business/settings.dart';
 enum ConnectivityManagerEvent {
   TorStatusChange,
   TorConnectedDoesntWork,
-  ElectrumUnreachable
+  ElectrumUnreachable,
+  ElectrumReachable
 }
 
 class ConnectivityManager {
@@ -54,6 +55,7 @@ class ConnectivityManager {
 
   electrumSuccess() {
     electrumConnected = true;
+    events.add(ConnectivityManagerEvent.ElectrumReachable);
   }
 
   electrumFailure() {
