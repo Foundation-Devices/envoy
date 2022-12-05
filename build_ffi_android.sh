@@ -15,5 +15,3 @@ rustup install 1.64.0
 rustup +1.64.0 target add aarch64-linux-android
 cargo +1.64.0 build --target=aarch64-linux-android
 cargo +1.64.0 build --target=aarch64-linux-android --release
-
-cargo build --target=aarch64-linux-android
