@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -386,7 +387,10 @@ class Wallet {
       }
 
       return changed;
-    }).timeout(Duration(seconds: 30));
+    }).timeout(Duration(seconds: 30), onTimeout: () {
+      _currentlySyncing = false;
+      throw TimeoutException;
+    });
   }
 
   Future<Psbt> createPsbt(String sendTo, int amount, double feeRate) async {
