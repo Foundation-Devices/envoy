@@ -338,6 +338,8 @@ class Wallet {
     map['tor_port'] = torPort;
 
     return compute(_sync, map).then((var walletState) {
+      _currentlySyncing = false;
+
       if (walletState == null) {
         throw Exception("Couldn't sync");
       }
@@ -383,7 +385,6 @@ class Wallet {
         feeRateSlow = walletState["feeRateSlow"];
       }
 
-      _currentlySyncing = false;
       return changed;
     }).timeout(Duration(seconds: 30));
   }
