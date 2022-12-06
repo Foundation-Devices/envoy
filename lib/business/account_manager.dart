@@ -63,27 +63,29 @@ class AccountManager extends ChangeNotifier {
               .sync(Settings().electrumAddress(account.wallet.network),
                   Tor().port)
               .then((changed) {
-            // Let ConnectivityManager know that we've synced
-            if (account.wallet.network == Network.Mainnet) {
-              ConnectivityManager().electrumSuccess();
+            if (changed != null) {
+              // Let ConnectivityManager know that we've synced
+              if (account.wallet.network == Network.Mainnet) {
+                ConnectivityManager().electrumSuccess();
+              }
+
+              // This does away with amounts "ghosting" in UI
+              if (account.initialSyncCompleted == false) {
+                account.initialSyncCompleted = true;
+                notifyListeners();
+              }
+
+              // Update the Fees singleton
+              Fees().electrumFastRate = account.wallet.feeRateFast;
+              Fees().electrumSlowRate = account.wallet.feeRateSlow;
+
+              // Notify UI if txs or balance changed
+              if (changed) {
+                notifyListeners();
+              }
+
+              storeAccounts();
             }
-
-            // This does away with amounts "ghosting" in UI
-            if (account.initialSyncCompleted == false) {
-              account.initialSyncCompleted = true;
-              notifyListeners();
-            }
-
-            // Update the Fees singleton
-            Fees().electrumFastRate = account.wallet.feeRateFast;
-            Fees().electrumSlowRate = account.wallet.feeRateSlow;
-
-            // Notify UI if txs or balance changed
-            if (changed) {
-              notifyListeners();
-            }
-
-            storeAccounts();
           }, onError: (_) {
             // Let ConnectivityManager know that we can't reach Electrum
             if (account.wallet.network == Network.Mainnet) {

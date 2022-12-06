@@ -214,6 +214,7 @@ class Wallet {
   static late DynamicLibrary _lib;
 
   Pointer<Uint8> _self = nullptr;
+  bool _currentlySyncing = false;
 
   final String name;
   final String externalDescriptor;
@@ -323,7 +324,13 @@ class Wallet {
   }
 
   // Returns true if there have been changes
-  Future<bool> sync(String electrumAddress, int torPort) async {
+  Future<bool?> sync(String electrumAddress, int torPort) async {
+    if (_currentlySyncing) {
+      return null;
+    }
+
+    _currentlySyncing = true;
+
     // Unfortunately we need to pass maps onto computes if there is more than one arg
     Map map = Map();
     map['wallet_pointer'] = _self.address;
@@ -376,6 +383,7 @@ class Wallet {
         feeRateSlow = walletState["feeRateSlow"];
       }
 
+      _currentlySyncing = false;
       return changed;
     }).timeout(Duration(seconds: 30));
   }
