@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:http_tor/http_tor.dart';
@@ -108,15 +109,12 @@ class ExchangeRate extends ChangeNotifier {
         final json = jsonDecode(response.body);
         var rate = json['reply']['BTC' + currencyCode]["last"];
         _storeRate(rate, currencyCode);
+        ConnectivityManager().nguSuccess();
       } else {
         throw Exception("Couldn't get exchange rate");
       }
     }, onError: (_) {
-      // ENV-175
-      if (Tor().enabled) {
-        print("Restarting Tor");
-        Tor().restart();
-      }
+      ConnectivityManager().nguFailure();
     });
   }
 
