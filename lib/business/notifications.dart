@@ -104,12 +104,7 @@ class Notifications {
   }
 
   deleteFromAccount(Account account) {
-    for (var notification in notifications) {
-      if (notification.walletName != null &&
-          notification.walletName == account.wallet.name) {
-        notifications.remove(notification);
-      }
-    }
+    notifications.removeWhere((element) => element.walletName == account.name);
   }
 
   //ignore:unused_element
