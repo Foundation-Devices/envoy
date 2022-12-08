@@ -16,19 +16,11 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  EnvoyNotificationType? _notificationType;
-
   @override
   Widget build(BuildContext context) {
     double _topOffset = MediaQuery.of(context).padding.top;
     //double _appBarHeight = AppBar().preferredSize.height;
     double _paddingTop = _topOffset + 10;
-
-    var n = Notifications().notifications;
-    List<EnvoyNotification> filtered = _notificationType == null
-        ? n
-        : n.where((element) => element.type == _notificationType).toList();
-    filtered.sort((a, b) => b.date.compareTo(a.date));
 
     return Consumer(
       builder: (context, ref, _) {
