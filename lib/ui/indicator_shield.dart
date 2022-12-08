@@ -5,6 +5,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/settings.dart';
 
 class IndicatorShield extends StatefulWidget {
   @override
@@ -46,8 +48,6 @@ class IndicatorShieldState extends State<IndicatorShield>
         _updateShield();
       });
     });
-
-    _updateShield();
   }
 
   void _checkIfNeedAnimate() {
@@ -93,11 +93,15 @@ class IndicatorShieldState extends State<IndicatorShield>
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-        opacity: ConnectivityManager().torCircuitEstablished
-            ? 1.0
-            : _circuitEstablishingAnimation.value,
-        child: AnimatedSwitcher(
-            duration: Duration(seconds: 1), child: _currentShield));
+    return Consumer(builder: (context, ref, _) {
+      ref.watch(settingsProvider);
+      _updateShield();
+      return Opacity(
+          opacity: ConnectivityManager().torCircuitEstablished
+              ? 1.0
+              : _circuitEstablishingAnimation.value,
+          child: AnimatedSwitcher(
+              duration: Duration(seconds: 1), child: _currentShield));
+    });
   }
 }

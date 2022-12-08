@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -118,11 +119,13 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
       _state = ElectrumServerEntryState.pending;
     });
     Wallet.getServerFeatures(address, Tor().port).then((features) {
+      ConnectivityManager().electrumSuccess();
       setState(() {
         _state = ElectrumServerEntryState.valid;
         _textBelow = "Connected to " + features.serverVersion;
       });
     }, onError: (e) {
+      ConnectivityManager().electrumFailure();
       if (e is InvalidPort) {
         print("Your port is invalid");
       }
