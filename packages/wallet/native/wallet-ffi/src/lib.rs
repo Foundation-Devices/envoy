@@ -116,7 +116,7 @@ pub fn take_last_error() -> Option<Box<dyn Error>> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn last_error_message() -> *const c_char {
+pub unsafe extern "C" fn wallet_last_error_message() -> *const c_char {
     let last_error = match take_last_error() {
         Some(err) => err,
         None => return CString::new("").unwrap().into_raw(),
@@ -198,13 +198,19 @@ pub unsafe extern "C" fn wallet_sync(
     wallet: *mut Mutex<Wallet<Tree>>,
     electrum_address: *const c_char,
     tor_port: i32,
-) {
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), ());
+) -> bool {
+    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), false);
 
-    let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), ());
+    let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), false);
 
-    let blockchain = unwrap_or_return!(get_electrum_blockchain(tor_port, electrum_address), ());
-    unwrap_or_return!(wallet.sync(&blockchain, SyncOptions { progress: None }), ());
+    let blockchain = unwrap_or_return!(get_electrum_blockchain(tor_port, electrum_address), false);
+    unwrap_or_return!(
+        wallet.sync(&blockchain, SyncOptions { progress: None }),
+        false
+    );
+
+    // Successful sync
+    true
 }
 
 unsafe fn get_wallet_mutex(wallet: *mut Mutex<Wallet<Tree>>) -> &'static mut Mutex<Wallet<Tree>> {

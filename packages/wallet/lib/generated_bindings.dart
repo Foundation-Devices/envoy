@@ -18,6 +18,16 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
+  ffi.Pointer<ffi.Char> wallet_last_error_message() {
+    return _wallet_last_error_message();
+  }
+
+  late final _wallet_last_error_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'wallet_last_error_message');
+  late final _wallet_last_error_message = _wallet_last_error_messagePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function()>();
+
   ffi.Pointer<ffi.Int> wallet_init(
     ffi.Pointer<ffi.Char> name,
     ffi.Pointer<ffi.Char> external_descriptor,
@@ -79,7 +89,7 @@ class NativeLibrary {
   late final _wallet_get_address = _wallet_get_addressPtr
       .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Int>)>();
 
-  void wallet_sync(
+  bool wallet_sync(
     ffi.Pointer<ffi.Int> wallet,
     ffi.Pointer<ffi.Char> electrum_address,
     int tor_port,
@@ -93,10 +103,10 @@ class NativeLibrary {
 
   late final _wallet_syncPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>,
+          ffi.Bool Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>,
               ffi.Int32)>>('wallet_sync');
   late final _wallet_sync = _wallet_syncPtr.asFunction<
-      void Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>, int)>();
+      bool Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>, int)>();
 
   int wallet_get_balance(
     ffi.Pointer<ffi.Int> wallet,

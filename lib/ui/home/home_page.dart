@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -20,6 +22,11 @@ import 'package:envoy/ui/envoy_icons.dart';
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/pages/onboarding_welcome_page.dart';
+
+import 'package:envoy/ui/tor_warning.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -104,6 +111,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }));
       }
     });
+
+    // Home is there for the lifetime of the app so no need to dispose stream
+    ConnectivityManager().events.stream.listen((event) {
+      // If Tor is broken surface a warning
+      if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
+        _notifyAboutTor();
+      }
+    });
+  }
+
+  _notifyAboutTor() {
+    EnvoyToast(
+      backgroundColor: Colors.lightBlue,
+      message: "Issue establishing Tor connectivity",
+      icon: Icon(
+        Icons.error_outline_rounded,
+        color: EnvoyColors.darkCopper,
+      ),
+      actionButtonText: "Learn More",
+      onActionTap: () {
+        Navigator.pop(context);
+        showBlurDialog(dialog: TorWarning(), context: context);
+      },
+    ).show(context);
   }
 
   void _toggleSettings() {
