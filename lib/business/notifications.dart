@@ -36,19 +36,18 @@ class EnvoyNotification {
   Map<String, dynamic> toJson() => _$EnvoyNotificationToJson(this);
 }
 
-//all notification as stream provider
 final notificationStreamProvider = StreamProvider<List<EnvoyNotification>>(
     (ref) => Notifications().getNotificationsStream());
 
 // filter state provider for notifications
 final notificationTypeFilterProvider =
-    StateProvider<EnvoyNotificationType?>((ref) => null);
+    StateProvider.autoDispose<EnvoyNotificationType?>((ref) => null);
 
 // order provider for notification sort. 0 for descending, 1 for ascending
 final notificationOrderProvider = StateProvider<int>((ref) => 1);
 
 final filteredNotificationStreamProvider =
-    Provider<List<EnvoyNotification>>((ref) {
+    Provider.autoDispose<List<EnvoyNotification>>((ref) {
   List<EnvoyNotification> notifications =
       ref.watch(notificationStreamProvider).valueOrNull ?? [];
   EnvoyNotificationType? filter = ref.watch(notificationTypeFilterProvider);
