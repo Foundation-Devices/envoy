@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:tor/tor.dart';
@@ -73,40 +74,42 @@ class MyApp extends StatelessWidget {
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
-    return NeumorphicApp(
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false,
-        title: 'Envoy',
-        themeMode: ThemeMode.light,
-        materialTheme: ThemeData(
-          pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+    return ProviderScope(
+      child: NeumorphicApp(
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          debugShowCheckedModeBanner: false,
+          title: 'Envoy',
+          themeMode: ThemeMode.light,
+          materialTheme: ThemeData(
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+            }),
+            primaryColor: envoyAccentColor,
+            brightness: Brightness.light,
+            textTheme: envoyTextTheme,
+            scaffoldBackgroundColor: envoyBaseColor,
+          ),
+          theme: NeumorphicThemeData(
+            textTheme: envoyTextTheme,
+            baseColor: envoyBaseColor,
+            accentColor: envoyAccentColor,
+            variantColor: envoyVariantColor,
+            depth: 0, // Flat for now
+          ),
+          initialRoute: "/",
+          routes: {
+            '/': (context) => HomePage(),
           }),
-          primaryColor: envoyAccentColor,
-          brightness: Brightness.light,
-          textTheme: envoyTextTheme,
-          scaffoldBackgroundColor: envoyBaseColor,
-        ),
-        theme: NeumorphicThemeData(
-          textTheme: envoyTextTheme,
-          baseColor: envoyBaseColor,
-          accentColor: envoyAccentColor,
-          variantColor: envoyVariantColor,
-          depth: 0, // Flat for now
-        ),
-        initialRoute: "/",
-        routes: {
-          '/': (context) => HomePage(),
-        });
+    );
   }
 }
