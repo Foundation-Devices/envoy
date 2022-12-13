@@ -9,8 +9,11 @@ class EnvoyButton extends StatelessWidget {
   final String label;
   final Function()? onTap;
   final bool light;
+  final BorderRadius? borderRadius;
+  final Color? backgroundColor;
 
-  EnvoyButton(this.label, {this.onTap, this.light: false});
+  EnvoyButton(this.label,
+      {this.onTap, this.light: false, this.borderRadius, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +22,17 @@ class EnvoyButton extends StatelessWidget {
       child: Container(
           height: 40.0,
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: light
-                      ? [EnvoyColors.grey15, EnvoyColors.grey15]
-                      : [EnvoyColors.teal, EnvoyColors.darkTeal]),
-              borderRadius: BorderRadius.all(Radius.circular(13.0))),
+              color: this.backgroundColor,
+              gradient: backgroundColor == null
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: light
+                          ? [EnvoyColors.grey15, EnvoyColors.grey15]
+                          : [EnvoyColors.teal, EnvoyColors.darkTeal])
+                  : null,
+              borderRadius:
+                  this.borderRadius ?? BorderRadius.all(Radius.circular(13.0))),
           child: Center(
               child: Text(
             label,
