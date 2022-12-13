@@ -18,27 +18,34 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
-  bool tor_start(
-    ffi.Pointer<ffi.Char> conf_path,
+  RandomXHash randomx_get(
+    int difficulty,
   ) {
-    return _tor_start(
-      conf_path,
+    return _randomx_get(
+      difficulty,
     );
   }
 
-  late final _tor_startPtr =
-      _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<ffi.Char>)>>(
-          'tor_start');
-  late final _tor_start =
-      _tor_startPtr.asFunction<bool Function(ffi.Pointer<ffi.Char>)>();
+  late final _randomx_getPtr =
+      _lookup<ffi.NativeFunction<RandomXHash Function(ffi.Uint32)>>(
+          'randomx_get');
+  late final _randomx_get =
+      _randomx_getPtr.asFunction<RandomXHash Function(int)>();
 
-  void tor_hello() {
-    return _tor_hello();
+  void randomx_hello() {
+    return _randomx_hello();
   }
 
-  late final _tor_helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('tor_hello');
-  late final _tor_hello = _tor_helloPtr.asFunction<void Function()>();
+  late final _randomx_helloPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function()>>('randomx_hello');
+  late final _randomx_hello = _randomx_helloPtr.asFunction<void Function()>();
+}
+
+class RandomXHash extends ffi.Struct {
+  @ffi.Uint32()
+  external int len;
+
+  external ffi.Pointer<ffi.Uint8> data;
 }
 
 const int __GNUC_VA_LIST = 1;

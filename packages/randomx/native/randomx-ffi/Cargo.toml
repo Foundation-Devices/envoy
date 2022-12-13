@@ -9,11 +9,12 @@ authors = ["Igor Cota <igor@foundationdevices.com>"]
 edition = "2018"
 
 [lib]
-name = "tor_ffi"
+name = "randomx_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 randomx-rs = "1.1.9"
+rand = "0.8.5"
 
 [build-dependencies]
 cbindgen = "0.24.3"

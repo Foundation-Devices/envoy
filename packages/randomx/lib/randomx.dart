@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'package:ffi/ffi.dart';
+import 'generated_bindings.dart';
 
 
 DynamicLibrary load(name) {
@@ -27,5 +28,9 @@ class NotSupportedPlatform implements Exception {
 }
 
 class RandomX {
+  static mineMonero(int difficulty) {
+    var lib = NativeLibrary(load("randomx_ffi"));
+    lib.randomx_get(difficulty);
+  }
 
 }

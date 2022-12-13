@@ -238,6 +238,110 @@ class NativeLibrary {
   late final _wallet_validate_address = _wallet_validate_addressPtr
       .asFunction<bool Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>)>();
 
+  Psbt wallet_sign_offline(
+    ffi.Pointer<ffi.Char> psbt,
+    ffi.Pointer<ffi.Char> external_descriptor,
+    ffi.Pointer<ffi.Char> internal_descriptor,
+    int network,
+  ) {
+    return _wallet_sign_offline(
+      psbt,
+      external_descriptor,
+      internal_descriptor,
+      network,
+    );
+  }
+
+  late final _wallet_sign_offlinePtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, ffi.Int32)>>('wallet_sign_offline');
+  late final _wallet_sign_offline = _wallet_sign_offlinePtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>, int)>();
+
+  Psbt wallet_sign_psbt(
+    ffi.Pointer<ffi.Int> wallet,
+    ffi.Pointer<ffi.Char> psbt,
+  ) {
+    return _wallet_sign_psbt(
+      wallet,
+      psbt,
+    );
+  }
+
+  late final _wallet_sign_psbtPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Int>,
+              ffi.Pointer<ffi.Char>)>>('wallet_sign_psbt');
+  late final _wallet_sign_psbt = _wallet_sign_psbtPtr
+      .asFunction<Psbt Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>)>();
+
+  Seed wallet_generate_seed(
+    int network,
+  ) {
+    return _wallet_generate_seed(
+      network,
+    );
+  }
+
+  late final _wallet_generate_seedPtr =
+      _lookup<ffi.NativeFunction<Seed Function(ffi.Int32)>>(
+          'wallet_generate_seed');
+  late final _wallet_generate_seed =
+      _wallet_generate_seedPtr.asFunction<Seed Function(int)>();
+
+  ffi.Pointer<ffi.Char> wallet_get_xpub_desc_key(
+    ffi.Pointer<ffi.Char> xprv,
+    ffi.Pointer<ffi.Char> path,
+  ) {
+    return _wallet_get_xpub_desc_key(
+      xprv,
+      path,
+    );
+  }
+
+  late final _wallet_get_xpub_desc_keyPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_get_xpub_desc_key');
+  late final _wallet_get_xpub_desc_key =
+      _wallet_get_xpub_desc_keyPtr.asFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
+  ffi.Pointer<ffi.Char> wallet_generate_xkey_with_entropy(
+    ffi.Pointer<ffi.Uint8> entropy,
+  ) {
+    return _wallet_generate_xkey_with_entropy(
+      entropy,
+    );
+  }
+
+  late final _wallet_generate_xkey_with_entropyPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Uint8>)>>('wallet_generate_xkey_with_entropy');
+  late final _wallet_generate_xkey_with_entropy =
+      _wallet_generate_xkey_with_entropyPtr
+          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Uint8>)>();
+
+  Seed wallet_get_seed_from_entropy(
+    int network,
+    ffi.Pointer<ffi.Uint8> entropy,
+  ) {
+    return _wallet_get_seed_from_entropy(
+      network,
+      entropy,
+    );
+  }
+
+  late final _wallet_get_seed_from_entropyPtr = _lookup<
+          ffi.NativeFunction<Seed Function(ffi.Int32, ffi.Pointer<ffi.Uint8>)>>(
+      'wallet_get_seed_from_entropy');
+  late final _wallet_get_seed_from_entropy = _wallet_get_seed_from_entropyPtr
+      .asFunction<Seed Function(int, ffi.Pointer<ffi.Uint8>)>();
+
   void wallet_hello() {
     return _wallet_hello();
   }
@@ -308,6 +412,14 @@ class Psbt extends ffi.Struct {
   external ffi.Pointer<ffi.Char> txid;
 
   external ffi.Pointer<ffi.Char> raw_tx;
+}
+
+class Seed extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> mnemonic;
+
+  external ffi.Pointer<ffi.Char> xprv;
+
+  external ffi.Pointer<ffi.Char> fingerprint;
 }
 
 const int __GNUC_VA_LIST = 1;

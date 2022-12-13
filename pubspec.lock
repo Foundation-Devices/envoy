@@ -777,6 +777,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  randomx:
+    dependency: "direct main"
+    description:
+      path: "packages/randomx"
+      relative: true
+    source: path
+    version: "0.0.1"
   share_plus:
     dependency: "direct main"
     description:
