@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 class EnvoyDialog extends StatelessWidget {
-  final Widget? title;
+  final String? title;
   final Widget? content;
   final List<Widget>? actions;
 
@@ -13,18 +13,46 @@ class EnvoyDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25.0))),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
-        buttonPadding: EdgeInsets.zero,
-        titlePadding: EdgeInsets.only(left: 25, right: 25, bottom: 10, top: 20),
-        contentPadding:
-            EdgeInsets.only(left: 25, right: 25, bottom: 10, top: 10),
-        actionsPadding:
-            EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
-        title: title,
-        content: content,
-        actions: actions);
+    return Container(
+      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      constraints: BoxConstraints(
+        minHeight: 270,
+        maxWidth: MediaQuery.of(context).size.width * 0.80,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Align(
+            alignment: Alignment.centerRight.add(Alignment(.1, 0)),
+            child: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 28),
+            child: Text(this.title ?? '',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24)),
+          ),
+          Padding(padding: EdgeInsets.all(8)),
+          content ?? Container(),
+          Padding(padding: EdgeInsets.all(12)),
+          ...actions?.map((widget) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: widget,
+                );
+              }).toList() ??
+              [],
+        ],
+      ),
+    );
   }
 }
