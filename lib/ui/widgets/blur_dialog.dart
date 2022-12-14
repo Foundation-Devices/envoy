@@ -15,12 +15,12 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   Color blurColor;
   bool dismissible;
 
-  Widget dialogWidget;
+  Builder builder;
   late AnimationController _controller;
   Animation<Alignment>? _animation;
 
   BlurDialogRoute({
-    required this.dialogWidget,
+    required this.builder,
     RouteSettings? settings,
     this.blur = 6,
     this.blurColor = Colors.black,
@@ -62,7 +62,9 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
                           elevation: _elevation?.value,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
-                          child: dialogWidget),
+                          child: Builder(
+                            builder: this.builder.build,
+                          )),
                     ),
                   ),
                 ),
@@ -131,7 +133,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
       ),
     );
 
-    _elevation = Tween(begin: 8.0, end: 2.0).animate(
+    _elevation = Tween(begin: 0.0, end: 12.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(
@@ -217,16 +219,18 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   }
 }
 
-Future<T?> showBlurDialog<T>(
+// Shows a dialog with a blur background
+Future<T?> showEnvoyDialog<T>(
     {required BuildContext context,
     Color blurColor = Colors.black38,
     double blur = 6,
     routeSettings,
-    required Widget dialog,
+    Widget? dialog,
+    Builder? builder,
     bool dismissible = true}) async {
   var route = BlurDialogRoute<T>(
-      dialogWidget: dialog,
       blur: blur,
+      builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
       blurColor: blurColor,
       dismissible: dismissible,
       settings: routeSettings);

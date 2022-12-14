@@ -7,8 +7,9 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 class TextEntry extends StatelessWidget {
   final _controller = TextEditingController();
   get enteredText => _controller.text;
+  final FocusNode? focusNode;
 
-  TextEntry({String placeholder: ""}) {
+  TextEntry({String placeholder: "", this.focusNode}) {
     _controller.text = placeholder;
   }
 
@@ -22,6 +23,7 @@ class TextEntry extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextFormField(
+              focusNode: focusNode,
               controller: _controller,
               validator: (value) {
                 return null;
