@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       actionButtonText: "Learn More",
       onActionTap: () {
         EnvoyToast.dismissPreviousToasts(context);
-        showBlurDialog(dialog: TorWarning(), context: context);
+        showEnvoyDialog(dialog: TorWarning(), context: context);
       },
     ).show(context);
   }

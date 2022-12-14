@@ -39,7 +39,7 @@ class FwIntroPage extends StatelessWidget {
             label: "Continue",
             onTap: () {
               if (UpdatesManager().getStoredFwVersion() == null) {
-                showBlurDialog(
+                showEnvoyDialog(
                     dialog: FwWarning(
                       tryNow: () {
                         // TODO: some kind of spinner here?
