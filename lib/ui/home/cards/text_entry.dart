@@ -2,14 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class TextEntry extends StatelessWidget {
   final _controller = TextEditingController();
   get enteredText => _controller.text;
   final FocusNode? focusNode;
+  final int? maxLength;
 
-  TextEntry({String placeholder: "", this.focusNode}) {
+  TextEntry({String placeholder: "", this.focusNode, this.maxLength}) {
     _controller.text = placeholder;
   }
 
@@ -25,6 +27,7 @@ class TextEntry extends StatelessWidget {
           child: TextFormField(
               focusNode: focusNode,
               controller: _controller,
+              maxLength: this.maxLength,
               validator: (value) {
                 return null;
               },
