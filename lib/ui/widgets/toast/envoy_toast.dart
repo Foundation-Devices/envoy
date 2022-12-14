@@ -59,6 +59,12 @@ class EnvoyToast<T> extends StatefulWidget {
         .push(envoyToastRoute as Route<T>);
   }
 
+  // clear all previous toasts overlays
+  static dismissPreviousToasts(BuildContext context) {
+    Navigator.of(context, rootNavigator: false)
+        .popUntil((route) => route.settings.name != ENVY_TOAST_ROUTE);
+  }
+
   @override
   State<StatefulWidget> createState() => EnvoyToastState();
 }
