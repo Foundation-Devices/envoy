@@ -286,6 +286,7 @@ class AccountOptions extends StatelessWidget {
                 builder: (context) {
                   var textEntry = TextEntry(
                     focusNode: focusNode,
+                    maxLength: 20,
                     placeholder: account.name,
                   );
                   if (!isKeyboardShown) {
