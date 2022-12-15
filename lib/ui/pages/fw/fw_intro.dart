@@ -29,7 +29,7 @@ class FwIntroPage extends StatelessWidget {
             text: S().envoy_fw_intro_subheading,
             onTap: () {
               launchUrlString(
-                  "https://github.com/Foundation-Devices/passport-firmware/releases");
+                  "https://github.com/Foundation-Devices/passport2/releases");
             })
       ],
       navigationDots: 3,
