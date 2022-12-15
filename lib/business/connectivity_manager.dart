@@ -13,6 +13,8 @@ enum ConnectivityManagerEvent {
   ElectrumReachable
 }
 
+const Duration _tempDisablementTimeout = Duration(hours: 24);
+
 class ConnectivityManager {
   bool get torEnabled {
     if (torTemporarilyDisabled) {
@@ -28,12 +30,27 @@ class ConnectivityManager {
   bool electrumConnected = true;
   bool nguConnected = false;
 
-  bool torTemporarilyDisabled = false;
+  DateTime? torTemporarilyDisabledTimeStamp;
 
   final StreamController<ConnectivityManagerEvent> events =
       StreamController.broadcast();
 
   static final ConnectivityManager _instance = ConnectivityManager._internal();
+
+  //Checks if the timeout has expired and if so, resets the temporary disablement
+  bool get torTemporarilyDisabled {
+    if (torTemporarilyDisabledTimeStamp != null &&
+        torTemporarilyDisabledTimeStamp!.isAfter(DateTime.now())) {
+      return true;
+    }
+    torTemporarilyDisabledTimeStamp = null;
+    return false;
+  }
+
+  set torTemporarilyDisabled(bool value) {
+    torTemporarilyDisabledTimeStamp =
+        value ? DateTime.now().add(_tempDisablementTimeout) : null;
+  }
 
   factory ConnectivityManager() {
     return _instance;
