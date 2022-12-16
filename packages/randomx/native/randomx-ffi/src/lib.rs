@@ -20,11 +20,31 @@ pub struct RandomXHash {
     data: *const u8,
 }
 
+
+// 1. GET backup_challenge
+
+// 2. JSON
+ // input -- random data
+ // key -- string
+ // difficulty -- int
+ // timestamp -- utc timedate
+ // signature -- input + key + difficulty + timestamp
+
+// 3. JSON
+ // input
+ // key
+ // difficulty
+ // timestamp
+ // signature
+ // proof --> 640 byte
+ // backup data --> ? bytes --> upsert
+
+
 #[no_mangle]
 pub unsafe extern "C" fn randomx_get(difficulty: u32) -> RandomXHash {
     //println!("{}",difficulty);
 
-    let chunks = 20;
+    let chunks = 4;
 
     let handles: Vec<JoinHandle<String>> = (0..chunks).map(|i| {
         let builder =
@@ -37,8 +57,8 @@ pub unsafe extern "C" fn randomx_get(difficulty: u32) -> RandomXHash {
             let key = "envoy";
             let input = rand::thread_rng().gen::<[u8; 16]>();
             let cache = RandomXCache::new(flags, key.as_bytes()).unwrap();
-            let dataset = RandomXDataset::new(flags, &cache, 0).unwrap();
-            let vm = RandomXVM::new(flags, Some(&cache), Some(&dataset)).unwrap();
+            let dataset = RandomXDataset::new(flags, cache.clone(), 0).unwrap();
+            let vm = RandomXVM::new(flags, Some(cache.clone()), Some(dataset)).unwrap();
 
             let mut i: u128 = 0;
 

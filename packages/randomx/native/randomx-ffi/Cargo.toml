@@ -13,7 +13,7 @@ name = "randomx_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-randomx-rs = "1.1.9"
+randomx-rs = {path = "/home/igor/Code/randomx-rs"}
 rand = "0.8.5"
 
 [build-dependencies]

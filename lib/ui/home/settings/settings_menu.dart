@@ -8,6 +8,7 @@ import 'package:envoy/ui/home/settings/support_page.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:randomx/randomx.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
@@ -98,6 +99,19 @@ class SettingsMenuWidget extends StatelessWidget {
                     label: "Seed",
                     onTap: () {
                       callback(SeedPage());
+                    },
+                  ),
+                  SizedBox(height: 50),
+                  MenuOption(
+                    label: "PoW",
+                    onTap: () {
+                      for(int i = 1; i < 100000000; i++) {
+                        var difficulty = 4290000000 + i;
+                        var stopwatch = Stopwatch()..start();
+                        RandomX.mineMonero(difficulty);
+                        print('Diffi: $difficulty, all hashes found in ${stopwatch.elapsed}');
+                      }
+                      //callback(SeedPage());
                     },
                   ),
                 ]),
