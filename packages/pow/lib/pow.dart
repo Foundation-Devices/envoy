@@ -27,10 +27,10 @@ class NotSupportedPlatform implements Exception {
   NotSupportedPlatform(String s);
 }
 
-class RandomX {
-  static mineMonero(int difficulty) {
-    var lib = NativeLibrary(load("randomx_ffi"));
-    lib.randomx_get(difficulty);
+class Pow {
+  static solve(int difficulty) {
+    var lib = NativeLibrary(load("pow_ffi"));
+    lib.pow_get(difficulty);
   }
 
 }

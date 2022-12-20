@@ -41,8 +41,8 @@ dependencies:
     path: packages/http_tor
   wallet:
     path: packages/wallet
-  randomx:
-    path: packages/randomx
+  pow:
+    path: packages/pow
 
 
   # qr_code_scanner fork

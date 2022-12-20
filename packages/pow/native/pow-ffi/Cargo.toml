@@ -3,18 +3,18 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [package]
-name = "randomx-ffi"
+name = "pow-ffi"
 version = "0.1.0"
 authors = ["Igor Cota <igor@foundationdevices.com>"]
 edition = "2018"
 
 [lib]
-name = "randomx_ffi"
+name = "pow_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-randomx-rs = {path = "/home/igor/Code/randomx-rs"}
-rand = "0.8.5"
+rand = {version = "0.8.5", features = ["min_const_gen"]}
+crypto-hashes = "0.10.0"
 
 [build-dependencies]
 cbindgen = "0.24.3"

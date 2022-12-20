@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: randomx
-description: A Flutter plugin for performing RandomX proof-of-work
+name: pow
+description: A Flutter plugin for performing proof-of-work
 version: 0.0.1
 homepage:
 
@@ -36,10 +36,10 @@ ffigen:
       - _.*
   functions:
     include:
-      - randomx_.*
+      - pow_.*
   headers:
     entry-points:
-      - 'native/randomx-ffi/target/randomx-ffi.hpp'
+      - 'native/pow-ffi/target/pow-ffi.hpp'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
