@@ -14,3 +14,4 @@ const struct CharArray *ur_decoder_receive(char *decoder, const char *value);
 void tor_hello();
 void http_hello();
 void wallet_hello();
+void pow_hello();
