@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:math';
-
 import 'package:test/test.dart';
 import 'package:pow/pow.dart';
 

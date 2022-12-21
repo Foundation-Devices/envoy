@@ -34,6 +34,15 @@ ffigen:
   structs:
     exclude:
       - _.*
+  unions:
+    exclude:
+      - _.*
+  enums:
+    exclude:
+      - _.*
+  macros:
+    exclude:
+      - _.*
   functions:
     include:
       - pow_.*

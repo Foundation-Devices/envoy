@@ -2,11 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:async';
-import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
-import 'package:ffi/ffi.dart';
 import 'generated_bindings.dart';
 
 
