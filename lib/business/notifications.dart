@@ -44,7 +44,7 @@ final notificationTypeFilterProvider =
     StateProvider.autoDispose<EnvoyNotificationType?>((ref) => null);
 
 // order provider for notification sort. 0 for descending, 1 for ascending
-final notificationOrderProvider = StateProvider<int>((ref) => 1);
+final notificationOrderProvider = StateProvider<int>((ref) => 0);
 
 final filteredNotificationStreamProvider =
     Provider.autoDispose<List<EnvoyNotification>>((ref) {
