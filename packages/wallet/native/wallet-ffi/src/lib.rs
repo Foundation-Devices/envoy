@@ -33,7 +33,6 @@ use std::ptr::null_mut;
 use crate::electrum_client::Client;
 use crate::miniscript::Segwitv0;
 use bdk::bitcoin::secp256k1::Secp256k1;
-use bdk::bitcoin::util::bip32;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
 use bdk::keys::bip39::{Language, Mnemonic};
