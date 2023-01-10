@@ -88,8 +88,10 @@ class ConnectivityManager {
     nguConnected = false;
 
     // TODO: consider having a counter of times we have failed?
-    restartTor();
-    events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
+    if (torEnabled) {
+      restartTor();
+      events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
+    }
   }
 
   restartTor() {
