@@ -5,6 +5,7 @@
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +23,8 @@ LocalStorage ls = LocalStorage();
 enum Environment { local, development, staging, production }
 
 enum DisplayUnit { btc, sat }
+
+final settingsProvider = ChangeNotifierProvider((ref) => Settings());
 
 @JsonSerializable()
 class Settings extends ChangeNotifier {
@@ -95,6 +98,7 @@ class Settings extends ChangeNotifier {
 
   useDefaultElectrumServer(bool enabled) {
     usingDefaultElectrumServer = enabled;
+    notifyListeners();
   }
 
   bool customElectrumEnabled() {

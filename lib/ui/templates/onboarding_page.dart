@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -13,7 +14,6 @@ import 'dart:typed_data';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -62,14 +62,42 @@ class OnboardingPage extends StatelessWidget {
       return FutureBuilder<String>(
           future: qrCode,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.hasData) {
-              return QrImage(
-                data: snapshot.data!,
-                backgroundColor: Colors.transparent,
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
+            return Container(
+              height: 350,
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  !snapshot.hasData ? CircularProgressIndicator() : SizedBox(),
+                  snapshot.hasData
+                      ? Expanded(
+                          child: Center(
+                            child: QrImage(
+                              data: snapshot.data!,
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+                  snapshot.hasData
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric()
+                              .add(EdgeInsets.only(bottom: 48, top: 22)),
+                          child: Text(
+                            snapshot.data!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(
+                                    fontWeight: FontWeight.w600, fontSize: 12),
+                          ),
+                        )
+                      : SizedBox()
+                ],
+              ),
+            );
           });
     }
 
@@ -97,7 +125,8 @@ class OnboardingPage extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(Tor().enabled && !Tor().circuitEstablished
+                        child: Text(ConnectivityManager().torEnabled &&
+                                !ConnectivityManager().torCircuitEstablished
                             ? S().envoy_video_player_connecting_tor
                             : S().envoy_video_player_loading_tor),
                       )

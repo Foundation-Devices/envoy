@@ -18,6 +18,16 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
+  ffi.Pointer<ffi.Char> http_last_error_message() {
+    return _http_last_error_message();
+  }
+
+  late final _http_last_error_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'http_last_error_message');
+  late final _http_last_error_message = _http_last_error_messagePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function()>();
+
   void http_get_file_cancel(
     ffi.Pointer<ffi.Int> handle,
   ) {

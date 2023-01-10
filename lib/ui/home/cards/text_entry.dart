@@ -7,8 +7,10 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 class TextEntry extends StatelessWidget {
   final _controller = TextEditingController();
   get enteredText => _controller.text;
+  final FocusNode? focusNode;
+  final int? maxLength;
 
-  TextEntry({String placeholder: ""}) {
+  TextEntry({String placeholder: "", this.focusNode, this.maxLength}) {
     _controller.text = placeholder;
   }
 
@@ -22,7 +24,9 @@ class TextEntry extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextFormField(
+              focusNode: focusNode,
               controller: _controller,
+              maxLength: this.maxLength,
               validator: (value) {
                 return null;
               },

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -105,9 +106,9 @@ typedef WalletDropDart = Pointer<Utf8> Function(Pointer<Uint8> wallet);
 typedef WalletGetAddressRust = Pointer<Utf8> Function(Pointer<Uint8> wallet);
 typedef WalletGetAddressDart = Pointer<Utf8> Function(Pointer<Uint8> wallet);
 
-typedef WalletSyncRust = Void Function(
+typedef WalletSyncRust = Bool Function(
     Pointer<Uint8> wallet, Pointer<Utf8> electrumAddress, Int32 torPort);
-typedef WalletSyncDart = void Function(
+typedef WalletSyncDart = bool Function(
     Pointer<Uint8> wallet, Pointer<Utf8> electrumAddress, int torPort);
 
 typedef WalletGetBalanceRust = Uint64 Function(Pointer<Uint8> wallet);
@@ -284,11 +285,15 @@ class Wallet {
         lib.lookup<NativeFunction<WalletSyncRust>>('wallet_sync');
     final dartFunction = rustFunction.asFunction<WalletSyncDart>();
 
-    dartFunction(
+    bool synced = dartFunction(
       Pointer.fromAddress(walletPtr),
       electrumAddress.toNativeUtf8(),
       torPort,
     );
+
+    if (!synced) {
+      return null;
+    }
 
     var balance = _getBalance(walletPtr);
 
@@ -366,6 +371,12 @@ class Wallet {
     map['tor_port'] = torPort;
 
     return compute(_sync, map).then((var walletState) {
+      _currentlySyncing = false;
+
+      if (walletState == null) {
+        throw Exception("Couldn't sync");
+      }
+
       bool changed = false;
 
       if (balance != walletState["balance"]) {
@@ -407,9 +418,11 @@ class Wallet {
         feeRateSlow = walletState["feeRateSlow"];
       }
 
-      _currentlySyncing = false;
       return changed;
-    }).timeout(Duration(seconds: 30));
+    }).timeout(Duration(seconds: 30), onTimeout: () {
+      _currentlySyncing = false;
+      throw TimeoutException;
+    });
   }
 
   Future<Psbt> createPsbt(String sendTo, int amount, double feeRate) async {

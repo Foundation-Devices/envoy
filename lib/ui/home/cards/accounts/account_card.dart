@@ -5,6 +5,7 @@
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/amount.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -14,6 +15,7 @@ import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -276,39 +278,40 @@ class AccountOptions extends StatelessWidget {
           ),
           onTap: () {
             navigator!.hideOptions();
-            showDialog(
+            FocusNode focusNode = FocusNode();
+            bool isKeyboardShown = false;
+            showEnvoyDialog(
               context: context,
-              builder: (BuildContext context) {
-                var textEntry = TextEntry(
-                  placeholder: account.name,
-                );
-                return EnvoyDialog(
-                  title: Text(S().envoy_account_rename),
-                  content: textEntry,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        S().component_cancel.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkCopper),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        AccountManager()
-                            .renameAccount(account, textEntry.enteredText);
-                        Navigator.pop(context);
-                      },
-                      child: Text(
+              dialog: Builder(
+                builder: (context) {
+                  var textEntry = TextEntry(
+                    focusNode: focusNode,
+                    maxLength: 20,
+                    placeholder: account.name,
+                  );
+                  if (!isKeyboardShown) {
+                    Future.delayed(Duration(milliseconds: 200)).then((value) {
+                      FocusScope.of(context).requestFocus(focusNode);
+                    });
+                    isKeyboardShown = true;
+                  }
+                  return EnvoyDialog(
+                    title: S().envoy_account_rename,
+                    content: textEntry,
+                    actions: [
+                      EnvoyButton(
                         S().component_save.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkTeal),
+                        light: false,
+                        onTap: () {
+                          AccountManager()
+                              .renameAccount(account, textEntry.enteredText);
+                          Navigator.pop(context);
+                        },
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             );
           },
         ),
@@ -320,37 +323,24 @@ class AccountOptions extends StatelessWidget {
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             navigator!.hideOptions();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return EnvoyDialog(
-                  title: Text(S().envoy_account_delete_are_you_sure),
+            showEnvoyDialog(
+                context: context,
+                dialog: EnvoyDialog(
+                  title: S().envoy_account_delete_are_you_sure,
                   content: Text(S().envoy_account_delete_explainer),
                   actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        S().component_cancel.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkCopper),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
+                    EnvoyButton(
+                      S().component_delete.toUpperCase(),
+                      light: false,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      onTap: () {
                         AccountManager().deleteAccount(account);
                         navigator!.pop();
                         Navigator.pop(context);
                       },
-                      child: Text(
-                        S().component_delete.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkTeal),
-                      ),
                     ),
                   ],
-                );
-              },
-            );
+                ));
           },
         ),
       ],

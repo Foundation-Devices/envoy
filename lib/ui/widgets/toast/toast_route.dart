@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 enum EnvoyToastRouteStatus { SHOWING, DISMISSED, IS_APPEARING, IS_HIDING }
 
 typedef ToastStatusCallback = void Function(EnvoyToastRouteStatus? status);
+const String ENVY_TOAST_ROUTE = "./envoy_toast";
 
 class EnvoyToastRoute<T> extends OverlayRoute<T> {
   final EnvoyToast envoy;
@@ -315,6 +316,6 @@ EnvoyToastRoute showToast<T>(
     {required BuildContext context, required EnvoyToast toast}) {
   return EnvoyToastRoute<T>(
     envoy: toast,
-    settings: const RouteSettings(name: "./envoy_toast"),
+    settings: const RouteSettings(name: ENVY_TOAST_ROUTE),
   );
 }

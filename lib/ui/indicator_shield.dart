@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:tor/tor.dart';
+import 'package:envoy/business/connectivity_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/settings.dart';
 
 class IndicatorShield extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class IndicatorShield extends StatefulWidget {
 
 class IndicatorShieldState extends State<IndicatorShield>
     with SingleTickerProviderStateMixin {
-  late StreamSubscription _torStream;
+  late StreamSubscription _connectivityStream;
   Widget _currentShield = SizedBox.shrink();
   late AnimationController _circuitEstablishingAnimationController;
   late Animation<double> _circuitEstablishingAnimation;
@@ -41,60 +42,66 @@ class IndicatorShieldState extends State<IndicatorShield>
       }
     });
 
-    _torStream = Tor().events.stream.listen((event) {
-      // Update UI on Tor changes
+    _connectivityStream = ConnectivityManager().events.stream.listen((_) {
+      // Update UI on connectivity changes
       setState(() {
-        _currentShield = _determineShield();
+        _updateShield();
       });
-
-      _checkIfNeedAnimate();
     });
-
-    _currentShield = _determineShield();
-    _checkIfNeedAnimate();
   }
 
   void _checkIfNeedAnimate() {
-    if (Tor().enabled && !Tor().circuitEstablished) {
+    if (ConnectivityManager().torEnabled &&
+        !ConnectivityManager().torCircuitEstablished) {
       _circuitEstablishingAnimationController.forward();
     } else {
       _circuitEstablishingAnimationController.stop();
     }
   }
 
+  void _updateShield() {
+    _currentShield = _determineShield();
+    _checkIfNeedAnimate();
+  }
+
   Widget _determineShield() {
-    if (!Tor().enabled) {
+    if (!ConnectivityManager().torEnabled ||
+        ConnectivityManager().torTemporarilyDisabled) {
       // No shield
       return SizedBox.shrink(key: UniqueKey());
     } else {
-      if (Tor().circuitEstablished) {
-        // Same image as below until we decide on all the colours/states
+      if (!ConnectivityManager().usingDefaultServer &&
+          !ConnectivityManager().electrumConnected) {
         return Image.asset(
-          "assets/indicator_shield_teal.png",
-          key: UniqueKey(),
-        );
-      } else {
-        return Image.asset(
-          "assets/indicator_shield_teal.png",
+          "assets/indicator_shield_red.png",
           key: UniqueKey(),
         );
       }
+
+      return Image.asset(
+        "assets/indicator_shield_teal.png",
+        key: UniqueKey(),
+      );
     }
   }
 
   @override
   void dispose() {
-    _torStream.cancel();
+    _connectivityStream.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-        opacity: Tor().circuitEstablished
-            ? 1.0
-            : _circuitEstablishingAnimation.value,
-        child: AnimatedSwitcher(
-            duration: Duration(seconds: 1), child: _currentShield));
+    return Consumer(builder: (context, ref, _) {
+      ref.watch(settingsProvider);
+      _updateShield();
+      return Opacity(
+          opacity: ConnectivityManager().torCircuitEstablished
+              ? 1.0
+              : _circuitEstablishingAnimation.value,
+          child: AnimatedSwitcher(
+              duration: Duration(seconds: 1), child: _currentShield));
+    });
   }
 }

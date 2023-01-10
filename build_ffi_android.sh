@@ -7,9 +7,11 @@
 # Exit if anything fails
 set -e
 
-# Add Android toolchain
-rustup target add aarch64-linux-android
-
 # Required for Cargo to build libtor-sys
 export PATH=$PATH:$ANDROID_SDK_ROOT/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/
-cargo build --target=aarch64-linux-android
+
+# Use specific Rust version
+rustup install 1.64.0
+rustup +1.64.0 target add aarch64-linux-android
+cargo +1.64.0 build --target=aarch64-linux-android
+cargo +1.64.0 build --target=aarch64-linux-android --release

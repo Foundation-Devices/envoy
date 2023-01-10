@@ -16,7 +16,7 @@ use std::convert::TryFrom;
 use std::error::Error;
 
 use bdk::bitcoin::{Address, Network};
-use bdk::blockchain::ElectrumBlockchain;
+use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::{BatchDatabase, ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
@@ -136,7 +136,7 @@ pub fn take_last_error() -> Option<Box<dyn Error>> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn last_error_message() -> *const c_char {
+pub unsafe extern "C" fn wallet_last_error_message() -> *const c_char {
     let last_error = match take_last_error() {
         Some(err) => err,
         None => return CString::new("").unwrap().into_raw(),
@@ -216,15 +216,19 @@ pub unsafe extern "C" fn wallet_sync(
     wallet: *mut Mutex<Wallet<Tree>>,
     electrum_address: *const c_char,
     tor_port: i32,
-) {
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), ());
+) -> bool {
+    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), false);
 
-    let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), ());
+    let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), false);
 
-    let client = unwrap_or_return!(get_electrum_client(tor_port, electrum_address), ());
-    let blockchain = ElectrumBlockchain::from(client);
+    let blockchain = unwrap_or_return!(get_electrum_blockchain(tor_port, electrum_address), false);
+    unwrap_or_return!(
+        wallet.sync(&blockchain, SyncOptions { progress: None }),
+        false
+    );
 
-    unwrap_or_return!(wallet.sync(&blockchain, SyncOptions { progress: None }), ());
+    // Successful sync
+    true
 }
 
 unsafe fn get_wallet_mutex(wallet: *mut Mutex<Wallet<Tree>>) -> &'static mut Mutex<Wallet<Tree>> {
@@ -233,6 +237,39 @@ unsafe fn get_wallet_mutex(wallet: *mut Mutex<Wallet<Tree>>) -> &'static mut Mut
         &mut *wallet
     };
     wallet
+}
+
+fn get_electrum_blockchain_config(
+    tor_port: i32,
+    electrum_address: &str,
+) -> ElectrumBlockchainConfig {
+    if tor_port > 0 {
+        ElectrumBlockchainConfig {
+            url: electrum_address.parse().unwrap(),
+            socks5: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
+            retry: 0,
+            timeout: None,
+            stop_gap: 50,
+            validate_domain: false,
+        }
+    } else {
+        ElectrumBlockchainConfig {
+            url: electrum_address.parse().unwrap(),
+            socks5: None,
+            retry: 0,
+            timeout: Some(5),
+            stop_gap: 50,
+            validate_domain: false,
+        }
+    }
+}
+
+fn get_electrum_blockchain(
+    tor_port: i32,
+    electrum_address: &str,
+) -> Result<ElectrumBlockchain, bdk::Error> {
+    let config = get_electrum_blockchain_config(tor_port, electrum_address);
+    ElectrumBlockchain::from_config(&config)
 }
 
 fn get_electrum_client(
@@ -667,8 +704,8 @@ pub unsafe extern "C" fn wallet_get_xpub_desc_key(
 pub unsafe extern "C" fn wallet_generate_xkey_with_entropy(entropy: *const u8) -> *const c_char {
     let entropy_slice = std::slice::from_raw_parts(entropy, 32);
     let entropy_arr = <[u8; 32]>::try_from(entropy_slice).unwrap();
-    let xkey: GeneratedKey<ExtendedPrivKey, miniscript::Segwitv0> =
-        bip32::ExtendedPrivKey::generate_with_entropy_default(entropy_arr).unwrap();
+    let xkey: GeneratedKey<ExtendedPrivKey, Segwitv0> =
+        ExtendedPrivKey::generate_with_entropy_default(entropy_arr).unwrap();
 
     CString::new(xkey.to_string()).unwrap().into_raw()
 }

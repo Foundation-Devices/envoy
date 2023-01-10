@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -10,14 +9,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TorWarning extends StatefulWidget {
-  const TorWarning({Key? key}) : super(key: key);
+class FwWarning extends StatefulWidget {
+  const FwWarning({Key? key, required this.tryNow, required this.tryLater})
+      : super(key: key);
+
+  final Function tryNow;
+  final Function tryLater;
 
   @override
-  State<TorWarning> createState() => _TorWarningState();
+  State<FwWarning> createState() => _FwWarningState();
 }
 
-class _TorWarningState extends State<TorWarning> {
+class _FwWarningState extends State<FwWarning> {
   @override
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme.bodyText2?.copyWith(
@@ -63,35 +66,18 @@ class _TorWarningState extends State<TorWarning> {
                       children: [
                         TextSpan(
                           text:
-                              "Envoy is unable to establish a connection due to ongoing Tor network ",
-                        ),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              launchUrl(
-                                  Uri.parse("https://status.torproject.org"),
-                                  mode: LaunchMode.externalApplication);
-                            },
-                          style: linkStyle,
-                          text: "disruptions",
-                        ),
-                        TextSpan(
-                          text:
-                              ".\n\n Disabling Tor will establish a direct connection with the Envoy server, but comes with privacy ",
+                              "Sorry, we can’t get the firmware update right now.\n\n",
                         ),
                         TextSpan(
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(
                                   Uri.parse(
-                                      "https://docs.foundationdevices.com/envoy/tor"),
+                                      "https://github.com/Foundation-Devices/passport2/releases"),
                                   mode: LaunchMode.externalApplication);
                             },
                           style: linkStyle,
-                          text: "tradeoffs",
-                        ),
-                        TextSpan(
-                          text: ".",
+                          text: "Download from GitHub",
                         ),
                       ],
                     ),
@@ -107,20 +93,19 @@ class _TorWarningState extends State<TorWarning> {
               //Temporarily Disable Tor
               children: [
                 EnvoyButton(
-                  "Temporarily Disable Tor",
+                  "Try again later",
                   light: true,
                   onTap: () {
-                    ConnectivityManager().torTemporarilyDisabled = true;
-                    Navigator.of(context).pop();
+                    widget.tryLater();
                   },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
-                    "Retry Tor Connection",
+                    "Retry now",
                     light: false,
                     onTap: () {
-                      // We are continually retrying anyway
+                      widget.tryNow();
                       Navigator.of(context).pop();
                     },
                   ),

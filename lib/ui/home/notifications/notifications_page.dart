@@ -7,6 +7,7 @@ import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationsPage extends StatefulWidget {
@@ -15,50 +16,48 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  EnvoyNotificationType? _notificationType;
-
   @override
   Widget build(BuildContext context) {
     double _topOffset = MediaQuery.of(context).padding.top;
     //double _appBarHeight = AppBar().preferredSize.height;
     double _paddingTop = _topOffset + 10;
 
-    var n = Notifications().notifications;
-    List<EnvoyNotification> filtered = _notificationType == null
-        ? n
-        : n.where((element) => element.type == _notificationType).toList();
-
-    return Container(
-      color: Colors.black,
-      child: Padding(
-        padding: EdgeInsets.only(top: _paddingTop, left: 20, right: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: NotificationTypeToggle((type) {
-                setState(() {
-                  _notificationType = type;
-                });
-              }),
+    return Consumer(
+      builder: (context, ref, _) {
+        List<EnvoyNotification> notifications =
+            ref.watch(filteredNotificationStreamProvider);
+        return Container(
+          color: Colors.black,
+          child: Padding(
+            padding: EdgeInsets.only(top: _paddingTop, left: 20, right: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: NotificationTypeToggle((type) {
+                    ref.read(notificationTypeFilterProvider.notifier).state =
+                        type;
+                  }),
+                ),
+                ListView.builder(
+                    padding: EdgeInsets.only(top: 15.0),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          //if (index == 0) Text("Just now"),
+                          NotificationTile(notifications[index]),
+                        ],
+                      );
+                    },
+                    itemCount: notifications.length)
+              ],
             ),
-            ListView.builder(
-                padding: EdgeInsets.only(top: 15.0),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      //if (index == 0) Text("Just now"),
-                      NotificationTile(filtered[index]),
-                    ],
-                  );
-                },
-                itemCount: filtered.length)
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

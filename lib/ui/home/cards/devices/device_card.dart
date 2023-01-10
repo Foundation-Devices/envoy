@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -97,39 +99,36 @@ class DeviceOptions extends StatelessWidget {
           ),
           onTap: () {
             navigator!.hideOptions();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                var textEntry = TextEntry(
-                  placeholder: device.name,
-                );
-                return EnvoyDialog(
-                  title: Text(S().envoy_device_rename),
-                  content: textEntry,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        S().component_cancel.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkCopper),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Devices().renameDevice(device, textEntry.enteredText);
-                        Navigator.pop(context);
-                      },
-                      child: Text(
+            bool isKeyboardShown = false;
+            FocusNode focusNode = FocusNode();
+            showEnvoyDialog(
+                context: context,
+                dialog: Builder(builder: (BuildContext context) {
+                  var textEntry = TextEntry(
+                    focusNode: focusNode,
+                    placeholder: device.name,
+                  );
+                  if (!isKeyboardShown) {
+                    Future.delayed(Duration(milliseconds: 200)).then((value) {
+                      FocusScope.of(context).requestFocus(focusNode);
+                    });
+                    isKeyboardShown = true;
+                  }
+                  return EnvoyDialog(
+                    title: S().envoy_device_rename,
+                    content: textEntry,
+                    actions: [
+                      EnvoyButton(
                         S().component_save.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkTeal),
+                        light: false,
+                        onTap: () {
+                          Devices().renameDevice(device, textEntry.enteredText);
+                          Navigator.pop(context);
+                        },
                       ),
-                    ),
-                  ],
-                );
-              },
-            );
+                    ],
+                  );
+                }));
           },
         ),
         SizedBox(
@@ -140,38 +139,24 @@ class DeviceOptions extends StatelessWidget {
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             navigator!.hideOptions();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return EnvoyDialog(
-                  title:
-                      Text(S().envoy_device_delete_are_you_sure(device.name)),
+            showEnvoyDialog(
+                context: context,
+                dialog: EnvoyDialog(
+                  title: S().envoy_device_delete_are_you_sure(device.name),
                   content: Text(S().envoy_device_delete_explainer),
                   actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        S().component_cancel.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkCopper),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
+                    EnvoyButton(
+                      S().component_delete.toUpperCase(),
+                      light: false,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      onTap: () {
                         Devices().deleteDevice(device);
                         Navigator.pop(context);
                         navigator!.pop();
                       },
-                      child: Text(
-                        S().component_delete.toUpperCase(),
-                        style: TextStyle(color: EnvoyColors.darkTeal),
-                      ),
                     ),
                   ],
-                );
-              },
-            );
+                ));
           },
         ),
       ],
