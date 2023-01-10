@@ -105,11 +105,12 @@ class SettingsMenuWidget extends StatelessWidget {
                   MenuOption(
                     label: "PoW",
                     onTap: () {
-                      for(int i = 1; i < 100000000; i++) {
+                      for (int i = 1; i < 100000000; i++) {
                         var difficulty = 4294960000 + i;
                         var stopwatch = Stopwatch()..start();
                         Pow.solve(difficulty);
-                        print('Diffi: $difficulty, all hashes found in ${stopwatch.elapsed}');
+                        print(
+                            'Diffi: $difficulty, all hashes found in ${stopwatch.elapsed}');
                       }
                       //callback(SeedPage());
                     },

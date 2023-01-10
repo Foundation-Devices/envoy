@@ -6,7 +6,6 @@ import 'dart:ffi';
 import 'dart:io';
 import 'generated_bindings.dart';
 
-
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
     return DynamicLibrary.open('lib$name.so');
@@ -29,5 +28,4 @@ class Pow {
     var lib = NativeLibrary(load("pow_ffi"));
     lib.pow_get(difficulty);
   }
-
 }
