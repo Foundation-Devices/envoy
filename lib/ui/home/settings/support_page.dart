@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/support/support_chat_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -26,6 +27,16 @@ class SupportPage extends StatelessWidget {
                     onTap: () {
                       launchUrl(
                           Uri.parse("https://docs.foundationdevices.com"));
+                    },
+                  ),
+                  SizedBox(height: 50),
+                  MenuOption(
+                    label: "Chat",
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SupportChatScreen()));
                     },
                   ),
                   SizedBox(height: 50),
