@@ -55,6 +55,12 @@ dependencies:
       ref: set-position
       path: flutter_vlc_player
 
+  # chatwoot_client_sdk fork
+  chatwoot_client_sdk:
+    git:
+      url: https://github.com/Foundation-Devices/chatwoot-flutter-sdk.git
+      ref: cf98048
+
   qr_flutter: ^4.0.0
   flutter_neumorphic: ^3.2.0
   dots_indicator: ^2.0.0
