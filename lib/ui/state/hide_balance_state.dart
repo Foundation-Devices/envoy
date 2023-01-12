@@ -9,7 +9,6 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class HideStateNotifier extends ChangeNotifier {
   Set<int> amountHiddenAccounts = {};
 
