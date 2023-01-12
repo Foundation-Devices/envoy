@@ -15,5 +15,5 @@ cargo +1.64.0 build --target=aarch64-apple-ios --release
 
 # iOS simulator
 # (This'll work when https://github.com/alexcrichton/openssl-src-rs/pull/131 is merged/released)
-#rustup target add aarch64-apple-ios-sim
-#cargo build --target=aarch64-apple-ios-sim
+rustup +1.64.0 target add aarch64-apple-ios-sim
+cargo +1.64.0 build --target=aarch64-apple-ios-sim
