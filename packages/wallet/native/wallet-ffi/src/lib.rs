@@ -46,6 +46,7 @@ use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub enum NetworkType {
     Mainnet,
     Testnet,
@@ -196,6 +197,51 @@ pub unsafe extern "C" fn wallet_init(
 #[no_mangle]
 pub unsafe extern "C" fn wallet_drop(wallet: *mut Mutex<Wallet<Tree>>) {
     drop(wallet);
+}
+
+// Get wallet from seed words, path and network
+#[no_mangle]
+pub unsafe extern "C" fn wallet_derive(
+    seed_words: *const c_char,
+    path: *const c_char,
+    data_dir: *const c_char,
+    network: NetworkType,
+) -> *mut Mutex<Wallet<Tree>> {
+    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), null_mut());
+    let path = unwrap_or_return!(CStr::from_ptr(path).to_str(), null_mut());
+
+
+    // Convert seed words to xprv
+
+    let mnemonic = unwrap_or_return!(Mnemonic::parse(seed_words), null_mut());
+
+    let xkey: ExtendedKey = unwrap_or_return!(mnemonic.into_extended_key(), null_mut());
+
+    let xprv = match xkey.into_xprv(network.clone().into()) {
+        None => {return null_mut();}
+        Some(p) => {p}
+    };
+
+    let derivation_path = unwrap_or_return!(DerivationPath::from_str(path), null_mut());
+
+    // Derive
+    let secp = Secp256k1::new();
+    let derived_xprv = &xprv.derive_priv(&secp, &derivation_path).unwrap();
+
+
+    let origin: KeySource = (xprv.fingerprint(&secp), derivation_path);
+
+    let derived_xprv_desc_key: DescriptorKey<Segwitv0> = derived_xprv
+        .into_descriptor_key(Some(origin), DerivationPath::default())
+        .unwrap();
+
+    let xprv_str = derived_xprv.to_string();
+
+    let name = CString::new(xprv_str).unwrap();
+    let external_descriptor = CString::new("").unwrap();
+    let internal_descriptor = CString::new("").unwrap();
+
+    wallet_init(name.into_raw(), external_descriptor.into_raw(), internal_descriptor.into_raw(), data_dir,network)
 }
 
 #[no_mangle]
@@ -638,7 +684,7 @@ pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     let secp = Secp256k1::new();
 
     let mut rng = rand::thread_rng();
-    let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 24).unwrap();
+    let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 12).unwrap();
 
     let mnemonic_string = mnemonic.to_string();
 
@@ -656,7 +702,7 @@ pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
 
 // #[no_mangle]
 // pub unsafe extern "C" fn wallet_get_seed_words(seed: *const u8) -> Seed {
-//     // let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 24).unwrap();
+//     // let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 12).unwrap();
 //     // let mnemonic_string = mnemonic.to_string();
 //
 //     let xkey: ExtendedKey<miniscript::BareCtx> = mnemonic.into_extended_key().unwrap();

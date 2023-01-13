@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wallet/exceptions.dart';
+import 'package:wallet/generated_bindings.dart';
 
 // Generated
 part 'wallet.g.dart';
@@ -344,6 +345,9 @@ class Wallet {
     }
   }
 
+  Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
+      this.internalDescriptor, this._self);
+
   drop() {
     final rustFunction =
         _lib.lookup<NativeFunction<WalletDropRust>>('wallet_drop');
@@ -595,8 +599,16 @@ class Wallet {
     NativeSeed seed =
         dartFunction(testnet ? Network.Testnet.index : Network.Mainnet.index);
 
-    final xprv = seed.xprv.cast<Utf8>().toDartString();
-    return xprv;
+    final words = seed.mnemonic.cast<Utf8>().toDartString();
+    return words;
+  }
+
+  static Wallet deriveWallet(String seed, String path, Network network) {
+
+    final lib = NativeLibrary(load(_libName));
+    var walletPtr = lib.wallet_derive(seed.toNativeUtf8().cast(), path.toNativeUtf8().cast(), "".toNativeUtf8().cast(), network.index);
+    
+    return Wallet.fromPointer("name", network, "externalDescriptor", "internalDescriptor", walletPtr.cast());
   }
 
   static String getSeedWords(List<int> binarySeed) {

@@ -91,4 +91,36 @@ void main() async {
     expect(tx,
         "010000000102b56f3725dee13bd639bb76bcfa48bf82093de146d6144af11b53833571dcc10000000000fdffffff021027000000000000160014ff9da567e62f30ea8654fa1d5fbd47bef8e3be13e640010000000000160014befe48687e7b714563a19df96cbc629ced41c24c00000000");
   });
+
+  test('Generate seed', () {
+    String seed = Wallet.generateSeed(false); // TODO: somehow check if words are the same between testnet and mainnet?
+
+    final List words = seed.split(" ");
+
+    expect(words.length,
+        12);
+  });
+
+  test('Create wallet from seed and path', () {
+    String seed = Wallet.generateSeed(false); // TODO: somehow check if words are the same between testnet and mainnet?
+
+    final List words = seed.split(" ");
+
+    expect(words.length,
+        12);
+  });
+
+
+
+  // Import seed?
+
+  // Create seed?
+
+  // After that wallets get automagically created depending on derivation path ---> do we have this documented?
+
+  // Create wallet from seed ---> just use derivation
+
+  // Create wallet magically
+
+  // Bac
 }

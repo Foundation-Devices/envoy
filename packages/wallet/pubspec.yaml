@@ -29,15 +29,28 @@ ffigen:
   output: 'lib/generated_bindings.dart'
   llvm-path:
     - '/usr/lib/llvm-14/lib/libclang.so.1'
-  globals:
-    exclude:
-      - _.*
-  structs:
-    exclude:
-      - _.*
   functions:
     include:
       - wallet_.*
+  structs:
+    exclude:
+      - _.*
+  unions:
+    exclude:
+      - _.*
+  enums:
+    exclude:
+      - _.*
+  unnamed-enums:
+    exclude:
+      - _.*
+  macros:
+    exclude:
+      - _.*
+  globals:
+    exclude:
+      - _.*
+
   headers:
     entry-points:
       - 'native/wallet-ffi/target/wallet-ffi.hpp'
