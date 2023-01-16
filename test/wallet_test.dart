@@ -101,13 +101,19 @@ void main() async {
         12);
   });
 
-  test('Create wallet from seed and path', () {
-    String seed = Wallet.generateSeed(false); // TODO: somehow check if words are the same between testnet and mainnet?
+  test('Derive wallet from seed and path', () async {
+    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final path = "m/84'/0'/0'";
 
-    final List words = seed.split(" ");
+    var docsDir = await getApplicationDocumentsDirectory();
 
-    expect(words.length,
-        12);
+    var walletsDir = docsDir.path + "/test_wallets/";
+
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet);
+
+    var address = await wallet.getAddress();
+
+    expect(address, "bc1q3parkhjdyur586rtrxv7z0lj37u4wcw78xa3l6");
   });
 
 

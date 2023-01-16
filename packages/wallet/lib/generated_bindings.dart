@@ -28,53 +28,19 @@ class NativeLibrary {
   late final _wallet_last_error_message = _wallet_last_error_messagePtr
       .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
-  ffi.Pointer<ffi.Int> wallet_init(
-    ffi.Pointer<ffi.Char> name,
-    ffi.Pointer<ffi.Char> external_descriptor,
-    ffi.Pointer<ffi.Char> internal_descriptor,
-    ffi.Pointer<ffi.Char> data_dir,
-    int network,
-  ) {
-    return _wallet_init(
-      name,
-      external_descriptor,
-      internal_descriptor,
-      data_dir,
-      network,
-    );
-  }
-
-  late final _wallet_initPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Int> Function(
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int32)>>('wallet_init');
-  late final _wallet_init = _wallet_initPtr.asFunction<
-      ffi.Pointer<ffi.Int> Function(
-          ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>,
-          int)>();
-
   void wallet_drop(
-    ffi.Pointer<ffi.Int> wallet,
+    int arg0,
   ) {
     return _wallet_drop(
-      wallet,
+      arg0,
     );
   }
 
   late final _wallet_dropPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Int>)>>(
-          'wallet_drop');
-  late final _wallet_drop =
-      _wallet_dropPtr.asFunction<void Function(ffi.Pointer<ffi.Int>)>();
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int)>>('wallet_drop');
+  late final _wallet_drop = _wallet_dropPtr.asFunction<void Function(int)>();
 
-  ffi.Pointer<ffi.Int> wallet_derive(
+  Wallet wallet_derive(
     ffi.Pointer<ffi.Char> seed_words,
     ffi.Pointer<ffi.Char> path,
     ffi.Pointer<ffi.Char> data_dir,
@@ -90,62 +56,51 @@ class NativeLibrary {
 
   late final _wallet_derivePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Int> Function(
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int32)>>('wallet_derive');
+          Wallet Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, ffi.Int32)>>('wallet_derive');
   late final _wallet_derive = _wallet_derivePtr.asFunction<
-      ffi.Pointer<ffi.Int> Function(ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+      Wallet Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>, int)>();
 
   ffi.Pointer<ffi.Char> wallet_get_address(
-    ffi.Pointer<ffi.Int> wallet,
+    int arg0,
   ) {
     return _wallet_get_address(
-      wallet,
+      arg0,
     );
   }
 
-  late final _wallet_get_addressPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<ffi.Int>)>>('wallet_get_address');
-  late final _wallet_get_address = _wallet_get_addressPtr
-      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Int>)>();
+  late final _wallet_get_addressPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Int)>>(
+          'wallet_get_address');
+  late final _wallet_get_address =
+      _wallet_get_addressPtr.asFunction<ffi.Pointer<ffi.Char> Function(int)>();
 
   bool wallet_sync(
-    ffi.Pointer<ffi.Int> wallet,
-    ffi.Pointer<ffi.Char> electrum_address,
-    int tor_port,
+    int arg0,
   ) {
     return _wallet_sync(
-      wallet,
-      electrum_address,
-      tor_port,
+      arg0,
     );
   }
 
-  late final _wallet_syncPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Bool Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>,
-              ffi.Int32)>>('wallet_sync');
-  late final _wallet_sync = _wallet_syncPtr.asFunction<
-      bool Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>, int)>();
+  late final _wallet_syncPtr =
+      _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Int)>>('wallet_sync');
+  late final _wallet_sync = _wallet_syncPtr.asFunction<bool Function(int)>();
 
   int wallet_get_balance(
-    ffi.Pointer<ffi.Int> wallet,
+    int arg0,
   ) {
     return _wallet_get_balance(
-      wallet,
+      arg0,
     );
   }
 
   late final _wallet_get_balancePtr =
-      _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<ffi.Int>)>>(
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Int)>>(
           'wallet_get_balance');
   late final _wallet_get_balance =
-      _wallet_get_balancePtr.asFunction<int Function(ffi.Pointer<ffi.Int>)>();
+      _wallet_get_balancePtr.asFunction<int Function(int)>();
 
   double wallet_get_fee_rate(
     ffi.Pointer<ffi.Char> electrum_address,
@@ -161,8 +116,8 @@ class NativeLibrary {
 
   late final _wallet_get_fee_ratePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Double Function(ffi.Pointer<ffi.Char>, ffi.Int32,
-              ffi.Uint16)>>('wallet_get_fee_rate');
+          ffi.Double Function(
+              ffi.Pointer<ffi.Char>, ffi.Int, ffi.Int)>>('wallet_get_fee_rate');
   late final _wallet_get_fee_rate = _wallet_get_fee_ratePtr
       .asFunction<double Function(ffi.Pointer<ffi.Char>, int, int)>();
 
@@ -179,62 +134,49 @@ class NativeLibrary {
   late final _wallet_get_server_featuresPtr = _lookup<
       ffi.NativeFunction<
           ServerFeatures Function(
-              ffi.Pointer<ffi.Char>, ffi.Int32)>>('wallet_get_server_features');
+              ffi.Pointer<ffi.Char>, ffi.Int)>>('wallet_get_server_features');
   late final _wallet_get_server_features = _wallet_get_server_featuresPtr
       .asFunction<ServerFeatures Function(ffi.Pointer<ffi.Char>, int)>();
 
   TransactionList wallet_get_transactions(
-    ffi.Pointer<ffi.Int> wallet,
+    int arg0,
   ) {
     return _wallet_get_transactions(
-      wallet,
+      arg0,
     );
   }
 
-  late final _wallet_get_transactionsPtr = _lookup<
-          ffi.NativeFunction<TransactionList Function(ffi.Pointer<ffi.Int>)>>(
-      'wallet_get_transactions');
-  late final _wallet_get_transactions = _wallet_get_transactionsPtr
-      .asFunction<TransactionList Function(ffi.Pointer<ffi.Int>)>();
+  late final _wallet_get_transactionsPtr =
+      _lookup<ffi.NativeFunction<TransactionList Function(ffi.Int)>>(
+          'wallet_get_transactions');
+  late final _wallet_get_transactions =
+      _wallet_get_transactionsPtr.asFunction<TransactionList Function(int)>();
 
   Psbt wallet_create_psbt(
-    ffi.Pointer<ffi.Int> wallet,
-    ffi.Pointer<ffi.Char> send_to,
-    int amount,
-    double fee_rate,
+    int arg0,
   ) {
     return _wallet_create_psbt(
-      wallet,
-      send_to,
-      amount,
-      fee_rate,
+      arg0,
     );
   }
 
-  late final _wallet_create_psbtPtr = _lookup<
-      ffi.NativeFunction<
-          Psbt Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>, ffi.Uint64,
-              ffi.Double)>>('wallet_create_psbt');
-  late final _wallet_create_psbt = _wallet_create_psbtPtr.asFunction<
-      Psbt Function(
-          ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>, int, double)>();
+  late final _wallet_create_psbtPtr =
+      _lookup<ffi.NativeFunction<Psbt Function(ffi.Int)>>('wallet_create_psbt');
+  late final _wallet_create_psbt =
+      _wallet_create_psbtPtr.asFunction<Psbt Function(int)>();
 
   Psbt wallet_decode_psbt(
-    ffi.Pointer<ffi.Int> wallet,
-    ffi.Pointer<ffi.Char> psbt,
+    int arg0,
   ) {
     return _wallet_decode_psbt(
-      wallet,
-      psbt,
+      arg0,
     );
   }
 
-  late final _wallet_decode_psbtPtr = _lookup<
-      ffi.NativeFunction<
-          Psbt Function(ffi.Pointer<ffi.Int>,
-              ffi.Pointer<ffi.Char>)>>('wallet_decode_psbt');
-  late final _wallet_decode_psbt = _wallet_decode_psbtPtr
-      .asFunction<Psbt Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>)>();
+  late final _wallet_decode_psbtPtr =
+      _lookup<ffi.NativeFunction<Psbt Function(ffi.Int)>>('wallet_decode_psbt');
+  late final _wallet_decode_psbt =
+      _wallet_decode_psbtPtr.asFunction<Psbt Function(int)>();
 
   ffi.Pointer<ffi.Char> wallet_broadcast_tx(
     ffi.Pointer<ffi.Char> electrum_address,
@@ -250,28 +192,25 @@ class NativeLibrary {
 
   late final _wallet_broadcast_txPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>, ffi.Int32,
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>, ffi.Int,
               ffi.Pointer<ffi.Char>)>>('wallet_broadcast_tx');
   late final _wallet_broadcast_tx = _wallet_broadcast_txPtr.asFunction<
       ffi.Pointer<ffi.Char> Function(
           ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
 
   bool wallet_validate_address(
-    ffi.Pointer<ffi.Int> wallet,
-    ffi.Pointer<ffi.Char> address,
+    int arg0,
   ) {
     return _wallet_validate_address(
-      wallet,
-      address,
+      arg0,
     );
   }
 
-  late final _wallet_validate_addressPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Bool Function(ffi.Pointer<ffi.Int>,
-              ffi.Pointer<ffi.Char>)>>('wallet_validate_address');
-  late final _wallet_validate_address = _wallet_validate_addressPtr
-      .asFunction<bool Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>)>();
+  late final _wallet_validate_addressPtr =
+      _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Int)>>(
+          'wallet_validate_address');
+  late final _wallet_validate_address =
+      _wallet_validate_addressPtr.asFunction<bool Function(int)>();
 
   Psbt wallet_sign_offline(
     ffi.Pointer<ffi.Char> psbt,
@@ -296,21 +235,17 @@ class NativeLibrary {
           ffi.Pointer<ffi.Char>, int)>();
 
   Psbt wallet_sign_psbt(
-    ffi.Pointer<ffi.Int> wallet,
-    ffi.Pointer<ffi.Char> psbt,
+    int arg0,
   ) {
     return _wallet_sign_psbt(
-      wallet,
-      psbt,
+      arg0,
     );
   }
 
-  late final _wallet_sign_psbtPtr = _lookup<
-      ffi.NativeFunction<
-          Psbt Function(ffi.Pointer<ffi.Int>,
-              ffi.Pointer<ffi.Char>)>>('wallet_sign_psbt');
-  late final _wallet_sign_psbt = _wallet_sign_psbtPtr
-      .asFunction<Psbt Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>)>();
+  late final _wallet_sign_psbtPtr =
+      _lookup<ffi.NativeFunction<Psbt Function(ffi.Int)>>('wallet_sign_psbt');
+  late final _wallet_sign_psbt =
+      _wallet_sign_psbtPtr.asFunction<Psbt Function(int)>();
 
   Seed wallet_generate_seed(
     int network,
@@ -346,7 +281,7 @@ class NativeLibrary {
               ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   ffi.Pointer<ffi.Char> wallet_generate_xkey_with_entropy(
-    ffi.Pointer<ffi.Uint8> entropy,
+    ffi.Pointer<ffi.Int> entropy,
   ) {
     return _wallet_generate_xkey_with_entropy(
       entropy,
@@ -356,14 +291,14 @@ class NativeLibrary {
   late final _wallet_generate_xkey_with_entropyPtr = _lookup<
       ffi.NativeFunction<
           ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<ffi.Uint8>)>>('wallet_generate_xkey_with_entropy');
+              ffi.Pointer<ffi.Int>)>>('wallet_generate_xkey_with_entropy');
   late final _wallet_generate_xkey_with_entropy =
       _wallet_generate_xkey_with_entropyPtr
-          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Uint8>)>();
+          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Int>)>();
 
   Seed wallet_get_seed_from_entropy(
     int network,
-    ffi.Pointer<ffi.Uint8> entropy,
+    ffi.Pointer<ffi.Int> entropy,
   ) {
     return _wallet_get_seed_from_entropy(
       network,
@@ -372,10 +307,10 @@ class NativeLibrary {
   }
 
   late final _wallet_get_seed_from_entropyPtr = _lookup<
-          ffi.NativeFunction<Seed Function(ffi.Int32, ffi.Pointer<ffi.Uint8>)>>(
+          ffi.NativeFunction<Seed Function(ffi.Int32, ffi.Pointer<ffi.Int>)>>(
       'wallet_get_seed_from_entropy');
   late final _wallet_get_seed_from_entropy = _wallet_get_seed_from_entropyPtr
-      .asFunction<Seed Function(int, ffi.Pointer<ffi.Uint8>)>();
+      .asFunction<Seed Function(int, ffi.Pointer<ffi.Int>)>();
 
   void wallet_hello() {
     return _wallet_hello();
@@ -393,6 +328,19 @@ abstract class NetworkType {
   static const int Regtest = 3;
 }
 
+class Wallet extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> name;
+
+  @ffi.Int32()
+  external int network;
+
+  external ffi.Pointer<ffi.Char> external_descriptor;
+
+  external ffi.Pointer<ffi.Char> internal_descriptor;
+
+  external ffi.Pointer<ffi.Int> bkd_wallet_ptr;
+}
+
 class ServerFeatures extends ffi.Struct {
   external ffi.Pointer<ffi.Char> server_version;
 
@@ -400,46 +348,46 @@ class ServerFeatures extends ffi.Struct {
 
   external ffi.Pointer<ffi.Char> protocol_max;
 
-  @ffi.Int64()
+  @ffi.Int()
   external int pruning;
 
-  external ffi.Pointer<ffi.Uint8> genesis_hash;
+  external ffi.Pointer<ffi.Int> genesis_hash;
 }
 
 class Transaction extends ffi.Struct {
   external ffi.Pointer<ffi.Char> txid;
 
-  @ffi.Uint64()
+  @ffi.Int()
   external int received;
 
-  @ffi.Uint64()
+  @ffi.Int()
   external int sent;
 
-  @ffi.Uint64()
+  @ffi.Int()
   external int fee;
 
-  @ffi.Uint32()
+  @ffi.Int()
   external int confirmation_height;
 
-  @ffi.Uint64()
+  @ffi.Int()
   external int confirmation_time;
 }
 
 class TransactionList extends ffi.Struct {
-  @ffi.Uint32()
+  @ffi.Int()
   external int transactions_len;
 
   external ffi.Pointer<Transaction> transactions;
 }
 
 class Psbt extends ffi.Struct {
-  @ffi.Uint64()
+  @ffi.Int()
   external int sent;
 
-  @ffi.Uint64()
+  @ffi.Int()
   external int received;
 
-  @ffi.Uint64()
+  @ffi.Int()
   external int fee;
 
   external ffi.Pointer<ffi.Char> base64;
@@ -456,203 +404,3 @@ class Seed extends ffi.Struct {
 
   external ffi.Pointer<ffi.Char> fingerprint;
 }
-
-const int INT8_MIN = -128;
-
-const int INT16_MIN = -32768;
-
-const int INT32_MIN = -2147483648;
-
-const int INT64_MIN = -9223372036854775808;
-
-const int INT8_MAX = 127;
-
-const int INT16_MAX = 32767;
-
-const int INT32_MAX = 2147483647;
-
-const int INT64_MAX = 9223372036854775807;
-
-const int UINT8_MAX = 255;
-
-const int UINT16_MAX = 65535;
-
-const int UINT32_MAX = 4294967295;
-
-const int UINT64_MAX = -1;
-
-const int INT_LEAST8_MIN = -128;
-
-const int INT_LEAST16_MIN = -32768;
-
-const int INT_LEAST32_MIN = -2147483648;
-
-const int INT_LEAST64_MIN = -9223372036854775808;
-
-const int INT_LEAST8_MAX = 127;
-
-const int INT_LEAST16_MAX = 32767;
-
-const int INT_LEAST32_MAX = 2147483647;
-
-const int INT_LEAST64_MAX = 9223372036854775807;
-
-const int UINT_LEAST8_MAX = 255;
-
-const int UINT_LEAST16_MAX = 65535;
-
-const int UINT_LEAST32_MAX = 4294967295;
-
-const int UINT_LEAST64_MAX = -1;
-
-const int INT_FAST8_MIN = -128;
-
-const int INT_FAST16_MIN = -9223372036854775808;
-
-const int INT_FAST32_MIN = -9223372036854775808;
-
-const int INT_FAST64_MIN = -9223372036854775808;
-
-const int INT_FAST8_MAX = 127;
-
-const int INT_FAST16_MAX = 9223372036854775807;
-
-const int INT_FAST32_MAX = 9223372036854775807;
-
-const int INT_FAST64_MAX = 9223372036854775807;
-
-const int UINT_FAST8_MAX = 255;
-
-const int UINT_FAST16_MAX = -1;
-
-const int UINT_FAST32_MAX = -1;
-
-const int UINT_FAST64_MAX = -1;
-
-const int INTPTR_MIN = -9223372036854775808;
-
-const int INTPTR_MAX = 9223372036854775807;
-
-const int UINTPTR_MAX = -1;
-
-const int INTMAX_MIN = -9223372036854775808;
-
-const int INTMAX_MAX = 9223372036854775807;
-
-const int UINTMAX_MAX = -1;
-
-const int PTRDIFF_MIN = -9223372036854775808;
-
-const int PTRDIFF_MAX = 9223372036854775807;
-
-const int SIG_ATOMIC_MIN = -2147483648;
-
-const int SIG_ATOMIC_MAX = 2147483647;
-
-const int SIZE_MAX = -1;
-
-const int WCHAR_MIN = -2147483648;
-
-const int WCHAR_MAX = 2147483647;
-
-const int WINT_MIN = 0;
-
-const int WINT_MAX = 4294967295;
-
-const int INT8_WIDTH = 8;
-
-const int UINT8_WIDTH = 8;
-
-const int INT16_WIDTH = 16;
-
-const int UINT16_WIDTH = 16;
-
-const int INT32_WIDTH = 32;
-
-const int UINT32_WIDTH = 32;
-
-const int INT64_WIDTH = 64;
-
-const int UINT64_WIDTH = 64;
-
-const int INT_LEAST8_WIDTH = 8;
-
-const int UINT_LEAST8_WIDTH = 8;
-
-const int INT_LEAST16_WIDTH = 16;
-
-const int UINT_LEAST16_WIDTH = 16;
-
-const int INT_LEAST32_WIDTH = 32;
-
-const int UINT_LEAST32_WIDTH = 32;
-
-const int INT_LEAST64_WIDTH = 64;
-
-const int UINT_LEAST64_WIDTH = 64;
-
-const int INT_FAST8_WIDTH = 8;
-
-const int UINT_FAST8_WIDTH = 8;
-
-const int INT_FAST16_WIDTH = 64;
-
-const int UINT_FAST16_WIDTH = 64;
-
-const int INT_FAST32_WIDTH = 64;
-
-const int UINT_FAST32_WIDTH = 64;
-
-const int INT_FAST64_WIDTH = 64;
-
-const int UINT_FAST64_WIDTH = 64;
-
-const int INTPTR_WIDTH = 64;
-
-const int UINTPTR_WIDTH = 64;
-
-const int INTMAX_WIDTH = 64;
-
-const int UINTMAX_WIDTH = 64;
-
-const int PTRDIFF_WIDTH = 64;
-
-const int SIG_ATOMIC_WIDTH = 32;
-
-const int SIZE_WIDTH = 64;
-
-const int WCHAR_WIDTH = 32;
-
-const int WINT_WIDTH = 32;
-
-const int NULL = 0;
-
-const int WNOHANG = 1;
-
-const int WUNTRACED = 2;
-
-const int WSTOPPED = 2;
-
-const int WEXITED = 4;
-
-const int WCONTINUED = 8;
-
-const int WNOWAIT = 16777216;
-
-const int RAND_MAX = 2147483647;
-
-const int EXIT_FAILURE = 1;
-
-const int EXIT_SUCCESS = 0;
-
-const int LITTLE_ENDIAN = 1234;
-
-const int BIG_ENDIAN = 4321;
-
-const int PDP_ENDIAN = 3412;
-
-const int BYTE_ORDER = 1234;
-
-const int FD_SETSIZE = 1024;
-
-const int NFDBITS = 64;

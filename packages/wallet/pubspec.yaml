@@ -50,7 +50,6 @@ ffigen:
   globals:
     exclude:
       - _.*
-
   headers:
     entry-points:
       - 'native/wallet-ffi/target/wallet-ffi.hpp'

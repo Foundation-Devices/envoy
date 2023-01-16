@@ -33,6 +33,8 @@ class AccountManager extends ChangeNotifier {
   static const String _ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
 
+  static String walletsDirectory = LocalStorage().appDocumentsDir.path + "/wallets/";
+
   factory AccountManager() {
     return _instance;
   }
@@ -244,7 +246,7 @@ class AccountManager extends ChangeNotifier {
       for (var account in storedAccounts) {
         Account restoredAccount = Account.fromJson(account);
         accounts.add(restoredAccount);
-        restoredAccount.wallet.init(LocalStorage().appDocumentsDir.path);
+        restoredAccount.wallet.init(walletsDirectory);
       }
     }
 
@@ -274,7 +276,7 @@ class AccountManager extends ChangeNotifier {
 
     Wallet wallet =
         Wallet(fingerprint, network, externalDescriptor, internalDescriptor);
-    wallet.init(LocalStorage().appDocumentsDir.path);
+    wallet.init(walletsDirectory);
 
     return wallet;
   }
@@ -294,8 +296,7 @@ class AccountManager extends ChangeNotifier {
     account.wallet.drop();
 
     // Delete the BDK DB so it doesn't get confused on re-pair
-    final dir = Directory(LocalStorage().appDocumentsDir.path +
-        "/wallets/" +
+    final dir = Directory(walletsDirectory +
         account.wallet.name);
     dir.delete(recursive: true);
 

@@ -326,7 +326,7 @@ class Wallet {
   Wallet(this.name, this.network, this.externalDescriptor,
       this.internalDescriptor);
 
-  init(String dir) {
+  init(String walletsDirectory) {
     _lib = load(_libName);
 
     final rustFunction =
@@ -337,7 +337,7 @@ class Wallet {
         name.toNativeUtf8(),
         externalDescriptor.toNativeUtf8(),
         internalDescriptor.toNativeUtf8(),
-        (dir + "/wallets/" + name).toNativeUtf8(),
+        (walletsDirectory + name).toNativeUtf8(),
         network.index);
 
     if (_self == nullptr) {
@@ -603,12 +603,32 @@ class Wallet {
     return words;
   }
 
-  static Wallet deriveWallet(String seed, String path, Network network) {
+  static Wallet deriveWallet(
+      String seed, String path, String directory, Network network) {
+    final lib = load(_libName);
+    final native = NativeLibrary(lib);
+    var wallet = native.wallet_derive(
+        seed.toNativeUtf8().cast(),
+        path.toNativeUtf8().cast(),
+        directory.toNativeUtf8().cast(),
+        network.index);
 
-    final lib = NativeLibrary(load(_libName));
-    var walletPtr = lib.wallet_derive(seed.toNativeUtf8().cast(), path.toNativeUtf8().cast(), "".toNativeUtf8().cast(), network.index);
-    
-    return Wallet.fromPointer("name", network, "externalDescriptor", "internalDescriptor", walletPtr.cast());
+    if (wallet.bkd_wallet_ptr == nullptr) {
+      throwRustException(lib);
+    }
+
+    final name = wallet.name.cast<Utf8>().toDartString();
+
+    final externalDescriptor =
+        wallet.external_descriptor.cast<Utf8>().toDartString();
+
+    final internalDescriptor =
+        wallet.internal_descriptor.cast<Utf8>().toDartString();
+
+    print(wallet.bkd_wallet_ptr.value);
+
+    return Wallet.fromPointer(name, network, externalDescriptor,
+        internalDescriptor, wallet.bkd_wallet_ptr.cast());
   }
 
   static String getSeedWords(List<int> binarySeed) {
