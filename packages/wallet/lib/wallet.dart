@@ -259,6 +259,11 @@ class Wallet {
           Network.Mainnet) // Migration from binary main/testnet approach
   final Network network;
 
+  @JsonKey(
+      defaultValue:
+      false) // Migration from time when all the Wallets were cold
+  final bool hot;
+
   List<Transaction> transactions = [];
   int balance = 0;
 
@@ -324,7 +329,7 @@ class Wallet {
   }
 
   Wallet(this.name, this.network, this.externalDescriptor,
-      this.internalDescriptor);
+      this.internalDescriptor, {this.hot: false});
 
   init(String walletsDirectory) {
     _lib = load(_libName);
@@ -346,7 +351,7 @@ class Wallet {
   }
 
   Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
-      this.internalDescriptor, this._self);
+      this.internalDescriptor, this._self, {this.hot: false});
 
   drop() {
     final rustFunction =
@@ -604,7 +609,8 @@ class Wallet {
   }
 
   static Wallet deriveWallet(
-      String seed, String path, String directory, Network network, {bool private: false}) {
+      String seed, String path, String directory, Network network,
+      {bool private: false}) {
     final lib = load(_libName);
     final native = NativeLibrary(lib);
     var wallet = native.wallet_derive(
@@ -620,16 +626,16 @@ class Wallet {
 
     final name = wallet.name.cast<Utf8>().toDartString();
 
-    final externalDescriptor =
-        wallet.external_descriptor.cast<Utf8>().toDartString();
+    final externalDescriptor = private
+        ? wallet.external_prv_descriptor.cast<Utf8>().toDartString()
+        : wallet.external_pub_descriptor.cast<Utf8>().toDartString();
 
-    final internalDescriptor =
-        wallet.internal_descriptor.cast<Utf8>().toDartString();
-
-    print(wallet.bkd_wallet_ptr.value);
+    final internalDescriptor = private
+        ? wallet.internal_prv_descriptor.cast<Utf8>().toDartString()
+        : wallet.internal_pub_descriptor.cast<Utf8>().toDartString();
 
     return Wallet.fromPointer(name, network, externalDescriptor,
-        internalDescriptor, wallet.bkd_wallet_ptr.cast());
+        internalDescriptor, wallet.bkd_wallet_ptr.cast(), hot: true);
   }
 
   static String getSeedWords(List<int> binarySeed) {

@@ -110,8 +110,10 @@ pub struct ServerFeatures {
 pub struct Wallet {
     name: *const c_char,
     network: NetworkType,
-    external_descriptor: *const c_char,
-    internal_descriptor: *const c_char,
+    external_pub_descriptor: *const c_char,
+    internal_pub_descriptor: *const c_char,
+    external_prv_descriptor: *const c_char,
+    internal_prv_descriptor: *const c_char,
     bkd_wallet_ptr: *mut usize,
 }
 
@@ -211,20 +213,22 @@ pub unsafe extern "C" fn wallet_drop(wallet: *mut Mutex<bdk::Wallet<Tree>>) {
     drop(wallet);
 }
 
-// Get wallet from seed words, path and network
+// Get wallet public/private pair from seed words, path and network
 #[no_mangle]
 pub unsafe extern "C" fn wallet_derive(
     seed_words: *const c_char,
     path: *const c_char,
     data_dir: *const c_char,
     network: NetworkType,
-    private: bool,
+    private: bool, // Which BDK wallet to return
 ) -> Wallet {
     let error_return = Wallet {
         name: ptr::null(),
         network,
-        external_descriptor: ptr::null(),
-        internal_descriptor: ptr::null(),
+        external_pub_descriptor: ptr::null(),
+        internal_pub_descriptor: ptr::null(),
+        external_prv_descriptor: ptr::null(),
+        internal_prv_descriptor: ptr::null(),
         bkd_wallet_ptr: null_mut(),
     };
 
@@ -248,40 +252,49 @@ pub unsafe extern "C" fn wallet_derive(
     let derived_xprv = &xprv.derive_priv(&secp, &derivation_path).unwrap();
     let origin: KeySource = (xprv.fingerprint(&secp), derivation_path);
 
-    // Get descriptor
-    let descriptor = {
-        let derived_xprv_desc_key: DescriptorKey<Segwitv0> =
-            derived_xprv.into_descriptor_key(Some(origin), DerivationPath::default()).unwrap();
+    // Get descriptors
+    let derived_xprv_desc_key: DescriptorKey<Segwitv0> =
+        derived_xprv.into_descriptor_key(Some(origin), DerivationPath::default()).unwrap();
 
-        match derived_xprv_desc_key {
-            DescriptorKey::Public(_, _, _) => {
-                return error_return;
-            }
-            Secret(desc_seckey, _, _) => {
-                if private {
-                    desc_seckey.to_string()
-                } else {
-                    let desc_pubkey = desc_seckey.to_public(&secp).unwrap();
-                    desc_pubkey.to_string()
-                }
-            }
+    let (descriptor_prv, descriptor_pub) = match derived_xprv_desc_key {
+        DescriptorKey::Public(_, _, _) => {
+            return error_return;
+        }
+        Secret(desc_seckey, _, _) => {
+            (desc_seckey.to_string(), {
+                let desc_pubkey = desc_seckey.to_public(&secp).unwrap();
+                desc_pubkey.to_string()
+            })
         }
     };
 
-    let external_descriptor = format!("wpkh({descriptor})").replace("/*", "/0/*");
-    let internal_descriptor = external_descriptor.replace("/0/*", "/1/*");
 
-    let xfp = &descriptor[1..9];
+    let external_pub_descriptor = format!("wpkh({descriptor_pub})").replace("/*", "/0/*");
+    let internal_pub_descriptor = external_pub_descriptor.replace("/0/*", "/1/*");
+
+    let external_prv_descriptor = format!("wpkh({descriptor_prv})").replace("/*", "/0/*");
+    let internal_prv_descriptor = external_prv_descriptor.replace("/0/*", "/1/*");
+
+    let xfp = &descriptor_prv[1..9];
 
     let wallet_dir = format!("{data_dir}{xfp}");
 
-    let ptr = init(network, &*xfp, &*external_descriptor, &*internal_descriptor, &*wallet_dir);
+    let ptr = {
+        if private {
+            init(network, &*xfp, &*external_prv_descriptor, &*internal_prv_descriptor, &*wallet_dir)
+        }
+        else {
+            init(network, &*xfp, &*external_pub_descriptor, &*internal_pub_descriptor, &*wallet_dir)
+        }
+    };
 
     Wallet {
         name: CString::new(xfp).unwrap().into_raw(),
         network,
-        external_descriptor: CString::new(external_descriptor).unwrap().into_raw(),
-        internal_descriptor: CString::new(internal_descriptor).unwrap().into_raw(),
+        external_pub_descriptor: CString::new(external_pub_descriptor).unwrap().into_raw(),
+        internal_pub_descriptor: CString::new(internal_pub_descriptor).unwrap().into_raw(),
+        external_prv_descriptor: CString::new(external_prv_descriptor).unwrap().into_raw(),
+        internal_prv_descriptor: CString::new(internal_prv_descriptor).unwrap().into_raw(),
         bkd_wallet_ptr: ptr as *mut usize,
     }
 }

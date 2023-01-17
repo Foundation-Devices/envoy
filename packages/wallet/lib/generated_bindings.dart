@@ -336,9 +336,13 @@ class Wallet extends ffi.Struct {
   @ffi.Int32()
   external int network;
 
-  external ffi.Pointer<ffi.Char> external_descriptor;
+  external ffi.Pointer<ffi.Char> external_pub_descriptor;
 
-  external ffi.Pointer<ffi.Char> internal_descriptor;
+  external ffi.Pointer<ffi.Char> internal_pub_descriptor;
+
+  external ffi.Pointer<ffi.Char> external_prv_descriptor;
+
+  external ffi.Pointer<ffi.Char> internal_prv_descriptor;
 
   external ffi.Pointer<ffi.Int> bkd_wallet_ptr;
 }

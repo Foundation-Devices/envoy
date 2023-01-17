@@ -116,6 +116,21 @@ void main() async {
     expect(address.contains("bc1"), true);
   });
 
+  test('Get derived testnet wallet address', () async {
+    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final path = "m/84'/0'/0'";
+
+    var docsDir = await getApplicationDocumentsDirectory();
+
+    var walletsDir = docsDir.path + "/test_wallets/";
+
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet, private: true);
+
+    var address = await wallet.getAddress();
+
+    expect(address.contains("tb1"), true);
+  });
+
   test('Derive public wallet from seed and path', () async {
     final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
