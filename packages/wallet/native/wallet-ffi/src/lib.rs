@@ -31,19 +31,18 @@ use bdk::bitcoin::consensus::encode::serialize;
 use std::ptr::null_mut;
 
 use crate::electrum_client::Client;
-use crate::miniscript::Segwitv0;
+use crate::miniscript::{DescriptorPublicKey, Segwitv0};
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
 use bdk::keys::bip39::{Language, Mnemonic};
 use bdk::keys::DescriptorKey::Secret;
-use bdk::keys::{
-    DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
-};
+use bdk::keys::{DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey, IntoDescriptorKey};
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
+use crate::miniscript::descriptor::DescriptorSecretKey;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -219,68 +218,71 @@ pub unsafe extern "C" fn wallet_derive(
     path: *const c_char,
     data_dir: *const c_char,
     network: NetworkType,
+    private: bool,
 ) -> Wallet {
     let error_return = Wallet {
-        name:  ptr::null(),
+        name: ptr::null(),
         network,
-        external_descriptor:  ptr::null(),
-        internal_descriptor:  ptr::null(),
-        bkd_wallet_ptr:  null_mut(),
+        external_descriptor: ptr::null(),
+        internal_descriptor: ptr::null(),
+        bkd_wallet_ptr: null_mut(),
     };
 
     let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), error_return);
     let path = unwrap_or_return!(CStr::from_ptr(path).to_str(), error_return);
     let data_dir = unwrap_or_return!(CStr::from_ptr(data_dir).to_str(), error_return);
 
-    // Convert seed words to xprv
+    // Parse seed words
     let mnemonic = unwrap_or_return!(Mnemonic::parse(seed_words),error_return);
     let xkey: ExtendedKey = unwrap_or_return!(mnemonic.into_extended_key(), error_return);
-    let xprv = match xkey.into_xprv(network.clone().into()) {
-        None => {return error_return;}
-        Some(p) => {p}
-    };
 
     let derivation_path = unwrap_or_return!(DerivationPath::from_str(path), error_return);
+    let secp = Secp256k1::new();
 
     // Derive
-    let secp = Secp256k1::new();
+    let xprv = match xkey.into_xprv(network.clone().into()) {
+        None => { return error_return; }
+        Some(p) => { p }
+    };
+
     let derived_xprv = &xprv.derive_priv(&secp, &derivation_path).unwrap();
-
-
     let origin: KeySource = (xprv.fingerprint(&secp), derivation_path);
 
-    let derived_xprv_desc_key: DescriptorKey<Segwitv0> = derived_xprv
-        .into_descriptor_key(Some(origin), DerivationPath::default())
-        .unwrap();
+    // Get descriptor
+    let descriptor = {
+        let derived_xprv_desc_key: DescriptorKey<Segwitv0> =
+            derived_xprv.into_descriptor_key(Some(origin), DerivationPath::default()).unwrap();
 
-    let xprv_str = derived_xprv.to_string();
+        match derived_xprv_desc_key {
+            DescriptorKey::Public(_, _, _) => {
+                return error_return;
+            }
+            Secret(desc_seckey, _, _) => {
+                if private {
+                    desc_seckey.to_string()
+                } else {
+                    let desc_pubkey = desc_seckey.to_public(&secp).unwrap();
+                    desc_pubkey.to_string()
+                }
+            }
+        }
+    };
 
-    let xfp = derived_xprv.parent_fingerprint.to_string();
-    // TODO: get descriptors
-    // Like: wpkh([5d14cd2a/84h/1h/0h]xpub6DQrFKWSTE7e13Juxx8La4iAmAvdUjVGhaqNLSNqgVGkCWmtjt76YFmWsT4XYFaZAYCLWebNXHPCNkbC6Z4y3n3rPHra7CF35bLN8M4FzbQ/0/*)
+    let external_descriptor = format!("wpkh({descriptor})").replace("/*", "/0/*");
+    let internal_descriptor = external_descriptor.replace("/0/*", "/1/*");
 
-    // BDK likes a certain format of path
-    let path = path.replace("m/", "").replace("'", "h");
-
-    let external_descriptor = format!("wpkh([{xfp}/{path}]{xprv_str}/0/*)");
-    let internal_descriptor = external_descriptor.replace("/0/*)", "/1/*)");
+    let xfp = &descriptor[1..9];
 
     let wallet_dir = format!("{data_dir}{xfp}");
-
-
-    // let xfp_ptr = CString::new(xfp).unwrap().into_raw();
-    // let external_descriptor_ptr = CString::new(external_descriptor).unwrap().into_raw();
-    // let internal_descriptor_ptr = CString::new(internal_descriptor).unwrap().into_raw();
-
 
     let ptr = init(network, &*xfp, &*external_descriptor, &*internal_descriptor, &*wallet_dir);
 
     Wallet {
-        name:  CString::new(xfp).unwrap().into_raw(),
+        name: CString::new(xfp).unwrap().into_raw(),
         network,
         external_descriptor: CString::new(external_descriptor).unwrap().into_raw(),
         internal_descriptor: CString::new(internal_descriptor).unwrap().into_raw(),
-        bkd_wallet_ptr: ptr as *mut usize
+        bkd_wallet_ptr: ptr as *mut usize,
     }
 }
 
@@ -677,7 +679,7 @@ pub unsafe extern "C" fn wallet_sign_offline(
         network.into(),
         MemoryDatabase::new(),
     )
-    .unwrap();
+        .unwrap();
 
     let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();

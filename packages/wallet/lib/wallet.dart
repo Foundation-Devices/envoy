@@ -604,14 +604,15 @@ class Wallet {
   }
 
   static Wallet deriveWallet(
-      String seed, String path, String directory, Network network) {
+      String seed, String path, String directory, Network network, {bool private: false}) {
     final lib = load(_libName);
     final native = NativeLibrary(lib);
     var wallet = native.wallet_derive(
         seed.toNativeUtf8().cast(),
         path.toNativeUtf8().cast(),
         directory.toNativeUtf8().cast(),
-        network.index);
+        network.index,
+        private);
 
     if (wallet.bkd_wallet_ptr == nullptr) {
       throwRustException(lib);

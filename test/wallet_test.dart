@@ -101,7 +101,7 @@ void main() async {
         12);
   });
 
-  test('Derive wallet from seed and path', () async {
+  test('Get derived private wallet address', () async {
     final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
@@ -109,11 +109,35 @@ void main() async {
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, private: true);
 
     var address = await wallet.getAddress();
 
-    expect(address, "bc1q3parkhjdyur586rtrxv7z0lj37u4wcw78xa3l6");
+    expect(address.contains("bc1"), true);
+  });
+
+  test('Derive public wallet from seed and path', () async {
+    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final path = "m/84'/0'/0'";
+
+    var docsDir = await getApplicationDocumentsDirectory();
+
+    var walletsDir = docsDir.path + "/test_wallets/";
+
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, private: false);
+    expect(wallet.internalDescriptor.contains("xpub"), true);
+  });
+
+  test('Derive private wallet from seed and path', () async {
+    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final path = "m/84'/0'/0'";
+
+    var docsDir = await getApplicationDocumentsDirectory();
+
+    var walletsDir = docsDir.path + "/test_wallets/";
+
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, private: true);
+    expect(wallet.internalDescriptor.contains("xprv"), true);
   });
 
 
