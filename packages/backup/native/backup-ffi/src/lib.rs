@@ -18,26 +18,8 @@ pub struct PowHash {
     data: *const u8,
 }
 
-// 1. GET backup_challenge
-
-// 2. JSON
-// input -- random data
-// key -- string
-// difficulty -- int
-// timestamp -- utc timedate
-// signature -- input + key + difficulty + timestamp
-
-// 3. JSON
-// input
-// key
-// difficulty
-// timestamp
-// signature
-// proof --> 640 byte
-// backup data --> ? bytes --> upsert
-
 #[no_mangle]
-pub unsafe extern "C" fn pow_get(difficulty: u32) -> PowHash {
+pub unsafe extern "C" fn backup_perform(difficulty: u32) -> PowHash {
     let chunks = 4;
 
     let handles: Vec<JoinHandle<String>> = (0..chunks)

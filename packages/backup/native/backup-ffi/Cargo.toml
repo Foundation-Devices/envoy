@@ -3,18 +3,16 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [package]
-name = "pow-ffi"
+name = "backup-ffi"
 version = "0.1.0"
 authors = ["Igor Cota <igor@foundationdevices.com>"]
 edition = "2018"
 
 [lib]
-name = "pow_ffi"
+name = "backup_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-rand = {version = "0.8.5", features = ["min_const_gen"]}
-crypto-hashes = "0.10.0"
 
 [build-dependencies]
 cbindgen = "0.24.3"

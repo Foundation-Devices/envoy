@@ -23,9 +23,9 @@ class NotSupportedPlatform implements Exception {
   NotSupportedPlatform(String s);
 }
 
-class Pow {
+class Backup {
   static solve(int difficulty) {
-    var lib = NativeLibrary(load("pow_ffi"));
+    var lib = NativeLibrary(load("backup_ffi"));
     lib.pow_get(difficulty);
   }
 }

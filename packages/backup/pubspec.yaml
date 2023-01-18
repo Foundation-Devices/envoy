@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: pow
-description: A Flutter plugin for performing proof-of-work
+name: backup
+description: A Flutter plugin for performing backup and restore from Envoy server
 version: 0.0.1
 homepage:
 
@@ -45,10 +45,10 @@ ffigen:
       - _.*
   functions:
     include:
-      - pow_.*
+      - backup_.*
   headers:
     entry-points:
-      - 'native/pow-ffi/target/pow-ffi.hpp'
+      - 'native/backup-ffi/target/backup-ffi.hpp'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
