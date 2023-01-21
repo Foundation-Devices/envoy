@@ -21,7 +21,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/pages/onboarding_welcome_page.dart';
+import 'package:envoy/ui/onboard/onboarding_welcome_page.dart';
 
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';

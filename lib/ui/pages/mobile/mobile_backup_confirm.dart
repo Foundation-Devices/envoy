@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/templates/onboarding_page.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class MobileBackupConfirmPage extends StatelessWidget {

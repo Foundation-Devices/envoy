@@ -6,7 +6,7 @@ import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/pages/scv/scv_scan_qr.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/templates/onboarding_page.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
 //ignore:must_be_immutable
