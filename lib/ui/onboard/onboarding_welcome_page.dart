@@ -4,14 +4,11 @@
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/expert_setup.dart';
-import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/business/local_storage.dart';
-
-import '../pages/import_pp/single_import_pp_intro.dart';
 
 class OnboardingWelcomePage extends StatelessWidget {
   @override
@@ -29,7 +26,11 @@ class OnboardingWelcomePage extends StatelessWidget {
       ],
       buttons: [
         TextButton(
-            child: Text( "Setup passport instead",style: Theme.of(context).textTheme.bodyText2?.copyWith(color: EnvoyColors.teal)),
+            child: Text("Setup passport instead",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: EnvoyColors.teal)),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleImportPpIntroPage();

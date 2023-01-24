@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:flutter/gestures.dart';
@@ -14,7 +13,6 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'dart:typed_data';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -144,12 +142,9 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _shieldTop = MediaQuery.of(context).padding.top + 6.0;
-    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
-
     return WillPopScope(
         onWillPop: () async => false,
-        child:  OnboardPageBackground(
+        child: OnboardPageBackground(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -161,42 +156,32 @@ class OnboardingPage extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.topCenter,
                           children: [
-                            clipArt != null
-                                ? clipArt!
-                                : SizedBox.shrink(),
+                            clipArt != null ? clipArt! : SizedBox.shrink(),
                             Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   leftFunction != null
                                       ? Padding(
-                                    padding:
-                                    const EdgeInsets.all(
-                                        16.0),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          leftFunction!(
-                                              context);
-                                        },
-                                        child: Icon(
-                                            Icons
-                                                .arrow_back_ios_rounded,
-                                            size: 20)),
-                                  )
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                leftFunction!(context);
+                                              },
+                                              child: Icon(
+                                                  Icons.arrow_back_ios_rounded,
+                                                  size: 20)),
+                                        )
                                       : SizedBox.shrink(),
                                   rightFunction != null
                                       ? Padding(
-                                    padding:
-                                    const EdgeInsets.all(
-                                        16.0),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          rightFunction!(
-                                              context);
-                                        },
-                                        child: Icon(Icons
-                                            .close_rounded)),
-                                  )
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                rightFunction!(context);
+                                              },
+                                              child: Icon(Icons.close_rounded)),
+                                        )
                                       : SizedBox.shrink()
                                 ])
                           ],
@@ -214,18 +199,16 @@ class OnboardingPage extends StatelessWidget {
                   children: [
                     navigationDots != 0
                         ? Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: DotsIndicator(
-                        decorator: DotsDecorator(
-                            size: Size.square(5.0),
-                            activeSize: Size.square(5.0),
-                            spacing: EdgeInsets.symmetric(
-                                horizontal: 5)),
-                        dotsCount: navigationDots,
-                        position:
-                        navigationDotsIndex.toDouble(),
-                      ),
-                    )
+                            padding: const EdgeInsets.all(20.0),
+                            child: DotsIndicator(
+                              decorator: DotsDecorator(
+                                  size: Size.square(5.0),
+                                  activeSize: Size.square(5.0),
+                                  spacing: EdgeInsets.symmetric(horizontal: 5)),
+                              dotsCount: navigationDots,
+                              position: navigationDotsIndex.toDouble(),
+                            ),
+                          )
                         : SizedBox.shrink(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
