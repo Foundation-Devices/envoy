@@ -198,9 +198,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double _shieldTopOptionsShown =
         _shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double _shieldHeight = _screenHeight * 0.77 - _bottomOffset;
+    double _shieldHeight = _screenHeight * 0.76 - _bottomOffset;
     double _shieldHeightModalShown = _screenHeight * 0.85 - _bottomOffset;
-    double _shieldHeightOptionsShown = _screenHeight * 0.77 - _bottomOffset;
+    double _shieldHeightOptionsShown = _screenHeight * 0.76 - _bottomOffset;
 
     // ignore: unused_local_variable
     double _shieldGlowOffset = 30;

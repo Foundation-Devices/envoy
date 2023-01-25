@@ -4,11 +4,14 @@
 
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/amount.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/loader_ghost.dart';
@@ -56,174 +59,233 @@ class _AccountListTileState extends State<AccountListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return CardSwipeWrapper(
       height: containerHeight,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        border:
-            Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
-        gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              widget.account.color,
-              Colors.black,
-            ]),
-      ),
+      account: widget.account,
       child: Container(
+        height: containerHeight,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-            border: Border.all(
-                color: widget.account.color,
-                width: 2,
-                style: BorderStyle.solid)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-          child: GestureDetector(
-            onTap: widget.onTap,
-            child: Stack(children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: LinesPainter(
-                      color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
-                ),
-              ),
-              Positioned.fill(
-                  child: Column(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.account.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(color: Colors.white),
-                                ),
-                                Text(
-                                  Devices().getDeviceName(
-                                      widget.account.deviceSerial),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 12),
-                            child: Container(
-                                width: widget.account.wallet.network ==
-                                        Network.Testnet
-                                    ? null
-                                    : containerHeight / 2.2,
-                                height: containerHeight / 2.2,
-                                decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.6),
-                                    borderRadius: BorderRadius.circular(
-                                        containerHeight / 2),
-                                    border: Border.all(
-                                        color: widget.account.color,
-                                        width: 3,
-                                        style: BorderStyle.solid)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      if (widget.account.wallet.network ==
-                                          Network.Testnet)
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Text(
-                                            "Testnet",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .copyWith(color: Colors.white),
-                                          ),
-                                        ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            right:
-                                                widget.account.wallet.network ==
-                                                        Network.Testnet
-                                                    ? 6.0
-                                                    : 0.0),
-                                        child: SvgPicture.asset(
-                                          "assets/bitcoin.svg",
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          border: Border.all(
+              color: Colors.black, width: 2, style: BorderStyle.solid),
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                widget.account.color,
+                Colors.black,
+              ]),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              border: Border.all(
+                  color: widget.account.color,
+                  width: 2,
+                  style: BorderStyle.solid)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            child: GestureDetector(
+              onTap: widget.onTap,
+              child: Stack(children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: LinesPainter(
+                        color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                ),
+                Positioned.fill(
+                    child: Column(
+                  children: [
+                    Expanded(
+                      flex: 3,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                        padding: const EdgeInsets.only(left: 13),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: !widget.account.initialSyncCompleted
-                                  ? LoaderGhost(
-                                      width: 200,
-                                      height: 20,
-                                    )
-                                  : Text(
-                                      getFormattedAmount(
-                                          widget.account.wallet.balance,
-                                          includeUnit: true),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5!
-                                          .copyWith(color: EnvoyColors.grey),
-                                    ),
-                            ),
-                            !widget.account.initialSyncCompleted
-                                ? LoaderGhost(
-                                    width: 50,
-                                    height: 15,
-                                  )
-                                : Text(
-                                    ExchangeRate().getFormattedAmount(
-                                        widget.account.wallet.balance),
+                            Flexible(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.account.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                  Text(
+                                    Devices().getDeviceName(
+                                        widget.account.deviceSerial),
                                     style: Theme.of(context)
                                         .textTheme
                                         .subtitle2!
-                                        .copyWith(color: EnvoyColors.grey),
-                                  )
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Container(
+                                  width: widget.account.wallet.network ==
+                                          Network.Testnet
+                                      ? null
+                                      : containerHeight / 2.2,
+                                  height: containerHeight / 2.2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      borderRadius: BorderRadius.circular(
+                                          containerHeight / 2),
+                                      border: Border.all(
+                                          color: widget.account.color,
+                                          width: 3,
+                                          style: BorderStyle.solid)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        if (widget.account.wallet.network ==
+                                            Network.Testnet)
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Text(
+                                              "Testnet",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2!
+                                                  .copyWith(
+                                                      color: Colors.white),
+                                            ),
+                                          ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              right: widget.account.wallet
+                                                          .network ==
+                                                      Network.Testnet
+                                                  ? 6.0
+                                                  : 0.0),
+                                          child: SvgPicture.asset(
+                                            "assets/bitcoin.svg",
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                  )
-                ],
-              ))
-            ]),
+                    Expanded(
+                      flex: 2,
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final hide = ref.watch(
+                              balanceHideStateStatusProvider(widget.account));
+                          print(
+                              "widget.account.initialSyncCompleted  ${widget.account.number} ${widget.account.initialSyncCompleted} $hide");
+                          if (hide) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16))),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 13.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 200,
+                                      height: 20,
+                                      child: Container(
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffEEEEEE),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20)))),
+                                    ),
+                                    SizedBox(
+                                        width: 50,
+                                        height: 15,
+                                        child: Container(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xffEEEEEE),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20)))))
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16))),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 13.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: !widget
+                                                .account.initialSyncCompleted ||
+                                            hide
+                                        ? LoaderGhost(
+                                            width: 200,
+                                            height: 20,
+                                          )
+                                        : Text(
+                                            getFormattedAmount(
+                                                widget.account.wallet.balance,
+                                                includeUnit: true),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                    color: EnvoyColors.grey),
+                                          ),
+                                  ),
+                                  !widget.account.initialSyncCompleted || hide
+                                      ? LoaderGhost(
+                                          width: 50,
+                                          height: 15,
+                                        )
+                                      : Text(
+                                          ExchangeRate().getFormattedAmount(
+                                              widget.account.wallet.balance),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!
+                                              .copyWith(
+                                                  color: EnvoyColors.grey),
+                                        )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ))
+              ]),
+            ),
           ),
         ),
       ),
