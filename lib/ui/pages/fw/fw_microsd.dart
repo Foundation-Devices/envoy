@@ -8,7 +8,7 @@ import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/templates/onboarding_page.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
 import 'package:envoy/business/devices.dart';

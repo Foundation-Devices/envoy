@@ -6,7 +6,7 @@ import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_microsd.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/templates/onboarding_page.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 //ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {

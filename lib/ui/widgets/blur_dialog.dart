@@ -13,6 +13,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   Animation<Color?>? _filterColorAnimation;
   double blur = 6;
   Color blurColor;
+  Color? cardColor;
   bool dismissible;
 
   Builder builder;
@@ -25,6 +26,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     this.blur = 6,
     this.blurColor = Colors.black,
     this.dismissible = true,
+    this.cardColor,
   }) : super(settings: settings);
 
   @override
@@ -59,6 +61,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
                     child: FadeTransition(
                       opacity: _fade!,
                       child: Card(
+                          color: cardColor,
                           elevation: _elevation?.value,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
@@ -223,6 +226,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 Future<T?> showEnvoyDialog<T>(
     {required BuildContext context,
     Color blurColor = Colors.black38,
+    Color? cardColor,
     double blur = 6,
     routeSettings,
     Widget? dialog,
@@ -232,6 +236,7 @@ Future<T?> showEnvoyDialog<T>(
       blur: blur,
       builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
       blurColor: blurColor,
+      cardColor: cardColor,
       dismissible: dismissible,
       settings: routeSettings);
   return await Navigator.of(context, rootNavigator: false).push(route);
