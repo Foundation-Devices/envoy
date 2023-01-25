@@ -12,12 +12,11 @@ environment:
   flutter: ">=1.20.0"
 
 dependencies:
-  convert: ^3.0.1
-  crypto: ^3.0.1
   ffi: ^1.1.2
   flutter:
     sdk: flutter
-  path_provider: ^2.0.2
+  shared_preferences: ^2.0.11
+
 
 dev_dependencies:
   ffigen: ^6.0.0

@@ -6,6 +6,8 @@ import 'dart:ffi';
 import 'dart:io';
 import 'generated_bindings.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
     return DynamicLibrary.open('lib$name.so');
@@ -24,8 +26,14 @@ class NotSupportedPlatform implements Exception {
 }
 
 class Backup {
-  static solve(int difficulty) {
+  static perform(SharedPreferences prefs, List<String> keys, String password) {
+    List<String> jsonData = [];
+    for (var key in keys) {
+      jsonData.add(prefs.getString(key)!);
+    }
+
+
+
     var lib = NativeLibrary(load("backup_ffi"));
-    lib.pow_get(difficulty);
   }
 }

@@ -13,6 +13,7 @@ name = "backup_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
+mla = "1.3.0"
 
 [build-dependencies]
 cbindgen = "0.24.3"
