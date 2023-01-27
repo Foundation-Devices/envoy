@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/onboard/mnemonic/wordlist.dart';
+import 'package:envoy/ui/onboard/expert/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
@@ -14,10 +14,14 @@ enum SeedLength {
 
 class MnemonicEntryGrid extends StatefulWidget {
   final SeedLength seedLength;
+  final List<String>? seedInput;
   final Function(List<String>) onSeedWordAdded;
 
   MnemonicEntryGrid(
-      {Key? key, required this.seedLength, required this.onSeedWordAdded})
+      {Key? key,
+      required this.seedLength,
+      this.seedInput,
+      required this.onSeedWordAdded})
       : super(key: key);
 
   @override
@@ -80,6 +84,7 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
           ),
         ),
         DotsIndicator(
+          totalPages: 2,
           pageController: _pageController,
         )
       ],
@@ -286,8 +291,10 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
 class DotsIndicator extends StatefulWidget {
   final PageController pageController;
+  final int totalPages;
 
-  const DotsIndicator({Key? key, required this.pageController})
+  const DotsIndicator(
+      {Key? key, required this.pageController, required this.totalPages})
       : super(key: key);
 
   @override
@@ -296,19 +303,13 @@ class DotsIndicator extends StatefulWidget {
 
 class _DotsIndicatorState extends State<DotsIndicator> {
   int page = 0;
-  int totalPages = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        totalPages = widget.pageController.positions.length;
-      });
-    });
     widget.pageController.addListener(() {
       int value = widget.pageController.page?.ceil() ?? 0;
-      if (value != page)
+      if (value != page && mounted)
         setState(() {
           page = value;
         });
@@ -318,7 +319,7 @@ class _DotsIndicatorState extends State<DotsIndicator> {
   @override
   Widget build(BuildContext context) {
     List<Widget> widgets = [];
-    for (int i = 0; i <= totalPages; i++) {
+    for (int i = 0; i <= widget.totalPages; i++) {
       widgets.add(_buildDot(i == page));
     }
 
@@ -348,6 +349,8 @@ class MnemonicInput extends StatefulWidget {
           FocusNode focusNode, TextEditingController controller, String word)
       onWordDetected;
   final Function(String word) onWordAdded;
+  final bool readOnly;
+  final bool active;
   final TextEditingController controller;
   final FocusNode focusNode;
   final int index;
@@ -358,6 +361,8 @@ class MnemonicInput extends StatefulWidget {
       required this.onWordDetected,
       required this.focusNode,
       required this.index,
+      this.readOnly = false,
+      this.active = false,
       required this.onWordAdded})
       : super(key: key);
 
@@ -401,7 +406,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
       borderColor = Colors.black87;
     }
 
-    if (_hasFocus) {
+    if (_hasFocus || widget.active) {
       borderColor = Theme.of(context).primaryColor;
     }
 
@@ -416,7 +421,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
       builder: (p0, p1) {
         return GestureDetector(
           onTap: () {
-            widget.focusNode.requestFocus();
+            if (!widget.readOnly) widget.focusNode.requestFocus();
           },
           child: Container(
             height: 80,
