@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/onboard/expert_setup.dart';
+import 'package:envoy/ui/onboard/expert/expert_setup.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
