@@ -5,6 +5,7 @@
 #[macro_use]
 extern crate log;
 
+use std::convert::TryFrom;
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::ptr;
@@ -22,6 +23,7 @@ use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
 use bdk::{electrum_client, SyncOptions};
 use bdk::{FeeRate, Wallet};
+use payjoin::{PjUri, PjUriExt};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -35,7 +37,7 @@ use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
 use bitcoin_hashes::hex::ToHex;
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard};
 
 #[repr(C)]
 pub enum NetworkType {
@@ -445,6 +447,48 @@ pub unsafe extern "C" fn wallet_create_psbt(
     amount: u64,
     fee_rate: f64,
 ) -> Psbt {
+    use payjoin::UriExt;
+    let error_return = Psbt {
+        sent: 0,
+        received: 0,
+        fee: 0,
+        base64: ptr::null(),
+        txid: ptr::null(),
+        raw_tx: ptr::null(),
+    };
+    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
+    let destination  = CStr::from_ptr(send_to).to_str().unwrap();
+    let fee_rate = FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32); // Multiplication here is t convert from BTC/vkb to sat/vb
+
+    match payjoin::Uri::try_from(destination) {
+        Ok(uri) => {
+            let address = uri.address.clone();
+            if let Ok(pj_uri) = uri.check_pj_supported() {
+                return create_payjoin(&wallet, pj_uri, amount, fee_rate)
+            } else {
+                create_transaction(&wallet, address, amount, fee_rate)
+            }
+        }
+        _ => {
+            let address = match Address::from_str(destination) {
+                Ok(a) => a,
+                Err(e) => {
+                    update_last_error(e);
+                    return error_return;
+                }
+            };
+            create_transaction(&wallet, address, amount, fee_rate)
+        }
+    }
+
+}
+
+fn create_payjoin(
+    wallet: &Wallet<Tree>,
+    pj_uri: PjUri<'_>,
+    amount: u64,
+    fee_rate: FeeRate,
+) -> Psbt {
     let error_return = Psbt {
         sent: 0,
         received: 0,
@@ -454,10 +498,40 @@ pub unsafe extern "C" fn wallet_create_psbt(
         raw_tx: ptr::null(),
     };
 
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
-    let address = CStr::from_ptr(send_to).to_str().unwrap();
+    let mut builder = wallet.build_tx();
+    builder
+        .ordering(TxOrdering::Shuffle)
+        .only_witness_utxo()
+        .add_recipient(pj_uri.address.script_pubkey(), amount)
+        .enable_rbf()
+        .fee_rate(fee_rate);
 
-    let send_to = unwrap_or_return!(Address::from_str(address), error_return);
+    let (original_psbt, _) = builder.finish().expect("Could not create original psbt");
+
+    // TODO set payjoin optional parameters using fee_rate
+    let pj_params = payjoin::sender::Params::non_incentivizing();
+    let (req, ctx) = pj_uri.create_pj_request(original_psbt, pj_params).expect("zoinks! can't create request");
+
+    let response = reqwest::blocking::Client::new() // TODO use blocking client?
+        .post(req.url)
+        .header("Content-Type", "text/plain")
+        .body(req.body)
+        .send()
+        .expect("failed to communicate with payjoin recipient");
+
+    let payjoin_psbt = ctx.process_response(response).unwrap();
+    psbt_extract_details(&wallet, &payjoin_psbt)
+}
+
+fn create_transaction(wallet: &Wallet<Tree>, send_to: Address, amount: u64, fee_rate: FeeRate) -> Psbt {
+    let error_return = Psbt {
+        sent: 0,
+        received: 0,
+        fee: 0,
+        base64: ptr::null(),
+        txid: ptr::null(),
+        raw_tx: ptr::null(),
+    };
 
     let mut builder = wallet.build_tx();
     builder
@@ -465,7 +539,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
         .only_witness_utxo()
         .add_recipient(send_to.script_pubkey(), amount)
         .enable_rbf()
-        .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
+        .fee_rate(fee_rate);
 
     match builder.finish() {
         Ok((psbt, _)) => psbt_extract_details(&wallet, &psbt),
