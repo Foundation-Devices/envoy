@@ -47,6 +47,16 @@ class _SendCardState extends State<SendCard>
     _address = AddressEntry(
         wallet: widget.account.wallet,
         initalAddress: widget.address,
+        onAmountChanged: (amount) {
+          setState(() {
+            _amount = amount;
+            _amountEntry = AmountEntry(
+              onAmountChanged: _updateAmount,
+              initalSatAmount: _amount,
+              key: UniqueKey(),
+            );
+          });
+        },
         onAddressChanged: (valid) {
           Future.delayed(Duration.zero, () async {
             setState(() {
