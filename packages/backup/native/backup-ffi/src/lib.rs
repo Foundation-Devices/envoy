@@ -4,13 +4,17 @@
 
 extern crate core;
 
-use std::ffi::CString;
+#[macro_use]
+extern crate log;
+
+use std::ffi::{CStr, CString};
 use std::io;
+use std::io::Read;
 use std::os::raw::c_char;
 use serde::{Deserialize, Serialize};
 
 // TODO: Some other way to do this?
-use curve25519_parser::parse_openssl_25519_pubkey;
+use curve25519_parser::{parse_openssl_25519_pubkey, StaticSecret};
 use curve25519_parser::parse_openssl_25519_privkey;
 
 use mla::config::ArchiveWriterConfig;
@@ -19,44 +23,13 @@ use mla::ArchiveWriter;
 use mla::config::ArchiveReaderConfig;
 use mla::ArchiveReader;
 
-use std::cell::RefCell;
-use std::error::Error;
+use bdk::keys::bip39::Mnemonic;
 
-use bdk::keys::bip39::{Language, Mnemonic};
-
-
-
-thread_local! {
-    static LAST_ERROR: RefCell<Option<Box<dyn Error>>> = RefCell::new(None);
-}
-
-/// Update the most recent error, clearing whatever may have been there before.
-pub fn update_last_error<E: Error + 'static>(err: E) {
-    error!("Setting LAST_ERROR: {}", err);
-
-    {
-        // Print a pseudo-backtrace for this error, following back each error's
-        // cause until we reach the root error.
-        let mut cause = err.source();
-        while let Some(parent_err) = cause {
-            warn!("Caused by: {}", parent_err);
-            cause = parent_err.source();
-        }
-    }
-
-    LAST_ERROR.with(|prev| {
-        *prev.borrow_mut() = Some(Box::new(err));
-    });
-}
-
-/// Retrieve the most recent error, clearing it in the process.
-pub fn take_last_error() -> Option<Box<dyn Error>> {
-    LAST_ERROR.with(|prev| prev.borrow_mut().take())
-}
+mod error;
 
 #[no_mangle]
 pub unsafe extern "C" fn backup_last_error_message() -> *const c_char {
-    let last_error = match take_last_error() {
+    let last_error = match error::take_last_error() {
         Some(err) => err,
         None => return CString::new("").unwrap().into_raw(),
     };
@@ -101,8 +74,13 @@ pub unsafe extern "C" fn backup_perform(files_nr: u8,
                                         server_url: *const c_char,
                                         proxy_port: i32,
 ) {
+    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+
     // Compress files
     let mnemonic = Mnemonic::parse(seed_words).unwrap();
+    let entropy = mnemonic.to_entropy_array().0;
+    let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
+    let password = StaticSecret::from(entropy_32);
 
 
     // Ask for challenge
@@ -111,17 +89,13 @@ pub unsafe extern "C" fn backup_perform(files_nr: u8,
     // Push solution + file
 }
 
-fn encrypt_backup(files: Vec<(&str, &str)>, password: &str) -> Vec<u8> {
-
-    // TODO: convert seed to pubkey
-    let public_key = parse_openssl_25519_pubkey(password.as_ref()).unwrap();
-
+fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
     // Create an MLA Archive - Output only needs the Write trait
     let mut buf = Vec::new();
     // Default is Compression + Encryption, to avoid mistakes
     let mut config = ArchiveWriterConfig::default();
     // The use of multiple public keys is supported
-    config.add_public_keys(&vec![public_key]);
+    config.add_public_keys(&vec![secret.into()]);
     {
         // Create the Writer
 
@@ -129,7 +103,7 @@ fn encrypt_backup(files: Vec<(&str, &str)>, password: &str) -> Vec<u8> {
 
         // Add a file
         for (name, data) in files {
-            mla.add_file(name, 4, data.as_bytes()).unwrap();
+            mla.add_file(name, data.len() as u64, data.as_bytes()).unwrap();
         }
 
         // Complete the archive
@@ -139,27 +113,26 @@ fn encrypt_backup(files: Vec<(&str, &str)>, password: &str) -> Vec<u8> {
     buf
 }
 
-fn decrypt_backup(data: Vec<u8>, password: &str) -> Vec<(&str, &str)> {
-    // Get the private key
-    let private_key = parse_openssl_25519_privkey(password.as_ref()).unwrap();
-
+fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> {
     // Specify the key for the Reader
     let mut config = ArchiveReaderConfig::new();
-    config.add_private_keys(&[private_key]);
+    config.add_private_keys(&[secret]);
 
     // Read from buf, which needs Read + Seek
     let buf = io::Cursor::new(data);
 
     let mut mla_read = ArchiveReader::from_config(buf, config).unwrap();
 
-    // Get a file
+/*    // Get a file
     let mut file = mla_read
         .get_file("simple".to_string())
         .unwrap() // An error can be raised (I/O, decryption, etc.)
         .unwrap(); // Option(file), as the file might not exist in the archive
 
     // Get back its filename, size, and data
-    println!("{} ({} bytes)", file.filename, file.size);
+    println!("{} ({} bytes)", file.filename, file.size);*/
+
+
     //let mut output = Vec::new();
     //std::io::copy(&mut file.data, &mut output).unwrap();
 
@@ -168,7 +141,24 @@ fn decrypt_backup(data: Vec<u8>, password: &str) -> Vec<(&str, &str)> {
     //     println!("{}", fname);
     // }
 
-    vec![("", "")]
+
+    let files: Vec<String> = mla_read.list_files().unwrap().cloned().collect();
+
+    //let mut file = mla_read.get_file("what".to_string()).unwrap().unwrap().data;
+
+
+    files.iter().map(|name|{
+        let mut file = mla_read.get_file(name.clone()).unwrap().unwrap().data;
+        let mut content = String::new();
+
+        file.read_to_string(&mut content).unwrap();
+
+        println!("{content}");
+
+        (name.to_owned(), content)
+    }).collect()
+
+    //vec![("".to_owned(), "".to_owned())]
 
 
 }
@@ -246,12 +236,15 @@ mod tests {
 
     #[test]
     fn test_compress_backup() {
-        let encrypted = encrypt_backup(vec![("hello", "there")], "password");
+        let mnemonic = Mnemonic::parse("copper december enlist body dove discover cross help evidence fall rich clean").unwrap();
+        let entropy = mnemonic.to_entropy_array().0;
+        let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
 
-        let decrypted = decrypt_backup(encrypted, "password");
+        let encrypted = encrypt_backup(vec![("hello", "there")], &StaticSecret::from(entropy_32));
+        let decrypted = decrypt_backup(encrypted, StaticSecret::from(entropy_32));
 
 
-        assert_eq!(decrypted, [("hello", "there")]);
+        assert_eq!(decrypted, [("hello".to_owned(), "there".to_owned())]);
 
     }
 }
