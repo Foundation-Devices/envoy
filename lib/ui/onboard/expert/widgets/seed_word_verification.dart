@@ -8,6 +8,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/expert/widgets/wordlist.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
   PageController _pageController = PageController();
   List<List<String>> _puzzleOptions = [];
   List<String> answers = [];
+  bool _finishedAnswers = false;
 
   int _puzzlePageIndex = 0;
 
@@ -89,7 +91,9 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                                   if (answer ==
                                       answers[_puzzleOptions.indexOf(e)]) {
                                     if (answers.last == answer) {
-                                      widget.onVerificationFinished(true);
+                                      setState(() {
+                                        _finishedAnswers = true;
+                                      });
                                       return;
                                     }
                                     await Future.delayed(
@@ -113,11 +117,21 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                               pageController: _pageController,
                               totalPages: _puzzleOptions.length - 1)),
                       Padding(padding: EdgeInsets.all(6)),
-                      Text("Choose a word to continue",
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption
-                              ?.copyWith(fontWeight: FontWeight.w400)),
+                      !_finishedAnswers
+                          ? Text("Choose a word to continue ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption
+                                  ?.copyWith(fontWeight: FontWeight.w400))
+                          : Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 0),
+                              child: OnboardingButton(
+                                  label: "Continue",
+                                  light: false,
+                                  onTap: () {
+                                    widget.onVerificationFinished(true);
+                                  })),
                       Padding(padding: EdgeInsets.all(6)),
                     ],
                   ),
