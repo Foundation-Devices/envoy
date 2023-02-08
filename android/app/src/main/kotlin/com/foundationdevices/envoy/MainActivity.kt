@@ -14,6 +14,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
+import java.io.FileInputStream
 
 
 class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
@@ -113,6 +114,15 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
                     startActivityForResult(intent, saveFileRequestCode)
                     result.success(true)
+                }
+                "flush_file" -> {
+                    val stream = FileInputStream(firmware!!)
+                    try {
+                        stream.fd.sync()
+                        result.success(true)
+                    } catch (e: Exception) {
+                        result.error(e.toString(), "", "")
+                    }
                 }
                 "data_changed" -> {
                     BackupManager(this).dataChanged()

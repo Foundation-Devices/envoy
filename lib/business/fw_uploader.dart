@@ -59,6 +59,10 @@ class FwUploader {
     platform.invokeMethod('save_file', argsMap);
   }
 
+  _flushFile() {
+    platform.invokeMethod('flush_file');
+  }
+
   // ignore: unused_element
   getManageFilesPermission() {
     platform.invokeMethod('get_manage_files_permission');
@@ -76,6 +80,12 @@ class FwUploader {
       _androidUpload();
     } else {
       _iosUpload();
+    }
+  }
+
+  flush() {
+    if (Platform.isAndroid) {
+      _flushFile();
     }
   }
 

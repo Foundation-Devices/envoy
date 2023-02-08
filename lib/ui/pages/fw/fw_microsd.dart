@@ -7,6 +7,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
+import 'package:envoy/ui/pages/fw/fw_progress.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -52,9 +53,11 @@ class FwMicrosdPage extends StatelessWidget {
                   if (Platform.isAndroid)
                     return FwAndroidInstructionsPage(onboarding: onboarding);
                 }
-                return FwPassportPage(
-                  onboarding: onboarding,
-                );
+                return Platform.isIOS
+                    ? FwPassportPage(
+                        onboarding: onboarding,
+                      )
+                    : FwProgressPage(fw, onboarding: onboarding);
               }));
             }),
       ],
