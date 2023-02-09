@@ -59,8 +59,8 @@ class FwUploader {
     platform.invokeMethod('save_file', argsMap);
   }
 
-  _flushFile() {
-    platform.invokeMethod('flush_file');
+  Future<dynamic> _flushFile() {
+    return platform.invokeMethod('flush_file');
   }
 
   // ignore: unused_element
@@ -83,10 +83,8 @@ class FwUploader {
     }
   }
 
-  flush() {
-    if (Platform.isAndroid) {
-      _flushFile();
-    }
+  Future<dynamic> flush() {
+      return _flushFile();
   }
 
   _iosUpload() {
