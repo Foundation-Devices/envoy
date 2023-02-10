@@ -6,6 +6,7 @@ import 'dart:math';
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
 import 'package:envoy/ui/onboard/expert/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -54,8 +55,10 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
             VerifySeedPuzzleWidget(
                 seed: seed,
                 onVerificationFinished: (bool verified) async {
+                  //TODO: Show
                   if (verified) {
-                    // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ImportMnemonicSetup()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => StorageSetupPage()));
                   } else {
                     await Future.delayed(Duration(milliseconds: 100));
                     Haptics.heavyImpact();
