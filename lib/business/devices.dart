@@ -39,7 +39,7 @@ class Devices extends ChangeNotifier {
   List<Device> devices = [];
   LocalStorage _ls = LocalStorage();
 
-  static const String _DEVICES_PREFS = "devices";
+  static const String DEVICES_PREFS = "devices";
   static final Devices _instance = Devices._internal();
 
   factory Devices() {
@@ -72,17 +72,17 @@ class Devices extends ChangeNotifier {
 
   //ignore:unused_element
   _clearDevices() {
-    _ls.prefs.remove(_DEVICES_PREFS);
+    _ls.prefs.remove(DEVICES_PREFS);
   }
 
   storeDevices() {
     String json = jsonEncode(devices);
-    _ls.prefs.setString(_DEVICES_PREFS, json);
+    _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
   _restoreDevices() {
-    if (_ls.prefs.containsKey(_DEVICES_PREFS)) {
-      var storedDevices = jsonDecode(_ls.prefs.getString(_DEVICES_PREFS)!);
+    if (_ls.prefs.containsKey(DEVICES_PREFS)) {
+      var storedDevices = jsonDecode(_ls.prefs.getString(DEVICES_PREFS)!);
       for (var device in storedDevices) {
         devices.add(Device.fromJson(device));
       }

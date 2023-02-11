@@ -26,11 +26,15 @@ class NotSupportedPlatform implements Exception {
 }
 
 class Backup {
-  static perform(SharedPreferences prefs, List<String> keys, String password) {
-    List<String> jsonData = [];
-    for (var key in keys) {
-      jsonData.add(prefs.getString(key)!);
+  static perform(SharedPreferences prefs, List<String> keysToBackUp, String password) {
+    Map<String, String> backupData = {};
+    for (var key in keysToBackUp) {
+      if (prefs.containsKey(key)) {
+        backupData[key] = prefs.getString(key)!;
+      }
     }
+
+    // Convert map
 
 
 

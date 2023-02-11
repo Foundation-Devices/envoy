@@ -73,7 +73,7 @@ class Notifications {
   List<EnvoyNotification> notifications = [];
   LocalStorage _ls = LocalStorage();
 
-  static const String _NOTIFICATIONS_PREFS = "notifications";
+  static const String NOTIFICATIONS_PREFS = "notifications";
 
   static final Notifications _instance = Notifications._internal();
 
@@ -146,7 +146,7 @@ class Notifications {
 
   //ignore:unused_element
   _clearNotifications() {
-    _ls.prefs.remove(_NOTIFICATIONS_PREFS);
+    _ls.prefs.remove(NOTIFICATIONS_PREFS);
   }
 
   dispose() {
@@ -160,7 +160,7 @@ class Notifications {
     };
 
     String json = jsonEncode(jsonMap);
-    _ls.prefs.setString(_NOTIFICATIONS_PREFS, json);
+    _ls.prefs.setString(NOTIFICATIONS_PREFS, json);
   }
 
   _restoreNotifications() {
@@ -168,8 +168,8 @@ class Notifications {
       _syncTimer!.cancel();
     }
 
-    if (_ls.prefs.containsKey(_NOTIFICATIONS_PREFS)) {
-      var jsonMap = jsonDecode(_ls.prefs.getString(_NOTIFICATIONS_PREFS)!);
+    if (_ls.prefs.containsKey(NOTIFICATIONS_PREFS)) {
+      var jsonMap = jsonDecode(_ls.prefs.getString(NOTIFICATIONS_PREFS)!);
 
       lastUpdated = DateTime.parse(jsonMap["last_updated"]);
 

@@ -30,7 +30,7 @@ class AccountManager extends ChangeNotifier {
   Timer? _syncTimer;
   bool _syncBlocked = false;
 
-  static const String _ACCOUNTS_PREFS = "accounts";
+  static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
 
   static String walletsDirectory = LocalStorage().appDocumentsDir.path + "/wallets/";
@@ -241,8 +241,8 @@ class AccountManager extends ChangeNotifier {
     }
 
     _dropAccounts();
-    if (_ls.prefs.containsKey(_ACCOUNTS_PREFS)) {
-      var storedAccounts = jsonDecode(_ls.prefs.getString(_ACCOUNTS_PREFS)!);
+    if (_ls.prefs.containsKey(ACCOUNTS_PREFS)) {
+      var storedAccounts = jsonDecode(_ls.prefs.getString(ACCOUNTS_PREFS)!);
       for (var account in storedAccounts) {
         Account restoredAccount = Account.fromJson(account);
         accounts.add(restoredAccount);
@@ -283,7 +283,7 @@ class AccountManager extends ChangeNotifier {
 
   storeAccounts() {
     String json = jsonEncode(accounts);
-    _ls.prefs.setString(_ACCOUNTS_PREFS, json);
+    _ls.prefs.setString(ACCOUNTS_PREFS, json);
   }
 
   renameAccount(Account account, String newName) {

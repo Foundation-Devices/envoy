@@ -14174,16 +14174,6 @@ class S {
     );
   }
 
-  /// `1`
-  String get text_639b0589fe1a37c21666ea54 {
-    return Intl.message(
-      '1',
-      name: 'text_639b0589fe1a37c21666ea54',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `6`
   String get text_639b0589fe1a37c21666ea56 {
     return Intl.message(
@@ -14264,16 +14254,6 @@ class S {
     );
   }
 
-  /// `2`
-  String get text_639b0589fe1a37c21666ea6a {
-    return Intl.message(
-      '2',
-      name: 'text_639b0589fe1a37c21666ea6a',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `6. tank`
   String get text_639b0589fe1a37c21666ea6e {
     return Intl.message(
@@ -14309,16 +14289,6 @@ class S {
     return Intl.message(
       '12. catch',
       name: 'text_639b0589fe1a37c21666ea74',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_639b0589fe1a37c21666ea77 {
-    return Intl.message(
-      '3',
-      name: 'text_639b0589fe1a37c21666ea77',
       desc: '',
       args: [],
     );
@@ -14384,16 +14354,6 @@ class S {
     );
   }
 
-  /// `4`
-  String get text_639b0589fe1a37c21666ea86 {
-    return Intl.message(
-      '4',
-      name: 'text_639b0589fe1a37c21666ea86',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `My seed has a passphrase`
   String get text_639b0589fe1a37c21666ea88 {
     return Intl.message(
@@ -14429,16 +14389,6 @@ class S {
     return Intl.message(
       'Done',
       name: 'text_639b0589fe1a37c21666ea8e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5`
-  String get text_639b0589fe1a37c21666ea8f {
-    return Intl.message(
-      '5',
-      name: 'text_639b0589fe1a37c21666ea8f',
       desc: '',
       args: [],
     );
@@ -14514,16 +14464,6 @@ class S {
     );
   }
 
-  /// `6`
-  String get text_639b0589fe1a37c21666ea9e {
-    return Intl.message(
-      '6',
-      name: 'text_639b0589fe1a37c21666ea9e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get text_639b0589fe1a37c21666eaa0 {
     return Intl.message(
@@ -14584,16 +14524,6 @@ class S {
     );
   }
 
-  /// `7`
-  String get text_639b0589fe1a37c21666eaab {
-    return Intl.message(
-      '7',
-      name: 'text_639b0589fe1a37c21666eaab',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get text_639b0589fe1a37c21666eaad {
     return Intl.message(
@@ -14629,16 +14559,6 @@ class S {
     return Intl.message(
       'r',
       name: 'text_639b0589fe1a37c21666eab2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8`
-  String get text_639b0589fe1a37c21666eab4 {
-    return Intl.message(
-      '8',
-      name: 'text_639b0589fe1a37c21666eab4',
       desc: '',
       args: [],
     );
@@ -14684,16 +14604,6 @@ class S {
     );
   }
 
-  /// `9`
-  String get text_639b0589fe1a37c21666eabe {
-    return Intl.message(
-      '9',
-      name: 'text_639b0589fe1a37c21666eabe',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `q`
   String get text_639b0589fe1a37c21666eac0 {
     return Intl.message(
@@ -14719,16 +14629,6 @@ class S {
     return Intl.message(
       'y',
       name: 'text_639b0589fe1a37c21666eac4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `0`
-  String get text_639b0589fe1a37c21666eac6 {
-    return Intl.message(
-      '0',
-      name: 'text_639b0589fe1a37c21666eac6',
       desc: '',
       args: [],
     );
@@ -14764,16 +14664,6 @@ class S {
     );
   }
 
-  /// `q`
-  String get text_639b0589fe1a37c21666eace {
-    return Intl.message(
-      'q',
-      name: 'text_639b0589fe1a37c21666eace',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `e`
   String get text_639b0589fe1a37c21666ead0 {
     return Intl.message(
@@ -14799,16 +14689,6 @@ class S {
     return Intl.message(
       'i',
       name: 'text_639b0589fe1a37c21666ead4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `w`
-  String get text_639b0589fe1a37c21666ead6 {
-    return Intl.message(
-      'w',
-      name: 'text_639b0589fe1a37c21666ead6',
       desc: '',
       args: [],
     );
@@ -14844,16 +14724,6 @@ class S {
     );
   }
 
-  /// `e`
-  String get text_639b0589fe1a37c21666eade {
-    return Intl.message(
-      'e',
-      name: 'text_639b0589fe1a37c21666eade',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `t`
   String get text_639b0589fe1a37c21666eae0 {
     return Intl.message(
@@ -14879,16 +14749,6 @@ class S {
     return Intl.message(
       'p',
       name: 'text_639b0589fe1a37c21666eae4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `r`
-  String get text_639b0589fe1a37c21666eae6 {
-    return Intl.message(
-      'r',
-      name: 'text_639b0589fe1a37c21666eae6',
       desc: '',
       args: [],
     );
@@ -14924,16 +14784,6 @@ class S {
     );
   }
 
-  /// `t`
-  String get text_639b0589fe1a37c21666eaee {
-    return Intl.message(
-      't',
-      name: 'text_639b0589fe1a37c21666eaee',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `u`
   String get text_639b0589fe1a37c21666eaf0 {
     return Intl.message(
@@ -14959,16 +14809,6 @@ class S {
     return Intl.message(
       's',
       name: 'text_639b0589fe1a37c21666eaf4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `y`
-  String get text_639b0589fe1a37c21666eaf6 {
-    return Intl.message(
-      'y',
-      name: 'text_639b0589fe1a37c21666eaf6',
       desc: '',
       args: [],
     );
@@ -15004,16 +14844,6 @@ class S {
     );
   }
 
-  /// `u`
-  String get text_639b0589fe1a37c21666eafe {
-    return Intl.message(
-      'u',
-      name: 'text_639b0589fe1a37c21666eafe',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `o`
   String get text_639b0589fe1a37c21666eb00 {
     return Intl.message(
@@ -15039,16 +14869,6 @@ class S {
     return Intl.message(
       'f',
       name: 'text_639b0589fe1a37c21666eb04',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `i`
-  String get text_639b0589fe1a37c21666eb06 {
-    return Intl.message(
-      'i',
-      name: 'text_639b0589fe1a37c21666eb06',
       desc: '',
       args: [],
     );
@@ -15084,16 +14904,6 @@ class S {
     );
   }
 
-  /// `o`
-  String get text_639b0589fe1a37c21666eb0e {
-    return Intl.message(
-      'o',
-      name: 'text_639b0589fe1a37c21666eb0e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `a`
   String get text_639b0589fe1a37c21666eb10 {
     return Intl.message(
@@ -15119,16 +14929,6 @@ class S {
     return Intl.message(
       'h',
       name: 'text_639b0589fe1a37c21666eb14',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `p`
-  String get text_639b0589fe1a37c21666eb16 {
-    return Intl.message(
-      'p',
-      name: 'text_639b0589fe1a37c21666eb16',
       desc: '',
       args: [],
     );
@@ -15164,16 +14964,6 @@ class S {
     );
   }
 
-  /// `a`
-  String get text_639b0589fe1a37c21666eb1e {
-    return Intl.message(
-      'a',
-      name: 'text_639b0589fe1a37c21666eb1e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `d`
   String get text_639b0589fe1a37c21666eb20 {
     return Intl.message(
@@ -15199,16 +14989,6 @@ class S {
     return Intl.message(
       'k',
       name: 'text_639b0589fe1a37c21666eb24',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `s`
-  String get text_639b0589fe1a37c21666eb26 {
-    return Intl.message(
-      's',
-      name: 'text_639b0589fe1a37c21666eb26',
       desc: '',
       args: [],
     );
@@ -15244,16 +15024,6 @@ class S {
     );
   }
 
-  /// `d`
-  String get text_639b0589fe1a37c21666eb2e {
-    return Intl.message(
-      'd',
-      name: 'text_639b0589fe1a37c21666eb2e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `g`
   String get text_639b0589fe1a37c21666eb30 {
     return Intl.message(
@@ -15279,16 +15049,6 @@ class S {
     return Intl.message(
       'z',
       name: 'text_639b0589fe1a37c21666eb34',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `f`
-  String get text_639b0589fe1a37c21666eb36 {
-    return Intl.message(
-      'f',
-      name: 'text_639b0589fe1a37c21666eb36',
       desc: '',
       args: [],
     );
@@ -15324,16 +15084,6 @@ class S {
     );
   }
 
-  /// `g`
-  String get text_639b0589fe1a37c21666eb3e {
-    return Intl.message(
-      'g',
-      name: 'text_639b0589fe1a37c21666eb3e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `j`
   String get text_639b0589fe1a37c21666eb40 {
     return Intl.message(
@@ -15359,16 +15109,6 @@ class S {
     return Intl.message(
       'c',
       name: 'text_639b0589fe1a37c21666eb44',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `h`
-  String get text_639b0589fe1a37c21666eb46 {
-    return Intl.message(
-      'h',
-      name: 'text_639b0589fe1a37c21666eb46',
       desc: '',
       args: [],
     );
@@ -15404,16 +15144,6 @@ class S {
     );
   }
 
-  /// `j`
-  String get text_639b0589fe1a37c21666eb4e {
-    return Intl.message(
-      'j',
-      name: 'text_639b0589fe1a37c21666eb4e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `l`
   String get text_639b0589fe1a37c21666eb50 {
     return Intl.message(
@@ -15439,16 +15169,6 @@ class S {
     return Intl.message(
       'b',
       name: 'text_639b0589fe1a37c21666eb54',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `k`
-  String get text_639b0589fe1a37c21666eb56 {
-    return Intl.message(
-      'k',
-      name: 'text_639b0589fe1a37c21666eb56',
       desc: '',
       args: [],
     );
@@ -15484,16 +15204,6 @@ class S {
     );
   }
 
-  /// `l`
-  String get text_639b0589fe1a37c21666eb5e {
-    return Intl.message(
-      'l',
-      name: 'text_639b0589fe1a37c21666eb5e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `x`
   String get text_639b0589fe1a37c21666eb60 {
     return Intl.message(
@@ -15524,16 +15234,6 @@ class S {
     );
   }
 
-  /// `z`
-  String get text_639b0589fe1a37c21666eb66 {
-    return Intl.message(
-      'z',
-      name: 'text_639b0589fe1a37c21666eb66',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `c`
   String get text_639b0589fe1a37c21666eb68 {
     return Intl.message(
@@ -15559,16 +15259,6 @@ class S {
     return Intl.message(
       '/',
       name: 'text_639b0589fe1a37c21666eb6c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `x`
-  String get text_639b0589fe1a37c21666eb6e {
-    return Intl.message(
-      'x',
-      name: 'text_639b0589fe1a37c21666eb6e',
       desc: '',
       args: [],
     );
@@ -15614,16 +15304,6 @@ class S {
     );
   }
 
-  /// `c`
-  String get text_639b0589fe1a37c21666eb78 {
-    return Intl.message(
-      'c',
-      name: 'text_639b0589fe1a37c21666eb78',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `n`
   String get text_639b0589fe1a37c21666eb7a {
     return Intl.message(
@@ -15649,16 +15329,6 @@ class S {
     return Intl.message(
       '?123',
       name: 'text_639b0589fe1a37c21666eb7e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `v`
-  String get text_639b0589fe1a37c21666eb80 {
-    return Intl.message(
-      'v',
-      name: 'text_639b0589fe1a37c21666eb80',
       desc: '',
       args: [],
     );
@@ -15694,16 +15364,6 @@ class S {
     );
   }
 
-  /// `b`
-  String get text_639b0589fe1a37c21666eb88 {
-    return Intl.message(
-      'b',
-      name: 'text_639b0589fe1a37c21666eb88',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `/`
   String get text_639b0589fe1a37c21666eb8a {
     return Intl.message(
@@ -15729,16 +15389,6 @@ class S {
     return Intl.message(
       '18.',
       name: 'text_639b0589fe1a37c21666eb8e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `n`
-  String get text_639b0589fe1a37c21666eb90 {
-    return Intl.message(
-      'n',
-      name: 'text_639b0589fe1a37c21666eb90',
       desc: '',
       args: [],
     );
@@ -15774,16 +15424,6 @@ class S {
     );
   }
 
-  /// `m`
-  String get text_639b0589fe1a37c21666eb97 {
-    return Intl.message(
-      'm',
-      name: 'text_639b0589fe1a37c21666eb97',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `?123`
   String get text_639b0589fe1a37c21666eb99 {
     return Intl.message(
@@ -15799,16 +15439,6 @@ class S {
     return Intl.message(
       'n',
       name: 'text_639b0589fe1a37c21666eb9b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `/`
-  String get text_639b0589fe1a37c21666eb9d {
-    return Intl.message(
-      '/',
-      name: 'text_639b0589fe1a37c21666eb9d',
       desc: '',
       args: [],
     );
@@ -15834,16 +15464,6 @@ class S {
     );
   }
 
-  /// `.`
-  String get text_639b0589fe1a37c21666eba2 {
-    return Intl.message(
-      '.',
-      name: 'text_639b0589fe1a37c21666eba2',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `/`
   String get text_639b0589fe1a37c21666eba4 {
     return Intl.message(
@@ -15854,31 +15474,11 @@ class S {
     );
   }
 
-  /// `?123`
-  String get text_639b0589fe1a37c21666eba6 {
-    return Intl.message(
-      '?123',
-      name: 'text_639b0589fe1a37c21666eba6',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `.`
   String get text_639b0589fe1a37c21666eba8 {
     return Intl.message(
       '.',
       name: 'text_639b0589fe1a37c21666eba8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `English`
-  String get text_639b0589fe1a37c21666ebaa {
-    return Intl.message(
-      'English',
-      name: 'text_639b0589fe1a37c21666ebaa',
       desc: '',
       args: [],
     );
@@ -16119,6 +15719,66 @@ class S {
     return Intl.message(
       '3',
       name: 'text_639b19e631a859f389968090',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63e4bedf566f474c5544de21 {
+    return Intl.message(
+      'Skip',
+      name: 'text_63e4bedf566f474c5544de21',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How would you like to set up your wallet?`
+  String get text_63e4bedf566f474c5544de22 {
+    return Intl.message(
+      'How would you like to set up your wallet?',
+      name: 'text_63e4bedf566f474c5544de22',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get text_63e4bedf566f474c5544de23 {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'text_63e4bedf566f474c5544de23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Setup Passport Instead`
+  String get text_63e4bedf566f474c5544de24 {
+    return Intl.message(
+      'Setup Passport Instead',
+      name: 'text_63e4bedf566f474c5544de24',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expert Setup`
+  String get text_63e4bedf566f474c5544de25 {
+    return Intl.message(
+      'Expert Setup',
+      name: 'text_63e4bedf566f474c5544de25',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Setup`
+  String get text_63e4bedf566f474c5544de26 {
+    return Intl.message(
+      'Magic Setup',
+      name: 'text_63e4bedf566f474c5544de26',
       desc: '',
       args: [],
     );

@@ -18,7 +18,7 @@ class ScvServer {
   static String serverAddress = "https://validate.foundationdevices.com";
 
   LocalStorage _ls = LocalStorage();
-  static const String _SCV_CHALLENGE_PREFS = "scv_challenge";
+  static const String SCV_CHALLENGE_PREFS = "scv_challenge";
   Challenge? storedChallenge;
 
   static final ScvServer _instance = ScvServer._internal();
@@ -47,12 +47,12 @@ class ScvServer {
   _storeChallenge(Challenge challenge) {
     storedChallenge = challenge;
     String json = jsonEncode(challenge.toJson());
-    _ls.prefs.setString(_SCV_CHALLENGE_PREFS, json);
+    _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
   }
 
   bool _restoreChallege() {
-    if (_ls.prefs.containsKey(_SCV_CHALLENGE_PREFS)) {
-      var challenge = jsonDecode(_ls.prefs.getString(_SCV_CHALLENGE_PREFS)!);
+    if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
+      var challenge = jsonDecode(_ls.prefs.getString(SCV_CHALLENGE_PREFS)!);
       storedChallenge = Challenge.fromJson(challenge);
       return true;
     }
@@ -61,8 +61,8 @@ class ScvServer {
   }
 
   _clearChallenge() {
-    if (_ls.prefs.containsKey(_SCV_CHALLENGE_PREFS)) {
-      _ls.prefs.remove(_SCV_CHALLENGE_PREFS);
+    if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
+      _ls.prefs.remove(SCV_CHALLENGE_PREFS);
     }
   }
 

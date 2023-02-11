@@ -49,7 +49,7 @@ class ExchangeRate extends ChangeNotifier {
   HttpTor _http = HttpTor(Tor());
   String _serverAddress = Settings().nguServerAddress;
 
-  static const String _LAST_EXCHANGE_RATE_PREFS = "exchange_rate";
+  static const String LAST_EXCHANGE_RATE_PREFS = "exchange_rate";
   static final ExchangeRate _instance = ExchangeRate._internal();
 
   factory ExchangeRate() {
@@ -77,9 +77,9 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   _restoreRate() {
-    if (_ls.prefs.containsKey(_LAST_EXCHANGE_RATE_PREFS)) {
+    if (_ls.prefs.containsKey(LAST_EXCHANGE_RATE_PREFS)) {
       var storedExchangeRate =
-          jsonDecode(_ls.prefs.getString(_LAST_EXCHANGE_RATE_PREFS)!);
+          jsonDecode(_ls.prefs.getString(LAST_EXCHANGE_RATE_PREFS)!);
       _rate = storedExchangeRate["rate"];
       setCurrency(storedExchangeRate["currency"]);
     }
@@ -99,7 +99,7 @@ class ExchangeRate extends ChangeNotifier {
 
     Map exchangeRateMap = {"currency": currencyCode, "rate": rate};
     String json = jsonEncode(exchangeRateMap);
-    _ls.prefs.setString(_LAST_EXCHANGE_RATE_PREFS, json);
+    _ls.prefs.setString(LAST_EXCHANGE_RATE_PREFS, json);
   }
 
   _getRate() {

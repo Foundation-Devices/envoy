@@ -2958,8 +2958,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("11. piano"),
         "text_639b0589fe1a37c21666ea52":
             MessageLookupByLibrary.simpleMessage("24. bacon"),
-        "text_639b0589fe1a37c21666ea54":
-            MessageLookupByLibrary.simpleMessage("1"),
         "text_639b0589fe1a37c21666ea56":
             MessageLookupByLibrary.simpleMessage("6"),
         "text_639b0589fe1a37c21666ea5a":
@@ -2976,8 +2974,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("2"),
         "text_639b0589fe1a37c21666ea68":
             MessageLookupByLibrary.simpleMessage("7"),
-        "text_639b0589fe1a37c21666ea6a":
-            MessageLookupByLibrary.simpleMessage("2"),
         "text_639b0589fe1a37c21666ea6e":
             MessageLookupByLibrary.simpleMessage("6. tank"),
         "text_639b0589fe1a37c21666ea70":
@@ -2986,8 +2982,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("12. catch"),
         "text_639b0589fe1a37c21666ea74":
             MessageLookupByLibrary.simpleMessage("12. catch"),
-        "text_639b0589fe1a37c21666ea77":
-            MessageLookupByLibrary.simpleMessage("3"),
         "text_639b0589fe1a37c21666ea79":
             MessageLookupByLibrary.simpleMessage("8"),
         "text_639b0589fe1a37c21666ea7b":
@@ -3000,8 +2994,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("4"),
         "text_639b0589fe1a37c21666ea84":
             MessageLookupByLibrary.simpleMessage("9"),
-        "text_639b0589fe1a37c21666ea86":
-            MessageLookupByLibrary.simpleMessage("4"),
         "text_639b0589fe1a37c21666ea88":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
         "text_639b0589fe1a37c21666ea8a":
@@ -3010,8 +3002,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("12. catch"),
         "text_639b0589fe1a37c21666ea8e":
             MessageLookupByLibrary.simpleMessage("Done"),
-        "text_639b0589fe1a37c21666ea8f":
-            MessageLookupByLibrary.simpleMessage("5"),
         "text_639b0589fe1a37c21666ea91":
             MessageLookupByLibrary.simpleMessage("0"),
         "text_639b0589fe1a37c21666ea93":
@@ -3026,8 +3016,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("6"),
         "text_639b0589fe1a37c21666ea9c":
             MessageLookupByLibrary.simpleMessage("q"),
-        "text_639b0589fe1a37c21666ea9e":
-            MessageLookupByLibrary.simpleMessage("6"),
         "text_639b0589fe1a37c21666eaa0":
             MessageLookupByLibrary.simpleMessage("Done"),
         "text_639b0589fe1a37c21666eaa1":
@@ -3040,8 +3028,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("5"),
         "text_639b0589fe1a37c21666eaa9":
             MessageLookupByLibrary.simpleMessage("e"),
-        "text_639b0589fe1a37c21666eaab":
-            MessageLookupByLibrary.simpleMessage("7"),
         "text_639b0589fe1a37c21666eaad":
             MessageLookupByLibrary.simpleMessage("Done"),
         "text_639b0589fe1a37c21666eaae":
@@ -3050,8 +3036,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("6"),
         "text_639b0589fe1a37c21666eab2":
             MessageLookupByLibrary.simpleMessage("r"),
-        "text_639b0589fe1a37c21666eab4":
-            MessageLookupByLibrary.simpleMessage("8"),
         "text_639b0589fe1a37c21666eab6":
             MessageLookupByLibrary.simpleMessage("9"),
         "text_639b0589fe1a37c21666eab8":
@@ -3060,184 +3044,138 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("0"),
         "text_639b0589fe1a37c21666eabc":
             MessageLookupByLibrary.simpleMessage("t"),
-        "text_639b0589fe1a37c21666eabe":
-            MessageLookupByLibrary.simpleMessage("9"),
         "text_639b0589fe1a37c21666eac0":
             MessageLookupByLibrary.simpleMessage("q"),
         "text_639b0589fe1a37c21666eac2":
             MessageLookupByLibrary.simpleMessage("8"),
         "text_639b0589fe1a37c21666eac4":
             MessageLookupByLibrary.simpleMessage("y"),
-        "text_639b0589fe1a37c21666eac6":
-            MessageLookupByLibrary.simpleMessage("0"),
         "text_639b0589fe1a37c21666eac8":
             MessageLookupByLibrary.simpleMessage("w"),
         "text_639b0589fe1a37c21666eaca":
             MessageLookupByLibrary.simpleMessage("9"),
         "text_639b0589fe1a37c21666eacc":
             MessageLookupByLibrary.simpleMessage("u"),
-        "text_639b0589fe1a37c21666eace":
-            MessageLookupByLibrary.simpleMessage("q"),
         "text_639b0589fe1a37c21666ead0":
             MessageLookupByLibrary.simpleMessage("e"),
         "text_639b0589fe1a37c21666ead2":
             MessageLookupByLibrary.simpleMessage("0"),
         "text_639b0589fe1a37c21666ead4":
             MessageLookupByLibrary.simpleMessage("i"),
-        "text_639b0589fe1a37c21666ead6":
-            MessageLookupByLibrary.simpleMessage("w"),
         "text_639b0589fe1a37c21666ead8":
             MessageLookupByLibrary.simpleMessage("r"),
         "text_639b0589fe1a37c21666eada":
             MessageLookupByLibrary.simpleMessage("q"),
         "text_639b0589fe1a37c21666eadc":
             MessageLookupByLibrary.simpleMessage("o"),
-        "text_639b0589fe1a37c21666eade":
-            MessageLookupByLibrary.simpleMessage("e"),
         "text_639b0589fe1a37c21666eae0":
             MessageLookupByLibrary.simpleMessage("t"),
         "text_639b0589fe1a37c21666eae2":
             MessageLookupByLibrary.simpleMessage("w"),
         "text_639b0589fe1a37c21666eae4":
             MessageLookupByLibrary.simpleMessage("p"),
-        "text_639b0589fe1a37c21666eae6":
-            MessageLookupByLibrary.simpleMessage("r"),
         "text_639b0589fe1a37c21666eae8":
             MessageLookupByLibrary.simpleMessage("y"),
         "text_639b0589fe1a37c21666eaea":
             MessageLookupByLibrary.simpleMessage("e"),
         "text_639b0589fe1a37c21666eaec":
             MessageLookupByLibrary.simpleMessage("a"),
-        "text_639b0589fe1a37c21666eaee":
-            MessageLookupByLibrary.simpleMessage("t"),
         "text_639b0589fe1a37c21666eaf0":
             MessageLookupByLibrary.simpleMessage("u"),
         "text_639b0589fe1a37c21666eaf2":
             MessageLookupByLibrary.simpleMessage("r"),
         "text_639b0589fe1a37c21666eaf4":
             MessageLookupByLibrary.simpleMessage("s"),
-        "text_639b0589fe1a37c21666eaf6":
-            MessageLookupByLibrary.simpleMessage("y"),
         "text_639b0589fe1a37c21666eaf8":
             MessageLookupByLibrary.simpleMessage("i"),
         "text_639b0589fe1a37c21666eafa":
             MessageLookupByLibrary.simpleMessage("t"),
         "text_639b0589fe1a37c21666eafc":
             MessageLookupByLibrary.simpleMessage("d"),
-        "text_639b0589fe1a37c21666eafe":
-            MessageLookupByLibrary.simpleMessage("u"),
         "text_639b0589fe1a37c21666eb00":
             MessageLookupByLibrary.simpleMessage("o"),
         "text_639b0589fe1a37c21666eb02":
             MessageLookupByLibrary.simpleMessage("y"),
         "text_639b0589fe1a37c21666eb04":
             MessageLookupByLibrary.simpleMessage("f"),
-        "text_639b0589fe1a37c21666eb06":
-            MessageLookupByLibrary.simpleMessage("i"),
         "text_639b0589fe1a37c21666eb08":
             MessageLookupByLibrary.simpleMessage("p"),
         "text_639b0589fe1a37c21666eb0a":
             MessageLookupByLibrary.simpleMessage("u"),
         "text_639b0589fe1a37c21666eb0c":
             MessageLookupByLibrary.simpleMessage("g"),
-        "text_639b0589fe1a37c21666eb0e":
-            MessageLookupByLibrary.simpleMessage("o"),
         "text_639b0589fe1a37c21666eb10":
             MessageLookupByLibrary.simpleMessage("a"),
         "text_639b0589fe1a37c21666eb12":
             MessageLookupByLibrary.simpleMessage("i"),
         "text_639b0589fe1a37c21666eb14":
             MessageLookupByLibrary.simpleMessage("h"),
-        "text_639b0589fe1a37c21666eb16":
-            MessageLookupByLibrary.simpleMessage("p"),
         "text_639b0589fe1a37c21666eb18":
             MessageLookupByLibrary.simpleMessage("s"),
         "text_639b0589fe1a37c21666eb1a":
             MessageLookupByLibrary.simpleMessage("o"),
         "text_639b0589fe1a37c21666eb1c":
             MessageLookupByLibrary.simpleMessage("j"),
-        "text_639b0589fe1a37c21666eb1e":
-            MessageLookupByLibrary.simpleMessage("a"),
         "text_639b0589fe1a37c21666eb20":
             MessageLookupByLibrary.simpleMessage("d"),
         "text_639b0589fe1a37c21666eb22":
             MessageLookupByLibrary.simpleMessage("p"),
         "text_639b0589fe1a37c21666eb24":
             MessageLookupByLibrary.simpleMessage("k"),
-        "text_639b0589fe1a37c21666eb26":
-            MessageLookupByLibrary.simpleMessage("s"),
         "text_639b0589fe1a37c21666eb28":
             MessageLookupByLibrary.simpleMessage("f"),
         "text_639b0589fe1a37c21666eb2a":
             MessageLookupByLibrary.simpleMessage("a"),
         "text_639b0589fe1a37c21666eb2c":
             MessageLookupByLibrary.simpleMessage("l"),
-        "text_639b0589fe1a37c21666eb2e":
-            MessageLookupByLibrary.simpleMessage("d"),
         "text_639b0589fe1a37c21666eb30":
             MessageLookupByLibrary.simpleMessage("g"),
         "text_639b0589fe1a37c21666eb32":
             MessageLookupByLibrary.simpleMessage("s"),
         "text_639b0589fe1a37c21666eb34":
             MessageLookupByLibrary.simpleMessage("z"),
-        "text_639b0589fe1a37c21666eb36":
-            MessageLookupByLibrary.simpleMessage("f"),
         "text_639b0589fe1a37c21666eb38":
             MessageLookupByLibrary.simpleMessage("h"),
         "text_639b0589fe1a37c21666eb3a":
             MessageLookupByLibrary.simpleMessage("d"),
         "text_639b0589fe1a37c21666eb3c":
             MessageLookupByLibrary.simpleMessage("x"),
-        "text_639b0589fe1a37c21666eb3e":
-            MessageLookupByLibrary.simpleMessage("g"),
         "text_639b0589fe1a37c21666eb40":
             MessageLookupByLibrary.simpleMessage("j"),
         "text_639b0589fe1a37c21666eb42":
             MessageLookupByLibrary.simpleMessage("f"),
         "text_639b0589fe1a37c21666eb44":
             MessageLookupByLibrary.simpleMessage("c"),
-        "text_639b0589fe1a37c21666eb46":
-            MessageLookupByLibrary.simpleMessage("h"),
         "text_639b0589fe1a37c21666eb48":
             MessageLookupByLibrary.simpleMessage("k"),
         "text_639b0589fe1a37c21666eb4a":
             MessageLookupByLibrary.simpleMessage("g"),
         "text_639b0589fe1a37c21666eb4c":
             MessageLookupByLibrary.simpleMessage("v"),
-        "text_639b0589fe1a37c21666eb4e":
-            MessageLookupByLibrary.simpleMessage("j"),
         "text_639b0589fe1a37c21666eb50":
             MessageLookupByLibrary.simpleMessage("l"),
         "text_639b0589fe1a37c21666eb52":
             MessageLookupByLibrary.simpleMessage("h"),
         "text_639b0589fe1a37c21666eb54":
             MessageLookupByLibrary.simpleMessage("b"),
-        "text_639b0589fe1a37c21666eb56":
-            MessageLookupByLibrary.simpleMessage("k"),
         "text_639b0589fe1a37c21666eb58":
             MessageLookupByLibrary.simpleMessage("z"),
         "text_639b0589fe1a37c21666eb5a":
             MessageLookupByLibrary.simpleMessage("j"),
         "text_639b0589fe1a37c21666eb5c":
             MessageLookupByLibrary.simpleMessage("n"),
-        "text_639b0589fe1a37c21666eb5e":
-            MessageLookupByLibrary.simpleMessage("l"),
         "text_639b0589fe1a37c21666eb60":
             MessageLookupByLibrary.simpleMessage("x"),
         "text_639b0589fe1a37c21666eb62":
             MessageLookupByLibrary.simpleMessage("k"),
         "text_639b0589fe1a37c21666eb64":
             MessageLookupByLibrary.simpleMessage("m"),
-        "text_639b0589fe1a37c21666eb66":
-            MessageLookupByLibrary.simpleMessage("z"),
         "text_639b0589fe1a37c21666eb68":
             MessageLookupByLibrary.simpleMessage("c"),
         "text_639b0589fe1a37c21666eb6a":
             MessageLookupByLibrary.simpleMessage("l"),
         "text_639b0589fe1a37c21666eb6c":
             MessageLookupByLibrary.simpleMessage("/"),
-        "text_639b0589fe1a37c21666eb6e":
-            MessageLookupByLibrary.simpleMessage("x"),
         "text_639b0589fe1a37c21666eb70":
             MessageLookupByLibrary.simpleMessage("v"),
         "text_639b0589fe1a37c21666eb72":
@@ -3246,60 +3184,42 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("b"),
         "text_639b0589fe1a37c21666eb76":
             MessageLookupByLibrary.simpleMessage("."),
-        "text_639b0589fe1a37c21666eb78":
-            MessageLookupByLibrary.simpleMessage("c"),
         "text_639b0589fe1a37c21666eb7a":
             MessageLookupByLibrary.simpleMessage("n"),
         "text_639b0589fe1a37c21666eb7c":
             MessageLookupByLibrary.simpleMessage("x"),
         "text_639b0589fe1a37c21666eb7e":
             MessageLookupByLibrary.simpleMessage("?123"),
-        "text_639b0589fe1a37c21666eb80":
-            MessageLookupByLibrary.simpleMessage("v"),
         "text_639b0589fe1a37c21666eb82":
             MessageLookupByLibrary.simpleMessage("m"),
         "text_639b0589fe1a37c21666eb84":
             MessageLookupByLibrary.simpleMessage("c"),
         "text_639b0589fe1a37c21666eb86":
             MessageLookupByLibrary.simpleMessage("English"),
-        "text_639b0589fe1a37c21666eb88":
-            MessageLookupByLibrary.simpleMessage("b"),
         "text_639b0589fe1a37c21666eb8a":
             MessageLookupByLibrary.simpleMessage("/"),
         "text_639b0589fe1a37c21666eb8c":
             MessageLookupByLibrary.simpleMessage("v"),
         "text_639b0589fe1a37c21666eb8e":
             MessageLookupByLibrary.simpleMessage("18."),
-        "text_639b0589fe1a37c21666eb90":
-            MessageLookupByLibrary.simpleMessage("n"),
         "text_639b0589fe1a37c21666eb92":
             MessageLookupByLibrary.simpleMessage("."),
         "text_639b0589fe1a37c21666eb94":
             MessageLookupByLibrary.simpleMessage("b"),
         "text_639b0589fe1a37c21666eb96":
             MessageLookupByLibrary.simpleMessage("24."),
-        "text_639b0589fe1a37c21666eb97":
-            MessageLookupByLibrary.simpleMessage("m"),
         "text_639b0589fe1a37c21666eb99":
             MessageLookupByLibrary.simpleMessage("?123"),
         "text_639b0589fe1a37c21666eb9b":
             MessageLookupByLibrary.simpleMessage("n"),
-        "text_639b0589fe1a37c21666eb9d":
-            MessageLookupByLibrary.simpleMessage("/"),
         "text_639b0589fe1a37c21666eb9f":
             MessageLookupByLibrary.simpleMessage("English"),
         "text_639b0589fe1a37c21666eba0":
             MessageLookupByLibrary.simpleMessage("m"),
-        "text_639b0589fe1a37c21666eba2":
-            MessageLookupByLibrary.simpleMessage("."),
         "text_639b0589fe1a37c21666eba4":
             MessageLookupByLibrary.simpleMessage("/"),
-        "text_639b0589fe1a37c21666eba6":
-            MessageLookupByLibrary.simpleMessage("?123"),
         "text_639b0589fe1a37c21666eba8":
             MessageLookupByLibrary.simpleMessage("."),
-        "text_639b0589fe1a37c21666ebaa":
-            MessageLookupByLibrary.simpleMessage("English"),
         "text_639b0589fe1a37c21666ebab":
             MessageLookupByLibrary.simpleMessage("?123"),
         "text_639b0589fe1a37c21666ebad":
@@ -3348,6 +3268,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("2"),
         "text_639b19e631a859f389968090":
             MessageLookupByLibrary.simpleMessage("3"),
+        "text_63e4bedf566f474c5544de21":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_63e4bedf566f474c5544de22": MessageLookupByLibrary.simpleMessage(
+            "How would you like to set up your wallet?"),
+        "text_63e4bedf566f474c5544de23": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_63e4bedf566f474c5544de24":
+            MessageLookupByLibrary.simpleMessage("Setup Passport Instead"),
+        "text_63e4bedf566f474c5544de25":
+            MessageLookupByLibrary.simpleMessage("Expert Setup"),
+        "text_63e4bedf566f474c5544de26":
+            MessageLookupByLibrary.simpleMessage("Magic Setup"),
         "wallet_is_setup_CTA":
             MessageLookupByLibrary.simpleMessage("Go To Account"),
         "wallet_is_setup_heading":

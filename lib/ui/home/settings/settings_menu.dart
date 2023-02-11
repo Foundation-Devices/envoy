@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/ui/home/settings/seed_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
@@ -13,6 +17,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+
+import '../../../business/connectivity_manager.dart';
+import '../../../business/devices.dart';
+import '../../../business/notifications.dart';
+import '../../../business/updates_manager.dart';
 
 class SettingsMenu extends StatefulWidget {
   @override
@@ -105,7 +114,18 @@ class SettingsMenuWidget extends StatelessWidget {
                   MenuOption(
                     label: "Backup",
                     onTap: () {
+                      List<String> keysToBackUp = [
+                        Settings.SETTINGS_PREFS,
+                        // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
+                        // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
+                        // ScvServer.SCV_CHALLENGE_PREFS,
+                        Fees.FEE_RATE_PREFS,
+                        AccountManager.ACCOUNTS_PREFS,
+                        Notifications.NOTIFICATIONS_PREFS,
+                        Devices.DEVICES_PREFS,
+                      ];
 
+                      Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean");
                     },
                   ),
                 ]),
