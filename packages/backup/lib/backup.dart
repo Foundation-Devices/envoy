@@ -4,6 +4,8 @@
 
 import 'dart:ffi';
 import 'dart:io';
+import 'package:ffi/ffi.dart';
+
 import 'generated_bindings.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +28,8 @@ class NotSupportedPlatform implements Exception {
 }
 
 class Backup {
-  static perform(SharedPreferences prefs, List<String> keysToBackUp, String password) {
+  static perform(
+      SharedPreferences prefs, List<String> keysToBackUp, String seedWords, String serverUrl, int proxyPort) {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {
@@ -34,10 +37,28 @@ class Backup {
       }
     }
 
+    if (backupData.isEmpty) {
+      return;
+    }
+
     // Convert map
+    int keysNumber = backupData.length;
+    Pointer<Pointer<Char>> nativeData = nullptr;
 
+    nativeData = calloc(keysNumber * 2);
 
+    int i = 0;
+    for (var key in backupData.keys) {
+      nativeData[i] = key.toNativeUtf8().cast<Char>();
+      nativeData[i + 1] = backupData[key]!.toNativeUtf8().cast<Char>();
+      i += 2;
+    }
 
     var lib = NativeLibrary(load("backup_ffi"));
+    lib.backup_perform(keysNumber,
+        nativeData,
+        seedWords.toNativeUtf8().cast<Char>(),
+        serverUrl.toNativeUtf8().cast<Char>(),
+        proxyPort);
   }
 }

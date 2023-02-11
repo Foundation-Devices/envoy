@@ -18,32 +18,51 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
-  PowHash pow_get(
-    int difficulty,
+  ffi.Pointer<ffi.Char> backup_last_error_message() {
+    return _backup_last_error_message();
+  }
+
+  late final _backup_last_error_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'backup_last_error_message');
+  late final _backup_last_error_message = _backup_last_error_messagePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function()>();
+
+  void backup_perform(
+    int keys_nr,
+    ffi.Pointer<ffi.Pointer<ffi.Char>> data,
+    ffi.Pointer<ffi.Char> seed_words,
+    ffi.Pointer<ffi.Char> server_url,
+    int proxy_port,
   ) {
-    return _pow_get(
-      difficulty,
+    return _backup_perform(
+      keys_nr,
+      data,
+      seed_words,
+      server_url,
+      proxy_port,
     );
   }
 
-  late final _pow_getPtr =
-      _lookup<ffi.NativeFunction<PowHash Function(ffi.Uint32)>>('pow_get');
-  late final _pow_get = _pow_getPtr.asFunction<PowHash Function(int)>();
+  late final _backup_performPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Uint8,
+              ffi.Pointer<ffi.Pointer<ffi.Char>>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Int32)>>('backup_perform');
+  late final _backup_perform = _backup_performPtr.asFunction<
+      void Function(int, ffi.Pointer<ffi.Pointer<ffi.Char>>,
+          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
-  void pow_hello() {
-    return _pow_hello();
+  void backup_hello() {
+    return _backup_hello();
   }
 
-  late final _pow_helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('pow_hello');
-  late final _pow_hello = _pow_helloPtr.asFunction<void Function()>();
-}
-
-class PowHash extends ffi.Struct {
-  @ffi.Uint32()
-  external int len;
-
-  external ffi.Pointer<ffi.Uint8> data;
+  late final _backup_helloPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function()>>('backup_hello');
+  late final _backup_hello = _backup_helloPtr.asFunction<void Function()>();
 }
 
 const int INT8_MIN = -128;

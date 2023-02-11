@@ -13,6 +13,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:backup/backup.dart';
+import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
@@ -125,7 +126,9 @@ class SettingsMenuWidget extends StatelessWidget {
                         Devices.DEVICES_PREFS,
                       ];
 
-                      Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean");
+                      Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean",
+                          "https://envoy.staging.foundationdevices.dev", Tor().port
+                      );
                     },
                   ),
                 ]),

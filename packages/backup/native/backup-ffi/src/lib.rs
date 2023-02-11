@@ -68,8 +68,8 @@ pub struct BackupRequest {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn backup_perform(files_nr: u8,
-                                        files: *const *const c_char,
+pub unsafe extern "C" fn backup_perform(keys_nr: u8,
+                                        data: *const *const c_char,
                                         seed_words: *const c_char,
                                         server_url: *const c_char,
                                         proxy_port: i32,
