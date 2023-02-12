@@ -28,7 +28,21 @@ class NativeLibrary {
   late final _backup_last_error_message = _backup_last_error_messagePtr
       .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
-  void backup_perform(
+  void backup_perform_cancel(
+    ffi.Pointer<ffi.Int> handle,
+  ) {
+    return _backup_perform_cancel(
+      handle,
+    );
+  }
+
+  late final _backup_perform_cancelPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Int>)>>(
+          'backup_perform_cancel');
+  late final _backup_perform_cancel = _backup_perform_cancelPtr
+      .asFunction<void Function(ffi.Pointer<ffi.Int>)>();
+
+  ffi.Pointer<ffi.Int> backup_perform(
     int keys_nr,
     ffi.Pointer<ffi.Pointer<ffi.Char>> data,
     ffi.Pointer<ffi.Char> seed_words,
@@ -46,14 +60,14 @@ class NativeLibrary {
 
   late final _backup_performPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(
+          ffi.Pointer<ffi.Int> Function(
               ffi.Uint8,
               ffi.Pointer<ffi.Pointer<ffi.Char>>,
               ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Char>,
               ffi.Int32)>>('backup_perform');
   late final _backup_perform = _backup_performPtr.asFunction<
-      void Function(int, ffi.Pointer<ffi.Pointer<ffi.Char>>,
+      ffi.Pointer<ffi.Int> Function(int, ffi.Pointer<ffi.Pointer<ffi.Char>>,
           ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
   void backup_hello() {

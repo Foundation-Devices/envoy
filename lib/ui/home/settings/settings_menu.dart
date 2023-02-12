@@ -127,7 +127,7 @@ class SettingsMenuWidget extends StatelessWidget {
                       ];
 
                       Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean",
-                          "https://envoy.staging.foundationdevices.dev", Tor().port
+                          Settings().envoyServerAddress, Tor().port
                       );
                     },
                   ),

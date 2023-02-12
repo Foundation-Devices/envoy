@@ -11,6 +11,8 @@ use std::ffi::{CStr, CString};
 use std::io;
 use std::io::Read;
 use std::os::raw::c_char;
+use bdk::bitcoin;
+use bdk::bitcoin::hashes::hex::ToHex;
 use serde::{Deserialize, Serialize};
 
 // TODO: Some other way to do this?
@@ -24,6 +26,13 @@ use mla::config::ArchiveReaderConfig;
 use mla::ArchiveReader;
 
 use bdk::keys::bip39::Mnemonic;
+use effort::Solution;
+use tokio::task::JoinHandle;
+use lazy_static::lazy_static;
+use tokio::sync::broadcast::{Receiver, Sender};
+use tokio::runtime::{Builder, Runtime};
+use crate::bitcoin::hashes::Hash;
+
 
 mod error;
 
@@ -67,13 +76,27 @@ pub struct BackupRequest {
     backup: String,
 }
 
+lazy_static! {
+    static ref RUNTIME: io::Result<Runtime> = Builder::new_multi_thread().enable_all().build();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn backup_perform_cancel(handle: *mut JoinHandle<()>) {
+    let handle = {
+        assert!(!handle.is_null());
+        &mut *handle
+    };
+
+    handle.abort();
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn backup_perform(keys_nr: u8,
                                         data: *const *const c_char,
                                         seed_words: *const c_char,
                                         server_url: *const c_char,
                                         proxy_port: i32,
-) {
+) -> *mut JoinHandle<()> {
 
     let mut backup_data: Vec<(&str, &str)> = vec![];
 
@@ -90,17 +113,32 @@ pub unsafe extern "C" fn backup_perform(keys_nr: u8,
 
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
 
+    let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
+
+    let server_url = CStr::from_ptr(server_url).to_str().unwrap();
+
+
     // Compress files
     let mnemonic = Mnemonic::parse(seed_words).unwrap();
     let entropy = mnemonic.to_entropy_array().0;
     let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
     let password = StaticSecret::from(entropy_32);
 
+    let encrypted = encrypt_backup(backup_data, &password);
 
-    // Ask for challenge
+    let rt = RUNTIME.as_ref().unwrap();
 
+    let handle = rt.spawn(async move {
+        let (tx, mut rx): (Sender<u128>, Receiver<u128>) =
+            tokio::sync::broadcast::channel(4);
 
-    // Push solution + file
+        let challenge = get_challenge_async(server_url, proxy_port).await;
+        let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
+        post_backup_async(server_url, proxy_port, challenge, solution, hash.to_hex(), encrypted).await;
+    });
+
+    let handle_box = Box::new(handle);
+    Box::into_raw(handle_box)
 }
 
 fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
@@ -199,7 +237,7 @@ async fn get_challenge_async(server_url: &str, proxy_port: i32) -> ChallengeResp
     response.json().await.unwrap()
 }
 
-async fn post_backup_async(server_url: &str, proxy_port: i32, server_response: ChallengeResponse, solution: effort::Solution, password_hash: &str, payload: Vec<u8>) {
+async fn post_backup_async(server_url: &str, proxy_port: i32, server_response: ChallengeResponse, solution: Solution, password_hash: String, payload: Vec<u8>) {
     let client = get_reqwest_client(proxy_port);
     let response = client.post(server_url.to_owned() + "/backup").json(&BackupRequest {
         challenge: server_response.challenge,
@@ -207,10 +245,8 @@ async fn post_backup_async(server_url: &str, proxy_port: i32, server_response: C
         timestamp: server_response.timestamp,
         signature: server_response.signature,
         hash: password_hash.parse().unwrap(),
-        backup: "hello world".to_string(),
+        backup: payload.to_hex(),
     }).send().await.unwrap();
-
-    let number = 4;
 
     println!("{response:?}");
 }
@@ -240,7 +276,7 @@ mod tests {
 
         let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
 
-        post_backup_async(server_url, -1, challenge, solution, "hey", vec![0, 1, 2]).await;
+        post_backup_async(server_url, -1, challenge, solution, "hey".to_owned(), vec![0, 1, 2]).await;
     }
 
     #[test]
