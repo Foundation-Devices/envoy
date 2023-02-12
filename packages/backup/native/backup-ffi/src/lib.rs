@@ -74,6 +74,20 @@ pub unsafe extern "C" fn backup_perform(keys_nr: u8,
                                         server_url: *const c_char,
                                         proxy_port: i32,
 ) {
+
+    let mut backup_data: Vec<(&str, &str)> = vec![];
+
+    for i in 0..keys_nr {
+        let key = CStr::from_ptr(*data.offset(i as isize))
+            .to_str()
+            .unwrap();
+        let value = CStr::from_ptr(*data.offset((i + 1) as isize))
+            .to_str()
+            .unwrap();
+        backup_data.push((key, value));
+    }
+
+
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
 
     // Compress files
