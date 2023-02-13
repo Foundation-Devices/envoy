@@ -54,9 +54,13 @@ class Backup {
       i += 2;
     }
 
+    final Pointer<BackupPayload> payload = calloc<BackupPayload >();
+    payload.ref.keys_nr = keysNumber;
+    payload.ref.data = nativeData;
+
+
     var lib = NativeLibrary(load("backup_ffi"));
-    lib.backup_perform(keysNumber,
-        nativeData,
+    lib.backup_perform(payload.ref,
         seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(),
         proxyPort);
