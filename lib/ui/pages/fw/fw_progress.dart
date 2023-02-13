@@ -2,84 +2,81 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
+import 'package:envoy/ui/onboard/sd_card_spinner.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/onboarding_page.dart';
-import 'package:envoy/business/fw_uploader.dart';
-
-import '../../envoy_button.dart';
-import '../../envoy_dialog.dart';
-import '../../widgets/blur_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //ignore: must_be_immutable
-class FwProgressPage extends StatelessWidget {
+class FwProgressPage extends ConsumerStatefulWidget {
   bool onboarding;
-  FwUploader fw;
 
-  FwProgressPage(this.fw, {this.onboarding: true});
+  FwProgressPage({this.onboarding: true});
+
+  @override
+  ConsumerState<FwProgressPage> createState() => _FwProgressPageState();
+}
+
+class _FwProgressPageState extends ConsumerState<FwProgressPage> {
+  Timer? _uploadTimer;
+  bool done = false;
+  final sdCardUploadSuccessProvider = StateProvider<bool>((ref) => false);
+
+  @override
+  void initState() {
+    _uploadTimer = Timer(Duration(seconds: 10), () {
+      setState(() {
+        done = true;
+      });
+
+      ref.read(sdCardUploadSuccessProvider.notifier).state = true;
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_uploadTimer != null) {
+      _uploadTimer!.cancel();
+    }
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
+      leftFunction: (context) {
+        Navigator.of(context).pop();
+      },
       key: Key("fw_progress"),
-      //clipArt: Image.asset("assets/fw_passport.png"),
+      clipArt: SdCardSpinner(sdCardUploadSuccessProvider),
       text: [
-        OnboardingText(
-          header: "Tap on Continue",
-          text: onboarding
-              ? "There will be a spinner on this screen"
-              : "It will transform to a checkmark and whisk you away",
-        )
+        AnimatedSwitcher(
+            duration: Duration(milliseconds: 250),
+            child: OnboardingText(
+                key: UniqueKey(),
+                header: done
+                    ? "Firmware was successfully copied onto the microSD card"
+                    : "Envoy is now copying the firmware onto the microSD card",
+                text: done
+                    ? "Make sure to \"safely remove\" from your file manager or notification bar before removing your microSD card from your phone."
+                    : "This might take few seconds. Please do not remove the microSD card."))
       ],
       buttons: [
         OnboardingButton(
             label: "Continue",
             onTap: () {
-              fw.flush().then((result) {
-                showEnvoyDialog(
-                    context: context,
-                    dialog: EnvoyDialog(
-                      title: result.toString(),
-                      content: Text("^^^ what does the above say QnA"),
-                      actions: [
-                        EnvoyButton(
-                          "Continue",
-                          light: false,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                              return FwPassportPage(
-                                onboarding: onboarding,
-                              );
-                            }));
-                          },
-                        ),
-                      ],
-                    ));
-              }, onError: (error) {
-                showEnvoyDialog(
-                    context: context,
-                    dialog: EnvoyDialog(
-                      title: error.toString(),
-                      content: Text("^^^ what does the above say QnA"),
-                      actions: [
-                        EnvoyButton(
-                          "Continue",
-                          light: false,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                              return FwPassportPage(
-                                onboarding: onboarding,
-                              );
-                            }));
-                          },
-                        ),
-                      ],
-                    ));
-              });
+              Navigator.pop(context);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return FwPassportPage(
+                  onboarding: widget.onboarding,
+                );
+              }));
             })
       ],
     );

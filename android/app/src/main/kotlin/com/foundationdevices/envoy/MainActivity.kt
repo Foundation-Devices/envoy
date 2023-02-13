@@ -74,10 +74,14 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     output?.flush()
                     output?.close()
 
+                    // Get the file descriptor and fsync to make sure it's on the SD
                     val pfd = applicationContext.contentResolver.openFileDescriptor(uri, "w")
                     Os.fsync(pfd!!.fileDescriptor)
 
                     pfd.close()
+
+                    // Boolean down the chute means success
+                    sdCardEventSink?.success(true)
                 }
             }
         }
@@ -121,15 +125,6 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
                     startActivityForResult(intent, saveFileRequestCode)
                     result.success(true)
-                }
-                "flush_file" -> {
-                    val stream = FileInputStream(firmware!!)
-                    try {
-                        stream.fd.sync()
-                        result.success(true)
-                    } catch (e: Exception) {
-                        result.error(e.toString(), "", "")
-                    }
                 }
                 "data_changed" -> {
                     BackupManager(this).dataChanged()

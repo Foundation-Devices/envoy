@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:envoy/business/local_storage.dart';
 
 class FwUploader {
+  Function? onUploaded;
   File fw;
   String _sdCardPath =
       "/private/var/mobile/Library/LiveFiles/com.apple.filesystems.userfsd/PASSPORT-SD/";
@@ -17,7 +18,7 @@ class FwUploader {
   static const platform = MethodChannel('envoy');
   static const sdCardEventChannel = EventChannel('sd_card_events');
 
-  FwUploader(this.fw) {
+  FwUploader(this.fw, {this.onUploaded}) {
     var prefs = LocalStorage().prefs;
 
     // Get the last used SD CARD path
@@ -26,8 +27,12 @@ class FwUploader {
     }
 
     // On iOS updates are received asynchronously from platform
-    sdCardEventChannel.receiveBroadcastStream().listen((path) {
-      String pathFromPlatform = (path as String);
+    sdCardEventChannel.receiveBroadcastStream().listen((event) {
+      if (event is bool) {
+        onUploaded!();
+      }
+
+      String pathFromPlatform = (event as String);
       if (Platform.isIOS) {
         _sdCardPath = pathFromPlatform.substring(7);
         prefs.setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
@@ -59,10 +64,6 @@ class FwUploader {
     platform.invokeMethod('save_file', argsMap);
   }
 
-  Future<dynamic> _flushFile() {
-    return platform.invokeMethod('flush_file');
-  }
-
   // ignore: unused_element
   getManageFilesPermission() {
     platform.invokeMethod('get_manage_files_permission');
@@ -83,16 +84,14 @@ class FwUploader {
     }
   }
 
-  Future<dynamic> flush() {
-      return _flushFile();
-  }
-
   _iosUpload() {
     print("SD: trying to access folder");
     _accessFolder();
 
     print("SD: trying to copy file to " + _sdCardPath);
     fw.copySync(_sdCardPath + basename(fw.path));
+
+    onUploaded!();
   }
 
   _androidUpload() {

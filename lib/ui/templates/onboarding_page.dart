@@ -289,7 +289,7 @@ class OnboardingText extends StatelessWidget {
   final String? header;
   final String? text;
 
-  const OnboardingText({this.header, this.text});
+  const OnboardingText({this.header, this.text, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
