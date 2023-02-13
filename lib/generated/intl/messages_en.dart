@@ -24,6 +24,36 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accounts_screen_bottom_menu_accounts":
+            MessageLookupByLibrary.simpleMessage("Accounts"),
+        "accounts_screen_bottom_menu_activity":
+            MessageLookupByLibrary.simpleMessage("Activity"),
+        "accounts_screen_bottom_menu_learn":
+            MessageLookupByLibrary.simpleMessage("Learn"),
+        "accounts_screen_bottom_menu_privacy":
+            MessageLookupByLibrary.simpleMessage("Privacy"),
+        "accounts_screen_connect_button":
+            MessageLookupByLibrary.simpleMessage("Connect"),
+        "accounts_screen_learn_more_button":
+            MessageLookupByLibrary.simpleMessage("Learn More"),
+        "accounts_screen_passport":
+            MessageLookupByLibrary.simpleMessage("Passport"),
+        "accounts_screen_sats_amount":
+            MessageLookupByLibrary.simpleMessage("0.00 SATS"),
+        "accounts_screen_top_bar":
+            MessageLookupByLibrary.simpleMessage("Accounts"),
+        "accounts_screen_usd_amount":
+            MessageLookupByLibrary.simpleMessage("\$0.00"),
+        "accounts_screen_wallet_name":
+            MessageLookupByLibrary.simpleMessage("New wallet"),
+        "accounts_screen_wallet_type":
+            MessageLookupByLibrary.simpleMessage("Hot Wallet"),
+        "android_backup_info_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "android_backup_info_heading":
+            MessageLookupByLibrary.simpleMessage("Android backs up every 24h"),
+        "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
+            "Android is backs up your Envoy data automatically every 24 hours, but you can force a manual backup right now from your device Settings."),
         "component_app_store_copyright": MessageLookupByLibrary.simpleMessage(
             "© 2022 Foundation Devices, Inc."),
         "component_app_store_description": MessageLookupByLibrary.simpleMessage(
@@ -41,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_dateformatter_yesterday":
             MessageLookupByLibrary.simpleMessage("Yesterday"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "component_done": MessageLookupByLibrary.simpleMessage("Done"),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_os_clock": MessageLookupByLibrary.simpleMessage("4321"),
         "component_play_store_app_name":
@@ -51,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_play_store_short_description":
             MessageLookupByLibrary.simpleMessage(
                 "The perfect mobile companion for your Passport hardware wallet."),
+        "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_save": MessageLookupByLibrary.simpleMessage("Save"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "envoy_about_app_version":
@@ -872,6 +904,516 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Establishing a private connection over Tor"),
         "envoy_widgets_torloader_loading": MessageLookupByLibrary.simpleMessage(
             "Loading over the Tor network\n"),
+        "learn_more_about_data_secured_1_4_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "learn_more_about_data_secured_1_4_heading":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "learn_more_about_data_secured_1_4_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "learn_more_about_data_secured_1_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy stores your seed securely in either your iCloud Keychain for iOS users or Google Drive for Android users.\n\nThis will happen automatically as part of the setup flow. All you need to do is ensure you’re signed in to your iCloud or Google account on this phone."),
+        "learn_more_about_data_secured_2_4_heading":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "learn_more_about_data_secured_2_4_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "learn_more_about_data_secured_2_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "An encrypted backup file is sent to the Envoy server. This file is encrypted with your seed to ensure that nobody but you, or anyone with access to your Cloud can access the file.\n\nThe file contains important information such as labels, account info and wallet preferences. Envoy will update this backup periodically to ensure it is kept up to date."),
+        "learn_more_about_data_secured_3_4_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "learn_more_about_data_secured_3_4_heading":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "learn_more_about_data_secured_3_4_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "learn_more_about_data_secured_3_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "In a recovery scenario, download Envoy onto a new phone, sign into your Apple or Google cloud account and Envoy will automatically restore everything for you.\n\nIt is crucial that you restrict access to your Cloud account with a secure password. It is also recommended that you secure the account with 2 factor authentication (2FA).  "),
+        "learn_more_about_data_secured_4_4_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "learn_more_about_data_secured_4_4_heading":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "learn_more_about_data_secured_4_4_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "learn_more_about_data_secured_4_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "To use Envoy without leveraging any external cloud providers, go back to the opening screen and choose Manual Setup.\n\nPlease note that the manual setup requires management of Bitcoin Seed Words and offline backup solutions."),
+        "magic_recovery_fail_android_CTA_1":
+            MessageLookupByLibrary.simpleMessage("Retry"),
+        "magic_recovery_fail_android_CTA_2":
+            MessageLookupByLibrary.simpleMessage("QR code backup recovery"),
+        "magic_recovery_fail_android_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic Recovery Unsuccessful"),
+        "magic_recovery_fail_android_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Android / Calyx logged in text\n\nYou can always recover ith a QR code."),
+        "magic_recovery_flow_done_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Recovering your Envoy wallet"),
+        "magic_recovery_flow_done_step_1": MessageLookupByLibrary.simpleMessage(
+            "Sign into iCloud and install Envoy on the new device."),
+        "magic_recovery_flow_done_step_2": MessageLookupByLibrary.simpleMessage(
+            "Open Envoy and tap ‘Recover Envoy   Wallet’."),
+        "magic_recovery_flow_done_step_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy will then automatically reinstate your existing Envoy wallet."),
+        "magic_recovery_flow_done_subheading": MessageLookupByLibrary.simpleMessage(
+            "To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions."),
+        "magic_recovery_flow_heading": MessageLookupByLibrary.simpleMessage(
+            "Recovering your Envoy wallet"),
+        "magic_recovery_flow_retry_2_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Recovering your Envoy wallet"),
+        "magic_recovery_flow_retry_2_step_1":
+            MessageLookupByLibrary.simpleMessage(
+                "Sign into iCloud and install Envoy on the new device."),
+        "magic_recovery_flow_retry_2_step_2":
+            MessageLookupByLibrary.simpleMessage(
+                "Open Envoy and tap ‘Recover Envoy   Wallet’."),
+        "magic_recovery_flow_retry_2_step_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy will then automatically reinstate your existing Envoy wallet."),
+        "magic_recovery_flow_retry_2_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions."),
+        "magic_recovery_flow_retry_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Recovering your Envoy wallet"),
+        "magic_recovery_flow_retry_step_1":
+            MessageLookupByLibrary.simpleMessage(
+                "Sign into iCloud and install Envoy on the new device."),
+        "magic_recovery_flow_retry_step_2":
+            MessageLookupByLibrary.simpleMessage(
+                "Open Envoy and tap ‘Recover Envoy   Wallet’."),
+        "magic_recovery_flow_retry_step_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy will then automatically reinstate your existing Envoy wallet."),
+        "magic_recovery_flow_retry_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions."),
+        "magic_recovery_flow_step_1": MessageLookupByLibrary.simpleMessage(
+            "Sign into iCloud and install Envoy on the new device."),
+        "magic_recovery_flow_step_2": MessageLookupByLibrary.simpleMessage(
+            "Open Envoy and tap ‘Recover Envoy   Wallet’."),
+        "magic_recovery_flow_step_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy will then automatically reinstate your existing Envoy wallet."),
+        "magic_recovery_flow_subheading": MessageLookupByLibrary.simpleMessage(
+            "To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions."),
+        "magic_recovery_retry_fail_CTA_1":
+            MessageLookupByLibrary.simpleMessage("Retry"),
+        "magic_recovery_retry_fail_CTA_2":
+            MessageLookupByLibrary.simpleMessage("QR code backup recovery"),
+        "magic_recovery_retry_fail_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic Recovery Unsuccessful"),
+        "magic_recovery_retry_fail_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Are you sure you’re using the right Apple ID ?\n\nYou can always recover ith a QR code."),
+        "magic_recovery_retry_iOS_CTA_1":
+            MessageLookupByLibrary.simpleMessage("Retry"),
+        "magic_recovery_retry_iOS_CTA_2":
+            MessageLookupByLibrary.simpleMessage("QR code backup recovery"),
+        "magic_recovery_retry_iOS_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic Recovery Unsuccessful"),
+        "magic_recovery_retry_iOS_subheading": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you’re signed in to the correct Cloud account? You can check your Settings to verify.\n\nIf you still have access to your existing Envoy device, you can choose to recover via the QR method below."),
+        "magic_setup_encrypting_backup_1_5_heading":
+            MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
+        "magic_setup_encrypting_backup_1_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings."),
+        "magic_setup_encrypting_backup_2_5_heading":
+            MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
+        "magic_setup_encrypting_backup_2_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings."),
+        "magic_setup_encrypting_backup_3_5_heading":
+            MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
+        "magic_setup_encrypting_backup_3_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings."),
+        "magic_setup_encrypting_backup_4_5_heading":
+            MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
+        "magic_setup_encrypting_backup_4_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings."),
+        "magic_setup_encrypting_backup_5_5_heading":
+            MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
+        "magic_setup_encrypting_backup_5_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings."),
+        "magic_setup_envoy_key_creation_1_5_heading":
+            MessageLookupByLibrary.simpleMessage("Creating Your Envoy Key"),
+        "magic_setup_envoy_key_creation_1_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key."),
+        "magic_setup_envoy_key_creation_2_5_heading":
+            MessageLookupByLibrary.simpleMessage("Creating Your Envoy Key"),
+        "magic_setup_envoy_key_creation_2_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key."),
+        "magic_setup_envoy_key_creation_3_5_heading":
+            MessageLookupByLibrary.simpleMessage("Creating Your Envoy Key"),
+        "magic_setup_envoy_key_creation_3_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key."),
+        "magic_setup_envoy_key_creation_4_5_heading":
+            MessageLookupByLibrary.simpleMessage("Creating Your Envoy Key"),
+        "magic_setup_envoy_key_creation_4_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key."),
+        "magic_setup_envoy_key_creation_5_5_heading":
+            MessageLookupByLibrary.simpleMessage("Creating Your Envoy Key"),
+        "magic_setup_envoy_key_creation_5_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key."),
+        "magic_setup_flow_tutorial_CTA_1":
+            MessageLookupByLibrary.simpleMessage("Create New Wallet"),
+        "magic_setup_flow_tutorial_CTA_2":
+            MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
+        "magic_setup_flow_tutorial_heading":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "magic_setup_flow_tutorial_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "magic_setup_flow_tutorial_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  Learn more."),
+        "magic_setup_generate_wallet_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "magic_setup_generate_wallet_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "magic_setup_generate_wallet_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "WARNING\n\nIf you have another wallet in another device, generating a new wallet will erase your existing wallet."),
+        "magic_setup_import_seed_CTA_1":
+            MessageLookupByLibrary.simpleMessage("12 Word Seed"),
+        "magic_setup_import_seed_CTA_2":
+            MessageLookupByLibrary.simpleMessage("24 Word Seed"),
+        "magic_setup_import_seed_heading":
+            MessageLookupByLibrary.simpleMessage("We Don’t Keep Your Seed"),
+        "magic_setup_import_seed_subheading":
+            MessageLookupByLibrary.simpleMessage("Text info about seed import"),
+        "magic_setup_sending_backup_to_envoy_server_1_5_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Sending Encrypted Backup to Envoy Server"),
+        "magic_setup_sending_backup_to_envoy_server_1_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+        "magic_setup_sending_backup_to_envoy_server_2_5_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Sending Encrypted Backup to Envoy Server"),
+        "magic_setup_sending_backup_to_envoy_server_2_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+        "magic_setup_sending_backup_to_envoy_server_3_5_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Sending Encrypted Backup to Envoy Server"),
+        "magic_setup_sending_backup_to_envoy_server_3_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+        "magic_setup_sending_backup_to_envoy_server_4_5_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Sending Encrypted Backup to Envoy Server"),
+        "magic_setup_sending_backup_to_envoy_server_4_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+        "magic_setup_sending_backup_to_envoy_server_5_5_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Sending Encrypted Backup to Envoy Server"),
+        "magic_setup_sending_backup_to_envoy_server_5_5_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+        "manual_seed_generate_seed_verify_seed_warning_CTA":
+            MessageLookupByLibrary.simpleMessage("Go back"),
+        "manual_seed_generate_seed_verify_seed_warning_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "That seed appears to be invalid. Please check the words you wrote, including the order they are in and try again."),
+        "manual_setup_12_word_seed_enter_passphrase_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_12_word_seed_enter_passphrase_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Passphrase"),
+        "manual_setup_12_word_seed_enter_passphrase_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Passphrases are case and space sensitive. Enter with extreme care."),
+        "manual_setup_12_word_seed_passphrase_warning_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_12_word_seed_passphrase_warning_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
+        "manual_setup_12_word_seed_verify_passphrase_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_12_word_seed_verify_passphrase_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
+        "manual_setup_12_word_seed_verify_passphrase_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Passphrases are case and space sensitive. Enter with extreme care."),
+        "manual_setup_encrypted_backup_location_1_2_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your backup is encrypted by your seed words. If you lose access to your seed words, you will be unable to recover your backup file contents.\n\nPlease ensure you have a robust seed word backup solution."),
+        "manual_setup_encrypted_backup_location_1_3_CTA":
+            MessageLookupByLibrary.simpleMessage("Choose destination"),
+        "manual_setup_encrypted_backup_location_1_3_heading":
+            MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
+        "manual_setup_encrypted_backup_location_1_3_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card."),
+        "manual_setup_encrypted_backup_location_2_3_CTA":
+            MessageLookupByLibrary.simpleMessage("I understand"),
+        "manual_setup_encrypted_backup_location_3_3_CTA":
+            MessageLookupByLibrary.simpleMessage("Action"),
+        "manual_setup_encrypted_backup_location_3_3_heading":
+            MessageLookupByLibrary.simpleMessage("Title Here"),
+        "manual_setup_encrypted_backup_location_3_3_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Here’s to the crazy ones, the misfits, the rebels, the troublemakers..."),
+        "manual_setup_flow_tutorial_CTA_1":
+            MessageLookupByLibrary.simpleMessage("Generate New Seed"),
+        "manual_setup_flow_tutorial_CTA_2":
+            MessageLookupByLibrary.simpleMessage("Import Seed"),
+        "manual_setup_flow_tutorial_heading":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "manual_setup_flow_tutorial_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "manual_setup_flow_tutorial_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "manual_setup_generate_seed_CTA":
+            MessageLookupByLibrary.simpleMessage("Generate Seed"),
+        "manual_setup_generate_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Don’t Show Your Seed"),
+        "manual_setup_generate_seed_subheading":
+            MessageLookupByLibrary.simpleMessage("Text info about security"),
+        "manual_setup_generate_seed_verify_quiz_4_4_done_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_generate_seed_verify_quiz_4_4_done_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_quiz_4_4_done_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_quiz_4_4_done_state_correct":
+            MessageLookupByLibrary.simpleMessage("Correct"),
+        "manual_setup_generate_seed_verify_quiz_4_4_done_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 11?"),
+        "manual_setup_generate_seed_verify_quiz_4_4_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_quiz_4_4_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_quiz_4_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 11?"),
+        "manual_setup_generate_seed_verify_quiz_success_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_quiz_success_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_quiz_success_state_correct":
+            MessageLookupByLibrary.simpleMessage("Correct"),
+        "manual_setup_generate_seed_verify_quiz_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 2?"),
+        "manual_setup_generate_seed_verify_seed_CTA":
+            MessageLookupByLibrary.simpleMessage("Verify Seed"),
+        "manual_setup_generate_seed_verify_seed_again_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_generate_seed_verify_seed_again_heading":
+            MessageLookupByLibrary.simpleMessage("Write Down the 12 Worlds"),
+        "manual_setup_generate_seed_verify_seed_again_quiz_1_4_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_again_quiz_1_4_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_again_quiz_1_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 2?"),
+        "manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 2?"),
+        "manual_setup_generate_seed_verify_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Let’s Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_1_4_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_1_4_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_quiz_1_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 2?"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 9?"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_success_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_success_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_success_state_correct":
+            MessageLookupByLibrary.simpleMessage("Correct"),
+        "manual_setup_generate_seed_verify_seed_quiz_2_4_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 9?"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_CTA":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 5?"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_success_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_success_info_text":
+            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_success_state_correct":
+            MessageLookupByLibrary.simpleMessage("Correct"),
+        "manual_setup_generate_seed_verify_seed_quiz_3_4_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 5?"),
+        "manual_setup_generate_seed_verify_seed_quiz_fail_CTA":
+            MessageLookupByLibrary.simpleMessage("Try Again"),
+        "manual_setup_generate_seed_verify_seed_quiz_fail_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_generate_seed_verify_seed_quiz_fail_info_text":
+            MessageLookupByLibrary.simpleMessage(
+                "Choose a word from the list below."),
+        "manual_setup_generate_seed_verify_seed_quiz_fail_state_invalid_entry":
+            MessageLookupByLibrary.simpleMessage("Invalid Entry"),
+        "manual_setup_generate_seed_verify_seed_quiz_fail_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "What’s your seed word number 2?"),
+        "manual_setup_generate_seed_verify_seed_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Text info about seed verification"),
+        "manual_setup_generate_seed_write_seed_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_generate_seed_write_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Write Down the 12 Worlds"),
+        "manual_setup_import_12_word_seed_autocomplete_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_complete_1_2_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_complete_2_2_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_completing_android_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_completing_iOS_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_done_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_12_word_seed_done_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_12_word_seed_done_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_12_word_seed_invalid_CTA":
+            MessageLookupByLibrary.simpleMessage("Go back"),
+        "manual_setup_import_12_word_seed_invalid_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "That seed appears to be invalid. Please check the words entered, including the order they are in and try again."),
+        "manual_setup_import_12_word_seed_modify_seedword_1_2_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_12_word_seed_modify_seedword_1_2_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_12_word_seed_modify_seedword_1_2_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_12_word_seed_modify_seedword_2_2_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_12_word_seed_modify_seedword_2_2_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_12_word_seed_modify_seedword_2_2_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_12_word_seed_modify_seedword_done_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_12_word_seed_modify_seedword_done_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_12_word_seed_modify_seedword_done_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_24_word_seed_1_2_autocomplete_done_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_1_2_autocomplete_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_1_2_done_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_1_2_done_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_1_2_entering_seedword_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_1_2_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_2_2_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_24_word_seed_2_2_done_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_24_word_seed_2_2_done_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_24_word_seed_2_2_done_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_2_2_entering_seedwords_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_2_2_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "manual_setup_import_24_word_seed_invalid_seedword_CTA":
+            MessageLookupByLibrary.simpleMessage("Go back"),
+        "manual_setup_import_24_word_seed_invalid_seedword_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "That seed appears to be invalid. Please check the words entered, including the order they are in and try again."),
+        "manual_setup_import_24_word_seed_modify_seedword_1_2_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_modify_seedword_1_2_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_24_word_seed_modify_seedword_2_2_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_modify_seedword_2_2_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_24_word_seed_verify_seedword_add_passphrase_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_24_word_seed_verify_seedword_add_passphrase_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_24_word_seed_verify_seedword_add_passphrase_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_24_word_seed_verify_seedword_done_1_2_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_verify_seedword_done_1_2_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_24_word_seed_verify_seedword_done_2_2_CTA":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "manual_setup_import_24_word_seed_verify_seedword_done_2_2_checkbox":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "manual_setup_import_24_word_seed_verify_seedword_done_2_2_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Passphrase"),
+        "manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Passphrases are case and space sensitive. Enter with extreme care."),
+        "manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
+        "manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
+        "manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Passphrases are case and space sensitive. Enter with extreme care."),
+        "recovery_scenario_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "recovery_scenario_heading":
+            MessageLookupByLibrary.simpleMessage("How to Recover?"),
+        "recovery_scenario_step_1": MessageLookupByLibrary.simpleMessage(
+            "Sign into iCloud and install Envoy on the new device."),
+        "recovery_scenario_step_2": MessageLookupByLibrary.simpleMessage(
+            "Open Envoy and tap ‘Recover Envoy   Wallet’."),
+        "recovery_scenario_step_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy will then automatically reinstate your existing Envoy wallet."),
+        "recovery_scenario_subheading": MessageLookupByLibrary.simpleMessage(
+            "To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions."),
         "single_envoy_import_pp_intro_card1_heading":
             MessageLookupByLibrary.simpleMessage("Connect Passport with Envoy"),
         "single_envoy_import_pp_intro_card1_subheading":
@@ -935,6 +1477,1814 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "single_envoy_wallet_pair_success_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is now connected to your Passport.")
+                "Envoy is now connected to your Passport."),
+        "text_636d0bb5a3b7eb50b6015535":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_636d0bb5a3b7eb50b6015538":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_636d0bb5a3b7eb50b601553b": MessageLookupByLibrary.simpleMessage(
+            "The perfect companion for your Passport"),
+        "text_636d0bb5a3b7eb50b601553f": MessageLookupByLibrary.simpleMessage(
+            "The perfect companion for your Passport"),
+        "text_636d0bb5a3b7eb50b6015541":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_636d0bb5a3b7eb50b6015544": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_636d0bb5a3b7eb50b6015548": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_636d0bb5a3b7eb50b601554a": MessageLookupByLibrary.simpleMessage(
+            "The perfect companion for your Passport@"),
+        "text_636d0bb5a3b7eb50b601554c": MessageLookupByLibrary.simpleMessage(
+            "Don’t have a Passport? Buy One"),
+        "text_636d0bb5a3b7eb50b6015550": MessageLookupByLibrary.simpleMessage(
+            "Don’t have a Passport? Buy One"),
+        "text_636d0bb5a3b7eb50b6015552": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_636d0bb5a3b7eb50b6015555":
+            MessageLookupByLibrary.simpleMessage("Manage an Existing Passport"),
+        "text_636d0bb5a3b7eb50b6015559":
+            MessageLookupByLibrary.simpleMessage("Manage an Existing Passport"),
+        "text_636d0bb5a3b7eb50b601555b": MessageLookupByLibrary.simpleMessage(
+            "Don’t have a Passport? Buy One"),
+        "text_636d0bb5a3b7eb50b601555d":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_636d0bb5a3b7eb50b601555f":
+            MessageLookupByLibrary.simpleMessage("Set Up a New Passport"),
+        "text_636d0bb5a3b7eb50b6015560":
+            MessageLookupByLibrary.simpleMessage("Set Up a New Passport"),
+        "text_636d0bb5a3b7eb50b6015561":
+            MessageLookupByLibrary.simpleMessage("Manage an Existing Passport"),
+        "text_636d0bb5a3b7eb50b6015563": MessageLookupByLibrary.simpleMessage(
+            "The perfect companion for your Passport"),
+        "text_636d0bb5a3b7eb50b6015565":
+            MessageLookupByLibrary.simpleMessage("Set Up a New Passport"),
+        "text_636d0bb5a3b7eb50b6015566": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_636d0bb5a3b7eb50b6015568": MessageLookupByLibrary.simpleMessage(
+            "I don’t have a Passport. Buy One"),
+        "text_636d0bb5a3b7eb50b601556a":
+            MessageLookupByLibrary.simpleMessage("Manage an Existing Passport"),
+        "text_636d0bb5a3b7eb50b601556c":
+            MessageLookupByLibrary.simpleMessage("Set Up a New Passport"),
+        "text_636d0e1257301d8b9eb942f5":
+            MessageLookupByLibrary.simpleMessage("4321"),
+        "text_636d0e1257301d8b9eb942f7": MessageLookupByLibrary.simpleMessage(
+            "The perfect companion for your Passport Andy"),
+        "text_636d0e1257301d8b9eb942f9": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_636d0e1257301d8b9eb942fd":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_636d0e1257301d8b9eb942ff": MessageLookupByLibrary.simpleMessage(
+            "Have an Envoy Shield Account? {{Log In}}"),
+        "text_636d0e1257301d8b9eb94301":
+            MessageLookupByLibrary.simpleMessage("Set up a new Passport"),
+        "text_636d0e1257301d8b9eb94303": MessageLookupByLibrary.simpleMessage(
+            "Connect an existing Passport"),
+        "text_636d0e1257301d8b9eb94305": MessageLookupByLibrary.simpleMessage(
+            "I don’t have a Passport. {{Buy One}}"),
+        "text_636d1be00ce8d6d7ed885c2a":
+            MessageLookupByLibrary.simpleMessage("Skip!"),
+        "text_636d1be00ce8d6d7ed885c2c": MessageLookupByLibrary.simpleMessage(
+            "The perfect companion for your Passport"),
+        "text_636d1be00ce8d6d7ed885c2e": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_636d1be00ce8d6d7ed885c30": MessageLookupByLibrary.simpleMessage(
+            "I don’t have a Passport. Buy One"),
+        "text_636d1be00ce8d6d7ed885c32":
+            MessageLookupByLibrary.simpleMessage("Manage an Existing Passport"),
+        "text_636d1be00ce8d6d7ed885c34":
+            MessageLookupByLibrary.simpleMessage("Set Up a New Passport"),
+        "text_6399ff19b95f367561884578learn_more_about_data_secured_2_4_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "text_6399ff19b95f367561884580":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "text_6399ff19b95f367561884586":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "text_6399ff19b95f367561884588":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "text_6399ff19b95f36756188458a": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_6399ff19b95f36756188458c": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_6399ff19b95f367561884590": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_6399ff19b95f367561884592": MessageLookupByLibrary.simpleMessage(
+            "Learn how your data is secured"),
+        "text_6399ff19b95f367561884594": MessageLookupByLibrary.simpleMessage(
+            "Learn how your data is secured"),
+        "text_6399ff19b95f367561884598": MessageLookupByLibrary.simpleMessage(
+            "Learn how your data is secured"),
+        "text_6399ff19b95f36756188459a":
+            MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
+        "text_6399ff19b95f36756188459c":
+            MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
+        "text_6399ff19b95f3675618845a0":
+            MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
+        "text_6399ff19b95f3675618845a2":
+            MessageLookupByLibrary.simpleMessage("Generate New Wallet"),
+        "text_6399ff19b95f3675618845a3":
+            MessageLookupByLibrary.simpleMessage("Generate New Wallet"),
+        "text_6399ff19b95f3675618845a4":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "text_6399ff19b95f3675618845a6":
+            MessageLookupByLibrary.simpleMessage("Generate New Wallet"),
+        "text_6399ff19b95f3675618845a7": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_6399ff19b95f3675618845a9": MessageLookupByLibrary.simpleMessage(
+            "Learn how your data is secured"),
+        "text_6399ff19b95f3675618845ab":
+            MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
+        "text_6399ff19b95f3675618845ad":
+            MessageLookupByLibrary.simpleMessage("Generate New Wallet"),
+        "text_639a01a7b95f367561884984":
+            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+        "text_639a01a7b95f367561884986": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_639a01a7b95f367561884988":
+            MessageLookupByLibrary.simpleMessage("We don’t keep your seed"),
+        "text_639a01a7b95f36756188498a":
+            MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
+        "text_639a01a7b95f36756188498c":
+            MessageLookupByLibrary.simpleMessage("Generate New Wallet"),
+        "text_639aec9fa3d8db28cd9f6a1f":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6a29":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639aec9fa3d8db28cd9f6a46":
+            MessageLookupByLibrary.simpleMessage("abandon"),
+        "text_639aec9fa3d8db28cd9f6a67":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6a8b":
+            MessageLookupByLibrary.simpleMessage("sweet"),
+        "text_639aec9fa3d8db28cd9f6aac":
+            MessageLookupByLibrary.simpleMessage("original"),
+        "text_639aec9fa3d8db28cd9f6ac2":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639aec9fa3d8db28cd9f6ac4":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639aec9fa3d8db28cd9f6ac8":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639aec9fa3d8db28cd9f6aca":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639aec9fa3d8db28cd9f6ad3":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639aec9fa3d8db28cd9f6ad5":
+            MessageLookupByLibrary.simpleMessage("foster"),
+        "text_639aec9fa3d8db28cd9f6ad9":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "text_639aec9fa3d8db28cd9f6ae2":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639aec9fa3d8db28cd9f6ae4":
+            MessageLookupByLibrary.simpleMessage("pelican"),
+        "text_639aec9fa3d8db28cd9f6aec":
+            MessageLookupByLibrary.simpleMessage("abandon"),
+        "text_639aec9fa3d8db28cd9f6aee":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639aec9fa3d8db28cd9f6af2":
+            MessageLookupByLibrary.simpleMessage("piano"),
+        "text_639aec9fa3d8db28cd9f6af4":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639aec9fa3d8db28cd9f6afa":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639aec9fa3d8db28cd9f6b02":
+            MessageLookupByLibrary.simpleMessage("toast"),
+        "text_639aec9fa3d8db28cd9f6b04":
+            MessageLookupByLibrary.simpleMessage("castle"),
+        "text_639aec9fa3d8db28cd9f6b06":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639aec9fa3d8db28cd9f6b08":
+            MessageLookupByLibrary.simpleMessage("abandon"),
+        "text_639aec9fa3d8db28cd9f6b0a":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6b0c":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639aec9fa3d8db28cd9f6b11":
+            MessageLookupByLibrary.simpleMessage("tank"),
+        "text_639aec9fa3d8db28cd9f6b16":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639aec9fa3d8db28cd9f6b18":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639aec9fa3d8db28cd9f6b1a":
+            MessageLookupByLibrary.simpleMessage("piano"),
+        "text_639aec9fa3d8db28cd9f6b1c":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6b1e":
+            MessageLookupByLibrary.simpleMessage("sweet"),
+        "text_639aec9fa3d8db28cd9f6b20":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639aec9fa3d8db28cd9f6b22":
+            MessageLookupByLibrary.simpleMessage("abandon"),
+        "text_639aec9fa3d8db28cd9f6b24":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639aec9fa3d8db28cd9f6b26":
+            MessageLookupByLibrary.simpleMessage("glow"),
+        "text_639aec9fa3d8db28cd9f6b28":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639aec9fa3d8db28cd9f6b2a":
+            MessageLookupByLibrary.simpleMessage("piano"),
+        "text_639aec9fa3d8db28cd9f6b2c":
+            MessageLookupByLibrary.simpleMessage("catch"),
+        "text_639aec9fa3d8db28cd9f6b30":
+            MessageLookupByLibrary.simpleMessage("original"),
+        "text_639aec9fa3d8db28cd9f6b32":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639aec9fa3d8db28cd9f6b34":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639aec9fa3d8db28cd9f6b36":
+            MessageLookupByLibrary.simpleMessage("piano"),
+        "text_639aec9fa3d8db28cd9f6b38":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639aec9fa3d8db28cd9f6b3a":
+            MessageLookupByLibrary.simpleMessage("13. bacon"),
+        "text_639aec9fa3d8db28cd9f6b3c":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6b40":
+            MessageLookupByLibrary.simpleMessage("castle"),
+        "text_639aec9fa3d8db28cd9f6b44":
+            MessageLookupByLibrary.simpleMessage("Correct"),
+        "text_639aec9fa3d8db28cd9f6b49":
+            MessageLookupByLibrary.simpleMessage("foster"),
+        "text_639aec9fa3d8db28cd9f6b4b":
+            MessageLookupByLibrary.simpleMessage("tank"),
+        "text_639aec9fa3d8db28cd9f6b4d":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639aec9fa3d8db28cd9f6b4f":
+            MessageLookupByLibrary.simpleMessage("tank"),
+        "text_639aec9fa3d8db28cd9f6b51":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639aec9fa3d8db28cd9f6b53":
+            MessageLookupByLibrary.simpleMessage("19. bacon"),
+        "text_639aec9fa3d8db28cd9f6b55":
+            MessageLookupByLibrary.simpleMessage("abandon"),
+        "text_639aec9fa3d8db28cd9f6b57":
+            MessageLookupByLibrary.simpleMessage("piano"),
+        "text_639aec9fa3d8db28cd9f6b5a":
+            MessageLookupByLibrary.simpleMessage("pelican"),
+        "text_639aec9fa3d8db28cd9f6b5c":
+            MessageLookupByLibrary.simpleMessage("sweet"),
+        "text_639aec9fa3d8db28cd9f6b5e":
+            MessageLookupByLibrary.simpleMessage("catch"),
+        "text_639aec9fa3d8db28cd9f6b60":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639aec9fa3d8db28cd9f6b62":
+            MessageLookupByLibrary.simpleMessage("tank"),
+        "text_639aec9fa3d8db28cd9f6b64":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6b66":
+            MessageLookupByLibrary.simpleMessage("14. bacon"),
+        "text_639aec9fa3d8db28cd9f6b68":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639aec9fa3d8db28cd9f6b6a":
+            MessageLookupByLibrary.simpleMessage("catch"),
+        "text_639aec9fa3d8db28cd9f6b6c":
+            MessageLookupByLibrary.simpleMessage("abandon"),
+        "text_639aec9fa3d8db28cd9f6b6f":
+            MessageLookupByLibrary.simpleMessage("original"),
+        "text_639aec9fa3d8db28cd9f6b71":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639aec9fa3d8db28cd9f6b73":
+            MessageLookupByLibrary.simpleMessage("20. bacon"),
+        "text_639aec9fa3d8db28cd9f6b75":
+            MessageLookupByLibrary.simpleMessage("sweet"),
+        "text_639aec9fa3d8db28cd9f6b77":
+            MessageLookupByLibrary.simpleMessage("catch"),
+        "text_639aec9fa3d8db28cd9f6b79":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639aec9fa3d8db28cd9f6b7b":
+            MessageLookupByLibrary.simpleMessage("foster"),
+        "text_639aec9fa3d8db28cd9f6b7d":
+            MessageLookupByLibrary.simpleMessage("toast"),
+        "text_639aec9fa3d8db28cd9f6b7f":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639aec9fa3d8db28cd9f6b81":
+            MessageLookupByLibrary.simpleMessage("foster"),
+        "text_639aec9fa3d8db28cd9f6b83":
+            MessageLookupByLibrary.simpleMessage("original"),
+        "text_639aec9fa3d8db28cd9f6b85":
+            MessageLookupByLibrary.simpleMessage("15. bacon"),
+        "text_639aec9fa3d8db28cd9f6b87":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639aec9fa3d8db28cd9f6b8a":
+            MessageLookupByLibrary.simpleMessage("foster"),
+        "text_639aec9fa3d8db28cd9f6b8c":
+            MessageLookupByLibrary.simpleMessage("broccoli"),
+        "text_639aec9fa3d8db28cd9f6b8e":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639aec9fa3d8db28cd9f6b90":
+            MessageLookupByLibrary.simpleMessage("21. bacon"),
+        "text_639aec9fa3d8db28cd9f6b95":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639aec9fa3d8db28cd9f6b98":
+            MessageLookupByLibrary.simpleMessage("glow"),
+        "text_639aec9fa3d8db28cd9f6b9b":
+            MessageLookupByLibrary.simpleMessage("16. bacon"),
+        "text_639aec9fa3d8db28cd9f6b9d":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639aec9fa3d8db28cd9f6ba0":
+            MessageLookupByLibrary.simpleMessage("sweet"),
+        "text_639aec9fa3d8db28cd9f6ba2":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639aec9fa3d8db28cd9f6ba4":
+            MessageLookupByLibrary.simpleMessage("castle"),
+        "text_639aec9fa3d8db28cd9f6ba6":
+            MessageLookupByLibrary.simpleMessage("22. bacon"),
+        "text_639aec9fa3d8db28cd9f6ba8":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639aec9fa3d8db28cd9f6baa":
+            MessageLookupByLibrary.simpleMessage("original"),
+        "text_639aec9fa3d8db28cd9f6bac":
+            MessageLookupByLibrary.simpleMessage("17. bacon"),
+        "text_639aec9fa3d8db28cd9f6bae":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639aec9fa3d8db28cd9f6bb3":
+            MessageLookupByLibrary.simpleMessage("23. bacon"),
+        "text_639aec9fa3d8db28cd9f6bb5":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639aec9fa3d8db28cd9f6bb7":
+            MessageLookupByLibrary.simpleMessage("18. bacon"),
+        "text_639aec9fa3d8db28cd9f6bba":
+            MessageLookupByLibrary.simpleMessage("24. bacon"),
+        "text_639aec9fa3d8db28cd9f6bbc":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639aec9fa3d8db28cd9f6bbe":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639af7fc5ab3596bdd618453":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618456":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618458":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd61845b":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639af7fc5ab3596bdd61845e":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639af7fc5ab3596bdd618460":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd61846d":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd61846f":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd618477":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd618486":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639af7fc5ab3596bdd618488":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639af7fc5ab3596bdd618490":
+            MessageLookupByLibrary.simpleMessage("8. taost"),
+        "text_639af7fc5ab3596bdd6184a9":
+            MessageLookupByLibrary.simpleMessage("3. swe"),
+        "text_639af7fc5ab3596bdd6184ab":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd6184ad":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd6184c6":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639af7fc5ab3596bdd6184c8":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639af7fc5ab3596bdd6184d2":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd6184dc":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639af7fc5ab3596bdd6184de":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639af7fc5ab3596bdd6184e0":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639af7fc5ab3596bdd6184e4":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd6184ea":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639af7fc5ab3596bdd6184ee":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6184f0":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639af7fc5ab3596bdd6184f2":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639af7fc5ab3596bdd6184fa":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639af7fc5ab3596bdd6184fe":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618500":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639af7fc5ab3596bdd618502":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639af7fc5ab3596bdd618504":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd618506":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd61850c":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639af7fc5ab3596bdd618510":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618512":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618514":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618516":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd618518":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639af7fc5ab3596bdd61851a":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd61851c":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd618520":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639af7fc5ab3596bdd618522":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639af7fc5ab3596bdd618526":
+            MessageLookupByLibrary.simpleMessage("1."),
+        "text_639af7fc5ab3596bdd61852a":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd61852c":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd61852e":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd618530":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639af7fc5ab3596bdd618534":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639af7fc5ab3596bdd618536":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd618538":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd61853a":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639af7fc5ab3596bdd61853c":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd618540":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639af7fc5ab3596bdd618542":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618544":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd618546":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639af7fc5ab3596bdd618548":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd61854a":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd61854c":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639af7fc5ab3596bdd618552":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd618554":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639af7fc5ab3596bdd618556":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd618558":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639af7fc5ab3596bdd61855a":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd61855c":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639af7fc5ab3596bdd61855e":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd618560":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639af7fc5ab3596bdd618562":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639af7fc5ab3596bdd618566":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd618568":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639af7fc5ab3596bdd61856a":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639af7fc5ab3596bdd61856c":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639af7fc5ab3596bdd61856e":
+            MessageLookupByLibrary.simpleMessage("8. to"),
+        "text_639af7fc5ab3596bdd618570":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639af7fc5ab3596bdd618572":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639af7fc5ab3596bdd618574":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd618576":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639af7fc5ab3596bdd618578":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd61857b":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639af7fc5ab3596bdd61857d":
+            MessageLookupByLibrary.simpleMessage("3. swe"),
+        "text_639af7fc5ab3596bdd61857f":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639af7fc5ab3596bdd618581":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639af7fc5ab3596bdd618583":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639af7fc5ab3596bdd618585":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd618587":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd618589":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd61858b":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639af7fc5ab3596bdd61858d":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639af7fc5ab3596bdd61858f":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd618591":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639af7fc5ab3596bdd618593":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639af7fc5ab3596bdd618595":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639af7fc5ab3596bdd618597":
+            MessageLookupByLibrary.simpleMessage("8. taost"),
+        "text_639af7fc5ab3596bdd618599":
+            MessageLookupByLibrary.simpleMessage("3."),
+        "text_639af7fc5ab3596bdd61859b":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639af7fc5ab3596bdd61859d":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd61859f":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd6185a1":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639af7fc5ab3596bdd6185a3":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639af7fc5ab3596bdd6185a5":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639af7fc5ab3596bdd6185a7":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6185a9":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd6185ab":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639af7fc5ab3596bdd6185ad":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd6185af":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639af7fc5ab3596bdd6185b1":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd6185b3":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639af7fc5ab3596bdd6185b5":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639af7fc5ab3596bdd6185b7":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639af7fc5ab3596bdd6185b9":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639af7fc5ab3596bdd6185bb":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639af7fc5ab3596bdd6185bd":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639af7fc5ab3596bdd6185bf":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd6185c1":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639af7fc5ab3596bdd6185c3":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd6185c5":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd6185c7":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6185c9":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6185cb":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd6185cd":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639af7fc5ab3596bdd6185cf":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639af7fc5ab3596bdd6185d1":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639af7fc5ab3596bdd6185d3":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6185d5":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639af7fc5ab3596bdd6185d7":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639af7fc5ab3596bdd6185d9":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639af7fc5ab3596bdd6185db":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd6185dd":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd6185df":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd6185e1":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639af7fc5ab3596bdd6185e3":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639af7fc5ab3596bdd6185e5":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639af7fc5ab3596bdd6185e7":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6185e9":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639af7fc5ab3596bdd6185eb":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd6185ed":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639af7fc5ab3596bdd6185ef":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639af7fc5ab3596bdd6185f1":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639af7fc5ab3596bdd6185f3":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639af7fc5ab3596bdd6185f5":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639af7fc5ab3596bdd6185f7":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639af7fc5ab3596bdd6185f9":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd6185fb":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd6185fd":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd6185ff":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd618601":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd618603":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639af7fc5ab3596bdd618605":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd618607":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639af7fc5ab3596bdd618609":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639af7fc5ab3596bdd61860b":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639af7fc5ab3596bdd61860d":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639af7fc5ab3596bdd61860f":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639af7fc5ab3596bdd618611":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639af7fc5ab3596bdd618613":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd618615":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd618617":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd618619":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639af7fc5ab3596bdd61861b":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd61861d":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639af7fc5ab3596bdd61861f":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd618621":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd618623":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639af7fc5ab3596bdd618625":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639af7fc5ab3596bdd618627":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639af7fc5ab3596bdd618629":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd61862b":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639af7fc5ab3596bdd61862d":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd61862f":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd618631":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd618633":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639af7fc5ab3596bdd618635":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639af7fc5ab3596bdd618637":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639af7fc5ab3596bdd618639":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd61863b":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd61863d":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd61863f":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639af7fc5ab3596bdd618641":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd618643":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639af7fc5ab3596bdd618644":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639af7fc5ab3596bdd618646":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639af7fc5ab3596bdd618648":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd61864a":
+            MessageLookupByLibrary.simpleMessage("“design”"),
+        "text_639af7fc5ab3596bdd61864c":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639af7fc5ab3596bdd61864e":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639af7fc5ab3596bdd618650":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639af7fc5ab3596bdd618652":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd618654":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd618658":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639af7fc5ab3596bdd61865a":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639af7fc5ab3596bdd61865c":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639af7fc5ab3596bdd61865d":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639af7fc5ab3596bdd61865f":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639af7fc5ab3596bdd618661":
+            MessageLookupByLibrary.simpleMessage("Design"),
+        "text_639af7fc5ab3596bdd618665":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd618667":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639af7fc5ab3596bdd618669":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd61866c":
+            MessageLookupByLibrary.simpleMessage("Designer"),
+        "text_639af7fc5ab3596bdd61866e":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639af7fc5ab3596bdd618670":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639af7fc5ab3596bdd618672":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639af7fc5ab3596bdd618674":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639af7fc5ab3596bdd618678":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639af7fc5ab3596bdd61867a":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639af7fc5ab3596bdd61867c":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639af7fc5ab3596bdd61867e":
+            MessageLookupByLibrary.simpleMessage("Q"),
+        "text_639af7fc5ab3596bdd618680":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639af7fc5ab3596bdd618683":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639af7fc5ab3596bdd618685":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639af7fc5ab3596bdd618687":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639af7fc5ab3596bdd618689":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639af7fc5ab3596bdd61868b":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639af7fc5ab3596bdd61868d":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639af7fc5ab3596bdd618690":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639af7fc5ab3596bdd618692":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639af7fc5ab3596bdd618694":
+            MessageLookupByLibrary.simpleMessage("W"),
+        "text_639af7fc5ab3596bdd618696":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639af7fc5ab3596bdd618697":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639af7fc5ab3596bdd618698":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639af7fc5ab3596bdd61869a":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639af7fc5ab3596bdd61869c":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639af7fc5ab3596bdd61869e":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639af7fc5ab3596bdd6186a0":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639af7fc5ab3596bdd6186a2":
+            MessageLookupByLibrary.simpleMessage("E"),
+        "text_639af7fc5ab3596bdd6186a4":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639af7fc5ab3596bdd6186a6":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639af7fc5ab3596bdd6186a8":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639af7fc5ab3596bdd6186a9":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639af7fc5ab3596bdd6186ab":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639af7fc5ab3596bdd6186ad":
+            MessageLookupByLibrary.simpleMessage("R"),
+        "text_639af7fc5ab3596bdd6186af":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639af7fc5ab3596bdd6186b1":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639af7fc5ab3596bdd6186b3":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639af7fc5ab3596bdd6186b5":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639af7fc5ab3596bdd6186b7":
+            MessageLookupByLibrary.simpleMessage("T"),
+        "text_639af7fc5ab3596bdd6186b9":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639af7fc5ab3596bdd6186bb":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639af7fc5ab3596bdd6186bd":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639af7fc5ab3596bdd6186bf":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639af7fc5ab3596bdd6186c1":
+            MessageLookupByLibrary.simpleMessage("Y"),
+        "text_639af7fc5ab3596bdd6186c3":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639af7fc5ab3596bdd6186c5":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639af7fc5ab3596bdd6186c7":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639af7fc5ab3596bdd6186c9":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639af7fc5ab3596bdd6186cb":
+            MessageLookupByLibrary.simpleMessage("U"),
+        "text_639af7fc5ab3596bdd6186cd":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639af7fc5ab3596bdd6186cf":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639af7fc5ab3596bdd6186d1":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639af7fc5ab3596bdd6186d3":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639af7fc5ab3596bdd6186d5":
+            MessageLookupByLibrary.simpleMessage("I"),
+        "text_639af7fc5ab3596bdd6186d7":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639af7fc5ab3596bdd6186d9":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639af7fc5ab3596bdd6186db":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639af7fc5ab3596bdd6186dd":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639af7fc5ab3596bdd6186df":
+            MessageLookupByLibrary.simpleMessage("O"),
+        "text_639af7fc5ab3596bdd6186e1":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639af7fc5ab3596bdd6186e3":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639af7fc5ab3596bdd6186e5":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639af7fc5ab3596bdd6186e7":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639af7fc5ab3596bdd6186e9":
+            MessageLookupByLibrary.simpleMessage("P"),
+        "text_639af7fc5ab3596bdd6186eb":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639af7fc5ab3596bdd6186ed":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639af7fc5ab3596bdd6186ef":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639af7fc5ab3596bdd6186f1":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639af7fc5ab3596bdd6186f3":
+            MessageLookupByLibrary.simpleMessage("A"),
+        "text_639af7fc5ab3596bdd6186f5":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639af7fc5ab3596bdd6186f7":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639af7fc5ab3596bdd6186f9":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639af7fc5ab3596bdd6186fb":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639af7fc5ab3596bdd6186fd":
+            MessageLookupByLibrary.simpleMessage("S"),
+        "text_639af7fc5ab3596bdd6186ff":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639af7fc5ab3596bdd618701":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639af7fc5ab3596bdd618703":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639af7fc5ab3596bdd618705":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639af7fc5ab3596bdd618707":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639af7fc5ab3596bdd618709":
+            MessageLookupByLibrary.simpleMessage("D"),
+        "text_639af7fc5ab3596bdd61870b":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639af7fc5ab3596bdd61870d":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639af7fc5ab3596bdd61870f":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639af7fc5ab3596bdd618711":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639af7fc5ab3596bdd618713":
+            MessageLookupByLibrary.simpleMessage("F"),
+        "text_639af7fc5ab3596bdd618715":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639af7fc5ab3596bdd618717":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639af7fc5ab3596bdd618719":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639af7fc5ab3596bdd61871b":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639af7fc5ab3596bdd61871d":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639af7fc5ab3596bdd61871f":
+            MessageLookupByLibrary.simpleMessage("G"),
+        "text_639af7fc5ab3596bdd618721":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639af7fc5ab3596bdd618723":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639af7fc5ab3596bdd618725":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639af7fc5ab3596bdd618727":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639af7fc5ab3596bdd618729":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639af7fc5ab3596bdd61872b":
+            MessageLookupByLibrary.simpleMessage("H"),
+        "text_639af7fc5ab3596bdd61872d":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639af7fc5ab3596bdd61872f":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639af7fc5ab3596bdd618731":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639af7fc5ab3596bdd618733":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639af7fc5ab3596bdd618735":
+            MessageLookupByLibrary.simpleMessage("J"),
+        "text_639af7fc5ab3596bdd618737":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639af7fc5ab3596bdd618739":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639af7fc5ab3596bdd61873b":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639af7fc5ab3596bdd61873d":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639af7fc5ab3596bdd61873f":
+            MessageLookupByLibrary.simpleMessage("K"),
+        "text_639af7fc5ab3596bdd618741":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639af7fc5ab3596bdd618743":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639af7fc5ab3596bdd618745":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639af7fc5ab3596bdd618747":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639af7fc5ab3596bdd618749":
+            MessageLookupByLibrary.simpleMessage("L"),
+        "text_639af7fc5ab3596bdd61874b":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639af7fc5ab3596bdd61874d":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639af7fc5ab3596bdd61874f":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639af7fc5ab3596bdd618751":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639af7fc5ab3596bdd618755":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639af7fc5ab3596bdd618757":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639af7fc5ab3596bdd618759":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639af7fc5ab3596bdd61875b":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639af7fc5ab3596bdd61875d":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639af7fc5ab3596bdd61875f":
+            MessageLookupByLibrary.simpleMessage("Z"),
+        "text_639af7fc5ab3596bdd618761":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639af7fc5ab3596bdd618763":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639af7fc5ab3596bdd618765":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639af7fc5ab3596bdd618767":
+            MessageLookupByLibrary.simpleMessage("X"),
+        "text_639af7fc5ab3596bdd618769":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639af7fc5ab3596bdd61876b":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639af7fc5ab3596bdd61876d":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639af7fc5ab3596bdd61876f":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639af7fc5ab3596bdd618771":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639af7fc5ab3596bdd618773":
+            MessageLookupByLibrary.simpleMessage("C"),
+        "text_639af7fc5ab3596bdd618775":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639af7fc5ab3596bdd618777":
+            MessageLookupByLibrary.simpleMessage("V"),
+        "text_639af7fc5ab3596bdd618779":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639af7fc5ab3596bdd61877b":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639af7fc5ab3596bdd61877d":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639af7fc5ab3596bdd61877f":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639af7fc5ab3596bdd618781":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639af7fc5ab3596bdd618783":
+            MessageLookupByLibrary.simpleMessage("B"),
+        "text_639af7fc5ab3596bdd618785":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639af7fc5ab3596bdd618787":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639af7fc5ab3596bdd618789":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639af7fc5ab3596bdd61878b":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639af7fc5ab3596bdd61878d":
+            MessageLookupByLibrary.simpleMessage("N"),
+        "text_639af7fc5ab3596bdd61878f":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639af7fc5ab3596bdd618791":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639af7fc5ab3596bdd618793":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639af7fc5ab3596bdd618795":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639af7fc5ab3596bdd618797":
+            MessageLookupByLibrary.simpleMessage("M"),
+        "text_639af7fc5ab3596bdd618799":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639af7fc5ab3596bdd61879b":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639af7fc5ab3596bdd61879c":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639af7fc5ab3596bdd61879e":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639af7fc5ab3596bdd6187a2":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639af7fc5ab3596bdd6187a4":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639af7fc5ab3596bdd6187a6":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639af7fc5ab3596bdd6187a7":
+            MessageLookupByLibrary.simpleMessage("123"),
+        "text_639af7fc5ab3596bdd6187a9":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639af7fc5ab3596bdd6187ab":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639af7fc5ab3596bdd6187ad":
+            MessageLookupByLibrary.simpleMessage("space"),
+        "text_639af7fc5ab3596bdd6187af":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639af7fc5ab3596bdd6187b1":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639af7fc5ab3596bdd6187b3":
+            MessageLookupByLibrary.simpleMessage("return"),
+        "text_639af7fc5ab3596bdd6187b5":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639af7fc5ab3596bdd6187b7":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639af7fc5ab3596bdd6187b9":
+            MessageLookupByLibrary.simpleMessage("􀎸"),
+        "text_639af7fc5ab3596bdd6187bb":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639af7fc5ab3596bdd6187bc":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639af7fc5ab3596bdd6187be":
+            MessageLookupByLibrary.simpleMessage("􀊰"),
+        "text_639af7fc5ab3596bdd6187bf":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639af7fc5ab3596bdd6187c1":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639af7fc5ab3596bdd6187c3":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639af7fc5ab3596bdd6187c5":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639af7fc5ab3596bdd6187c7":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639af7fc5ab3596bdd6187c9":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639af7fc5ab3596bdd6187cb":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639b0588fe1a37c21666e85d":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0588fe1a37c21666e880":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0588fe1a37c21666e882":
+            MessageLookupByLibrary.simpleMessage("13. bacon"),
+        "text_639b0588fe1a37c21666e89c":
+            MessageLookupByLibrary.simpleMessage("13. bacon"),
+        "text_639b0588fe1a37c21666e89e":
+            MessageLookupByLibrary.simpleMessage("1. "),
+        "text_639b0588fe1a37c21666e8a0":
+            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+        "text_639b0588fe1a37c21666e8a2":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0588fe1a37c21666e8a4":
+            MessageLookupByLibrary.simpleMessage("19."),
+        "text_639b0588fe1a37c21666e8a8":
+            MessageLookupByLibrary.simpleMessage("13."),
+        "text_639b0588fe1a37c21666e8aa":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e8ae":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639b0589fe1a37c21666e8b3":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639b0589fe1a37c21666e8b5":
+            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+        "text_639b0589fe1a37c21666e8c1":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639b0589fe1a37c21666e8c3":
+            MessageLookupByLibrary.simpleMessage("19. bacon"),
+        "text_639b0589fe1a37c21666e8c5":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639b0589fe1a37c21666e8c7":
+            MessageLookupByLibrary.simpleMessage("14."),
+        "text_639b0589fe1a37c21666e8c9":
+            MessageLookupByLibrary.simpleMessage("13. bacon"),
+        "text_639b0589fe1a37c21666e8cb":
+            MessageLookupByLibrary.simpleMessage("19."),
+        "text_639b0589fe1a37c21666e8cd":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0589fe1a37c21666e8d5":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e8d9":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e8db":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e8dd":
+            MessageLookupByLibrary.simpleMessage("13. bacon"),
+        "text_639b0589fe1a37c21666e8df":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e8e3":
+            MessageLookupByLibrary.simpleMessage("2."),
+        "text_639b0589fe1a37c21666e8e5":
+            MessageLookupByLibrary.simpleMessage("14. bacon"),
+        "text_639b0589fe1a37c21666e8e7":
+            MessageLookupByLibrary.simpleMessage("20."),
+        "text_639b0589fe1a37c21666e8e9":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e8eb":
+            MessageLookupByLibrary.simpleMessage("19. bacon"),
+        "text_639b0589fe1a37c21666e8ed":
+            MessageLookupByLibrary.simpleMessage("14."),
+        "text_639b0589fe1a37c21666e8ef":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0589fe1a37c21666e8f1":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e8f7":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639b0589fe1a37c21666e8f9":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639b0589fe1a37c21666e8fb":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0589fe1a37c21666e8ff":
+            MessageLookupByLibrary.simpleMessage("19. bacon"),
+        "text_639b0589fe1a37c21666e901":
+            MessageLookupByLibrary.simpleMessage("7."),
+        "text_639b0589fe1a37c21666e903":
+            MessageLookupByLibrary.simpleMessage("13. bacon"),
+        "text_639b0589fe1a37c21666e905":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639b0589fe1a37c21666e907":
+            MessageLookupByLibrary.simpleMessage("20. bacon"),
+        "text_639b0589fe1a37c21666e909":
+            MessageLookupByLibrary.simpleMessage("15."),
+        "text_639b0589fe1a37c21666e90b":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e90d":
+            MessageLookupByLibrary.simpleMessage("8. taost"),
+        "text_639b0589fe1a37c21666e90f":
+            MessageLookupByLibrary.simpleMessage("20."),
+        "text_639b0589fe1a37c21666e911":
+            MessageLookupByLibrary.simpleMessage("14. bacon"),
+        "text_639b0589fe1a37c21666e913":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0589fe1a37c21666e915":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e919":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0589fe1a37c21666e91b":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0589fe1a37c21666e91d":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0589fe1a37c21666e921":
+            MessageLookupByLibrary.simpleMessage("19. bacon"),
+        "text_639b0589fe1a37c21666e923":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0589fe1a37c21666e925":
+            MessageLookupByLibrary.simpleMessage("14. bacon"),
+        "text_639b0589fe1a37c21666e927":
+            MessageLookupByLibrary.simpleMessage("3."),
+        "text_639b0589fe1a37c21666e929":
+            MessageLookupByLibrary.simpleMessage("15. bacon"),
+        "text_639b0589fe1a37c21666e92b":
+            MessageLookupByLibrary.simpleMessage("21."),
+        "text_639b0589fe1a37c21666e92d":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666e92f":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e931":
+            MessageLookupByLibrary.simpleMessage("15."),
+        "text_639b0589fe1a37c21666e933":
+            MessageLookupByLibrary.simpleMessage("20. bacon"),
+        "text_639b0589fe1a37c21666e935":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e937":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0589fe1a37c21666e939":
+            MessageLookupByLibrary.simpleMessage("2. broccoli"),
+        "text_639b0589fe1a37c21666e93b":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639b0589fe1a37c21666e93d":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639b0589fe1a37c21666e93f":
+            MessageLookupByLibrary.simpleMessage("8. to"),
+        "text_639b0589fe1a37c21666e941":
+            MessageLookupByLibrary.simpleMessage("1. abandon"),
+        "text_639b0589fe1a37c21666e943":
+            MessageLookupByLibrary.simpleMessage("14. bacon"),
+        "text_639b0589fe1a37c21666e945":
+            MessageLookupByLibrary.simpleMessage("8."),
+        "text_639b0589fe1a37c21666e947":
+            MessageLookupByLibrary.simpleMessage("20. bacon"),
+        "text_639b0589fe1a37c21666e949":
+            MessageLookupByLibrary.simpleMessage("16."),
+        "text_639b0589fe1a37c21666e94b":
+            MessageLookupByLibrary.simpleMessage("21. bacon"),
+        "text_639b0589fe1a37c21666e94d":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639b0589fe1a37c21666e94f":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639b0589fe1a37c21666e951":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e953":
+            MessageLookupByLibrary.simpleMessage("21."),
+        "text_639b0589fe1a37c21666e955":
+            MessageLookupByLibrary.simpleMessage("15. bacon"),
+        "text_639b0589fe1a37c21666e957":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0589fe1a37c21666e959":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639b0589fe1a37c21666e95b":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639b0589fe1a37c21666e95d":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e95f":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e961":
+            MessageLookupByLibrary.simpleMessage("3. swe"),
+        "text_639b0589fe1a37c21666e963":
+            MessageLookupByLibrary.simpleMessage("7. pelican"),
+        "text_639b0589fe1a37c21666e965":
+            MessageLookupByLibrary.simpleMessage("20. bacon"),
+        "text_639b0589fe1a37c21666e967":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e969":
+            MessageLookupByLibrary.simpleMessage("15. bacon"),
+        "text_639b0589fe1a37c21666e96b":
+            MessageLookupByLibrary.simpleMessage("22."),
+        "text_639b0589fe1a37c21666e96d":
+            MessageLookupByLibrary.simpleMessage("16. bacon"),
+        "text_639b0589fe1a37c21666e96f":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639b0589fe1a37c21666e971":
+            MessageLookupByLibrary.simpleMessage("16."),
+        "text_639b0589fe1a37c21666e973":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666e975":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666e977":
+            MessageLookupByLibrary.simpleMessage("21. bacon"),
+        "text_639b0589fe1a37c21666e979":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639b0589fe1a37c21666e97b":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639b0589fe1a37c21666e97d":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e97f":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e981":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639b0589fe1a37c21666e983":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639b0589fe1a37c21666e985":
+            MessageLookupByLibrary.simpleMessage("9."),
+        "text_639b0589fe1a37c21666e987":
+            MessageLookupByLibrary.simpleMessage("15. bacon"),
+        "text_639b0589fe1a37c21666e989":
+            MessageLookupByLibrary.simpleMessage("2 broccoli."),
+        "text_639b0589fe1a37c21666e98b":
+            MessageLookupByLibrary.simpleMessage("21. bacon"),
+        "text_639b0589fe1a37c21666e98d":
+            MessageLookupByLibrary.simpleMessage("17."),
+        "text_639b0589fe1a37c21666e98f":
+            MessageLookupByLibrary.simpleMessage("22. bacon"),
+        "text_639b0589fe1a37c21666e991":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639b0589fe1a37c21666e993":
+            MessageLookupByLibrary.simpleMessage("22."),
+        "text_639b0589fe1a37c21666e995":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639b0589fe1a37c21666e997":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666e999":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e99b":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639b0589fe1a37c21666e99d":
+            MessageLookupByLibrary.simpleMessage("16. bacon"),
+        "text_639b0589fe1a37c21666e99f":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e9a1":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666e9a3":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639b0589fe1a37c21666e9a5":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639b0589fe1a37c21666e9a7":
+            MessageLookupByLibrary.simpleMessage("4."),
+        "text_639b0589fe1a37c21666e9a9":
+            MessageLookupByLibrary.simpleMessage("21. bacon"),
+        "text_639b0589fe1a37c21666e9ab":
+            MessageLookupByLibrary.simpleMessage("8. toast"),
+        "text_639b0589fe1a37c21666e9ad":
+            MessageLookupByLibrary.simpleMessage("17. bacon"),
+        "text_639b0589fe1a37c21666e9af":
+            MessageLookupByLibrary.simpleMessage("23."),
+        "text_639b0589fe1a37c21666e9b1":
+            MessageLookupByLibrary.simpleMessage("16. bacon"),
+        "text_639b0589fe1a37c21666e9b3":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639b0589fe1a37c21666e9b5":
+            MessageLookupByLibrary.simpleMessage("17."),
+        "text_639b0589fe1a37c21666e9b7":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666e9b9":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666e9bb":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e9bd":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e9bf":
+            MessageLookupByLibrary.simpleMessage("22. bacon"),
+        "text_639b0589fe1a37c21666e9c1":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639b0589fe1a37c21666e9c3":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639b0589fe1a37c21666e9c5":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666e9c7":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639b0589fe1a37c21666e9c9":
+            MessageLookupByLibrary.simpleMessage("10."),
+        "text_639b0589fe1a37c21666e9cb":
+            MessageLookupByLibrary.simpleMessage("16. bacon"),
+        "text_639b0589fe1a37c21666e9cd":
+            MessageLookupByLibrary.simpleMessage("3. sweet"),
+        "text_639b0589fe1a37c21666e9cf":
+            MessageLookupByLibrary.simpleMessage("23. bacon"),
+        "text_639b0589fe1a37c21666e9d1":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b0589fe1a37c21666e9d3":
+            MessageLookupByLibrary.simpleMessage("22. bacon"),
+        "text_639b0589fe1a37c21666e9d5":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666e9d7":
+            MessageLookupByLibrary.simpleMessage("23."),
+        "text_639b0589fe1a37c21666e9d9":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639b0589fe1a37c21666e9db":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666e9dd":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666e9df":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e9e1":
+            MessageLookupByLibrary.simpleMessage("17. bacon"),
+        "text_639b0589fe1a37c21666e9e3":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639b0589fe1a37c21666e9e5":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666e9e7":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639b0589fe1a37c21666e9e9":
+            MessageLookupByLibrary.simpleMessage("22. bacon"),
+        "text_639b0589fe1a37c21666e9eb":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639b0589fe1a37c21666e9ed":
+            MessageLookupByLibrary.simpleMessage("5."),
+        "text_639b0589fe1a37c21666e9ef":
+            MessageLookupByLibrary.simpleMessage("9. castle"),
+        "text_639b0589fe1a37c21666e9f1":
+            MessageLookupByLibrary.simpleMessage("18. bacon"),
+        "text_639b0589fe1a37c21666e9f3":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b0589fe1a37c21666e9f5":
+            MessageLookupByLibrary.simpleMessage("17. bacon"),
+        "text_639b0589fe1a37c21666e9f7":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666e9f9":
+            MessageLookupByLibrary.simpleMessage("18."),
+        "text_639b0589fe1a37c21666e9fb":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639b0589fe1a37c21666e9fd":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666e9ff":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639b0589fe1a37c21666ea02":
+            MessageLookupByLibrary.simpleMessage("23. bacon"),
+        "text_639b0589fe1a37c21666ea04":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639b0589fe1a37c21666ea06":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666ea08":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666ea0a":
+            MessageLookupByLibrary.simpleMessage("17. bacon"),
+        "text_639b0589fe1a37c21666ea0c":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639b0589fe1a37c21666ea0e":
+            MessageLookupByLibrary.simpleMessage("11."),
+        "text_639b0589fe1a37c21666ea10":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b0589fe1a37c21666ea12":
+            MessageLookupByLibrary.simpleMessage("24. bacon"),
+        "text_639b0589fe1a37c21666ea14":
+            MessageLookupByLibrary.simpleMessage("4. original"),
+        "text_639b0589fe1a37c21666ea16":
+            MessageLookupByLibrary.simpleMessage("23. bacon"),
+        "text_639b0589fe1a37c21666ea18":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666ea1a":
+            MessageLookupByLibrary.simpleMessage("24."),
+        "text_639b0589fe1a37c21666ea1c":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639b0589fe1a37c21666ea1d":
+            MessageLookupByLibrary.simpleMessage("10. glow"),
+        "text_639b0589fe1a37c21666ea1f":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666ea21":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666ea23":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666ea25":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639b0589fe1a37c21666ea27":
+            MessageLookupByLibrary.simpleMessage("18. bacon"),
+        "text_639b0589fe1a37c21666ea29":
+            MessageLookupByLibrary.simpleMessage("23. bacon"),
+        "text_639b0589fe1a37c21666ea2b":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639b0589fe1a37c21666ea2d":
+            MessageLookupByLibrary.simpleMessage("6."),
+        "text_639b0589fe1a37c21666ea2f":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639b0589fe1a37c21666ea33":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666ea35":
+            MessageLookupByLibrary.simpleMessage("5. foster"),
+        "text_639b0589fe1a37c21666ea39":
+            MessageLookupByLibrary.simpleMessage("18. bacon"),
+        "text_639b0589fe1a37c21666ea3b":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666ea3d":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666ea3f":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666ea41":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639b0589fe1a37c21666ea43":
+            MessageLookupByLibrary.simpleMessage("24. bacon"),
+        "text_639b0589fe1a37c21666ea46":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639b0589fe1a37c21666ea48":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639b0589fe1a37c21666ea4a":
+            MessageLookupByLibrary.simpleMessage("12."),
+        "text_639b0589fe1a37c21666ea4c":
+            MessageLookupByLibrary.simpleMessage("18. bacon"),
+        "text_639b0589fe1a37c21666ea4e":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666ea50":
+            MessageLookupByLibrary.simpleMessage("11. piano"),
+        "text_639b0589fe1a37c21666ea52":
+            MessageLookupByLibrary.simpleMessage("24. bacon"),
+        "text_639b0589fe1a37c21666ea56":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639b0589fe1a37c21666ea5a":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b0589fe1a37c21666ea5d":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666ea5f":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666ea61":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b0589fe1a37c21666ea63":
+            MessageLookupByLibrary.simpleMessage("24. bacon"),
+        "text_639b0589fe1a37c21666ea65":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b0589fe1a37c21666ea68":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639b0589fe1a37c21666ea6e":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666ea70":
+            MessageLookupByLibrary.simpleMessage("6. tank"),
+        "text_639b0589fe1a37c21666ea72":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666ea74":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666ea79":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639b0589fe1a37c21666ea7b":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b0589fe1a37c21666ea7d":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639b0589fe1a37c21666ea7f":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b0589fe1a37c21666ea82":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639b0589fe1a37c21666ea84":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639b0589fe1a37c21666ea88":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639b0589fe1a37c21666ea8a":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639b0589fe1a37c21666ea8c":
+            MessageLookupByLibrary.simpleMessage("12. catch"),
+        "text_639b0589fe1a37c21666ea8e":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639b0589fe1a37c21666ea91":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639b0589fe1a37c21666ea93":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639b0589fe1a37c21666ea95":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639b0589fe1a37c21666ea96":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b0589fe1a37c21666ea98":
+            MessageLookupByLibrary.simpleMessage("4"),
+        "text_639b0589fe1a37c21666ea9a":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639b0589fe1a37c21666ea9c":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639b0589fe1a37c21666eaa0":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639b0589fe1a37c21666eaa1":
+            MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "text_639b0589fe1a37c21666eaa3":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639b0589fe1a37c21666eaa5":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639b0589fe1a37c21666eaa7":
+            MessageLookupByLibrary.simpleMessage("5"),
+        "text_639b0589fe1a37c21666eaa9":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639b0589fe1a37c21666eaad":
+            MessageLookupByLibrary.simpleMessage("Done"),
+        "text_639b0589fe1a37c21666eaae":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639b0589fe1a37c21666eab0":
+            MessageLookupByLibrary.simpleMessage("6"),
+        "text_639b0589fe1a37c21666eab2":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639b0589fe1a37c21666eab6":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639b0589fe1a37c21666eab8":
+            MessageLookupByLibrary.simpleMessage("7"),
+        "text_639b0589fe1a37c21666eaba":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639b0589fe1a37c21666eabc":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639b0589fe1a37c21666eac0":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639b0589fe1a37c21666eac2":
+            MessageLookupByLibrary.simpleMessage("8"),
+        "text_639b0589fe1a37c21666eac4":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639b0589fe1a37c21666eac8":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639b0589fe1a37c21666eaca":
+            MessageLookupByLibrary.simpleMessage("9"),
+        "text_639b0589fe1a37c21666eacc":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639b0589fe1a37c21666ead0":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639b0589fe1a37c21666ead2":
+            MessageLookupByLibrary.simpleMessage("0"),
+        "text_639b0589fe1a37c21666ead4":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639b0589fe1a37c21666ead8":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639b0589fe1a37c21666eada":
+            MessageLookupByLibrary.simpleMessage("q"),
+        "text_639b0589fe1a37c21666eadc":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639b0589fe1a37c21666eae0":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639b0589fe1a37c21666eae2":
+            MessageLookupByLibrary.simpleMessage("w"),
+        "text_639b0589fe1a37c21666eae4":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639b0589fe1a37c21666eae8":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639b0589fe1a37c21666eaea":
+            MessageLookupByLibrary.simpleMessage("e"),
+        "text_639b0589fe1a37c21666eaec":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639b0589fe1a37c21666eaf0":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639b0589fe1a37c21666eaf2":
+            MessageLookupByLibrary.simpleMessage("r"),
+        "text_639b0589fe1a37c21666eaf4":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639b0589fe1a37c21666eaf8":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639b0589fe1a37c21666eafa":
+            MessageLookupByLibrary.simpleMessage("t"),
+        "text_639b0589fe1a37c21666eafc":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639b0589fe1a37c21666eb00":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639b0589fe1a37c21666eb02":
+            MessageLookupByLibrary.simpleMessage("y"),
+        "text_639b0589fe1a37c21666eb04":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639b0589fe1a37c21666eb08":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639b0589fe1a37c21666eb0a":
+            MessageLookupByLibrary.simpleMessage("u"),
+        "text_639b0589fe1a37c21666eb0c":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639b0589fe1a37c21666eb10":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639b0589fe1a37c21666eb12":
+            MessageLookupByLibrary.simpleMessage("i"),
+        "text_639b0589fe1a37c21666eb14":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639b0589fe1a37c21666eb18":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639b0589fe1a37c21666eb1a":
+            MessageLookupByLibrary.simpleMessage("o"),
+        "text_639b0589fe1a37c21666eb1c":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639b0589fe1a37c21666eb20":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639b0589fe1a37c21666eb22":
+            MessageLookupByLibrary.simpleMessage("p"),
+        "text_639b0589fe1a37c21666eb24":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639b0589fe1a37c21666eb28":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639b0589fe1a37c21666eb2a":
+            MessageLookupByLibrary.simpleMessage("a"),
+        "text_639b0589fe1a37c21666eb2c":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639b0589fe1a37c21666eb30":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639b0589fe1a37c21666eb32":
+            MessageLookupByLibrary.simpleMessage("s"),
+        "text_639b0589fe1a37c21666eb34":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639b0589fe1a37c21666eb38":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639b0589fe1a37c21666eb3a":
+            MessageLookupByLibrary.simpleMessage("d"),
+        "text_639b0589fe1a37c21666eb3c":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639b0589fe1a37c21666eb40":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639b0589fe1a37c21666eb42":
+            MessageLookupByLibrary.simpleMessage("f"),
+        "text_639b0589fe1a37c21666eb44":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639b0589fe1a37c21666eb48":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639b0589fe1a37c21666eb4a":
+            MessageLookupByLibrary.simpleMessage("g"),
+        "text_639b0589fe1a37c21666eb4c":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639b0589fe1a37c21666eb50":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639b0589fe1a37c21666eb52":
+            MessageLookupByLibrary.simpleMessage("h"),
+        "text_639b0589fe1a37c21666eb54":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639b0589fe1a37c21666eb58":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639b0589fe1a37c21666eb5a":
+            MessageLookupByLibrary.simpleMessage("j"),
+        "text_639b0589fe1a37c21666eb5c":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639b0589fe1a37c21666eb60":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639b0589fe1a37c21666eb62":
+            MessageLookupByLibrary.simpleMessage("k"),
+        "text_639b0589fe1a37c21666eb64":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639b0589fe1a37c21666eb68":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639b0589fe1a37c21666eb6a":
+            MessageLookupByLibrary.simpleMessage("l"),
+        "text_639b0589fe1a37c21666eb6c":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639b0589fe1a37c21666eb70":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639b0589fe1a37c21666eb72":
+            MessageLookupByLibrary.simpleMessage("z"),
+        "text_639b0589fe1a37c21666eb74":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639b0589fe1a37c21666eb76":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639b0589fe1a37c21666eb7a":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639b0589fe1a37c21666eb7c":
+            MessageLookupByLibrary.simpleMessage("x"),
+        "text_639b0589fe1a37c21666eb7e":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639b0589fe1a37c21666eb82":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639b0589fe1a37c21666eb84":
+            MessageLookupByLibrary.simpleMessage("c"),
+        "text_639b0589fe1a37c21666eb86":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639b0589fe1a37c21666eb8a":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639b0589fe1a37c21666eb8c":
+            MessageLookupByLibrary.simpleMessage("v"),
+        "text_639b0589fe1a37c21666eb8e":
+            MessageLookupByLibrary.simpleMessage("18."),
+        "text_639b0589fe1a37c21666eb92":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639b0589fe1a37c21666eb94":
+            MessageLookupByLibrary.simpleMessage("b"),
+        "text_639b0589fe1a37c21666eb96":
+            MessageLookupByLibrary.simpleMessage("24."),
+        "text_639b0589fe1a37c21666eb99":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639b0589fe1a37c21666eb9b":
+            MessageLookupByLibrary.simpleMessage("n"),
+        "text_639b0589fe1a37c21666eb9f":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639b0589fe1a37c21666eba0":
+            MessageLookupByLibrary.simpleMessage("m"),
+        "text_639b0589fe1a37c21666eba4":
+            MessageLookupByLibrary.simpleMessage("/"),
+        "text_639b0589fe1a37c21666eba8":
+            MessageLookupByLibrary.simpleMessage("."),
+        "text_639b0589fe1a37c21666ebab":
+            MessageLookupByLibrary.simpleMessage("?123"),
+        "text_639b0589fe1a37c21666ebad":
+            MessageLookupByLibrary.simpleMessage("English"),
+        "text_639b1606dab75c7f53a911a8":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b1606dab75c7f53a911ae":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b1606dab75c7f53a911b2":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b1606dab75c7f53a911b4":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b1606dab75c7f53a911b8":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b1606dab75c7f53a911be":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b1606dab75c7f53a911c2":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b1606dab75c7f53a911c4":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b1606dab75c7f53a911c8":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b1606dab75c7f53a911ce":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b1606dab75c7f53a911d1":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b1606dab75c7f53a911d3":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_639b189339d43a7643a01f7b":
+            MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
+        "text_639b189339d43a7643a01f81": MessageLookupByLibrary.simpleMessage(
+            "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card."),
+        "text_639b189339d43a7643a01f84":
+            MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
+        "text_639b189339d43a7643a01f86":
+            MessageLookupByLibrary.simpleMessage("Choose destination"),
+        "text_639b189339d43a7643a01f87": MessageLookupByLibrary.simpleMessage(
+            "Envoy has generated your encrypted seed backup. You can choose to secure it on cloud, on a device, or on a micro SD."),
+        "text_639b189339d43a7643a01f89":
+            MessageLookupByLibrary.simpleMessage("Choose destination"),
+        "text_639b19e631a859f38996807d":
+            MessageLookupByLibrary.simpleMessage("1"),
+        "text_639b19e631a859f389968081":
+            MessageLookupByLibrary.simpleMessage("Devices"),
+        "text_639b19e631a859f389968088":
+            MessageLookupByLibrary.simpleMessage("2"),
+        "text_639b19e631a859f389968090":
+            MessageLookupByLibrary.simpleMessage("3"),
+        "text_63e4bedf566f474c5544de21":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "text_63e4bedf566f474c5544de22": MessageLookupByLibrary.simpleMessage(
+            "How would you like to set up your wallet?"),
+        "text_63e4bedf566f474c5544de23": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+        "text_63e4bedf566f474c5544de24":
+            MessageLookupByLibrary.simpleMessage("Setup Passport Instead"),
+        "text_63e4bedf566f474c5544de25":
+            MessageLookupByLibrary.simpleMessage("Expert Setup"),
+        "text_63e4bedf566f474c5544de26":
+            MessageLookupByLibrary.simpleMessage("Magic Setup"),
+        "wallet_is_setup_CTA":
+            MessageLookupByLibrary.simpleMessage("Go To Account"),
+        "wallet_is_setup_heading":
+            MessageLookupByLibrary.simpleMessage("Your Wallet Is Now Setup"),
+        "wallet_is_setup_subheading": MessageLookupByLibrary.simpleMessage(
+            "Text info about secured storage")
       };
 }
