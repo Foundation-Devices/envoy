@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -114,10 +115,11 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                   ],
                 )),
                 OnboardingButton(
-                    label: "I understand",
+                    label: S().manual_setup_encrypted_backup_location_2_3_CTA,
                     onTap: () async {
                       //TODO - implement backup options
                       Navigator.of(context).pop();
+                      Navigator.of(context).popUntil(ModalRoute.withName("/"));
                     }),
                 Padding(padding: EdgeInsets.all(12)),
               ],
