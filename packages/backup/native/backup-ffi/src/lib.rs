@@ -29,6 +29,7 @@ use bdk::keys::bip39::Mnemonic;
 use effort::Solution;
 use tokio::task::JoinHandle;
 use lazy_static::lazy_static;
+use tokio::join;
 use tokio::sync::broadcast::{Receiver, Sender};
 use tokio::runtime::{Builder, Runtime};
 use crate::bitcoin::hashes::Hash;
@@ -76,8 +77,19 @@ pub struct BackupRequest {
     backup: String,
 }
 
+#[derive(Deserialize)]
+pub struct GetBackupResponse {
+    backup: String,
+}
+
 lazy_static! {
     static ref RUNTIME: io::Result<Runtime> = Builder::new_multi_thread().enable_all().build();
+}
+
+#[repr(C)]
+pub struct BackupPayload {
+    keys_nr: u8,
+    data: *const *const c_char,
 }
 
 #[no_mangle]
@@ -91,8 +103,7 @@ pub unsafe extern "C" fn backup_perform_cancel(handle: *mut JoinHandle<()>) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn backup_perform(keys_nr: u8,
-                                        data: *const *const c_char,
+pub unsafe extern "C" fn backup_perform(payload: BackupPayload,
                                         seed_words: *const c_char,
                                         server_url: *const c_char,
                                         proxy_port: i32,
@@ -100,11 +111,11 @@ pub unsafe extern "C" fn backup_perform(keys_nr: u8,
 
     let mut backup_data: Vec<(&str, &str)> = vec![];
 
-    for i in 0..keys_nr {
-        let key = CStr::from_ptr(*data.offset(i as isize))
+    for i in 0..payload.keys_nr {
+        let key = CStr::from_ptr(*payload.data.offset(i as isize))
             .to_str()
             .unwrap();
-        let value = CStr::from_ptr(*data.offset((i + 1) as isize))
+        let value = CStr::from_ptr(*payload.data.offset((i + 1) as isize))
             .to_str()
             .unwrap();
         backup_data.push((key, value));
@@ -118,12 +129,7 @@ pub unsafe extern "C" fn backup_perform(keys_nr: u8,
     let server_url = CStr::from_ptr(server_url).to_str().unwrap();
 
 
-    // Compress files
-    let mnemonic = Mnemonic::parse(seed_words).unwrap();
-    let entropy = mnemonic.to_entropy_array().0;
-    let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
-    let password = StaticSecret::from(entropy_32);
-
+    let password = get_static_secret(seed_words);
     let encrypted = encrypt_backup(backup_data, &password);
 
     let rt = RUNTIME.as_ref().unwrap();
@@ -139,6 +145,53 @@ pub unsafe extern "C" fn backup_perform(keys_nr: u8,
 
     let handle_box = Box::new(handle);
     Box::into_raw(handle_box)
+}
+
+unsafe fn get_static_secret(seed_words: &str) -> StaticSecret {
+    let mnemonic = Mnemonic::parse(seed_words).unwrap();
+    let entropy = mnemonic.to_entropy_array().0;
+    let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
+    let password = StaticSecret::from(entropy_32);
+    password
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn backup_get(seed_words: *const c_char,
+                                        server_url: *const c_char,
+                                        proxy_port: i32,
+) -> BackupPayload {
+
+    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+    let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
+
+    let password = get_static_secret(seed_words);
+
+
+    let server_url = CStr::from_ptr(server_url).to_str().unwrap();
+
+    let rt = RUNTIME.as_ref().unwrap();
+
+    let response = rt.block_on(async move {
+        get_backup_async(server_url, proxy_port, hash.to_hex()).await
+    });
+
+    let data = decrypt_backup(response.backup.into(), password);
+
+    //let ret: *const *const c_char;
+
+    //let (one, two): (Vec<String>, Vec<String>) = data.iter().unzip();
+
+    let mut ret = vec![];
+    for (k, v) in data.iter() {
+        ret.push(k.as_ptr() as *const c_char);
+        ret.push(v.as_ptr() as *const c_char);
+    }
+
+    // TODO: std::mem::forget here?
+    BackupPayload {
+        keys_nr: data.len() as u8,
+        data: ret.as_ptr()
+    }
 }
 
 fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
@@ -237,18 +290,25 @@ async fn get_challenge_async(server_url: &str, proxy_port: i32) -> ChallengeResp
     response.json().await.unwrap()
 }
 
-async fn post_backup_async(server_url: &str, proxy_port: i32, server_response: ChallengeResponse, solution: Solution, password_hash: String, payload: Vec<u8>) {
+async fn post_backup_async(server_url: &str, proxy_port: i32, server_response: ChallengeResponse, solution: Solution, hash: String, payload: Vec<u8>) {
     let client = get_reqwest_client(proxy_port);
     let response = client.post(server_url.to_owned() + "/backup").json(&BackupRequest {
         challenge: server_response.challenge,
         solution,
         timestamp: server_response.timestamp,
         signature: server_response.signature,
-        hash: password_hash.parse().unwrap(),
+        hash: hash.parse().unwrap(),
         backup: payload.to_hex(),
     }).send().await.unwrap();
 
     println!("{response:?}");
+}
+
+async fn get_backup_async(server_url: &str, proxy_port: i32, hash: String) -> GetBackupResponse {
+    let client = get_reqwest_client(proxy_port);
+    let response = client.get(server_url.to_owned() + "/backup?key={hash}").send().await.unwrap();
+
+    response.json().await.unwrap()
 }
 
 fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {

@@ -43,15 +43,13 @@ class NativeLibrary {
       .asFunction<void Function(ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<ffi.Int> backup_perform(
-    int keys_nr,
-    ffi.Pointer<ffi.Pointer<ffi.Char>> data,
+    BackupPayload payload,
     ffi.Pointer<ffi.Char> seed_words,
     ffi.Pointer<ffi.Char> server_url,
     int proxy_port,
   ) {
     return _backup_perform(
-      keys_nr,
-      data,
+      payload,
       seed_words,
       server_url,
       proxy_port,
@@ -60,14 +58,30 @@ class NativeLibrary {
 
   late final _backup_performPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Int> Function(
-              ffi.Uint8,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int32)>>('backup_perform');
+          ffi.Pointer<ffi.Int> Function(BackupPayload, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, ffi.Int32)>>('backup_perform');
   late final _backup_perform = _backup_performPtr.asFunction<
-      ffi.Pointer<ffi.Int> Function(int, ffi.Pointer<ffi.Pointer<ffi.Char>>,
+      ffi.Pointer<ffi.Int> Function(
+          BackupPayload, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+
+  BackupPayload backup_get(
+    ffi.Pointer<ffi.Char> seed_words,
+    ffi.Pointer<ffi.Char> server_url,
+    int proxy_port,
+  ) {
+    return _backup_get(
+      seed_words,
+      server_url,
+      proxy_port,
+    );
+  }
+
+  late final _backup_getPtr = _lookup<
+      ffi.NativeFunction<
+          BackupPayload Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Int32)>>('backup_get');
+  late final _backup_get = _backup_getPtr.asFunction<
+      BackupPayload Function(
           ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
   void backup_hello() {
@@ -77,6 +91,13 @@ class NativeLibrary {
   late final _backup_helloPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function()>>('backup_hello');
   late final _backup_hello = _backup_helloPtr.asFunction<void Function()>();
+}
+
+class BackupPayload extends ffi.Struct {
+  @ffi.Uint8()
+  external int keys_nr;
+
+  external ffi.Pointer<ffi.Pointer<ffi.Char>> data;
 }
 
 const int INT8_MIN = -128;
