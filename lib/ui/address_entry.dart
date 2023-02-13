@@ -12,6 +12,7 @@ import 'package:wallet/wallet.dart';
 class AddressEntry extends StatelessWidget {
   final _controller = TextEditingController();
   final Function(bool)? onAddressChanged;
+  final Function(int)? onAmountChanged;
   final bool canEdit;
   final Wallet wallet;
 
@@ -24,6 +25,7 @@ class AddressEntry extends StatelessWidget {
   AddressEntry(
       {String? initalAddress,
       this.onAddressChanged,
+      this.onAmountChanged,
       this.canEdit: true,
       required this.wallet}) {
     if (initalAddress != null) {
@@ -109,6 +111,9 @@ class AddressEntry extends StatelessWidget {
                                   .push(MaterialPageRoute(builder: (context) {
                                 return ScannerPage.address((address, amount) {
                                   _controller.text = address;
+                                  if (onAmountChanged != null) {
+                                    onAmountChanged!(amount);
+                                  }
                                 }, wallet);
                               }));
                             },

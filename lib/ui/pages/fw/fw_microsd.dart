@@ -7,6 +7,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
+import 'package:envoy/ui/pages/fw/fw_progress.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -21,7 +22,15 @@ class FwMicrosdPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fw = FwUploader(UpdatesManager().getStoredFw());
+    var fw = FwUploader(UpdatesManager().getStoredFw(), onUploaded: () {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return Platform.isIOS
+            ? FwPassportPage(
+                onboarding: onboarding,
+              )
+            : FwProgressPage(onboarding: onboarding);
+      }));
+    });
     return OnboardingPage(
       key: Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
@@ -37,25 +46,26 @@ class FwMicrosdPage extends StatelessWidget {
         OnboardingButton(
             label: S().envoy_fw_microsd_cta,
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                try {
-                  fw.upload();
+              try {
+                fw.upload();
 
-                  // Here we assume user has updated all his devices
-                  Devices()
-                      .markAllUpdated(UpdatesManager().getStoredFwVersion()!);
-                } catch (e) {
-                  print("SD: error " + e.toString());
-                  if (Platform.isIOS) // TODO: this needs to be smarter
+                // Here we assume user has updated all his devices
+                Devices()
+                    .markAllUpdated(UpdatesManager().getStoredFwVersion()!);
+              } catch (e) {
+                print("SD: error " + e.toString());
+                if (Platform.isIOS) // TODO: this needs to be smarter
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
                     return FwIosInstructionsPage(onboarding: onboarding);
+                  }));
 
-                  if (Platform.isAndroid)
+                if (Platform.isAndroid)
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
                     return FwAndroidInstructionsPage(onboarding: onboarding);
-                }
-                return FwPassportPage(
-                  onboarding: onboarding,
-                );
-              }));
+                  }));
+              }
             }),
       ],
     );

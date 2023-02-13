@@ -214,8 +214,10 @@ class _ScannerPageState extends State<ScannerPage> {
         address = bip21.address;
 
         // BIP-21 amounts are in BTC
-        amount = (bip21.amount * 100000000.0) as int;
-      } catch (_) {
+        amount = (bip21.amount * 100000000.0).toInt();
+      } catch (e, s) {
+        print(e);
+        debugPrintStack(stackTrace: s);
         // TODO
       }
 

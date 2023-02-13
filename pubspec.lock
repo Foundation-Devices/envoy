@@ -219,7 +219,7 @@ packages:
     source: hosted
     version: "5.0.1"
   cupertino_icons:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
