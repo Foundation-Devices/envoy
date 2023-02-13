@@ -6,6 +6,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/magic/magic_create_wallet.dart';
+import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -95,12 +96,10 @@ class _MagicSetupState extends State<MagicSetup> {
                                   .bodyText2
                                   ?.copyWith(color: EnvoyColors.teal)),
                           onPressed: () {
-                            // Navigator.of(context)
-                            //     .push(MaterialPageRoute(builder: (context) {
-                            //   return SelectMode(
-                            //     generate: false,
-                            //   );
-                            // }));
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return MagicRecoverWallet();
+                            }));
                           }),
                     ),
                     OnboardingButton(
@@ -108,10 +107,6 @@ class _MagicSetupState extends State<MagicSetup> {
                         label: "Create New Wallet",
                         onTap: () {
                           showCreateWarning(context);
-                          // Navigator.of(context)
-                          //     .push(MaterialPageRoute(builder: (context) {
-                          //   return SelectMode(generate: true);
-                          // }));
                         }),
                   ],
                 ))

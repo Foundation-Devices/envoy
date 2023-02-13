@@ -6,7 +6,6 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/expert/expert_setup.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -15,6 +14,7 @@ class OnboardingWelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Only onboard once
+    //TODO: uncomment this line
     // LocalStorage().prefs.setBool("onboarded", true);
     return OnboardingPage(
       key: Key("onboarding_welcome_page"),
@@ -46,7 +46,7 @@ class OnboardingWelcomePage extends StatelessWidget {
               }));
             }),
         OnboardingButton(
-            label: "Magic Setup",
+            label: "Magic sSetup",
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return MagicSetup();
