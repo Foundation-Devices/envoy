@@ -8,12 +8,15 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+import android.system.Os
 import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
+import java.io.FileDescriptor
+import java.io.FileInputStream
 
 
 class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
@@ -70,6 +73,15 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     output?.write(firmware!!.readBytes())
                     output?.flush()
                     output?.close()
+
+                    // Get the file descriptor and fsync to make sure it's on the SD
+                    val pfd = applicationContext.contentResolver.openFileDescriptor(uri, "w")
+                    Os.fsync(pfd!!.fileDescriptor)
+
+                    pfd.close()
+
+                    // Boolean down the chute means success
+                    sdCardEventSink?.success(true)
                 }
             }
         }
@@ -87,11 +99,11 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
         super.configureFlutterEngine(flutterEngine)
 
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, SD_CARD_EVENT_CHANNEL)
-                .setStreamHandler(this)
+            .setStreamHandler(this)
 
         MethodChannel(
-                flutterEngine.dartExecutor.binaryMessenger,
-                CHANNEL
+            flutterEngine.dartExecutor.binaryMessenger,
+            CHANNEL
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "save_file" -> {
@@ -125,7 +137,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                 "get_sd_card_path" -> {
                     val paths = getExternalFilesDirs(null)
                     // TODO: If there is only 1 path that means there is no SD?
-                    sdCard = paths.last().toPath().subpath(0,2).toFile()
+                    sdCard = paths.last().toPath().subpath(0, 2).toFile()
                     result.success(sdCard?.absolutePath)
                 }
                 "get_directory_content_permission" -> {
