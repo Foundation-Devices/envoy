@@ -46,7 +46,7 @@ class OnboardingWelcomePage extends StatelessWidget {
               }));
             }),
         OnboardingButton(
-            label: "Magic sSetup",
+            label: "Magic Setup",
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return MagicSetup();

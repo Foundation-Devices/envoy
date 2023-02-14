@@ -34,12 +34,14 @@ class _MagicSetupState extends State<MagicSetup> {
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 12),
               child: TextButton(
-                child: Text("Skip",
+                child: Text(S().magic_setup_generate_wallet_skip,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
                         ?.copyWith(color: Colors.black)),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
           ),
@@ -63,7 +65,7 @@ class _MagicSetupState extends State<MagicSetup> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Let’s Setup Your Wallet",
+                        S().magic_setup_flow_tutorial_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
@@ -90,7 +92,7 @@ class _MagicSetupState extends State<MagicSetup> {
                     Container(
                       width: double.infinity,
                       child: TextButton(
-                          child: Text("Recover Envoy Wallet",
+                          child: Text(S().magic_setup_flow_tutorial_CTA_2,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2
@@ -104,7 +106,7 @@ class _MagicSetupState extends State<MagicSetup> {
                     ),
                     OnboardingButton(
                         light: false,
-                        label: "Create New Wallet",
+                        label: S().magic_setup_flow_tutorial_CTA_1,
                         onTap: () {
                           showCreateWarning(context);
                         }),
@@ -143,14 +145,14 @@ class _MagicSetupState extends State<MagicSetup> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        "WARNING\n\nIf you have another wallet in another device, generating a new wallet will erase your existing wallet.",
+                        S().magic_setup_generate_wallet_subheading,
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ],
                 )),
                 OnboardingButton(
-                    label: "Continue",
+                    label: S().magic_setup_generate_wallet_CTA,
                     onTap: () async {
                       Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/expert/generate_seed.dart';
 import 'package:envoy/ui/onboard/expert/import_mnemonic_setup.dart';
@@ -61,13 +62,13 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Let’s Setup Your Wallet",
+                        S().envoy_welcome_card1_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
                       Text(
-                        "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.",
+                        S().envoy_welcome_card1_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -88,7 +89,7 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                     Container(
                       width: double.infinity,
                       child: TextButton(
-                          child: Text("Import Seed",
+                          child: Text(S().manual_setup_flow_tutorial_CTA_2,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2
@@ -104,7 +105,7 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                     ),
                     OnboardingButton(
                         light: false,
-                        label: "Generate New Seed",
+                        label: S().manual_setup_flow_tutorial_CTA_1,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
@@ -163,13 +164,13 @@ class SelectMode extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "We Don’t Keep Your Seed",
+                          S().magic_setup_import_seed_heading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         Padding(padding: EdgeInsets.all(24)),
                         Text(
-                          "Text info about seed import",
+                          S().magic_setup_import_seed_subheading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
@@ -186,7 +187,7 @@ class SelectMode extends StatelessWidget {
                   generate
                       ? OnboardingButton(
                           light: false,
-                          label: "Generate seed",
+                          label: S().manual_setup_generate_seed_CTA,
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
@@ -201,7 +202,7 @@ class SelectMode extends StatelessWidget {
                           children: [
                             OnboardingButton(
                                 light: true,
-                                label: "12 Word Seed",
+                                label: S().magic_setup_import_seed_CTA_1,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
@@ -214,7 +215,7 @@ class SelectMode extends StatelessWidget {
                                 }),
                             OnboardingButton(
                                 light: true,
-                                label: "24 Word Seed",
+                                label: S().magic_setup_import_seed_CTA_2,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
