@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -48,7 +49,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    "Enter Your Seed",
+                    S().manual_setup_import_12_word_seed_done_heading,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
@@ -99,7 +100,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                             },
                           ),
                           Text(
-                            "My Seed Has a passphrase",
+                            S().manual_setup_import_12_word_seed_done_checkbox,
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                         ],
@@ -109,7 +110,8 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                         padding:
                             EdgeInsets.symmetric(vertical: 8, horizontal: 24),
                         child: OnboardingButton(
-                            label: "Done",
+                            label: S()
+                                .manual_setup_import_12_word_seed_modify_seedword_1_2_CTA,
                             light: false,
                             onTap: () {
                               //TODO: validate bip39
@@ -194,7 +196,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 48, vertical: 6),
           child: Text(
-            "WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.",
+            S().manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading,
             textAlign: TextAlign.center,
           ),
         ),
@@ -204,7 +206,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
             //Temporarily Disable Tor
             children: [
               EnvoyButton(
-                "Continue",
+                S().manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_CTA,
                 onTap: () async {
                   Navigator.of(context).pop();
                   showPassphraseDialog(context);
@@ -281,7 +283,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
           ),
           Padding(padding: EdgeInsets.all(8)),
           Text(
-              "Passphrases are case and space sensitive. Enter with extreme care.",
+              S().manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading,
               textAlign: TextAlign.center),
           Padding(padding: EdgeInsets.all(8)),
           Container(
@@ -317,7 +319,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
               : SizedBox.shrink(),
           Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
-            "Continue",
+            S().recovery_scenario_CTA,
             light: false,
             borderRadius: BorderRadius.all(Radius.circular(8)),
             onTap: () {

@@ -4,6 +4,7 @@
 
 import 'dart:math';
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
@@ -57,7 +58,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Text("Verify Your Seed",
+                  child: Text(
+                      S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center),
                 ),
@@ -281,7 +283,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               ),
               Padding(padding: EdgeInsets.all(4)),
               Text(
-                "Correct",
+                S().manual_setup_generate_seed_verify_quiz_success_state_correct,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2
@@ -297,7 +299,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                   color: EnvoyColors.brown, size: 14),
               Padding(padding: EdgeInsets.all(4)),
               Text(
-                "Invalid Entry",
+                S().manual_setup_generate_seed_verify_seed_quiz_fail_state_invalid_entry,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2

@@ -46,13 +46,13 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                     children: [
                       Padding(padding: EdgeInsets.all(8)),
                       Text(
-                        "Store Your Encrypted Backup",
+                        S().manual_setup_encrypted_backup_location_1_3_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(12)),
                       Text(
-                        "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card.",
+                        S().manual_setup_encrypted_backup_location_1_3_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme

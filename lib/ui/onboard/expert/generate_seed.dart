@@ -4,6 +4,7 @@
 
 import 'dart:math';
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
@@ -120,7 +121,8 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-                child: Text("Write Down the 12 Worlds",
+                child: Text(
+                    S().manual_setup_generate_seed_verify_seed_again_heading,
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
               ),
@@ -169,7 +171,8 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                             duration: Duration(milliseconds: 300),
                             curve: Curves.ease);
                       },
-                      label: "Done",
+                      label:
+                          S().manual_setup_generate_seed_verify_seed_again_CTA,
                     )
                   ],
                 ),
@@ -206,14 +209,15 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        "That seed appears to be invalid.\nPlease check the words you wrote,\nincluding the order they are in and\ntry again.",
+                        S().manual_setup_import_12_word_seed_invalid_subheading,
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ],
                 )),
                 OnboardingButton(
-                    label: "Go back",
+                    label:
+                        S().manual_seed_generate_seed_verify_seed_warning_CTA,
                     onTap: () async {
                       await Navigator.maybePop(context);
                       _pageController.animateToPage(1,
