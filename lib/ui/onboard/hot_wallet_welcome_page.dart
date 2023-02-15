@@ -10,24 +10,24 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
-class OnboardingWelcomePage extends StatelessWidget {
+class HotWalletWelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Only onboard once
     //TODO: uncomment this line
     // LocalStorage().prefs.setBool("onboarded", true);
     return OnboardingPage(
-      key: Key("onboarding_welcome_page"),
+      key: Key("hot_wallet_welcome_page"),
       leftFunction: null,
-      clipArt: Image.asset("assets/envoy_passport.png"),
+      clipArt: Image.asset("assets/envoy.png"),
       text: [
         OnboardingText(
-            header: S().envoy_pp_setup_intro_card1_heading,
-            text: S().envoy_welcome_card1_subheading)
+            header: S().splash_screen_heading,
+            text: S().splash_screen_subheading)
       ],
       buttons: [
         TextButton(
-            child: Text("Setup passport instead",
+            child: Text(S().splash_screen_cta3,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2
@@ -39,14 +39,14 @@ class OnboardingWelcomePage extends StatelessWidget {
             }),
         OnboardingButton(
             light: true,
-            label: "Expert Setup",
+            label: S().splash_screen_cta2,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ExpertSetupPage();
               }));
             }),
         OnboardingButton(
-            label: "Magic Setup",
+            label: S().splash_screen_cta1,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return MagicSetup();

@@ -188,8 +188,6 @@ class _AccountListTileState extends State<AccountListTile> {
                         builder: (context, ref, child) {
                           final hide = ref.watch(
                               balanceHideStateStatusProvider(widget.account));
-                          print(
-                              "widget.account.initialSyncCompleted  ${widget.account.number} ${widget.account.initialSyncCompleted} $hide");
                           if (hide) {
                             return Container(
                               decoration: BoxDecoration(
