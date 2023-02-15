@@ -5654,10 +5654,10 @@ class S {
     );
   }
 
-  /// `Write Down the 12 Worlds`
+  /// `Write Down the 12 Words`
   String get manual_setup_generate_seed_verify_seed_again_heading {
     return Intl.message(
-      'Write Down the 12 Worlds',
+      'Write Down the 12 Words',
       name: 'manual_setup_generate_seed_verify_seed_again_heading',
       desc: '',
       args: [],
@@ -5990,10 +5990,10 @@ class S {
     );
   }
 
-  /// `Write Down the 12 Worlds`
+  /// `Write Down the 12 Words`
   String get manual_setup_generate_seed_write_seed_heading {
     return Intl.message(
-      'Write Down the 12 Worlds',
+      'Write Down the 12 Words',
       name: 'manual_setup_generate_seed_write_seed_heading',
       desc: '',
       args: [],
@@ -7239,6 +7239,66 @@ class S {
     return Intl.message(
       'Envoy is now connected to your Passport.',
       name: 'single_envoy_wallet_pair_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Setup`
+  String get splash_screen_cta1 {
+    return Intl.message(
+      'Magic Setup',
+      name: 'splash_screen_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expert Setup`
+  String get splash_screen_cta2 {
+    return Intl.message(
+      'Expert Setup',
+      name: 'splash_screen_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Setup Passport Instead`
+  String get splash_screen_cta3 {
+    return Intl.message(
+      'Setup Passport Instead',
+      name: 'splash_screen_cta3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How would you like to set up your wallet?`
+  String get splash_screen_heading {
+    return Intl.message(
+      'How would you like to set up your wallet?',
+      name: 'splash_screen_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get splash_screen_skip {
+    return Intl.message(
+      'Skip',
+      name: 'splash_screen_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get splash_screen_subheading {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'splash_screen_subheading',
       desc: '',
       args: [],
     );
@@ -13391,66 +13451,6 @@ class S {
     return Intl.message(
       '3',
       name: 'text_639b19e631a859f389968090',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get text_63e4bedf566f474c5544de21 {
-    return Intl.message(
-      'Skip',
-      name: 'text_63e4bedf566f474c5544de21',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How would you like to set up your wallet?`
-  String get text_63e4bedf566f474c5544de22 {
-    return Intl.message(
-      'How would you like to set up your wallet?',
-      name: 'text_63e4bedf566f474c5544de22',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_63e4bedf566f474c5544de23 {
-    return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_63e4bedf566f474c5544de23',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Setup Passport Instead`
-  String get text_63e4bedf566f474c5544de24 {
-    return Intl.message(
-      'Setup Passport Instead',
-      name: 'text_63e4bedf566f474c5544de24',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Expert Setup`
-  String get text_63e4bedf566f474c5544de25 {
-    return Intl.message(
-      'Expert Setup',
-      name: 'text_63e4bedf566f474c5544de25',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Magic Setup`
-  String get text_63e4bedf566f474c5544de26 {
-    return Intl.message(
-      'Magic Setup',
-      name: 'text_63e4bedf566f474c5544de26',
       desc: '',
       args: [],
     );

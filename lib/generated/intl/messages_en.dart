@@ -1238,7 +1238,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_again_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_generate_seed_verify_seed_again_heading":
-            MessageLookupByLibrary.simpleMessage("Write Down the 12 Worlds"),
+            MessageLookupByLibrary.simpleMessage("Write Down the 12 Words"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_info_text":
@@ -1312,7 +1312,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_write_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_generate_seed_write_seed_heading":
-            MessageLookupByLibrary.simpleMessage("Write Down the 12 Worlds"),
+            MessageLookupByLibrary.simpleMessage("Write Down the 12 Words"),
         "manual_setup_import_12_word_seed_autocomplete_heading":
             MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
         "manual_setup_import_12_word_seed_complete_1_2_heading":
@@ -1579,6 +1579,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "single_envoy_wallet_pair_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is now connected to your Passport."),
+        "splash_screen_cta1":
+            MessageLookupByLibrary.simpleMessage("Magic Setup"),
+        "splash_screen_cta2":
+            MessageLookupByLibrary.simpleMessage("Expert Setup"),
+        "splash_screen_cta3":
+            MessageLookupByLibrary.simpleMessage("Setup Passport Instead"),
+        "splash_screen_heading": MessageLookupByLibrary.simpleMessage(
+            "How would you like to set up your wallet?"),
+        "splash_screen_skip": MessageLookupByLibrary.simpleMessage("Skip"),
+        "splash_screen_subheading": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
         "text_636d0bb5a3b7eb50b6015535":
             MessageLookupByLibrary.simpleMessage("Skip"),
         "text_636d0bb5a3b7eb50b6015538":
@@ -2809,18 +2820,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("2"),
         "text_639b19e631a859f389968090":
             MessageLookupByLibrary.simpleMessage("3"),
-        "text_63e4bedf566f474c5544de21":
-            MessageLookupByLibrary.simpleMessage("Skip"),
-        "text_63e4bedf566f474c5544de22": MessageLookupByLibrary.simpleMessage(
-            "How would you like to set up your wallet?"),
-        "text_63e4bedf566f474c5544de23": MessageLookupByLibrary.simpleMessage(
-            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
-        "text_63e4bedf566f474c5544de24":
-            MessageLookupByLibrary.simpleMessage("Setup Passport Instead"),
-        "text_63e4bedf566f474c5544de25":
-            MessageLookupByLibrary.simpleMessage("Expert Setup"),
-        "text_63e4bedf566f474c5544de26":
-            MessageLookupByLibrary.simpleMessage("Magic Setup"),
         "text_63ea44c3d7462fb1215fd9f8":
             MessageLookupByLibrary.simpleMessage("Update Firmware"),
         "text_63ea44c3d7462fb1215fd9fd":
