@@ -11,5 +11,5 @@ set -e
 rustup target add x86_64-linux-android
 
 # Required for Cargo to build libtor-sys
-export PATH=$PATH:$ANDROID_SDK_ROOT/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/
+export PATH=$PATH:$ANDROID_SDK_ROOT/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/
 cargo build --target=x86_64-linux-android
