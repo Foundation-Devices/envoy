@@ -54,13 +54,13 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        S().envoy_welcome_card1_heading,
+                        S().manual_setup_flow_tutorial_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
                       Text(
-                        S().envoy_welcome_card1_subheading,
+                        S().manual_setup_flow_tutorial_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme

@@ -27,6 +27,9 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
   bool hasPassphrase = false;
   String passPhrase = "";
 
+  List<String> currentWords = [];
+
+
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
@@ -60,8 +63,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                   child: MnemonicEntryGrid(
                       seedLength: widget.seedLength,
                       onSeedWordAdded: (List<String> words) {
-                        //TODO: validate bip39 checksum
-                        print("Words updated : $words");
+                        currentWords = words;
                       }),
                 ),
               ),
@@ -114,6 +116,10 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                                 .manual_setup_import_12_word_seed_modify_seedword_1_2_CTA,
                             light: false,
                             onTap: () {
+                              // IGOR: validate and go forth
+                              if (!hasPassphrase) {
+                                print(currentWords);
+                              }
                               //TODO: validate bip39
                             }))
                   ],

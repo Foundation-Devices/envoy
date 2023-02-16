@@ -24,13 +24,23 @@ class EnvoySeed {
 
   static const _platform = MethodChannel('envoy');
 
-  Future create() async {
+  Future generate() async {
     final randomSeed = Wallet.generateSeed(true);
-    //String randomSeed = "CI bait";
+
     await saveNonSecure(randomSeed, LOCAL_SECRET_FILE_NAME);
     _platform.invokeMethod('data_changed');
 
     await LocalStorage().saveSecure(SEED_KEY, randomSeed);
+  }
+
+  Future create(List<String> seed, {String? passphrase}) async {
+    // Check if seed is valid
+
+
+    //await saveNonSecure(randomSeed, LOCAL_SECRET_FILE_NAME);
+    //_platform.invokeMethod('data_changed');
+
+    //await LocalStorage().saveSecure(SEED_KEY, randomSeed);
   }
 
   Future<String?> restoreSecure() async {

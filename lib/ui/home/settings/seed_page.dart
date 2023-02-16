@@ -35,7 +35,7 @@ class _SeedPageState extends State<SeedPage> {
                 AboutButton(
                   "(Re)create Seed",
                   onTap: () {
-                    seed.create().then((value) {
+                    seed.generate().then((value) {
                       setState(() {});
                     });
                   },

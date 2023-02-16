@@ -268,7 +268,7 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
             _scrollControllerPage2.animateTo(180,
                 duration: Duration(milliseconds: 200), curve: Curves.ease);
           }
-          if (i == 11) {
+          if (i == 11 && widget.seedLength == SeedLength.MNEMONIC_24) {
             _showNextPage = true;
           }
           break;
