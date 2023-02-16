@@ -45,15 +45,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "accounts_screen_usd_amount":
             MessageLookupByLibrary.simpleMessage("\$0.00"),
         "accounts_screen_wallet_name":
-            MessageLookupByLibrary.simpleMessage("New wallet"),
+            MessageLookupByLibrary.simpleMessage("Envoy Wallet"),
         "accounts_screen_wallet_type":
             MessageLookupByLibrary.simpleMessage("Hot Wallet"),
         "android_backup_info_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "android_backup_info_heading":
-            MessageLookupByLibrary.simpleMessage("Android backs up every 24h"),
+            MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
-            "Android is backs up your Envoy data automatically every 24 hours, but you can force a manual backup right now from your device Settings."),
+            "Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device Settings."),
         "component_app_store_copyright": MessageLookupByLibrary.simpleMessage(
             "© 2022 Foundation Devices, Inc."),
         "component_app_store_description": MessageLookupByLibrary.simpleMessage(
@@ -943,7 +943,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "learn_more_about_data_secured_2_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation’s servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data."),
+                "Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data."),
         "learn_more_about_data_secured_3_4_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "learn_more_about_data_secured_3_4_heading":
@@ -961,20 +961,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "learn_more_about_data_secured_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Setup."),
+                "If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup."),
         "magic_recovery_fail_android_CTA_1":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "magic_recovery_fail_android_CTA_2":
-            MessageLookupByLibrary.simpleMessage("QR code backup recovery"),
+            MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "magic_recovery_fail_android_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Automatic Recovery Unsuccessful"),
+            MessageLookupByLibrary.simpleMessage("Recovery Unsuccessful"),
         "magic_recovery_fail_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Android / Calyx logged in text\n\nYou can always recover ith a QR code."),
+                "Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup."),
         "magic_recovery_flow_done_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Recovering your Envoy wallet"),
+                "Recovering your Envoy Wallet"),
         "magic_recovery_flow_done_step_1": MessageLookupByLibrary.simpleMessage(
             "Sign into iCloud and install Envoy on the new device."),
         "magic_recovery_flow_done_step_2": MessageLookupByLibrary.simpleMessage(
@@ -987,7 +986,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Recovering your Envoy wallet"),
         "magic_recovery_flow_retry_2_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Recovering your Envoy wallet"),
+                "Recovering your Envoy Wallet"),
         "magic_recovery_flow_retry_2_step_1":
             MessageLookupByLibrary.simpleMessage(
                 "Sign into iCloud and install Envoy on the new device."),
@@ -1024,22 +1023,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_recovery_retry_fail_CTA_1":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "magic_recovery_retry_fail_CTA_2":
-            MessageLookupByLibrary.simpleMessage("QR code backup recovery"),
+            MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "magic_recovery_retry_fail_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Automatic Recovery Unsuccessful"),
+            MessageLookupByLibrary.simpleMessage("Recovery Unsuccessful"),
         "magic_recovery_retry_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Are you sure you’re using the right Apple ID ?\n\nYou can always recover ith a QR code."),
+                "Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup."),
         "magic_recovery_retry_iOS_CTA_1":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "magic_recovery_retry_iOS_CTA_2":
-            MessageLookupByLibrary.simpleMessage("QR code backup recovery"),
+            MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "magic_recovery_retry_iOS_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Automatic Recovery Unsuccessful"),
+            MessageLookupByLibrary.simpleMessage("Recovery Unsuccessful"),
         "magic_recovery_retry_iOS_subheading": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you’re signed in to the correct Cloud account? You can check your Settings to verify.\n\nIf you still have access to your existing Envoy device, you can choose to recover via the QR method below."),
+            "Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup."),
         "magic_setup_encrypting_backup_1_5_heading":
             MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
         "magic_setup_encrypting_backup_1_5_subheading":
@@ -1069,7 +1066,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Creating Your Envoy Key"),
         "magic_setup_envoy_key_creation_1_5_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key."),
+                "Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA."),
         "magic_setup_envoy_key_creation_2_5_heading":
             MessageLookupByLibrary.simpleMessage("Creating Your Envoy Wallet"),
         "magic_setup_envoy_key_creation_2_5_subheading":
@@ -1095,7 +1092,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_flow_tutorial_CTA_2":
             MessageLookupByLibrary.simpleMessage("Recover Envoy Wallet"),
         "magic_setup_flow_tutorial_heading":
-            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+            MessageLookupByLibrary.simpleMessage("Set Up Your Wallet"),
         "magic_setup_flow_tutorial_skip":
             MessageLookupByLibrary.simpleMessage("Skip"),
         "magic_setup_flow_tutorial_subheading":
@@ -1113,42 +1110,39 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_import_seed_CTA_2":
             MessageLookupByLibrary.simpleMessage("24 Word Seed"),
         "magic_setup_import_seed_heading":
-            MessageLookupByLibrary.simpleMessage("We Don’t Keep Your Seed"),
-        "magic_setup_import_seed_subheading":
-            MessageLookupByLibrary.simpleMessage("Text info about seed import"),
+            MessageLookupByLibrary.simpleMessage("Import your Seed"),
+        "magic_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
+            "Continue below to import an existing 12 or 24 word seed.\n\nYou’ll have the option to apply a passphrase as well."),
         "magic_setup_sending_backup_to_envoy_server_1_5_heading":
             MessageLookupByLibrary.simpleMessage("Uploading Encrypted Backup"),
         "magic_setup_sending_backup_to_envoy_server_1_5_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The Envoy server stores your backup in an encrypted format.\n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+                "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "magic_setup_sending_backup_to_envoy_server_2_5_heading":
             MessageLookupByLibrary.simpleMessage("Uploading Encrypted Backup"),
         "magic_setup_sending_backup_to_envoy_server_2_5_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+                "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "magic_setup_sending_backup_to_envoy_server_3_5_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Sending Encrypted Backup to Envoy Server"),
+            MessageLookupByLibrary.simpleMessage("Uploading Encrypted Backup"),
         "magic_setup_sending_backup_to_envoy_server_3_5_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+                "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "magic_setup_sending_backup_to_envoy_server_4_5_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Sending Encrypted Backup to Envoy Server"),
+            MessageLookupByLibrary.simpleMessage("Uploading Encrypted Backup"),
         "magic_setup_sending_backup_to_envoy_server_4_5_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+                "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "magic_setup_sending_backup_to_envoy_server_5_5_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Sending Encrypted Backup to Envoy Server"),
+            MessageLookupByLibrary.simpleMessage("Uploading Encrypted Backup"),
         "magic_setup_sending_backup_to_envoy_server_5_5_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover."),
+                "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "manual_seed_generate_seed_verify_seed_warning_CTA":
             MessageLookupByLibrary.simpleMessage("Go back"),
         "manual_seed_generate_seed_verify_seed_warning_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "That seed appears to be invalid. Please check the words you wrote, including the order they are in and try again."),
+                "Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again."),
         "manual_setup_12_word_seed_enter_passphrase_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_12_word_seed_enter_passphrase_heading":
@@ -1170,14 +1164,14 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Passphrases are case and space sensitive. Enter with extreme care."),
         "manual_setup_encrypted_backup_location_1_2_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your backup is encrypted by your seed words. If you lose access to your seed words, you will be unable to recover your backup file contents.\n\nPlease ensure you have a robust seed word backup solution."),
+                "Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup."),
         "manual_setup_encrypted_backup_location_1_3_CTA":
-            MessageLookupByLibrary.simpleMessage("Choose destination"),
+            MessageLookupByLibrary.simpleMessage("Choose Destination"),
         "manual_setup_encrypted_backup_location_1_3_heading":
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "manual_setup_encrypted_backup_location_1_3_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card."),
+                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_encrypted_backup_location_2_3_CTA":
             MessageLookupByLibrary.simpleMessage("I understand"),
         "manual_setup_encrypted_backup_location_3_3_CTA":
@@ -1192,18 +1186,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_flow_tutorial_CTA_2":
             MessageLookupByLibrary.simpleMessage("Import Seed"),
         "manual_setup_flow_tutorial_heading":
-            MessageLookupByLibrary.simpleMessage("Let’s Setup Your Wallet"),
+            MessageLookupByLibrary.simpleMessage("Set Up Your Wallet"),
         "manual_setup_flow_tutorial_skip":
             MessageLookupByLibrary.simpleMessage("Skip"),
         "manual_setup_flow_tutorial_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+                "Continue below to import an existing seed or create a new seed."),
         "manual_setup_generate_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Generate Seed"),
         "manual_setup_generate_seed_heading":
-            MessageLookupByLibrary.simpleMessage("Don’t Show Your Seed"),
+            MessageLookupByLibrary.simpleMessage("Keep Your Seed Private"),
         "manual_setup_generate_seed_subheading":
-            MessageLookupByLibrary.simpleMessage("Text info about security"),
+            MessageLookupByLibrary.simpleMessage(
+                "Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!"),
         "manual_setup_generate_seed_verify_quiz_4_4_done_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_generate_seed_verify_quiz_4_4_done_heading":
@@ -1213,15 +1208,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_quiz_4_4_done_state_correct":
             MessageLookupByLibrary.simpleMessage("Correct"),
         "manual_setup_generate_seed_verify_quiz_4_4_done_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 11?"),
+            MessageLookupByLibrary.simpleMessage("What is your #11 seed word?"),
         "manual_setup_generate_seed_verify_quiz_4_4_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_quiz_4_4_info_text":
             MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_quiz_4_4_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 11?"),
+            MessageLookupByLibrary.simpleMessage("What is your #11 seed word?"),
         "manual_setup_generate_seed_verify_quiz_success_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_quiz_success_info_text":
@@ -1229,28 +1222,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_quiz_success_state_correct":
             MessageLookupByLibrary.simpleMessage("Correct"),
         "manual_setup_generate_seed_verify_quiz_success_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 2?"),
+            MessageLookupByLibrary.simpleMessage("What is your #2 seed word?"),
         "manual_setup_generate_seed_verify_seed_CTA":
-            MessageLookupByLibrary.simpleMessage("Verify Seed"),
+            MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_generate_seed_verify_seed_again_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_generate_seed_verify_seed_again_heading":
-            MessageLookupByLibrary.simpleMessage("Write Down the 12 Words"),
+            MessageLookupByLibrary.simpleMessage("Write Down these 12 Words"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_info_text":
             MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 2?"),
+            MessageLookupByLibrary.simpleMessage("What is your #2 seed word?"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_info_text":
             MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 2?"),
+            MessageLookupByLibrary.simpleMessage("What is your #2 seed word?"),
         "manual_setup_generate_seed_verify_seed_heading":
             MessageLookupByLibrary.simpleMessage("Let’s Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_quiz_1_4_heading":
@@ -1258,15 +1248,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_quiz_1_4_info_text":
             MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_seed_quiz_1_4_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 2?"),
+            MessageLookupByLibrary.simpleMessage("What is your #2 seed word?"),
         "manual_setup_generate_seed_verify_seed_quiz_2_4_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_quiz_2_4_info_text":
             MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_seed_quiz_2_4_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 9?"),
+            MessageLookupByLibrary.simpleMessage("What is your #9 seed word?"),
         "manual_setup_generate_seed_verify_seed_quiz_2_4_success_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_quiz_2_4_success_info_text":
@@ -1274,15 +1262,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_quiz_2_4_success_state_correct":
             MessageLookupByLibrary.simpleMessage("Correct"),
         "manual_setup_generate_seed_verify_seed_quiz_2_4_success_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 9?"),
+            MessageLookupByLibrary.simpleMessage("What is your #9 seed word?"),
         "manual_setup_generate_seed_verify_seed_quiz_3_4_CTA":
             MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_seed_quiz_3_4_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_quiz_3_4_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 5?"),
+            MessageLookupByLibrary.simpleMessage("What is your #5 seed word?"),
         "manual_setup_generate_seed_verify_seed_quiz_3_4_success_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_quiz_3_4_success_info_text":
@@ -1290,8 +1276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_quiz_3_4_success_state_correct":
             MessageLookupByLibrary.simpleMessage("Correct"),
         "manual_setup_generate_seed_verify_seed_quiz_3_4_success_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 5?"),
+            MessageLookupByLibrary.simpleMessage("What is your #5 seed word?"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_CTA":
             MessageLookupByLibrary.simpleMessage("Try Again"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_heading":
@@ -1302,15 +1287,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_quiz_fail_state_invalid_entry":
             MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "What’s your seed word number 2?"),
+            MessageLookupByLibrary.simpleMessage("What is your #2 seed word?"),
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Text info about seed verification"),
+                "Envoy will ask you some questions to verify you correctly recorded your seed."),
         "manual_setup_generate_seed_write_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_generate_seed_write_seed_heading":
-            MessageLookupByLibrary.simpleMessage("Write Down the 12 Words"),
+            MessageLookupByLibrary.simpleMessage("Write Down these 12 Words"),
         "manual_setup_import_12_word_seed_autocomplete_heading":
             MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
         "manual_setup_import_12_word_seed_complete_1_2_heading":
@@ -1380,7 +1364,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Go back"),
         "manual_setup_import_24_word_seed_invalid_seedword_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "That seed appears to be invalid. Please check the words entered, including the order they are in and try again."),
+                "Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again."),
         "manual_setup_import_24_word_seed_modify_seedword_1_2_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_import_24_word_seed_modify_seedword_1_2_heading":
@@ -1411,19 +1395,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter Your Passphrase"),
         "manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Passphrases are case and space sensitive. Enter with extreme care."),
+                "Passphrases are case and space sensitive. Enter with care."),
         "manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
+                "WARNING\n\nPassphrases are an advanced feature. Are you sure you want to apply a passphrase? \n\nEnvoy is unable to recover a forgotten or incorrect passphrase."),
         "manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_heading":
             MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
         "manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Passphrases are case and space sensitive. Enter with extreme care."),
+                "Passphrases are case and space sensitive. Enter with care."),
         "pair_existing_device_address_cta1":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "pair_existing_device_address_cta2":
@@ -1506,13 +1490,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_heading":
             MessageLookupByLibrary.simpleMessage("How to Recover?"),
         "recovery_scenario_step_1": MessageLookupByLibrary.simpleMessage(
-            "Sign into iCloud and install Envoy on the new device."),
+            "Sign into iCloud and restore your iCloud backup"),
         "recovery_scenario_step_2": MessageLookupByLibrary.simpleMessage(
-            "Open Envoy and tap ‘Recover Envoy   Wallet’."),
+            "Install Envoy and tap “Recover Envoy Wallet”"),
         "recovery_scenario_step_3": MessageLookupByLibrary.simpleMessage(
-            "Envoy will then automatically reinstate your existing Envoy wallet."),
+            "Envoy will then automatically restore your existing Envoy wallet"),
         "recovery_scenario_subheading": MessageLookupByLibrary.simpleMessage(
-            "To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions."),
+            "To recover your Envoy wallet, follow these simple instructions."),
         "single_envoy_import_pp_intro_card1_heading":
             MessageLookupByLibrary.simpleMessage("Connect Passport with Envoy"),
         "single_envoy_import_pp_intro_card1_subheading":
@@ -1578,16 +1562,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is now connected to your Passport."),
         "splash_screen_cta1":
-            MessageLookupByLibrary.simpleMessage("Magic Setup"),
+            MessageLookupByLibrary.simpleMessage("Create a New Wallet"),
         "splash_screen_cta2":
-            MessageLookupByLibrary.simpleMessage("Expert Setup"),
+            MessageLookupByLibrary.simpleMessage("Manual Wallet Setup"),
         "splash_screen_cta3":
-            MessageLookupByLibrary.simpleMessage("Setup Passport Instead"),
-        "splash_screen_heading": MessageLookupByLibrary.simpleMessage(
-            "How would you like to set up your wallet?"),
+            MessageLookupByLibrary.simpleMessage("Passport-Only Setup"),
+        "splash_screen_heading":
+            MessageLookupByLibrary.simpleMessage("Welcome to Envoy"),
         "splash_screen_skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "splash_screen_subheading": MessageLookupByLibrary.simpleMessage(
-            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+            "Envoy is a simple Bitcoin wallet and Passport companion app."),
         "text_636d0bb5a3b7eb50b6015535":
             MessageLookupByLibrary.simpleMessage("Skip"),
         "text_636d0bb5a3b7eb50b6015538":
@@ -2801,7 +2785,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "text_639b189339d43a7643a01f7b":
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "text_639b189339d43a7643a01f81": MessageLookupByLibrary.simpleMessage(
-            "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card."),
+            "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "text_639b189339d43a7643a01f84":
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "text_639b189339d43a7643a01f86":
@@ -3002,11 +2986,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "text_63eb5ba0b6fe43bcae1c747b":
             MessageLookupByLibrary.simpleMessage("Connect"),
-        "wallet_is_setup_CTA":
-            MessageLookupByLibrary.simpleMessage("Go To Account"),
+        "wallet_is_setup_CTA": MessageLookupByLibrary.simpleMessage("Continue"),
         "wallet_is_setup_heading":
-            MessageLookupByLibrary.simpleMessage("Your Wallet Is Now Setup"),
+            MessageLookupByLibrary.simpleMessage("Your Wallet Is Ready"),
         "wallet_is_setup_subheading": MessageLookupByLibrary.simpleMessage(
-            "Text info about secured storage")
+            "Envoy Wallet is set up and ready for your Bitcoin!")
       };
 }

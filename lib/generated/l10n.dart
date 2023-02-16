@@ -150,10 +150,10 @@ class S {
     );
   }
 
-  /// `New wallet`
+  /// `Envoy Wallet`
   String get accounts_screen_wallet_name {
     return Intl.message(
-      'New wallet',
+      'Envoy Wallet',
       name: 'accounts_screen_wallet_name',
       desc: '',
       args: [],
@@ -180,20 +180,20 @@ class S {
     );
   }
 
-  /// `Android backs up every 24h`
+  /// `Android Backs Up Every 24h`
   String get android_backup_info_heading {
     return Intl.message(
-      'Android backs up every 24h',
+      'Android Backs Up Every 24h',
       name: 'android_backup_info_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Android is backs up your Envoy data automatically every 24 hours, but you can force a manual backup right now from your device Settings.`
+  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device Settings.`
   String get android_backup_info_subheading {
     return Intl.message(
-      'Android is backs up your Envoy data automatically every 24 hours, but you can force a manual backup right now from your device Settings.',
+      'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device Settings.',
       name: 'android_backup_info_subheading',
       desc: '',
       args: [],
@@ -4424,10 +4424,10 @@ class S {
     );
   }
 
-  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation’s servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
+  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
   String get learn_more_about_data_secured_2_4_subheading {
     return Intl.message(
-      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation’s servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
+      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
       name: 'learn_more_about_data_secured_2_4_subheading',
       desc: '',
       args: [],
@@ -4504,10 +4504,10 @@ class S {
     );
   }
 
-  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Setup.`
+  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
   String get learn_more_about_data_secured_4_4_subheading {
     return Intl.message(
-      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Setup.',
+      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
       name: 'learn_more_about_data_secured_4_4_subheading',
       desc: '',
       args: [],
@@ -4524,40 +4524,40 @@ class S {
     );
   }
 
-  /// `QR code backup recovery`
+  /// `Recover with QR Code`
   String get magic_recovery_fail_android_CTA_2 {
     return Intl.message(
-      'QR code backup recovery',
+      'Recover with QR Code',
       name: 'magic_recovery_fail_android_CTA_2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Automatic Recovery Unsuccessful`
+  /// `Recovery Unsuccessful`
   String get magic_recovery_fail_android_heading {
     return Intl.message(
-      'Automatic Recovery Unsuccessful',
+      'Recovery Unsuccessful',
       name: 'magic_recovery_fail_android_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Android / Calyx logged in text\n\nYou can always recover ith a QR code.`
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
   String get magic_recovery_fail_android_subheading {
     return Intl.message(
-      'Android / Calyx logged in text\n\nYou can always recover ith a QR code.',
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
       name: 'magic_recovery_fail_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recovering your Envoy wallet`
+  /// `Recovering your Envoy Wallet`
   String get magic_recovery_flow_done_heading {
     return Intl.message(
-      'Recovering your Envoy wallet',
+      'Recovering your Envoy Wallet',
       name: 'magic_recovery_flow_done_heading',
       desc: '',
       args: [],
@@ -4614,10 +4614,10 @@ class S {
     );
   }
 
-  /// `Recovering your Envoy wallet`
+  /// `Recovering your Envoy Wallet`
   String get magic_recovery_flow_retry_2_heading {
     return Intl.message(
-      'Recovering your Envoy wallet',
+      'Recovering your Envoy Wallet',
       name: 'magic_recovery_flow_retry_2_heading',
       desc: '',
       args: [],
@@ -4764,30 +4764,30 @@ class S {
     );
   }
 
-  /// `QR code backup recovery`
+  /// `Recover with QR Code`
   String get magic_recovery_retry_fail_CTA_2 {
     return Intl.message(
-      'QR code backup recovery',
+      'Recover with QR Code',
       name: 'magic_recovery_retry_fail_CTA_2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Automatic Recovery Unsuccessful`
+  /// `Recovery Unsuccessful`
   String get magic_recovery_retry_fail_heading {
     return Intl.message(
-      'Automatic Recovery Unsuccessful',
+      'Recovery Unsuccessful',
       name: 'magic_recovery_retry_fail_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you sure you’re using the right Apple ID ?\n\nYou can always recover ith a QR code.`
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
   String get magic_recovery_retry_fail_subheading {
     return Intl.message(
-      'Are you sure you’re using the right Apple ID ?\n\nYou can always recover ith a QR code.',
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
       name: 'magic_recovery_retry_fail_subheading',
       desc: '',
       args: [],
@@ -4804,30 +4804,30 @@ class S {
     );
   }
 
-  /// `QR code backup recovery`
+  /// `Recover with QR Code`
   String get magic_recovery_retry_iOS_CTA_2 {
     return Intl.message(
-      'QR code backup recovery',
+      'Recover with QR Code',
       name: 'magic_recovery_retry_iOS_CTA_2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Automatic Recovery Unsuccessful`
+  /// `Recovery Unsuccessful`
   String get magic_recovery_retry_iOS_heading {
     return Intl.message(
-      'Automatic Recovery Unsuccessful',
+      'Recovery Unsuccessful',
       name: 'magic_recovery_retry_iOS_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you sure you’re signed in to the correct Cloud account? You can check your Settings to verify.\n\nIf you still have access to your existing Envoy device, you can choose to recover via the QR method below.`
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
   String get magic_recovery_retry_iOS_subheading {
     return Intl.message(
-      'Are you sure you’re signed in to the correct Cloud account? You can check your Settings to verify.\n\nIf you still have access to your existing Envoy device, you can choose to recover via the QR method below.',
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
       name: 'magic_recovery_retry_iOS_subheading',
       desc: '',
       args: [],
@@ -4944,10 +4944,10 @@ class S {
     );
   }
 
-  /// `Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
   String get magic_setup_envoy_key_creation_1_5_subheading {
     return Intl.message(
-      'Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
       name: 'magic_setup_envoy_key_creation_1_5_subheading',
       desc: '',
       args: [],
@@ -5054,10 +5054,10 @@ class S {
     );
   }
 
-  /// `Let’s Setup Your Wallet`
+  /// `Set Up Your Wallet`
   String get magic_setup_flow_tutorial_heading {
     return Intl.message(
-      'Let’s Setup Your Wallet',
+      'Set Up Your Wallet',
       name: 'magic_setup_flow_tutorial_heading',
       desc: '',
       args: [],
@@ -5134,20 +5134,20 @@ class S {
     );
   }
 
-  /// `We Don’t Keep Your Seed`
+  /// `Import your Seed`
   String get magic_setup_import_seed_heading {
     return Intl.message(
-      'We Don’t Keep Your Seed',
+      'Import your Seed',
       name: 'magic_setup_import_seed_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Text info about seed import`
+  /// `Continue below to import an existing 12 or 24 word seed.\n\nYou’ll have the option to apply a passphrase as well.`
   String get magic_setup_import_seed_subheading {
     return Intl.message(
-      'Text info about seed import',
+      'Continue below to import an existing 12 or 24 word seed.\n\nYou’ll have the option to apply a passphrase as well.',
       name: 'magic_setup_import_seed_subheading',
       desc: '',
       args: [],
@@ -5164,10 +5164,10 @@ class S {
     );
   }
 
-  /// `The Envoy server stores your backup in an encrypted format.\n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
   String get magic_setup_sending_backup_to_envoy_server_1_5_subheading {
     return Intl.message(
-      'The Envoy server stores your backup in an encrypted format.\n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_sending_backup_to_envoy_server_1_5_subheading',
       desc: '',
       args: [],
@@ -5184,70 +5184,70 @@ class S {
     );
   }
 
-  /// `The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
   String get magic_setup_sending_backup_to_envoy_server_2_5_subheading {
     return Intl.message(
-      'The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_sending_backup_to_envoy_server_2_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sending Encrypted Backup to Envoy Server`
+  /// `Uploading Encrypted Backup`
   String get magic_setup_sending_backup_to_envoy_server_3_5_heading {
     return Intl.message(
-      'Sending Encrypted Backup to Envoy Server',
+      'Uploading Encrypted Backup',
       name: 'magic_setup_sending_backup_to_envoy_server_3_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
   String get magic_setup_sending_backup_to_envoy_server_3_5_subheading {
     return Intl.message(
-      'The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_sending_backup_to_envoy_server_3_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sending Encrypted Backup to Envoy Server`
+  /// `Uploading Encrypted Backup`
   String get magic_setup_sending_backup_to_envoy_server_4_5_heading {
     return Intl.message(
-      'Sending Encrypted Backup to Envoy Server',
+      'Uploading Encrypted Backup',
       name: 'magic_setup_sending_backup_to_envoy_server_4_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
   String get magic_setup_sending_backup_to_envoy_server_4_5_subheading {
     return Intl.message(
-      'The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_sending_backup_to_envoy_server_4_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sending Encrypted Backup to Envoy Server`
+  /// `Uploading Encrypted Backup`
   String get magic_setup_sending_backup_to_envoy_server_5_5_heading {
     return Intl.message(
-      'Sending Encrypted Backup to Envoy Server',
+      'Uploading Encrypted Backup',
       name: 'magic_setup_sending_backup_to_envoy_server_5_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
   String get magic_setup_sending_backup_to_envoy_server_5_5_subheading {
     return Intl.message(
-      'The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_sending_backup_to_envoy_server_5_5_subheading',
       desc: '',
       args: [],
@@ -5264,10 +5264,10 @@ class S {
     );
   }
 
-  /// `That seed appears to be invalid. Please check the words you wrote, including the order they are in and try again.`
+  /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
   String get manual_seed_generate_seed_verify_seed_warning_subheading {
     return Intl.message(
-      'That seed appears to be invalid. Please check the words you wrote, including the order they are in and try again.',
+      'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
       name: 'manual_seed_generate_seed_verify_seed_warning_subheading',
       desc: '',
       args: [],
@@ -5354,20 +5354,20 @@ class S {
     );
   }
 
-  /// `Your backup is encrypted by your seed words. If you lose access to your seed words, you will be unable to recover your backup file contents.\n\nPlease ensure you have a robust seed word backup solution.`
+  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
   String get manual_setup_encrypted_backup_location_1_2_subheading {
     return Intl.message(
-      'Your backup is encrypted by your seed words. If you lose access to your seed words, you will be unable to recover your backup file contents.\n\nPlease ensure you have a robust seed word backup solution.',
+      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
       name: 'manual_setup_encrypted_backup_location_1_2_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Choose destination`
+  /// `Choose Destination`
   String get manual_setup_encrypted_backup_location_1_3_CTA {
     return Intl.message(
-      'Choose destination',
+      'Choose Destination',
       name: 'manual_setup_encrypted_backup_location_1_3_CTA',
       desc: '',
       args: [],
@@ -5384,10 +5384,10 @@ class S {
     );
   }
 
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card.`
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
   String get manual_setup_encrypted_backup_location_1_3_subheading {
     return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card.',
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
       name: 'manual_setup_encrypted_backup_location_1_3_subheading',
       desc: '',
       args: [],
@@ -5454,10 +5454,10 @@ class S {
     );
   }
 
-  /// `Let’s Setup Your Wallet`
+  /// `Set Up Your Wallet`
   String get manual_setup_flow_tutorial_heading {
     return Intl.message(
-      'Let’s Setup Your Wallet',
+      'Set Up Your Wallet',
       name: 'manual_setup_flow_tutorial_heading',
       desc: '',
       args: [],
@@ -5474,10 +5474,10 @@ class S {
     );
   }
 
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  /// `Continue below to import an existing seed or create a new seed.`
   String get manual_setup_flow_tutorial_subheading {
     return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      'Continue below to import an existing seed or create a new seed.',
       name: 'manual_setup_flow_tutorial_subheading',
       desc: '',
       args: [],
@@ -5494,20 +5494,20 @@ class S {
     );
   }
 
-  /// `Don’t Show Your Seed`
+  /// `Keep Your Seed Private`
   String get manual_setup_generate_seed_heading {
     return Intl.message(
-      'Don’t Show Your Seed',
+      'Keep Your Seed Private',
       name: 'manual_setup_generate_seed_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Text info about security`
+  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!`
   String get manual_setup_generate_seed_subheading {
     return Intl.message(
-      'Text info about security',
+      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!',
       name: 'manual_setup_generate_seed_subheading',
       desc: '',
       args: [],
@@ -5554,10 +5554,10 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 11?`
+  /// `What is your #11 seed word?`
   String get manual_setup_generate_seed_verify_quiz_4_4_done_subheading {
     return Intl.message(
-      'What’s your seed word number 11?',
+      'What is your #11 seed word?',
       name: 'manual_setup_generate_seed_verify_quiz_4_4_done_subheading',
       desc: '',
       args: [],
@@ -5584,10 +5584,10 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 11?`
+  /// `What is your #11 seed word?`
   String get manual_setup_generate_seed_verify_quiz_4_4_subheading {
     return Intl.message(
-      'What’s your seed word number 11?',
+      'What is your #11 seed word?',
       name: 'manual_setup_generate_seed_verify_quiz_4_4_subheading',
       desc: '',
       args: [],
@@ -5624,20 +5624,20 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 2?`
+  /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_quiz_success_subheading {
     return Intl.message(
-      'What’s your seed word number 2?',
+      'What is your #2 seed word?',
       name: 'manual_setup_generate_seed_verify_quiz_success_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Verify Seed`
+  /// `Continue`
   String get manual_setup_generate_seed_verify_seed_CTA {
     return Intl.message(
-      'Verify Seed',
+      'Continue',
       name: 'manual_setup_generate_seed_verify_seed_CTA',
       desc: '',
       args: [],
@@ -5654,10 +5654,10 @@ class S {
     );
   }
 
-  /// `Write Down the 12 Words`
+  /// `Write Down these 12 Words`
   String get manual_setup_generate_seed_verify_seed_again_heading {
     return Intl.message(
-      'Write Down the 12 Words',
+      'Write Down these 12 Words',
       name: 'manual_setup_generate_seed_verify_seed_again_heading',
       desc: '',
       args: [],
@@ -5684,10 +5684,10 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 2?`
+  /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_seed_again_quiz_1_4_subheading {
     return Intl.message(
-      'What’s your seed word number 2?',
+      'What is your #2 seed word?',
       name: 'manual_setup_generate_seed_verify_seed_again_quiz_1_4_subheading',
       desc: '',
       args: [],
@@ -5718,11 +5718,11 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 2?`
+  /// `What is your #2 seed word?`
   String
       get manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_subheading {
     return Intl.message(
-      'What’s your seed word number 2?',
+      'What is your #2 seed word?',
       name:
           'manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_subheading',
       desc: '',
@@ -5760,10 +5760,10 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 2?`
+  /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_1_4_subheading {
     return Intl.message(
-      'What’s your seed word number 2?',
+      'What is your #2 seed word?',
       name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_subheading',
       desc: '',
       args: [],
@@ -5790,10 +5790,10 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 9?`
+  /// `What is your #9 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_2_4_subheading {
     return Intl.message(
-      'What’s your seed word number 9?',
+      'What is your #9 seed word?',
       name: 'manual_setup_generate_seed_verify_seed_quiz_2_4_subheading',
       desc: '',
       args: [],
@@ -5832,11 +5832,11 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 9?`
+  /// `What is your #9 seed word?`
   String
       get manual_setup_generate_seed_verify_seed_quiz_2_4_success_subheading {
     return Intl.message(
-      'What’s your seed word number 9?',
+      'What is your #9 seed word?',
       name:
           'manual_setup_generate_seed_verify_seed_quiz_2_4_success_subheading',
       desc: '',
@@ -5864,10 +5864,10 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 5?`
+  /// `What is your #5 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_3_4_subheading {
     return Intl.message(
-      'What’s your seed word number 5?',
+      'What is your #5 seed word?',
       name: 'manual_setup_generate_seed_verify_seed_quiz_3_4_subheading',
       desc: '',
       args: [],
@@ -5906,11 +5906,11 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 5?`
+  /// `What is your #5 seed word?`
   String
       get manual_setup_generate_seed_verify_seed_quiz_3_4_success_subheading {
     return Intl.message(
-      'What’s your seed word number 5?',
+      'What is your #5 seed word?',
       name:
           'manual_setup_generate_seed_verify_seed_quiz_3_4_success_subheading',
       desc: '',
@@ -5960,20 +5960,20 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 2?`
+  /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_fail_subheading {
     return Intl.message(
-      'What’s your seed word number 2?',
+      'What is your #2 seed word?',
       name: 'manual_setup_generate_seed_verify_seed_quiz_fail_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Text info about seed verification`
+  /// `Envoy will ask you some questions to verify you correctly recorded your seed.`
   String get manual_setup_generate_seed_verify_seed_subheading {
     return Intl.message(
-      'Text info about seed verification',
+      'Envoy will ask you some questions to verify you correctly recorded your seed.',
       name: 'manual_setup_generate_seed_verify_seed_subheading',
       desc: '',
       args: [],
@@ -5990,10 +5990,10 @@ class S {
     );
   }
 
-  /// `Write Down the 12 Words`
+  /// `Write Down these 12 Words`
   String get manual_setup_generate_seed_write_seed_heading {
     return Intl.message(
-      'Write Down the 12 Words',
+      'Write Down these 12 Words',
       name: 'manual_setup_generate_seed_write_seed_heading',
       desc: '',
       args: [],
@@ -6330,10 +6330,10 @@ class S {
     );
   }
 
-  /// `That seed appears to be invalid. Please check the words entered, including the order they are in and try again.`
+  /// `Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.`
   String get manual_setup_import_24_word_seed_invalid_seedword_subheading {
     return Intl.message(
-      'That seed appears to be invalid. Please check the words entered, including the order they are in and try again.',
+      'Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.',
       name: 'manual_setup_import_24_word_seed_invalid_seedword_subheading',
       desc: '',
       args: [],
@@ -6492,11 +6492,11 @@ class S {
     );
   }
 
-  /// `Passphrases are case and space sensitive. Enter with extreme care.`
+  /// `Passphrases are case and space sensitive. Enter with care.`
   String
       get manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_subheading {
     return Intl.message(
-      'Passphrases are case and space sensitive. Enter with extreme care.',
+      'Passphrases are case and space sensitive. Enter with care.',
       name:
           'manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_subheading',
       desc: '',
@@ -6516,11 +6516,11 @@ class S {
     );
   }
 
-  /// `WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
+  /// `WARNING\n\nPassphrases are an advanced feature. Are you sure you want to apply a passphrase? \n\nEnvoy is unable to recover a forgotten or incorrect passphrase.`
   String
       get manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading {
     return Intl.message(
-      'WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
+      'WARNING\n\nPassphrases are an advanced feature. Are you sure you want to apply a passphrase? \n\nEnvoy is unable to recover a forgotten or incorrect passphrase.',
       name:
           'manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading',
       desc: '',
@@ -6552,11 +6552,11 @@ class S {
     );
   }
 
-  /// `Passphrases are case and space sensitive. Enter with extreme care.`
+  /// `Passphrases are case and space sensitive. Enter with care.`
   String
       get manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading {
     return Intl.message(
-      'Passphrases are case and space sensitive. Enter with extreme care.',
+      'Passphrases are case and space sensitive. Enter with care.',
       name:
           'manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading',
       desc: '',
@@ -6924,40 +6924,40 @@ class S {
     );
   }
 
-  /// `Sign into iCloud and install Envoy on the new device.`
+  /// `Sign into iCloud and restore your iCloud backup`
   String get recovery_scenario_step_1 {
     return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
+      'Sign into iCloud and restore your iCloud backup',
       name: 'recovery_scenario_step_1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
   String get recovery_scenario_step_2 {
     return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
+      'Install Envoy and tap “Recover Envoy Wallet”',
       name: 'recovery_scenario_step_2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
+  /// `Envoy will then automatically restore your existing Envoy wallet`
   String get recovery_scenario_step_3 {
     return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
+      'Envoy will then automatically restore your existing Envoy wallet',
       name: 'recovery_scenario_step_3',
       desc: '',
       args: [],
     );
   }
 
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  /// `To recover your Envoy wallet, follow these simple instructions.`
   String get recovery_scenario_subheading {
     return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      'To recover your Envoy wallet, follow these simple instructions.',
       name: 'recovery_scenario_subheading',
       desc: '',
       args: [],
@@ -7244,40 +7244,40 @@ class S {
     );
   }
 
-  /// `Magic Setup`
+  /// `Create a New Wallet`
   String get splash_screen_cta1 {
     return Intl.message(
-      'Magic Setup',
+      'Create a New Wallet',
       name: 'splash_screen_cta1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Expert Setup`
+  /// `Manual Wallet Setup`
   String get splash_screen_cta2 {
     return Intl.message(
-      'Expert Setup',
+      'Manual Wallet Setup',
       name: 'splash_screen_cta2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Setup Passport Instead`
+  /// `Passport-Only Setup`
   String get splash_screen_cta3 {
     return Intl.message(
-      'Setup Passport Instead',
+      'Passport-Only Setup',
       name: 'splash_screen_cta3',
       desc: '',
       args: [],
     );
   }
 
-  /// `How would you like to set up your wallet?`
+  /// `Welcome to Envoy`
   String get splash_screen_heading {
     return Intl.message(
-      'How would you like to set up your wallet?',
+      'Welcome to Envoy',
       name: 'splash_screen_heading',
       desc: '',
       args: [],
@@ -7294,10 +7294,10 @@ class S {
     );
   }
 
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  /// `Envoy is a simple Bitcoin wallet and Passport companion app.`
   String get splash_screen_subheading {
     return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      'Envoy is a simple Bitcoin wallet and Passport companion app.',
       name: 'splash_screen_subheading',
       desc: '',
       args: [],
@@ -13366,10 +13366,10 @@ class S {
     );
   }
 
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card.`
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
   String get text_639b189339d43a7643a01f81 {
     return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, account info and Envoy settings.\n\nYou can choose to secure it on a cloud, another device, or an external storage option like a microSD card.',
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
       name: 'text_639b189339d43a7643a01f81',
       desc: '',
       args: [],
@@ -14376,30 +14376,30 @@ class S {
     );
   }
 
-  /// `Go To Account`
+  /// `Continue`
   String get wallet_is_setup_CTA {
     return Intl.message(
-      'Go To Account',
+      'Continue',
       name: 'wallet_is_setup_CTA',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your Wallet Is Now Setup`
+  /// `Your Wallet Is Ready`
   String get wallet_is_setup_heading {
     return Intl.message(
-      'Your Wallet Is Now Setup',
+      'Your Wallet Is Ready',
       name: 'wallet_is_setup_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Text info about secured storage`
+  /// `Envoy Wallet is set up and ready for your Bitcoin!`
   String get wallet_is_setup_subheading {
     return Intl.message(
-      'Text info about secured storage',
+      'Envoy Wallet is set up and ready for your Bitcoin!',
       name: 'wallet_is_setup_subheading',
       desc: '',
       args: [],
