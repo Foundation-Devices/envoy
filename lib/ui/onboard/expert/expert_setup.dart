@@ -26,20 +26,17 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
       children: [
         Align(
           alignment: Alignment.centerRight,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: TextButton(
-                child: Text("Skip",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.black)),
-                onPressed: () {},
-              ),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: TextButton(
+              child: Text("Skip",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.black)),
+              onPressed: () {
+                OnboardingPage.goHome(context);
+              },
             ),
           ),
         ),

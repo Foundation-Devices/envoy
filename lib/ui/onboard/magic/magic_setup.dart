@@ -27,11 +27,7 @@ class _MagicSetupState extends State<MagicSetup> {
       children: [
         Align(
           alignment: Alignment.centerRight,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Container(
+          child: Container(
               padding: EdgeInsets.symmetric(vertical: 12),
               child: TextButton(
                 child: Text(S().magic_setup_generate_wallet_skip,
@@ -40,12 +36,11 @@ class _MagicSetupState extends State<MagicSetup> {
                         .bodyMedium
                         ?.copyWith(color: Colors.black)),
                 onPressed: () {
-                  Navigator.pop(context);
+                  OnboardingPage.goHome(context);
                 },
               ),
             ),
           ),
-        ),
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -70,13 +65,11 @@ class _MagicSetupState extends State<MagicSetup> {
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
-                      Text(
-                        S().envoy_welcome_card1_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption!
-                            .copyWith(fontSize: 13),
+                      OnboardingHelperText(
+                        text: S().magic_setup_flow_tutorial_subheading,
+                        onTap: () {
+                          // Surface the explainers
+                        },
                       ),
                     ],
                   ),

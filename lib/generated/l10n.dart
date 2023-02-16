@@ -4374,10 +4374,10 @@ class S {
     );
   }
 
-  /// `How Your Data is Secured`
+  /// `How Your Wallet is Secured`
   String get learn_more_about_data_secured_1_4_heading {
     return Intl.message(
-      'How Your Data is Secured',
+      'How Your Wallet is Secured',
       name: 'learn_more_about_data_secured_1_4_heading',
       desc: '',
       args: [],
@@ -4394,20 +4394,20 @@ class S {
     );
   }
 
-  /// `Envoy stores your seed securely in either your iCloud Keychain for iOS users or Google Drive for Android users.\n\nThis will happen automatically as part of the setup flow. All you need to do is ensure you’re signed in to your iCloud or Google account on this phone.`
+  /// `Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
   String get learn_more_about_data_secured_1_4_subheading {
     return Intl.message(
-      'Envoy stores your seed securely in either your iCloud Keychain for iOS users or Google Drive for Android users.\n\nThis will happen automatically as part of the setup flow. All you need to do is ensure you’re signed in to your iCloud or Google account on this phone.',
+      'Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
       name: 'learn_more_about_data_secured_1_4_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `How Your Data is Secured`
+  /// `How Your Wallet is Secured`
   String get learn_more_about_data_secured_2_4_heading {
     return Intl.message(
-      'How Your Data is Secured',
+      'How Your Wallet is Secured',
       name: 'learn_more_about_data_secured_2_4_heading',
       desc: '',
       args: [],
@@ -4424,10 +4424,10 @@ class S {
     );
   }
 
-  /// `An encrypted backup file is sent to the Envoy server. This file is encrypted with your seed to ensure that nobody but you, or anyone with access to your Cloud can access the file.\n\nThe file contains important information such as labels, account info and wallet preferences. Envoy will update this backup periodically to ensure it is kept up to date.`
+  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation’s servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
   String get learn_more_about_data_secured_2_4_subheading {
     return Intl.message(
-      'An encrypted backup file is sent to the Envoy server. This file is encrypted with your seed to ensure that nobody but you, or anyone with access to your Cloud can access the file.\n\nThe file contains important information such as labels, account info and wallet preferences. Envoy will update this backup periodically to ensure it is kept up to date.',
+      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation’s servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
       name: 'learn_more_about_data_secured_2_4_subheading',
       desc: '',
       args: [],
@@ -4464,10 +4464,10 @@ class S {
     );
   }
 
-  /// `In a recovery scenario, download Envoy onto a new phone, sign into your Apple or Google cloud account and Envoy will automatically restore everything for you.\n\nIt is crucial that you restrict access to your Cloud account with a secure password. It is also recommended that you secure the account with 2 factor authentication (2FA).  `
+  /// `To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.`
   String get learn_more_about_data_secured_3_4_subheading {
     return Intl.message(
-      'In a recovery scenario, download Envoy onto a new phone, sign into your Apple or Google cloud account and Envoy will automatically restore everything for you.\n\nIt is crucial that you restrict access to your Cloud account with a secure password. It is also recommended that you secure the account with 2 factor authentication (2FA).  ',
+      'To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.',
       name: 'learn_more_about_data_secured_3_4_subheading',
       desc: '',
       args: [],
@@ -4504,10 +4504,10 @@ class S {
     );
   }
 
-  /// `To use Envoy without leveraging any external cloud providers, go back to the opening screen and choose Manual Setup.\n\nPlease note that the manual setup requires management of Bitcoin Seed Words and offline backup solutions.`
+  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Setup.`
   String get learn_more_about_data_secured_4_4_subheading {
     return Intl.message(
-      'To use Envoy without leveraging any external cloud providers, go back to the opening screen and choose Manual Setup.\n\nPlease note that the manual setup requires management of Bitcoin Seed Words and offline backup solutions.',
+      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Setup.',
       name: 'learn_more_about_data_secured_4_4_subheading',
       desc: '',
       args: [],
@@ -4844,10 +4844,10 @@ class S {
     );
   }
 
-  /// `Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.`
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
   String get magic_setup_encrypting_backup_1_5_subheading {
     return Intl.message(
-      'Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
       name: 'magic_setup_encrypting_backup_1_5_subheading',
       desc: '',
       args: [],
@@ -4864,10 +4864,10 @@ class S {
     );
   }
 
-  /// `Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.`
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
   String get magic_setup_encrypting_backup_2_5_subheading {
     return Intl.message(
-      'Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
       name: 'magic_setup_encrypting_backup_2_5_subheading',
       desc: '',
       args: [],
@@ -4884,10 +4884,10 @@ class S {
     );
   }
 
-  /// `Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.`
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
   String get magic_setup_encrypting_backup_3_5_subheading {
     return Intl.message(
-      'Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
       name: 'magic_setup_encrypting_backup_3_5_subheading',
       desc: '',
       args: [],
@@ -4904,10 +4904,10 @@ class S {
     );
   }
 
-  /// `Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.`
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
   String get magic_setup_encrypting_backup_4_5_subheading {
     return Intl.message(
-      'Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
       name: 'magic_setup_encrypting_backup_4_5_subheading',
       desc: '',
       args: [],
@@ -4924,10 +4924,10 @@ class S {
     );
   }
 
-  /// `Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.`
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
   String get magic_setup_encrypting_backup_5_5_subheading {
     return Intl.message(
-      'Your Envoy backup is encrypted by the Envoy key stored securely in your iCloud keychain.\n\nThis backup contains useful wallet data such as labels, account info and Envoy settings.',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
       name: 'magic_setup_encrypting_backup_5_5_subheading',
       desc: '',
       args: [],
@@ -4954,80 +4954,80 @@ class S {
     );
   }
 
-  /// `Creating Your Envoy Key`
+  /// `Creating Your Envoy Wallet`
   String get magic_setup_envoy_key_creation_2_5_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
+      'Creating Your Envoy Wallet',
       name: 'magic_setup_envoy_key_creation_2_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
   String get magic_setup_envoy_key_creation_2_5_subheading {
     return Intl.message(
-      'Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
       name: 'magic_setup_envoy_key_creation_2_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Creating Your Envoy Key`
+  /// `Creating Your Envoy Wallet`
   String get magic_setup_envoy_key_creation_3_5_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
+      'Creating Your Envoy Wallet',
       name: 'magic_setup_envoy_key_creation_3_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
   String get magic_setup_envoy_key_creation_3_5_subheading {
     return Intl.message(
-      'Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
       name: 'magic_setup_envoy_key_creation_3_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Creating Your Envoy Key`
+  /// `Creating Your Envoy Wallet`
   String get magic_setup_envoy_key_creation_4_5_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
+      'Creating Your Envoy Wallet',
       name: 'magic_setup_envoy_key_creation_4_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
   String get magic_setup_envoy_key_creation_4_5_subheading {
     return Intl.message(
-      'Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
       name: 'magic_setup_envoy_key_creation_4_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Creating Your Envoy Key`
+  /// `Creating Your Envoy Wallet`
   String get magic_setup_envoy_key_creation_5_5_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
+      'Creating Your Envoy Wallet',
       name: 'magic_setup_envoy_key_creation_5_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
   String get magic_setup_envoy_key_creation_5_5_subheading {
     return Intl.message(
-      'Envoy is creating a new Bitcoin key which will be stored securely in your iCloud keychain.\n\nIt is important that you secure access to your iCloud account to prevent anyone accessing your Envoy key.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
       name: 'magic_setup_envoy_key_creation_5_5_subheading',
       desc: '',
       args: [],
@@ -5074,10 +5074,10 @@ class S {
     );
   }
 
-  /// `Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  Learn more.`
+  /// `Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  {{Learn more.}}`
   String get magic_setup_flow_tutorial_subheading {
     return Intl.message(
-      'Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  Learn more.',
+      'Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  {{Learn more.}}',
       name: 'magic_setup_flow_tutorial_subheading',
       desc: '',
       args: [],
@@ -5104,10 +5104,10 @@ class S {
     );
   }
 
-  /// `WARNING\n\nIf you have another wallet in another device, generating a new wallet will erase your existing wallet.`
+  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
   String get magic_setup_generate_wallet_subheading {
     return Intl.message(
-      'WARNING\n\nIf you have another wallet in another device, generating a new wallet will erase your existing wallet.',
+      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
       name: 'magic_setup_generate_wallet_subheading',
       desc: '',
       args: [],
@@ -5154,30 +5154,30 @@ class S {
     );
   }
 
-  /// `Sending Encrypted Backup to Envoy Server`
+  /// `Uploading Encrypted Backup`
   String get magic_setup_sending_backup_to_envoy_server_1_5_heading {
     return Intl.message(
-      'Sending Encrypted Backup to Envoy Server',
+      'Uploading Encrypted Backup',
       name: 'magic_setup_sending_backup_to_envoy_server_1_5_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
+  /// `The Envoy server stores your backup in an encrypted format.\n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.`
   String get magic_setup_sending_backup_to_envoy_server_1_5_subheading {
     return Intl.message(
-      'The Envoy server stores your backup in an encrypted format. \n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
+      'The Envoy server stores your backup in an encrypted format.\n\nFoundation has no access to the contents of this file. Only the person in control of the Envoy key (you), can access the file and use it to recover.',
       name: 'magic_setup_sending_backup_to_envoy_server_1_5_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sending Encrypted Backup to Envoy Server`
+  /// `Uploading Encrypted Backup`
   String get magic_setup_sending_backup_to_envoy_server_2_5_heading {
     return Intl.message(
-      'Sending Encrypted Backup to Envoy Server',
+      'Uploading Encrypted Backup',
       name: 'magic_setup_sending_backup_to_envoy_server_2_5_heading',
       desc: '',
       args: [],
