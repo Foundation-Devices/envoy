@@ -28,14 +28,14 @@ use std::str::FromStr;
 use bdk::bitcoin::consensus::encode::deserialize;
 use bdk::bitcoin::consensus::encode::serialize;
 
-use std::ptr::null_mut;
+use std::ptr::{null, null_mut};
 
 use crate::electrum_client::Client;
 use crate::miniscript::{DescriptorPublicKey, Segwitv0};
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
-use bdk::keys::bip39::{Language, Mnemonic};
+use bdk::keys::bip39::{Language, Mnemonic, MnemonicWithPassphrase};
 use bdk::keys::DescriptorKey::Secret;
 use bdk::keys::{DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey, IntoDescriptorKey};
 use bdk::miniscript::psbt::PsbtExt;
@@ -217,6 +217,7 @@ pub unsafe extern "C" fn wallet_drop(wallet: *mut Mutex<bdk::Wallet<Tree>>) {
 #[no_mangle]
 pub unsafe extern "C" fn wallet_derive(
     seed_words: *const c_char,
+    passphrase: *const c_char,
     path: *const c_char,
     data_dir: *const c_char,
     network: NetworkType,
@@ -237,7 +238,17 @@ pub unsafe extern "C" fn wallet_derive(
     let data_dir = unwrap_or_return!(CStr::from_ptr(data_dir).to_str(), error_return);
 
     // Parse seed words
-    let mnemonic = unwrap_or_return!(Mnemonic::parse(seed_words),error_return);
+    let mnemonic_words = unwrap_or_return!(Mnemonic::parse(seed_words),error_return);
+
+    let mnemonic: MnemonicWithPassphrase = {
+        if !passphrase.is_null() {
+            let passphrase = unwrap_or_return!(CStr::from_ptr(passphrase).to_str(), error_return);
+            (mnemonic_words, Some(passphrase.parse().unwrap()))
+        } else {
+            (mnemonic_words, None)
+        }
+    };
+
     let xkey: ExtendedKey = unwrap_or_return!(mnemonic.into_extended_key(), error_return);
 
     let derivation_path = unwrap_or_return!(DerivationPath::from_str(path), error_return);

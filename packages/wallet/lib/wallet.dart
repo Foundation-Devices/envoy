@@ -610,11 +610,12 @@ class Wallet {
 
   static Wallet deriveWallet(
       String seed, String path, String directory, Network network,
-      {bool private: false}) {
+      {String? passphrase, bool private: false}) {
     final lib = load(_libName);
     final native = NativeLibrary(lib);
     var wallet = native.wallet_derive(
         seed.toNativeUtf8().cast(),
+        passphrase != null ? passphrase.toNativeUtf8().cast() : nullptr,
         path.toNativeUtf8().cast(),
         directory.toNativeUtf8().cast(),
         network.index,
