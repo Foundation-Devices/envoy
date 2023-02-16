@@ -48,11 +48,6 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/manual_setup_youtube_preview.png"),
-                )),
-                Flexible(
                     child: Container(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
