@@ -33,26 +33,30 @@ class EnvoySeed {
   static String encryptedBackupFilePath = LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
 
   Future generate() async {
-    final randomSeed = Wallet.generateSeed(true);
-    await store(randomSeed);
+    final generatedSeed = Wallet.generateSeed(true);
+    return await deriveAndAddWallets(generatedSeed);
   }
 
   Future<bool> create(List<String> seedList, {String? passphrase}) async {
     String seed = seedList.join(" ");
-    final path = "m/84'/0'/0'";
+    return await deriveAndAddWallets(seed, passphrase: passphrase);
+  }
 
+  Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
+    final path = "m/84'/0'/0'";
+    
     try {
       var mainnet = Wallet.deriveWallet(seed, path, AccountManager.walletsDirectory, Network.Mainnet, privateKey: true, passphrase: passphrase);
       var testnet = Wallet.deriveWallet(seed, path, AccountManager.walletsDirectory, Network.Testnet, privateKey: true, passphrase: passphrase);
-
+    
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
+      
+      await store(seed);
+      return true;
     } on Exception catch (_) {
       return false;
     }
-
-    await store(seed);
-    return true;
   }
 
   Future<void> store(String seed) async {

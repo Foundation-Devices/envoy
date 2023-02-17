@@ -8,8 +8,10 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/wallet_setup_finish.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/business/envoy_seed.dart';
 
 class MagicCreateWallet extends StatefulWidget {
   const MagicCreateWallet({Key? key}) : super(key: key);
@@ -46,8 +48,16 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
     _initiateWalletCreate();
   }
 
-  //TODO: start creating wallet
   void _initiateWalletCreate() async {
+    // TODO: sync this to actual steps in creation
+    EnvoySeed().generate().then((success) {
+      if (success) {
+        //Finish wallet creation
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (c) => MagicRecoveryInfo()));
+      }
+    });
+
     await Future.delayed(Duration(seconds: 2));
     setState(() {
       step = 1;
@@ -63,9 +73,6 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
     _updateProgress();
 
     await Future.delayed(Duration(seconds: 2));
-    //Finish wallet creation
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (c) => MagicRecoveryInfo()));
   }
 
   @override
@@ -211,9 +218,12 @@ class MagicRecoveryInfo extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: OnboardingButton(
-                    label: "Continue",
+                    label: S().component_continue,
                     onTap: () {
-                      // Navigator.of(context).push(MaterialPageRoute(builder: (c) => MagicRecoveryPhrase()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return WalletSetupFinish();
+                          }));
                     },
                   ),
                 ),

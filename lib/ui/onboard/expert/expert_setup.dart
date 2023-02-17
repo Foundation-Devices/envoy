@@ -156,13 +156,13 @@ class SelectMode extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          S().magic_setup_import_seed_heading,
+                          S().manual_setup_generate_seed_heading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         Padding(padding: EdgeInsets.all(24)),
                         Text(
-                          S().magic_setup_import_seed_subheading,
+                          S().manual_setup_generate_seed_subheading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme

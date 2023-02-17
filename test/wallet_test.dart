@@ -160,18 +160,4 @@ void main() async {
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true);
     expect(wallet.internalDescriptor.contains("xprv"), true);
   });
-
-
-
-  // Import seed?
-
-  // Create seed?
-
-  // After that wallets get automagically created depending on derivation path ---> do we have this documented?
-
-  // Create wallet from seed ---> just use derivation
-
-  // Create wallet magically
-
-  // Bac
 }
