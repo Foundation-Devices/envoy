@@ -11,7 +11,13 @@ WORKDIR /root
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/New_York
 
-RUN apt-get update && apt-get install -y \
+# Update all packages on the build host
+RUN apt-get update \
+    && apt-get upgrade -y
+    
+# Install necessary packages for building
+# and clear cache
+RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql \
     curl \
     build-essential \
@@ -46,7 +52,8 @@ RUN apt-get update && apt-get install -y \
     x11-utils \
     libstdc++-12-dev \
     llvm-14 \
-    libclang1-14
+    libclang1-14 \
+    && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK
 RUN update-java-alternatives --set /usr/lib/jvm/java-1.8.0-openjdk-amd64
