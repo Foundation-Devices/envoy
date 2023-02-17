@@ -9,13 +9,14 @@ MAINTAINER Igor Cota <igor@foundationdevices.com>
 WORKDIR /root
 
 ENV TZ=America/New_York
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Update all packages on the build host
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+RUN apt-get update \
     && apt-get upgrade -y
     
 # Install only necessary packages for building and clear cache
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
     postgresql \
     curl \
     build-essential \
