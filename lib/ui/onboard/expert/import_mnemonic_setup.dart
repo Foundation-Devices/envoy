@@ -31,7 +31,6 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
 
   List<String> currentWords = [];
 
-
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
@@ -118,14 +117,16 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                                 .manual_setup_import_12_word_seed_modify_seedword_1_2_CTA,
                             light: false,
                             onTap: () {
-                              EnvoySeed().create(currentWords, passphrase: passPhrase).then((success) {
+                              EnvoySeed()
+                                  .create(currentWords, passphrase: passPhrase)
+                                  .then((success) {
                                 if (success) {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
                                     return StorageSetupPage();
                                   }));
-                                }
-                                else {
-                                 // TODO: Show a dialog of failure
+                                } else {
+                                  // TODO: Show a dialog of failure
                                 }
                               });
                             }))

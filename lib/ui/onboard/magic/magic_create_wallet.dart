@@ -222,8 +222,8 @@ class MagicRecoveryInfo extends StatelessWidget {
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                            return WalletSetupFinish();
-                          }));
+                        return WalletSetupFinish();
+                      }));
                     },
                   ),
                 ),

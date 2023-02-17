@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 import 'package:wallet/wallet.dart';
 import 'dart:math';
@@ -94,28 +93,31 @@ void main() async {
   });
 
   test('Generate seed', () {
-    String seed = Wallet.generateSeed(false); // TODO: somehow check if words are the same between testnet and mainnet?
+    String seed = Wallet.generateSeed(
+        false); // TODO: somehow check if words are the same between testnet and mainnet?
 
     final List words = seed.split(" ");
 
-    expect(words.length,
-        12);
+    expect(words.length, 12);
   });
 
   test('Get derived private wallet address', () async {
-    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final seed =
+        "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true);
+    var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
+        privateKey: true);
 
     var address1 = await wallet1.getAddress();
     expect(address1.contains("bc1"), true);
 
-    var wallet2 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true, passphrase: "yolo");
+    var wallet2 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
+        privateKey: true, passphrase: "yolo");
 
     var address2 = await wallet2.getAddress();
     expect(address2.contains("bc1"), true);
@@ -123,14 +125,16 @@ void main() async {
   });
 
   test('Get derived testnet wallet address', () async {
-    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final seed =
+        "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet, privateKey: true);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet,
+        privateKey: true);
 
     var address = await wallet.getAddress();
 
@@ -138,26 +142,30 @@ void main() async {
   });
 
   test('Derive public wallet from seed and path', () async {
-    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final seed =
+        "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: false);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
+        privateKey: false);
     expect(wallet.internalDescriptor.contains("xpub"), true);
   });
 
   test('Derive private wallet from seed and path', () async {
-    final seed = "copper december enlist body dove discover cross help evidence fall rich clean";
+    final seed =
+        "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
+        privateKey: true);
     expect(wallet.internalDescriptor.contains("xprv"), true);
   });
 }

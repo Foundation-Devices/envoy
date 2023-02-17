@@ -1,5 +1,5 @@
-use std::error::Error;
 use std::cell::RefCell;
+use std::error::Error;
 
 thread_local! {
     static LAST_ERROR: RefCell<Option<Box<dyn Error>>> = RefCell::new(None);

@@ -28,19 +28,19 @@ class _MagicSetupState extends State<MagicSetup> {
         Align(
           alignment: Alignment.centerRight,
           child: Container(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: TextButton(
-                child: Text(S().magic_setup_generate_wallet_skip,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.black)),
-                onPressed: () {
-                  OnboardingPage.goHome(context);
-                },
-              ),
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: TextButton(
+              child: Text(S().magic_setup_generate_wallet_skip,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.black)),
+              onPressed: () {
+                OnboardingPage.goHome(context);
+              },
             ),
           ),
+        ),
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),

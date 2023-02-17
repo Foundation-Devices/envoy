@@ -28,8 +28,9 @@ class NotSupportedPlatform implements Exception {
 }
 
 class Backup {
-  static perform(
-      SharedPreferences prefs, List<String> keysToBackUp, String seedWords, String serverUrl, int proxyPort, {String? path}) {
+  static perform(SharedPreferences prefs, List<String> keysToBackUp,
+      String seedWords, String serverUrl, int proxyPort,
+      {String? path}) {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {
@@ -54,15 +55,12 @@ class Backup {
       i += 2;
     }
 
-    final Pointer<BackupPayload> payload = calloc<BackupPayload >();
+    final Pointer<BackupPayload> payload = calloc<BackupPayload>();
     payload.ref.keys_nr = keysNumber;
     payload.ref.data = nativeData;
 
-
     var lib = NativeLibrary(load("backup_ffi"));
-    lib.backup_perform(payload.ref,
-        seedWords.toNativeUtf8().cast<Char>(),
-        serverUrl.toNativeUtf8().cast<Char>(),
-        proxyPort);
+    lib.backup_perform(payload.ref, seedWords.toNativeUtf8().cast<Char>(),
+        serverUrl.toNativeUtf8().cast<Char>(), proxyPort, path != null ? path.toNativeUtf8().cast() : nullptr);
   }
 }

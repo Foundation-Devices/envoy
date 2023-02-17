@@ -30,7 +30,8 @@ class EnvoySeed {
   // Checksum is first 4 bits of SHA-256 of 16 bytes
 
   static const _platform = MethodChannel('envoy');
-  static String encryptedBackupFilePath = LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
+  static String encryptedBackupFilePath =
+      LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
 
   Future generate() async {
     final generatedSeed = Wallet.generateSeed(true);
@@ -44,14 +45,18 @@ class EnvoySeed {
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
     final path = "m/84'/0'/0'";
-    
+
     try {
-      var mainnet = Wallet.deriveWallet(seed, path, AccountManager.walletsDirectory, Network.Mainnet, privateKey: true, passphrase: passphrase);
-      var testnet = Wallet.deriveWallet(seed, path, AccountManager.walletsDirectory, Network.Testnet, privateKey: true, passphrase: passphrase);
-    
+      var mainnet = Wallet.deriveWallet(
+          seed, path, AccountManager.walletsDirectory, Network.Mainnet,
+          privateKey: true, passphrase: passphrase);
+      var testnet = Wallet.deriveWallet(
+          seed, path, AccountManager.walletsDirectory, Network.Testnet,
+          privateKey: true, passphrase: passphrase);
+
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
-      
+
       await store(seed);
       return true;
     } on Exception catch (_) {
@@ -77,13 +82,20 @@ class EnvoySeed {
       Devices.DEVICES_PREFS,
     ];
 
-    Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean",
-        Settings().envoyServerAddress, Tor().port, path: offline ? encryptedBackupFilePath : null
-    );
+    Backup.perform(
+        LocalStorage().prefs,
+        keysToBackUp,
+        "copper december enlist body dove discover cross help evidence fall rich clean",
+        Settings().envoyServerAddress,
+        Tor().port,
+        path: offline ? encryptedBackupFilePath : null);
   }
-  
+
   void saveOfflineData() {
-    var argsMap = <String, dynamic>{"from": encryptedBackupFilePath, "path": ""};
+    var argsMap = <String, dynamic>{
+      "from": encryptedBackupFilePath,
+      "path": ""
+    };
     _platform.invokeMethod('save_file', argsMap);
   }
 

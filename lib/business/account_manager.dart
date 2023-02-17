@@ -33,7 +33,8 @@ class AccountManager extends ChangeNotifier {
   static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
 
-  static String walletsDirectory = LocalStorage().appDocumentsDir.path + "/wallets/";
+  static String walletsDirectory =
+      LocalStorage().appDocumentsDir.path + "/wallets/";
 
   factory AccountManager() {
     return _instance;
@@ -313,8 +314,7 @@ class AccountManager extends ChangeNotifier {
     account.wallet.drop();
 
     // Delete the BDK DB so it doesn't get confused on re-pair
-    final dir = Directory(walletsDirectory +
-        account.wallet.name);
+    final dir = Directory(walletsDirectory + account.wallet.name);
     dir.delete(recursive: true);
 
     accounts.remove(account);

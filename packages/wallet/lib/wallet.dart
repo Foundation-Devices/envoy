@@ -260,8 +260,7 @@ class Wallet {
   final Network network;
 
   @JsonKey(
-      defaultValue:
-      false) // Migration from time when all the Wallets were cold
+      defaultValue: false) // Migration from time when all the Wallets were cold
   final bool hot;
 
   List<Transaction> transactions = [];
@@ -328,8 +327,9 @@ class Wallet {
         .toDartString();
   }
 
-  Wallet(this.name, this.network, this.externalDescriptor,
-      this.internalDescriptor, {this.hot: false});
+  Wallet(
+      this.name, this.network, this.externalDescriptor, this.internalDescriptor,
+      {this.hot: false});
 
   init(String walletsDirectory) {
     _lib = load(_libName);
@@ -351,7 +351,8 @@ class Wallet {
   }
 
   Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
-      this.internalDescriptor, this._self, {this.hot: false});
+      this.internalDescriptor, this._self,
+      {this.hot: false});
 
   drop() {
     final rustFunction =
@@ -636,7 +637,8 @@ class Wallet {
         : wallet.internal_pub_descriptor.cast<Utf8>().toDartString();
 
     return Wallet.fromPointer(name, network, externalDescriptor,
-        internalDescriptor, wallet.bkd_wallet_ptr.cast(), hot: true);
+        internalDescriptor, wallet.bkd_wallet_ptr.cast(),
+        hot: true);
   }
 
   static String getSeedWords(List<int> binarySeed) {
