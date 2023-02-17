@@ -15,7 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get upgrade -y
     
 # Install only necessary packages for building and clear cache
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     postgresql \
     curl \
     build-essential \
