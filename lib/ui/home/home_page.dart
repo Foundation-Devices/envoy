@@ -146,6 +146,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       } else {
         _background = Container();
         _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
+        //reset right action
+        _rightAction = _toggleOptions;
       }
     });
   }
