@@ -610,7 +610,7 @@ class Wallet {
 
   static Wallet deriveWallet(
       String seed, String path, String directory, Network network,
-      {String? passphrase, bool private: false}) {
+      {String? passphrase, bool privateKey: false}) {
     final lib = load(_libName);
     final native = NativeLibrary(lib);
     var wallet = native.wallet_derive(
@@ -619,7 +619,7 @@ class Wallet {
         path.toNativeUtf8().cast(),
         directory.toNativeUtf8().cast(),
         network.index,
-        private);
+        privateKey);
 
     if (wallet.bkd_wallet_ptr == nullptr) {
       throwRustException(lib);
@@ -627,11 +627,11 @@ class Wallet {
 
     final name = wallet.name.cast<Utf8>().toDartString();
 
-    final externalDescriptor = private
+    final externalDescriptor = privateKey
         ? wallet.external_prv_descriptor.cast<Utf8>().toDartString()
         : wallet.external_pub_descriptor.cast<Utf8>().toDartString();
 
-    final internalDescriptor = private
+    final internalDescriptor = privateKey
         ? wallet.internal_prv_descriptor.cast<Utf8>().toDartString()
         : wallet.internal_pub_descriptor.cast<Utf8>().toDartString();
 

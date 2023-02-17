@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 import 'package:wallet/wallet.dart';
 import 'dart:math';
@@ -109,11 +110,16 @@ void main() async {
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, private: true);
+    var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true);
 
-    var address = await wallet.getAddress();
+    var address1 = await wallet1.getAddress();
+    expect(address1.contains("bc1"), true);
 
-    expect(address.contains("bc1"), true);
+    var wallet2 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true, passphrase: "yolo");
+
+    var address2 = await wallet2.getAddress();
+    expect(address2.contains("bc1"), true);
+    expect(address1 == address2, false);
   });
 
   test('Get derived testnet wallet address', () async {
@@ -124,7 +130,7 @@ void main() async {
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet, private: true);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet, privateKey: true);
 
     var address = await wallet.getAddress();
 
@@ -139,7 +145,7 @@ void main() async {
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, private: false);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: false);
     expect(wallet.internalDescriptor.contains("xpub"), true);
   });
 
@@ -151,7 +157,7 @@ void main() async {
 
     var walletsDir = docsDir.path + "/test_wallets/";
 
-    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, private: true);
+    var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet, privateKey: true);
     expect(wallet.internalDescriptor.contains("xprv"), true);
   });
 

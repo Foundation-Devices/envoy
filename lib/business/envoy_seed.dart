@@ -4,11 +4,18 @@
 
 import 'dart:math';
 import 'dart:io';
+import 'package:backup/backup.dart';
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:flutter/services.dart';
+import 'package:tor/tor.dart';
 
 import 'package:wallet/wallet.dart';
 
+import 'devices.dart';
+import 'fees.dart';
 import 'local_storage.dart';
+import 'notifications.dart';
 
 const String SEED_KEY = "seed";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
@@ -23,24 +30,57 @@ class EnvoySeed {
   // Checksum is first 4 bits of SHA-256 of 16 bytes
 
   static const _platform = MethodChannel('envoy');
+  static String encryptedBackupFilePath = LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
 
   Future generate() async {
     final randomSeed = Wallet.generateSeed(true);
-
-    await saveNonSecure(randomSeed, LOCAL_SECRET_FILE_NAME);
-    _platform.invokeMethod('data_changed');
-
-    await LocalStorage().saveSecure(SEED_KEY, randomSeed);
+    await store(randomSeed);
   }
 
-  Future create(List<String> seed, {String? passphrase}) async {
-    // Check if seed is valid
+  Future<bool> create(List<String> seedList, {String? passphrase}) async {
+    String seed = seedList.join(" ");
+    final path = "m/84'/0'/0'";
 
+    try {
+      var mainnet = Wallet.deriveWallet(seed, path, AccountManager.walletsDirectory, Network.Mainnet, privateKey: true, passphrase: passphrase);
+      var testnet = Wallet.deriveWallet(seed, path, AccountManager.walletsDirectory, Network.Testnet, privateKey: true, passphrase: passphrase);
 
-    //await saveNonSecure(randomSeed, LOCAL_SECRET_FILE_NAME);
-    //_platform.invokeMethod('data_changed');
+      AccountManager().addHotWalletAccount(mainnet);
+      AccountManager().addHotWalletAccount(testnet);
+    } on Exception catch (_) {
+      return false;
+    }
 
-    //await LocalStorage().saveSecure(SEED_KEY, randomSeed);
+    await store(seed);
+    return true;
+  }
+
+  Future<void> store(String seed) async {
+    await saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
+    _platform.invokeMethod('data_changed');
+    await LocalStorage().saveSecure(SEED_KEY, seed);
+  }
+
+  void backupData({bool offline: false}) {
+    List<String> keysToBackUp = [
+      Settings.SETTINGS_PREFS,
+      // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
+      // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
+      // ScvServer.SCV_CHALLENGE_PREFS,
+      Fees.FEE_RATE_PREFS,
+      AccountManager.ACCOUNTS_PREFS,
+      Notifications.NOTIFICATIONS_PREFS,
+      Devices.DEVICES_PREFS,
+    ];
+
+    Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean",
+        Settings().envoyServerAddress, Tor().port, path: offline ? encryptedBackupFilePath : null
+    );
+  }
+  
+  void saveOfflineData() {
+    var argsMap = <String, dynamic>{"from": encryptedBackupFilePath, "path": ""};
+    _platform.invokeMethod('save_file', argsMap);
   }
 
   Future<String?> restoreSecure() async {
@@ -51,8 +91,6 @@ class EnvoySeed {
     final seed = await LocalStorage().readSecure(SEED_KEY);
     return seed!;
   }
-
-  // TODO: a function to return a watch-only (temporary hot wallet to sign?)
 
   List<int> getRandomBytes(int len) {
     var rng = new Random.secure();
@@ -106,6 +144,4 @@ class EnvoySeed {
         int.parse(timestampString.replaceAll(".", "").substring(0, 13));
     return DateTime.fromMillisecondsSinceEpoch(timestamp);
   }
-
-  // TODO: function to spawn a wallet - what's the derivation path?
 }

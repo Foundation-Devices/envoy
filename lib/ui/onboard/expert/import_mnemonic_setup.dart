@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -116,11 +118,16 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                                 .manual_setup_import_12_word_seed_modify_seedword_1_2_CTA,
                             light: false,
                             onTap: () {
-                              // IGOR: validate and go forth
-                              if (!hasPassphrase) {
-                                print(currentWords);
-                              }
-                              //TODO: validate bip39
+                              EnvoySeed().create(currentWords, passphrase: passPhrase).then((success) {
+                                if (success) {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                                    return StorageSetupPage();
+                                  }));
+                                }
+                                else {
+                                 // TODO: Show a dialog of failure
+                                }
+                              });
                             }))
                   ],
                 ),

@@ -99,6 +99,23 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
+  Future<Account?> addHotWalletAccount(Wallet wallet) async {
+    // TODO: look & feel of hot wallet accounts
+    Account account = Account(
+        wallet,
+        "Hot Wallet",
+        "envoy", // Device code for wallets derived on phone
+        DateTime.now(),
+        0);
+
+    accounts.add(account);
+    storeAccounts();
+    notifyListeners();
+
+    syncAll();
+    return account;
+  }
+
   Future<Account?> addEnvoyAccount(CryptoRequest request) async {
     var hdkey = (request).objects[0] as CryptoHdKey;
 

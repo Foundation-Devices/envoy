@@ -29,7 +29,7 @@ class NotSupportedPlatform implements Exception {
 
 class Backup {
   static perform(
-      SharedPreferences prefs, List<String> keysToBackUp, String seedWords, String serverUrl, int proxyPort) {
+      SharedPreferences prefs, List<String> keysToBackUp, String seedWords, String serverUrl, int proxyPort, {String? path}) {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {

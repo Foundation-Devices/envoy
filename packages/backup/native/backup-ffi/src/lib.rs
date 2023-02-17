@@ -8,9 +8,10 @@ extern crate core;
 extern crate log;
 
 use std::ffi::{CStr, CString};
-use std::io;
+use std::{fs, io};
 use std::io::Read;
 use std::os::raw::c_char;
+use std::ptr::null;
 use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::ToHex;
 use serde::{Deserialize, Serialize};
@@ -107,6 +108,7 @@ pub unsafe extern "C" fn backup_perform(payload: BackupPayload,
                                         seed_words: *const c_char,
                                         server_url: *const c_char,
                                         proxy_port: i32,
+                                        path: *const c_char,
 ) -> *mut JoinHandle<()> {
 
     let mut backup_data: Vec<(&str, &str)> = vec![];
@@ -133,6 +135,18 @@ pub unsafe extern "C" fn backup_perform(payload: BackupPayload,
     let encrypted = encrypt_backup(backup_data, &password);
 
     let rt = RUNTIME.as_ref().unwrap();
+
+    if !path.is_null() {
+        // We are doing an offline backup, store the data at path
+        let path = CStr::from_ptr(path).to_str().unwrap();
+
+        let handle =  rt.spawn(async move {
+            tokio::fs::write(path, encrypted).await.unwrap()
+        });
+
+        let handle_box = Box::new(handle);
+        return Box::into_raw(handle_box);
+    }
 
     let handle = rt.spawn(async move {
         let (tx, mut rx): (Sender<u128>, Receiver<u128>) =

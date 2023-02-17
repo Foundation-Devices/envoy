@@ -21,6 +21,7 @@ import 'package:envoy/generated/l10n.dart';
 
 import '../../../business/connectivity_manager.dart';
 import '../../../business/devices.dart';
+import '../../../business/envoy_seed.dart';
 import '../../../business/notifications.dart';
 import '../../../business/updates_manager.dart';
 
@@ -115,20 +116,7 @@ class SettingsMenuWidget extends StatelessWidget {
                   MenuOption(
                     label: "Backup",
                     onTap: () {
-                      List<String> keysToBackUp = [
-                        Settings.SETTINGS_PREFS,
-                        // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
-                        // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
-                        // ScvServer.SCV_CHALLENGE_PREFS,
-                        Fees.FEE_RATE_PREFS,
-                        AccountManager.ACCOUNTS_PREFS,
-                        Notifications.NOTIFICATIONS_PREFS,
-                        Devices.DEVICES_PREFS,
-                      ];
-
-                      Backup.perform(LocalStorage().prefs, keysToBackUp, "copper december enlist body dove discover cross help evidence fall rich clean",
-                          Settings().envoyServerAddress, Tor().port
-                      );
+                      EnvoySeed().backupData();
                     },
                   ),
                 ]),
