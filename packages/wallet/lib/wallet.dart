@@ -638,7 +638,7 @@ class Wallet {
 
     return Wallet.fromPointer(name, network, externalDescriptor,
         internalDescriptor, wallet.bkd_wallet_ptr.cast(),
-        hot: true);
+        hot: privateKey);
   }
 
   static String getSeedWords(List<int> binarySeed) {

@@ -115,6 +115,10 @@ class Devices extends ChangeNotifier {
   }
 
   getDeviceName(String serialNumber) {
+    if (serialNumber == "envoy") {
+      return "Envoy";
+    }
+
     return devices.firstWhere((d) => d.serial == serialNumber).name;
   }
 }
