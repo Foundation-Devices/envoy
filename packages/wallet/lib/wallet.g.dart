@@ -32,6 +32,7 @@ Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       $enumDecodeNullable(_$NetworkEnumMap, json['network']) ?? Network.Mainnet,
       json['externalDescriptor'] as String,
       json['internalDescriptor'] as String,
+      hot: json['hot'] as bool? ?? false,
     )
       ..transactions = (json['transactions'] as List<dynamic>)
           .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
@@ -45,6 +46,7 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
       'externalDescriptor': instance.externalDescriptor,
       'internalDescriptor': instance.internalDescriptor,
       'network': _$NetworkEnumMap[instance.network],
+      'hot': instance.hot,
       'transactions': instance.transactions,
       'balance': instance.balance,
       'feeRateFast': instance.feeRateFast,
