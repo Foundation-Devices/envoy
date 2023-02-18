@@ -67,6 +67,17 @@ impl Into<Network> for NetworkType {
     }
 }
 
+impl Into<String> for NetworkType {
+    fn into(self) -> String {
+        match self {
+            NetworkType::Mainnet => "mainnet".to_string(),
+            NetworkType::Testnet => "testnet".to_string(),
+            NetworkType::Signet => "signet".to_string(),
+            NetworkType::Regtest => "regtest".to_string(),
+        }
+    }
+}
+
 #[repr(C)]
 pub struct Transaction {
     txid: *const c_char,
@@ -302,14 +313,16 @@ pub unsafe extern "C" fn wallet_derive(
     let internal_prv_descriptor = external_prv_descriptor.replace("/0/*", "/1/*");
 
     let xfp = &descriptor_prv[1..9];
+    let network_str: String = network.into();
 
-    let wallet_dir = format!("{data_dir}{xfp}");
+    let name = format!("{xfp}-{network_str}");
+    let wallet_dir = format!("{data_dir}{name}");
 
     let ptr = {
         if private {
             init(
                 network,
-                &*xfp,
+                &*name,
                 &*external_prv_descriptor,
                 &*internal_prv_descriptor,
                 &*wallet_dir,
@@ -317,7 +330,7 @@ pub unsafe extern "C" fn wallet_derive(
         } else {
             init(
                 network,
-                &*xfp,
+                &*name,
                 &*external_pub_descriptor,
                 &*internal_pub_descriptor,
                 &*wallet_dir,
@@ -326,7 +339,7 @@ pub unsafe extern "C" fn wallet_derive(
     };
 
     Wallet {
-        name: CString::new(xfp).unwrap().into_raw(),
+        name: CString::new(name).unwrap().into_raw(),
         network,
         external_pub_descriptor: CString::new(external_pub_descriptor).unwrap().into_raw(),
         internal_pub_descriptor: CString::new(internal_pub_descriptor).unwrap().into_raw(),

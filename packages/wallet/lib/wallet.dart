@@ -352,7 +352,9 @@ class Wallet {
 
   Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
       this.internalDescriptor, this._self,
-      {this.hot: false});
+      {this.hot: false, required DynamicLibrary lib}) {
+    _lib = lib;
+  }
 
   drop() {
     final rustFunction =
@@ -638,7 +640,7 @@ class Wallet {
 
     return Wallet.fromPointer(name, network, externalDescriptor,
         internalDescriptor, wallet.bkd_wallet_ptr.cast(),
-        hot: privateKey);
+        hot: privateKey, lib: lib);
   }
 
   static String getSeedWords(List<int> binarySeed) {
