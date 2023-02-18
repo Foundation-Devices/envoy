@@ -13,12 +13,9 @@ use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::io::Read;
 use std::os::raw::c_char;
-use std::ptr::null;
-use std::{fs, io};
+use std::io;
 
-// TODO: Some other way to do this?
-use curve25519_parser::parse_openssl_25519_privkey;
-use curve25519_parser::{parse_openssl_25519_pubkey, StaticSecret};
+use curve25519_parser::StaticSecret;
 
 use mla::config::ArchiveWriterConfig;
 use mla::ArchiveWriter;
@@ -30,7 +27,6 @@ use crate::bitcoin::hashes::Hash;
 use bdk::keys::bip39::Mnemonic;
 use effort::Solution;
 use lazy_static::lazy_static;
-use tokio::join;
 use tokio::runtime::{Builder, Runtime};
 use tokio::sync::broadcast::{Receiver, Sender};
 use tokio::task::JoinHandle;

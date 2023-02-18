@@ -28,7 +28,7 @@ use std::str::FromStr;
 use bdk::bitcoin::consensus::encode::deserialize;
 use bdk::bitcoin::consensus::encode::serialize;
 
-use std::ptr::{null, null_mut};
+use std::ptr::null_mut;
 
 use crate::electrum_client::Client;
 use crate::miniscript::descriptor::DescriptorSecretKey;
@@ -643,7 +643,21 @@ pub unsafe extern "C" fn wallet_create_psbt(
         .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
 
     match builder.finish() {
-        Ok((psbt, _)) => psbt_extract_details(&wallet, &psbt),
+        Ok((mut psbt, _)) => {
+            let sign_options = SignOptions {
+                trust_witness_utxo: true,
+                ..Default::default()
+            };
+
+            match wallet.sign(&mut psbt, sign_options) {
+                Ok(_) => {
+                    psbt_extract_details(&wallet, &psbt)
+                }
+                Err(_) => {
+                    psbt_extract_details(&wallet, &psbt)
+                }
+            }
+        },
         Err(e) => {
             update_last_error(e);
             return error_return;
