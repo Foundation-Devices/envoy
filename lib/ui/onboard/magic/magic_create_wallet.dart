@@ -50,13 +50,13 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
 
   void _initiateWalletCreate() async {
     // TODO: sync this to actual steps in creation
-    EnvoySeed().generate().then((success) {
-      if (success) {
-        //Finish wallet creation
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (c) => MagicRecoveryInfo()));
-      }
-    });
+    bool success = await EnvoySeed().generate();
+    if (success) {
+      await showDialog(
+          context: context, builder: (context) => MagicRecoveryInfo());
+      // await Navigator.of(context)
+      //     .push(MaterialPageRoute(builder: (c) => MagicRecoveryInfo()));
+    }
 
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -73,6 +73,10 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
     _updateProgress();
 
     await Future.delayed(Duration(seconds: 2));
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return WalletSetupFinish();
+    }));
   }
 
   @override
@@ -220,10 +224,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return WalletSetupFinish();
-                      }));
+                      Navigator.pop(context);
                     },
                   ),
                 ),
