@@ -651,16 +651,12 @@ pub unsafe extern "C" fn wallet_create_psbt(
 
             // Always try signing
             let _finalized = match wallet.sign(&mut psbt, sign_options) {
-                Ok(f) => {
-                    f
-                }
-                Err(_) => {
-                    false
-                }
+                Ok(f) => f,
+                Err(_) => false,
             };
 
             psbt_extract_details(&wallet, &psbt)
-        },
+        }
         Err(e) => {
             update_last_error(e);
             return error_return;

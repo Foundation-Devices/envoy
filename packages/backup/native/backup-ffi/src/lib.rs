@@ -11,9 +11,9 @@ use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::ToHex;
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
+use std::io;
 use std::io::Read;
 use std::os::raw::c_char;
-use std::io;
 
 use curve25519_parser::StaticSecret;
 

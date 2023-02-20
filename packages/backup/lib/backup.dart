@@ -60,7 +60,30 @@ class Backup {
     payload.ref.data = nativeData;
 
     var lib = NativeLibrary(load("backup_ffi"));
-    lib.backup_perform(payload.ref, seedWords.toNativeUtf8().cast<Char>(),
-        serverUrl.toNativeUtf8().cast<Char>(), proxyPort, path != null ? path.toNativeUtf8().cast() : nullptr);
+    lib.backup_perform(
+        payload.ref,
+        seedWords.toNativeUtf8().cast<Char>(),
+        serverUrl.toNativeUtf8().cast<Char>(),
+        proxyPort,
+        path != null ? path.toNativeUtf8().cast() : nullptr);
+  }
+
+  static restore(SharedPreferences prefs, String seedWords, String serverUrl,
+      int proxyPort) {
+    var lib = NativeLibrary(load("backup_ffi"));
+    var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
+        serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
+
+    Map<String, String> backupData = {};
+    for (var i = 0; i < payload.keys_nr; i++) {
+      var key = payload.data.elementAt(i).cast<Utf8>().toDartString();
+      var value = payload.data.elementAt(i + 1).cast<Utf8>().toDartString();
+      backupData[key] = value;
+      i += 2;
+    }
+
+    backupData.forEach((key, value) {
+      prefs.setString(key, value);
+    });
   }
 }

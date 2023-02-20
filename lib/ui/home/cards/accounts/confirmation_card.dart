@@ -152,13 +152,8 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                     navigationCallback: widget.navigator,
                   ));
                 } else {
-                  broadcast(
-                      _boostEnabled
-                          ? _currentPsbtBoost
-                          : _currentPsbt,
-                      context,
-                      widget.account.wallet,
-                      widget.navigator!);
+                  broadcast(_boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                      context, widget.account.wallet, widget.navigator!);
                 }
               },
               label: S().envoy_confirmation_confirm))
