@@ -5,11 +5,12 @@
 import 'package:test/test.dart';
 import 'package:wallet/wallet.dart';
 import 'dart:math';
-import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 void main() async {
+  Directory dir = Directory.current;
+
   test('Get new address', () async {
-    var dir = await getApplicationDocumentsDirectory();
     var wallet = Wallet(
         Random().nextInt(9999).toString(),
         Network.Testnet,
@@ -25,7 +26,6 @@ void main() async {
   });
 
   test('Decode PSBT', () async {
-    var dir = await getApplicationDocumentsDirectory();
     var wallet = Wallet(
         Random().nextInt(9999).toString(),
         Network.Testnet,
@@ -54,7 +54,6 @@ void main() async {
   });
 
   test('Validate address', () async {
-    var dir = await getApplicationDocumentsDirectory();
     var wallet = Wallet(
         Random().nextInt(9999).toString(),
         Network.Testnet,
@@ -106,11 +105,8 @@ void main() async {
         "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
-    var docsDir = await getApplicationDocumentsDirectory();
-    var walletsDir = docsDir.path +
-        "/test_wallets_" +
-        Random().nextInt(9999).toString() +
-        "/";
+    var walletsDir =
+        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true);
@@ -131,11 +127,8 @@ void main() async {
         "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
-    var docsDir = await getApplicationDocumentsDirectory();
-    var walletsDir = docsDir.path +
-        "/test_wallets_" +
-        Random().nextInt(9999).toString() +
-        "/";
+    var walletsDir =
+        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet,
         privateKey: true);
@@ -150,11 +143,8 @@ void main() async {
         "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
-    var docsDir = await getApplicationDocumentsDirectory();
-    var walletsDir = docsDir.path +
-        "/test_wallets_" +
-        Random().nextInt(9999).toString() +
-        "/";
+    var walletsDir =
+        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: false);
@@ -166,11 +156,8 @@ void main() async {
         "copper december enlist body dove discover cross help evidence fall rich clean";
     final path = "m/84'/0'/0'";
 
-    var docsDir = await getApplicationDocumentsDirectory();
-    var walletsDir = docsDir.path +
-        "/test_wallets_" +
-        Random().nextInt(9999).toString() +
-        "/";
+    var walletsDir =
+        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true);
