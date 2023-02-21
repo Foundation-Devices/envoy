@@ -1,4 +1,5 @@
 docker_image := 'envoy'
+docker_image_linux := 'envoy_linux'
 
 docker-build:
     docker build -t {{docker_image}} .
@@ -20,20 +21,23 @@ docker-build-android-sign: docker-build
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
         && cp /root/build/app/outputs/bundle/release/app-release.aab /release"
 
-docker-test: docker-build
-    docker run -t {{docker_image}} flutter test
+docker-build-linux:
+    docker build -t {{docker_image_linux}} . -f linux.Dockerfile
 
-docker-test-integration: docker-build
-    docker run -t {{docker_image}} bash integration_test_headless.sh
+docker-test: docker-build-linux
+    docker run -t {{docker_image_linux}} flutter test
 
-docker-run: docker-build
+docker-test-integration: docker-build-linux
+    docker run -t {{docker_image_linux}} bash integration_test_headless.sh
+
+docker-run: docker-build-linux
     xhost +local:root
     docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
-     -v $HOME/.Xauthority:/home/root/.Xauthority -t {{docker_image}} flutter run -d linux
+     -v $HOME/.Xauthority:/home/root/.Xauthority -t {{docker_image_linux}} flutter run -d linux
     xhost -local:root
 
-docker-console:
-    docker run -it {{docker_image}} bash
+docker-console: docker-build-linux
+    docker run -it {{docker_image_linux}} bash
 
 # run the APK through SHA256
 verify-sha sha:
