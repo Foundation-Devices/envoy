@@ -107,8 +107,7 @@ void main() async {
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
-
-    var walletsDir = docsDir.path + "/test_wallets/";
+    var walletsDir = docsDir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true);
@@ -130,8 +129,7 @@ void main() async {
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
-
-    var walletsDir = docsDir.path + "/test_wallets/";
+    var walletsDir = docsDir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet,
         privateKey: true);
@@ -147,8 +145,7 @@ void main() async {
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
-
-    var walletsDir = docsDir.path + "/test_wallets/";
+    var walletsDir = docsDir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: false);
@@ -161,8 +158,7 @@ void main() async {
     final path = "m/84'/0'/0'";
 
     var docsDir = await getApplicationDocumentsDirectory();
-
-    var walletsDir = docsDir.path + "/test_wallets/";
+    var walletsDir = docsDir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true);
