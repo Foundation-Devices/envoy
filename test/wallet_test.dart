@@ -87,8 +87,8 @@ void main() async {
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)",
         true);
 
-    expect(tx,
-        "f1984502c0902b103c53115d733d550c401907ac98db38ff317b6e26ae303605");
+    expect(
+        tx, "f1984502c0902b103c53115d733d550c401907ac98db38ff317b6e26ae303605");
   });
 
   test('Generate seed', () {
