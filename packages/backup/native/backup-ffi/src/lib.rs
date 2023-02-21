@@ -330,14 +330,13 @@ fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tokio::runtime::Runtime;
     use tokio::sync::broadcast::{Receiver, Sender};
 
     #[tokio::test]
     async fn test_get_and_solve_challenge() {
-        let server_url = "https://envoy.staging.foundationdevices.dev";
+        let server_url = "https://envoy.foundationdevices.com";
         let challenge = get_challenge_async(server_url, -1).await;
-        let (tx, mut rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
+        let (tx, _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 
         let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
 
@@ -350,11 +349,6 @@ mod tests {
             vec![0, 1, 2],
         )
         .await;
-    }
-
-    #[test]
-    fn test_get_challenge() {
-        get_challenge("https://envoy.staging.foundationdevices.dev", -1);
     }
 
     #[test]
