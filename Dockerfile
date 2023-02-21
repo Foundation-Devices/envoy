@@ -52,6 +52,7 @@ RUN apt-get install -y --no-install-recommends \
     libstdc++-12-dev \
     llvm-14 \
     libclang1-14 \
+    libtool \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK
