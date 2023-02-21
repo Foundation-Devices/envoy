@@ -30,7 +30,7 @@ class _MagicSetupState extends State<MagicSetup> {
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 12),
             child: TextButton(
-              child: Text(S().magic_setup_generate_wallet_skip,
+              child: Text("MISSING", //S().magic_setup_generate_wallet_skip,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -55,13 +55,14 @@ class _MagicSetupState extends State<MagicSetup> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        S().magic_setup_flow_tutorial_heading,
+                        "MISSING", //S().magic_setup_flow_tutorial_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
                       OnboardingHelperText(
-                        text: S().magic_setup_flow_tutorial_subheading,
+                        text:
+                            "MISSING", //S().magic_setup_flow_tutorial_subheading,
                         onTap: () {
                           // Surface the explainers
                         },
@@ -80,7 +81,8 @@ class _MagicSetupState extends State<MagicSetup> {
                     Container(
                       width: double.infinity,
                       child: TextButton(
-                          child: Text(S().magic_setup_flow_tutorial_CTA_2,
+                          child: Text(
+                              "MISSING", //S().magic_setup_flow_tutorial_CTA_2,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2
@@ -94,7 +96,7 @@ class _MagicSetupState extends State<MagicSetup> {
                     ),
                     OnboardingButton(
                         light: false,
-                        label: S().magic_setup_flow_tutorial_CTA_1,
+                        label: "MISSING", //S().magic_setup_flow_tutorial_CTA_1,
                         onTap: () {
                           showCreateWarning(context);
                         }),
@@ -133,14 +135,14 @@ class _MagicSetupState extends State<MagicSetup> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        S().magic_setup_generate_wallet_subheading,
+                        "MISSING", //S().magic_setup_generate_wallet_subheading,
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ],
                 )),
                 OnboardingButton(
-                    label: S().magic_setup_generate_wallet_CTA,
+                    label: "MISSING", //S().magic_setup_generate_wallet_CTA,
                     onTap: () async {
                       Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(

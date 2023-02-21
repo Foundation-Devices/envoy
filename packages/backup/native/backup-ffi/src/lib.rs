@@ -11,9 +11,9 @@ use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::ToHex;
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
-use std::io;
 use std::io::Read;
 use std::os::raw::c_char;
+use std::{io, ptr};
 
 use curve25519_parser::StaticSecret;
 
@@ -25,7 +25,6 @@ use mla::ArchiveReader;
 
 use crate::bitcoin::hashes::Hash;
 use bdk::keys::bip39::Mnemonic;
-use effort::Solution;
 use lazy_static::lazy_static;
 use tokio::runtime::{Builder, Runtime};
 use tokio::sync::broadcast::{Receiver, Sender};
@@ -49,7 +48,7 @@ macro_rules! unwrap_or_return {
         match $a {
             Ok(x) => x,
             Err(e) => {
-                update_last_error(e);
+                error::update_last_error(e);
                 return $b;
             }
         }
@@ -118,7 +117,7 @@ pub unsafe extern "C" fn backup_perform(
         backup_data.push((key, value));
     }
 
-    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), ptr::null_mut());
 
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
 
@@ -140,7 +139,7 @@ pub unsafe extern "C" fn backup_perform(
     }
 
     let handle = rt.spawn(async move {
-        let (tx, mut rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
+        let (tx, mut _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 
         let challenge = get_challenge_async(server_url, proxy_port).await;
         let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
@@ -187,10 +186,6 @@ pub unsafe extern "C" fn backup_get(
 
     let data = decrypt_backup(response.backup.into(), password);
 
-    //let ret: *const *const c_char;
-
-    //let (one, two): (Vec<String>, Vec<String>) = data.iter().unzip();
-
     let mut ret = vec![];
     for (k, v) in data.iter() {
         ret.push(k.as_ptr() as *const c_char);
@@ -213,7 +208,6 @@ fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
     config.add_public_keys(&vec![secret.into()]);
     {
         // Create the Writer
-
         let mut mla = ArchiveWriter::from_config(&mut buf, config).unwrap();
 
         // Add a file
@@ -238,27 +232,7 @@ fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> 
     let buf = io::Cursor::new(data);
 
     let mut mla_read = ArchiveReader::from_config(buf, config).unwrap();
-
-    /*    // Get a file
-    let mut file = mla_read
-        .get_file("simple".to_string())
-        .unwrap() // An error can be raised (I/O, decryption, etc.)
-        .unwrap(); // Option(file), as the file might not exist in the archive
-
-    // Get back its filename, size, and data
-    println!("{} ({} bytes)", file.filename, file.size);*/
-
-    //let mut output = Vec::new();
-    //std::io::copy(&mut file.data, &mut output).unwrap();
-
-    // Get back the list of files in the archive:
-    // for fname in mla_read.list_files().unwrap() {
-    //     println!("{}", fname);
-    // }
-
     let files: Vec<String> = mla_read.list_files().unwrap().cloned().collect();
-
-    //let mut file = mla_read.get_file("what".to_string()).unwrap().unwrap().data;
 
     files
         .iter()
@@ -273,11 +247,9 @@ fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> 
             (name.to_owned(), content)
         })
         .collect()
-
-    //vec![("".to_owned(), "".to_owned())]
 }
 
-fn get_challenge(server_url: &str, proxy_port: i32) -> ChallengeResponse {
+fn _get_challenge(server_url: &str, proxy_port: i32) -> ChallengeResponse {
     let client = if proxy_port > 0 {
         let proxy = reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &proxy_port.to_string())
             .unwrap();
@@ -312,7 +284,7 @@ async fn post_backup_async(
     server_url: &str,
     proxy_port: i32,
     server_response: ChallengeResponse,
-    solution: Solution,
+    solution: effort::Solution,
     hash: String,
     payload: Vec<u8>,
 ) {
@@ -337,7 +309,7 @@ async fn post_backup_async(
 async fn get_backup_async(server_url: &str, proxy_port: i32, hash: String) -> GetBackupResponse {
     let client = get_reqwest_client(proxy_port);
     let response = client
-        .get(server_url.to_owned() + "/backup?key={hash}")
+        .get(server_url.to_owned() + "/backup?key=" + &*hash)
         .send()
         .await
         .unwrap();

@@ -4365,40 +4365,80 @@ class S {
   }
 
   /// `Continue`
-  String get learn_more_about_data_secured_1_4_CTA {
+  String get learn_more_about_data_secured_1_4_android_CTA {
     return Intl.message(
       'Continue',
-      name: 'learn_more_about_data_secured_1_4_CTA',
+      name: 'learn_more_about_data_secured_1_4_android_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `How Your Wallet is Secured`
-  String get learn_more_about_data_secured_1_4_heading {
+  String get learn_more_about_data_secured_1_4_android_heading {
     return Intl.message(
       'How Your Wallet is Secured',
-      name: 'learn_more_about_data_secured_1_4_heading',
+      name: 'learn_more_about_data_secured_1_4_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  String get learn_more_about_data_secured_1_4_android_subheading {
+    return Intl.message(
+      'Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      name: 'learn_more_about_data_secured_1_4_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get learn_more_about_data_secured_1_4_iOS_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'learn_more_about_data_secured_1_4_iOS_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Wallet is Secured`
+  String get learn_more_about_data_secured_1_4_iOS_heading {
+    return Intl.message(
+      'How Your Wallet is Secured',
+      name: 'learn_more_about_data_secured_1_4_iOS_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get learn_more_about_data_secured_1_4_skip {
+  String get learn_more_about_data_secured_1_4_iOS_skip {
     return Intl.message(
       'Skip',
-      name: 'learn_more_about_data_secured_1_4_skip',
+      name: 'learn_more_about_data_secured_1_4_iOS_skip',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
-  String get learn_more_about_data_secured_1_4_subheading {
+  String get learn_more_about_data_secured_1_4_iOS_subheading {
     return Intl.message(
       'Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
-      name: 'learn_more_about_data_secured_1_4_subheading',
+      name: 'learn_more_about_data_secured_1_4_iOS_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get learn_more_about_data_secured_2_4_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'learn_more_about_data_secured_2_4_CTA',
       desc: '',
       args: [],
     );
@@ -4435,40 +4475,70 @@ class S {
   }
 
   /// `Continue`
-  String get learn_more_about_data_secured_3_4_CTA {
+  String get learn_more_about_data_secured_3_4_android_CTA {
     return Intl.message(
       'Continue',
-      name: 'learn_more_about_data_secured_3_4_CTA',
+      name: 'learn_more_about_data_secured_3_4_android_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `How Your Data is Secured`
-  String get learn_more_about_data_secured_3_4_heading {
+  String get learn_more_about_data_secured_3_4_android_heading {
     return Intl.message(
       'How Your Data is Secured',
-      name: 'learn_more_about_data_secured_3_4_heading',
+      name: 'learn_more_about_data_secured_3_4_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your wallet, simply log into your Google account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your Google account with a strong password and 2FA.`
+  String get learn_more_about_data_secured_3_4_android_subheading {
+    return Intl.message(
+      'To recover your wallet, simply log into your Google account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your Google account with a strong password and 2FA.',
+      name: 'learn_more_about_data_secured_3_4_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get learn_more_about_data_secured_3_4_iOS_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'learn_more_about_data_secured_3_4_iOS_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get learn_more_about_data_secured_3_4_iOS_heading {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'learn_more_about_data_secured_3_4_iOS_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get learn_more_about_data_secured_3_4_skip {
+  String get learn_more_about_data_secured_3_4_iOS_skip {
     return Intl.message(
       'Skip',
-      name: 'learn_more_about_data_secured_3_4_skip',
+      name: 'learn_more_about_data_secured_3_4_iOS_skip',
       desc: '',
       args: [],
     );
   }
 
   /// `To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.`
-  String get learn_more_about_data_secured_3_4_subheading {
+  String get learn_more_about_data_secured_3_4_iOS_subheading {
     return Intl.message(
       'To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.',
-      name: 'learn_more_about_data_secured_3_4_subheading',
+      name: 'learn_more_about_data_secured_3_4_iOS_subheading',
       desc: '',
       args: [],
     );
@@ -4509,6 +4579,16 @@ class S {
     return Intl.message(
       'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
       name: 'learn_more_about_data_secured_4_4_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery Unsuccessful`
+  String get magic_recovery_fail_android {
+    return Intl.message(
+      'Recovery Unsuccessful',
+      name: 'magic_recovery_fail_android',
       desc: '',
       args: [],
     );
@@ -4555,10 +4635,20 @@ class S {
   }
 
   /// `Recovering your Envoy Wallet`
-  String get magic_recovery_flow_done_heading {
+  String get magic_recovery_flow_done_iOS_heading {
     return Intl.message(
       'Recovering your Envoy Wallet',
-      name: 'magic_recovery_flow_done_heading',
+      name: 'magic_recovery_flow_done_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get magic_recovery_flow_done_iOS_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'magic_recovery_flow_done_iOS_subheading',
       desc: '',
       args: [],
     );
@@ -4594,16 +4684,6 @@ class S {
     );
   }
 
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
-  String get magic_recovery_flow_done_subheading {
-    return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
-      name: 'magic_recovery_flow_done_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Recovering your Envoy wallet`
   String get magic_recovery_flow_heading {
     return Intl.message(
@@ -4619,36 +4699,6 @@ class S {
     return Intl.message(
       'Recovering your Envoy Wallet',
       name: 'magic_recovery_flow_retry_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sign into iCloud and install Envoy on the new device.`
-  String get magic_recovery_flow_retry_2_step_1 {
-    return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
-      name: 'magic_recovery_flow_retry_2_step_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
-  String get magic_recovery_flow_retry_2_step_2 {
-    return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
-      name: 'magic_recovery_flow_retry_2_step_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
-  String get magic_recovery_flow_retry_2_step_3 {
-    return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
-      name: 'magic_recovery_flow_retry_2_step_3',
       desc: '',
       args: [],
     );
@@ -4674,80 +4724,10 @@ class S {
     );
   }
 
-  /// `Sign into iCloud and install Envoy on the new device.`
-  String get magic_recovery_flow_retry_step_1 {
-    return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
-      name: 'magic_recovery_flow_retry_step_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
-  String get magic_recovery_flow_retry_step_2 {
-    return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
-      name: 'magic_recovery_flow_retry_step_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
-  String get magic_recovery_flow_retry_step_3 {
-    return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
-      name: 'magic_recovery_flow_retry_step_3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
-  String get magic_recovery_flow_retry_subheading {
-    return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
-      name: 'magic_recovery_flow_retry_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sign into iCloud and install Envoy on the new device.`
-  String get magic_recovery_flow_step_1 {
-    return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
-      name: 'magic_recovery_flow_step_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
-  String get magic_recovery_flow_step_2 {
-    return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
-      name: 'magic_recovery_flow_step_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
-  String get magic_recovery_flow_step_3 {
-    return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
-      name: 'magic_recovery_flow_step_3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  /// `Envoy is recovering your wallet from your (cloud/drive).`
   String get magic_recovery_flow_subheading {
     return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      'Envoy is recovering your wallet from your (cloud/drive).',
       name: 'magic_recovery_flow_subheading',
       desc: '',
       args: [],
@@ -4835,26 +4815,6 @@ class S {
   }
 
   /// `Encrypting Your Backup`
-  String get magic_setup_encrypting_backup_1_5_heading {
-    return Intl.message(
-      'Encrypting Your Backup',
-      name: 'magic_setup_encrypting_backup_1_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
-  String get magic_setup_encrypting_backup_1_5_subheading {
-    return Intl.message(
-      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
-      name: 'magic_setup_encrypting_backup_1_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Encrypting Your Backup`
   String get magic_setup_encrypting_backup_2_5_heading {
     return Intl.message(
       'Encrypting Your Backup',
@@ -4934,21 +4894,21 @@ class S {
     );
   }
 
-  /// `Creating Your Envoy Key`
-  String get magic_setup_envoy_key_creation_1_5_heading {
+  /// `Encrypting Your Backup`
+  String get magic_setup_encrypting_backup_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
-      name: 'magic_setup_envoy_key_creation_1_5_heading',
+      'Encrypting Your Backup',
+      name: 'magic_setup_encrypting_backup_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
-  String get magic_setup_envoy_key_creation_1_5_subheading {
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
+  String get magic_setup_encrypting_backup_subheading {
     return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
-      name: 'magic_setup_envoy_key_creation_1_5_subheading',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
+      name: 'magic_setup_encrypting_backup_subheading',
       desc: '',
       args: [],
     );
@@ -5034,81 +4994,171 @@ class S {
     );
   }
 
+  /// `Creating Your Envoy Key`
+  String get magic_setup_envoy_key_creation_iOS_heading {
+    return Intl.message(
+      'Creating Your Envoy Key',
+      name: 'magic_setup_envoy_key_creation_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
+  String get magic_setup_envoy_key_creation_iOS_subheading {
+    return Intl.message(
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
+      name: 'magic_setup_envoy_key_creation_iOS_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create New Wallet`
-  String get magic_setup_flow_tutorial_CTA_1 {
+  String get magic_setup_flow_tutorial_android_CTA1 {
     return Intl.message(
       'Create New Wallet',
-      name: 'magic_setup_flow_tutorial_CTA_1',
+      name: 'magic_setup_flow_tutorial_android_CTA1',
       desc: '',
       args: [],
     );
   }
 
   /// `Recover Envoy Wallet`
-  String get magic_setup_flow_tutorial_CTA_2 {
+  String get magic_setup_flow_tutorial_android_CTA2 {
     return Intl.message(
       'Recover Envoy Wallet',
-      name: 'magic_setup_flow_tutorial_CTA_2',
+      name: 'magic_setup_flow_tutorial_android_CTA2',
       desc: '',
       args: [],
     );
   }
 
   /// `Set Up Your Wallet`
-  String get magic_setup_flow_tutorial_heading {
+  String get magic_setup_flow_tutorial_android_heading {
     return Intl.message(
       'Set Up Your Wallet',
-      name: 'magic_setup_flow_tutorial_heading',
+      name: 'magic_setup_flow_tutorial_android_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get magic_setup_flow_tutorial_skip {
+  String get magic_setup_flow_tutorial_android_skip {
     return Intl.message(
       'Skip',
-      name: 'magic_setup_flow_tutorial_skip',
+      name: 'magic_setup_flow_tutorial_android_skip',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  {{Learn more.}}`
-  String get magic_setup_flow_tutorial_subheading {
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get magic_setup_flow_tutorial_android_subheading {
     return Intl.message(
-      'Envoy Wallet securely and automatically backs up your wallet to iCloud Keychain.  {{Learn more.}}',
-      name: 'magic_setup_flow_tutorial_subheading',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'magic_setup_flow_tutorial_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Wallet`
+  String get magic_setup_flow_tutorial_iOS_CTA_1 {
+    return Intl.message(
+      'Create New Wallet',
+      name: 'magic_setup_flow_tutorial_iOS_CTA_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get magic_setup_flow_tutorial_iOS_CTA_2 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'magic_setup_flow_tutorial_iOS_CTA_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Wallet Setup`
+  String get magic_setup_flow_tutorial_iOS_heading {
+    return Intl.message(
+      'Envoy Wallet Setup',
+      name: 'magic_setup_flow_tutorial_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get magic_setup_flow_tutorial_iOS_skip {
+    return Intl.message(
+      'Skip',
+      name: 'magic_setup_flow_tutorial_iOS_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get magic_setup_flow_tutorial_iOS_subheading {
+    return Intl.message(
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'magic_setup_flow_tutorial_iOS_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `Continue`
-  String get magic_setup_generate_wallet_CTA {
+  String get magic_setup_generate_wallet_android_CTA {
     return Intl.message(
       'Continue',
-      name: 'magic_setup_generate_wallet_CTA',
+      name: 'magic_setup_generate_wallet_android_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.`
+  String get magic_setup_generate_wallet_android_heading {
+    return Intl.message(
+      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.',
+      name: 'magic_setup_generate_wallet_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get magic_setup_generate_wallet_iOS_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'magic_setup_generate_wallet_iOS_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get magic_setup_generate_wallet_skip {
+  String get magic_setup_generate_wallet_iOS_skip {
     return Intl.message(
       'Skip',
-      name: 'magic_setup_generate_wallet_skip',
+      name: 'magic_setup_generate_wallet_iOS_skip',
       desc: '',
       args: [],
     );
   }
 
   /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
-  String get magic_setup_generate_wallet_subheading {
+  String get magic_setup_generate_wallet_iOS_subheading {
     return Intl.message(
       'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
-      name: 'magic_setup_generate_wallet_subheading',
+      name: 'magic_setup_generate_wallet_iOS_subheading',
       desc: '',
       args: [],
     );
@@ -5144,31 +5194,31 @@ class S {
     );
   }
 
-  /// `Continue below to import an existing 12 or 24 word seed.\n\nYou’ll have the option to apply a passphrase as well.`
+  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.`
   String get magic_setup_import_seed_subheading {
     return Intl.message(
-      'Continue below to import an existing 12 or 24 word seed.\n\nYou’ll have the option to apply a passphrase as well.',
+      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.',
       name: 'magic_setup_import_seed_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Uploading Encrypted Backup`
-  String get magic_setup_sending_backup_to_envoy_server_1_5_heading {
+  /// `Creating Your Envoy Key`
+  String get magic_setup_key_creaton_android_heading {
     return Intl.message(
-      'Uploading Encrypted Backup',
-      name: 'magic_setup_sending_backup_to_envoy_server_1_5_heading',
+      'Creating Your Envoy Key',
+      name: 'magic_setup_key_creaton_android_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
-  String get magic_setup_sending_backup_to_envoy_server_1_5_subheading {
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Google Drive.\n\nRemember to always secure your Google account with a strong password and 2FA.`
+  String get magic_setup_key_creaton_android_subheading {
     return Intl.message(
-      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
-      name: 'magic_setup_sending_backup_to_envoy_server_1_5_subheading',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Google Drive.\n\nRemember to always secure your Google account with a strong password and 2FA.',
+      name: 'magic_setup_key_creaton_android_subheading',
       desc: '',
       args: [],
     );
@@ -5249,6 +5299,26 @@ class S {
     return Intl.message(
       'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_sending_backup_to_envoy_server_5_5_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uploading Encrypted Backup`
+  String get magic_setup_sending_backup_to_envoy_server_heading {
+    return Intl.message(
+      'Uploading Encrypted Backup',
+      name: 'magic_setup_sending_backup_to_envoy_server_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
+  String get magic_setup_sending_backup_to_envoy_server_subheading {
+    return Intl.message(
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
+      name: 'magic_setup_sending_backup_to_envoy_server_subheading',
       desc: '',
       args: [],
     );
@@ -5344,10 +5414,10 @@ class S {
     );
   }
 
-  /// `Passphrases are case and space sensitive. Enter with extreme care.`
+  /// `Please carefully re-enter your passphrase.`
   String get manual_setup_12_word_seed_verify_passphrase_subheading {
     return Intl.message(
-      'Passphrases are case and space sensitive. Enter with extreme care.',
+      'Please carefully re-enter your passphrase.',
       name: 'manual_setup_12_word_seed_verify_passphrase_subheading',
       desc: '',
       args: [],
@@ -5454,10 +5524,10 @@ class S {
     );
   }
 
-  /// `Set Up Your Wallet`
+  /// `Manual Seed Setup`
   String get manual_setup_flow_tutorial_heading {
     return Intl.message(
-      'Set Up Your Wallet',
+      'Manual Seed Setup',
       name: 'manual_setup_flow_tutorial_heading',
       desc: '',
       args: [],
@@ -5474,10 +5544,10 @@ class S {
     );
   }
 
-  /// `Continue below to import an existing seed or create a new seed.`
+  /// `If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used.`
   String get manual_setup_flow_tutorial_subheading {
     return Intl.message(
-      'Continue below to import an existing seed or create a new seed.',
+      'If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used.',
       name: 'manual_setup_flow_tutorial_subheading',
       desc: '',
       args: [],
@@ -6904,61 +6974,121 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get recovery_scenario_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'recovery_scenario_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How to Recover?`
-  String get recovery_scenario_heading {
-    return Intl.message(
-      'How to Recover?',
-      name: 'recovery_scenario_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sign into iCloud and restore your iCloud backup`
-  String get recovery_scenario_step_1 {
-    return Intl.message(
-      'Sign into iCloud and restore your iCloud backup',
-      name: 'recovery_scenario_step_1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Install Envoy and tap “Recover Envoy Wallet”`
-  String get recovery_scenario_step_2 {
+  String get recovery_scenario_android_2_3 {
     return Intl.message(
       'Install Envoy and tap “Recover Envoy Wallet”',
-      name: 'recovery_scenario_step_2',
+      name: 'recovery_scenario_android_2_3',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy will then automatically restore your existing Envoy wallet`
-  String get recovery_scenario_step_3 {
+  String get recovery_scenario_android_3_3 {
     return Intl.message(
       'Envoy will then automatically restore your existing Envoy wallet',
-      name: 'recovery_scenario_step_3',
+      name: 'recovery_scenario_android_3_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get recovery_scenario_android_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'recovery_scenario_android_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How to Recover?`
+  String get recovery_scenario_android_heading {
+    return Intl.message(
+      'How to Recover?',
+      name: 'recovery_scenario_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into Google and restore your  backup data`
+  String get recovery_scenario_android_recover_1_3 {
+    return Intl.message(
+      'Sign into Google and restore your  backup data',
+      name: 'recovery_scenario_android_recover_1_3',
       desc: '',
       args: [],
     );
   }
 
   /// `To recover your Envoy wallet, follow these simple instructions.`
-  String get recovery_scenario_subheading {
+  String get recovery_scenario_android_subheading {
     return Intl.message(
       'To recover your Envoy wallet, follow these simple instructions.',
-      name: 'recovery_scenario_subheading',
+      name: 'recovery_scenario_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get recovery_scenario_iOS_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'recovery_scenario_iOS_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How to Recover?`
+  String get recovery_scenario_iOS_heading {
+    return Intl.message(
+      'How to Recover?',
+      name: 'recovery_scenario_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into iCloud and restore your iCloud backup`
+  String get recovery_scenario_iOS_step_1 {
+    return Intl.message(
+      'Sign into iCloud and restore your iCloud backup',
+      name: 'recovery_scenario_iOS_step_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get recovery_scenario_iOS_step_2 {
+    return Intl.message(
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'recovery_scenario_iOS_step_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get recovery_scenario_iOS_step_3 {
+    return Intl.message(
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'recovery_scenario_iOS_step_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet, follow these simple instructions.`
+  String get recovery_scenario_iOS_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet, follow these simple instructions.',
+      name: 'recovery_scenario_iOS_subheading',
       desc: '',
       args: [],
     );
@@ -7244,30 +7374,30 @@ class S {
     );
   }
 
-  /// `Create a New Wallet`
+  /// `Set Up Envoy Wallet`
   String get splash_screen_cta1 {
     return Intl.message(
-      'Create a New Wallet',
+      'Set Up Envoy Wallet',
       name: 'splash_screen_cta1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Manual Wallet Setup`
+  /// `Manually Configure Seed Words`
   String get splash_screen_cta2 {
     return Intl.message(
-      'Manual Wallet Setup',
+      'Manually Configure Seed Words',
       name: 'splash_screen_cta2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Passport-Only Setup`
+  /// `Only Manage Passport`
   String get splash_screen_cta3 {
     return Intl.message(
-      'Passport-Only Setup',
+      'Only Manage Passport',
       name: 'splash_screen_cta3',
       desc: '',
       args: [],
@@ -7294,10 +7424,10 @@ class S {
     );
   }
 
-  /// `Envoy is a simple Bitcoin wallet and Passport companion app.`
+  /// `Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.`
   String get splash_screen_subheading {
     return Intl.message(
-      'Envoy is a simple Bitcoin wallet and Passport companion app.',
+      'Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.',
       name: 'splash_screen_subheading',
       desc: '',
       args: [],
@@ -7684,18 +7814,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String
-      get text_6399ff19b95f367561884578learn_more_about_data_secured_2_4_CTA {
-    return Intl.message(
-      'Continue',
-      name:
-          'text_6399ff19b95f367561884578learn_more_about_data_secured_2_4_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Let’s Setup Your Wallet`
   String get text_6399ff19b95f367561884580 {
     return Intl.message(
@@ -7731,16 +7849,6 @@ class S {
     return Intl.message(
       'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
       name: 'text_6399ff19b95f36756188458a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_6399ff19b95f36756188458c {
-    return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_6399ff19b95f36756188458c',
       desc: '',
       args: [],
     );
@@ -13237,50 +13345,10 @@ class S {
   }
 
   /// `1`
-  String get text_639b1606dab75c7f53a911a8 {
-    return Intl.message(
-      '1',
-      name: 'text_639b1606dab75c7f53a911a8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
   String get text_639b1606dab75c7f53a911ae {
     return Intl.message(
       '1',
       name: 'text_639b1606dab75c7f53a911ae',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_639b1606dab75c7f53a911b2 {
-    return Intl.message(
-      '1',
-      name: 'text_639b1606dab75c7f53a911b2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_639b1606dab75c7f53a911b4 {
-    return Intl.message(
-      '1',
-      name: 'text_639b1606dab75c7f53a911b4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_639b1606dab75c7f53a911b8 {
-    return Intl.message(
-      '2',
-      name: 'text_639b1606dab75c7f53a911b8',
       desc: '',
       args: [],
     );
@@ -13296,61 +13364,11 @@ class S {
     );
   }
 
-  /// `2`
-  String get text_639b1606dab75c7f53a911c2 {
-    return Intl.message(
-      '2',
-      name: 'text_639b1606dab75c7f53a911c2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_639b1606dab75c7f53a911c4 {
-    return Intl.message(
-      '2',
-      name: 'text_639b1606dab75c7f53a911c4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_639b1606dab75c7f53a911c8 {
-    return Intl.message(
-      '3',
-      name: 'text_639b1606dab75c7f53a911c8',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `3`
   String get text_639b1606dab75c7f53a911ce {
     return Intl.message(
       '3',
       name: 'text_639b1606dab75c7f53a911ce',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_639b1606dab75c7f53a911d1 {
-    return Intl.message(
-      '3',
-      name: 'text_639b1606dab75c7f53a911d1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_639b1606dab75c7f53a911d3 {
-    return Intl.message(
-      '3',
-      name: 'text_639b1606dab75c7f53a911d3',
       desc: '',
       args: [],
     );
@@ -14371,6 +14389,486 @@ class S {
     return Intl.message(
       'Connect',
       name: 'text_63eb5ba0b6fe43bcae1c747b',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63ef93b71a2ca27cec9a55fc {
+    return Intl.message(
+      'Skip',
+      name: 'text_63ef93b71a2ca27cec9a55fc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63ef93b71a2ca27cec9a55fd {
+    return Intl.message(
+      'Skip',
+      name: 'text_63ef93b71a2ca27cec9a55fd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63ef93b71a2ca27cec9a55fe {
+    return Intl.message(
+      'Skip',
+      name: 'text_63ef93b71a2ca27cec9a55fe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Let’s Setup Your Wallet`
+  String get text_63ef93b71a2ca27cec9a560a {
+    return Intl.message(
+      'Let’s Setup Your Wallet',
+      name: 'text_63ef93b71a2ca27cec9a560a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Let’s Setup Your Wallet`
+  String get text_63ef93b71a2ca27cec9a560c {
+    return Intl.message(
+      'Let’s Setup Your Wallet',
+      name: 'text_63ef93b71a2ca27cec9a560c',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1`
+  String get text_63ef93b71a2ca27cec9a560e {
+    return Intl.message(
+      '1',
+      name: 'text_63ef93b71a2ca27cec9a560e',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get text_63ef93b71a2ca27cec9a5610 {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'text_63ef93b71a2ca27cec9a5610',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get text_63ef93b71a2ca27cec9a5611 {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'text_63ef93b71a2ca27cec9a5611',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn how your data is secured`
+  String get text_63ef93b71a2ca27cec9a5613 {
+    return Intl.message(
+      'Learn how your data is secured',
+      name: 'text_63ef93b71a2ca27cec9a5613',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Let’s Setup Your Wallet`
+  String get text_63ef93b71a2ca27cec9a5614 {
+    return Intl.message(
+      'Let’s Setup Your Wallet',
+      name: 'text_63ef93b71a2ca27cec9a5614',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get text_63ef93b71a2ca27cec9a5616 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'text_63ef93b71a2ca27cec9a5616',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We don’t keep your seed`
+  String get text_63ef93b71a2ca27cec9a5617 {
+    return Intl.message(
+      'We don’t keep your seed',
+      name: 'text_63ef93b71a2ca27cec9a5617',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get text_63ef93b71a2ca27cec9a5618 {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'text_63ef93b71a2ca27cec9a5618',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2`
+  String get text_63ef93b71a2ca27cec9a5619 {
+    return Intl.message(
+      '2',
+      name: 'text_63ef93b71a2ca27cec9a5619',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate New Wallet`
+  String get text_63ef93b71a2ca27cec9a561a {
+    return Intl.message(
+      'Generate New Wallet',
+      name: 'text_63ef93b71a2ca27cec9a561a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get text_63ef93b71a2ca27cec9a561b {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'text_63ef93b71a2ca27cec9a561b',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn how your data is secured`
+  String get text_63ef93b71a2ca27cec9a561c {
+    return Intl.message(
+      'Learn how your data is secured',
+      name: 'text_63ef93b71a2ca27cec9a561c',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate New Wallet`
+  String get text_63ef93b71a2ca27cec9a561e {
+    return Intl.message(
+      'Generate New Wallet',
+      name: 'text_63ef93b71a2ca27cec9a561e',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get text_63ef93b71a2ca27cec9a561f {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'text_63ef93b71a2ca27cec9a561f',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3`
+  String get text_63ef93b71a2ca27cec9a5620 {
+    return Intl.message(
+      '3',
+      name: 'text_63ef93b71a2ca27cec9a5620',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate New Wallet`
+  String get text_63ef93b71a2ca27cec9a5621 {
+    return Intl.message(
+      'Generate New Wallet',
+      name: 'text_63ef93b71a2ca27cec9a5621',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get text_63ef9b0da3f1179c4de848e7 {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'text_63ef9b0da3f1179c4de848e7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is recovering your wallet from your (cloud/drive).`
+  String get text_63f3830d0edfca43eecfbeea {
+    return Intl.message(
+      'Envoy is recovering your wallet from your (cloud/drive).',
+      name: 'text_63f3830d0edfca43eecfbeea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery Unsuccessful`
+  String get text_63f388c812a4345c94ac03fa {
+    return Intl.message(
+      'Recovery Unsuccessful',
+      name: 'text_63f388c812a4345c94ac03fa',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
+  String get text_63f388c812a4345c94ac03fb {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
+      name: 'text_63f388c812a4345c94ac03fb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy Wallet`
+  String get text_63f388c812a4345c94ac03fc {
+    return Intl.message(
+      'Recovering your Envoy Wallet',
+      name: 'text_63f388c812a4345c94ac03fc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy wallet`
+  String get text_63f388c812a4345c94ac03fd {
+    return Intl.message(
+      'Recovering your Envoy wallet',
+      name: 'text_63f388c812a4345c94ac03fd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get text_63f388c812a4345c94ac03fe {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'text_63f388c812a4345c94ac03fe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy Wallet`
+  String get text_63f388c812a4345c94ac03ff {
+    return Intl.message(
+      'Recovering your Envoy Wallet',
+      name: 'text_63f388c812a4345c94ac03ff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get text_63f388c812a4345c94ac0401 {
+    return Intl.message(
+      'Retry',
+      name: 'text_63f388c812a4345c94ac0401',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get text_63f388c812a4345c94ac0402 {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'text_63f388c812a4345c94ac0402',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is recovering your wallet from your (cloud/drive).`
+  String get text_63f388c812a4345c94ac0403 {
+    return Intl.message(
+      'Envoy is recovering your wallet from your (cloud/drive).',
+      name: 'text_63f388c812a4345c94ac0403',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get text_63f388c812a4345c94ac0404 {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'text_63f388c812a4345c94ac0404',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
+  String get text_63f388c812a4345c94ac0405 {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
+      name: 'text_63f388c812a4345c94ac0405',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1`
+  String get text_63f388c812a4345c94ac0406 {
+    return Intl.message(
+      '1',
+      name: 'text_63f388c812a4345c94ac0406',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1`
+  String get text_63f388c812a4345c94ac0407 {
+    return Intl.message(
+      '1',
+      name: 'text_63f388c812a4345c94ac0407',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get text_63f388c812a4345c94ac0408 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'text_63f388c812a4345c94ac0408',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into iCloud and install Envoy on the new device.`
+  String get text_63f388c812a4345c94ac0409 {
+    return Intl.message(
+      'Sign into iCloud and install Envoy on the new device.',
+      name: 'text_63f388c812a4345c94ac0409',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into Google and restore your  backup data`
+  String get text_63f388c812a4345c94ac040a {
+    return Intl.message(
+      'Sign into Google and restore your  backup data',
+      name: 'text_63f388c812a4345c94ac040a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get text_63f388c812a4345c94ac040b {
+    return Intl.message(
+      'Retry',
+      name: 'text_63f388c812a4345c94ac040b',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2`
+  String get text_63f388c812a4345c94ac040c {
+    return Intl.message(
+      '2',
+      name: 'text_63f388c812a4345c94ac040c',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2`
+  String get text_63f388c812a4345c94ac040d {
+    return Intl.message(
+      '2',
+      name: 'text_63f388c812a4345c94ac040d',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
+  String get text_63f388c812a4345c94ac040e {
+    return Intl.message(
+      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
+      name: 'text_63f388c812a4345c94ac040e',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get text_63f388c812a4345c94ac040f {
+    return Intl.message(
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'text_63f388c812a4345c94ac040f',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3`
+  String get text_63f388c812a4345c94ac0410 {
+    return Intl.message(
+      '3',
+      name: 'text_63f388c812a4345c94ac0410',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3`
+  String get text_63f388c812a4345c94ac0411 {
+    return Intl.message(
+      '3',
+      name: 'text_63f388c812a4345c94ac0411',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
+  String get text_63f388c812a4345c94ac0412 {
+    return Intl.message(
+      'Envoy will then automatically reinstate your existing Envoy wallet.',
+      name: 'text_63f388c812a4345c94ac0412',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get text_63f388c812a4345c94ac0413 {
+    return Intl.message(
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'text_63f388c812a4345c94ac0413',
       desc: '',
       args: [],
     );

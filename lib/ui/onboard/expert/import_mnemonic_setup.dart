@@ -333,7 +333,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
               : SizedBox.shrink(),
           Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
-            S().recovery_scenario_CTA,
+            "MISSING", //S().recovery_scenario_CTA,
             light: false,
             borderRadius: BorderRadius.all(Radius.circular(8)),
             onTap: () {

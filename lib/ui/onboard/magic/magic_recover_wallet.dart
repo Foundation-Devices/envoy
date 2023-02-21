@@ -146,7 +146,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             ),
           ),
           title: Text(
-            S().magic_recovery_flow_step_1,
+            "MISSING", //S().magic_recovery_flow_step_1,
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
           ),
@@ -169,7 +169,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             ),
           ),
           title: Text(
-            S().magic_recovery_flow_step_2,
+            "MISSING", //S().magic_recovery_flow_step_2,
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
           ),
@@ -190,7 +190,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                     ?.copyWith(color: Colors.white)),
           ),
           title: Text(
-            S().magic_recovery_flow_step_3,
+            "MISSING", //S().magic_recovery_flow_step_3,
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
           ),

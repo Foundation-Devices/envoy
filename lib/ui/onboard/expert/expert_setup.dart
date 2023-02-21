@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/expert/generate_seed.dart';
 import 'package:envoy/ui/onboard/expert/import_mnemonic_setup.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
@@ -78,23 +77,17 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      width: double.infinity,
-                      child: TextButton(
-                          child: Text(S().manual_setup_flow_tutorial_CTA_2,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  ?.copyWith(color: EnvoyColors.teal)),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return SelectMode(
-                                generate: false,
-                              );
-                            }));
-                          }),
-                    ),
+                    OnboardingButton(
+                        label: S().manual_setup_flow_tutorial_CTA_2,
+                        light: true,
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SelectMode(
+                              generate: false,
+                            );
+                          }));
+                        }),
                     OnboardingButton(
                         light: false,
                         label: S().manual_setup_flow_tutorial_CTA_1,
@@ -156,13 +149,17 @@ class SelectMode extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          S().manual_setup_generate_seed_heading,
+                          generate
+                              ? S().manual_setup_generate_seed_heading
+                              : S().magic_setup_import_seed_heading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         Padding(padding: EdgeInsets.all(24)),
                         Text(
-                          S().manual_setup_generate_seed_subheading,
+                          generate
+                              ? S().manual_setup_generate_seed_subheading
+                              : S().magic_setup_import_seed_subheading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme

@@ -31,8 +31,7 @@ use bdk::bitcoin::consensus::encode::serialize;
 use std::ptr::null_mut;
 
 use crate::electrum_client::Client;
-use crate::miniscript::descriptor::DescriptorSecretKey;
-use crate::miniscript::{DescriptorPublicKey, Segwitv0};
+use crate::miniscript::Segwitv0;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
@@ -40,7 +39,6 @@ use bdk::keys::bip39::{Language, Mnemonic, MnemonicWithPassphrase};
 use bdk::keys::DescriptorKey::Secret;
 use bdk::keys::{
     DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
-    IntoDescriptorKey,
 };
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;

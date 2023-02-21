@@ -25,15 +25,15 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
   PageController _pageController = PageController();
   int step = 0;
   List<String> stepsHeadings = [
-    S().magic_setup_envoy_key_creation_1_5_heading,
-    S().magic_setup_encrypting_backup_1_5_heading,
-    S().magic_setup_sending_backup_to_envoy_server_1_5_heading,
+    "MISSING", //S().magic_setup_envoy_key_creation_1_5_heading,
+    "MISSING", //S().magic_setup_encrypting_backup_1_5_heading,
+    "MISSING", //S().magic_setup_sending_backup_to_envoy_server_1_5_heading,
   ];
 
   List<String> stepSubHeadings = [
-    S().magic_setup_envoy_key_creation_1_5_subheading,
-    S().magic_setup_encrypting_backup_1_5_subheading,
-    S().magic_setup_sending_backup_to_envoy_server_1_5_subheading,
+    "MISSING", //S().magic_setup_envoy_key_creation_1_5_subheading,
+    "MISSING", //S().magic_setup_encrypting_backup_1_5_subheading,
+    "MISSING", //S().magic_setup_sending_backup_to_envoy_server_1_5_subheading,
   ];
 
   _onRiveInit(Artboard artboard) {
@@ -243,13 +243,13 @@ class MagicRecoveryInfo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            S().recovery_scenario_heading,
+            "MISSING", //S().recovery_scenario_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
           Padding(padding: EdgeInsets.all(12)),
           Text(
-            S().recovery_scenario_subheading,
+            "MISSING", //S().recovery_scenario_subheading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
           ),
@@ -272,7 +272,7 @@ class MagicRecoveryInfo extends StatelessWidget {
               ),
             ),
             title: Text(
-              S().recovery_scenario_step_1,
+              "MISSING", //S().recovery_scenario_step_1,
               textAlign: TextAlign.start,
               style:
                   Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
@@ -296,7 +296,7 @@ class MagicRecoveryInfo extends StatelessWidget {
               ),
             ),
             title: Text(
-              S().recovery_scenario_step_2,
+              "MISSING", //S().recovery_scenario_step_2,
               textAlign: TextAlign.start,
               style:
                   Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
@@ -318,7 +318,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                       ?.copyWith(color: Colors.white)),
             ),
             title: Text(
-              S().recovery_scenario_step_3,
+              "MISSING", //S().recovery_scenario_step_3,
               textAlign: TextAlign.start,
               style:
                   Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
