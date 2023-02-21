@@ -582,17 +582,15 @@ class Wallet {
 
   static String signOffline(String psbt, String externalDescriptor,
       String internalDescriptor, bool testnet) {
-    final lib = load(_libName);
+    var lib = NativeLibrary(load(_libName));
 
-    final rustFunction = lib
-        .lookup<NativeFunction<WalletSignOfflineRust>>('wallet_sign_offline');
-    final dartFunction = rustFunction.asFunction<WalletSignOfflineDart>();
-
-    return dartFunction(
-            psbt.toNativeUtf8(),
-            externalDescriptor.toNativeUtf8(),
-            internalDescriptor.toNativeUtf8(),
+    return lib
+        .wallet_sign_offline(
+            psbt.toNativeUtf8().cast(),
+            externalDescriptor.toNativeUtf8().cast(),
+            internalDescriptor.toNativeUtf8().cast(),
             testnet ? Network.Testnet.index : Network.Mainnet.index)
+        .raw_tx
         .cast<Utf8>()
         .toDartString();
   }
