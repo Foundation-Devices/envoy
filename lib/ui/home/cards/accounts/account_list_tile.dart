@@ -171,7 +171,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                                   ? 6.0
                                                   : 0.0),
                                           child: SvgPicture.asset(
-                                            "assets/bitcoin.svg",
+                                            widget.account.wallet.hot ? "assets/wallet.svg" : "assets/bitcoin.svg",
                                           ),
                                         )
                                       ],
