@@ -283,7 +283,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               ),
               Padding(padding: EdgeInsets.all(4)),
               Text(
-                S().manual_setup_generate_seed_verify_quiz_success_state_correct,
+                S().manual_setup_generate_seed_verify_seed_quiz_success_success,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2
@@ -299,7 +299,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                   color: EnvoyColors.brown, size: 14),
               Padding(padding: EdgeInsets.all(4)),
               Text(
-                S().manual_setup_generate_seed_verify_seed_quiz_fail_state_invalid_entry,
+                S().manual_setup_generate_seed_verify_seed_quiz_fail_error,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2

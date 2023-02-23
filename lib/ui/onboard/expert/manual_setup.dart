@@ -4,20 +4,20 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/expert/generate_seed.dart';
-import 'package:envoy/ui/onboard/expert/import_mnemonic_setup.dart';
+import 'package:envoy/ui/onboard/expert/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 
-class ExpertSetupPage extends StatefulWidget {
-  const ExpertSetupPage({Key? key}) : super(key: key);
+class ManualSetup extends StatefulWidget {
+  const ManualSetup({Key? key}) : super(key: key);
 
   @override
-  State<ExpertSetupPage> createState() => _ExpertSetupPageState();
+  State<ManualSetup> createState() => _ManualSetupState();
 }
 
-class _ExpertSetupPageState extends State<ExpertSetupPage> {
+class _ManualSetupState extends State<ManualSetup> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
@@ -53,13 +53,13 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        S().manual_setup_flow_tutorial_heading,
+                        S().manual_setup_tutorial_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
                       Text(
-                        S().manual_setup_flow_tutorial_subheading,
+                        S().manual_setup_tutorial_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -78,7 +78,7 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     OnboardingButton(
-                        label: S().manual_setup_flow_tutorial_CTA_2,
+                        label: S().manual_setup_tutorial_CTA2,
                         light: true,
                         onTap: () {
                           Navigator.of(context)
@@ -90,7 +90,7 @@ class _ExpertSetupPageState extends State<ExpertSetupPage> {
                         }),
                     OnboardingButton(
                         light: false,
-                        label: S().manual_setup_flow_tutorial_CTA_1,
+                        label: S().manual_setup_tutorial_CTA1,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
@@ -150,8 +150,8 @@ class SelectMode extends StatelessWidget {
                       children: [
                         Text(
                           generate
-                              ? S().manual_setup_generate_seed_heading
-                              : S().magic_setup_import_seed_heading,
+                              ? S().text_63f5d60b70d317aa0a96manual_setup_generate_seed_heading6b88
+                              : S().manual_setup_import_seed_heading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
                         ),
@@ -159,7 +159,7 @@ class SelectMode extends StatelessWidget {
                         Text(
                           generate
                               ? S().manual_setup_generate_seed_subheading
-                              : S().magic_setup_import_seed_subheading,
+                              : S().manual_setup_import_seed_subheading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
@@ -191,12 +191,12 @@ class SelectMode extends StatelessWidget {
                           children: [
                             OnboardingButton(
                                 light: true,
-                                label: S().magic_setup_import_seed_CTA_1,
+                                label: S().manual_setup_import_seed_CTA2,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
-                                      return ImportMnemonicSeed(
+                                      return ManualSetupImportSeed(
                                         seedLength: SeedLength.MNEMONIC_12,
                                       );
                                     });
@@ -204,12 +204,12 @@ class SelectMode extends StatelessWidget {
                                 }),
                             OnboardingButton(
                                 light: true,
-                                label: S().magic_setup_import_seed_CTA_2,
+                                label: S().manual_setup_import_seed_CTA1,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
-                                      return ImportMnemonicSeed(
+                                      return ManualSetupImportSeed(
                                         seedLength: SeedLength.MNEMONIC_24,
                                       );
                                     });

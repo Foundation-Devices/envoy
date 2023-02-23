@@ -35,15 +35,15 @@ class _WalletSetupFinishState extends State<WalletSetupFinish> {
                   ),
                 ),
                 Text(
-                  S().wallet_is_setup_heading,
+                  S().wallet_setup_success_heading,
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 Text(
-                  S().wallet_is_setup_subheading,
+                  S().wallet_setup_success_subheading,
                 ),
                 OnboardingButton(
                     light: false,
-                    label: S().wallet_is_setup_CTA,
+                    label: S().wallet_setup_success_CTA,
                     onTap: () {
                       Navigator.of(context).popUntil(ModalRoute.withName("/"));
                     }),

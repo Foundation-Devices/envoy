@@ -122,7 +122,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
             slivers: [
               SliverToBoxAdapter(
                 child: Text(
-                    S().manual_setup_generate_seed_verify_seed_again_heading,
+                    S().manual_setup_generate_seed_verify_seed_again_quiz_heading,
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
               ),
@@ -172,7 +172,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                             curve: Curves.ease);
                       },
                       label:
-                          S().manual_setup_generate_seed_verify_seed_again_CTA,
+                          S().manual_setup_generate_seed_verify_seed_CTA,
                     )
                   ],
                 ),
@@ -209,7 +209,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        S().manual_setup_import_12_word_seed_invalid_subheading,
+                        S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -217,7 +217,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                 )),
                 OnboardingButton(
                     label:
-                        S().manual_seed_generate_seed_verify_seed_warning_CTA,
+                        S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA,
                     onTap: () async {
                       await Navigator.maybePop(context);
                       _pageController.animateToPage(1,

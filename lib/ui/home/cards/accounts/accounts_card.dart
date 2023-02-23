@@ -5,7 +5,7 @@
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/onboard/hot_wallet_welcome_page.dart';
+import 'package:envoy/ui/onboard/splash_screen.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -41,7 +41,7 @@ class AccountsCardState extends State<AccountsCard>
   void _showAddAccountPage() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       // TODO: double check with team if this is the right thing to do
-      return HotWalletWelcomePage();
+      return SplashScreen();
       //return SingleImportPpIntroPage();
     }));
   }

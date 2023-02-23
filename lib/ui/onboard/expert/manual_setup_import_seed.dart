@@ -15,17 +15,17 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-class ImportMnemonicSeed extends StatefulWidget {
+class ManualSetupImportSeed extends StatefulWidget {
   final SeedLength seedLength;
 
-  const ImportMnemonicSeed({Key? key, required this.seedLength})
+  const ManualSetupImportSeed({Key? key, required this.seedLength})
       : super(key: key);
 
   @override
-  State<ImportMnemonicSeed> createState() => _ImportMnemonicSeedState();
+  State<ManualSetupImportSeed> createState() => _ManualSetupImportSeedState();
 }
 
-class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
+class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
   bool hasPassphrase = false;
   String passPhrase = "";
 
@@ -53,7 +53,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    S().manual_setup_import_12_word_seed_done_heading,
+                    S().manual_setup_import_seed_12_words_heading,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
@@ -103,7 +103,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                             },
                           ),
                           Text(
-                            S().manual_setup_import_12_word_seed_done_checkbox,
+                            S().manual_setup_import_seed_12_words_checkbox,
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                         ],
@@ -114,7 +114,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
                             EdgeInsets.symmetric(vertical: 8, horizontal: 24),
                         child: OnboardingButton(
                             label: S()
-                                .manual_setup_import_12_word_seed_modify_seedword_1_2_CTA,
+                                .manual_setup_import_seed_12_words_CTA,
                             light: false,
                             onTap: () {
                               EnvoySeed()
@@ -210,7 +210,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 48, vertical: 6),
           child: Text(
-            S().manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading,
+            S().manual_setup_import_seed_12_words_fail_modal_subheading,
             textAlign: TextAlign.center,
           ),
         ),
@@ -220,7 +220,7 @@ class _ImportMnemonicSeedState extends State<ImportMnemonicSeed> {
             //Temporarily Disable Tor
             children: [
               EnvoyButton(
-                S().manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_CTA,
+                S().manual_setup_import_seed_12_words_fail_modal_CTA,
                 onTap: () async {
                   Navigator.of(context).pop();
                   showPassphraseDialog(context);
@@ -297,7 +297,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
           ),
           Padding(padding: EdgeInsets.all(8)),
           Text(
-              S().manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading,
+              S().manual_setup_verify_seed_12_words_heading,
               textAlign: TextAlign.center),
           Padding(padding: EdgeInsets.all(8)),
           Container(
@@ -333,7 +333,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
               : SizedBox.shrink(),
           Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
-            "MISSING", //S().recovery_scenario_CTA,
+            S().recovery_scenario_ios_CTA,
             light: false,
             borderRadius: BorderRadius.all(Radius.circular(8)),
             onTap: () {

@@ -3,21 +3,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/onboard/expert/expert_setup.dart';
+import 'package:envoy/ui/onboard/expert/manual_setup.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/business/local_storage.dart';
 
-class HotWalletWelcomePage extends StatelessWidget {
+class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Only onboard once
-    //TODO: uncomment this line
-    // LocalStorage().prefs.setBool("onboarded", true);
+    LocalStorage().prefs.setBool("onboarded", true);
     return OnboardingPage(
-      key: Key("hot_wallet_welcome_page"),
+      key: Key("splash_screen"),
       leftFunction: null,
       clipArt: Image.asset("assets/envoy.png"),
       text: [
@@ -27,7 +27,7 @@ class HotWalletWelcomePage extends StatelessWidget {
       ],
       buttons: [
         TextButton(
-            child: Text(S().splash_screen_cta3,
+            child: Text(S().splash_screen_CTA3,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText2
@@ -39,14 +39,14 @@ class HotWalletWelcomePage extends StatelessWidget {
             }),
         OnboardingButton(
             light: true,
-            label: S().splash_screen_cta2,
+            label: S().splash_screen_CTA2,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ExpertSetupPage();
+                return ManualSetup();
               }));
             }),
         OnboardingButton(
-            label: S().splash_screen_cta1,
+            label: S().splash_screen_CTA1,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return MagicSetup();

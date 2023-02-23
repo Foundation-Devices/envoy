@@ -117,13 +117,13 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     return Column(
       children: [
         Text(
-          S().magic_recovery_flow_heading,
+          S().magic_setup_recovery_heading,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline6,
         ),
         Padding(padding: EdgeInsets.all(12)),
         Text(
-          S().magic_recovery_flow_subheading,
+          S().magic_setup_recovery_subheading,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
@@ -206,7 +206,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_recovery_retry_fail_heading,
+            S().magic_setup_recovery_fail_ios_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
@@ -216,15 +216,15 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
             isAndroid
-                ? S().magic_recovery_fail_android_subheading
-                : S().magic_recovery_retry_iOS_subheading,
+                ? S().magic_setup_recovery_fail_android_subheading
+                : S().magic_setup_recovery_fail_ios_subheading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
           ),
         ),
         Padding(padding: EdgeInsets.all(24)),
         OnboardingButton(
-          label: S().magic_recovery_fail_android_CTA_2,
+          label: S().magic_setup_recovery_fail_ios_CTA2,
           light: true,
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -233,7 +233,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           },
         ),
         OnboardingButton(
-          label: S().magic_recovery_retry_fail_CTA_1,
+          label: S().magic_setup_recovery_fail_ios_CTA1,
           onTap: () async {
             setState(() {
               _magicRecoverWalletState = MagicRecoveryWalletState.recovering;

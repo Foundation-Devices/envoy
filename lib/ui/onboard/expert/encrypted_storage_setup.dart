@@ -47,13 +47,13 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                     children: [
                       Padding(padding: EdgeInsets.all(8)),
                       Text(
-                        S().manual_setup_encrypted_backup_location_1_3_heading,
+                        S().manual_setup_create_and_store_backup_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(12)),
                       Text(
-                        S().manual_setup_encrypted_backup_location_1_3_subheading,
+                        S().manual_setup_create_and_store_backup_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -70,7 +70,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                 Flexible(
                     child: OnboardingButton(
                         light: false,
-                        label: "Choose destination",
+                        label: S().manual_setup_create_and_store_backup_CTA,
                         onTap: () {
                           showVerificationFailedDialog(context);
                         }))
@@ -108,7 +108,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       child: Text(
-                        S().manual_setup_encrypted_backup_location_1_3_subheading,
+                        S().manual_setup_create_and_store_backup_modal_heading,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -116,7 +116,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                   ],
                 )),
                 OnboardingButton(
-                    label: S().manual_setup_encrypted_backup_location_2_3_CTA,
+                    label: S().manual_setup_create_and_store_backup_modal_CTA,
                     onTap: () async {
                       EnvoySeed().saveOfflineData();
                       Navigator.of(context).popUntil(ModalRoute.withName("/"));

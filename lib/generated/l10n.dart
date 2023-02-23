@@ -4344,1211 +4344,451 @@ class S {
     );
   }
 
-  /// `Establishing a private connection over Tor`
-  String get envoy_widgets_torloader_establishing_connection {
-    return Intl.message(
-      'Establishing a private connection over Tor',
-      name: 'envoy_widgets_torloader_establishing_connection',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading over the Tor network\n`
-  String get envoy_widgets_torloader_loading {
-    return Intl.message(
-      'Loading over the Tor network\n',
-      name: 'envoy_widgets_torloader_loading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get learn_more_about_data_secured_1_4_android_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'learn_more_about_data_secured_1_4_android_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Your Wallet is Secured`
-  String get learn_more_about_data_secured_1_4_android_heading {
-    return Intl.message(
-      'How Your Wallet is Secured',
-      name: 'learn_more_about_data_secured_1_4_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
-  String get learn_more_about_data_secured_1_4_android_subheading {
-    return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
-      name: 'learn_more_about_data_secured_1_4_android_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get learn_more_about_data_secured_1_4_iOS_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'learn_more_about_data_secured_1_4_iOS_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Your Wallet is Secured`
-  String get learn_more_about_data_secured_1_4_iOS_heading {
-    return Intl.message(
-      'How Your Wallet is Secured',
-      name: 'learn_more_about_data_secured_1_4_iOS_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get learn_more_about_data_secured_1_4_iOS_skip {
-    return Intl.message(
-      'Skip',
-      name: 'learn_more_about_data_secured_1_4_iOS_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
-  String get learn_more_about_data_secured_1_4_iOS_subheading {
-    return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
-      name: 'learn_more_about_data_secured_1_4_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get learn_more_about_data_secured_2_4_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'learn_more_about_data_secured_2_4_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Your Wallet is Secured`
-  String get learn_more_about_data_secured_2_4_heading {
-    return Intl.message(
-      'How Your Wallet is Secured',
-      name: 'learn_more_about_data_secured_2_4_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get learn_more_about_data_secured_2_4_skip {
-    return Intl.message(
-      'Skip',
-      name: 'learn_more_about_data_secured_2_4_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
-  String get learn_more_about_data_secured_2_4_subheading {
-    return Intl.message(
-      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
-      name: 'learn_more_about_data_secured_2_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get learn_more_about_data_secured_3_4_android_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'learn_more_about_data_secured_3_4_android_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Your Data is Secured`
-  String get learn_more_about_data_secured_3_4_android_heading {
-    return Intl.message(
-      'How Your Data is Secured',
-      name: 'learn_more_about_data_secured_3_4_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your wallet, simply log into your Google account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your Google account with a strong password and 2FA.`
-  String get learn_more_about_data_secured_3_4_android_subheading {
-    return Intl.message(
-      'To recover your wallet, simply log into your Google account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your Google account with a strong password and 2FA.',
-      name: 'learn_more_about_data_secured_3_4_android_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get learn_more_about_data_secured_3_4_iOS_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'learn_more_about_data_secured_3_4_iOS_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Your Data is Secured`
-  String get learn_more_about_data_secured_3_4_iOS_heading {
-    return Intl.message(
-      'How Your Data is Secured',
-      name: 'learn_more_about_data_secured_3_4_iOS_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get learn_more_about_data_secured_3_4_iOS_skip {
-    return Intl.message(
-      'Skip',
-      name: 'learn_more_about_data_secured_3_4_iOS_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.`
-  String get learn_more_about_data_secured_3_4_iOS_subheading {
-    return Intl.message(
-      'To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.',
-      name: 'learn_more_about_data_secured_3_4_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get learn_more_about_data_secured_4_4_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'learn_more_about_data_secured_4_4_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Your Data is Secured`
-  String get learn_more_about_data_secured_4_4_heading {
-    return Intl.message(
-      'How Your Data is Secured',
-      name: 'learn_more_about_data_secured_4_4_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get learn_more_about_data_secured_4_4_skip {
-    return Intl.message(
-      'Skip',
-      name: 'learn_more_about_data_secured_4_4_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
-  String get learn_more_about_data_secured_4_4_subheading {
-    return Intl.message(
-      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
-      name: 'learn_more_about_data_secured_4_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovery Unsuccessful`
-  String get magic_recovery_fail_android {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_recovery_fail_android',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retry`
-  String get magic_recovery_fail_android_CTA_1 {
-    return Intl.message(
-      'Retry',
-      name: 'magic_recovery_fail_android_CTA_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover with QR Code`
-  String get magic_recovery_fail_android_CTA_2 {
-    return Intl.message(
-      'Recover with QR Code',
-      name: 'magic_recovery_fail_android_CTA_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovery Unsuccessful`
-  String get magic_recovery_fail_android_heading {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_recovery_fail_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
-  String get magic_recovery_fail_android_subheading {
-    return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
-      name: 'magic_recovery_fail_android_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovering your Envoy Wallet`
-  String get magic_recovery_flow_done_iOS_heading {
-    return Intl.message(
-      'Recovering your Envoy Wallet',
-      name: 'magic_recovery_flow_done_iOS_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
-  String get magic_recovery_flow_done_iOS_subheading {
-    return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
-      name: 'magic_recovery_flow_done_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sign into iCloud and install Envoy on the new device.`
-  String get magic_recovery_flow_done_step_1 {
-    return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
-      name: 'magic_recovery_flow_done_step_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
-  String get magic_recovery_flow_done_step_2 {
-    return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
-      name: 'magic_recovery_flow_done_step_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
-  String get magic_recovery_flow_done_step_3 {
-    return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
-      name: 'magic_recovery_flow_done_step_3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovering your Envoy wallet`
-  String get magic_recovery_flow_heading {
-    return Intl.message(
-      'Recovering your Envoy wallet',
-      name: 'magic_recovery_flow_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovering your Envoy Wallet`
-  String get magic_recovery_flow_retry_2_heading {
-    return Intl.message(
-      'Recovering your Envoy Wallet',
-      name: 'magic_recovery_flow_retry_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
-  String get magic_recovery_flow_retry_2_subheading {
-    return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
-      name: 'magic_recovery_flow_retry_2_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovering your Envoy wallet`
-  String get magic_recovery_flow_retry_heading {
-    return Intl.message(
-      'Recovering your Envoy wallet',
-      name: 'magic_recovery_flow_retry_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is recovering your wallet from your (cloud/drive).`
-  String get magic_recovery_flow_subheading {
-    return Intl.message(
-      'Envoy is recovering your wallet from your (cloud/drive).',
-      name: 'magic_recovery_flow_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retry`
-  String get magic_recovery_retry_fail_CTA_1 {
-    return Intl.message(
-      'Retry',
-      name: 'magic_recovery_retry_fail_CTA_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover with QR Code`
-  String get magic_recovery_retry_fail_CTA_2 {
-    return Intl.message(
-      'Recover with QR Code',
-      name: 'magic_recovery_retry_fail_CTA_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovery Unsuccessful`
-  String get magic_recovery_retry_fail_heading {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_recovery_retry_fail_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
-  String get magic_recovery_retry_fail_subheading {
-    return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
-      name: 'magic_recovery_retry_fail_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retry`
-  String get magic_recovery_retry_iOS_CTA_1 {
-    return Intl.message(
-      'Retry',
-      name: 'magic_recovery_retry_iOS_CTA_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover with QR Code`
-  String get magic_recovery_retry_iOS_CTA_2 {
-    return Intl.message(
-      'Recover with QR Code',
-      name: 'magic_recovery_retry_iOS_CTA_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovery Unsuccessful`
-  String get magic_recovery_retry_iOS_heading {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_recovery_retry_iOS_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
-  String get magic_recovery_retry_iOS_subheading {
-    return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
-      name: 'magic_recovery_retry_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Encrypting Your Backup`
-  String get magic_setup_encrypting_backup_2_5_heading {
+  String get magic_setup_generate_backup_heading {
     return Intl.message(
       'Encrypting Your Backup',
-      name: 'magic_setup_encrypting_backup_2_5_heading',
+      name: 'magic_setup_generate_backup_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
-  String get magic_setup_encrypting_backup_2_5_subheading {
+  String get magic_setup_generate_backup_subheading {
     return Intl.message(
       'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
-      name: 'magic_setup_encrypting_backup_2_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Encrypting Your Backup`
-  String get magic_setup_encrypting_backup_3_5_heading {
-    return Intl.message(
-      'Encrypting Your Backup',
-      name: 'magic_setup_encrypting_backup_3_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
-  String get magic_setup_encrypting_backup_3_5_subheading {
-    return Intl.message(
-      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
-      name: 'magic_setup_encrypting_backup_3_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Encrypting Your Backup`
-  String get magic_setup_encrypting_backup_4_5_heading {
-    return Intl.message(
-      'Encrypting Your Backup',
-      name: 'magic_setup_encrypting_backup_4_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
-  String get magic_setup_encrypting_backup_4_5_subheading {
-    return Intl.message(
-      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
-      name: 'magic_setup_encrypting_backup_4_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Encrypting Your Backup`
-  String get magic_setup_encrypting_backup_5_5_heading {
-    return Intl.message(
-      'Encrypting Your Backup',
-      name: 'magic_setup_encrypting_backup_5_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
-  String get magic_setup_encrypting_backup_5_5_subheading {
-    return Intl.message(
-      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
-      name: 'magic_setup_encrypting_backup_5_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Encrypting Your Backup`
-  String get magic_setup_encrypting_backup_heading {
-    return Intl.message(
-      'Encrypting Your Backup',
-      name: 'magic_setup_encrypting_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
-  String get magic_setup_encrypting_backup_subheading {
-    return Intl.message(
-      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
-      name: 'magic_setup_encrypting_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating Your Envoy Wallet`
-  String get magic_setup_envoy_key_creation_2_5_heading {
-    return Intl.message(
-      'Creating Your Envoy Wallet',
-      name: 'magic_setup_envoy_key_creation_2_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
-  String get magic_setup_envoy_key_creation_2_5_subheading {
-    return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
-      name: 'magic_setup_envoy_key_creation_2_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating Your Envoy Wallet`
-  String get magic_setup_envoy_key_creation_3_5_heading {
-    return Intl.message(
-      'Creating Your Envoy Wallet',
-      name: 'magic_setup_envoy_key_creation_3_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
-  String get magic_setup_envoy_key_creation_3_5_subheading {
-    return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
-      name: 'magic_setup_envoy_key_creation_3_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating Your Envoy Wallet`
-  String get magic_setup_envoy_key_creation_4_5_heading {
-    return Intl.message(
-      'Creating Your Envoy Wallet',
-      name: 'magic_setup_envoy_key_creation_4_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
-  String get magic_setup_envoy_key_creation_4_5_subheading {
-    return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
-      name: 'magic_setup_envoy_key_creation_4_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating Your Envoy Wallet`
-  String get magic_setup_envoy_key_creation_5_5_heading {
-    return Intl.message(
-      'Creating Your Envoy Wallet',
-      name: 'magic_setup_envoy_key_creation_5_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
-  String get magic_setup_envoy_key_creation_5_5_subheading {
-    return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
-      name: 'magic_setup_envoy_key_creation_5_5_subheading',
+      name: 'magic_setup_generate_backup_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `Creating Your Envoy Key`
-  String get magic_setup_envoy_key_creation_iOS_heading {
+  String get magic_setup_generate_envoy_key_android_heading {
     return Intl.message(
       'Creating Your Envoy Key',
-      name: 'magic_setup_envoy_key_creation_iOS_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
-  String get magic_setup_envoy_key_creation_iOS_subheading {
-    return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
-      name: 'magic_setup_envoy_key_creation_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Create New Wallet`
-  String get magic_setup_flow_tutorial_android_CTA1 {
-    return Intl.message(
-      'Create New Wallet',
-      name: 'magic_setup_flow_tutorial_android_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get magic_setup_flow_tutorial_android_CTA2 {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'magic_setup_flow_tutorial_android_CTA2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set Up Your Wallet`
-  String get magic_setup_flow_tutorial_android_heading {
-    return Intl.message(
-      'Set Up Your Wallet',
-      name: 'magic_setup_flow_tutorial_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get magic_setup_flow_tutorial_android_skip {
-    return Intl.message(
-      'Skip',
-      name: 'magic_setup_flow_tutorial_android_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
-  String get magic_setup_flow_tutorial_android_subheading {
-    return Intl.message(
-      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
-      name: 'magic_setup_flow_tutorial_android_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Create New Wallet`
-  String get magic_setup_flow_tutorial_iOS_CTA_1 {
-    return Intl.message(
-      'Create New Wallet',
-      name: 'magic_setup_flow_tutorial_iOS_CTA_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get magic_setup_flow_tutorial_iOS_CTA_2 {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'magic_setup_flow_tutorial_iOS_CTA_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy Wallet Setup`
-  String get magic_setup_flow_tutorial_iOS_heading {
-    return Intl.message(
-      'Envoy Wallet Setup',
-      name: 'magic_setup_flow_tutorial_iOS_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get magic_setup_flow_tutorial_iOS_skip {
-    return Intl.message(
-      'Skip',
-      name: 'magic_setup_flow_tutorial_iOS_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
-  String get magic_setup_flow_tutorial_iOS_subheading {
-    return Intl.message(
-      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
-      name: 'magic_setup_flow_tutorial_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get magic_setup_generate_wallet_android_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'magic_setup_generate_wallet_android_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.`
-  String get magic_setup_generate_wallet_android_heading {
-    return Intl.message(
-      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.',
-      name: 'magic_setup_generate_wallet_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get magic_setup_generate_wallet_iOS_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'magic_setup_generate_wallet_iOS_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get magic_setup_generate_wallet_iOS_skip {
-    return Intl.message(
-      'Skip',
-      name: 'magic_setup_generate_wallet_iOS_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
-  String get magic_setup_generate_wallet_iOS_subheading {
-    return Intl.message(
-      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
-      name: 'magic_setup_generate_wallet_iOS_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12 Word Seed`
-  String get magic_setup_import_seed_CTA_1 {
-    return Intl.message(
-      '12 Word Seed',
-      name: 'magic_setup_import_seed_CTA_1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24 Word Seed`
-  String get magic_setup_import_seed_CTA_2 {
-    return Intl.message(
-      '24 Word Seed',
-      name: 'magic_setup_import_seed_CTA_2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Import your Seed`
-  String get magic_setup_import_seed_heading {
-    return Intl.message(
-      'Import your Seed',
-      name: 'magic_setup_import_seed_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.`
-  String get magic_setup_import_seed_subheading {
-    return Intl.message(
-      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.',
-      name: 'magic_setup_import_seed_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating Your Envoy Key`
-  String get magic_setup_key_creaton_android_heading {
-    return Intl.message(
-      'Creating Your Envoy Key',
-      name: 'magic_setup_key_creaton_android_heading',
+      name: 'magic_setup_generate_envoy_key_android_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Google Drive.\n\nRemember to always secure your Google account with a strong password and 2FA.`
-  String get magic_setup_key_creaton_android_subheading {
+  String get magic_setup_generate_envoy_key_android_subheading {
     return Intl.message(
       'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Google Drive.\n\nRemember to always secure your Google account with a strong password and 2FA.',
-      name: 'magic_setup_key_creaton_android_subheading',
+      name: 'magic_setup_generate_envoy_key_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Uploading Encrypted Backup`
-  String get magic_setup_sending_backup_to_envoy_server_2_5_heading {
+  /// `Creating Your Envoy Key`
+  String get magic_setup_generate_envoy_key_ios_heading {
     return Intl.message(
-      'Uploading Encrypted Backup',
-      name: 'magic_setup_sending_backup_to_envoy_server_2_5_heading',
+      'Creating Your Envoy Key',
+      name: 'magic_setup_generate_envoy_key_ios_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
-  String get magic_setup_sending_backup_to_envoy_server_2_5_subheading {
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
+  String get magic_setup_generate_envoy_key_ios_subheading {
     return Intl.message(
-      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
-      name: 'magic_setup_sending_backup_to_envoy_server_2_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Uploading Encrypted Backup`
-  String get magic_setup_sending_backup_to_envoy_server_3_5_heading {
-    return Intl.message(
-      'Uploading Encrypted Backup',
-      name: 'magic_setup_sending_backup_to_envoy_server_3_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
-  String get magic_setup_sending_backup_to_envoy_server_3_5_subheading {
-    return Intl.message(
-      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
-      name: 'magic_setup_sending_backup_to_envoy_server_3_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Uploading Encrypted Backup`
-  String get magic_setup_sending_backup_to_envoy_server_4_5_heading {
-    return Intl.message(
-      'Uploading Encrypted Backup',
-      name: 'magic_setup_sending_backup_to_envoy_server_4_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
-  String get magic_setup_sending_backup_to_envoy_server_4_5_subheading {
-    return Intl.message(
-      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
-      name: 'magic_setup_sending_backup_to_envoy_server_4_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Uploading Encrypted Backup`
-  String get magic_setup_sending_backup_to_envoy_server_5_5_heading {
-    return Intl.message(
-      'Uploading Encrypted Backup',
-      name: 'magic_setup_sending_backup_to_envoy_server_5_5_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
-  String get magic_setup_sending_backup_to_envoy_server_5_5_subheading {
-    return Intl.message(
-      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
-      name: 'magic_setup_sending_backup_to_envoy_server_5_5_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Uploading Encrypted Backup`
-  String get magic_setup_sending_backup_to_envoy_server_heading {
-    return Intl.message(
-      'Uploading Encrypted Backup',
-      name: 'magic_setup_sending_backup_to_envoy_server_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
-  String get magic_setup_sending_backup_to_envoy_server_subheading {
-    return Intl.message(
-      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
-      name: 'magic_setup_sending_backup_to_envoy_server_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Go back`
-  String get manual_seed_generate_seed_verify_seed_warning_CTA {
-    return Intl.message(
-      'Go back',
-      name: 'manual_seed_generate_seed_verify_seed_warning_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
-  String get manual_seed_generate_seed_verify_seed_warning_subheading {
-    return Intl.message(
-      'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
-      name: 'manual_seed_generate_seed_verify_seed_warning_subheading',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
+      name: 'magic_setup_generate_envoy_key_ios_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `Continue`
-  String get manual_setup_12_word_seed_enter_passphrase_CTA {
+  String get magic_setup_generate_wallet_modal_android_CTA {
     return Intl.message(
       'Continue',
-      name: 'manual_setup_12_word_seed_enter_passphrase_CTA',
+      name: 'magic_setup_generate_wallet_modal_android_CTA',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Passphrase`
-  String get manual_setup_12_word_seed_enter_passphrase_heading {
+  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.`
+  String get magic_setup_generate_wallet_modal_android_subheading {
     return Intl.message(
-      'Enter Your Passphrase',
-      name: 'manual_setup_12_word_seed_enter_passphrase_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Passphrases are case and space sensitive. Enter with extreme care.`
-  String get manual_setup_12_word_seed_enter_passphrase_subheading {
-    return Intl.message(
-      'Passphrases are case and space sensitive. Enter with extreme care.',
-      name: 'manual_setup_12_word_seed_enter_passphrase_subheading',
+      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.',
+      name: 'magic_setup_generate_wallet_modal_android_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `Continue`
-  String get manual_setup_12_word_seed_passphrase_warning_CTA {
+  String get magic_setup_generate_wallet_modal_ios_CTA {
     return Intl.message(
       'Continue',
-      name: 'manual_setup_12_word_seed_passphrase_warning_CTA',
+      name: 'magic_setup_generate_wallet_modal_ios_CTA',
       desc: '',
       args: [],
     );
   }
 
-  /// `WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
-  String get manual_setup_12_word_seed_passphrase_warning_subheading {
+  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
+  String get magic_setup_generate_wallet_modal_ios_subheading {
     return Intl.message(
-      'WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
-      name: 'manual_setup_12_word_seed_passphrase_warning_subheading',
+      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
+      name: 'magic_setup_generate_wallet_modal_ios_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Continue`
-  String get manual_setup_12_word_seed_verify_passphrase_CTA {
+  /// `Retry`
+  String get magic_setup_recovery_fail_android_CTA1 {
     return Intl.message(
-      'Continue',
-      name: 'manual_setup_12_word_seed_verify_passphrase_CTA',
+      'Retry',
+      name: 'magic_setup_recovery_fail_android_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Verify Your Passphrase`
-  String get manual_setup_12_word_seed_verify_passphrase_heading {
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_android_CTA2 {
     return Intl.message(
-      'Verify Your Passphrase',
-      name: 'manual_setup_12_word_seed_verify_passphrase_heading',
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_android_CTA2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Please carefully re-enter your passphrase.`
-  String get manual_setup_12_word_seed_verify_passphrase_subheading {
+  /// `Recovery Unsuccessful`
+  String get magic_setup_recovery_fail_android_heading {
     return Intl.message(
-      'Please carefully re-enter your passphrase.',
-      name: 'manual_setup_12_word_seed_verify_passphrase_subheading',
+      'Recovery Unsuccessful',
+      name: 'magic_setup_recovery_fail_android_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
-  String get manual_setup_encrypted_backup_location_1_2_subheading {
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
+  String get magic_setup_recovery_fail_android_subheading {
     return Intl.message(
-      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
-      name: 'manual_setup_encrypted_backup_location_1_2_subheading',
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
+      name: 'magic_setup_recovery_fail_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Choose Destination`
-  String get manual_setup_encrypted_backup_location_1_3_CTA {
+  /// `Retry`
+  String get magic_setup_recovery_fail_ios_CTA1 {
     return Intl.message(
-      'Choose Destination',
-      name: 'manual_setup_encrypted_backup_location_1_3_CTA',
+      'Retry',
+      name: 'magic_setup_recovery_fail_ios_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Store Your Encrypted Backup`
-  String get manual_setup_encrypted_backup_location_1_3_heading {
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_ios_CTA2 {
     return Intl.message(
-      'Store Your Encrypted Backup',
-      name: 'manual_setup_encrypted_backup_location_1_3_heading',
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_ios_CTA2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_encrypted_backup_location_1_3_subheading {
+  /// `Recovery Unsuccessful`
+  String get magic_setup_recovery_fail_ios_heading {
     return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_encrypted_backup_location_1_3_subheading',
+      'Recovery Unsuccessful',
+      name: 'magic_setup_recovery_fail_ios_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `I understand`
-  String get manual_setup_encrypted_backup_location_2_3_CTA {
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
+  String get magic_setup_recovery_fail_ios_subheading {
     return Intl.message(
-      'I understand',
-      name: 'manual_setup_encrypted_backup_location_2_3_CTA',
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
+      name: 'magic_setup_recovery_fail_ios_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Action`
-  String get manual_setup_encrypted_backup_location_3_3_CTA {
+  /// `Recovering your Envoy wallet`
+  String get magic_setup_recovery_heading {
     return Intl.message(
-      'Action',
-      name: 'manual_setup_encrypted_backup_location_3_3_CTA',
+      'Recovering your Envoy wallet',
+      name: 'magic_setup_recovery_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Title Here`
-  String get manual_setup_encrypted_backup_location_3_3_heading {
+  /// `Envoy is recovering your wallet from your (cloud/drive).`
+  String get magic_setup_recovery_subheading {
     return Intl.message(
-      'Title Here',
-      name: 'manual_setup_encrypted_backup_location_3_3_heading',
+      'Envoy is recovering your wallet from your (cloud/drive).',
+      name: 'magic_setup_recovery_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Here’s to the crazy ones, the misfits, the rebels, the troublemakers...`
-  String get manual_setup_encrypted_backup_location_3_3_subheading {
+  /// `Recovering your Envoy Wallet`
+  String get magic_setup_recovery_success_android_heading {
     return Intl.message(
-      'Here’s to the crazy ones, the misfits, the rebels, the troublemakers...',
-      name: 'manual_setup_encrypted_backup_location_3_3_subheading',
+      'Recovering your Envoy Wallet',
+      name: 'magic_setup_recovery_success_android_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Generate New Seed`
-  String get manual_setup_flow_tutorial_CTA_1 {
+  /// `Sign into Google and restore your  backup data`
+  String get magic_setup_recovery_success_android_instructions1 {
     return Intl.message(
-      'Generate New Seed',
-      name: 'manual_setup_flow_tutorial_CTA_1',
+      'Sign into Google and restore your  backup data',
+      name: 'magic_setup_recovery_success_android_instructions1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Import Seed`
-  String get manual_setup_flow_tutorial_CTA_2 {
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get magic_setup_recovery_success_android_instructions2 {
     return Intl.message(
-      'Import Seed',
-      name: 'manual_setup_flow_tutorial_CTA_2',
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'magic_setup_recovery_success_android_instructions2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Manual Seed Setup`
-  String get manual_setup_flow_tutorial_heading {
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get magic_setup_recovery_success_android_instructions3 {
     return Intl.message(
-      'Manual Seed Setup',
-      name: 'manual_setup_flow_tutorial_heading',
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'magic_setup_recovery_success_android_instructions3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get magic_setup_recovery_success_android_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'magic_setup_recovery_success_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy Wallet`
+  String get magic_setup_recovery_success_ios_heading {
+    return Intl.message(
+      'Recovering your Envoy Wallet',
+      name: 'magic_setup_recovery_success_ios_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into iCloud and install Envoy on the new device.`
+  String get magic_setup_recovery_success_ios_instructions1 {
+    return Intl.message(
+      'Sign into iCloud and install Envoy on the new device.',
+      name: 'magic_setup_recovery_success_ios_instructions1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Envoy and tap ‘Recover Envoy Wallet’.`
+  String get magic_setup_recovery_success_ios_instructions2 {
+    return Intl.message(
+      'Open Envoy and tap ‘Recover Envoy Wallet’.',
+      name: 'magic_setup_recovery_success_ios_instructions2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
+  String get magic_setup_recovery_success_ios_instructions3 {
+    return Intl.message(
+      'Envoy will then automatically reinstate your existing Envoy wallet.',
+      name: 'magic_setup_recovery_success_ios_instructions3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get magic_setup_recovery_success_ios_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'magic_setup_recovery_success_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uploading Encrypted Backup`
+  String get magic_setup_send_backup_to_envoy_server_heading {
+    return Intl.message(
+      'Uploading Encrypted Backup',
+      name: 'magic_setup_send_backup_to_envoy_server_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.`
+  String get magic_setup_send_backup_to_envoy_server_subheading {
+    return Intl.message(
+      'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
+      name: 'magic_setup_send_backup_to_envoy_server_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Wallet`
+  String get magic_setup_tutorial_android_CTA1 {
+    return Intl.message(
+      'Create New Wallet',
+      name: 'magic_setup_tutorial_android_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get magic_setup_tutorial_android_CTA2 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'magic_setup_tutorial_android_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Your Wallet`
+  String get magic_setup_tutorial_android_heading {
+    return Intl.message(
+      'Set Up Your Wallet',
+      name: 'magic_setup_tutorial_android_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get manual_setup_flow_tutorial_skip {
+  String get magic_setup_tutorial_android_skip {
     return Intl.message(
       'Skip',
-      name: 'manual_setup_flow_tutorial_skip',
+      name: 'magic_setup_tutorial_android_skip',
       desc: '',
       args: [],
     );
   }
 
-  /// `If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used.`
-  String get manual_setup_flow_tutorial_subheading {
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get magic_setup_tutorial_android_subheading {
     return Intl.message(
-      'If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used.',
-      name: 'manual_setup_flow_tutorial_subheading',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'magic_setup_tutorial_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Wallet`
+  String get magic_setup_tutorial_ios_CTA1 {
+    return Intl.message(
+      'Create New Wallet',
+      name: 'magic_setup_tutorial_ios_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get magic_setup_tutorial_ios_CTA2 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'magic_setup_tutorial_ios_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Your Wallet`
+  String get magic_setup_tutorial_ios_heading {
+    return Intl.message(
+      'Set Up Your Wallet',
+      name: 'magic_setup_tutorial_ios_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get magic_setup_tutorial_ios_skip {
+    return Intl.message(
+      'Skip',
+      name: 'magic_setup_tutorial_ios_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get magic_setup_tutorial_ios_subheading {
+    return Intl.message(
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'magic_setup_tutorial_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Destination`
+  String get manual_setup_create_and_store_backup_CTA {
+    return Intl.message(
+      'Choose Destination',
+      name: 'manual_setup_create_and_store_backup_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Store Your Encrypted Backup`
+  String get manual_setup_create_and_store_backup_heading {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'manual_setup_create_and_store_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_create_and_store_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_create_and_store_backup_subheading',
       desc: '',
       args: [],
     );
@@ -5564,141 +4804,11 @@ class S {
     );
   }
 
-  /// `Keep Your Seed Private`
-  String get manual_setup_generate_seed_heading {
-    return Intl.message(
-      'Keep Your Seed Private',
-      name: 'manual_setup_generate_seed_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!`
+  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin! DEV_ID:test_test`
   String get manual_setup_generate_seed_subheading {
     return Intl.message(
-      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!',
+      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin! DEV_ID:test_test',
       name: 'manual_setup_generate_seed_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_generate_seed_verify_quiz_4_4_done_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_done_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_quiz_4_4_done_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_done_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_quiz_4_4_done_info_text {
-    return Intl.message(
-      'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_done_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Correct`
-  String get manual_setup_generate_seed_verify_quiz_4_4_done_state_correct {
-    return Intl.message(
-      'Correct',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_done_state_correct',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #11 seed word?`
-  String get manual_setup_generate_seed_verify_quiz_4_4_done_subheading {
-    return Intl.message(
-      'What is your #11 seed word?',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_done_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_quiz_4_4_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_quiz_4_4_info_text {
-    return Intl.message(
-      'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #11 seed word?`
-  String get manual_setup_generate_seed_verify_quiz_4_4_subheading {
-    return Intl.message(
-      'What is your #11 seed word?',
-      name: 'manual_setup_generate_seed_verify_quiz_4_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_quiz_success_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_quiz_success_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_quiz_success_info_text {
-    return Intl.message(
-      'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_quiz_success_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Correct`
-  String get manual_setup_generate_seed_verify_quiz_success_state_correct {
-    return Intl.message(
-      'Correct',
-      name: 'manual_setup_generate_seed_verify_quiz_success_state_correct',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #2 seed word?`
-  String get manual_setup_generate_seed_verify_quiz_success_subheading {
-    return Intl.message(
-      'What is your #2 seed word?',
-      name: 'manual_setup_generate_seed_verify_quiz_success_subheading',
       desc: '',
       args: [],
     );
@@ -5714,87 +4824,31 @@ class S {
     );
   }
 
-  /// `Done`
-  String get manual_setup_generate_seed_verify_seed_again_CTA {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_generate_seed_verify_seed_again_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Write Down these 12 Words`
-  String get manual_setup_generate_seed_verify_seed_again_heading {
-    return Intl.message(
-      'Write Down these 12 Words',
-      name: 'manual_setup_generate_seed_verify_seed_again_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_seed_again_quiz_1_4_heading {
+  String get manual_setup_generate_seed_verify_seed_again_quiz_heading {
     return Intl.message(
       'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_seed_again_quiz_1_4_heading',
+      name: 'manual_setup_generate_seed_verify_seed_again_quiz_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_seed_again_quiz_1_4_info_text {
+  String get manual_setup_generate_seed_verify_seed_again_quiz_infotext {
     return Intl.message(
       'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_seed_again_quiz_1_4_info_text',
+      name: 'manual_setup_generate_seed_verify_seed_again_quiz_infotext',
       desc: '',
       args: [],
     );
   }
 
   /// `What is your #2 seed word?`
-  String get manual_setup_generate_seed_verify_seed_again_quiz_1_4_subheading {
+  String get manual_setup_generate_seed_verify_seed_again_quiz_subheading {
     return Intl.message(
       'What is your #2 seed word?',
-      name: 'manual_setup_generate_seed_verify_seed_again_quiz_1_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String
-      get manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name:
-          'manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a word to continue`
-  String
-      get manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_info_text {
-    return Intl.message(
-      'Choose a word to continue',
-      name:
-          'manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #2 seed word?`
-  String
-      get manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_subheading {
-    return Intl.message(
-      'What is your #2 seed word?',
-      name:
-          'manual_setup_generate_seed_verify_seed_again_quiz_1_4_success_subheading',
+      name: 'manual_setup_generate_seed_verify_seed_again_quiz_subheading',
       desc: '',
       args: [],
     );
@@ -5820,16 +4874,6 @@ class S {
     );
   }
 
-  /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_seed_quiz_1_4_info_text {
-    return Intl.message(
-      'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_1_4_subheading {
     return Intl.message(
@@ -5840,51 +4884,51 @@ class S {
     );
   }
 
-  /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_seed_quiz_2_4_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_2_4_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_seed_quiz_2_4_info_text {
+  String get manual_setup_generate_seed_verify_seed_quiz_1_4_subheading_CTA {
     return Intl.message(
       'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_2_4_info_text',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_subheading_CTA',
       desc: '',
       args: [],
     );
   }
 
-  /// `What is your #9 seed word?`
-  String get manual_setup_generate_seed_verify_seed_quiz_2_4_subheading {
+  /// `Continue`
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_CTA {
     return Intl.message(
-      'What is your #9 seed word?',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_2_4_subheading',
+      'Continue',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_seed_quiz_2_4_success_heading {
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_heading {
     return Intl.message(
       'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_2_4_success_heading',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_seed_quiz_2_4_success_info_text {
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_infotext {
     return Intl.message(
       'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_2_4_success_info_text',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_infotext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is your #11 seed word?`
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading {
+    return Intl.message(
+      'What is your #11 seed word?',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading',
       desc: '',
       args: [],
     );
@@ -5892,97 +4936,11 @@ class S {
 
   /// `Correct`
   String
-      get manual_setup_generate_seed_verify_seed_quiz_2_4_success_state_correct {
+      get manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading_success {
     return Intl.message(
       'Correct',
       name:
-          'manual_setup_generate_seed_verify_seed_quiz_2_4_success_state_correct',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #9 seed word?`
-  String
-      get manual_setup_generate_seed_verify_seed_quiz_2_4_success_subheading {
-    return Intl.message(
-      'What is your #9 seed word?',
-      name:
-          'manual_setup_generate_seed_verify_seed_quiz_2_4_success_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_seed_quiz_3_4_CTA {
-    return Intl.message(
-      'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_3_4_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_seed_quiz_3_4_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_3_4_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #5 seed word?`
-  String get manual_setup_generate_seed_verify_seed_quiz_3_4_subheading {
-    return Intl.message(
-      'What is your #5 seed word?',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_3_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_generate_seed_verify_seed_quiz_3_4_success_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_3_4_success_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a word to continue`
-  String get manual_setup_generate_seed_verify_seed_quiz_3_4_success_info_text {
-    return Intl.message(
-      'Choose a word to continue',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_3_4_success_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Correct`
-  String
-      get manual_setup_generate_seed_verify_seed_quiz_3_4_success_state_correct {
-    return Intl.message(
-      'Correct',
-      name:
-          'manual_setup_generate_seed_verify_seed_quiz_3_4_success_state_correct',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #5 seed word?`
-  String
-      get manual_setup_generate_seed_verify_seed_quiz_3_4_success_subheading {
-    return Intl.message(
-      'What is your #5 seed word?',
-      name:
-          'manual_setup_generate_seed_verify_seed_quiz_3_4_success_subheading',
+          'manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading_success',
       desc: '',
       args: [],
     );
@@ -5993,6 +4951,16 @@ class S {
     return Intl.message(
       'Try Again',
       name: 'manual_setup_generate_seed_verify_seed_quiz_fail_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Entry`
+  String get manual_setup_generate_seed_verify_seed_quiz_fail_error {
+    return Intl.message(
+      'Invalid Entry',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_fail_error',
       desc: '',
       args: [],
     );
@@ -6009,22 +4977,10 @@ class S {
   }
 
   /// `Choose a word from the list below.`
-  String get manual_setup_generate_seed_verify_seed_quiz_fail_info_text {
+  String get manual_setup_generate_seed_verify_seed_quiz_fail_infotext {
     return Intl.message(
       'Choose a word from the list below.',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_fail_info_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Invalid Entry`
-  String
-      get manual_setup_generate_seed_verify_seed_quiz_fail_state_invalid_entry {
-    return Intl.message(
-      'Invalid Entry',
-      name:
-          'manual_setup_generate_seed_verify_seed_quiz_fail_state_invalid_entry',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_fail_infotext',
       desc: '',
       args: [],
     );
@@ -6035,6 +4991,70 @@ class S {
     return Intl.message(
       'What is your #2 seed word?',
       name: 'manual_setup_generate_seed_verify_seed_quiz_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go back`
+  String
+      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA {
+    return Intl.message(
+      'Go back',
+      name:
+          'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
+  String
+      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
+    return Intl.message(
+      'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
+      name:
+          'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_heading {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a word to continue`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_info_text {
+    return Intl.message(
+      'Choose a word to continue',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_info_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is your #2 seed word?`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_subheading {
+    return Intl.message(
+      'What is your #2 seed word?',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correct`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_success {
+    return Intl.message(
+      'Correct',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_success',
       desc: '',
       args: [],
     );
@@ -6051,584 +5071,346 @@ class S {
   }
 
   /// `Done`
-  String get manual_setup_generate_seed_write_seed_CTA {
+  String get manual_setup_generate_seed_write_words_CTA {
     return Intl.message(
       'Done',
-      name: 'manual_setup_generate_seed_write_seed_CTA',
+      name: 'manual_setup_generate_seed_write_words_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `Write Down these 12 Words`
-  String get manual_setup_generate_seed_write_seed_heading {
+  String get manual_setup_generate_seed_write_words_heading {
     return Intl.message(
       'Write Down these 12 Words',
-      name: 'manual_setup_generate_seed_write_seed_heading',
+      name: 'manual_setup_generate_seed_write_words_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_autocomplete_heading {
+  /// `Create New Backup`
+  String get manual_setup_import_backup_CTA1 {
     return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_autocomplete_heading',
+      'Create New Backup',
+      name: 'manual_setup_import_backup_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_complete_1_2_heading {
+  /// `Import Existing Backup`
+  String get manual_setup_import_backup_CTA2 {
     return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_complete_1_2_heading',
+      'Import Existing Backup',
+      name: 'manual_setup_import_backup_CTA2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_complete_2_2_heading {
+  /// `Import Existing Backup`
+  String get manual_setup_import_backup_heading {
     return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_complete_2_2_heading',
+      'Import Existing Backup',
+      name: 'manual_setup_import_backup_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_completing_android_heading {
+  /// `Do you have an existing backup file to be restored?\n\nIf no, tap Create New Backup for Envoy to create a new backup file for you.`
+  String get manual_setup_import_backup_subheading {
     return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_completing_android_heading',
+      'Do you have an existing backup file to be restored?\n\nIf no, tap Create New Backup for Envoy to create a new backup file for you.',
+      name: 'manual_setup_import_backup_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_completing_iOS_heading {
+  /// `Choose Destination`
+  String get manual_setup_import_existing_backup_CTA {
     return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_completing_iOS_heading',
+      'Choose Destination',
+      name: 'manual_setup_import_existing_backup_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Store Your Encrypted Backup`
+  String get manual_setup_import_existing_backup_heading {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'manual_setup_import_existing_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_import_existing_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_import_existing_backup_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `Done`
-  String get manual_setup_import_12_word_seed_done_CTA {
+  String get manual_setup_import_seed_12_words_CTA {
     return Intl.message(
       'Done',
-      name: 'manual_setup_import_12_word_seed_done_CTA',
+      name: 'manual_setup_import_seed_12_words_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `My seed has a passphrase`
-  String get manual_setup_import_12_word_seed_done_checkbox {
+  String get manual_setup_import_seed_12_words_checkbox {
     return Intl.message(
       'My seed has a passphrase',
-      name: 'manual_setup_import_12_word_seed_done_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_done_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_done_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_12_word_seed_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_12_word_seed_heading',
+      name: 'manual_setup_import_seed_12_words_checkbox',
       desc: '',
       args: [],
     );
   }
 
   /// `Go back`
-  String get manual_setup_import_12_word_seed_invalid_CTA {
+  String get manual_setup_import_seed_12_words_fail_modal_CTA {
     return Intl.message(
       'Go back',
-      name: 'manual_setup_import_12_word_seed_invalid_CTA',
+      name: 'manual_setup_import_seed_12_words_fail_modal_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `That seed appears to be invalid. Please check the words entered, including the order they are in and try again.`
-  String get manual_setup_import_12_word_seed_invalid_subheading {
+  String get manual_setup_import_seed_12_words_fail_modal_subheading {
     return Intl.message(
       'That seed appears to be invalid. Please check the words entered, including the order they are in and try again.',
-      name: 'manual_setup_import_12_word_seed_invalid_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get manual_setup_import_12_word_seed_modify_seedword_1_2_CTA {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_1_2_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get manual_setup_import_12_word_seed_modify_seedword_1_2_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_1_2_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_12_word_seed_modify_seedword_1_2_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_1_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get manual_setup_import_12_word_seed_modify_seedword_2_2_CTA {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_2_2_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get manual_setup_import_12_word_seed_modify_seedword_2_2_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_2_2_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_12_word_seed_modify_seedword_2_2_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_2_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get manual_setup_import_12_word_seed_modify_seedword_done_CTA {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_done_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get manual_setup_import_12_word_seed_modify_seedword_done_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_done_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_12_word_seed_modify_seedword_done_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_12_word_seed_modify_seedword_done_heading',
+      name: 'manual_setup_import_seed_12_words_fail_modal_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_1_2_autocomplete_done_heading {
+  String get manual_setup_import_seed_12_words_heading {
     return Intl.message(
       'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_1_2_autocomplete_done_heading',
+      name: 'manual_setup_import_seed_12_words_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_1_2_autocomplete_heading {
+  /// `24 Word Seed`
+  String get manual_setup_import_seed_CTA1 {
     return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_1_2_autocomplete_heading',
+      '24 Word Seed',
+      name: 'manual_setup_import_seed_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `12 Word Seed`
+  String get manual_setup_import_seed_CTA2 {
+    return Intl.message(
+      '12 Word Seed',
+      name: 'manual_setup_import_seed_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import your Seed`
+  String get manual_setup_import_seed_heading {
+    return Intl.message(
+      'Import your Seed',
+      name: 'manual_setup_import_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.`
+  String get manual_setup_import_seed_subheading {
+    return Intl.message(
+      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.',
+      name: 'manual_setup_import_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate New Seed`
+  String get manual_setup_tutorial_CTA1 {
+    return Intl.message(
+      'Generate New Seed',
+      name: 'manual_setup_tutorial_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Seed`
+  String get manual_setup_tutorial_CTA2 {
+    return Intl.message(
+      'Import Seed',
+      name: 'manual_setup_tutorial_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manual Seed Setup`
+  String get manual_setup_tutorial_heading {
+    return Intl.message(
+      'Manual Seed Setup',
+      name: 'manual_setup_tutorial_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get manual_setup_tutorial_skip {
+    return Intl.message(
+      'Skip',
+      name: 'manual_setup_tutorial_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used.`
+  String get manual_setup_tutorial_subheading {
+    return Intl.message(
+      'If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used.',
+      name: 'manual_setup_tutorial_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get manual_setup_verify_seed_12_words_CTA {
+    return Intl.message(
+      'Done',
+      name: 'manual_setup_verify_seed_12_words_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get manual_setup_verify_seed_12_words_checkbox {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'manual_setup_verify_seed_12_words_checkbox',
       desc: '',
       args: [],
     );
   }
 
   /// `Continue`
-  String get manual_setup_import_24_word_seed_1_2_done_CTA {
+  String get manual_setup_verify_seed_12_words_enter_passphrase_modal_CTA {
     return Intl.message(
       'Continue',
-      name: 'manual_setup_import_24_word_seed_1_2_done_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_1_2_done_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_1_2_done_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_1_2_entering_seedword_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_1_2_entering_seedword_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_1_2_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_1_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get manual_setup_import_24_word_seed_2_2_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'manual_setup_import_24_word_seed_2_2_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get manual_setup_import_24_word_seed_2_2_done_CTA {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_import_24_word_seed_2_2_done_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get manual_setup_import_24_word_seed_2_2_done_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'manual_setup_import_24_word_seed_2_2_done_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_2_2_done_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_2_2_done_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_2_2_entering_seedwords_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_2_2_entering_seedwords_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get manual_setup_import_24_word_seed_2_2_heading {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'manual_setup_import_24_word_seed_2_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Go back`
-  String get manual_setup_import_24_word_seed_invalid_seedword_CTA {
-    return Intl.message(
-      'Go back',
-      name: 'manual_setup_import_24_word_seed_invalid_seedword_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.`
-  String get manual_setup_import_24_word_seed_invalid_seedword_subheading {
-    return Intl.message(
-      'Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.',
-      name: 'manual_setup_import_24_word_seed_invalid_seedword_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_import_24_word_seed_modify_seedword_1_2_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_import_24_word_seed_modify_seedword_1_2_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_24_word_seed_modify_seedword_1_2_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_24_word_seed_modify_seedword_1_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_import_24_word_seed_modify_seedword_2_2_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_import_24_word_seed_modify_seedword_2_2_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_24_word_seed_modify_seedword_2_2_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_24_word_seed_modify_seedword_2_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_add_passphrase_CTA {
-    return Intl.message(
-      'Done',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_add_passphrase_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_add_passphrase_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_add_passphrase_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_add_passphrase_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_add_passphrase_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_import_24_word_seed_verify_seedword_done_1_2_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_import_24_word_seed_verify_seedword_done_1_2_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_24_word_seed_verify_seedword_done_1_2_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_24_word_seed_verify_seedword_done_1_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get manual_setup_import_24_word_seed_verify_seedword_done_2_2_CTA {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_import_24_word_seed_verify_seedword_done_2_2_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_done_2_2_checkbox {
-    return Intl.message(
-      'My seed has a passphrase',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_done_2_2_checkbox',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get manual_setup_import_24_word_seed_verify_seedword_done_2_2_heading {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'manual_setup_import_24_word_seed_verify_seedword_done_2_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_CTA {
-    return Intl.message(
-      'Continue',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_CTA',
+      name: 'manual_setup_verify_seed_12_words_enter_passphrase_modal_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `Enter Your Passphrase`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_heading {
+  String get manual_setup_verify_seed_12_words_enter_passphrase_modal_heading {
     return Intl.message(
       'Enter Your Passphrase',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_heading',
+      name: 'manual_setup_verify_seed_12_words_enter_passphrase_modal_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Passphrases are case and space sensitive. Enter with care.`
+  /// `Passphrases are case and space sensitive. Enter with extreme care.`
   String
-      get manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_subheading {
+      get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
     return Intl.message(
-      'Passphrases are case and space sensitive. Enter with care.',
+      'Passphrases are case and space sensitive. Enter with extreme care.',
       name:
-          'manual_setup_import_24_word_seed_verify_seedword_enter_passphrase_subheading',
+          'manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Continue`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_CTA {
+  /// `Verify Your Seed`
+  String get manual_setup_verify_seed_12_words_heading {
     return Intl.message(
-      'Continue',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING\n\nPassphrases are an advanced feature. Are you sure you want to apply a passphrase? \n\nEnvoy is unable to recover a forgotten or incorrect passphrase.`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading {
-    return Intl.message(
-      'WARNING\n\nPassphrases are an advanced feature. Are you sure you want to apply a passphrase? \n\nEnvoy is unable to recover a forgotten or incorrect passphrase.',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_passphrase_warning_subheading',
+      'Verify Your Seed',
+      name: 'manual_setup_verify_seed_12_words_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Continue`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_CTA {
+  String get manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA {
     return Intl.message(
       'Continue',
+      name: 'manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
+  String
+      get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
+    return Intl.message(
+      'WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
       name:
-          'manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_CTA',
+          'manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get manual_setup_verify_seed_12_words_verify_passphrase_modal_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_verify_seed_12_words_verify_passphrase_modal_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `Verify Your Passphrase`
-  String
-      get manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_heading {
+  String get manual_setup_verify_seed_12_words_verify_passphrase_modal_heading {
     return Intl.message(
       'Verify Your Passphrase',
-      name:
-          'manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_heading',
+      name: 'manual_setup_verify_seed_12_words_verify_passphrase_modal_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Passphrases are case and space sensitive. Enter with care.`
+  /// `Please carefully re-enter your passphrase.`
   String
-      get manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading {
+      get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
     return Intl.message(
-      'Passphrases are case and space sensitive. Enter with care.',
+      'Please carefully re-enter your passphrase.',
       name:
-          'manual_setup_import_24_word_seed_verify_seedword_verify_passphrase_subheading',
+          'manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading',
       desc: '',
       args: [],
     );
@@ -6974,26 +5756,6 @@ class S {
     );
   }
 
-  /// `Install Envoy and tap “Recover Envoy Wallet”`
-  String get recovery_scenario_android_2_3 {
-    return Intl.message(
-      'Install Envoy and tap “Recover Envoy Wallet”',
-      name: 'recovery_scenario_android_2_3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically restore your existing Envoy wallet`
-  String get recovery_scenario_android_3_3 {
-    return Intl.message(
-      'Envoy will then automatically restore your existing Envoy wallet',
-      name: 'recovery_scenario_android_3_3',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Continue`
   String get recovery_scenario_android_CTA {
     return Intl.message(
@@ -7015,10 +5777,30 @@ class S {
   }
 
   /// `Sign into Google and restore your  backup data`
-  String get recovery_scenario_android_recover_1_3 {
+  String get recovery_scenario_android_instructions1 {
     return Intl.message(
       'Sign into Google and restore your  backup data',
-      name: 'recovery_scenario_android_recover_1_3',
+      name: 'recovery_scenario_android_instructions1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get recovery_scenario_android_instructions2 {
+    return Intl.message(
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'recovery_scenario_android_instructions2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get recovery_scenario_android_instructions3 {
+    return Intl.message(
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'recovery_scenario_android_instructions3',
       desc: '',
       args: [],
     );
@@ -7035,60 +5817,60 @@ class S {
   }
 
   /// `Continue`
-  String get recovery_scenario_iOS_CTA {
+  String get recovery_scenario_ios_CTA {
     return Intl.message(
       'Continue',
-      name: 'recovery_scenario_iOS_CTA',
+      name: 'recovery_scenario_ios_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `How to Recover?`
-  String get recovery_scenario_iOS_heading {
+  String get recovery_scenario_ios_heading {
     return Intl.message(
       'How to Recover?',
-      name: 'recovery_scenario_iOS_heading',
+      name: 'recovery_scenario_ios_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Sign into iCloud and restore your iCloud backup`
-  String get recovery_scenario_iOS_step_1 {
+  String get recovery_scenario_ios_instructions1 {
     return Intl.message(
       'Sign into iCloud and restore your iCloud backup',
-      name: 'recovery_scenario_iOS_step_1',
+      name: 'recovery_scenario_ios_instructions1',
       desc: '',
       args: [],
     );
   }
 
   /// `Install Envoy and tap “Recover Envoy Wallet”`
-  String get recovery_scenario_iOS_step_2 {
+  String get recovery_scenario_ios_instructions2 {
     return Intl.message(
       'Install Envoy and tap “Recover Envoy Wallet”',
-      name: 'recovery_scenario_iOS_step_2',
+      name: 'recovery_scenario_ios_instructions2',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy will then automatically restore your existing Envoy wallet`
-  String get recovery_scenario_iOS_step_3 {
+  String get recovery_scenario_ios_instructions3 {
     return Intl.message(
       'Envoy will then automatically restore your existing Envoy wallet',
-      name: 'recovery_scenario_iOS_step_3',
+      name: 'recovery_scenario_ios_instructions3',
       desc: '',
       args: [],
     );
   }
 
   /// `To recover your Envoy wallet, follow these simple instructions.`
-  String get recovery_scenario_iOS_subheading {
+  String get recovery_scenario_ios_subheading {
     return Intl.message(
       'To recover your Envoy wallet, follow these simple instructions.',
-      name: 'recovery_scenario_iOS_subheading',
+      name: 'recovery_scenario_ios_subheading',
       desc: '',
       args: [],
     );
@@ -7375,30 +6157,30 @@ class S {
   }
 
   /// `Set Up Envoy Wallet`
-  String get splash_screen_cta1 {
+  String get splash_screen_CTA1 {
     return Intl.message(
       'Set Up Envoy Wallet',
-      name: 'splash_screen_cta1',
+      name: 'splash_screen_CTA1',
       desc: '',
       args: [],
     );
   }
 
   /// `Manually Configure Seed Words`
-  String get splash_screen_cta2 {
+  String get splash_screen_CTA2 {
     return Intl.message(
       'Manually Configure Seed Words',
-      name: 'splash_screen_cta2',
+      name: 'splash_screen_CTA2',
       desc: '',
       args: [],
     );
   }
 
   /// `Only Manage Passport`
-  String get splash_screen_cta3 {
+  String get splash_screen_CTA3 {
     return Intl.message(
       'Only Manage Passport',
-      name: 'splash_screen_cta3',
+      name: 'splash_screen_CTA3',
       desc: '',
       args: [],
     );
@@ -7814,5666 +6596,6 @@ class S {
     );
   }
 
-  /// `Let’s Setup Your Wallet`
-  String get text_6399ff19b95f367561884580 {
-    return Intl.message(
-      'Let’s Setup Your Wallet',
-      name: 'text_6399ff19b95f367561884580',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Let’s Setup Your Wallet`
-  String get text_6399ff19b95f367561884586 {
-    return Intl.message(
-      'Let’s Setup Your Wallet',
-      name: 'text_6399ff19b95f367561884586',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Let’s Setup Your Wallet`
-  String get text_6399ff19b95f367561884588 {
-    return Intl.message(
-      'Let’s Setup Your Wallet',
-      name: 'text_6399ff19b95f367561884588',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_6399ff19b95f36756188458a {
-    return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_6399ff19b95f36756188458a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_6399ff19b95f367561884590 {
-    return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_6399ff19b95f367561884590',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn how your data is secured`
-  String get text_6399ff19b95f367561884592 {
-    return Intl.message(
-      'Learn how your data is secured',
-      name: 'text_6399ff19b95f367561884592',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn how your data is secured`
-  String get text_6399ff19b95f367561884594 {
-    return Intl.message(
-      'Learn how your data is secured',
-      name: 'text_6399ff19b95f367561884594',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn how your data is secured`
-  String get text_6399ff19b95f367561884598 {
-    return Intl.message(
-      'Learn how your data is secured',
-      name: 'text_6399ff19b95f367561884598',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get text_6399ff19b95f36756188459a {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'text_6399ff19b95f36756188459a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get text_6399ff19b95f36756188459c {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'text_6399ff19b95f36756188459c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get text_6399ff19b95f3675618845a0 {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'text_6399ff19b95f3675618845a0',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Generate New Wallet`
-  String get text_6399ff19b95f3675618845a2 {
-    return Intl.message(
-      'Generate New Wallet',
-      name: 'text_6399ff19b95f3675618845a2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Generate New Wallet`
-  String get text_6399ff19b95f3675618845a3 {
-    return Intl.message(
-      'Generate New Wallet',
-      name: 'text_6399ff19b95f3675618845a3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Let’s Setup Your Wallet`
-  String get text_6399ff19b95f3675618845a4 {
-    return Intl.message(
-      'Let’s Setup Your Wallet',
-      name: 'text_6399ff19b95f3675618845a4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Generate New Wallet`
-  String get text_6399ff19b95f3675618845a6 {
-    return Intl.message(
-      'Generate New Wallet',
-      name: 'text_6399ff19b95f3675618845a6',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_6399ff19b95f3675618845a7 {
-    return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_6399ff19b95f3675618845a7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn how your data is secured`
-  String get text_6399ff19b95f3675618845a9 {
-    return Intl.message(
-      'Learn how your data is secured',
-      name: 'text_6399ff19b95f3675618845a9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get text_6399ff19b95f3675618845ab {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'text_6399ff19b95f3675618845ab',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Generate New Wallet`
-  String get text_6399ff19b95f3675618845ad {
-    return Intl.message(
-      'Generate New Wallet',
-      name: 'text_6399ff19b95f3675618845ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Let’s Setup Your Wallet`
-  String get text_639a01a7b95f367561884984 {
-    return Intl.message(
-      'Let’s Setup Your Wallet',
-      name: 'text_639a01a7b95f367561884984',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_639a01a7b95f367561884986 {
-    return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_639a01a7b95f367561884986',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `We don’t keep your seed`
-  String get text_639a01a7b95f367561884988 {
-    return Intl.message(
-      'We don’t keep your seed',
-      name: 'text_639a01a7b95f367561884988',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get text_639a01a7b95f36756188498a {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'text_639a01a7b95f36756188498a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Generate New Wallet`
-  String get text_639a01a7b95f36756188498c {
-    return Intl.message(
-      'Generate New Wallet',
-      name: 'text_639a01a7b95f36756188498c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6a1f {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6a1f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639aec9fa3d8db28cd9f6a29 {
-    return Intl.message(
-      '2.',
-      name: 'text_639aec9fa3d8db28cd9f6a29',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `abandon`
-  String get text_639aec9fa3d8db28cd9f6a46 {
-    return Intl.message(
-      'abandon',
-      name: 'text_639aec9fa3d8db28cd9f6a46',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6a67 {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6a67',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `sweet`
-  String get text_639aec9fa3d8db28cd9f6a8b {
-    return Intl.message(
-      'sweet',
-      name: 'text_639aec9fa3d8db28cd9f6a8b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `original`
-  String get text_639aec9fa3d8db28cd9f6aac {
-    return Intl.message(
-      'original',
-      name: 'text_639aec9fa3d8db28cd9f6aac',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639aec9fa3d8db28cd9f6ac2 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639aec9fa3d8db28cd9f6ac2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639aec9fa3d8db28cd9f6ac4 {
-    return Intl.message(
-      '9.',
-      name: 'text_639aec9fa3d8db28cd9f6ac4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639aec9fa3d8db28cd9f6ac8 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639aec9fa3d8db28cd9f6ac8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639aec9fa3d8db28cd9f6aca {
-    return Intl.message(
-      '2.',
-      name: 'text_639aec9fa3d8db28cd9f6aca',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639aec9fa3d8db28cd9f6ad3 {
-    return Intl.message(
-      '5.',
-      name: 'text_639aec9fa3d8db28cd9f6ad3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `foster`
-  String get text_639aec9fa3d8db28cd9f6ad5 {
-    return Intl.message(
-      'foster',
-      name: 'text_639aec9fa3d8db28cd9f6ad5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get text_639aec9fa3d8db28cd9f6ad9 {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'text_639aec9fa3d8db28cd9f6ad9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639aec9fa3d8db28cd9f6ae2 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639aec9fa3d8db28cd9f6ae2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `pelican`
-  String get text_639aec9fa3d8db28cd9f6ae4 {
-    return Intl.message(
-      'pelican',
-      name: 'text_639aec9fa3d8db28cd9f6ae4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `abandon`
-  String get text_639aec9fa3d8db28cd9f6aec {
-    return Intl.message(
-      'abandon',
-      name: 'text_639aec9fa3d8db28cd9f6aec',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639aec9fa3d8db28cd9f6aee {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639aec9fa3d8db28cd9f6aee',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `piano`
-  String get text_639aec9fa3d8db28cd9f6af2 {
-    return Intl.message(
-      'piano',
-      name: 'text_639aec9fa3d8db28cd9f6af2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639aec9fa3d8db28cd9f6af4 {
-    return Intl.message(
-      '5.',
-      name: 'text_639aec9fa3d8db28cd9f6af4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639aec9fa3d8db28cd9f6afa {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6afa',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `toast`
-  String get text_639aec9fa3d8db28cd9f6b02 {
-    return Intl.message(
-      'toast',
-      name: 'text_639aec9fa3d8db28cd9f6b02',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `castle`
-  String get text_639aec9fa3d8db28cd9f6b04 {
-    return Intl.message(
-      'castle',
-      name: 'text_639aec9fa3d8db28cd9f6b04',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639aec9fa3d8db28cd9f6b06 {
-    return Intl.message(
-      '2.',
-      name: 'text_639aec9fa3d8db28cd9f6b06',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `abandon`
-  String get text_639aec9fa3d8db28cd9f6b08 {
-    return Intl.message(
-      'abandon',
-      name: 'text_639aec9fa3d8db28cd9f6b08',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6b0a {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6b0a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639aec9fa3d8db28cd9f6b0c {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6b0c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `tank`
-  String get text_639aec9fa3d8db28cd9f6b11 {
-    return Intl.message(
-      'tank',
-      name: 'text_639aec9fa3d8db28cd9f6b11',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639aec9fa3d8db28cd9f6b16 {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639aec9fa3d8db28cd9f6b16',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639aec9fa3d8db28cd9f6b18 {
-    return Intl.message(
-      '11.',
-      name: 'text_639aec9fa3d8db28cd9f6b18',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `piano`
-  String get text_639aec9fa3d8db28cd9f6b1a {
-    return Intl.message(
-      'piano',
-      name: 'text_639aec9fa3d8db28cd9f6b1a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6b1c {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6b1c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `sweet`
-  String get text_639aec9fa3d8db28cd9f6b1e {
-    return Intl.message(
-      'sweet',
-      name: 'text_639aec9fa3d8db28cd9f6b1e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639aec9fa3d8db28cd9f6b20 {
-    return Intl.message(
-      '2.',
-      name: 'text_639aec9fa3d8db28cd9f6b20',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `abandon`
-  String get text_639aec9fa3d8db28cd9f6b22 {
-    return Intl.message(
-      'abandon',
-      name: 'text_639aec9fa3d8db28cd9f6b22',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639aec9fa3d8db28cd9f6b24 {
-    return Intl.message(
-      '9.',
-      name: 'text_639aec9fa3d8db28cd9f6b24',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `glow`
-  String get text_639aec9fa3d8db28cd9f6b26 {
-    return Intl.message(
-      'glow',
-      name: 'text_639aec9fa3d8db28cd9f6b26',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639aec9fa3d8db28cd9f6b28 {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639aec9fa3d8db28cd9f6b28',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `piano`
-  String get text_639aec9fa3d8db28cd9f6b2a {
-    return Intl.message(
-      'piano',
-      name: 'text_639aec9fa3d8db28cd9f6b2a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `catch`
-  String get text_639aec9fa3d8db28cd9f6b2c {
-    return Intl.message(
-      'catch',
-      name: 'text_639aec9fa3d8db28cd9f6b2c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `original`
-  String get text_639aec9fa3d8db28cd9f6b30 {
-    return Intl.message(
-      'original',
-      name: 'text_639aec9fa3d8db28cd9f6b30',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639aec9fa3d8db28cd9f6b32 {
-    return Intl.message(
-      '2.',
-      name: 'text_639aec9fa3d8db28cd9f6b32',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639aec9fa3d8db28cd9f6b34 {
-    return Intl.message(
-      '11.',
-      name: 'text_639aec9fa3d8db28cd9f6b34',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `piano`
-  String get text_639aec9fa3d8db28cd9f6b36 {
-    return Intl.message(
-      'piano',
-      name: 'text_639aec9fa3d8db28cd9f6b36',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639aec9fa3d8db28cd9f6b38 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639aec9fa3d8db28cd9f6b38',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13. bacon`
-  String get text_639aec9fa3d8db28cd9f6b3a {
-    return Intl.message(
-      '13. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b3a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6b3c {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6b3c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `castle`
-  String get text_639aec9fa3d8db28cd9f6b40 {
-    return Intl.message(
-      'castle',
-      name: 'text_639aec9fa3d8db28cd9f6b40',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Correct`
-  String get text_639aec9fa3d8db28cd9f6b44 {
-    return Intl.message(
-      'Correct',
-      name: 'text_639aec9fa3d8db28cd9f6b44',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `foster`
-  String get text_639aec9fa3d8db28cd9f6b49 {
-    return Intl.message(
-      'foster',
-      name: 'text_639aec9fa3d8db28cd9f6b49',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `tank`
-  String get text_639aec9fa3d8db28cd9f6b4b {
-    return Intl.message(
-      'tank',
-      name: 'text_639aec9fa3d8db28cd9f6b4b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639aec9fa3d8db28cd9f6b4d {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639aec9fa3d8db28cd9f6b4d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `tank`
-  String get text_639aec9fa3d8db28cd9f6b4f {
-    return Intl.message(
-      'tank',
-      name: 'text_639aec9fa3d8db28cd9f6b4f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639aec9fa3d8db28cd9f6b51 {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639aec9fa3d8db28cd9f6b51',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19. bacon`
-  String get text_639aec9fa3d8db28cd9f6b53 {
-    return Intl.message(
-      '19. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b53',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `abandon`
-  String get text_639aec9fa3d8db28cd9f6b55 {
-    return Intl.message(
-      'abandon',
-      name: 'text_639aec9fa3d8db28cd9f6b55',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `piano`
-  String get text_639aec9fa3d8db28cd9f6b57 {
-    return Intl.message(
-      'piano',
-      name: 'text_639aec9fa3d8db28cd9f6b57',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `pelican`
-  String get text_639aec9fa3d8db28cd9f6b5a {
-    return Intl.message(
-      'pelican',
-      name: 'text_639aec9fa3d8db28cd9f6b5a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `sweet`
-  String get text_639aec9fa3d8db28cd9f6b5c {
-    return Intl.message(
-      'sweet',
-      name: 'text_639aec9fa3d8db28cd9f6b5c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `catch`
-  String get text_639aec9fa3d8db28cd9f6b5e {
-    return Intl.message(
-      'catch',
-      name: 'text_639aec9fa3d8db28cd9f6b5e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639aec9fa3d8db28cd9f6b60 {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639aec9fa3d8db28cd9f6b60',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `tank`
-  String get text_639aec9fa3d8db28cd9f6b62 {
-    return Intl.message(
-      'tank',
-      name: 'text_639aec9fa3d8db28cd9f6b62',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6b64 {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6b64',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14. bacon`
-  String get text_639aec9fa3d8db28cd9f6b66 {
-    return Intl.message(
-      '14. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b66',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639aec9fa3d8db28cd9f6b68 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639aec9fa3d8db28cd9f6b68',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `catch`
-  String get text_639aec9fa3d8db28cd9f6b6a {
-    return Intl.message(
-      'catch',
-      name: 'text_639aec9fa3d8db28cd9f6b6a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `abandon`
-  String get text_639aec9fa3d8db28cd9f6b6c {
-    return Intl.message(
-      'abandon',
-      name: 'text_639aec9fa3d8db28cd9f6b6c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `original`
-  String get text_639aec9fa3d8db28cd9f6b6f {
-    return Intl.message(
-      'original',
-      name: 'text_639aec9fa3d8db28cd9f6b6f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639aec9fa3d8db28cd9f6b71 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639aec9fa3d8db28cd9f6b71',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20. bacon`
-  String get text_639aec9fa3d8db28cd9f6b73 {
-    return Intl.message(
-      '20. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b73',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `sweet`
-  String get text_639aec9fa3d8db28cd9f6b75 {
-    return Intl.message(
-      'sweet',
-      name: 'text_639aec9fa3d8db28cd9f6b75',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `catch`
-  String get text_639aec9fa3d8db28cd9f6b77 {
-    return Intl.message(
-      'catch',
-      name: 'text_639aec9fa3d8db28cd9f6b77',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639aec9fa3d8db28cd9f6b79 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639aec9fa3d8db28cd9f6b79',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `foster`
-  String get text_639aec9fa3d8db28cd9f6b7b {
-    return Intl.message(
-      'foster',
-      name: 'text_639aec9fa3d8db28cd9f6b7b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `toast`
-  String get text_639aec9fa3d8db28cd9f6b7d {
-    return Intl.message(
-      'toast',
-      name: 'text_639aec9fa3d8db28cd9f6b7d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639aec9fa3d8db28cd9f6b7f {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639aec9fa3d8db28cd9f6b7f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `foster`
-  String get text_639aec9fa3d8db28cd9f6b81 {
-    return Intl.message(
-      'foster',
-      name: 'text_639aec9fa3d8db28cd9f6b81',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `original`
-  String get text_639aec9fa3d8db28cd9f6b83 {
-    return Intl.message(
-      'original',
-      name: 'text_639aec9fa3d8db28cd9f6b83',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15. bacon`
-  String get text_639aec9fa3d8db28cd9f6b85 {
-    return Intl.message(
-      '15. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b85',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639aec9fa3d8db28cd9f6b87 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639aec9fa3d8db28cd9f6b87',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `foster`
-  String get text_639aec9fa3d8db28cd9f6b8a {
-    return Intl.message(
-      'foster',
-      name: 'text_639aec9fa3d8db28cd9f6b8a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `broccoli`
-  String get text_639aec9fa3d8db28cd9f6b8c {
-    return Intl.message(
-      'broccoli',
-      name: 'text_639aec9fa3d8db28cd9f6b8c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639aec9fa3d8db28cd9f6b8e {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639aec9fa3d8db28cd9f6b8e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21. bacon`
-  String get text_639aec9fa3d8db28cd9f6b90 {
-    return Intl.message(
-      '21. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b90',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639aec9fa3d8db28cd9f6b95 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639aec9fa3d8db28cd9f6b95',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `glow`
-  String get text_639aec9fa3d8db28cd9f6b98 {
-    return Intl.message(
-      'glow',
-      name: 'text_639aec9fa3d8db28cd9f6b98',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16. bacon`
-  String get text_639aec9fa3d8db28cd9f6b9b {
-    return Intl.message(
-      '16. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6b9b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639aec9fa3d8db28cd9f6b9d {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639aec9fa3d8db28cd9f6b9d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `sweet`
-  String get text_639aec9fa3d8db28cd9f6ba0 {
-    return Intl.message(
-      'sweet',
-      name: 'text_639aec9fa3d8db28cd9f6ba0',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639aec9fa3d8db28cd9f6ba2 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639aec9fa3d8db28cd9f6ba2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `castle`
-  String get text_639aec9fa3d8db28cd9f6ba4 {
-    return Intl.message(
-      'castle',
-      name: 'text_639aec9fa3d8db28cd9f6ba4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22. bacon`
-  String get text_639aec9fa3d8db28cd9f6ba6 {
-    return Intl.message(
-      '22. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6ba6',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639aec9fa3d8db28cd9f6ba8 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639aec9fa3d8db28cd9f6ba8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `original`
-  String get text_639aec9fa3d8db28cd9f6baa {
-    return Intl.message(
-      'original',
-      name: 'text_639aec9fa3d8db28cd9f6baa',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17. bacon`
-  String get text_639aec9fa3d8db28cd9f6bac {
-    return Intl.message(
-      '17. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6bac',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639aec9fa3d8db28cd9f6bae {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639aec9fa3d8db28cd9f6bae',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23. bacon`
-  String get text_639aec9fa3d8db28cd9f6bb3 {
-    return Intl.message(
-      '23. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6bb3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639aec9fa3d8db28cd9f6bb5 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639aec9fa3d8db28cd9f6bb5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18. bacon`
-  String get text_639aec9fa3d8db28cd9f6bb7 {
-    return Intl.message(
-      '18. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6bb7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24. bacon`
-  String get text_639aec9fa3d8db28cd9f6bba {
-    return Intl.message(
-      '24. bacon',
-      name: 'text_639aec9fa3d8db28cd9f6bba',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639aec9fa3d8db28cd9f6bbc {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639aec9fa3d8db28cd9f6bbc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639aec9fa3d8db28cd9f6bbe {
-    return Intl.message(
-      'Done',
-      name: 'text_639aec9fa3d8db28cd9f6bbe',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618453 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618453',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618456 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618456',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618458 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618458',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639af7fc5ab3596bdd61845b {
-    return Intl.message(
-      '7.',
-      name: 'text_639af7fc5ab3596bdd61845b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639af7fc5ab3596bdd61845e {
-    return Intl.message(
-      '7.',
-      name: 'text_639af7fc5ab3596bdd61845e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd618460 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd618460',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd61846d {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd61846d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd61846f {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd61846f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd618477 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd618477',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639af7fc5ab3596bdd618486 {
-    return Intl.message(
-      '8.',
-      name: 'text_639af7fc5ab3596bdd618486',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639af7fc5ab3596bdd618488 {
-    return Intl.message(
-      '8.',
-      name: 'text_639af7fc5ab3596bdd618488',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. taost`
-  String get text_639af7fc5ab3596bdd618490 {
-    return Intl.message(
-      '8. taost',
-      name: 'text_639af7fc5ab3596bdd618490',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. swe`
-  String get text_639af7fc5ab3596bdd6184a9 {
-    return Intl.message(
-      '3. swe',
-      name: 'text_639af7fc5ab3596bdd6184a9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd6184ab {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd6184ab',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd6184ad {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd6184ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639af7fc5ab3596bdd6184c6 {
-    return Intl.message(
-      '9.',
-      name: 'text_639af7fc5ab3596bdd6184c6',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639af7fc5ab3596bdd6184c8 {
-    return Intl.message(
-      '9.',
-      name: 'text_639af7fc5ab3596bdd6184c8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd6184d2 {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd6184d2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639af7fc5ab3596bdd6184dc {
-    return Intl.message(
-      '4.',
-      name: 'text_639af7fc5ab3596bdd6184dc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639af7fc5ab3596bdd6184de {
-    return Intl.message(
-      '4.',
-      name: 'text_639af7fc5ab3596bdd6184de',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639af7fc5ab3596bdd6184e0 {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639af7fc5ab3596bdd6184e0',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd6184e4 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd6184e4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639af7fc5ab3596bdd6184ea {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639af7fc5ab3596bdd6184ea',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6184ee {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6184ee',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639af7fc5ab3596bdd6184f0 {
-    return Intl.message(
-      '10.',
-      name: 'text_639af7fc5ab3596bdd6184f0',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639af7fc5ab3596bdd6184f2 {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639af7fc5ab3596bdd6184f2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639af7fc5ab3596bdd6184fa {
-    return Intl.message(
-      '10.',
-      name: 'text_639af7fc5ab3596bdd6184fa',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd6184fe {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd6184fe',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639af7fc5ab3596bdd618500 {
-    return Intl.message(
-      '7.',
-      name: 'text_639af7fc5ab3596bdd618500',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639af7fc5ab3596bdd618502 {
-    return Intl.message(
-      '5.',
-      name: 'text_639af7fc5ab3596bdd618502',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd618504 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd618504',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618506 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618506',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639af7fc5ab3596bdd61850c {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639af7fc5ab3596bdd61850c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618510 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618510',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618512 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618512',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618514 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618514',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd618516 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd618516',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639af7fc5ab3596bdd618518 {
-    return Intl.message(
-      '11.',
-      name: 'text_639af7fc5ab3596bdd618518',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd61851a {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd61851a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd61851c {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd61851c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639af7fc5ab3596bdd618520 {
-    return Intl.message(
-      '5.',
-      name: 'text_639af7fc5ab3596bdd618520',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639af7fc5ab3596bdd618522 {
-    return Intl.message(
-      '7.',
-      name: 'text_639af7fc5ab3596bdd618522',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1.`
-  String get text_639af7fc5ab3596bdd618526 {
-    return Intl.message(
-      '1.',
-      name: 'text_639af7fc5ab3596bdd618526',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd61852a {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd61852a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd61852c {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd61852c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd61852e {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd61852e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639af7fc5ab3596bdd618530 {
-    return Intl.message(
-      '7.',
-      name: 'text_639af7fc5ab3596bdd618530',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639af7fc5ab3596bdd618534 {
-    return Intl.message(
-      '8.',
-      name: 'text_639af7fc5ab3596bdd618534',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd618536 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd618536',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618538 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618538',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639af7fc5ab3596bdd61853a {
-    return Intl.message(
-      '11.',
-      name: 'text_639af7fc5ab3596bdd61853a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd61853c {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd61853c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639af7fc5ab3596bdd618540 {
-    return Intl.message(
-      '7.',
-      name: 'text_639af7fc5ab3596bdd618540',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618542 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618542',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd618544 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd618544',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639af7fc5ab3596bdd618546 {
-    return Intl.message(
-      '6.',
-      name: 'text_639af7fc5ab3596bdd618546',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd618548 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd618548',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd61854a {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd61854a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639af7fc5ab3596bdd61854c {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639af7fc5ab3596bdd61854c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd618552 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd618552',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639af7fc5ab3596bdd618554 {
-    return Intl.message(
-      '6.',
-      name: 'text_639af7fc5ab3596bdd618554',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd618556 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd618556',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639af7fc5ab3596bdd618558 {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639af7fc5ab3596bdd618558',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd61855a {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd61855a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639af7fc5ab3596bdd61855c {
-    return Intl.message(
-      '2.',
-      name: 'text_639af7fc5ab3596bdd61855c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd61855e {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd61855e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639af7fc5ab3596bdd618560 {
-    return Intl.message(
-      '8.',
-      name: 'text_639af7fc5ab3596bdd618560',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639af7fc5ab3596bdd618562 {
-    return Intl.message(
-      '12.',
-      name: 'text_639af7fc5ab3596bdd618562',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618566 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618566',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639af7fc5ab3596bdd618568 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639af7fc5ab3596bdd618568',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639af7fc5ab3596bdd61856a {
-    return Intl.message(
-      '8.',
-      name: 'text_639af7fc5ab3596bdd61856a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639af7fc5ab3596bdd61856c {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639af7fc5ab3596bdd61856c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. to`
-  String get text_639af7fc5ab3596bdd61856e {
-    return Intl.message(
-      '8. to',
-      name: 'text_639af7fc5ab3596bdd61856e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639af7fc5ab3596bdd618570 {
-    return Intl.message(
-      '12.',
-      name: 'text_639af7fc5ab3596bdd618570',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639af7fc5ab3596bdd618572 {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639af7fc5ab3596bdd618572',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd618574 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd618574',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639af7fc5ab3596bdd618576 {
-    return Intl.message(
-      '9.',
-      name: 'text_639af7fc5ab3596bdd618576',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd618578 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd618578',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. swe`
-  String get text_639af7fc5ab3596bdd61857d {
-    return Intl.message(
-      '3. swe',
-      name: 'text_639af7fc5ab3596bdd61857d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639af7fc5ab3596bdd61857f {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639af7fc5ab3596bdd61857f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639af7fc5ab3596bdd618581 {
-    return Intl.message(
-      '8.',
-      name: 'text_639af7fc5ab3596bdd618581',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639af7fc5ab3596bdd618583 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639af7fc5ab3596bdd618583',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd618585 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd618585',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd618587 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd618587',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd618589 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd618589',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639af7fc5ab3596bdd61858b {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639af7fc5ab3596bdd61858b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639af7fc5ab3596bdd61858d {
-    return Intl.message(
-      '4.',
-      name: 'text_639af7fc5ab3596bdd61858d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd61858f {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd61858f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639af7fc5ab3596bdd618591 {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639af7fc5ab3596bdd618591',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639af7fc5ab3596bdd618595 {
-    return Intl.message(
-      '9.',
-      name: 'text_639af7fc5ab3596bdd618595',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. taost`
-  String get text_639af7fc5ab3596bdd618597 {
-    return Intl.message(
-      '8. taost',
-      name: 'text_639af7fc5ab3596bdd618597',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3.`
-  String get text_639af7fc5ab3596bdd618599 {
-    return Intl.message(
-      '3.',
-      name: 'text_639af7fc5ab3596bdd618599',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639af7fc5ab3596bdd61859b {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639af7fc5ab3596bdd61859b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd61859d {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd61859d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd61859f {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd61859f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639af7fc5ab3596bdd6185a1 {
-    return Intl.message(
-      '9.',
-      name: 'text_639af7fc5ab3596bdd6185a1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639af7fc5ab3596bdd6185a3 {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639af7fc5ab3596bdd6185a3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6185a7 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6185a7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd6185a9 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd6185a9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd6185ad {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd6185ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639af7fc5ab3596bdd6185af {
-    return Intl.message(
-      '9.',
-      name: 'text_639af7fc5ab3596bdd6185af',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd6185b1 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd6185b1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639af7fc5ab3596bdd6185b3 {
-    return Intl.message(
-      '4.',
-      name: 'text_639af7fc5ab3596bdd6185b3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639af7fc5ab3596bdd6185b5 {
-    return Intl.message(
-      '10.',
-      name: 'text_639af7fc5ab3596bdd6185b5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639af7fc5ab3596bdd6185b7 {
-    return Intl.message(
-      '4.',
-      name: 'text_639af7fc5ab3596bdd6185b7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639af7fc5ab3596bdd6185b9 {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639af7fc5ab3596bdd6185b9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639af7fc5ab3596bdd6185bd {
-    return Intl.message(
-      '4.',
-      name: 'text_639af7fc5ab3596bdd6185bd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd6185bf {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd6185bf',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd6185c3 {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd6185c3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd6185c5 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd6185c5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6185c7 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6185c7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6185c9 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6185c9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd6185cb {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd6185cb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639af7fc5ab3596bdd6185cd {
-    return Intl.message(
-      '10.',
-      name: 'text_639af7fc5ab3596bdd6185cd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639af7fc5ab3596bdd6185cf {
-    return Intl.message(
-      '5.',
-      name: 'text_639af7fc5ab3596bdd6185cf',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6185d3 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6185d3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639af7fc5ab3596bdd6185d5 {
-    return Intl.message(
-      '10.',
-      name: 'text_639af7fc5ab3596bdd6185d5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639af7fc5ab3596bdd6185d7 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639af7fc5ab3596bdd6185d7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639af7fc5ab3596bdd6185d9 {
-    return Intl.message(
-      '10.',
-      name: 'text_639af7fc5ab3596bdd6185d9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd6185db {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd6185db',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd6185dd {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd6185dd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd6185df {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd6185df',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639af7fc5ab3596bdd6185e3 {
-    return Intl.message(
-      '11.',
-      name: 'text_639af7fc5ab3596bdd6185e3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639af7fc5ab3596bdd6185e5 {
-    return Intl.message(
-      '5.',
-      name: 'text_639af7fc5ab3596bdd6185e5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6185e7 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6185e7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd6185eb {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd6185eb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639af7fc5ab3596bdd6185ed {
-    return Intl.message(
-      '5.',
-      name: 'text_639af7fc5ab3596bdd6185ed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639af7fc5ab3596bdd6185ef {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639af7fc5ab3596bdd6185ef',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639af7fc5ab3596bdd6185f1 {
-    return Intl.message(
-      '5.',
-      name: 'text_639af7fc5ab3596bdd6185f1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639af7fc5ab3596bdd6185f3 {
-    return Intl.message(
-      '11.',
-      name: 'text_639af7fc5ab3596bdd6185f3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639af7fc5ab3596bdd6185f5 {
-    return Intl.message(
-      '6.',
-      name: 'text_639af7fc5ab3596bdd6185f5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd6185f9 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd6185f9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd6185fb {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd6185fb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd6185fd {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd6185fd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd6185ff {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd6185ff',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd618601 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd618601',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd618605 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd618605',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639af7fc5ab3596bdd618609 {
-    return Intl.message(
-      '12.',
-      name: 'text_639af7fc5ab3596bdd618609',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639af7fc5ab3596bdd61860b {
-    return Intl.message(
-      '6.',
-      name: 'text_639af7fc5ab3596bdd61860b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639af7fc5ab3596bdd61860d {
-    return Intl.message(
-      '11.',
-      name: 'text_639af7fc5ab3596bdd61860d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639af7fc5ab3596bdd61860f {
-    return Intl.message(
-      '4. original',
-      name: 'text_639af7fc5ab3596bdd61860f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639af7fc5ab3596bdd618611 {
-    return Intl.message(
-      '11.',
-      name: 'text_639af7fc5ab3596bdd618611',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd618613 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd618613',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd618615 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd618615',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd618617 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd618617',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd61861b {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd61861b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd61861f {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd61861f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd618621 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd618621',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639af7fc5ab3596bdd618623 {
-    return Intl.message(
-      '6.',
-      name: 'text_639af7fc5ab3596bdd618623',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639af7fc5ab3596bdd618625 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639af7fc5ab3596bdd618625',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639af7fc5ab3596bdd618627 {
-    return Intl.message(
-      '6.',
-      name: 'text_639af7fc5ab3596bdd618627',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd618629 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd618629',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd61862d {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd61862d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd61862f {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd61862f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd618631 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd618631',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639af7fc5ab3596bdd618633 {
-    return Intl.message(
-      '12.',
-      name: 'text_639af7fc5ab3596bdd618633',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd618639 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd618639',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd61863b {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd61863b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd61863d {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd61863d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd618641 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd618641',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639af7fc5ab3596bdd618643 {
-    return Intl.message(
-      '12.',
-      name: 'text_639af7fc5ab3596bdd618643',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639af7fc5ab3596bdd618644 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639af7fc5ab3596bdd618644',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639af7fc5ab3596bdd618646 {
-    return Intl.message(
-      '12.',
-      name: 'text_639af7fc5ab3596bdd618646',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd618648 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd618648',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `“design”`
-  String get text_639af7fc5ab3596bdd61864a {
-    return Intl.message(
-      '“design”',
-      name: 'text_639af7fc5ab3596bdd61864a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639af7fc5ab3596bdd618650 {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639af7fc5ab3596bdd618650',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd618652 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd618652',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd618654 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd618654',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639af7fc5ab3596bdd618658 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639af7fc5ab3596bdd618658',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639af7fc5ab3596bdd61865c {
-    return Intl.message(
-      'Done',
-      name: 'text_639af7fc5ab3596bdd61865c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Design`
-  String get text_639af7fc5ab3596bdd618661 {
-    return Intl.message(
-      'Design',
-      name: 'text_639af7fc5ab3596bdd618661',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd618665 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd618665',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd618669 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd618669',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Designer`
-  String get text_639af7fc5ab3596bdd61866c {
-    return Intl.message(
-      'Designer',
-      name: 'text_639af7fc5ab3596bdd61866c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639af7fc5ab3596bdd618674 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639af7fc5ab3596bdd618674',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Q`
-  String get text_639af7fc5ab3596bdd61867e {
-    return Intl.message(
-      'Q',
-      name: 'text_639af7fc5ab3596bdd61867e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639af7fc5ab3596bdd618680 {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639af7fc5ab3596bdd618680',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639af7fc5ab3596bdd618683 {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639af7fc5ab3596bdd618683',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639af7fc5ab3596bdd61868d {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639af7fc5ab3596bdd61868d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `W`
-  String get text_639af7fc5ab3596bdd618694 {
-    return Intl.message(
-      'W',
-      name: 'text_639af7fc5ab3596bdd618694',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639af7fc5ab3596bdd618696 {
-    return Intl.message(
-      'Done',
-      name: 'text_639af7fc5ab3596bdd618696',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639af7fc5ab3596bdd618697 {
-    return Intl.message(
-      'Done',
-      name: 'text_639af7fc5ab3596bdd618697',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639af7fc5ab3596bdd61869c {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639af7fc5ab3596bdd61869c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `E`
-  String get text_639af7fc5ab3596bdd6186a2 {
-    return Intl.message(
-      'E',
-      name: 'text_639af7fc5ab3596bdd6186a2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639af7fc5ab3596bdd6186a8 {
-    return Intl.message(
-      'Done',
-      name: 'text_639af7fc5ab3596bdd6186a8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `R`
-  String get text_639af7fc5ab3596bdd6186ad {
-    return Intl.message(
-      'R',
-      name: 'text_639af7fc5ab3596bdd6186ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `T`
-  String get text_639af7fc5ab3596bdd6186b7 {
-    return Intl.message(
-      'T',
-      name: 'text_639af7fc5ab3596bdd6186b7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Y`
-  String get text_639af7fc5ab3596bdd6186c1 {
-    return Intl.message(
-      'Y',
-      name: 'text_639af7fc5ab3596bdd6186c1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `U`
-  String get text_639af7fc5ab3596bdd6186cb {
-    return Intl.message(
-      'U',
-      name: 'text_639af7fc5ab3596bdd6186cb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `I`
-  String get text_639af7fc5ab3596bdd6186d5 {
-    return Intl.message(
-      'I',
-      name: 'text_639af7fc5ab3596bdd6186d5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `O`
-  String get text_639af7fc5ab3596bdd6186df {
-    return Intl.message(
-      'O',
-      name: 'text_639af7fc5ab3596bdd6186df',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `P`
-  String get text_639af7fc5ab3596bdd6186e9 {
-    return Intl.message(
-      'P',
-      name: 'text_639af7fc5ab3596bdd6186e9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `A`
-  String get text_639af7fc5ab3596bdd6186f3 {
-    return Intl.message(
-      'A',
-      name: 'text_639af7fc5ab3596bdd6186f3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `S`
-  String get text_639af7fc5ab3596bdd6186fd {
-    return Intl.message(
-      'S',
-      name: 'text_639af7fc5ab3596bdd6186fd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `D`
-  String get text_639af7fc5ab3596bdd618709 {
-    return Intl.message(
-      'D',
-      name: 'text_639af7fc5ab3596bdd618709',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `F`
-  String get text_639af7fc5ab3596bdd618713 {
-    return Intl.message(
-      'F',
-      name: 'text_639af7fc5ab3596bdd618713',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `G`
-  String get text_639af7fc5ab3596bdd61871f {
-    return Intl.message(
-      'G',
-      name: 'text_639af7fc5ab3596bdd61871f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `H`
-  String get text_639af7fc5ab3596bdd61872b {
-    return Intl.message(
-      'H',
-      name: 'text_639af7fc5ab3596bdd61872b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `J`
-  String get text_639af7fc5ab3596bdd618735 {
-    return Intl.message(
-      'J',
-      name: 'text_639af7fc5ab3596bdd618735',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `K`
-  String get text_639af7fc5ab3596bdd61873f {
-    return Intl.message(
-      'K',
-      name: 'text_639af7fc5ab3596bdd61873f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `L`
-  String get text_639af7fc5ab3596bdd618749 {
-    return Intl.message(
-      'L',
-      name: 'text_639af7fc5ab3596bdd618749',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Z`
-  String get text_639af7fc5ab3596bdd61875f {
-    return Intl.message(
-      'Z',
-      name: 'text_639af7fc5ab3596bdd61875f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `X`
-  String get text_639af7fc5ab3596bdd618767 {
-    return Intl.message(
-      'X',
-      name: 'text_639af7fc5ab3596bdd618767',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `C`
-  String get text_639af7fc5ab3596bdd618773 {
-    return Intl.message(
-      'C',
-      name: 'text_639af7fc5ab3596bdd618773',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `V`
-  String get text_639af7fc5ab3596bdd618777 {
-    return Intl.message(
-      'V',
-      name: 'text_639af7fc5ab3596bdd618777',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `B`
-  String get text_639af7fc5ab3596bdd618783 {
-    return Intl.message(
-      'B',
-      name: 'text_639af7fc5ab3596bdd618783',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `N`
-  String get text_639af7fc5ab3596bdd61878d {
-    return Intl.message(
-      'N',
-      name: 'text_639af7fc5ab3596bdd61878d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `M`
-  String get text_639af7fc5ab3596bdd618797 {
-    return Intl.message(
-      'M',
-      name: 'text_639af7fc5ab3596bdd618797',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `123`
-  String get text_639af7fc5ab3596bdd6187a7 {
-    return Intl.message(
-      '123',
-      name: 'text_639af7fc5ab3596bdd6187a7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `space`
-  String get text_639af7fc5ab3596bdd6187ad {
-    return Intl.message(
-      'space',
-      name: 'text_639af7fc5ab3596bdd6187ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `return`
-  String get text_639af7fc5ab3596bdd6187b3 {
-    return Intl.message(
-      'return',
-      name: 'text_639af7fc5ab3596bdd6187b3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `􀎸`
-  String get text_639af7fc5ab3596bdd6187b9 {
-    return Intl.message(
-      '􀎸',
-      name: 'text_639af7fc5ab3596bdd6187b9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `􀊰`
-  String get text_639af7fc5ab3596bdd6187be {
-    return Intl.message(
-      '􀊰',
-      name: 'text_639af7fc5ab3596bdd6187be',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0588fe1a37c21666e85d {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0588fe1a37c21666e85d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0588fe1a37c21666e880 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0588fe1a37c21666e880',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13. bacon`
-  String get text_639b0588fe1a37c21666e882 {
-    return Intl.message(
-      '13. bacon',
-      name: 'text_639b0588fe1a37c21666e882',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13. bacon`
-  String get text_639b0588fe1a37c21666e89c {
-    return Intl.message(
-      '13. bacon',
-      name: 'text_639b0588fe1a37c21666e89c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. `
-  String get text_639b0588fe1a37c21666e89e {
-    return Intl.message(
-      '1. ',
-      name: 'text_639b0588fe1a37c21666e89e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter Your Seed`
-  String get text_639b0588fe1a37c21666e8a0 {
-    return Intl.message(
-      'Enter Your Seed',
-      name: 'text_639b0588fe1a37c21666e8a0',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0588fe1a37c21666e8a2 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0588fe1a37c21666e8a2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19.`
-  String get text_639b0588fe1a37c21666e8a4 {
-    return Intl.message(
-      '19.',
-      name: 'text_639b0588fe1a37c21666e8a4',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13.`
-  String get text_639b0588fe1a37c21666e8a8 {
-    return Intl.message(
-      '13.',
-      name: 'text_639b0588fe1a37c21666e8a8',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0588fe1a37c21666e8aa {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0588fe1a37c21666e8aa',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639b0589fe1a37c21666e8ae {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639b0589fe1a37c21666e8ae',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639b0589fe1a37c21666e8b3 {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639b0589fe1a37c21666e8b3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Verify Your Seed`
-  String get text_639b0589fe1a37c21666e8b5 {
-    return Intl.message(
-      'Verify Your Seed',
-      name: 'text_639b0589fe1a37c21666e8b5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639b0589fe1a37c21666e8c1 {
-    return Intl.message(
-      '7.',
-      name: 'text_639b0589fe1a37c21666e8c1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19. bacon`
-  String get text_639b0589fe1a37c21666e8c3 {
-    return Intl.message(
-      '19. bacon',
-      name: 'text_639b0589fe1a37c21666e8c3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639b0589fe1a37c21666e8c5 {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639b0589fe1a37c21666e8c5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14.`
-  String get text_639b0589fe1a37c21666e8c7 {
-    return Intl.message(
-      '14.',
-      name: 'text_639b0589fe1a37c21666e8c7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13. bacon`
-  String get text_639b0589fe1a37c21666e8c9 {
-    return Intl.message(
-      '13. bacon',
-      name: 'text_639b0589fe1a37c21666e8c9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19.`
-  String get text_639b0589fe1a37c21666e8cb {
-    return Intl.message(
-      '19.',
-      name: 'text_639b0589fe1a37c21666e8cb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0589fe1a37c21666e8cd {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0589fe1a37c21666e8cd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e8d5 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e8d5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e8d9 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e8d9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e8db {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e8db',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13. bacon`
-  String get text_639b0589fe1a37c21666e8dd {
-    return Intl.message(
-      '13. bacon',
-      name: 'text_639b0589fe1a37c21666e8dd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e8df {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e8df',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2.`
-  String get text_639b0589fe1a37c21666e8e3 {
-    return Intl.message(
-      '2.',
-      name: 'text_639b0589fe1a37c21666e8e3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14. bacon`
-  String get text_639b0589fe1a37c21666e8e5 {
-    return Intl.message(
-      '14. bacon',
-      name: 'text_639b0589fe1a37c21666e8e5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20.`
-  String get text_639b0589fe1a37c21666e8e7 {
-    return Intl.message(
-      '20.',
-      name: 'text_639b0589fe1a37c21666e8e7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e8e9 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e8e9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19. bacon`
-  String get text_639b0589fe1a37c21666e8eb {
-    return Intl.message(
-      '19. bacon',
-      name: 'text_639b0589fe1a37c21666e8eb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14.`
-  String get text_639b0589fe1a37c21666e8ed {
-    return Intl.message(
-      '14.',
-      name: 'text_639b0589fe1a37c21666e8ed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0589fe1a37c21666e8ef {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0589fe1a37c21666e8ef',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e8f1 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e8f1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639b0589fe1a37c21666e8f7 {
-    return Intl.message(
-      '7.',
-      name: 'text_639b0589fe1a37c21666e8f7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639b0589fe1a37c21666e8f9 {
-    return Intl.message(
-      '7.',
-      name: 'text_639b0589fe1a37c21666e8f9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0589fe1a37c21666e8fb {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0589fe1a37c21666e8fb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19. bacon`
-  String get text_639b0589fe1a37c21666e8ff {
-    return Intl.message(
-      '19. bacon',
-      name: 'text_639b0589fe1a37c21666e8ff',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7.`
-  String get text_639b0589fe1a37c21666e901 {
-    return Intl.message(
-      '7.',
-      name: 'text_639b0589fe1a37c21666e901',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `13. bacon`
-  String get text_639b0589fe1a37c21666e903 {
-    return Intl.message(
-      '13. bacon',
-      name: 'text_639b0589fe1a37c21666e903',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639b0589fe1a37c21666e905 {
-    return Intl.message(
-      '8.',
-      name: 'text_639b0589fe1a37c21666e905',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20. bacon`
-  String get text_639b0589fe1a37c21666e907 {
-    return Intl.message(
-      '20. bacon',
-      name: 'text_639b0589fe1a37c21666e907',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15.`
-  String get text_639b0589fe1a37c21666e909 {
-    return Intl.message(
-      '15.',
-      name: 'text_639b0589fe1a37c21666e909',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e90b {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e90b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. taost`
-  String get text_639b0589fe1a37c21666e90d {
-    return Intl.message(
-      '8. taost',
-      name: 'text_639b0589fe1a37c21666e90d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20.`
-  String get text_639b0589fe1a37c21666e90f {
-    return Intl.message(
-      '20.',
-      name: 'text_639b0589fe1a37c21666e90f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14. bacon`
-  String get text_639b0589fe1a37c21666e911 {
-    return Intl.message(
-      '14. bacon',
-      name: 'text_639b0589fe1a37c21666e911',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0589fe1a37c21666e913 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0589fe1a37c21666e913',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e915 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e915',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0589fe1a37c21666e919 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0589fe1a37c21666e919',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0589fe1a37c21666e91b {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0589fe1a37c21666e91b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0589fe1a37c21666e91d {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0589fe1a37c21666e91d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `19. bacon`
-  String get text_639b0589fe1a37c21666e921 {
-    return Intl.message(
-      '19. bacon',
-      name: 'text_639b0589fe1a37c21666e921',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0589fe1a37c21666e923 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0589fe1a37c21666e923',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14. bacon`
-  String get text_639b0589fe1a37c21666e925 {
-    return Intl.message(
-      '14. bacon',
-      name: 'text_639b0589fe1a37c21666e925',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3.`
-  String get text_639b0589fe1a37c21666e927 {
-    return Intl.message(
-      '3.',
-      name: 'text_639b0589fe1a37c21666e927',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15. bacon`
-  String get text_639b0589fe1a37c21666e929 {
-    return Intl.message(
-      '15. bacon',
-      name: 'text_639b0589fe1a37c21666e929',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21.`
-  String get text_639b0589fe1a37c21666e92b {
-    return Intl.message(
-      '21.',
-      name: 'text_639b0589fe1a37c21666e92b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666e92d {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666e92d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e92f {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e92f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15.`
-  String get text_639b0589fe1a37c21666e931 {
-    return Intl.message(
-      '15.',
-      name: 'text_639b0589fe1a37c21666e931',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20. bacon`
-  String get text_639b0589fe1a37c21666e933 {
-    return Intl.message(
-      '20. bacon',
-      name: 'text_639b0589fe1a37c21666e933',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e935 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e935',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0589fe1a37c21666e937 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0589fe1a37c21666e937',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2. broccoli`
-  String get text_639b0589fe1a37c21666e939 {
-    return Intl.message(
-      '2. broccoli',
-      name: 'text_639b0589fe1a37c21666e939',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639b0589fe1a37c21666e93b {
-    return Intl.message(
-      '8.',
-      name: 'text_639b0589fe1a37c21666e93b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639b0589fe1a37c21666e93d {
-    return Intl.message(
-      '8.',
-      name: 'text_639b0589fe1a37c21666e93d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. to`
-  String get text_639b0589fe1a37c21666e93f {
-    return Intl.message(
-      '8. to',
-      name: 'text_639b0589fe1a37c21666e93f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1. abandon`
-  String get text_639b0589fe1a37c21666e941 {
-    return Intl.message(
-      '1. abandon',
-      name: 'text_639b0589fe1a37c21666e941',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `14. bacon`
-  String get text_639b0589fe1a37c21666e943 {
-    return Intl.message(
-      '14. bacon',
-      name: 'text_639b0589fe1a37c21666e943',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8.`
-  String get text_639b0589fe1a37c21666e945 {
-    return Intl.message(
-      '8.',
-      name: 'text_639b0589fe1a37c21666e945',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20. bacon`
-  String get text_639b0589fe1a37c21666e947 {
-    return Intl.message(
-      '20. bacon',
-      name: 'text_639b0589fe1a37c21666e947',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16.`
-  String get text_639b0589fe1a37c21666e949 {
-    return Intl.message(
-      '16.',
-      name: 'text_639b0589fe1a37c21666e949',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21. bacon`
-  String get text_639b0589fe1a37c21666e94b {
-    return Intl.message(
-      '21. bacon',
-      name: 'text_639b0589fe1a37c21666e94b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639b0589fe1a37c21666e94d {
-    return Intl.message(
-      '9.',
-      name: 'text_639b0589fe1a37c21666e94d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639b0589fe1a37c21666e94f {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639b0589fe1a37c21666e94f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e951 {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e951',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21.`
-  String get text_639b0589fe1a37c21666e953 {
-    return Intl.message(
-      '21.',
-      name: 'text_639b0589fe1a37c21666e953',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15. bacon`
-  String get text_639b0589fe1a37c21666e955 {
-    return Intl.message(
-      '15. bacon',
-      name: 'text_639b0589fe1a37c21666e955',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0589fe1a37c21666e957 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0589fe1a37c21666e957',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639b0589fe1a37c21666e959 {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639b0589fe1a37c21666e959',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639b0589fe1a37c21666e95b {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639b0589fe1a37c21666e95b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e95d {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e95d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e95f {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e95f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. swe`
-  String get text_639b0589fe1a37c21666e961 {
-    return Intl.message(
-      '3. swe',
-      name: 'text_639b0589fe1a37c21666e961',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7. pelican`
-  String get text_639b0589fe1a37c21666e963 {
-    return Intl.message(
-      '7. pelican',
-      name: 'text_639b0589fe1a37c21666e963',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `20. bacon`
-  String get text_639b0589fe1a37c21666e965 {
-    return Intl.message(
-      '20. bacon',
-      name: 'text_639b0589fe1a37c21666e965',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e967 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e967',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15. bacon`
-  String get text_639b0589fe1a37c21666e969 {
-    return Intl.message(
-      '15. bacon',
-      name: 'text_639b0589fe1a37c21666e969',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22.`
-  String get text_639b0589fe1a37c21666e96b {
-    return Intl.message(
-      '22.',
-      name: 'text_639b0589fe1a37c21666e96b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16. bacon`
-  String get text_639b0589fe1a37c21666e96d {
-    return Intl.message(
-      '16. bacon',
-      name: 'text_639b0589fe1a37c21666e96d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639b0589fe1a37c21666e96f {
-    return Intl.message(
-      '4.',
-      name: 'text_639b0589fe1a37c21666e96f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16.`
-  String get text_639b0589fe1a37c21666e971 {
-    return Intl.message(
-      '16.',
-      name: 'text_639b0589fe1a37c21666e971',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666e973 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666e973',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666e975 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666e975',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21. bacon`
-  String get text_639b0589fe1a37c21666e977 {
-    return Intl.message(
-      '21. bacon',
-      name: 'text_639b0589fe1a37c21666e977',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639b0589fe1a37c21666e979 {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639b0589fe1a37c21666e979',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639b0589fe1a37c21666e97b {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639b0589fe1a37c21666e97b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e97d {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e97d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e97f {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e97f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639b0589fe1a37c21666e981 {
-    return Intl.message(
-      '9.',
-      name: 'text_639b0589fe1a37c21666e981',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639b0589fe1a37c21666e983 {
-    return Intl.message(
-      '9.',
-      name: 'text_639b0589fe1a37c21666e983',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9.`
-  String get text_639b0589fe1a37c21666e985 {
-    return Intl.message(
-      '9.',
-      name: 'text_639b0589fe1a37c21666e985',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `15. bacon`
-  String get text_639b0589fe1a37c21666e987 {
-    return Intl.message(
-      '15. bacon',
-      name: 'text_639b0589fe1a37c21666e987',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2 broccoli.`
-  String get text_639b0589fe1a37c21666e989 {
-    return Intl.message(
-      '2 broccoli.',
-      name: 'text_639b0589fe1a37c21666e989',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21. bacon`
-  String get text_639b0589fe1a37c21666e98b {
-    return Intl.message(
-      '21. bacon',
-      name: 'text_639b0589fe1a37c21666e98b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17.`
-  String get text_639b0589fe1a37c21666e98d {
-    return Intl.message(
-      '17.',
-      name: 'text_639b0589fe1a37c21666e98d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22. bacon`
-  String get text_639b0589fe1a37c21666e98f {
-    return Intl.message(
-      '22. bacon',
-      name: 'text_639b0589fe1a37c21666e98f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639b0589fe1a37c21666e991 {
-    return Intl.message(
-      '10.',
-      name: 'text_639b0589fe1a37c21666e991',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22.`
-  String get text_639b0589fe1a37c21666e993 {
-    return Intl.message(
-      '22.',
-      name: 'text_639b0589fe1a37c21666e993',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639b0589fe1a37c21666e995 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639b0589fe1a37c21666e995',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666e997 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666e997',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e999 {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e999',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639b0589fe1a37c21666e99b {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639b0589fe1a37c21666e99b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16. bacon`
-  String get text_639b0589fe1a37c21666e99d {
-    return Intl.message(
-      '16. bacon',
-      name: 'text_639b0589fe1a37c21666e99d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e99f {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e99f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666e9a1 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666e9a1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639b0589fe1a37c21666e9a3 {
-    return Intl.message(
-      '4.',
-      name: 'text_639b0589fe1a37c21666e9a3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639b0589fe1a37c21666e9a5 {
-    return Intl.message(
-      '4.',
-      name: 'text_639b0589fe1a37c21666e9a5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4.`
-  String get text_639b0589fe1a37c21666e9a7 {
-    return Intl.message(
-      '4.',
-      name: 'text_639b0589fe1a37c21666e9a7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `21. bacon`
-  String get text_639b0589fe1a37c21666e9a9 {
-    return Intl.message(
-      '21. bacon',
-      name: 'text_639b0589fe1a37c21666e9a9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `8. toast`
-  String get text_639b0589fe1a37c21666e9ab {
-    return Intl.message(
-      '8. toast',
-      name: 'text_639b0589fe1a37c21666e9ab',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17. bacon`
-  String get text_639b0589fe1a37c21666e9ad {
-    return Intl.message(
-      '17. bacon',
-      name: 'text_639b0589fe1a37c21666e9ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23.`
-  String get text_639b0589fe1a37c21666e9af {
-    return Intl.message(
-      '23.',
-      name: 'text_639b0589fe1a37c21666e9af',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16. bacon`
-  String get text_639b0589fe1a37c21666e9b1 {
-    return Intl.message(
-      '16. bacon',
-      name: 'text_639b0589fe1a37c21666e9b1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639b0589fe1a37c21666e9b3 {
-    return Intl.message(
-      '5.',
-      name: 'text_639b0589fe1a37c21666e9b3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17.`
-  String get text_639b0589fe1a37c21666e9b5 {
-    return Intl.message(
-      '17.',
-      name: 'text_639b0589fe1a37c21666e9b5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666e9b7 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666e9b7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666e9b9 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666e9b9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e9bb {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e9bb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e9bd {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e9bd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22. bacon`
-  String get text_639b0589fe1a37c21666e9bf {
-    return Intl.message(
-      '22. bacon',
-      name: 'text_639b0589fe1a37c21666e9bf',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639b0589fe1a37c21666e9c1 {
-    return Intl.message(
-      '10.',
-      name: 'text_639b0589fe1a37c21666e9c1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639b0589fe1a37c21666e9c3 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639b0589fe1a37c21666e9c3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666e9c5 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666e9c5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639b0589fe1a37c21666e9c7 {
-    return Intl.message(
-      '10.',
-      name: 'text_639b0589fe1a37c21666e9c7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10.`
-  String get text_639b0589fe1a37c21666e9c9 {
-    return Intl.message(
-      '10.',
-      name: 'text_639b0589fe1a37c21666e9c9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `16. bacon`
-  String get text_639b0589fe1a37c21666e9cb {
-    return Intl.message(
-      '16. bacon',
-      name: 'text_639b0589fe1a37c21666e9cb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3. sweet`
-  String get text_639b0589fe1a37c21666e9cd {
-    return Intl.message(
-      '3. sweet',
-      name: 'text_639b0589fe1a37c21666e9cd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23. bacon`
-  String get text_639b0589fe1a37c21666e9cf {
-    return Intl.message(
-      '23. bacon',
-      name: 'text_639b0589fe1a37c21666e9cf',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22. bacon`
-  String get text_639b0589fe1a37c21666e9d3 {
-    return Intl.message(
-      '22. bacon',
-      name: 'text_639b0589fe1a37c21666e9d3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666e9d5 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666e9d5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23.`
-  String get text_639b0589fe1a37c21666e9d7 {
-    return Intl.message(
-      '23.',
-      name: 'text_639b0589fe1a37c21666e9d7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639b0589fe1a37c21666e9d9 {
-    return Intl.message(
-      '11.',
-      name: 'text_639b0589fe1a37c21666e9d9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666e9db {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666e9db',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666e9dd {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666e9dd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e9df {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e9df',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17. bacon`
-  String get text_639b0589fe1a37c21666e9e1 {
-    return Intl.message(
-      '17. bacon',
-      name: 'text_639b0589fe1a37c21666e9e1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639b0589fe1a37c21666e9e3 {
-    return Intl.message(
-      '5.',
-      name: 'text_639b0589fe1a37c21666e9e3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666e9e5 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666e9e5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639b0589fe1a37c21666e9e7 {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639b0589fe1a37c21666e9e7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `22. bacon`
-  String get text_639b0589fe1a37c21666e9e9 {
-    return Intl.message(
-      '22. bacon',
-      name: 'text_639b0589fe1a37c21666e9e9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639b0589fe1a37c21666e9eb {
-    return Intl.message(
-      '5.',
-      name: 'text_639b0589fe1a37c21666e9eb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5.`
-  String get text_639b0589fe1a37c21666e9ed {
-    return Intl.message(
-      '5.',
-      name: 'text_639b0589fe1a37c21666e9ed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9. castle`
-  String get text_639b0589fe1a37c21666e9ef {
-    return Intl.message(
-      '9. castle',
-      name: 'text_639b0589fe1a37c21666e9ef',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18. bacon`
-  String get text_639b0589fe1a37c21666e9f1 {
-    return Intl.message(
-      '18. bacon',
-      name: 'text_639b0589fe1a37c21666e9f1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17. bacon`
-  String get text_639b0589fe1a37c21666e9f5 {
-    return Intl.message(
-      '17. bacon',
-      name: 'text_639b0589fe1a37c21666e9f5',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666e9f7 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666e9f7',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18.`
-  String get text_639b0589fe1a37c21666e9f9 {
-    return Intl.message(
-      '18.',
-      name: 'text_639b0589fe1a37c21666e9f9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639b0589fe1a37c21666e9fb {
-    return Intl.message(
-      '6.',
-      name: 'text_639b0589fe1a37c21666e9fb',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666e9fd {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666e9fd',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639b0589fe1a37c21666e9ff {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639b0589fe1a37c21666e9ff',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23. bacon`
-  String get text_639b0589fe1a37c21666ea02 {
-    return Intl.message(
-      '23. bacon',
-      name: 'text_639b0589fe1a37c21666ea02',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639b0589fe1a37c21666ea04 {
-    return Intl.message(
-      '11.',
-      name: 'text_639b0589fe1a37c21666ea04',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666ea06 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666ea06',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666ea08 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666ea08',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `17. bacon`
-  String get text_639b0589fe1a37c21666ea0a {
-    return Intl.message(
-      '17. bacon',
-      name: 'text_639b0589fe1a37c21666ea0a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639b0589fe1a37c21666ea0c {
-    return Intl.message(
-      '11.',
-      name: 'text_639b0589fe1a37c21666ea0c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11.`
-  String get text_639b0589fe1a37c21666ea0e {
-    return Intl.message(
-      '11.',
-      name: 'text_639b0589fe1a37c21666ea0e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24. bacon`
-  String get text_639b0589fe1a37c21666ea12 {
-    return Intl.message(
-      '24. bacon',
-      name: 'text_639b0589fe1a37c21666ea12',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `4. original`
-  String get text_639b0589fe1a37c21666ea14 {
-    return Intl.message(
-      '4. original',
-      name: 'text_639b0589fe1a37c21666ea14',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23. bacon`
-  String get text_639b0589fe1a37c21666ea16 {
-    return Intl.message(
-      '23. bacon',
-      name: 'text_639b0589fe1a37c21666ea16',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666ea18 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666ea18',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24.`
-  String get text_639b0589fe1a37c21666ea1a {
-    return Intl.message(
-      '24.',
-      name: 'text_639b0589fe1a37c21666ea1a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639b0589fe1a37c21666ea1c {
-    return Intl.message(
-      '12.',
-      name: 'text_639b0589fe1a37c21666ea1c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `10. glow`
-  String get text_639b0589fe1a37c21666ea1d {
-    return Intl.message(
-      '10. glow',
-      name: 'text_639b0589fe1a37c21666ea1d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666ea1f {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666ea1f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666ea21 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666ea21',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666ea23 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666ea23',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639b0589fe1a37c21666ea25 {
-    return Intl.message(
-      '6.',
-      name: 'text_639b0589fe1a37c21666ea25',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18. bacon`
-  String get text_639b0589fe1a37c21666ea27 {
-    return Intl.message(
-      '18. bacon',
-      name: 'text_639b0589fe1a37c21666ea27',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `23. bacon`
-  String get text_639b0589fe1a37c21666ea29 {
-    return Intl.message(
-      '23. bacon',
-      name: 'text_639b0589fe1a37c21666ea29',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639b0589fe1a37c21666ea2b {
-    return Intl.message(
-      '6.',
-      name: 'text_639b0589fe1a37c21666ea2b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6.`
-  String get text_639b0589fe1a37c21666ea2d {
-    return Intl.message(
-      '6.',
-      name: 'text_639b0589fe1a37c21666ea2d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666ea33 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666ea33',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5. foster`
-  String get text_639b0589fe1a37c21666ea35 {
-    return Intl.message(
-      '5. foster',
-      name: 'text_639b0589fe1a37c21666ea35',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18. bacon`
-  String get text_639b0589fe1a37c21666ea39 {
-    return Intl.message(
-      '18. bacon',
-      name: 'text_639b0589fe1a37c21666ea39',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666ea3b {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666ea3b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666ea3d {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666ea3d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666ea3f {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666ea3f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639b0589fe1a37c21666ea41 {
-    return Intl.message(
-      '12.',
-      name: 'text_639b0589fe1a37c21666ea41',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24. bacon`
-  String get text_639b0589fe1a37c21666ea43 {
-    return Intl.message(
-      '24. bacon',
-      name: 'text_639b0589fe1a37c21666ea43',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639b0589fe1a37c21666ea48 {
-    return Intl.message(
-      '12.',
-      name: 'text_639b0589fe1a37c21666ea48',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12.`
-  String get text_639b0589fe1a37c21666ea4a {
-    return Intl.message(
-      '12.',
-      name: 'text_639b0589fe1a37c21666ea4a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18. bacon`
-  String get text_639b0589fe1a37c21666ea4c {
-    return Intl.message(
-      '18. bacon',
-      name: 'text_639b0589fe1a37c21666ea4c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666ea4e {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666ea4e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11. piano`
-  String get text_639b0589fe1a37c21666ea50 {
-    return Intl.message(
-      '11. piano',
-      name: 'text_639b0589fe1a37c21666ea50',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24. bacon`
-  String get text_639b0589fe1a37c21666ea52 {
-    return Intl.message(
-      '24. bacon',
-      name: 'text_639b0589fe1a37c21666ea52',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666ea5d {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666ea5d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666ea5f {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666ea5f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24. bacon`
-  String get text_639b0589fe1a37c21666ea63 {
-    return Intl.message(
-      '24. bacon',
-      name: 'text_639b0589fe1a37c21666ea63',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666ea6e {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666ea6e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6. tank`
-  String get text_639b0589fe1a37c21666ea70 {
-    return Intl.message(
-      '6. tank',
-      name: 'text_639b0589fe1a37c21666ea70',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666ea72 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666ea72',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666ea74 {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666ea74',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639b0589fe1a37c21666ea7d {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639b0589fe1a37c21666ea7d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639b0589fe1a37c21666ea88 {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639b0589fe1a37c21666ea88',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639b0589fe1a37c21666ea8a {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639b0589fe1a37c21666ea8a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `12. catch`
-  String get text_639b0589fe1a37c21666ea8c {
-    return Intl.message(
-      '12. catch',
-      name: 'text_639b0589fe1a37c21666ea8c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639b0589fe1a37c21666ea8e {
-    return Intl.message(
-      'Done',
-      name: 'text_639b0589fe1a37c21666ea8e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639b0589fe1a37c21666ea95 {
-    return Intl.message(
-      'Done',
-      name: 'text_639b0589fe1a37c21666ea95',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639b0589fe1a37c21666eaa0 {
-    return Intl.message(
-      'Done',
-      name: 'text_639b0589fe1a37c21666eaa0',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `My seed has a passphrase`
-  String get text_639b0589fe1a37c21666eaa1 {
-    return Intl.message(
-      'My seed has a passphrase',
-      name: 'text_639b0589fe1a37c21666eaa1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get text_639b0589fe1a37c21666eaad {
-    return Intl.message(
-      'Done',
-      name: 'text_639b0589fe1a37c21666eaad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `18.`
-  String get text_639b0589fe1a37c21666eb8e {
-    return Intl.message(
-      '18.',
-      name: 'text_639b0589fe1a37c21666eb8e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `24.`
-  String get text_639b0589fe1a37c21666eb96 {
-    return Intl.message(
-      '24.',
-      name: 'text_639b0589fe1a37c21666eb96',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_639b1606dab75c7f53a911ae {
-    return Intl.message(
-      '1',
-      name: 'text_639b1606dab75c7f53a911ae',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_639b1606dab75c7f53a911be {
-    return Intl.message(
-      '2',
-      name: 'text_639b1606dab75c7f53a911be',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_639b1606dab75c7f53a911ce {
-    return Intl.message(
-      '3',
-      name: 'text_639b1606dab75c7f53a911ce',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Store Your Encrypted Backup`
-  String get text_639b189339d43a7643a01f7b {
-    return Intl.message(
-      'Store Your Encrypted Backup',
-      name: 'text_639b189339d43a7643a01f7b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get text_639b189339d43a7643a01f81 {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'text_639b189339d43a7643a01f81',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Store Your Encrypted Backup`
-  String get text_639b189339d43a7643a01f84 {
-    return Intl.message(
-      'Store Your Encrypted Backup',
-      name: 'text_639b189339d43a7643a01f84',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose destination`
-  String get text_639b189339d43a7643a01f86 {
-    return Intl.message(
-      'Choose destination',
-      name: 'text_639b189339d43a7643a01f86',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted seed backup. You can choose to secure it on cloud, on a device, or on a micro SD.`
-  String get text_639b189339d43a7643a01f87 {
-    return Intl.message(
-      'Envoy has generated your encrypted seed backup. You can choose to secure it on cloud, on a device, or on a micro SD.',
-      name: 'text_639b189339d43a7643a01f87',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose destination`
-  String get text_639b189339d43a7643a01f89 {
-    return Intl.message(
-      'Choose destination',
-      name: 'text_639b189339d43a7643a01f89',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_639b19e631a859f38996807d {
-    return Intl.message(
-      '1',
-      name: 'text_639b19e631a859f38996807d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Devices`
-  String get text_639b19e631a859f389968081 {
-    return Intl.message(
-      'Devices',
-      name: 'text_639b19e631a859f389968081',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_639b19e631a859f389968088 {
-    return Intl.message(
-      '2',
-      name: 'text_639b19e631a859f389968088',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_639b19e631a859f389968090 {
-    return Intl.message(
-      '3',
-      name: 'text_639b19e631a859f389968090',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Update Firmware`
   String get text_63ea44c3d7462fb1215fd9f8 {
     return Intl.message(
@@ -13534,16 +6656,6 @@ class S {
     );
   }
 
-  /// `Restore Seed`
-  String get text_63eb47cef06e51c88ad46df4 {
-    return Intl.message(
-      'Restore Seed',
-      name: 'text_63eb47cef06e51c88ad46df4',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Create Seed`
   String get text_63eb47cef06e51c88ad46df5 {
     return Intl.message(
@@ -13564,16 +6676,6 @@ class S {
     );
   }
 
-  /// `Enter word 1 of 24`
-  String get text_63eb47cef06e51c88ad46df7 {
-    return Intl.message(
-      'Enter word 1 of 24',
-      name: 'text_63eb47cef06e51c88ad46df7',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Restore Backup`
   String get text_63eb47cef06e51c88ad46df8 {
     return Intl.message(
@@ -13589,16 +6691,6 @@ class S {
     return Intl.message(
       'Restore Seed',
       name: 'text_63eb47cef06e51c88ad46df9',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7`
-  String get text_63eb47cef06e51c88ad46dfa {
-    return Intl.message(
-      '7',
-      name: 'text_63eb47cef06e51c88ad46dfa',
       desc: '',
       args: [],
     );
@@ -13634,16 +6726,6 @@ class S {
     );
   }
 
-  /// `5`
-  String get text_63eb47cef06e51c88ad46e01 {
-    return Intl.message(
-      '5',
-      name: 'text_63eb47cef06e51c88ad46e01',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Backup`
   String get text_63eb47cef06e51c88ad46e04 {
     return Intl.message(
@@ -13659,26 +6741,6 @@ class S {
     return Intl.message(
       'Backup Code',
       name: 'text_63eb47cef06e51c88ad46e06',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ski`
-  String get text_63eb47cef06e51c88ad46e09 {
-    return Intl.message(
-      'ski',
-      name: 'text_63eb47cef06e51c88ad46e09',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `slab`
-  String get text_63eb47cef06e51c88ad46e0b {
-    return Intl.message(
-      'slab',
-      name: 'text_63eb47cef06e51c88ad46e0b',
       desc: '',
       args: [],
     );
@@ -13704,51 +6766,11 @@ class S {
     );
   }
 
-  /// `Create encrypted backup?`
-  String get text_63eb47cef06e51c88ad46e11 {
-    return Intl.message(
-      'Create encrypted backup?',
-      name: 'text_63eb47cef06e51c88ad46e11',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Create Seed`
   String get text_63eb47cef06e51c88ad46e14 {
     return Intl.message(
       'Create Seed',
       name: 'text_63eb47cef06e51c88ad46e14',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `How Would you like to Set Up your Passport?`
-  String get text_63eb47cef06e51c88ad46e15 {
-    return Intl.message(
-      'How Would you like to Set Up your Passport?',
-      name: 'text_63eb47cef06e51c88ad46e15',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Backup`
-  String get text_63eb47cef06e51c88ad46e16 {
-    return Intl.message(
-      'Backup',
-      name: 'text_63eb47cef06e51c88ad46e16',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `This is an optional but step to backup your wallet seed. Head to settings > Backup > Create Backup. `
-  String get text_63eb47cef06e51c88ad46e17 {
-    return Intl.message(
-      'This is an optional but step to backup your wallet seed. Head to settings > Backup > Create Backup. ',
-      name: 'text_63eb47cef06e51c88ad46e17',
       desc: '',
       args: [],
     );
@@ -13774,16 +6796,6 @@ class S {
     );
   }
 
-  /// `slam`
-  String get text_63eb47cef06e51c88ad46e1b {
-    return Intl.message(
-      'slam',
-      name: 'text_63eb47cef06e51c88ad46e1b',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `3`
   String get text_63eb47cef06e51c88ad46e1e {
     return Intl.message(
@@ -13804,51 +6816,11 @@ class S {
     );
   }
 
-  /// `Backup Code`
-  String get text_63eb47cef06e51c88ad46e22 {
-    return Intl.message(
-      'Backup Code',
-      name: 'text_63eb47cef06e51c88ad46e22',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `As a new owner of a Passport you can create a new seed. You can also restore a wallet using seed words, or restore a backup from an existing Passport.`
-  String get text_63eb47cef06e51c88ad46e23 {
-    return Intl.message(
-      'As a new owner of a Passport you can create a new seed. You can also restore a wallet using seed words, or restore a backup from an existing Passport.',
-      name: 'text_63eb47cef06e51c88ad46e23',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Restore Backup`
   String get text_63eb47cef06e51c88ad46e24 {
     return Intl.message(
       'Restore Backup',
       name: 'text_63eb47cef06e51c88ad46e24',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restore Backup`
-  String get text_63eb47cef06e51c88ad46e27 {
-    return Intl.message(
-      'Restore Backup',
-      name: 'text_63eb47cef06e51c88ad46e27',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_63eb47cef06e51c88ad46e28 {
-    return Intl.message(
-      '1',
-      name: 'text_63eb47cef06e51c88ad46e28',
       desc: '',
       args: [],
     );
@@ -13875,40 +6847,10 @@ class S {
   }
 
   /// `play`
-  String get text_63eb47cef06e51c88ad46e2d {
-    return Intl.message(
-      'play',
-      name: 'text_63eb47cef06e51c88ad46e2d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `play`
   String get text_63eb47cef06e51c88ad46e2e {
     return Intl.message(
       'play',
       name: 'text_63eb47cef06e51c88ad46e2e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_63eb47cef06e51c88ad46e2f {
-    return Intl.message(
-      '2',
-      name: 'text_63eb47cef06e51c88ad46e2f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restore Seed`
-  String get text_63eb47cef06e51c88ad46e30 {
-    return Intl.message(
-      'Restore Seed',
-      name: 'text_63eb47cef06e51c88ad46e30',
       desc: '',
       args: [],
     );
@@ -13919,16 +6861,6 @@ class S {
     return Intl.message(
       'Restore Seed',
       name: 'text_63eb47cef06e51c88ad46e31',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_63eb47cef06e51c88ad46e33 {
-    return Intl.message(
-      '3',
-      name: 'text_63eb47cef06e51c88ad46e33',
       desc: '',
       args: [],
     );
@@ -13954,16 +6886,6 @@ class S {
     );
   }
 
-  /// `Enter your Seed Words`
-  String get text_63eb47cef06e51c88ad46e36 {
-    return Intl.message(
-      'Enter your Seed Words',
-      name: 'text_63eb47cef06e51c88ad46e36',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `slot`
   String get text_63eb47cef06e51c88ad46e37 {
     return Intl.message(
@@ -13974,41 +6896,11 @@ class S {
     );
   }
 
-  /// `4`
-  String get text_63eb47cef06e51c88ad46e38 {
-    return Intl.message(
-      '4',
-      name: 'text_63eb47cef06e51c88ad46e38',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Create New Seed`
-  String get text_63eb47cef06e51c88ad46e39 {
-    return Intl.message(
-      'Create New Seed',
-      name: 'text_63eb47cef06e51c88ad46e39',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Create New Seed`
   String get text_63eb47cef06e51c88ad46e3a {
     return Intl.message(
       'Create New Seed',
       name: 'text_63eb47cef06e51c88ad46e3a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5`
-  String get text_63eb47cef06e51c88ad46e3b {
-    return Intl.message(
-      '5',
-      name: 'text_63eb47cef06e51c88ad46e3b',
       desc: '',
       args: [],
     );
@@ -14034,41 +6926,11 @@ class S {
     );
   }
 
-  /// `Passport uses predictive text entry to make seed word entry much faster.\n\nFor instance, to enter the word ‘car’, simply type 2-2-7. Passport will display all words associated with that key combination.`
-  String get text_63eb47cef06e51c88ad46e3e {
-    return Intl.message(
-      'Passport uses predictive text entry to make seed word entry much faster.\n\nFor instance, to enter the word ‘car’, simply type 2-2-7. Passport will display all words associated with that key combination.',
-      name: 'text_63eb47cef06e51c88ad46e3e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `6`
-  String get text_63eb47cef06e51c88ad46e40 {
-    return Intl.message(
-      '6',
-      name: 'text_63eb47cef06e51c88ad46e40',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `7`
   String get text_63eb47cef06e51c88ad46e43 {
     return Intl.message(
       '7',
       name: 'text_63eb47cef06e51c88ad46e43',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7`
-  String get text_63eb47cef06e51c88ad46e45 {
-    return Intl.message(
-      '7',
-      name: 'text_63eb47cef06e51c88ad46e45',
       desc: '',
       args: [],
     );
@@ -14084,31 +6946,11 @@ class S {
     );
   }
 
-  /// `8`
-  String get text_63eb47cef06e51c88ad46e49 {
-    return Intl.message(
-      '8',
-      name: 'text_63eb47cef06e51c88ad46e49',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `9`
   String get text_63eb47cef06e51c88ad46e4b {
     return Intl.message(
       '9',
       name: 'text_63eb47cef06e51c88ad46e4b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9`
-  String get text_63eb47cef06e51c88ad46e4c {
-    return Intl.message(
-      '9',
-      name: 'text_63eb47cef06e51c88ad46e4c',
       desc: '',
       args: [],
     );
@@ -14124,31 +6966,11 @@ class S {
     );
   }
 
-  /// `0`
-  String get text_63eb47cef06e51c88ad46e4e {
-    return Intl.message(
-      '0',
-      name: 'text_63eb47cef06e51c88ad46e4e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `1`
   String get text_63eb47cef06e51c88ad46e4f {
     return Intl.message(
       '1',
       name: 'text_63eb47cef06e51c88ad46e4f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_63eb47cef06e51c88ad46e50 {
-    return Intl.message(
-      '1',
-      name: 'text_63eb47cef06e51c88ad46e50',
       desc: '',
       args: [],
     );
@@ -14164,31 +6986,11 @@ class S {
     );
   }
 
-  /// `2`
-  String get text_63eb47cef06e51c88ad46e52 {
-    return Intl.message(
-      '2',
-      name: 'text_63eb47cef06e51c88ad46e52',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `3`
   String get text_63eb47cef06e51c88ad46e53 {
     return Intl.message(
       '3',
       name: 'text_63eb47cef06e51c88ad46e53',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_63eb47cef06e51c88ad46e54 {
-    return Intl.message(
-      '3',
-      name: 'text_63eb47cef06e51c88ad46e54',
       desc: '',
       args: [],
     );
@@ -14204,31 +7006,11 @@ class S {
     );
   }
 
-  /// `4`
-  String get text_63eb47cef06e51c88ad46e56 {
-    return Intl.message(
-      '4',
-      name: 'text_63eb47cef06e51c88ad46e56',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `5`
   String get text_63eb47cef06e51c88ad46e57 {
     return Intl.message(
       '5',
       name: 'text_63eb47cef06e51c88ad46e57',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `5`
-  String get text_63eb47cef06e51c88ad46e58 {
-    return Intl.message(
-      '5',
-      name: 'text_63eb47cef06e51c88ad46e58',
       desc: '',
       args: [],
     );
@@ -14244,31 +7026,11 @@ class S {
     );
   }
 
-  /// `6`
-  String get text_63eb47cef06e51c88ad46e5a {
-    return Intl.message(
-      '6',
-      name: 'text_63eb47cef06e51c88ad46e5a',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `7`
   String get text_63eb47cef06e51c88ad46e5b {
     return Intl.message(
       '7',
       name: 'text_63eb47cef06e51c88ad46e5b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `7`
-  String get text_63eb47cef06e51c88ad46e5c {
-    return Intl.message(
-      '7',
-      name: 'text_63eb47cef06e51c88ad46e5c',
       desc: '',
       args: [],
     );
@@ -14284,31 +7046,11 @@ class S {
     );
   }
 
-  /// `8`
-  String get text_63eb47cef06e51c88ad46e5e {
-    return Intl.message(
-      '8',
-      name: 'text_63eb47cef06e51c88ad46e5e',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `9`
   String get text_63eb47cef06e51c88ad46e5f {
     return Intl.message(
       '9',
       name: 'text_63eb47cef06e51c88ad46e5f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `9`
-  String get text_63eb47cef06e51c88ad46e60 {
-    return Intl.message(
-      '9',
-      name: 'text_63eb47cef06e51c88ad46e60',
       desc: '',
       args: [],
     );
@@ -14324,66 +7066,6 @@ class S {
     );
   }
 
-  /// `0`
-  String get text_63eb47cef06e51c88ad46e62 {
-    return Intl.message(
-      '0',
-      name: 'text_63eb47cef06e51c88ad46e62',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Write down the Backup Code your Passport generates`
-  String get text_63eb47cef06e51c88ad46e64 {
-    return Intl.message(
-      'Write down the Backup Code your Passport generates',
-      name: 'text_63eb47cef06e51c88ad46e64',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The 20 digit code displayed on your passport is REQUIRED to decrypt the backup.\n\nUse the included security card to write down the backup code and store it in a secure location.`
-  String get text_63eb47cef06e51c88ad46e66 {
-    return Intl.message(
-      'The 20 digit code displayed on your passport is REQUIRED to decrypt the backup.\n\nUse the included security card to write down the backup code and store it in a secure location.',
-      name: 'text_63eb47cef06e51c88ad46e66',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get text_63eb53d531b6213e846c1d8b {
-    return Intl.message(
-      'Continue',
-      name: 'text_63eb53d531b6213e846c1d8b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get text_63eb53d531b6213e846c1d8d {
-    return Intl.message(
-      'Continue',
-      name: 'text_63eb53d531b6213e846c1d8d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get text_63eb53d531b6213e846c1d8f {
-    return Intl.message(
-      'Continue',
-      name: 'text_63eb53d531b6213e846c1d8f',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Connect`
   String get text_63eb5ba0b6fe43bcae1c747b {
     return Intl.message(
@@ -14394,511 +7076,911 @@ class S {
     );
   }
 
-  /// `Skip`
-  String get text_63ef93b71a2ca27cec9a55fc {
+  /// `Verify Your Seed`
+  String get text_63f5d4fe320b01cc1d2acae1 {
     return Intl.message(
-      'Skip',
-      name: 'text_63ef93b71a2ca27cec9a55fc',
+      'Verify Your Seed',
+      name: 'text_63f5d4fe320b01cc1d2acae1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get text_63f5d4fe320b01cc1d2acae3 {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'text_63f5d4fe320b01cc1d2acae3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get text_63f5d4fe320b01cc1d2acaec {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'text_63f5d4fe320b01cc1d2acaec',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get text_63f5d4fe320b01cc1d2acaf2 {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'text_63f5d4fe320b01cc1d2acaf2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get text_63f5d4fe320b01cc1d2acaf6 {
+    return Intl.message(
+      'Done',
+      name: 'text_63f5d4fe320b01cc1d2acaf6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get text_63f5d4fe320b01cc1d2acaf7 {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'text_63f5d4fe320b01cc1d2acaf7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get text_63f5d4fe320b01cc1d2acb14 {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'text_63f5d4fe320b01cc1d2acb14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get text_63f5d4fe320b01cc1d2acb16 {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'text_63f5d4fe320b01cc1d2acb16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get text_63f5d4fe320b01cc1d2acb17 {
+    return Intl.message(
+      'Done',
+      name: 'text_63f5d4fe320b01cc1d2acb17',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get text_63f5d4fe320b01cc1d2acb19 {
+    return Intl.message(
+      'Done',
+      name: 'text_63f5d4fe320b01cc1d2acb19',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get text_63f5d4fe320b01cc1d2acb1b {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'text_63f5d4fe320b01cc1d2acb1b',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get text_63f5d4fe320b01cc1d2acb1c {
+    return Intl.message(
+      'Done',
+      name: 'text_63f5d4fe320b01cc1d2acb1c',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get text_63f5d60b70d317aa0a966b97 {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'text_63f5d60b70d317aa0a966b97',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is your #2 seed word?`
+  String get text_63f5d60b70d317aa0a966b9c {
+    return Intl.message(
+      'What is your #2 seed word?',
+      name: 'text_63f5d60b70d317aa0a966b9c',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Entry`
+  String get text_63f5d60b70d317aa0a966ba2 {
+    return Intl.message(
+      'Invalid Entry',
+      name: 'text_63f5d60b70d317aa0a966ba2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a word from the list below.`
+  String get text_63f5d60b70d317aa0a966ba6 {
+    return Intl.message(
+      'Choose a word from the list below.',
+      name: 'text_63f5d60b70d317aa0a966ba6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try Again`
+  String get text_63f5d60b70d317aa0a966ba9 {
+    return Intl.message(
+      'Try Again',
+      name: 'text_63f5d60b70d317aa0a966ba9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Your Seed Private`
+  String get text_63f5d60b70d317aa0a96manual_setup_generate_seed_heading6b88 {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'text_63f5d60b70d317aa0a96manual_setup_generate_seed_heading6b88',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
+  String get manual_setup_create_and_store_backup_modal_heading {
+    return Intl.message(
+      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
+      name: 'manual_setup_create_and_store_backup_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I understand`
+  String get manual_setup_create_and_store_backup_modal_CTA {
+    return Intl.message(
+      'I understand',
+      name: 'manual_setup_create_and_store_backup_modal_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Store Your Encrypted Backup`
+  String get text_63f5d62270d317aa0a966bb7 {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'text_63f5d62270d317aa0a966bb7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get text_63f5d62270d317aa0a966bb8 {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'text_63f5d62270d317aa0a966bb8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose destination`
+  String get text_63f5d62270d317aa0a966bb9 {
+    return Intl.message(
+      'Choose destination',
+      name: 'text_63f5d62270d317aa0a966bb9',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get text_63ef93b71a2ca27cec9a55fd {
+  String get text_63f5d6579d4599e1ee5d633d {
     return Intl.message(
       'Skip',
-      name: 'text_63ef93b71a2ca27cec9a55fd',
+      name: 'text_63f5d6579d4599e1ee5d633d',
       desc: '',
       args: [],
     );
   }
 
   /// `Skip`
-  String get text_63ef93b71a2ca27cec9a55fe {
+  String get text_63f5d6579d4599e1ee5d633f {
     return Intl.message(
       'Skip',
-      name: 'text_63ef93b71a2ca27cec9a55fe',
+      name: 'text_63f5d6579d4599e1ee5d633f',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Your Wallet`
+  String get text_63f5d6579d4599e1ee5d6341 {
+    return Intl.message(
+      'Set Up Your Wallet',
+      name: 'text_63f5d6579d4599e1ee5d6341',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Your Wallet`
+  String get text_63f5d6579d4599e1ee5d6343 {
+    return Intl.message(
+      'Set Up Your Wallet',
+      name: 'text_63f5d6579d4599e1ee5d6343',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get text_63f5d6579d4599e1ee5d6345 {
+    return Intl.message(
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'text_63f5d6579d4599e1ee5d6345',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get text_63f5d6579d4599e1ee5d6346 {
+    return Intl.message(
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'text_63f5d6579d4599e1ee5d6346',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get text_63f5d6579d4599e1ee5d6348 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'text_63f5d6579d4599e1ee5d6348',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get text_63f5d6579d4599e1ee5d6349 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'text_63f5d6579d4599e1ee5d6349',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate New Wallet`
+  String get text_63f5d6579d4599e1ee5d634a {
+    return Intl.message(
+      'Generate New Wallet',
+      name: 'text_63f5d6579d4599e1ee5d634a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate New Wallet`
+  String get text_63f5d6579d4599e1ee5d634b {
+    return Intl.message(
+      'Generate New Wallet',
+      name: 'text_63f5d6579d4599e1ee5d634b',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63f5d667c5f173296ce135de {
+    return Intl.message(
+      'Skip',
+      name: 'text_63f5d667c5f173296ce135de',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63f5d667c5f173296ce135df {
+    return Intl.message(
+      'Skip',
+      name: 'text_63f5d667c5f173296ce135df',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63f5d667c5f173296ce135e4 {
+    return Intl.message(
+      'Skip',
+      name: 'text_63f5d667c5f173296ce135e4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63f5d667c5f173296ce135e6 {
+    return Intl.message(
+      'Skip',
+      name: 'text_63f5d667c5f173296ce135e6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get text_63f5d667c5f173296ce135e9 {
+    return Intl.message(
+      'Skip',
+      name: 'text_63f5d667c5f173296ce135e9',
       desc: '',
       args: [],
     );
   }
 
   /// `Let’s Setup Your Wallet`
-  String get text_63ef93b71a2ca27cec9a560a {
+  String get text_63f5d667c5f173296ce135ec {
     return Intl.message(
       'Let’s Setup Your Wallet',
-      name: 'text_63ef93b71a2ca27cec9a560a',
+      name: 'text_63f5d667c5f173296ce135ec',
       desc: '',
       args: [],
     );
   }
 
   /// `Let’s Setup Your Wallet`
-  String get text_63ef93b71a2ca27cec9a560c {
+  String get text_63f5d667c5f173296ce135ed {
     return Intl.message(
       'Let’s Setup Your Wallet',
-      name: 'text_63ef93b71a2ca27cec9a560c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1`
-  String get text_63ef93b71a2ca27cec9a560e {
-    return Intl.message(
-      '1',
-      name: 'text_63ef93b71a2ca27cec9a560e',
+      name: 'text_63f5d667c5f173296ce135ed',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_63ef93b71a2ca27cec9a5610 {
+  String get text_63f5d667c5f173296ce135ef {
     return Intl.message(
       'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_63ef93b71a2ca27cec9a5610',
+      name: 'text_63f5d667c5f173296ce135ef',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_63ef93b71a2ca27cec9a5611 {
+  /// `Let’s Setup Your Wallet`
+  String get text_63f5d667c5f173296ce135f3 {
     return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_63ef93b71a2ca27cec9a5611',
+      'Let’s Setup Your Wallet',
+      name: 'text_63f5d667c5f173296ce135f3',
       desc: '',
       args: [],
     );
   }
 
   /// `Learn how your data is secured`
-  String get text_63ef93b71a2ca27cec9a5613 {
+  String get text_63f5d667c5f173296ce135f4 {
     return Intl.message(
       'Learn how your data is secured',
-      name: 'text_63ef93b71a2ca27cec9a5613',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Let’s Setup Your Wallet`
-  String get text_63ef93b71a2ca27cec9a5614 {
-    return Intl.message(
-      'Let’s Setup Your Wallet',
-      name: 'text_63ef93b71a2ca27cec9a5614',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recover Envoy Wallet`
-  String get text_63ef93b71a2ca27cec9a5616 {
-    return Intl.message(
-      'Recover Envoy Wallet',
-      name: 'text_63ef93b71a2ca27cec9a5616',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `We don’t keep your seed`
-  String get text_63ef93b71a2ca27cec9a5617 {
-    return Intl.message(
-      'We don’t keep your seed',
-      name: 'text_63ef93b71a2ca27cec9a5617',
+      name: 'text_63f5d667c5f173296ce135f4',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_63ef93b71a2ca27cec9a5618 {
+  String get text_63f5d667c5f173296ce135f5 {
     return Intl.message(
       'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_63ef93b71a2ca27cec9a5618',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_63ef93b71a2ca27cec9a5619 {
-    return Intl.message(
-      '2',
-      name: 'text_63ef93b71a2ca27cec9a5619',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Generate New Wallet`
-  String get text_63ef93b71a2ca27cec9a561a {
-    return Intl.message(
-      'Generate New Wallet',
-      name: 'text_63ef93b71a2ca27cec9a561a',
+      name: 'text_63f5d667c5f173296ce135f5',
       desc: '',
       args: [],
     );
   }
 
   /// `Recover Envoy Wallet`
-  String get text_63ef93b71a2ca27cec9a561b {
+  String get text_63f5d667c5f173296ce135f7 {
     return Intl.message(
       'Recover Envoy Wallet',
-      name: 'text_63ef93b71a2ca27cec9a561b',
+      name: 'text_63f5d667c5f173296ce135f7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get text_63f5d667c5f173296ce135f8 {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'text_63f5d667c5f173296ce135f8',
       desc: '',
       args: [],
     );
   }
 
   /// `Learn how your data is secured`
-  String get text_63ef93b71a2ca27cec9a561c {
+  String get text_63f5d667c5f173296ce135fb {
     return Intl.message(
       'Learn how your data is secured',
-      name: 'text_63ef93b71a2ca27cec9a561c',
+      name: 'text_63f5d667c5f173296ce135fb',
       desc: '',
       args: [],
     );
   }
 
   /// `Generate New Wallet`
-  String get text_63ef93b71a2ca27cec9a561e {
+  String get text_63f5d667c5f173296ce135fc {
     return Intl.message(
       'Generate New Wallet',
-      name: 'text_63ef93b71a2ca27cec9a561e',
+      name: 'text_63f5d667c5f173296ce135fc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn how your data is secured`
+  String get text_63f5d667c5f173296ce135fd {
+    return Intl.message(
+      'Learn how your data is secured',
+      name: 'text_63f5d667c5f173296ce135fd',
       desc: '',
       args: [],
     );
   }
 
   /// `Recover Envoy Wallet`
-  String get text_63ef93b71a2ca27cec9a561f {
+  String get text_63f5d667c5f173296ce135ff {
     return Intl.message(
       'Recover Envoy Wallet',
-      name: 'text_63ef93b71a2ca27cec9a561f',
+      name: 'text_63f5d667c5f173296ce135ff',
       desc: '',
       args: [],
     );
   }
 
-  /// `3`
-  String get text_63ef93b71a2ca27cec9a5620 {
+  /// `Skip`
+  String get text_63f5d667c5f173296ce13601 {
     return Intl.message(
-      '3',
-      name: 'text_63ef93b71a2ca27cec9a5620',
+      'Skip',
+      name: 'text_63f5d667c5f173296ce13601',
       desc: '',
       args: [],
     );
   }
 
   /// `Generate New Wallet`
-  String get text_63ef93b71a2ca27cec9a5621 {
+  String get text_63f5d667c5f173296ce13602 {
     return Intl.message(
       'Generate New Wallet',
-      name: 'text_63ef93b71a2ca27cec9a5621',
+      name: 'text_63f5d667c5f173296ce13602',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
-  String get text_63ef9b0da3f1179c4de848e7 {
+  /// `Recover Envoy Wallet`
+  String get text_63f5d667c5f173296ce13603 {
     return Intl.message(
-      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
-      name: 'text_63ef9b0da3f1179c4de848e7',
+      'Recover Envoy Wallet',
+      name: 'text_63f5d667c5f173296ce13603',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is recovering your wallet from your (cloud/drive).`
-  String get text_63f3830d0edfca43eecfbeea {
+  /// `Set Up Your Wallet`
+  String get text_63f5d667c5f173296ce13604 {
     return Intl.message(
-      'Envoy is recovering your wallet from your (cloud/drive).',
-      name: 'text_63f3830d0edfca43eecfbeea',
+      'Set Up Your Wallet',
+      name: 'text_63f5d667c5f173296ce13604',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recovery Unsuccessful`
-  String get text_63f388c812a4345c94ac03fa {
+  /// `Set Up Your Wallet`
+  String get text_63f5d667c5f173296ce13605 {
     return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'text_63f388c812a4345c94ac03fa',
+      'Set Up Your Wallet',
+      name: 'text_63f5d667c5f173296ce13605',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
-  String get text_63f388c812a4345c94ac03fb {
+  /// `Set Up Your Wallet`
+  String get text_63f5d667c5f173296ce13606 {
     return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
-      name: 'text_63f388c812a4345c94ac03fb',
+      'Set Up Your Wallet',
+      name: 'text_63f5d667c5f173296ce13606',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recovering your Envoy Wallet`
-  String get text_63f388c812a4345c94ac03fc {
+  /// `Generate New Wallet`
+  String get text_63f5d667c5f173296ce13607 {
     return Intl.message(
-      'Recovering your Envoy Wallet',
-      name: 'text_63f388c812a4345c94ac03fc',
+      'Generate New Wallet',
+      name: 'text_63f5d667c5f173296ce13607',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recovering your Envoy wallet`
-  String get text_63f388c812a4345c94ac03fd {
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get text_63f5d667c5f173296ce13608 {
     return Intl.message(
-      'Recovering your Envoy wallet',
-      name: 'text_63f388c812a4345c94ac03fd',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'text_63f5d667c5f173296ce13608',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recover with QR Code`
-  String get text_63f388c812a4345c94ac03fe {
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get text_63f5d667c5f173296ce13609 {
     return Intl.message(
-      'Recover with QR Code',
-      name: 'text_63f388c812a4345c94ac03fe',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'text_63f5d667c5f173296ce13609',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recovering your Envoy Wallet`
-  String get text_63f388c812a4345c94ac03ff {
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get text_63f5d667c5f173296ce1360a {
     return Intl.message(
-      'Recovering your Envoy Wallet',
-      name: 'text_63f388c812a4345c94ac03ff',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'text_63f5d667c5f173296ce1360a',
       desc: '',
       args: [],
     );
   }
 
-  /// `Retry`
-  String get text_63f388c812a4345c94ac0401 {
+  /// `Recover Envoy Wallet`
+  String get text_63f5d667c5f173296ce1360b {
     return Intl.message(
-      'Retry',
-      name: 'text_63f388c812a4345c94ac0401',
+      'Recover Envoy Wallet',
+      name: 'text_63f5d667c5f173296ce1360b',
       desc: '',
       args: [],
     );
   }
 
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
-  String get text_63f388c812a4345c94ac0402 {
+  /// `Recover Envoy Wallet`
+  String get text_63f5d667c5f173296ce1360c {
     return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
-      name: 'text_63f388c812a4345c94ac0402',
+      'Recover Envoy Wallet',
+      name: 'text_63f5d667c5f173296ce1360c',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is recovering your wallet from your (cloud/drive).`
-  String get text_63f388c812a4345c94ac0403 {
+  /// `Recover Envoy Wallet`
+  String get text_63f5d667c5f173296ce1360d {
     return Intl.message(
-      'Envoy is recovering your wallet from your (cloud/drive).',
-      name: 'text_63f388c812a4345c94ac0403',
+      'Recover Envoy Wallet',
+      name: 'text_63f5d667c5f173296ce1360d',
       desc: '',
       args: [],
     );
   }
 
-  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
-  String get text_63f388c812a4345c94ac0404 {
+  /// `Generate New Wallet`
+  String get text_63f5d667c5f173296ce1360e {
     return Intl.message(
-      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
-      name: 'text_63f388c812a4345c94ac0404',
+      'Generate New Wallet',
+      name: 'text_63f5d667c5f173296ce1360e',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
-  String get text_63f388c812a4345c94ac0405 {
+  /// `Generate New Wallet`
+  String get text_63f5d667c5f173296ce1360f {
     return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
-      name: 'text_63f388c812a4345c94ac0405',
+      'Generate New Wallet',
+      name: 'text_63f5d667c5f173296ce1360f',
       desc: '',
       args: [],
     );
   }
 
-  /// `1`
-  String get text_63f388c812a4345c94ac0406 {
+  /// `Generate New Wallet`
+  String get text_63f5d667c5f173296ce13610 {
     return Intl.message(
-      '1',
-      name: 'text_63f388c812a4345c94ac0406',
+      'Generate New Wallet',
+      name: 'text_63f5d667c5f173296ce13610',
       desc: '',
       args: [],
     );
   }
 
-  /// `1`
-  String get text_63f388c812a4345c94ac0407 {
+  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
+  String get text_63f5d667c5wallet_security_modal_4_4_subheadingf173296ce135e2 {
     return Intl.message(
-      '1',
-      name: 'text_63f388c812a4345c94ac0407',
+      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
+      name: 'text_63f5d667c5wallet_security_modal_4_4_subheadingf173296ce135e2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recover with QR Code`
-  String get text_63f388c812a4345c94ac0408 {
+  /// `Are You Sure?`
+  String get text_63f5e0ec15d26b5b27839664 {
     return Intl.message(
-      'Recover with QR Code',
-      name: 'text_63f388c812a4345c94ac0408',
+      'Are You Sure?',
+      name: 'text_63f5e0ec15d26b5b27839664',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sign into iCloud and install Envoy on the new device.`
-  String get text_63f388c812a4345c94ac0409 {
+  /// `You need to set up your Passport to use Envoy’s core features.`
+  String get text_63f5e0ec15d26b5b27839665 {
     return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
-      name: 'text_63f388c812a4345c94ac0409',
+      'You need to set up your Passport to use Envoy’s core features.',
+      name: 'text_63f5e0ec15d26b5b27839665',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sign into Google and restore your  backup data`
-  String get text_63f388c812a4345c94ac040a {
+  /// `Cancel`
+  String get text_63f5e0ec15d26b5b27839666 {
     return Intl.message(
-      'Sign into Google and restore your  backup data',
-      name: 'text_63f388c812a4345c94ac040a',
+      'Cancel',
+      name: 'text_63f5e0ec15d26b5b27839666',
       desc: '',
       args: [],
     );
   }
 
-  /// `Retry`
-  String get text_63f388c812a4345c94ac040b {
+  /// `Skip`
+  String get text_63f5e0ec15d26b5b27839667 {
     return Intl.message(
-      'Retry',
-      name: 'text_63f388c812a4345c94ac040b',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_63f388c812a4345c94ac040c {
-    return Intl.message(
-      '2',
-      name: 'text_63f388c812a4345c94ac040c',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `2`
-  String get text_63f388c812a4345c94ac040d {
-    return Intl.message(
-      '2',
-      name: 'text_63f388c812a4345c94ac040d',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open Envoy and tap ‘Recover Envoy   Wallet’.`
-  String get text_63f388c812a4345c94ac040e {
-    return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy   Wallet’.',
-      name: 'text_63f388c812a4345c94ac040e',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Install Envoy and tap “Recover Envoy Wallet”`
-  String get text_63f388c812a4345c94ac040f {
-    return Intl.message(
-      'Install Envoy and tap “Recover Envoy Wallet”',
-      name: 'text_63f388c812a4345c94ac040f',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_63f388c812a4345c94ac0410 {
-    return Intl.message(
-      '3',
-      name: 'text_63f388c812a4345c94ac0410',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `3`
-  String get text_63f388c812a4345c94ac0411 {
-    return Intl.message(
-      '3',
-      name: 'text_63f388c812a4345c94ac0411',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
-  String get text_63f388c812a4345c94ac0412 {
-    return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
-      name: 'text_63f388c812a4345c94ac0412',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy will then automatically restore your existing Envoy wallet`
-  String get text_63f388c812a4345c94ac0413 {
-    return Intl.message(
-      'Envoy will then automatically restore your existing Envoy wallet',
-      name: 'text_63f388c812a4345c94ac0413',
+      'Skip',
+      name: 'text_63f5e0ec15d26b5b27839667',
       desc: '',
       args: [],
     );
   }
 
   /// `Continue`
-  String get wallet_is_setup_CTA {
+  String get wallet_security_modal_1_4_android_CTA {
     return Intl.message(
       'Continue',
-      name: 'wallet_is_setup_CTA',
+      name: 'wallet_security_modal_1_4_android_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Wallet is Secured`
+  String get wallet_security_modal_1_4_android_heading {
+    return Intl.message(
+      'How Your Wallet is Secured',
+      name: 'wallet_security_modal_1_4_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  String get wallet_security_modal_1_4_android_subheading {
+    return Intl.message(
+      'Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      name: 'wallet_security_modal_1_4_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_security_modal_1_4_ios_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_1_4_ios_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Wallet is Secured`
+  String get wallet_security_modal_1_4_ios_heading {
+    return Intl.message(
+      'How Your Wallet is Secured',
+      name: 'wallet_security_modal_1_4_ios_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
+  String get wallet_security_modal_1_4_ios_subheading {
+    return Intl.message(
+      'Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
+      name: 'wallet_security_modal_1_4_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_security_modal_2_4_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_2_4_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Wallet is Secured`
+  String get wallet_security_modal_2_4_heading {
+    return Intl.message(
+      'How Your Wallet is Secured',
+      name: 'wallet_security_modal_2_4_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
+  String get wallet_security_modal_2_4_subheading {
+    return Intl.message(
+      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
+      name: 'wallet_security_modal_2_4_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_security_modal_34_ios_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_34_ios_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get wallet_security_modal_34_ios_heading {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'wallet_security_modal_34_ios_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.`
+  String get wallet_security_modal_34_ios_subheading {
+    return Intl.message(
+      'To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.',
+      name: 'wallet_security_modal_34_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_security_modal_3_4_android_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_3_4_android_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get wallet_security_modal_3_4_android_heading {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'wallet_security_modal_3_4_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your wallet, simply log into your Google account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your Google account with a strong password and 2FA.`
+  String get wallet_security_modal_3_4_android_subheading {
+    return Intl.message(
+      'To recover your wallet, simply log into your Google account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your Google account with a strong password and 2FA.',
+      name: 'wallet_security_modal_3_4_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_security_modal_4_4_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_4_4_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get wallet_security_modal_4_4_heading {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'wallet_security_modal_4_4_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_setup_success_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_setup_success_CTA',
       desc: '',
       args: [],
     );
   }
 
   /// `Your Wallet Is Ready`
-  String get wallet_is_setup_heading {
+  String get wallet_setup_success_heading {
     return Intl.message(
       'Your Wallet Is Ready',
-      name: 'wallet_is_setup_heading',
+      name: 'wallet_setup_success_heading',
       desc: '',
       args: [],
     );
   }
 
   /// `Envoy Wallet is set up and ready for your Bitcoin!`
-  String get wallet_is_setup_subheading {
+  String get wallet_setup_success_subheading {
     return Intl.message(
       'Envoy Wallet is set up and ready for your Bitcoin!',
-      name: 'wallet_is_setup_subheading',
+      name: 'wallet_setup_success_subheading',
       desc: '',
       args: [],
     );
