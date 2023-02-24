@@ -4804,10 +4804,10 @@ class S {
     );
   }
 
-  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin! DEV_ID:test_test`
+  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!`
   String get manual_setup_generate_seed_subheading {
     return Intl.message(
-      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin! DEV_ID:test_test',
+      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!',
       name: 'manual_setup_generate_seed_subheading',
       desc: '',
       args: [],
@@ -7247,10 +7247,10 @@ class S {
   }
 
   /// `Keep Your Seed Private`
-  String get text_63f5d60b70d317aa0a96manual_setup_generate_seed_heading6b88 {
+  String get manual_setup_generate_seed_heading {
     return Intl.message(
       'Keep Your Seed Private',
-      name: 'text_63f5d60b70d317aa0a96manual_setup_generate_seed_heading6b88',
+      name: 'manual_setup_generate_seed_heading',
       desc: '',
       args: [],
     );
@@ -7737,10 +7737,10 @@ class S {
   }
 
   /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
-  String get text_63f5d667c5wallet_security_modal_4_4_subheadingf173296ce135e2 {
+  String get wallet_security_modal_4_4_subheading {
     return Intl.message(
       'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
-      name: 'text_63f5d667c5wallet_security_modal_4_4_subheadingf173296ce135e2',
+      name: 'wallet_security_modal_4_4_subheading',
       desc: '',
       args: [],
     );

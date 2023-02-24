@@ -10,6 +10,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 
+import '../wallet_setup_success.dart';
+
 class StorageSetupPage extends StatefulWidget {
   const StorageSetupPage({Key? key}) : super(key: key);
 
@@ -119,7 +121,10 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                     label: S().manual_setup_create_and_store_backup_modal_CTA,
                     onTap: () async {
                       EnvoySeed().saveOfflineData();
-                      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return WalletSetupSuccess();
+                          }));
                     }),
                 Padding(padding: EdgeInsets.all(12)),
               ],

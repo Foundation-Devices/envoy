@@ -8,7 +8,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/wallet_setup_finish.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -75,7 +75,7 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
     await Future.delayed(Duration(seconds: 2));
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return WalletSetupFinish();
+      return WalletSetupSuccess();
     }));
   }
 

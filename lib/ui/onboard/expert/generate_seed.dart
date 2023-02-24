@@ -16,6 +16,8 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 
+import '../../../business/envoy_seed.dart';
+
 class GenerateSeedScreen extends StatefulWidget {
   const GenerateSeedScreen({Key? key}) : super(key: key);
 
@@ -56,10 +58,19 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
             VerifySeedPuzzleWidget(
                 seed: seed,
                 onVerificationFinished: (bool verified) async {
-                  //TODO: Show
                   if (verified) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => StorageSetupPage()));
+                    EnvoySeed()
+                        .create(seed)
+                        .then((success) {
+                      if (success) {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) {
+                              return StorageSetupPage();
+                            }));
+                      } else {
+                        // TODO: Show a dialog of failure
+                      }
+                    });
                   } else {
                     await Future.delayed(Duration(milliseconds: 100));
                     Haptics.heavyImpact();
@@ -122,7 +133,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
             slivers: [
               SliverToBoxAdapter(
                 child: Text(
-                    S().manual_setup_generate_seed_verify_seed_again_quiz_heading,
+                    S().manual_setup_generate_seed_write_words_heading,
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
               ),
@@ -172,7 +183,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                             curve: Curves.ease);
                       },
                       label:
-                          S().manual_setup_generate_seed_verify_seed_CTA,
+                          S().manual_setup_generate_seed_write_words_CTA,
                     )
                   ],
                 ),

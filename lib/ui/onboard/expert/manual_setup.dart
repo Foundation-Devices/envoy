@@ -150,7 +150,7 @@ class SelectMode extends StatelessWidget {
                       children: [
                         Text(
                           generate
-                              ? S().text_63f5d60b70d317aa0a96manual_setup_generate_seed_heading6b88
+                              ? S().manual_setup_generate_seed_heading
                               : S().manual_setup_import_seed_heading,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,

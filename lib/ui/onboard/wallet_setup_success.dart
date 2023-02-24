@@ -8,14 +8,14 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
-class WalletSetupFinish extends StatefulWidget {
-  const WalletSetupFinish({Key? key}) : super(key: key);
+class WalletSetupSuccess extends StatefulWidget {
+  const WalletSetupSuccess({Key? key}) : super(key: key);
 
   @override
-  State<WalletSetupFinish> createState() => _WalletSetupFinishState();
+  State<WalletSetupSuccess> createState() => _WalletSetupSuccessState();
 }
 
-class _WalletSetupFinishState extends State<WalletSetupFinish> {
+class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
