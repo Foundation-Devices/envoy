@@ -59,14 +59,12 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                 seed: seed,
                 onVerificationFinished: (bool verified) async {
                   if (verified) {
-                    EnvoySeed()
-                        .create(seed)
-                        .then((success) {
+                    EnvoySeed().create(seed).then((success) {
                       if (success) {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
-                              return StorageSetupPage();
-                            }));
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return StorageSetupPage();
+                        }));
                       } else {
                         // TODO: Show a dialog of failure
                       }
@@ -132,8 +130,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-                child: Text(
-                    S().manual_setup_generate_seed_write_words_heading,
+                child: Text(S().manual_setup_generate_seed_write_words_heading,
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
               ),
@@ -182,8 +179,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                             duration: Duration(milliseconds: 300),
                             curve: Curves.ease);
                       },
-                      label:
-                          S().manual_setup_generate_seed_write_words_CTA,
+                      label: S().manual_setup_generate_seed_write_words_CTA,
                     )
                   ],
                 ),
@@ -227,8 +223,8 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                   ],
                 )),
                 OnboardingButton(
-                    label:
-                        S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA,
+                    label: S()
+                        .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA,
                     onTap: () async {
                       await Navigator.maybePop(context);
                       _pageController.animateToPage(1,

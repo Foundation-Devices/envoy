@@ -113,8 +113,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                         padding:
                             EdgeInsets.symmetric(vertical: 8, horizontal: 24),
                         child: OnboardingButton(
-                            label: S()
-                                .manual_setup_import_seed_12_words_CTA,
+                            label: S().manual_setup_import_seed_12_words_CTA,
                             light: false,
                             onTap: () {
                               EnvoySeed()
@@ -296,8 +295,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
                     ?.copyWith(fontWeight: FontWeight.w500, fontSize: 22)),
           ),
           Padding(padding: EdgeInsets.all(8)),
-          Text(
-              S().manual_setup_verify_seed_12_words_heading,
+          Text(S().manual_setup_verify_seed_12_words_heading,
               textAlign: TextAlign.center),
           Padding(padding: EdgeInsets.all(8)),
           Container(

@@ -153,7 +153,8 @@ class _AccountListTileState extends State<AccountListTile> {
                                           if (widget.account.wallet.network ==
                                               Network.Testnet)
                                             Padding(
-                                              padding: const EdgeInsets.only(right: 7.0),
+                                              padding: const EdgeInsets.only(
+                                                  right: 7.0),
                                               child: Text(
                                                 "Testnet",
                                                 style: Theme.of(context)
@@ -165,7 +166,9 @@ class _AccountListTileState extends State<AccountListTile> {
                                               ),
                                             ),
                                           SvgPicture.asset(
-                                            widget.account.wallet.hot ? "assets/wallet.svg" : "assets/bitcoin.svg",
+                                            widget.account.wallet.hot
+                                                ? "assets/wallet.svg"
+                                                : "assets/bitcoin.svg",
                                             height: 20,
                                             width: 20,
                                             color: Colors.white,

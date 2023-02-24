@@ -25,15 +25,19 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
   PageController _pageController = PageController();
   int step = 0;
   List<String> stepsHeadings = [
-    "MISSING", //S().magic_setup_envoy_key_creation_1_5_heading,
-    "MISSING", //S().magic_setup_encrypting_backup_1_5_heading,
-    "MISSING", //S().magic_setup_sending_backup_to_envoy_server_1_5_heading,
+    Platform.isAndroid
+        ? S().magic_setup_generate_envoy_key_android_heading
+        : S().magic_setup_generate_envoy_key_ios_heading,
+    S().magic_setup_generate_backup_heading,
+    S().magic_setup_send_backup_to_envoy_server_heading,
   ];
 
   List<String> stepSubHeadings = [
-    "MISSING", //S().magic_setup_envoy_key_creation_1_5_subheading,
-    "MISSING", //S().magic_setup_encrypting_backup_1_5_subheading,
-    "MISSING", //S().magic_setup_sending_backup_to_envoy_server_1_5_subheading,
+    Platform.isAndroid
+        ? S().magic_setup_generate_envoy_key_android_subheading
+        : S().magic_setup_generate_envoy_key_ios_subheading,
+    S().magic_setup_generate_backup_subheading,
+    S().magic_setup_send_backup_to_envoy_server_subheading,
   ];
 
   _onRiveInit(Artboard artboard) {
@@ -50,13 +54,7 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
 
   void _initiateWalletCreate() async {
     // TODO: sync this to actual steps in creation
-    bool success = await EnvoySeed().generate();
-    if (success) {
-      await showDialog(
-          context: context, builder: (context) => MagicRecoveryInfo());
-      // await Navigator.of(context)
-      //     .push(MaterialPageRoute(builder: (c) => MagicRecoveryInfo()));
-    }
+    await EnvoySeed().generate();
 
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -75,7 +73,7 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
     await Future.delayed(Duration(seconds: 2));
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return WalletSetupSuccess();
+      return MagicRecoveryInfo();
     }));
   }
 
@@ -224,7 +222,10 @@ class MagicRecoveryInfo extends StatelessWidget {
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return WalletSetupSuccess();
+                      }));
                     },
                   ),
                 ),
@@ -243,13 +244,17 @@ class MagicRecoveryInfo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "MISSING", //S().recovery_scenario_heading,
+            Platform.isAndroid
+                ? S().recovery_scenario_android_subheading
+                : S().recovery_scenario_ios_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline6,
           ),
           Padding(padding: EdgeInsets.all(12)),
           Text(
-            "MISSING", //S().recovery_scenario_subheading,
+            Platform.isAndroid
+                ? S().recovery_scenario_android_subheading
+                : S().recovery_scenario_ios_subheading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
           ),
@@ -272,7 +277,9 @@ class MagicRecoveryInfo extends StatelessWidget {
               ),
             ),
             title: Text(
-              "MISSING", //S().recovery_scenario_step_1,
+              Platform.isAndroid
+                  ? S().recovery_scenario_ios_instructions1
+                  : S().recovery_scenario_ios_instructions1,
               textAlign: TextAlign.start,
               style:
                   Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
@@ -296,7 +303,9 @@ class MagicRecoveryInfo extends StatelessWidget {
               ),
             ),
             title: Text(
-              "MISSING", //S().recovery_scenario_step_2,
+              Platform.isAndroid
+                  ? S().recovery_scenario_ios_instructions2
+                  : S().recovery_scenario_ios_instructions2,
               textAlign: TextAlign.start,
               style:
                   Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
@@ -318,7 +327,9 @@ class MagicRecoveryInfo extends StatelessWidget {
                       ?.copyWith(color: Colors.white)),
             ),
             title: Text(
-              "MISSING", //S().recovery_scenario_step_3,
+              Platform.isAndroid
+                  ? S().recovery_scenario_android_instructions3
+                  : S().recovery_scenario_ios_instructions3,
               textAlign: TextAlign.start,
               style:
                   Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),

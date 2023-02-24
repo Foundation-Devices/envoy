@@ -123,8 +123,8 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                       EnvoySeed().saveOfflineData();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                            return WalletSetupSuccess();
-                          }));
+                        return WalletSetupSuccess();
+                      }));
                     }),
                 Padding(padding: EdgeInsets.all(12)),
               ],
