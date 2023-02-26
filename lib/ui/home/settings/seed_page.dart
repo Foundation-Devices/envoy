@@ -32,18 +32,8 @@ class _SeedPageState extends State<SeedPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Divider(),
-                AboutButton(
-                  "(Re)create Seed",
-                  onTap: () {
-                    seed.generate().then((value) {
-                      setState(() {});
-                    });
-                  },
-                ),
-                Divider(),
-                AboutText("Local/Corpo Cloud"),
                 FutureBuilder<String?>(
-                    future: seed.getLocal(),
+                    future: seed.get(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return AboutText(
@@ -73,18 +63,6 @@ class _SeedPageState extends State<SeedPage> {
                       seed.showSettingsMenu();
                     },
                   ),
-                Divider(),
-                AboutText("Secure Element"),
-                FutureBuilder<String?>(
-                    future: seed.restoreSecure(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return AboutText(
-                            snapshot.data == null ? "NULL" : snapshot.data!);
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    }),
               ],
             )));
   }

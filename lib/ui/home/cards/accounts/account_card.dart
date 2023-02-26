@@ -315,34 +315,36 @@ class AccountOptions extends StatelessWidget {
             );
           },
         ),
-        SizedBox(
-          height: 10,
-        ),
-        GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
-              style: TextStyle(color: EnvoyColors.lightCopper)),
-          onTap: () {
-            navigator!.hideOptions();
-            showEnvoyDialog(
-                context: context,
-                dialog: EnvoyDialog(
-                  title: S().envoy_account_delete_are_you_sure,
-                  content: Text(S().envoy_account_delete_explainer),
-                  actions: [
-                    EnvoyButton(
-                      S().component_delete.toUpperCase(),
-                      light: false,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      onTap: () {
-                        AccountManager().deleteAccount(account);
-                        navigator!.pop();
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ));
-          },
-        ),
+        if (!account.wallet.hot)
+          SizedBox(
+            height: 10,
+          ),
+        if (!account.wallet.hot)
+          GestureDetector(
+            child: Text(S().component_delete.toUpperCase(),
+                style: TextStyle(color: EnvoyColors.lightCopper)),
+            onTap: () {
+              navigator!.hideOptions();
+              showEnvoyDialog(
+                  context: context,
+                  dialog: EnvoyDialog(
+                    title: S().envoy_account_delete_are_you_sure,
+                    content: Text(S().envoy_account_delete_explainer),
+                    actions: [
+                      EnvoyButton(
+                        S().component_delete.toUpperCase(),
+                        light: false,
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        onTap: () {
+                          AccountManager().deleteAccount(account);
+                          navigator!.pop();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ));
+            },
+          ),
       ],
     );
   }

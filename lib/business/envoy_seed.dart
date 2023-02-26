@@ -99,7 +99,30 @@ class EnvoySeed {
     _platform.invokeMethod('save_file', argsMap);
   }
 
-  Future<String?> restoreSecure() async {
+  Future<String?> get() async {
+    String? secure = await getSecure();
+    String? nonSecure = await getNonSecure();
+
+    if (secure != null && nonSecure != null) {
+      if (secure != nonSecure) {
+        throw Exception("Different seed in secure and non-secure!");
+      }
+
+      return secure;
+    }
+
+    if (secure != null) {
+      return secure;
+    }
+
+    if (nonSecure != null) {
+      return nonSecure;
+    }
+
+    return null;
+  }
+
+  Future<String?> getSecure() async {
     if (!await LocalStorage().containsSecure(SEED_KEY)) {
       return null;
     }
@@ -144,7 +167,7 @@ class EnvoySeed {
     _platform.invokeMethod('show_settings');
   }
 
-  Future<String?> getLocal() async {
+  Future<String?> getNonSecure() async {
     return await restoreNonSecure(LOCAL_SECRET_FILE_NAME);
   }
 

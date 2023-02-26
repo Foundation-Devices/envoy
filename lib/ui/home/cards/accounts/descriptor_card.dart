@@ -31,8 +31,10 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
 
     // Multipath specifier as per https://github.com/bitcoin/bitcoin/pull/22838
     // Not yet supported in BDK but showing it as such
-    String descriptor =
-        account.wallet.externalDescriptor.replaceAll("/0/", "/<0;1>/");
+    String descriptor = (account.wallet.publicExternalDescriptor == null
+            ? account.wallet.externalDescriptor
+            : account.wallet.publicExternalDescriptor!)
+        .replaceAll("/0/", "/<0;1>/");
 
     return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       Padding(

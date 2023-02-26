@@ -254,6 +254,9 @@ class Wallet {
   final String externalDescriptor;
   final String internalDescriptor;
 
+  final String? publicExternalDescriptor;
+  final String? publicInternalDescriptor;
+
   @JsonKey(
       defaultValue:
           Network.Mainnet) // Migration from binary main/testnet approach
@@ -329,7 +332,9 @@ class Wallet {
 
   Wallet(
       this.name, this.network, this.externalDescriptor, this.internalDescriptor,
-      {this.hot: false});
+      {this.hot: false,
+      this.publicExternalDescriptor: null,
+      this.publicInternalDescriptor: null});
 
   init(String walletsDirectory) {
     _lib = load(_libName);
@@ -352,7 +357,10 @@ class Wallet {
 
   Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
       this.internalDescriptor, this._self,
-      {this.hot: false, required DynamicLibrary lib}) {
+      {this.hot: false,
+      this.publicExternalDescriptor: null,
+      this.publicInternalDescriptor: null,
+      required DynamicLibrary lib}) {
     _lib = lib;
   }
 
@@ -636,9 +644,19 @@ class Wallet {
         ? wallet.internal_prv_descriptor.cast<Utf8>().toDartString()
         : wallet.internal_pub_descriptor.cast<Utf8>().toDartString();
 
+    final publicExternalDescriptor = privateKey
+        ? wallet.external_pub_descriptor.cast<Utf8>().toDartString()
+        : null;
+    final publicInternalDescriptor = privateKey
+        ? wallet.internal_pub_descriptor.cast<Utf8>().toDartString()
+        : null;
+
     return Wallet.fromPointer(name, network, externalDescriptor,
         internalDescriptor, wallet.bkd_wallet_ptr.cast(),
-        hot: privateKey, lib: lib);
+        hot: privateKey,
+        publicExternalDescriptor: publicExternalDescriptor,
+        publicInternalDescriptor: publicInternalDescriptor,
+        lib: lib);
   }
 
   static String getSeedWords(List<int> binarySeed) {
