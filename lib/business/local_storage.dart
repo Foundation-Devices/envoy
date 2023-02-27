@@ -63,6 +63,16 @@ class LocalStorage {
     }
   }
 
+  Future<bool> removeSecure(String key) async {
+    // Remove from Keychain on iOS and Keystore on Android
+    if (Platform.isAndroid || Platform.isIOS) {
+      await secureStorage.delete(key: key);
+      return true;
+    } else {
+      return prefs.remove(key);
+    }
+  }
+
   Future<void> deleteAllSecure() async {
     if (Platform.isAndroid || Platform.isIOS) {
       secureStorage.deleteAll();

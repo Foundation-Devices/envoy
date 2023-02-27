@@ -9,8 +9,13 @@ class TextEntry extends StatelessWidget {
   get enteredText => _controller.text;
   final FocusNode? focusNode;
   final int? maxLength;
+  final TextInputType inputType;
 
-  TextEntry({String placeholder: "", this.focusNode, this.maxLength}) {
+  TextEntry(
+      {String placeholder: "",
+      this.inputType = TextInputType.text,
+      this.focusNode,
+      this.maxLength}) {
     _controller.text = placeholder;
   }
 
@@ -26,6 +31,7 @@ class TextEntry extends StatelessWidget {
           child: TextFormField(
               focusNode: focusNode,
               controller: _controller,
+              keyboardType: inputType,
               maxLength: this.maxLength,
               validator: (value) {
                 return null;
