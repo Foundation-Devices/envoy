@@ -44,14 +44,15 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
-    final path = "m/84'/0'/0'";
+    final mainnetPath = "m/84'/0'/0'";
+    final testnetPath = "m/84'/1'/0'";
 
     try {
       var mainnet = Wallet.deriveWallet(
-          seed, path, AccountManager.walletsDirectory, Network.Mainnet,
+          seed, mainnetPath, AccountManager.walletsDirectory, Network.Mainnet,
           privateKey: true, passphrase: passphrase);
       var testnet = Wallet.deriveWallet(
-          seed, path, AccountManager.walletsDirectory, Network.Testnet,
+          seed, testnetPath, AccountManager.walletsDirectory, Network.Testnet,
           privateKey: true, passphrase: passphrase);
 
       AccountManager().addHotWalletAccount(mainnet);
@@ -70,6 +71,7 @@ class EnvoySeed {
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
+  // TODO: store whether user prefers to backup to Server or not
   void backupData({bool offline: false}) {
     List<String> keysToBackUp = [
       Settings.SETTINGS_PREFS,
