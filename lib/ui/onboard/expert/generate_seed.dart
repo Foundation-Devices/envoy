@@ -32,7 +32,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _platform.invokeMethod("make_screen_secure",{"secure":true});
+      _platform.invokeMethod("make_screen_secure", {"secure": true});
       await Future.delayed(Duration(seconds: 1));
       setState(() {
         seed = Wallet.generateSeed().split(" ");
