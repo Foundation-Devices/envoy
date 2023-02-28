@@ -92,8 +92,7 @@ void main() async {
   });
 
   test('Generate seed', () {
-    String seed = Wallet.generateSeed(
-        false); // TODO: somehow check if words are the same between testnet and mainnet?
+    String seed = Wallet.generateSeed();
 
     final List words = seed.split(" ");
 

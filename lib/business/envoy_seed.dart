@@ -34,7 +34,7 @@ class EnvoySeed {
       LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
 
   Future generate() async {
-    final generatedSeed = Wallet.generateSeed(true);
+    final generatedSeed = Wallet.generateSeed();
     return await deriveAndAddWallets(generatedSeed);
   }
 
@@ -94,6 +94,8 @@ class EnvoySeed {
   }
 
   void saveOfflineData() {
+    backupData(offline: true);
+
     var argsMap = <String, dynamic>{
       "from": encryptedBackupFilePath,
       "path": ""

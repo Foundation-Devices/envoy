@@ -121,6 +121,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                     label: S().manual_setup_create_and_store_backup_modal_CTA,
                     onTap: () async {
                       EnvoySeed().saveOfflineData();
+                      Navigator.pop(context);
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
                         return WalletSetupSuccess();

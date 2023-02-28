@@ -603,7 +603,7 @@ class Wallet {
         .toDartString();
   }
 
-  static String generateSeed(bool testnet) {
+  static String generateSeed({bool testnet: false}) {
     final lib = load(_libName);
 
     final rustFunction = lib
