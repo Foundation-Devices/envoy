@@ -13,7 +13,6 @@ import 'package:envoy/ui/onboard/expert/widgets/seed_word_verification.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/envoy_seed.dart';
 
 class GenerateSeedScreen extends StatefulWidget {
   const GenerateSeedScreen({Key? key}) : super(key: key);
@@ -41,7 +40,9 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
     });
   }
 
-    _platform.invokeMethod("make_screen_secure",{"secure":false});
+  @override
+  void dispose() {
+    _platform.invokeMethod("make_screen_secure", {"secure": false});
     super.dispose();
   }
 
