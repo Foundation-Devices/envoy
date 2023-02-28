@@ -19,6 +19,8 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:animations/animations.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -40,9 +42,11 @@ class AccountsCardState extends State<AccountsCard>
     with AutomaticKeepAliveClientMixin, TopLevelNavigationCardState {
   void _showAddAccountPage() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      // TODO: double check with team if this is the right thing to do
-      return SplashScreen();
-      //return SingleImportPpIntroPage();
+      if (EnvoySeed().walletDerived()) {
+        return SingleImportPpIntroPage();
+      } else {
+        return SplashScreen();
+      }
     }));
   }
 

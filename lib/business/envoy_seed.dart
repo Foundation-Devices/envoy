@@ -18,6 +18,7 @@ import 'local_storage.dart';
 import 'notifications.dart';
 
 const String SEED_KEY = "seed";
+const String WALLET_DERIVED_PREFS = "wallet_derived";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
 const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
     LOCAL_SECRET_FILE_NAME + ".backup_timestamp";
@@ -59,10 +60,21 @@ class EnvoySeed {
       AccountManager().addHotWalletAccount(testnet);
 
       await store(seed);
+      LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
+
       return true;
     } on Exception catch (_) {
       return false;
     }
+  }
+
+  bool walletDerived() {
+    final derived = LocalStorage().prefs.getBool(WALLET_DERIVED_PREFS);
+    if (derived == null) {
+      return false;
+    }
+
+    return derived;
   }
 
   Future<void> store(String seed) async {
