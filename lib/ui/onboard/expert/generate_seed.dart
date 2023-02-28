@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
+import 'package:flutter/services.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -13,7 +15,6 @@ import 'package:envoy/ui/onboard/expert/widgets/seed_word_verification.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/envoy_seed.dart';
 
 class GenerateSeedScreen extends StatefulWidget {
   const GenerateSeedScreen({Key? key}) : super(key: key);
@@ -25,11 +26,13 @@ class GenerateSeedScreen extends StatefulWidget {
 class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
   PageController _pageController = PageController();
   List<String> seed = [];
+  static const _platform = MethodChannel('envoy');
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _platform.invokeMethod("make_screen_secure",{"secure":true});
       await Future.delayed(Duration(seconds: 1));
       setState(() {
         seed = Wallet.generateSeed().split(" ");
@@ -37,6 +40,12 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
       _pageController.animateToPage(1,
           duration: Duration(milliseconds: 300), curve: Curves.ease);
     });
+  }
+
+  @override
+  void dispose() {
+    _platform.invokeMethod("make_screen_secure", {"secure": false});
+    super.dispose();
   }
 
   @override

@@ -24,7 +24,6 @@ func getSdCardBookmark() -> URL {
             didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-
         FlutterEventChannel(name: sdCardEventChannel, binaryMessenger: controller.binaryMessenger)
                 .setStreamHandler(self)
 
@@ -33,7 +32,16 @@ func getSdCardBookmark() -> URL {
 
         envoyMethodChannel.setMethodCallHandler({
             [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
-            // Note: this method is invoked on the UI thread.
+            // Note: this method is invoked on the UI thread.\
+            if(call.method == "make_screen_secure"){
+                if let args = call.arguments as? Dictionary<String, Any>,
+                  let secure = args["secure"] as? Bool {
+                    self?.window != nil ? self?.makeSecure(window:  self!.window!, secure: secure) : ()
+                  result(nil)
+                } else {
+                  result(FlutterError.init(code: "param", message: "data or format error", details: nil))
+                }
+            }else
             if call.method == "prompt_folder_access" {
                 self?.promptUserForFolderAccess(result: result)
                 return
@@ -201,6 +209,26 @@ func getSdCardBookmark() -> URL {
         eventSink?(url.absoluteString)
     }
 
+    var field = UITextField()
+    //adds UITextField with isSecureTextEntry to prevent screenshots
+    func makeSecure(window:UIWindow, secure:Bool) {
+        if(secure){
+            field.isSecureTextEntry = true
+            if(!window.subviews.contains(field)){
+                window.addSubview(field)
+                field.centerYAnchor.constraint(equalTo: window.centerYAnchor).isActive = true
+                field.centerXAnchor.constraint(equalTo: window.centerXAnchor).isActive = true
+                window.layer.superlayer?.addSublayer(field.layer)
+                field.layer.sublayers?.first?.addSublayer(window.layer)
+            }
+         }else{
+            if(window.subviews.contains(field)){
+                field.isSecureTextEntry = false
+             }
+       }
+    }
+
+    
     private func accessFolder(url: URL, result: FlutterResult) {
         guard url.startAccessingSecurityScopedResource() else {
             result(false)

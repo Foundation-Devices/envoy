@@ -9,14 +9,13 @@ import android.provider.DocumentsContract
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.system.Os
+import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
-import java.io.FileDescriptor
-import java.io.FileInputStream
 
 
 class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
@@ -150,6 +149,15 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         getManageAllFilesPermission()
                     }
+                    result.success(true)
+                }
+                 "make_screen_secure" -> {
+                    val secure = call.argument<Boolean>("secure") ?: false
+                     if(secure){
+                         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+                     }else{
+                         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                     }
                     result.success(true)
                 }
                 else -> {
