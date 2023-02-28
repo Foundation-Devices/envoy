@@ -25,11 +25,13 @@ class GenerateSeedScreen extends StatefulWidget {
 class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
   PageController _pageController = PageController();
   List<String> seed = [];
+  static const _platform = MethodChannel('envoy');
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _platform.invokeMethod("make_screen_secure",{"secure":true});
       await Future.delayed(Duration(seconds: 1));
       setState(() {
         seed = Wallet.generateSeed().split(" ");
@@ -37,6 +39,10 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
       _pageController.animateToPage(1,
           duration: Duration(milliseconds: 300), curve: Curves.ease);
     });
+  }
+
+    _platform.invokeMethod("make_screen_secure",{"secure":false});
+    super.dispose();
   }
 
   @override
