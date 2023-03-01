@@ -278,21 +278,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         onPressed: _leftAction,
                       ),
                     )),
-                title: Stack(children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: AnimatedSwitcher(
+                title: Stack(
+                    fit: StackFit.loose,
+                    alignment: Alignment.center,
+                    children: [
+                      AnimatedSwitcher(
                         duration: _animationsDuration,
                         child: Text(
                           _appBarTitle,
                           key: ValueKey<String>(_appBarTitle),
                         ),
                       ),
-                    ),
-                  ),
-                  Center(child: SizedBox(height: 50, child: IndicatorShield()))
-                ]),
+                      SizedBox(height: 50, child: IndicatorShield())
+                    ]),
                 centerTitle: true,
                 actions: [
                   // Notifications
