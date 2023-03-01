@@ -228,13 +228,12 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 4,
-                  crossAxisSpacing: 34.0,
-                  mainAxisSpacing: 34,
+                  childAspectRatio: 2,
+                  crossAxisSpacing: 20.0,
                 ),
                 itemBuilder: (context, index) {
                   final TextStyle textTheme = TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       color: Colors.black87,
                       fontWeight: FontWeight.bold);
                   return GestureDetector(
@@ -247,16 +246,23 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                         Haptics.lightImpact();
                       }
                     },
-                    child: Container(
-                      height: 80,
-                      margin: EdgeInsets.symmetric(vertical: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      constraints: BoxConstraints(maxWidth: 200, maxHeight: 12),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Text("${widget.puzzle[index]}",
-                          style: textTheme, textAlign: TextAlign.center),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 80,
+                          margin: EdgeInsets.symmetric(vertical: 0),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          alignment: Alignment.center,
+                          constraints:
+                              BoxConstraints(maxWidth: 200, maxHeight: 40),
+                          decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Text("${widget.puzzle[index]}",
+                              style: textTheme, textAlign: TextAlign.center),
+                        ),
+                      ],
                     ),
                   );
                 },
