@@ -143,19 +143,19 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 4,
-                  crossAxisSpacing: 34.0,
-                  mainAxisSpacing: 34,
+                  crossAxisSpacing: 22.0,
+                  mainAxisSpacing: 30,
                 ),
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final TextStyle textTheme = TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       color: Colors.black87,
                       fontWeight: FontWeight.bold);
                   return Container(
-                    height: 80,
+                    height: 40,
                     margin: EdgeInsets.symmetric(vertical: 0),
                     padding: EdgeInsets.symmetric(horizontal: 8),
-                    constraints: BoxConstraints(maxWidth: 200, maxHeight: 12),
+                    constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
                     decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(8)),
