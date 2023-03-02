@@ -64,3 +64,6 @@ Cargo.lock
 
 # Android Docker builds
 release/
+
+# Localazy creds
+localazy.json
