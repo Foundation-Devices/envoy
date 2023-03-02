@@ -15,6 +15,8 @@ import 'package:envoy/ui/home/cards/accounts/fee_toggle.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
+import 'common.dart';
+
 //ignore: must_be_immutable
 class ConfirmationCard extends StatefulWidget with NavigationCard {
   @override
@@ -143,11 +145,16 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
           padding: const EdgeInsets.all(50.0),
           child: EnvoyTextButton(
               onTap: () {
-                widget.navigator!.push(PsbtCard(
-                  _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                  widget.account,
-                  navigationCallback: widget.navigator,
-                ));
+                if (!widget.account.wallet.hot) {
+                  widget.navigator!.push(PsbtCard(
+                    _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                    widget.account,
+                    navigationCallback: widget.navigator,
+                  ));
+                } else {
+                  broadcast(_boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                      context, widget.account.wallet, widget.navigator!);
+                }
               },
               label: S().envoy_confirmation_confirm))
     ]);

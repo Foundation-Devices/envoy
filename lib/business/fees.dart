@@ -29,7 +29,7 @@ class Fees {
   double electrumFastRate = 0;
   double electrumSlowRate = 0;
 
-  static const String _FEE_RATE_PREFS = "fees";
+  static const String FEE_RATE_PREFS = "fees";
   static final Fees _instance = Fees._internal();
 
   factory Fees() {
@@ -54,8 +54,8 @@ class Fees {
   }
 
   static restore() {
-    if (_ls.prefs.containsKey(_FEE_RATE_PREFS)) {
-      var storedFees = jsonDecode(_ls.prefs.getString(_FEE_RATE_PREFS)!);
+    if (_ls.prefs.containsKey(FEE_RATE_PREFS)) {
+      var storedFees = jsonDecode(_ls.prefs.getString(FEE_RATE_PREFS)!);
       Fees.fromJson(storedFees);
     }
 
@@ -64,7 +64,7 @@ class Fees {
 
   _storeRates() {
     String json = jsonEncode(this);
-    _ls.prefs.setString(_FEE_RATE_PREFS, json);
+    _ls.prefs.setString(FEE_RATE_PREFS, json);
   }
 
   _getMempoolRates() {

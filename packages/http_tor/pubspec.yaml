@@ -12,7 +12,7 @@ environment:
   flutter: ">=1.20.0"
 
 dependencies:
-  ffi: ^1.1.2
+  ffi: ^2.0.1
   flutter:
     sdk: flutter
   path_provider: ^2.0.2
@@ -33,6 +33,15 @@ ffigen:
     exclude:
       - _.*
   structs:
+    exclude:
+      - _.*
+  unions:
+    exclude:
+      - _.*
+  enums:
+    exclude:
+      - _.*
+  macros:
     exclude:
       - _.*
   functions:

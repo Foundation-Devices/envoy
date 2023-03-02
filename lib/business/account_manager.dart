@@ -30,8 +30,11 @@ class AccountManager extends ChangeNotifier {
   Timer? _syncTimer;
   bool _syncBlocked = false;
 
-  static const String _ACCOUNTS_PREFS = "accounts";
+  static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
+
+  static String walletsDirectory =
+      LocalStorage().appDocumentsDir.path + "/wallets/";
 
   factory AccountManager() {
     return _instance;
@@ -95,6 +98,23 @@ class AccountManager extends ChangeNotifier {
         }
       }
     }
+  }
+
+  Future<Account?> addHotWalletAccount(Wallet wallet) async {
+    // TODO: look & feel of hot wallet accounts
+    Account account = Account(
+        wallet,
+        "Hot Wallet",
+        "envoy", // Device code for wallets derived on phone
+        DateTime.now(),
+        0);
+
+    accounts.add(account);
+    storeAccounts();
+    notifyListeners();
+
+    syncAll();
+    return account;
   }
 
   Future<Account?> addEnvoyAccount(CryptoRequest request) async {
@@ -239,12 +259,12 @@ class AccountManager extends ChangeNotifier {
     }
 
     _dropAccounts();
-    if (_ls.prefs.containsKey(_ACCOUNTS_PREFS)) {
-      var storedAccounts = jsonDecode(_ls.prefs.getString(_ACCOUNTS_PREFS)!);
+    if (_ls.prefs.containsKey(ACCOUNTS_PREFS)) {
+      var storedAccounts = jsonDecode(_ls.prefs.getString(ACCOUNTS_PREFS)!);
       for (var account in storedAccounts) {
         Account restoredAccount = Account.fromJson(account);
         accounts.add(restoredAccount);
-        restoredAccount.wallet.init(LocalStorage().appDocumentsDir.path);
+        restoredAccount.wallet.init(walletsDirectory);
       }
     }
 
@@ -274,14 +294,14 @@ class AccountManager extends ChangeNotifier {
 
     Wallet wallet =
         Wallet(fingerprint, network, externalDescriptor, internalDescriptor);
-    wallet.init(LocalStorage().appDocumentsDir.path);
+    wallet.init(walletsDirectory);
 
     return wallet;
   }
 
   storeAccounts() {
     String json = jsonEncode(accounts);
-    _ls.prefs.setString(_ACCOUNTS_PREFS, json);
+    _ls.prefs.setString(ACCOUNTS_PREFS, json);
   }
 
   renameAccount(Account account, String newName) {
@@ -294,9 +314,7 @@ class AccountManager extends ChangeNotifier {
     account.wallet.drop();
 
     // Delete the BDK DB so it doesn't get confused on re-pair
-    final dir = Directory(LocalStorage().appDocumentsDir.path +
-        "/wallets/" +
-        account.wallet.name);
+    final dir = Directory(walletsDirectory + account.wallet.name);
     dir.delete(recursive: true);
 
     accounts.remove(account);

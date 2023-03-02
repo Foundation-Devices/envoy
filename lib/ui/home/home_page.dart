@@ -21,7 +21,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/pages/onboarding_welcome_page.dart';
+import 'package:envoy/ui/onboard/splash_screen.dart';
 
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!LocalStorage().prefs.containsKey("onboarded")) {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return OnboardingWelcomePage();
+          return SplashScreen();
         }));
       }
     });
@@ -278,21 +278,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         onPressed: _leftAction,
                       ),
                     )),
-                title: Stack(children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: AnimatedSwitcher(
+                title: Stack(
+                    fit: StackFit.loose,
+                    alignment: Alignment.center,
+                    children: [
+                      AnimatedSwitcher(
                         duration: _animationsDuration,
                         child: Text(
                           _appBarTitle,
                           key: ValueKey<String>(_appBarTitle),
                         ),
                       ),
-                    ),
-                  ),
-                  Center(child: SizedBox(height: 50, child: IndicatorShield()))
-                ]),
+                      SizedBox(height: 50, child: IndicatorShield())
+                    ]),
                 centerTitle: true,
                 actions: [
                   // Notifications

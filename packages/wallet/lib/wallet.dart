@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wallet/exceptions.dart';
+import 'package:wallet/generated_bindings.dart';
 
 // Generated
 part 'wallet.g.dart';
@@ -149,6 +150,38 @@ typedef WalletValidateAddressRust = Uint8 Function(
 typedef WalletValidateAddressDart = int Function(
     Pointer<Uint8> wallet, Pointer<Utf8> address);
 
+typedef WalletGenerateSeedRust = NativeSeed Function(Uint16 network);
+typedef WalletGenerateSeedDart = NativeSeed Function(int network);
+
+typedef WalletGetSeedWordsRust = NativeSeed Function(Pointer<Uint8> seed);
+typedef WalletGetSeedWordsDart = NativeSeed Function(Pointer<Uint8> seed);
+
+typedef WalletGetXpubDescKeyRust = Pointer<Utf8> Function(
+    Pointer<Utf8> xprv, Pointer<Utf8> path);
+typedef WalletGetXpubDescKeyDart = Pointer<Utf8> Function(
+    Pointer<Utf8> xprv, Pointer<Utf8> path);
+
+typedef WalletGenerateSeedWithEntropyRust = Pointer<Utf8> Function(
+    Pointer<Uint8> entropy);
+typedef WalletGenerateSeedWithEntropyDart = Pointer<Utf8> Function(
+    Pointer<Uint8> entropy);
+
+typedef WalletSignOfflineRust = Pointer<Utf8> Function(
+    Pointer<Utf8> psbt,
+    Pointer<Utf8> externalDescriptor,
+    Pointer<Utf8> internalDescriptor,
+    Uint16 network);
+typedef WalletSignOfflineDart = Pointer<Utf8> Function(
+    Pointer<Utf8> psbt,
+    Pointer<Utf8> externalDescriptor,
+    Pointer<Utf8> internalDescriptor,
+    int network);
+
+typedef WalletSignPsbtRust = Pointer<Utf8> Function(
+    Pointer<Uint8> wallet, Pointer<Utf8> psbt);
+typedef WalletSignPsbtDart = Pointer<Utf8> Function(
+    Pointer<Uint8> wallet, Pointer<Utf8> psbt);
+
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
     return DynamicLibrary.open('lib$name.so');
@@ -221,10 +254,17 @@ class Wallet {
   final String externalDescriptor;
   final String internalDescriptor;
 
+  final String? publicExternalDescriptor;
+  final String? publicInternalDescriptor;
+
   @JsonKey(
       defaultValue:
           Network.Mainnet) // Migration from binary main/testnet approach
   final Network network;
+
+  @JsonKey(
+      defaultValue: false) // Migration from time when all the Wallets were cold
+  final bool hot;
 
   List<Transaction> transactions = [];
   int balance = 0;
@@ -290,10 +330,13 @@ class Wallet {
         .toDartString();
   }
 
-  Wallet(this.name, this.network, this.externalDescriptor,
-      this.internalDescriptor);
+  Wallet(
+      this.name, this.network, this.externalDescriptor, this.internalDescriptor,
+      {this.hot: false,
+      this.publicExternalDescriptor: null,
+      this.publicInternalDescriptor: null});
 
-  init(String dir) {
+  init(String walletsDirectory) {
     _lib = load(_libName);
 
     final rustFunction =
@@ -304,12 +347,21 @@ class Wallet {
         name.toNativeUtf8(),
         externalDescriptor.toNativeUtf8(),
         internalDescriptor.toNativeUtf8(),
-        (dir + "/wallets/" + name).toNativeUtf8(),
+        (walletsDirectory + name).toNativeUtf8(),
         network.index);
 
     if (_self == nullptr) {
       throwRustException(_lib);
     }
+  }
+
+  Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
+      this.internalDescriptor, this._self,
+      {this.hot: false,
+      this.publicExternalDescriptor: null,
+      this.publicInternalDescriptor: null,
+      required DynamicLibrary lib}) {
+    _lib = lib;
   }
 
   drop() {
@@ -534,5 +586,133 @@ class Wallet {
             1
         ? true
         : false;
+  }
+
+  static String signOffline(String psbt, String externalDescriptor,
+      String internalDescriptor, bool testnet) {
+    var lib = NativeLibrary(load(_libName));
+
+    return lib
+        .wallet_sign_offline(
+            psbt.toNativeUtf8().cast(),
+            externalDescriptor.toNativeUtf8().cast(),
+            internalDescriptor.toNativeUtf8().cast(),
+            testnet ? Network.Testnet.index : Network.Mainnet.index)
+        .raw_tx
+        .cast<Utf8>()
+        .toDartString();
+  }
+
+  static String generateSeed({bool testnet: false}) {
+    final lib = load(_libName);
+
+    final rustFunction = lib
+        .lookup<NativeFunction<WalletGenerateSeedRust>>('wallet_generate_seed');
+    final dartFunction = rustFunction.asFunction<WalletGenerateSeedDart>();
+
+    NativeSeed seed =
+        dartFunction(testnet ? Network.Testnet.index : Network.Mainnet.index);
+
+    final words = seed.mnemonic.cast<Utf8>().toDartString();
+    return words;
+  }
+
+  static Wallet deriveWallet(
+      String seed, String path, String directory, Network network,
+      {String? passphrase, bool privateKey: false}) {
+    final lib = load(_libName);
+    final native = NativeLibrary(lib);
+    var wallet = native.wallet_derive(
+        seed.toNativeUtf8().cast(),
+        passphrase != null ? passphrase.toNativeUtf8().cast() : nullptr,
+        path.toNativeUtf8().cast(),
+        directory.toNativeUtf8().cast(),
+        network.index,
+        privateKey);
+
+    if (wallet.bkd_wallet_ptr == nullptr) {
+      throwRustException(lib);
+    }
+
+    final name = wallet.name.cast<Utf8>().toDartString();
+
+    final externalDescriptor = privateKey
+        ? wallet.external_prv_descriptor.cast<Utf8>().toDartString()
+        : wallet.external_pub_descriptor.cast<Utf8>().toDartString();
+
+    final internalDescriptor = privateKey
+        ? wallet.internal_prv_descriptor.cast<Utf8>().toDartString()
+        : wallet.internal_pub_descriptor.cast<Utf8>().toDartString();
+
+    final publicExternalDescriptor = privateKey
+        ? wallet.external_pub_descriptor.cast<Utf8>().toDartString()
+        : null;
+    final publicInternalDescriptor = privateKey
+        ? wallet.internal_pub_descriptor.cast<Utf8>().toDartString()
+        : null;
+
+    return Wallet.fromPointer(name, network, externalDescriptor,
+        internalDescriptor, wallet.bkd_wallet_ptr.cast(),
+        hot: privateKey,
+        publicExternalDescriptor: publicExternalDescriptor,
+        publicInternalDescriptor: publicInternalDescriptor,
+        lib: lib);
+  }
+
+  static String getSeedWords(List<int> binarySeed) {
+    final lib = load(_libName);
+
+    final rustFunction = lib.lookup<NativeFunction<WalletGetSeedWordsRust>>(
+        'wallet_get_seed_words');
+    final dartFunction = rustFunction.asFunction<WalletGetSeedWordsDart>();
+
+    final Pointer<Uint8> messagePointer = malloc.allocate<Uint8>(32);
+    final pointerList = messagePointer.asTypedList(32);
+    pointerList.setAll(0, binarySeed);
+
+    NativeSeed seed = dartFunction(messagePointer);
+
+    final xprv = seed.xprv.cast<Utf8>().toDartString();
+    return xprv;
+  }
+
+  static String getXpubDescKey(String xprv, String path) {
+    final lib = load(_libName);
+
+    final rustFunction = lib.lookup<NativeFunction<WalletGetXpubDescKeyRust>>(
+        'wallet_get_xpub_desc_key');
+    final dartFunction = rustFunction.asFunction<WalletGetXpubDescKeyDart>();
+
+    return dartFunction(xprv.toNativeUtf8(), path.toNativeUtf8())
+        .cast<Utf8>()
+        .toDartString();
+  }
+
+  static String generateXKeyWithEntropy(Uint8List entropy) {
+    final lib = load(_libName);
+
+    final rustFunction =
+        lib.lookup<NativeFunction<WalletGenerateSeedWithEntropyRust>>(
+            'wallet_generate_xkey_with_entropy');
+    final dartFunction =
+        rustFunction.asFunction<WalletGenerateSeedWithEntropyDart>();
+
+    final Pointer<Uint8> messagePointer = malloc.allocate<Uint8>(32);
+    final pointerList = messagePointer.asTypedList(32);
+    pointerList.setAll(0, entropy);
+
+    String seed = dartFunction(messagePointer).cast<Utf8>().toDartString();
+
+    malloc.free(messagePointer);
+    return seed;
+  }
+
+  Future<String> signPsbt(String psbt) async {
+    final rustFunction =
+        _lib.lookup<NativeFunction<WalletSignPsbtRust>>('wallet_sign_psbt');
+    final dartFunction = rustFunction.asFunction<WalletSignPsbtDart>();
+
+    return Future(() =>
+        dartFunction(_self, psbt.toNativeUtf8()).cast<Utf8>().toDartString());
   }
 }

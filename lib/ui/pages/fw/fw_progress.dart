@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:envoy/ui/onboard/sd_card_spinner.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/templates/onboarding_page.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //ignore: must_be_immutable

@@ -52,6 +52,7 @@ RUN apt-get install -y --no-install-recommends \
     libstdc++-12-dev \
     llvm-14 \
     libclang1-14 \
+    libtool \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK
@@ -80,4 +81,5 @@ COPY . .
 
 # Build
 ENV PATH=/root/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
-RUN chmod +x build_ffi.sh && ./build_ffi.sh && flutter build linux
+RUN chmod +x build_ffi_android.sh && ./build_ffi_android.sh
+

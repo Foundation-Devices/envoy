@@ -4,8 +4,8 @@
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -13,7 +13,6 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'dart:typed_data';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -27,7 +26,7 @@ class OnboardingPage extends StatelessWidget {
   final int navigationDots;
   final int navigationDotsIndex;
   final OnboardingHelperText? helperTextAbove;
-  final List<OnboardingButton>? buttons;
+  final List<Widget>? buttons;
   final OnboardingHelperText? helperTextBelow;
 
   // Default functions need to be static:
@@ -143,144 +142,85 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _shieldTop = MediaQuery.of(context).padding.top + 6.0;
-    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
-
     return WillPopScope(
         onWillPop: () async => false,
-        child: Stack(
-          children: [
-            AppBackground(),
-            Padding(
-              padding: EdgeInsets.only(
-                  right: 5.0,
-                  left: 5.0,
-                  top: _shieldTop,
-                  bottom: _shieldBottom),
-              child: Hero(
-                tag: "shield",
-                transitionOnUserGestures: true,
-                flightShuttleBuilder: (
-                  BuildContext flightContext,
-                  Animation<double> animation,
-                  HeroFlightDirection flightDirection,
-                  BuildContext fromHeroContext,
-                  BuildContext toHeroContext,
-                ) {
-                  return AnimatedBuilder(
-                    animation: animation,
-                    builder: (BuildContext context, Widget? child) {
-                      return Stack(children: [
-                        flightDirection == HeroFlightDirection.push
-                            ? toHeroContext.widget
-                            : fromHeroContext.widget,
-                        Opacity(
-                          opacity: 1 - animation.value,
-                          child: flightDirection == HeroFlightDirection.push
-                              ? fromHeroContext.widget
-                              : toHeroContext.widget,
-                        )
-                      ]);
-                    },
-                  );
-                },
-                child: Shield(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        right: 15, left: 15, top: 15, bottom: 50),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Flexible(
-                                  child: Stack(
-                                    alignment: Alignment.topCenter,
-                                    children: [
-                                      clipArt != null
-                                          ? clipArt!
-                                          : SizedBox.shrink(),
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            leftFunction != null
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          leftFunction!(
-                                                              context);
-                                                        },
-                                                        child: Icon(
-                                                            Icons
-                                                                .arrow_back_ios_rounded,
-                                                            size: 20)),
-                                                  )
-                                                : SizedBox.shrink(),
-                                            rightFunction != null
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          rightFunction!(
-                                                              context);
-                                                        },
-                                                        child: Icon(Icons
-                                                            .close_rounded)),
-                                                  )
-                                                : SizedBox.shrink()
-                                          ])
-                                    ],
-                                  ),
-                                ),
-                                _determineQr(),
-                                ...?text,
-                              ]),
+        child: OnboardPageBackground(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Flexible(
+                        child: Stack(
+                          alignment: Alignment.topCenter,
+                          children: [
+                            clipArt != null ? clipArt! : SizedBox.shrink(),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  leftFunction != null
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                leftFunction!(context);
+                                              },
+                                              child: Icon(
+                                                  Icons.arrow_back_ios_rounded,
+                                                  size: 20)),
+                                        )
+                                      : SizedBox.shrink(),
+                                  rightFunction != null
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                rightFunction!(context);
+                                              },
+                                              child: Icon(Icons.close_rounded)),
+                                        )
+                                      : SizedBox.shrink()
+                                ])
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              navigationDots != 0
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: DotsIndicator(
-                                        decorator: DotsDecorator(
-                                            size: Size.square(5.0),
-                                            activeSize: Size.square(5.0),
-                                            spacing: EdgeInsets.symmetric(
-                                                horizontal: 5)),
-                                        dotsCount: navigationDots,
-                                        position:
-                                            navigationDotsIndex.toDouble(),
-                                      ),
-                                    )
-                                  : SizedBox.shrink(),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: helperTextAbove ?? SizedBox.shrink(),
-                              ),
-                              ...?buttons,
-                              helperTextBelow ?? SizedBox.shrink()
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
+                      _determineQr(),
+                      ...?text,
+                    ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    navigationDots != 0
+                        ? Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: DotsIndicator(
+                              decorator: DotsDecorator(
+                                  size: Size.square(5.0),
+                                  activeSize: Size.square(5.0),
+                                  spacing: EdgeInsets.symmetric(horizontal: 5)),
+                              dotsCount: navigationDots,
+                              position: navigationDotsIndex.toDouble(),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: helperTextAbove ?? SizedBox.shrink(),
                     ),
-                  ),
+                    ...?buttons,
+                    helperTextBelow ?? SizedBox.shrink()
+                  ],
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ));
   }
 }

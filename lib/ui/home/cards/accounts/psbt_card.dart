@@ -12,11 +12,11 @@ import 'package:flutter/services.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/account.dart';
+
+import 'common.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends StatelessWidget with NavigationCard {
@@ -71,24 +71,8 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return ScannerPage.tx((psbt) {
-                      print(psbt);
                       account.wallet.decodePsbt(psbt).then((decoded) {
-                        account.wallet
-                            .broadcastTx(
-                                Settings()
-                                    .electrumAddress(account.wallet.network),
-                                Tor().port,
-                                decoded.rawTx)
-                            .then((_) {
-                          navigator!.pop(depth: 3);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(S().envoy_psbt_transaction_sent),
-                          ));
-                        }, onError: (_) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(S().envoy_psbt_transaction_not_sent),
-                          ));
-                        });
+                        broadcast(decoded, context, account.wallet, navigator!);
                       });
                     });
                   }));

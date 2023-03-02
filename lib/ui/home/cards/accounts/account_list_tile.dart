@@ -143,38 +143,38 @@ class _AccountListTileState extends State<AccountListTile> {
                                           color: widget.account.color,
                                           width: 3,
                                           style: BorderStyle.solid)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        if (widget.account.wallet.network ==
-                                            Network.Testnet)
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Text(
-                                              "Testnet",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2!
-                                                  .copyWith(
-                                                      color: Colors.white),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(9.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          if (widget.account.wallet.network ==
+                                              Network.Testnet)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 7.0),
+                                              child: Text(
+                                                "Testnet",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2!
+                                                    .copyWith(
+                                                        fontSize: 12,
+                                                        color: Colors.white),
+                                              ),
                                             ),
-                                          ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: widget.account.wallet
-                                                          .network ==
-                                                      Network.Testnet
-                                                  ? 6.0
-                                                  : 0.0),
-                                          child: SvgPicture.asset(
-                                            "assets/bitcoin.svg",
-                                          ),
-                                        )
-                                      ],
+                                          SvgPicture.asset(
+                                            widget.account.wallet.hot
+                                                ? "assets/wallet.svg"
+                                                : "assets/bitcoin.svg",
+                                            height: 20,
+                                            width: 20,
+                                            color: Colors.white,
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   )),
                             ),
@@ -188,8 +188,6 @@ class _AccountListTileState extends State<AccountListTile> {
                         builder: (context, ref, child) {
                           final hide = ref.watch(
                               balanceHideStateStatusProvider(widget.account));
-                          print(
-                              "widget.account.initialSyncCompleted  ${widget.account.number} ${widget.account.initialSyncCompleted} $hide");
                           if (hide) {
                             return Container(
                               decoration: BoxDecoration(

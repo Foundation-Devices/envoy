@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [workspace]
-members = ["packages/http_tor/native/*", "packages/tor/native/*", "packages/ur/native/*", "packages/wallet/native/*"]
+members = ["packages/http_tor/native/*", "packages/tor/native/*", "packages/ur/native/*", "packages/wallet/native/*", "packages/backup/native/*"]
 exclude = ["ditto/ditto-to-arb"]
 
 [profile.release]

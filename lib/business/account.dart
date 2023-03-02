@@ -24,6 +24,15 @@ class Account {
           true) // Ensure we don't show ghosting UI for accounts synced before introduction of this field
   bool initialSyncCompleted = false;
 
+  // Multipath specifier as per https://github.com/bitcoin/bitcoin/pull/22838
+  // Not yet supported in BDK but showing it as such
+  String get descriptor {
+    return (wallet.publicExternalDescriptor == null
+            ? wallet.externalDescriptor
+            : wallet.publicExternalDescriptor!)
+        .replaceAll("/0/", "/<0;1>/");
+  }
+
   Color get color {
     // Postmix accounts are pure red
     if (number == 2147483646) {

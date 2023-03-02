@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/home/settings/seed_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -11,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/business/envoy_seed.dart';
 
 class SettingsMenu extends StatefulWidget {
   @override
@@ -92,16 +94,20 @@ class SettingsMenuWidget extends StatelessWidget {
                       callback(AboutPage());
                     },
                   ),
-                  // SizedBox(height: 50),
-                  // MenuOption(
-                  //   label: "Onboard",
-                  //   onTap: () {
-                  //     Navigator.of(context)
-                  //         .push(MaterialPageRoute(builder: (context) {
-                  //       return OnboardingWelcomePage();
-                  //     }));
-                  //   },
-                  // ),
+                  SizedBox(height: 50),
+                  MenuOption(
+                    label: "Seed",
+                    onTap: () {
+                      callback(SeedPage());
+                    },
+                  ),
+                  SizedBox(height: 50),
+                  MenuOption(
+                    label: "Backup",
+                    onTap: () {
+                      EnvoySeed().backupData();
+                    },
+                  ),
                 ]),
             Padding(
               padding: const EdgeInsets.only(bottom: 30.0),
