@@ -26,6 +26,11 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
+		78FFD8CF29B3D023006D1730 /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CA29B3D021006D1730 /* libtor_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78FFD8D029B3D023006D1730 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CB29B3D022006D1730 /* libur_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78FFD8D129B3D023006D1730 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CC29B3D022006D1730 /* libbackup_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78FFD8D229B3D023006D1730 /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CD29B3D022006D1730 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		78FFD8D329B3D023006D1730 /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CE29B3D022006D1730 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		C49E014A737DDF8CAF4E437E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4A03813E38DEED7AB21F245 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +74,11 @@
 		33E51914231749380026EE4D /* Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
 		738E4991500F4372A16A3087 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		78FFD8CA29B3D021006D1730 /* libtor_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtor_ffi.a; path = "../target/aarch64-apple-darwin/debug/libtor_ffi.a"; sourceTree = "<group>"; };
+		78FFD8CB29B3D022006D1730 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-darwin/debug/libur_ffi.a"; sourceTree = "<group>"; };
+		78FFD8CC29B3D022006D1730 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-darwin/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
+		78FFD8CD29B3D022006D1730 /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-darwin/debug/libhttp_ffi.a"; sourceTree = "<group>"; };
+		78FFD8CE29B3D022006D1730 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-darwin/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		A4A03813E38DEED7AB21F245 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,7 +90,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78FFD8D329B3D023006D1730 /* libwallet_ffi.a in Frameworks */,
+				78FFD8D029B3D023006D1730 /* libur_ffi.a in Frameworks */,
 				C49E014A737DDF8CAF4E437E /* Pods_Runner.framework in Frameworks */,
+				78FFD8CF29B3D023006D1730 /* libtor_ffi.a in Frameworks */,
+				78FFD8D129B3D023006D1730 /* libbackup_ffi.a in Frameworks */,
+				78FFD8D229B3D023006D1730 /* libhttp_ffi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,13 +174,17 @@
 				2125192E80E02AACAACD7642 /* Pods-Runner.release.xcconfig */,
 				738E4991500F4372A16A3087 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				78FFD8CC29B3D022006D1730 /* libbackup_ffi.a */,
+				78FFD8CD29B3D022006D1730 /* libhttp_ffi.a */,
+				78FFD8CA29B3D021006D1730 /* libtor_ffi.a */,
+				78FFD8CB29B3D022006D1730 /* libur_ffi.a */,
+				78FFD8CE29B3D022006D1730 /* libwallet_ffi.a */,
 				A4A03813E38DEED7AB21F245 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -426,6 +445,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
+					/usr/lib/swift,
+					"../target/aarch64-apple-darwin/debug",
+				);
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -547,10 +572,38 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_secure_storage_macos\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/package_info_plus_macos\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/path_provider_macos\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/rive_common\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/share_plus_macos\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/shared_preferences_macos\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/url_launcher_macos\"",
+					"../target/aarch64-apple-darwin/debug",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_secure_storage_macos/flutter_secure_storage_macos.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/package_info_plus_macos/package_info_plus_macos.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/path_provider_macos/path_provider_macos.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/rive_common/rive_common.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/share_plus_macos/share_plus_macos.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/shared_preferences_macos/shared_preferences_macos.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/url_launcher_macos/url_launcher_macos.framework/Headers\"",
+					"../target/aarch64-apple-darwin/debug",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
+					/usr/lib/swift,
+					"../target/aarch64-apple-darwin/debug",
 				);
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -571,6 +624,12 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
+					/usr/lib/swift,
+					"../target/aarch64-apple-darwin/debug",
 				);
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
