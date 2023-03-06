@@ -85,6 +85,7 @@ dependencies:
   flutter_riverpod: ^2.1.1
   cupertino_icons: ^1.0.5
   rive: 0.10.2
+  local_auth: ^2.1.6
 
 dev_dependencies:
   test: any
