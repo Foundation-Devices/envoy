@@ -11,9 +11,14 @@ class EnvoyButton extends StatelessWidget {
   final bool light;
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
+  final TextStyle? textStyle;
 
   EnvoyButton(this.label,
-      {this.onTap, this.light: false, this.borderRadius, this.backgroundColor});
+      {this.onTap,
+      this.light: false,
+      this.textStyle,
+      this.borderRadius,
+      this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +41,13 @@ class EnvoyButton extends StatelessWidget {
           child: Center(
               child: Text(
             label,
-            style: TextStyle(
-              color: light ? EnvoyColors.darkTeal : Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w500,
-            ),
+            style: textStyle == null
+                ? TextStyle(
+                    color: light ? EnvoyColors.darkTeal : Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                  )
+                : this.textStyle,
             textAlign: TextAlign.center,
           ))),
     );
