@@ -19,6 +19,7 @@ class SplashScreen extends StatelessWidget {
     return OnboardingPage(
       key: Key("splash_screen"),
       leftFunction: null,
+      right: Text("Skip"),
       clipArt: Image.asset("assets/envoy.png"),
       text: [
         OnboardingText(
@@ -28,10 +29,8 @@ class SplashScreen extends StatelessWidget {
       buttons: [
         TextButton(
             child: Text(S().splash_screen_CTA3,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(color: EnvoyColors.teal)),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: EnvoyColors.teal, fontWeight: FontWeight.w600)),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleImportPpIntroPage();
@@ -40,6 +39,8 @@ class SplashScreen extends StatelessWidget {
         OnboardingButton(
             light: true,
             label: S().splash_screen_CTA2,
+            textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: EnvoyColors.teal, fontWeight: FontWeight.w600),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ManualSetup();
@@ -47,6 +48,10 @@ class SplashScreen extends StatelessWidget {
             }),
         OnboardingButton(
             label: S().splash_screen_CTA1,
+            textStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return MagicSetupTutorial();

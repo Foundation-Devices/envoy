@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void _toggleNotifications() {
+  void _toggleNotifications() async {
     setState(() {
       if (!_backgroundShown) {
         _appBarTitle = "Activity".toUpperCase();

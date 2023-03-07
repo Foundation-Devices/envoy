@@ -3,13 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -26,6 +29,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   bool _customElectrumServerVisible = Settings().customElectrumEnabled();
+  bool _useLocalAuth = false;
+  bool _bioMetricAuthAvailable = false;
+
+  final LocalAuthentication auth = LocalAuthentication();
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +101,44 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             Divider(),
+            Opacity(
+              opacity: _bioMetricAuthAvailable ? 1.0 : 0.4,
+              child: IgnorePointer(
+                ignoring: !_bioMetricAuthAvailable,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SettingText("Use biometrics to unlock"),
+                    NeumorphicSwitch(
+                        height: 35,
+                        value: _useLocalAuth,
+                        style: NeumorphicSwitchStyle(
+                            inactiveThumbColor: EnvoyColors.whitePrint,
+                            inactiveTrackColor: EnvoyColors.grey15,
+                            activeThumbColor: EnvoyColors.whitePrint,
+                            activeTrackColor: EnvoyColors.darkTeal,
+                            disableDepth: true),
+                        onChanged: (enabled) async {
+                          try {
+                            bool authSuccess = await auth.authenticate(
+                                localizedReason:
+                                    "Authenticate to enabled biometrics");
+                            if (authSuccess) {
+                              await LocalStorage().saveSecure(
+                                  "useLocalAuth", enabled.toString());
+                              setState(() {
+                                _useLocalAuth = enabled;
+                              });
+                            }
+                          } catch (e) {
+                            print(e);
+                          }
+                        })
+                  ],
+                ),
+              ),
+            ),
+            Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -113,10 +158,34 @@ class _SettingsPageState extends State<SettingsPage> {
                 duration: Duration(milliseconds: 200),
                 opacity: _customElectrumServerVisible ? 1.0 : 0.0,
               ),
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    LocalStorage().readSecure("useLocalAuth").then((value) {
+      setState(() {
+        _useLocalAuth = value == "true";
+      });
+    });
+    _initLocalAuth();
+  }
+
+  _initLocalAuth() async {
+    bool canCheckBiometrics = await auth.canCheckBiometrics;
+    if (canCheckBiometrics) {
+      List<BiometricType> availableBiometrics =
+          await auth.getAvailableBiometrics();
+      if (availableBiometrics.isNotEmpty) {
+        setState(() {
+          _bioMetricAuthAvailable = true;
+        });
+      }
+    }
   }
 }
