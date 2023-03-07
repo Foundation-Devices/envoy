@@ -19,6 +19,7 @@ import 'notifications.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
+const String LAST_BACKUP_PREFS = "last_backup";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
 const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
     LOCAL_SECRET_FILE_NAME + ".backup_timestamp";
@@ -83,8 +84,12 @@ class EnvoySeed {
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
-  // TODO: store whether user prefers to backup to Server or not
   void backupData({bool offline: false}) {
+    // Make sure we don't accidentally backup to Cloud
+    if (Settings().syncToCloud == false) {
+      offline = false;
+    }
+
     List<String> keysToBackUp = [
       Settings.SETTINGS_PREFS,
       // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
@@ -103,6 +108,19 @@ class EnvoySeed {
         Settings().envoyServerAddress,
         Tor().port,
         path: offline ? encryptedBackupFilePath : null);
+
+    LocalStorage()
+        .prefs
+        .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
+  }
+
+  DateTime? getLastBackupTime() {
+    final string = LocalStorage().prefs.getString(LAST_BACKUP_PREFS);
+    if (string == null) {
+      return null;
+    }
+
+    return DateTime.parse(string);
   }
 
   void saveOfflineData() {

@@ -21,6 +21,8 @@ import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 
+import 'envoy_seed.dart';
+
 class AccountAlreadyPaired implements Exception {}
 
 class AccountManager extends ChangeNotifier {
@@ -109,11 +111,7 @@ class AccountManager extends ChangeNotifier {
         DateTime.now(),
         0);
 
-    accounts.add(account);
-    storeAccounts();
-    notifyListeners();
-
-    syncAll();
+    addAccount(account);
     return account;
   }
 
@@ -175,11 +173,7 @@ class AccountManager extends ChangeNotifier {
         DateTime.now(),
         0);
 
-    accounts.add(account);
-    storeAccounts();
-    notifyListeners();
-
-    syncAll();
+    addAccount(account);
     return account;
   }
 
@@ -238,10 +232,7 @@ class AccountManager extends ChangeNotifier {
         DateTime.now(),
         accountNumber);
 
-    accounts.add(account);
-    storeAccounts();
-
-    syncAll();
+    addAccount(account);
     return account;
   }
 
@@ -302,6 +293,16 @@ class AccountManager extends ChangeNotifier {
   storeAccounts() {
     String json = jsonEncode(accounts);
     _ls.prefs.setString(ACCOUNTS_PREFS, json);
+  }
+
+  void addAccount(Account account) {
+    accounts.add(account);
+    storeAccounts();
+    notifyListeners();
+
+    EnvoySeed().backupData();
+
+    syncAll();
   }
 
   renameAccount(Account account, String newName) {

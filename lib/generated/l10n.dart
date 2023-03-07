@@ -50,6 +50,1360 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  // skipped getter for the '\$0' key
+
+  // skipped getter for the '\$0.00' key
+
+  // skipped getter for the '\$2.49' key
+
+  // skipped getter for the '\$K' key
+
+  // skipped getter for the '+' key
+
+  // skipped getter for the '.' key
+
+  // skipped getter for the '0' key
+
+  // skipped getter for the '0 sats' key
+
+  // skipped getter for the '0.13 USD' key
+
+  // skipped getter for the '0.5k Sats' key
+
+  // skipped getter for the '1 Coin' key
+
+  // skipped getter for the '1 Coin Spendable' key
+
+  // skipped getter for the '1 Spendable Coin' key
+
+  // skipped getter for the '1 Spendable Coins' key
+
+  // skipped getter for the '1 Unspendable Coin' key
+
+  // skipped getter for the '1 license' key
+
+  // skipped getter for the '1.0.1' key
+
+  // skipped getter for the '1.123456' key
+
+  // skipped getter for the '1.13 USD' key
+
+  // skipped getter for the '1.User initiates a spend' key
+
+  // skipped getter for the '1.initiates a spend' key
+
+  // skipped getter for the '10 Mins' key
+
+  // skipped getter for the '10 Minutes' key
+
+  // skipped getter for the '10,000 sats' key
+
+  // skipped getter for the '10’ -500 sats' key
+
+  // skipped getter for the '11,000' key
+
+  // skipped getter for the '11,000 sats' key
+
+  // skipped getter for the '11,500 sats' key
+
+  // skipped getter for the '12 seedword' key
+
+  // skipped getter for the '15 licenses' key
+
+  // skipped getter for the '2' key
+
+  // skipped getter for the '2 Coins' key
+
+  // skipped getter for the '2 Coins spendable' key
+
+  // skipped getter for the '2 Spendable Coins' key
+
+  // skipped getter for the '2 licenses' key
+
+  // skipped getter for the '2 wallets on two devices set to the same icloud. what happens? Android does overwrite iOS has conflict resolution policies One user, one seed test to see what happens in the field and warn user once we understand it better.' key
+
+  // skipped getter for the '2.Add amount' key
+
+  // skipped getter for the '24 seedword' key
+
+  // skipped getter for the '24,000 sats' key
+
+  // skipped getter for the '25,000 SATS' key
+
+  // skipped getter for the '25,000 sats' key
+
+  // skipped getter for the '3' key
+
+  // skipped getter for the '3 licenses' key
+
+  // skipped getter for the '3.ADD ADDRESS' key
+
+  // skipped getter for the '3.Add address / select fee' key
+
+  // skipped getter for the '3.a. AUTOMATIC COINSELECTION' key
+
+  // skipped getter for the '3.a.Envoy selects coins to include' key
+
+  // skipped getter for the '3.a.i. From 1 tag' key
+
+  // skipped getter for the '3.a.i. From 1 tag (Groceries here)' key
+
+  // skipped getter for the '3.a.i.1. Change' key
+
+  // skipped getter for the '3.a.i.2. No change' key
+
+  // skipped getter for the '3.a.ii. From multiple tags' key
+
+  // skipped getter for the '3.a.ii. From multiple tags (Groceries + Business here)' key
+
+  // skipped getter for the '3.a.ii.1. Change' key
+
+  // skipped getter for the '3.a.ii.1. No change' key
+
+  // skipped getter for the '3.a.ii.2. No change' key
+
+  // skipped getter for the '3.b. MANUAL OVERRIDE' key
+
+  // skipped getter for the '3.b.User constructs Tx' key
+
+  // skipped getter for the '3.b.i. From 1 tag' key
+
+  // skipped getter for the '3.b.i.1. Change' key
+
+  // skipped getter for the '3.b.ii. From multiple tags' key
+
+  // skipped getter for the '3.b.ii.1. Change' key
+
+  // skipped getter for the '3.b.ii.2. No change' key
+
+  // skipped getter for the '30 licenses' key
+
+  // skipped getter for the '34,000 sats' key
+
+  // skipped getter for the '35,000 sats' key
+
+  // skipped getter for the '3b.i.2. No change' key
+
+  // skipped getter for the '4' key
+
+  // skipped getter for the '4. User reviews Tx Details' key
+
+  // skipped getter for the '4.A AUTOMATIC COINSELECTION' key
+
+  // skipped getter for the '4.B MANUAL COINSELECTION' key
+
+  // skipped getter for the '4.a.i. From 1 tag (Groceries here)' key
+
+  // skipped getter for the '4.a.i.1. Change' key
+
+  // skipped getter for the '4.a.i.2. No change' key
+
+  // skipped getter for the '4.a.ii. From multiple tags (Groceries + Business here)' key
+
+  // skipped getter for the '4.a.ii.1. Change' key
+
+  // skipped getter for the '4.a.ii.1. No change' key
+
+  // skipped getter for the '4.select fee' key
+
+  // skipped getter for the '5' key
+
+  // skipped getter for the '5 Coins / 1 Spendable' key
+
+  // skipped getter for the '5 Coins / 2 Spendable' key
+
+  // skipped getter for the '5 Coins Spendable' key
+
+  // skipped getter for the '5 Coins, 3 Spendable' key
+
+  // skipped getter for the '5 Spendable Coins' key
+
+  // skipped getter for the '500 Sats' key
+
+  // skipped getter for the '500 sats' key
+
+  // skipped getter for the '5K Sats' key
+
+  // skipped getter for the '5k Sats' key
+
+  // skipped getter for the '5k sats' key
+
+  // skipped getter for the '6' key
+
+  // skipped getter for the '6 Coins unpendable' key
+
+  // skipped getter for the '6 Coins unspendable' key
+
+  // skipped getter for the '60 Mins' key
+
+  // skipped getter for the '60’ - 500 sats' key
+
+  // skipped getter for the '7' key
+
+  // skipped getter for the '8' key
+
+  // skipped getter for the '9' key
+
+  // skipped getter for the '9,000 SATS' key
+
+  // skipped getter for the '9k sats / \$0.99' key
+
+  /// `0`
+  String get A {
+    return Intl.message(
+      '0',
+      name: 'A',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'A Fee is Calculated' key
+
+  // skipped getter for the 'A Fee is Calculated (How do I edit?)' key
+
+  // skipped getter for the 'A Fee is Calculated, and the user can edit it' key
+
+  // skipped getter for the 'A-Z' key
+
+  // skipped getter for the 'ACCOUNTS ASSETS' key
+
+  // skipped getter for the 'AMBRE - I’VE DUPLICATED THE OLD SCREENS SO WE DON’T LOSE THEM. THE STUFF BELOW THIS TEXT IS WHAT I’LL WORK THROUGH AND UPDATE/REMOVE' key
+
+  // skipped getter for the 'ANDROID BACKUP INFO' key
+
+  // skipped getter for the 'ANIMATION - CREATING ENVOY KEY' key
+
+  // skipped getter for the 'ANIMATION - ENCRYPTING BACKUP' key
+
+  // skipped getter for the 'ANIMATION - HAPPY PATH' key
+
+  // skipped getter for the 'ANIMATION - LOADING' key
+
+  // skipped getter for the 'ANIMATION - SENDING BAKCUP TO ENVOY SERVER' key
+
+  // skipped getter for the 'ANIMATION - UNHAPPY PATH' key
+
+  /// `ASSETS`
+  String get ASSETS {
+    return Intl.message(
+      'ASSETS',
+      name: 'ASSETS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'AUTO COMPLETE' key
+
+  // skipped getter for the 'Account name' key
+
+  /// `include?`
+  String get Action {
+    return Intl.message(
+      'include?',
+      name: 'Action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FAQs`
+  String get Active {
+    return Intl.message(
+      'FAQs',
+      name: 'Active',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Add memo? Y/N (optional)' key
+
+  // skipped getter for the 'Add tag' key
+
+  /// `Advanced`
+  String get Advanced {
+    return Intl.message(
+      'Advanced',
+      name: 'Advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get All {
+    return Intl.message(
+      'All',
+      name: 'All',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get Amount {
+    return Intl.message(
+      'Amount',
+      name: 'Amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'App Version' key
+
+  /// `BBQ`
+  String get BBQ {
+    return Intl.message(
+      'BBQ',
+      name: 'BBQ',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BTC`
+  String get BTC {
+    return Intl.message(
+      'BTC',
+      name: 'BTC',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup`
+  String get Backup {
+    return Intl.message(
+      'Backup',
+      name: 'Backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bitcoin`
+  String get Bitcoin {
+    return Intl.message(
+      'Bitcoin',
+      name: 'Bitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Bitcoin Hotwallet' key
+
+  /// `Invalid Entry`
+  String get BodyCopy {
+    return Intl.message(
+      'Invalid Entry',
+      name: 'BodyCopy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Boost - 10’ - 5000 sats' key
+
+  /// `CHECKBOX`
+  String get CHECKBOX {
+    return Intl.message(
+      'CHECKBOX',
+      name: 'CHECKBOX',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'CMYK (100, 15, 0, 27)' key
+
+  // skipped getter for the 'CMYK (100, 8, 0, 20)' key
+
+  /// `COMPLETE`
+  String get COMPLETE {
+    return Intl.message(
+      'COMPLETE',
+      name: 'COMPLETE',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'CREATING ENVOY KEY' key
+
+  // skipped getter for the 'CTA Tertiary' key
+
+  // skipped getter for the 'CTA’s' key
+
+  // skipped getter for the 'Call To Action' key
+
+  // skipped getter for the 'Card Header' key
+
+  // skipped getter for the 'Choice 1' key
+
+  // skipped getter for the 'Choice 2' key
+
+  // skipped getter for the 'Coin Control' key
+
+  // skipped getter for the 'CoinAmount, SpendState' key
+
+  /// `Cold`
+  String get Cold {
+    return Intl.message(
+      'Cold',
+      name: 'Cold',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Cold storage' key
+
+  // skipped getter for the 'Confirm and Broadcast transaction' key
+
+  // skipped getter for the 'Confirm and Broadcast tx' key
+
+  /// `Connect`
+  String get Connect {
+    return Intl.message(
+      'Connect',
+      name: 'Connect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Connect with Envoy (Existing)' key
+
+  // skipped getter for the 'Connect with Envoy (New)' key
+
+  /// `Continue`
+  String get Continue {
+    return Intl.message(
+      'Continue',
+      name: 'Continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support.`
+  String get CopyText {
+    return Intl.message(
+      'If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support.',
+      name: 'CopyText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Create Seed' key
+
+  // skipped getter for the 'Create a new Account' key
+
+  // skipped getter for the 'Create a new tag' key
+
+  // skipped getter for the 'Create tag' key
+
+  /// `Custom`
+  String get Custom {
+    return Intl.message(
+      'Custom',
+      name: 'Custom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Custom Electrum Server' key
+
+  // skipped getter for the 'Custom fee' key
+
+  /// `DASHBOARD`
+  String get DASHBOARD {
+    return Intl.message(
+      'DASHBOARD',
+      name: 'DASHBOARD',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'DESIGN SYSTEM' key
+
+  /// `DEVICES`
+  String get DEVICES {
+    return Intl.message(
+      'DEVICES',
+      name: 'DEVICES',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DIALOGS`
+  String get DIALOGS {
+    return Intl.message(
+      'DIALOGS',
+      name: 'DIALOGS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DOCUMENTATION`
+  String get DOCUMENTATION {
+    return Intl.message(
+      'DOCUMENTATION',
+      name: 'DOCUMENTATION',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DONE`
+  String get DONE {
+    return Intl.message(
+      'DONE',
+      name: 'DONE',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default`
+  String get Default {
+    return Intl.message(
+      'Default',
+      name: 'Default',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get Delete {
+    return Intl.message(
+      'Delete',
+      name: 'Delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dialog`
+  String get Dialog {
+    return Intl.message(
+      'Dialog',
+      name: 'Dialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get Dismiss {
+    return Intl.message(
+      'Dismiss',
+      name: 'Dismiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Done {
+    return Intl.message(
+      'Done',
+      name: 'Done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Download from Github' key
+
+  // skipped getter for the 'EDIT DEVICE NAME DELETE' key
+
+  /// `EMAIL`
+  String get EMAIL {
+    return Intl.message(
+      'EMAIL',
+      name: 'EMAIL',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `EMPTY`
+  String get EMPTY {
+    return Intl.message(
+      'EMPTY',
+      name: 'EMPTY',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'ENCRYPTING BACKUP' key
+
+  /// `ENVOY`
+  String get ENVOY {
+    return Intl.message(
+      'ENVOY',
+      name: 'ENVOY',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get Edit {
+    return Intl.message(
+      'Edit',
+      name: 'Edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Enter an amount' key
+
+  // skipped getter for the 'Enter your node address here' key
+
+  /// `Entertain`
+  String get Entertain {
+    return Intl.message(
+      'Entertain',
+      name: 'Entertain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Entertain...' key
+
+  // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account (TBD) Vault Lightning' key
+
+  // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account Vault' key
+
+  // skipped getter for the 'Envoy Automatically Selects Coins' key
+
+  // skipped getter for the 'Envoy wallet' key
+
+  // skipped getter for the 'FW Update' key
+
+  /// `Family`
+  String get Family {
+    return Intl.message(
+      'Family',
+      name: 'Family',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Fee Modal' key
+
+  // skipped getter for the 'Fee inputs' key
+
+  // skipped getter for the 'Fee selection overlay' key
+
+  // skipped getter for the 'Fiat Currency' key
+
+  // skipped getter for the 'File Storage Destination Screen' key
+
+  // skipped getter for the 'GENERATED SEED DISPLAYED' key
+
+  // skipped getter for the 'Hex 009DB9' key
+
+  // skipped getter for the 'Hex 00BDCD' key
+
+  /// `Hotwallet`
+  String get Hotwallet {
+    return Intl.message(
+      'Hotwallet',
+      name: 'Hotwallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'I as a User want to manually Select Coins' key
+
+  // skipped getter for the 'I understand' key
+
+  // skipped getter for the 'I want to build a TX' key
+
+  /// `IMAGES`
+  String get IMAGES {
+    return Intl.message(
+      'IMAGES',
+      name: 'IMAGES',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'INVALID SEEDWORD' key
+
+  /// `Icons\n`
+  String get Icons {
+    return Intl.message(
+      'Icons\n',
+      name: 'Icons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Include`
+  String get Include {
+    return Intl.message(
+      'Include',
+      name: 'Include',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XXXXXXXXXXXXXXXXXXXXXX...`
+  String get Index {
+    return Intl.message(
+      'XXXXXXXXXXXXXXXXXXXXXX...',
+      name: 'Index',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Inputs amount insufficent' key
+
+  /// `Introduction`
+  String get Introduction {
+    return Intl.message(
+      'Introduction',
+      name: 'Introduction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'It contains the transaction for your Passport to sign.' key
+
+  /// `KYC`
+  String get KYC {
+    return Intl.message(
+      'KYC',
+      name: 'KYC',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'KYC ACCOUNT CREATION (BACKLOG)' key
+
+  // skipped getter for the 'KYC account created successfully.' key
+
+  // skipped getter for the 'LEARN MORE - HOW IS DATA SECURED' key
+
+  // skipped getter for the 'LIGHT TO DARK' key
+
+  /// `LN`
+  String get LN {
+    return Intl.message(
+      'LN',
+      name: 'LN',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` `
+  String get Label {
+    return Intl.message(
+      ' ',
+      name: 'Label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose destination`
+  String get Lavel {
+    return Intl.message(
+      'Choose destination',
+      name: 'Lavel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Learn more' key
+
+  // skipped getter for the 'Learning Center' key
+
+  /// `return`
+  String get Letter {
+    return Intl.message(
+      'return',
+      name: 'Letter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lightning`
+  String get Lightning {
+    return Intl.message(
+      'Lightning',
+      name: 'Lightning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Lightning wallet' key
+
+  // skipped getter for the 'List Item Active' key
+
+  // skipped getter for the 'List Item Inactive' key
+
+  // skipped getter for the 'MAGIC RECOVERY' key
+
+  // skipped getter for the 'MAGIC RECOVERY -FAIL' key
+
+  // skipped getter for the 'MAGIC RECOVERY -QR CODE BACKUP' key
+
+  // skipped getter for the 'MAGIC RECOVERY -retry' key
+
+  // skipped getter for the 'MAGIC SETUP - GENERATE WALLET' key
+
+  // skipped getter for the 'MANUAL SETUP - existing backup' key
+
+  // skipped getter for the 'MANUAL SETUP - store encrypted backup' key
+
+  // skipped getter for the 'Make Changes' key
+
+  // skipped getter for the 'Modal to inform user about use of multiple tags' key
+
+  /// `Multisig`
+  String get Multisig {
+    return Intl.message(
+      'Multisig',
+      name: 'Multisig',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Need a memo modal' key
+
+  // skipped getter for the 'New Seed' key
+
+  // skipped getter for the 'New tag (Personal here)' key
+
+  /// `OK`
+  String get OK {
+    return Intl.message(
+      'OK',
+      name: 'OK',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'ONBOARDING ICONS & ANIMATIONS' key
+
+  // skipped getter for the 'Open Account' key
+
+  // skipped getter for the 'Open Source Licences' key
+
+  // skipped getter for the 'PRIMARY ACCOUNTS COLORS' key
+
+  // skipped getter for the 'Pantone P 119-6 C' key
+
+  // skipped getter for the 'Pantone P 121-6 C' key
+
+  // skipped getter for the 'Parent tag' key
+
+  /// `Passport`
+  String get Passport {
+    return Intl.message(
+      'Passport',
+      name: 'Passport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Passport Tutorial - Simple Bitcoin Wallet Set Up (Single Signature)' key
+
+  // skipped getter for the 'Passport name' key
+
+  /// `Coinjoin`
+  String get PermissionName {
+    return Intl.message(
+      'Coinjoin',
+      name: 'PermissionName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal`
+  String get Personal {
+    return Intl.message(
+      'Personal',
+      name: 'Personal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Personal spending' key
+
+  // skipped getter for the 'Pin Creation' key
+
+  /// `Postmix`
+  String get Postmix {
+    return Intl.message(
+      'Postmix',
+      name: 'Postmix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Powered by Flutter' key
+
+  /// `Primary`
+  String get Primary {
+    return Intl.message(
+      'Primary',
+      name: 'Primary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Primary (#0)' key
+
+  // skipped getter for the 'Privacy Policy' key
+
+  // skipped getter for the 'Private wallet' key
+
+  // skipped getter for the 'Property 1=Tx details, Property2=SingleTag, Change=False' key
+
+  // skipped getter for the 'QR CODES' key
+
+  /// `RECOVERY\n`
+  String get RECOVERY {
+    return Intl.message(
+      'RECOVERY\n',
+      name: 'RECOVERY',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'RECOVERY INFO' key
+
+  // skipped getter for the 'RGB (0, 157, 185)' key
+
+  // skipped getter for the 'RGB (0, 189, 205)' key
+
+  /// `Receive`
+  String get Receive {
+    return Intl.message(
+      'Receive',
+      name: 'Receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Recovery scenario iOS_heading' key
+
+  // skipped getter for the 'Recovery scenario iOS_subheading' key
+
+  // skipped getter for the 'Required inputs' key
+
+  // skipped getter for the 'Required inputs:' key
+
+  // skipped getter for the 'Restore Backup' key
+
+  // skipped getter for the 'Restore Seed' key
+
+  // skipped getter for the 'Robust fee selection toggle' key
+
+  // skipped getter for the 'SEED WORDS' key
+
+  // skipped getter for the 'SEEDWORD VERIFICATION' key
+
+  // skipped getter for the 'SENDING ENCRYPTED BACKUP TO ENVOY SERVER' key
+
+  // skipped getter for the 'SHOW DESCRIPTOR EDIT ACCOUNT NAME DELETE' key
+
+  // skipped getter for the 'SUB ACCOUNTS COLORS' key
+
+  // skipped getter for the 'Sales revenue' key
+
+  /// `Save`
+  String get Save {
+    return Intl.message(
+      'Save',
+      name: 'Save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Scan the QR with your Passport' key
+
+  /// `12. catch`
+  String get ScreenHeading {
+    return Intl.message(
+      '12. catch',
+      name: 'ScreenHeading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `-$9.30`
+  String get Secondary {
+    return Intl.message(
+      '-\$9.30',
+      name: 'Secondary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Security Check' key
+
+  // skipped getter for the 'Seed generation for testnet wallet Dedicated seed to testnet Try to access = this account is inactive (lower opacity when testnet mode ON) Pop up alert to allow user to toggle on back off to testnet back to mainet) Easy way to switch into testnet from mainet (toggle in settings)' key
+
+  // skipped getter for the 'Select Amount' key
+
+  // skipped getter for the 'Select fee' key
+
+  /// `Send`
+  String get Send {
+    return Intl.message(
+      'Send',
+      name: 'Send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Send Max' key
+
+  // skipped getter for the 'Send Sats' key
+
+  // skipped getter for the 'Serial: B63E-DB17-F9E8-724B Paired 2 minutes ago' key
+
+  // skipped getter for the 'Set Pin' key
+
+  // skipped getter for the 'Settings > Toggle ON Testnet account' key
+
+  // skipped getter for the 'Setup Method' key
+
+  // skipped getter for the 'Shielded wallet' key
+
+  /// `Show`
+  String get Show {
+    return Intl.message(
+      'Show',
+      name: 'Show',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get Skip {
+    return Intl.message(
+      'Skip',
+      name: 'Skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Specs`
+  String get Specs {
+    return Intl.message(
+      'Specs',
+      name: 'Specs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spendable`
+  String get Spendable {
+    return Intl.message(
+      'Spendable',
+      name: 'Spendable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Splash Screen' key
+
+  /// `StackWalker`
+  String get StackWalker {
+    return Intl.message(
+      'StackWalker',
+      name: 'StackWalker',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Standard - 60’ - 500sats' key
+
+  /// `Sent`
+  String get Status {
+    return Intl.message(
+      'Sent',
+      name: 'Status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'String Middle' key
+
+  // skipped getter for the 'Swipe the card left & right to show & hide the balance.' key
+
+  /// `Q`
+  String get Symbol {
+    return Intl.message(
+      'Q',
+      name: 'Symbol',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TELEGRAM`
+  String get TELEGRAM {
+    return Intl.message(
+      'TELEGRAM',
+      name: 'TELEGRAM',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'TX Overview' key
+
+  // skipped getter for the 'TX Screen' key
+
+  // skipped getter for the 'Tag Name' key
+
+  // skipped getter for the 'Terms of Use' key
+
+  /// `Test`
+  String get Test {
+    return Intl.message(
+      'Test',
+      name: 'Test',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Testnet`
+  String get Testnet {
+    return Intl.message(
+      'Testnet',
+      name: 'Testnet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Testnet wallet from Envoy = toggle / press acocunt card' key
+
+  /// `Account Details`
+  String get Text {
+    return Intl.message(
+      'Account Details',
+      name: 'Text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Text info' key
+
+  // skipped getter for the 'This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.' key
+
+  /// `2 hours ago`
+  String get Timestamp {
+    return Intl.message(
+      '2 hours ago',
+      name: 'Timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'To:' key
+
+  // skipped getter for the 'To: tb1q33xnrjena6apwnhx5t375' key
+
+  // skipped getter for the 'Tor Connectivity' key
+
+  // skipped getter for the 'Total inputs' key
+
+  // skipped getter for the 'Total inputs:' key
+
+  // skipped getter for the 'Total: 11,500 sats ( 11,000 + 500 fee)' key
+
+  // skipped getter for the 'Total: 11,800 sats ( 11,000 + 800 fee)' key
+
+  // skipped getter for the 'Transaction history updated' key
+
+  // skipped getter for the 'Try again later' key
+
+  /// `Security`
+  String get Txs {
+    return Intl.message(
+      'Security',
+      name: 'Txs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `USD`
+  String get USD {
+    return Intl.message(
+      'USD',
+      name: 'USD',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'USER ORGANIZES COINS' key
+
+  /// `Untagged`
+  String get Untagged {
+    return Intl.message(
+      'Untagged',
+      name: 'Untagged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untitled`
+  String get Untitled {
+    return Intl.message(
+      'Untitled',
+      name: 'Untitled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Update Firmware' key
+
+  // skipped getter for the 'Use a different tag' key
+
+  // skipped getter for the 'VALID SEEDWORD' key
+
+  /// `VIDEO`
+  String get VIDEO {
+    return Intl.message(
+      'VIDEO',
+      name: 'VIDEO',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vault`
+  String get Vault {
+    return Intl.message(
+      'Vault',
+      name: 'Vault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'View Amount in Sats' key
+
+  // skipped getter for the 'WALLET SETUP' key
+
+  // skipped getter for the 'Wallet 1' key
+
+  // skipped getter for the 'Wallet 2' key
+
+  // skipped getter for the 'What is Envoy?' key
+
+  // skipped getter for the 'Work expenses' key
+
+  // skipped getter for the 'Yes, Let’s Get Started' key
+
+  // skipped getter for the 'You can now scan the QR code displayed on your Passport with your phone camera.' key
+
+  // skipped getter for the 'Your Electrum node is offline... please do x, y, z...' key
+
+  /// `Z`
+  String get Z {
+    return Intl.message(
+      'Z',
+      name: 'Z',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$25,721.00`
+  String get _ {
+    return Intl.message(
+      '\$25,721.00',
+      name: '_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `_fe_analyzer_shared`
+  String get _fe_analyzer_shared {
+    return Intl.message(
+      '_fe_analyzer_shared',
+      name: '_fe_analyzer_shared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'abseil-cpp' key
+
+  /// `accessibility`
+  String get accessibility {
+    return Intl.message(
+      'accessibility',
+      name: 'accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accounts`
   String get accounts_screen_bottom_menu_accounts {
     return Intl.message(
@@ -170,6 +1524,18 @@ class S {
     );
   }
 
+  // skipped getter for the 'add passphrase' key
+
+  /// `analyzer`
+  String get analyzer {
+    return Intl.message(
+      'analyzer',
+      name: 'analyzer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get android_backup_info_CTA {
     return Intl.message(
@@ -199,6 +1565,124 @@ class S {
       args: [],
     );
   }
+
+  /// `angle`
+  String get angle {
+    return Intl.message(
+      'angle',
+      name: 'angle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `animations`
+  String get animations {
+    return Intl.message(
+      'animations',
+      name: 'animations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `© 2022 Foundation Devices, Inc.`
+  String get app_store_copyright {
+    return Intl.message(
+      '© 2022 Foundation Devices, Inc.',
+      name: 'app_store_copyright',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy by Foundation is the perfect mobile companion to your Passport hardware wallet.\nEnvoy performs four key functions:\n1. Helps you securely and easily set up Passport.\n2. Keeps you up-to-date with firmware updates, no computer required!\n3. Provides quick and easy access to support resources.\n4. Offers a refreshingly simple Bitcoin software wallet.`
+  String get app_store_description {
+    return Intl.message(
+      'Envoy by Foundation is the perfect mobile companion to your Passport hardware wallet.\nEnvoy performs four key functions:\n1. Helps you securely and easily set up Passport.\n2. Keeps you up-to-date with firmware updates, no computer required!\n3. Provides quick and easy access to support resources.\n4. Offers a refreshingly simple Bitcoin software wallet.',
+      name: 'app_store_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `bitcoin, wallet, passport, foundation, foundation devices`
+  String get app_store_keywords {
+    return Intl.message(
+      'bitcoin, wallet, passport, foundation, foundation devices',
+      name: 'app_store_keywords',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The perfect mobile companion for your Passport hardware wallet.`
+  String get app_store_promotional_text {
+    return Intl.message(
+      'The perfect mobile companion for your Passport hardware wallet.',
+      name: 'app_store_promotional_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `archive`
+  String get archive {
+    return Intl.message(
+      'archive',
+      name: 'archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced`
+  String get backups_export_flow_advanced {
+    return Intl.message(
+      'Advanced',
+      name: 'backups_export_flow_advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Backup`
+  String get backups_export_flow_export_backup {
+    return Intl.message(
+      'Export Backup',
+      name: 'backups_export_flow_export_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Seed`
+  String get backups_export_flow_export_seed {
+    return Intl.message(
+      'Export Seed',
+      name: 'backups_export_flow_export_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get bc1cq313af51bh5k0lsmna21x {
+    return Intl.message(
+      '',
+      name: 'bc1cq313af51bh5k0lsmna21x',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'bc1cq313af51bh5k0lsmna21xpwnhx5...' key
+
+  // skipped getter for the 'casa only / not displayed on Envoy' key
+
+  // skipped getter for the 'check PP design system icon' key
+
+  // skipped getter for the 'cold storage' key
 
   /// `© 2022 Foundation Devices, Inc.`
   String get component_app_store_copyright {
@@ -399,6 +1883,10 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'dARK TO LIGHT' key
+
+  // skipped getter for the 'dialogs Icons' key
 
   /// `App Version`
   String get envoy_about_app_version {
@@ -4340,6 +5828,158 @@ class S {
     );
   }
 
+  /// `Download Backup File`
+  String get export_backup_send_CTA1 {
+    return Intl.message(
+      'Download Backup File',
+      name: 'export_backup_send_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard`
+  String get export_backup_send_CTA2 {
+    return Intl.message(
+      'Discard',
+      name: 'export_backup_send_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get export_seed_modal_12_words_CTA1 {
+    return Intl.message(
+      'Continue',
+      name: 'export_seed_modal_12_words_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to QR Code`
+  String get export_seed_modal_12_words_CTA2 {
+    return Intl.message(
+      'Back to QR Code',
+      name: 'export_seed_modal_12_words_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get export_seed_modal_24_words_1_2_CTA1 {
+    return Intl.message(
+      'Continue',
+      name: 'export_seed_modal_24_words_1_2_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to QR Code`
+  String get export_seed_modal_24_words_1_2_CTA2 {
+    return Intl.message(
+      'Back to QR Code',
+      name: 'export_seed_modal_24_words_1_2_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get export_seed_modal_24_words_2_2_CTA1 {
+    return Intl.message(
+      'Done',
+      name: 'export_seed_modal_24_words_2_2_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to QR Code`
+  String get export_seed_modal_24_words_2_2_CTA2 {
+    return Intl.message(
+      'Back to QR Code',
+      name: 'export_seed_modal_24_words_2_2_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get export_seed_modal_QR_code_CTA1 {
+    return Intl.message(
+      'Done',
+      name: 'export_seed_modal_QR_code_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Seed`
+  String get export_seed_modal_QR_code_CTA2 {
+    return Intl.message(
+      'View Seed',
+      name: 'export_seed_modal_QR_code_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code`
+  String get export_seed_modal_QR_code_subheading {
+    return Intl.message(
+      'To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code',
+      name: 'export_seed_modal_QR_code_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\nThe following screen displays highly sensitive information.\n\nAnyone with access to this data can steal your Bitcoin. Proceed with extreme caution.`
+  String get export_seed_modal_subheading {
+    return Intl.message(
+      'WARNING\nThe following screen displays highly sensitive information.\n\nAnyone with access to this data can steal your Bitcoin. Proceed with extreme caution.',
+      name: 'export_seed_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get heading {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hotwallet`
+  String get hotwallet {
+    return Intl.message(
+      'hotwallet',
+      name: 'hotwallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'how do we want to name those' key
+
+  // skipped getter for the 'mAGIC SETUP fLOW' key
+
+  // skipped getter for the 'mANUAL SETUP fLOW' key
+
+  // skipped getter for the 'mANUAL SETUP fLOW - IMPORT 12 SEEDWORDS' key
+
+  // skipped getter for the 'mANUAL SETUP fLOW - IMPORT 24 SEEDWORDS' key
+
+  // skipped getter for the 'mANUAL SETUP fLOW - IMPORT SEED' key
+
   /// `Encrypting Your Backup`
   String get magic_setup_generate_backup_heading {
     return Intl.message(
@@ -4420,6 +6060,16 @@ class S {
     );
   }
 
+  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
+  String get magic_setup_generate_wallet_modal_iOS_subheading {
+    return Intl.message(
+      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
+      name: 'magic_setup_generate_wallet_modal_iOS_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get magic_setup_generate_wallet_modal_ios_CTA {
     return Intl.message(
@@ -4430,11 +6080,61 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get magic_setup_generate_wallet_modal_ios_cta {
+    return Intl.message(
+      'Continue',
+      name: 'magic_setup_generate_wallet_modal_ios_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
   String get magic_setup_generate_wallet_modal_ios_subheading {
     return Intl.message(
       'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
       name: 'magic_setup_generate_wallet_modal_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get magic_setup_recovery_fail_Android_CTA1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_Android_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_Android_CTA2 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_Android_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery Unsuccessful`
+  String get magic_setup_recovery_fail_Android_heading {
+    return Intl.message(
+      'Recovery Unsuccessful',
+      name: 'magic_setup_recovery_fail_Android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
+  String get magic_setup_recovery_fail_Android_subheading {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
+      name: 'magic_setup_recovery_fail_Android_subheading',
       desc: '',
       args: [],
     );
@@ -4475,6 +6175,66 @@ class S {
     return Intl.message(
       'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
       name: 'magic_setup_recovery_fail_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery Unsuccessful`
+  String get magic_setup_recovery_fail_iOS_2_heading {
+    return Intl.message(
+      'Recovery Unsuccessful',
+      name: 'magic_setup_recovery_fail_iOS_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
+  String get magic_setup_recovery_fail_iOS_2_subheading {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
+      name: 'magic_setup_recovery_fail_iOS_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get magic_setup_recovery_fail_iOS_CTA1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_iOS_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_iOS_CTA2 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_iOS_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery Unsuccessful`
+  String get magic_setup_recovery_fail_iOS_heading {
+    return Intl.message(
+      'Recovery Unsuccessful',
+      name: 'magic_setup_recovery_fail_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
+  String get magic_setup_recovery_fail_iOS_subheading {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
+      name: 'magic_setup_recovery_fail_iOS_subheading',
       desc: '',
       args: [],
     );
@@ -4541,6 +6301,56 @@ class S {
   }
 
   /// `Recovering your Envoy Wallet`
+  String get magic_setup_recovery_success_Android_heading {
+    return Intl.message(
+      'Recovering your Envoy Wallet',
+      name: 'magic_setup_recovery_success_Android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into Google and restore your  backup data`
+  String get magic_setup_recovery_success_Android_instructions1 {
+    return Intl.message(
+      'Sign into Google and restore your  backup data',
+      name: 'magic_setup_recovery_success_Android_instructions1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get magic_setup_recovery_success_Android_instructions2 {
+    return Intl.message(
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'magic_setup_recovery_success_Android_instructions2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get magic_setup_recovery_success_Android_instructions3 {
+    return Intl.message(
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'magic_setup_recovery_success_Android_instructions3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get magic_setup_recovery_success_Android_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'magic_setup_recovery_success_Android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy Wallet`
   String get magic_setup_recovery_success_android_heading {
     return Intl.message(
       'Recovering your Envoy Wallet',
@@ -4585,6 +6395,56 @@ class S {
     return Intl.message(
       'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
       name: 'magic_setup_recovery_success_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy Wallet`
+  String get magic_setup_recovery_success_iOS_heading {
+    return Intl.message(
+      'Recovering your Envoy Wallet',
+      name: 'magic_setup_recovery_success_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into iCloud and install Envoy on the new device.`
+  String get magic_setup_recovery_success_iOS_instruction1 {
+    return Intl.message(
+      'Sign into iCloud and install Envoy on the new device.',
+      name: 'magic_setup_recovery_success_iOS_instruction1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Envoy and tap ‘Recover Envoy Wallet’.`
+  String get magic_setup_recovery_success_iOS_instruction2 {
+    return Intl.message(
+      'Open Envoy and tap ‘Recover Envoy Wallet’.',
+      name: 'magic_setup_recovery_success_iOS_instruction2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
+  String get magic_setup_recovery_success_iOS_instruction3 {
+    return Intl.message(
+      'Envoy will then automatically reinstate your existing Envoy wallet.',
+      name: 'magic_setup_recovery_success_iOS_instruction3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.`
+  String get magic_setup_recovery_success_iOS_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet onto a new device or Envoy app follow these simple instructions.',
+      name: 'magic_setup_recovery_success_iOS_subheading',
       desc: '',
       args: [],
     );
@@ -4711,6 +6571,46 @@ class S {
   }
 
   /// `Create New Wallet`
+  String get magic_setup_tutorial_iOS_CTA1 {
+    return Intl.message(
+      'Create New Wallet',
+      name: 'magic_setup_tutorial_iOS_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover Envoy Wallet`
+  String get magic_setup_tutorial_iOS_CTA2 {
+    return Intl.message(
+      'Recover Envoy Wallet',
+      name: 'magic_setup_tutorial_iOS_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Your Wallet`
+  String get magic_setup_tutorial_iOS_heading {
+    return Intl.message(
+      'Set Up Your Wallet',
+      name: 'magic_setup_tutorial_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
+  String get magic_setup_tutorial_iOS_subheading {
+    return Intl.message(
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
+      name: 'magic_setup_tutorial_iOS_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Wallet`
   String get magic_setup_tutorial_ios_CTA1 {
     return Intl.message(
       'Create New Wallet',
@@ -4760,6 +6660,10 @@ class S {
     );
   }
 
+  // skipped getter for the 'make sure no conflict w/ Samourai' key
+
+  // skipped getter for the 'manual setup fLOW - generate SEED' key
+
   /// `Choose Destination`
   String get manual_setup_create_and_store_backup_CTA {
     return Intl.message(
@@ -4780,6 +6684,36 @@ class S {
     );
   }
 
+  /// `I understand`
+  String get manual_setup_create_and_store_backup_modal_CTA {
+    return Intl.message(
+      'I understand',
+      name: 'manual_setup_create_and_store_backup_modal_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
+  String get manual_setup_create_and_store_backup_modal_heading {
+    return Intl.message(
+      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
+      name: 'manual_setup_create_and_store_backup_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
+  String get manual_setup_create_and_store_backup_modal_subheading {
+    return Intl.message(
+      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
+      name: 'manual_setup_create_and_store_backup_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
   String get manual_setup_create_and_store_backup_subheading {
     return Intl.message(
@@ -4795,6 +6729,16 @@ class S {
     return Intl.message(
       'Generate Seed',
       name: 'manual_setup_generate_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Your Seed Private`
+  String get manual_setup_generate_seed_heading {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'manual_setup_generate_seed_heading',
       desc: '',
       args: [],
     );
@@ -4870,6 +6814,16 @@ class S {
     );
   }
 
+  /// `Choose a word to continue`
+  String get manual_setup_generate_seed_verify_seed_quiz_1_4_infotext {
+    return Intl.message(
+      'Choose a word to continue',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_infotext',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_1_4_subheading {
     return Intl.message(
@@ -4895,6 +6849,16 @@ class S {
     return Intl.message(
       'Continue',
       name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correct`
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_correct {
+    return Intl.message(
+      'Correct',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_correct',
       desc: '',
       args: [],
     );
@@ -4982,6 +6946,16 @@ class S {
     );
   }
 
+  /// `Invalid Entry`
+  String get manual_setup_generate_seed_verify_seed_quiz_fail_invalid {
+    return Intl.message(
+      'Invalid Entry',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_fail_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `What is your #2 seed word?`
   String get manual_setup_generate_seed_verify_seed_quiz_fail_subheading {
     return Intl.message(
@@ -5004,6 +6978,30 @@ class S {
     );
   }
 
+  /// `Verify Your Seed`
+  String
+      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_heading {
+    return Intl.message(
+      'Verify Your Seed',
+      name:
+          'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a word from the list below.`
+  String
+      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_infotext {
+    return Intl.message(
+      'Choose a word from the list below.',
+      name:
+          'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_infotext',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
   String
       get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
@@ -5011,6 +7009,16 @@ class S {
       'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
       name:
           'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correct`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_correct {
+    return Intl.message(
+      'Correct',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_correct',
       desc: '',
       args: [],
     );
@@ -5031,6 +7039,16 @@ class S {
     return Intl.message(
       'Choose a word to continue',
       name: 'manual_setup_generate_seed_verify_seed_quiz_success_info_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a word to continue`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_infotext {
+    return Intl.message(
+      'Choose a word to continue',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_infotext',
       desc: '',
       args: [],
     );
@@ -5136,6 +7154,16 @@ class S {
     );
   }
 
+  /// `Choose Destination`
+  String get manual_setup_import_existing_backup_CTA1 {
+    return Intl.message(
+      'Choose Destination',
+      name: 'manual_setup_import_existing_backup_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Store Your Encrypted Backup`
   String get manual_setup_import_existing_backup_heading {
     return Intl.message(
@@ -5161,6 +7189,16 @@ class S {
     return Intl.message(
       'Done',
       name: 'manual_setup_import_seed_12_words_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get manual_setup_import_seed_12_words_CTA_inactive {
+    return Intl.message(
+      'Done',
+      name: 'manual_setup_import_seed_12_words_CTA_inactive',
       desc: '',
       args: [],
     );
@@ -5407,6 +7445,68 @@ class S {
       'Please carefully re-enter your passphrase.',
       name:
           'manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABOUT`
+  String get menu_about {
+    return Intl.message(
+      'ABOUT',
+      name: 'menu_about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get menu_backups {
+    return Intl.message(
+      'BACKUPS',
+      name: 'menu_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SETTINGS`
+  String get menu_settings {
+    return Intl.message(
+      'SETTINGS',
+      name: 'menu_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `support`
+  String get menu_support {
+    return Intl.message(
+      'support',
+      name: 'menu_support',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `multisig`
+  String get multisig {
+    return Intl.message(
+      'multisig',
+      name: 'multisig',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'override tx builder' key
+
+  /// `pagination`
+  String get pagination {
+    return Intl.message(
+      'pagination',
+      name: 'pagination',
       desc: '',
       args: [],
     );
@@ -5752,6 +7852,100 @@ class S {
     );
   }
 
+  /// `Envoy by Foundation`
+  String get play_store_app_name {
+    return Intl.message(
+      'Envoy by Foundation',
+      name: 'play_store_app_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy by Foundation is the perfect mobile companion to your Passport hardware wallet.\nEnvoy performs four key functions:\n1. Helps you securely and easily set up Passport.\n2. Keeps you up-to-date with firmware updates, no computer required!\n3. Provides quick and easy access to support resources.\n4. Offers a refreshingly simple Bitcoin software wallet.`
+  String get play_store_full_description {
+    return Intl.message(
+      'Envoy by Foundation is the perfect mobile companion to your Passport hardware wallet.\nEnvoy performs four key functions:\n1. Helps you securely and easily set up Passport.\n2. Keeps you up-to-date with firmware updates, no computer required!\n3. Provides quick and easy access to support resources.\n4. Offers a refreshingly simple Bitcoin software wallet.',
+      name: 'play_store_full_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The perfect mobile companion for your Passport hardware wallet.`
+  String get play_store_short_description {
+    return Intl.message(
+      'The perfect mobile companion for your Passport hardware wallet.',
+      name: 'play_store_short_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `postmix`
+  String get postmix {
+    return Intl.message(
+      'postmix',
+      name: 'postmix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'quiz FAILED' key
+
+  // skipped getter for the 'quiz successful' key
+
+  /// `How to Recover?`
+  String get recovery_scenario_Android_heading {
+    return Intl.message(
+      'How to Recover?',
+      name: 'recovery_scenario_Android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign into Google and restore your  backup data`
+  String get recovery_scenario_Android_instruction1 {
+    return Intl.message(
+      'Sign into Google and restore your  backup data',
+      name: 'recovery_scenario_Android_instruction1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get recovery_scenario_Android_instruction2 {
+    return Intl.message(
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'recovery_scenario_Android_instruction2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get recovery_scenario_Android_instruction3 {
+    return Intl.message(
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'recovery_scenario_Android_instruction3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your Envoy wallet, follow these simple instructions.`
+  String get recovery_scenario_Android_subheading {
+    return Intl.message(
+      'To recover your Envoy wallet, follow these simple instructions.',
+      name: 'recovery_scenario_Android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get recovery_scenario_android_CTA {
     return Intl.message(
@@ -5812,6 +8006,36 @@ class S {
     );
   }
 
+  /// `Sign into iCloud and restore your iCloud backup`
+  String get recovery_scenario_iOS_instruction1 {
+    return Intl.message(
+      'Sign into iCloud and restore your iCloud backup',
+      name: 'recovery_scenario_iOS_instruction1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  String get recovery_scenario_iOS_instruction2 {
+    return Intl.message(
+      'Install Envoy and tap “Recover Envoy Wallet”',
+      name: 'recovery_scenario_iOS_instruction2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your existing Envoy wallet`
+  String get recovery_scenario_iOS_instruction3 {
+    return Intl.message(
+      'Envoy will then automatically restore your existing Envoy wallet',
+      name: 'recovery_scenario_iOS_instruction3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get recovery_scenario_ios_CTA {
     return Intl.message(
@@ -5867,6 +8091,16 @@ class S {
     return Intl.message(
       'To recover your Envoy wallet, follow these simple instructions.',
       name: 'recovery_scenario_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `rtainment`
+  String get rtainment {
+    return Intl.message(
+      'rtainment',
+      name: 'rtainment',
       desc: '',
       args: [],
     );
@@ -6172,10 +8406,10 @@ class S {
     );
   }
 
-  /// `Only Manage Passport`
+  /// `Manage Your Passport`
   String get splash_screen_CTA3 {
     return Intl.message(
-      'Only Manage Passport',
+      'Manage Your Passport',
       name: 'splash_screen_CTA3',
       desc: '',
       args: [],
@@ -6212,45 +8446,31 @@ class S {
     );
   }
 
-  /// `Keep Your Seed Private`
-  String get manual_setup_generate_seed_heading {
+  // skipped getter for the 'ssl://mainnet.foundationdevices.com:50002' key
+
+  // skipped getter for the 'ssl:mainnet.foundationdevices' key
+
+  /// `tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7`
+  String get tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7 {
     return Intl.message(
-      'Keep Your Seed Private',
-      name: 'manual_setup_generate_seed_heading',
+      'tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7',
+      name: 'tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
-  String get manual_setup_create_and_store_backup_modal_heading {
+  /// `testnet`
+  String get testnet {
     return Intl.message(
-      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
-      name: 'manual_setup_create_and_store_backup_modal_heading',
+      'testnet',
+      name: 'testnet',
       desc: '',
       args: [],
     );
   }
 
-  /// `I understand`
-  String get manual_setup_create_and_store_backup_modal_CTA {
-    return Intl.message(
-      'I understand',
-      name: 'manual_setup_create_and_store_backup_modal_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
-  String get wallet_security_modal_4_4_subheading {
-    return Intl.message(
-      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
-      name: 'wallet_security_modal_4_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
+  // skipped getter for the 'version 1.0.1' key
 
   /// `Continue`
   String get wallet_security_modal_1_4_android_CTA {
@@ -6272,13 +8492,43 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  /// `Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
   String get wallet_security_modal_1_4_android_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      'Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
       name: 'wallet_security_modal_1_4_android_subheading',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Continue`
+  String get wallet_security_modal_1_4_iOS_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_1_4_iOS_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Wallet is Secured`
+  String get wallet_security_modal_1_4_iOS_bheading {
+    return Intl.message(
+      'How Your Wallet is Secured',
+      name: 'wallet_security_modal_1_4_iOS_bheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy securely and automatically backs up your wallet seed to iCloud {{Keychain}}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
+  String wallet_security_modal_1_4_iOS_subheading(Object Keychain) {
+    return Intl.message(
+      'Envoy securely and automatically backs up your wallet seed to iCloud {$Keychain}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
+      name: 'wallet_security_modal_1_4_iOS_subheading',
+      desc: '',
+      args: [Keychain],
     );
   }
 
@@ -6327,6 +8577,16 @@ class S {
     return Intl.message(
       'How Your Wallet is Secured',
       name: 'wallet_security_modal_2_4_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
+  String get wallet_security_modal_2_4_subehading {
+    return Intl.message(
+      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
+      name: 'wallet_security_modal_2_4_subehading',
       desc: '',
       args: [],
     );
@@ -6403,6 +8663,36 @@ class S {
   }
 
   /// `Continue`
+  String get wallet_security_modal_3_4_iOS_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'wallet_security_modal_3_4_iOS_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get wallet_security_modal_3_4_iOS_heading {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'wallet_security_modal_3_4_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.`
+  String get wallet_security_modal_3_4_iOS_subheading {
+    return Intl.message(
+      'To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.',
+      name: 'wallet_security_modal_3_4_iOS_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
   String get wallet_security_modal_4_4_CTA {
     return Intl.message(
       'Continue',
@@ -6417,6 +8707,16 @@ class S {
     return Intl.message(
       'How Your Data is Secured',
       name: 'wallet_security_modal_4_4_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
+  String get wallet_security_modal_4_4_subheading {
+    return Intl.message(
+      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
+      name: 'wallet_security_modal_4_4_subheading',
       desc: '',
       args: [],
     );
@@ -6451,6 +8751,26 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the '~\$45,560.78' key
+
+  // skipped getter for the '✏️ Action' key
+
+  // skipped getter for the '✏️ Description' key
+
+  // skipped getter for the '✏️ Suggestion' key
+
+  // skipped getter for the '✏️ Title' key
+
+  // skipped getter for the '🟣 Continue' key
+
+  // skipped getter for the '🟣 Go back' key
+
+  // skipped getter for the '🟣 Lavel' key
+
+  // skipped getter for the '􀊰' key
+
+  // skipped getter for the '􀜬' key
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

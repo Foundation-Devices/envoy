@@ -90,9 +90,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
       dismissible: false,
       builder: Builder(builder: (context) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.38,
           width: MediaQuery.of(context).size.width * 0.8,
-          constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
@@ -100,8 +98,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(padding: EdgeInsets.all(8)),
-                Expanded(
-                    child: Column(
+                Column(
                   children: [
                     Icon(Icons.info_outline,
                         color: EnvoyColors.darkTeal, size: 68),
@@ -116,7 +113,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                     ),
                     Padding(padding: EdgeInsets.all(2)),
                   ],
-                )),
+                ),
                 OnboardingButton(
                     label: S().manual_setup_create_and_store_backup_modal_CTA,
                     onTap: () async {
