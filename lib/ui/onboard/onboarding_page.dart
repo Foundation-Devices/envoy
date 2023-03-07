@@ -22,6 +22,7 @@ class OnboardingPage extends StatelessWidget {
   final Uint8List? qrCodeUrBinary;
   final Future<CryptoRequest>? qrCodeUrCryptoRequest;
   final Widget? clipArt;
+  final Widget? right;
   final List<Widget>? text; // Header/text pairs
   final int navigationDots;
   final int navigationDotsIndex;
@@ -54,6 +55,7 @@ class OnboardingPage extends StatelessWidget {
     this.qrCodeUrCryptoRequest,
     this.rightFunction: goHome,
     this.leftFunction: goBack,
+    this.right,
   }) : super(key: key);
 
   Widget _determineQr() {
@@ -180,7 +182,9 @@ class OnboardingPage extends StatelessWidget {
                                               onTap: () {
                                                 rightFunction!(context);
                                               },
-                                              child: Icon(Icons.close_rounded)),
+                                              child: this.right == null
+                                                  ? Icon(Icons.close_rounded)
+                                                  : this.right),
                                         )
                                       : SizedBox.shrink()
                                 ])
@@ -341,21 +345,26 @@ class OnboardingButton extends StatelessWidget {
   final String label;
   final void Function() onTap;
   final bool light;
+  final TextStyle? textStyle;
 
   const OnboardingButton(
-      {Key? key, required this.label, required this.onTap, this.light: false})
+      {Key? key,
+      required this.label,
+      this.textStyle,
+      required this.onTap,
+      this.light: false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-      child: GestureDetector(
-          onTap: onTap,
-          child: EnvoyButton(
-            label,
-            light: light,
-          )),
+      child: EnvoyButton(
+        label,
+        onTap: onTap,
+        textStyle: this.textStyle,
+        light: light,
+      ),
     );
   }
 }
