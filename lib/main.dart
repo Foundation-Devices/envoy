@@ -7,6 +7,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -106,9 +107,10 @@ class MyApp extends StatelessWidget {
             variantColor: envoyVariantColor,
             depth: 0, // Flat for now
           ),
-          initialRoute: "/",
+          initialRoute: "/lock",
           routes: {
             '/': (context) => HomePage(),
+            '/lock': (context) => AuthenticatePage(),
           }),
     );
   }
