@@ -8,6 +8,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
+import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -186,24 +187,5 @@ class _SettingsPageState extends State<SettingsPage> {
         });
       }
     }
-  }
-}
-
-class SettingText extends StatelessWidget {
-  final String label;
-
-  const SettingText(
-    this.label, {
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(label,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 15.0,
-          fontWeight: FontWeight.w500,
-        ));
   }
 }

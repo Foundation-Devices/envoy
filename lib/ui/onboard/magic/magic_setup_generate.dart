@@ -13,17 +13,20 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/business/envoy_seed.dart';
 
-class MagicCreateWallet extends StatefulWidget {
-  const MagicCreateWallet({Key? key}) : super(key: key);
+class MagicSetupGenerate extends StatefulWidget {
+  const MagicSetupGenerate({Key? key}) : super(key: key);
 
   @override
-  State<MagicCreateWallet> createState() => _MagicCreateWalletState();
+  State<MagicSetupGenerate> createState() => _MagicSetupGenerateState();
 }
 
-class _MagicCreateWalletState extends State<MagicCreateWallet> {
+class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
+  final walletGenerated = EnvoySeed().walletDerived();
+
   StateMachineController? stateMachineController;
   PageController _pageController = PageController();
-  int step = 0;
+  late int step;
+
   List<String> stepsHeadings = [
     Platform.isAndroid
         ? S().magic_setup_generate_envoy_key_android_heading
@@ -49,12 +52,14 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
   @override
   void initState() {
     super.initState();
+    step = walletGenerated ? 1 : 0;
     _initiateWalletCreate();
   }
 
   void _initiateWalletCreate() async {
-    // TODO: sync this to actual steps in creation
-    await EnvoySeed().generate();
+    if (walletGenerated) {
+      await EnvoySeed().generate();
+    }
 
     await Future.delayed(Duration(seconds: 2));
     setState(() {
