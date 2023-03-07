@@ -70,6 +70,8 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -408,6 +410,26 @@ class S {
 
   // skipped getter for the 'Boost - 10’ - 5000 sats' key
 
+  /// `Business`
+  String get Business {
+    return Intl.message(
+      'Business',
+      name: 'Business',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -449,6 +471,26 @@ class S {
   // skipped getter for the 'Coin Control' key
 
   // skipped getter for the 'CoinAmount, SpendState' key
+
+  /// `List`
+  String get CoinText {
+    return Intl.message(
+      'List',
+      name: 'CoinText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins`
+  String get Coins {
+    return Intl.message(
+      'Coins',
+      name: 'Coins',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Cold`
   String get Cold {
@@ -686,6 +728,16 @@ class S {
 
   // skipped getter for the 'Entertain...' key
 
+  /// `Entertainment`
+  String get Entertainment {
+    return Intl.message(
+      'Entertainment',
+      name: 'Entertainment',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account (TBD) Vault Lightning' key
 
   // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account Vault' key
@@ -695,6 +747,8 @@ class S {
   // skipped getter for the 'Envoy wallet' key
 
   // skipped getter for the 'FW Update' key
+
+  // skipped getter for the 'FW_Version_No.' key
 
   /// `Family`
   String get Family {
@@ -712,11 +766,41 @@ class S {
 
   // skipped getter for the 'Fee selection overlay' key
 
+  /// `$25,721.00`
+  String get Fiat {
+    return Intl.message(
+      '\$25,721.00',
+      name: 'Fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Fiat Currency' key
 
   // skipped getter for the 'File Storage Destination Screen' key
 
+  /// `Fuel`
+  String get Fuel {
+    return Intl.message(
+      'Fuel',
+      name: 'Fuel',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'GENERATED SEED DISPLAYED' key
+
+  /// `Groceries`
+  String get Groceries {
+    return Intl.message(
+      'Groceries',
+      name: 'Groceries',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Hex 009DB9' key
 
@@ -769,6 +853,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Include?' key
 
   /// `XXXXXXXXXXXXXXXXXXXXXX...`
   String get Index {
@@ -940,9 +1026,21 @@ class S {
     );
   }
 
+  // skipped getter for the 'Passport Name' key
+
   // skipped getter for the 'Passport Tutorial - Simple Bitcoin Wallet Set Up (Single Signature)' key
 
   // skipped getter for the 'Passport name' key
+
+  /// `Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.`
+  String get PermissionDetails {
+    return Intl.message(
+      'Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.',
+      name: 'PermissionDetails',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Coinjoin`
   String get PermissionName {
@@ -1030,6 +1128,16 @@ class S {
 
   // skipped getter for the 'Recovery scenario iOS_subheading' key
 
+  /// `Rename`
+  String get Rename {
+    return Intl.message(
+      'Rename',
+      name: 'Rename',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Required inputs' key
 
   // skipped getter for the 'Required inputs:' key
@@ -1052,11 +1160,31 @@ class S {
 
   // skipped getter for the 'Sales revenue' key
 
+  /// `123,345,679 SATS`
+  String get Sats {
+    return Intl.message(
+      '123,345,679 SATS',
+      name: 'Sats',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Save`
   String get Save {
     return Intl.message(
       'Save',
       name: 'Save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Savings`
+  String get Savings {
+    return Intl.message(
+      'Savings',
+      name: 'Savings',
       desc: '',
       args: [],
     );
@@ -1069,6 +1197,16 @@ class S {
     return Intl.message(
       '12. catch',
       name: 'ScreenHeading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get ScreenTitle {
+    return Intl.message(
+      'BACKUPS',
+      name: 'ScreenTitle',
       desc: '',
       args: [],
     );
@@ -1182,6 +1320,16 @@ class S {
 
   // skipped getter for the 'String Middle' key
 
+  /// `Store Your Encrypted Backup`
+  String get Subheading {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'Subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Swipe the card left & right to show & hide the balance.' key
 
   /// `Q`
@@ -1207,6 +1355,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Privacy`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Privacy',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -1372,10 +1530,10 @@ class S {
     );
   }
 
-  /// `$25,721.00`
+  /// `Export Seed`
   String get _ {
     return Intl.message(
-      '\$25,721.00',
+      'Export Seed',
       name: '_',
       desc: '',
       args: [],
@@ -1636,30 +1794,30 @@ class S {
     );
   }
 
-  /// `Advanced`
+  /// `Auto Backup`
   String get backups_export_flow_advanced {
     return Intl.message(
-      'Advanced',
+      'Auto Backup',
       name: 'backups_export_flow_advanced',
       desc: '',
       args: [],
     );
   }
 
-  /// `Export Backup`
+  /// `Seed state`
   String get backups_export_flow_export_backup {
     return Intl.message(
-      'Export Backup',
+      'Seed state',
       name: 'backups_export_flow_export_backup',
       desc: '',
       args: [],
     );
   }
 
-  /// `Export Seed`
+  /// `You don’t have any seed`
   String get backups_export_flow_export_seed {
     return Intl.message(
-      'Export Seed',
+      'You don’t have any seed',
       name: 'backups_export_flow_export_seed',
       desc: '',
       args: [],
@@ -5828,6 +5986,16 @@ class S {
     );
   }
 
+  /// `This encrypted file contains wallet metadata, such as tags, notes, accounts and app settings.\n\nThis file is encrypted with your wallet seed. Ensure you have that backed up securely. `
+  String get export_backup_modal_subheading {
+    return Intl.message(
+      'This encrypted file contains wallet metadata, such as tags, notes, accounts and app settings.\n\nThis file is encrypted with your wallet seed. Ensure you have that backed up securely. ',
+      name: 'export_backup_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Download Backup File`
   String get export_backup_send_CTA1 {
     return Intl.message(
@@ -6664,6 +6832,36 @@ class S {
 
   // skipped getter for the 'manual setup fLOW - generate SEED' key
 
+  /// `I understand`
+  String get manual_backups_export_flow_modal_4_4_CTA {
+    return Intl.message(
+      'I understand',
+      name: 'manual_backups_export_flow_modal_4_4_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get manual_backups_export_flow_modal_4_4_heading {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'manual_backups_export_flow_modal_4_4_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
+  String get manual_backups_export_flow_modal_4_4_subheading {
+    return Intl.message(
+      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
+      name: 'manual_backups_export_flow_modal_4_4_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choose Destination`
   String get manual_setup_create_and_store_backup_CTA {
     return Intl.message(
@@ -7450,6 +7648,396 @@ class S {
     );
   }
 
+  /// `Automatic Backups`
+  String get manual_toggle_off_autobackup {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_off_autobackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get manual_toggle_off_download_backup_file {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'manual_toggle_off_download_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get manual_toggle_off_view_seed_words {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_off_view_seed_words',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2 hours ago to Foundation servers`
+  String get manual_toggle_on_seed_backedup_android_2_hours_ago {
+    return Intl.message(
+      '2 hours ago to Foundation servers',
+      name: 'manual_toggle_on_seed_backedup_android_2_hours_ago',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_backedup_android_autobackups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_backedup_android_autobackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup Now`
+  String get manual_toggle_on_seed_backedup_android_backup_now {
+    return Intl.message(
+      'Backup Now',
+      name: 'manual_toggle_on_seed_backedup_android_backup_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get manual_toggle_on_seed_backedup_android_backups {
+    return Intl.message(
+      'BACKUPS',
+      name: 'manual_toggle_on_seed_backedup_android_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get manual_toggle_on_seed_backedup_android_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'manual_toggle_on_seed_backedup_android_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Android Settings`
+  String get manual_toggle_on_seed_backedup_android_open_settings {
+    return Intl.message(
+      'Open Android Settings',
+      name: 'manual_toggle_on_seed_backedup_android_open_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stored in Android Auto Backup`
+  String get manual_toggle_on_seed_backedup_android_stored {
+    return Intl.message(
+      'Stored in Android Auto Backup',
+      name: 'manual_toggle_on_seed_backedup_android_stored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get manual_toggle_on_seed_backedup_android_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_on_seed_backedup_android_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Data`
+  String get manual_toggle_on_seed_backedup_android_wallet_data {
+    return Intl.message(
+      'Wallet Data',
+      name: 'manual_toggle_on_seed_backedup_android_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Seed`
+  String get manual_toggle_on_seed_backedup_android_wallet_seed {
+    return Intl.message(
+      'Wallet Seed',
+      name: 'manual_toggle_on_seed_backedup_android_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2 hours ago to Foundation servers`
+  String get manual_toggle_on_seed_backedup_iOS_2_hours_ago {
+    return Intl.message(
+      '2 hours ago to Foundation servers',
+      name: 'manual_toggle_on_seed_backedup_iOS_2_hours_ago',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_backedup_iOS_auto_backups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_backedup_iOS_auto_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back Up Now`
+  String get manual_toggle_on_seed_backedup_iOS_backup_now {
+    return Intl.message(
+      'Back Up Now',
+      name: 'manual_toggle_on_seed_backedup_iOS_backup_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get manual_toggle_on_seed_backedup_iOS_backups {
+    return Intl.message(
+      'BACKUPS',
+      name: 'manual_toggle_on_seed_backedup_iOS_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get manual_toggle_on_seed_backedup_iOS_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'manual_toggle_on_seed_backedup_iOS_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stored in iCloud Keychain`
+  String get manual_toggle_on_seed_backedup_iOS_stored_in_cloud {
+    return Intl.message(
+      'Stored in iCloud Keychain',
+      name: 'manual_toggle_on_seed_backedup_iOS_stored_in_cloud',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get manual_toggle_on_seed_backedup_iOS_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_on_seed_backedup_iOS_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Data`
+  String get manual_toggle_on_seed_backedup_iOS_wallet_data {
+    return Intl.message(
+      'Wallet Data',
+      name: 'manual_toggle_on_seed_backedup_iOS_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Seed`
+  String get manual_toggle_on_seed_backedup_iOS_wallet_seed {
+    return Intl.message(
+      'Wallet Seed',
+      name: 'manual_toggle_on_seed_backedup_iOS_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_not_backedup_android_autobackups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_not_backedup_android_autobackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup Now`
+  String get manual_toggle_on_seed_not_backedup_android_backup_now {
+    return Intl.message(
+      'Backup Now',
+      name: 'manual_toggle_on_seed_not_backedup_android_backup_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get manual_toggle_on_seed_not_backedup_android_backups {
+    return Intl.message(
+      'BACKUPS',
+      name: 'manual_toggle_on_seed_not_backedup_android_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get manual_toggle_on_seed_not_backedup_android_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'manual_toggle_on_seed_not_backedup_android_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Android Settings`
+  String get manual_toggle_on_seed_not_backedup_android_open_settings {
+    return Intl.message(
+      'Open Android Settings',
+      name: 'manual_toggle_on_seed_not_backedup_android_open_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to Foundation servers`
+  String get manual_toggle_on_seed_not_backedup_android_pending_backup {
+    return Intl.message(
+      'Pending backup to Foundation servers',
+      name: 'manual_toggle_on_seed_not_backedup_android_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get manual_toggle_on_seed_not_backedup_android_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_on_seed_not_backedup_android_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Data`
+  String get manual_toggle_on_seed_not_backedup_android_wallet_data {
+    return Intl.message(
+      'Wallet Data',
+      name: 'manual_toggle_on_seed_not_backedup_android_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Seed`
+  String get manual_toggle_on_seed_not_backedup_android_wallet_seed {
+    return Intl.message(
+      'Wallet Seed',
+      name: 'manual_toggle_on_seed_not_backedup_android_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_not_backedup_iOS_autobackups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_autobackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back Up Now`
+  String get manual_toggle_on_seed_not_backedup_iOS_backup_now {
+    return Intl.message(
+      'Back Up Now',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_backup_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get manual_toggle_on_seed_not_backedup_iOS_backups {
+    return Intl.message(
+      'BACKUPS',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get manual_toggle_on_seed_not_backedup_iOS_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to Foundation servers`
+  String get manual_toggle_on_seed_not_backedup_iOS_pending_backup {
+    return Intl.message(
+      'Pending backup to Foundation servers',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get manual_toggle_on_seed_not_backedup_iOS_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Data`
+  String get manual_toggle_on_seed_not_backedup_iOS_wallet_data {
+    return Intl.message(
+      'Wallet Data',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet seed`
+  String get manual_toggle_on_seed_not_backedup_iOS_wallet_seed {
+    return Intl.message(
+      'Wallet seed',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `ABOUT`
   String get menu_about {
     return Intl.message(
@@ -7465,6 +8053,16 @@ class S {
     return Intl.message(
       'BACKUPS',
       name: 'menu_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ENVOY`
+  String get menu_heading {
+    return Intl.message(
+      'ENVOY',
+      name: 'menu_heading',
       desc: '',
       args: [],
     );
@@ -8492,10 +9090,10 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  /// `Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
   String get wallet_security_modal_1_4_android_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      'Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
       name: 'wallet_security_modal_1_4_android_subheading',
       desc: '',
       args: [],
@@ -8522,13 +9120,23 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed to iCloud {{Keychain}}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
-  String wallet_security_modal_1_4_iOS_subheading(Object Keychain) {
+  /// `How Your Wallet is Secured`
+  String get wallet_security_modal_1_4_iOS_heading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed to iCloud {$Keychain}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
+      'How Your Wallet is Secured',
+      name: 'wallet_security_modal_1_4_iOS_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
+  String get wallet_security_modal_1_4_iOS_subheading {
+    return Intl.message(
+      'Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
       name: 'wallet_security_modal_1_4_iOS_subheading',
       desc: '',
-      args: [Keychain],
+      args: [],
     );
   }
 
