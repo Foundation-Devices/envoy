@@ -209,7 +209,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 48, vertical: 6),
           child: Text(
-            S().manual_setup_import_seed_12_words_fail_modal_subheading,
+            S().manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading,
             textAlign: TextAlign.center,
           ),
         ),
@@ -219,7 +219,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
             //Temporarily Disable Tor
             children: [
               EnvoyButton(
-                S().manual_setup_import_seed_12_words_fail_modal_CTA,
+                S().manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA,
                 onTap: () async {
                   Navigator.of(context).pop();
                   showPassphraseDialog(context);
@@ -258,13 +258,19 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
       children: [
-        _buildInput("Enter Passphrase", context),
-        _buildInput("Verify Passphrase", context),
+        _buildInput(
+            S().manual_setup_verify_seed_12_words_enter_passphrase_modal_heading,
+            S().manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading,
+            context),
+        _buildInput(
+            S().manual_setup_verify_seed_12_words_verify_passphrase_modal_heading,
+            S().manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading,
+            context),
       ],
     );
   }
 
-  Widget _buildInput(String title, BuildContext context) {
+  Widget _buildInput(String heading, String subheading, BuildContext context) {
     return Container(
       padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
@@ -287,7 +293,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
           ),
           Container(
             margin: EdgeInsets.only(right: 0),
-            child: Text(title,
+            child: Text(heading,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
@@ -295,8 +301,7 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
                     ?.copyWith(fontWeight: FontWeight.w500, fontSize: 22)),
           ),
           Padding(padding: EdgeInsets.all(8)),
-          Text(S().manual_setup_verify_seed_12_words_heading,
-              textAlign: TextAlign.center),
+          Text(subheading, textAlign: TextAlign.center),
           Padding(padding: EdgeInsets.all(8)),
           Container(
             decoration: BoxDecoration(
