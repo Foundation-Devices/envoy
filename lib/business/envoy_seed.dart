@@ -35,6 +35,17 @@ class EnvoySeed {
   static String encryptedBackupFilePath =
       LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
 
+  List<String> keysToBackUp = [
+    Settings.SETTINGS_PREFS,
+    // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
+    // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
+    // ScvServer.SCV_CHALLENGE_PREFS,
+    Fees.FEE_RATE_PREFS,
+    AccountManager.ACCOUNTS_PREFS,
+    Notifications.NOTIFICATIONS_PREFS,
+    Devices.DEVICES_PREFS,
+  ];
+
   Future generate() async {
     final generatedSeed = Wallet.generateSeed();
     return await deriveAndAddWallets(generatedSeed);
@@ -90,28 +101,24 @@ class EnvoySeed {
       offline = false;
     }
 
-    List<String> keysToBackUp = [
-      Settings.SETTINGS_PREFS,
-      // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
-      // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
-      // ScvServer.SCV_CHALLENGE_PREFS,
-      Fees.FEE_RATE_PREFS,
-      AccountManager.ACCOUNTS_PREFS,
-      Notifications.NOTIFICATIONS_PREFS,
-      Devices.DEVICES_PREFS,
-    ];
+    get().then((seed) {
+      Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
+          Settings().envoyServerAddress, Tor().port,
+          path: offline ? encryptedBackupFilePath : null);
 
-    Backup.perform(
-        LocalStorage().prefs,
-        keysToBackUp,
-        "copper december enlist body dove discover cross help evidence fall rich clean",
-        Settings().envoyServerAddress,
-        Tor().port,
-        path: offline ? encryptedBackupFilePath : null);
+      LocalStorage()
+          .prefs
+          .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
+    });
+  }
 
-    LocalStorage()
-        .prefs
-        .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
+  Future<bool> restoreData({String? seed: null}) async {
+    if (seed == null) {
+      seed = await get();
+    }
+
+    return Backup.restore(
+        LocalStorage().prefs, seed!, Settings().envoyServerAddress, Tor().port);
   }
 
   DateTime? getLastBackupTime() {

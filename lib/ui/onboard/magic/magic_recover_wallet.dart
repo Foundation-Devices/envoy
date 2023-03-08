@@ -4,6 +4,7 @@
 
 import 'dart:io';
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -40,9 +41,17 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
 
   void _initWalletRecovery() async {
     await Future.delayed(Duration(seconds: 3));
+
+    final success = await EnvoySeed().restoreData();
+
     setState(() {
-      _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+      if (success) {
+        _magicRecoverWalletState = MagicRecoveryWalletState.success;
+      } else {
+        _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+      }
     });
+
     _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
     _stateMachineController?.findInput<bool>("happy")?.change(false);
     _stateMachineController?.findInput<bool>("unhappy")?.change(true);
@@ -127,76 +136,82 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
-        Padding(padding: EdgeInsets.all(12)),
-        ListTile(
-          minLeadingWidth: 20,
-          dense: true,
-          leading: Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: EnvoyColors.teal,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              "1",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.white),
-            ),
-          ),
-          title: Text(
-            "MISSING", //S().magic_recovery_flow_step_1,
-            textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
-          ),
-        ),
-        ListTile(
-          minLeadingWidth: 20,
-          dense: true,
-          leading: Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: EnvoyColors.teal,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              "2",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.white),
-            ),
-          ),
-          title: Text(
-            "MISSING", //S().magic_recovery_flow_step_2,
-            textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
-          ),
-        ),
-        ListTile(
-          minLeadingWidth: 20,
-          dense: true,
-          leading: Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: EnvoyColors.teal,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text("3",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.white)),
-          ),
-          title: Text(
-            "MISSING", //S().magic_recovery_flow_step_3,
-            textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
-          ),
-        ),
       ],
     );
+  }
+
+  // Might have use for this in the future?
+  //ignore: unused_element
+  Widget _recoverySteps(BuildContext context) {
+    return Column(children: [
+      ListTile(
+        minLeadingWidth: 20,
+        dense: true,
+        leading: Container(
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          decoration: BoxDecoration(
+            color: EnvoyColors.teal,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            "1",
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: Colors.white),
+          ),
+        ),
+        title: Text(
+          "MISSING", //S().magic_recovery_flow_step_1,
+          textAlign: TextAlign.start,
+          style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+        ),
+      ),
+      ListTile(
+        minLeadingWidth: 20,
+        dense: true,
+        leading: Container(
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          decoration: BoxDecoration(
+            color: EnvoyColors.teal,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            "2",
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: Colors.white),
+          ),
+        ),
+        title: Text(
+          "MISSING", //S().magic_recovery_flow_step_2,
+          textAlign: TextAlign.start,
+          style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+        ),
+      ),
+      ListTile(
+        minLeadingWidth: 20,
+        dense: true,
+        leading: Container(
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          decoration: BoxDecoration(
+            color: EnvoyColors.teal,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text("3",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Colors.white)),
+        ),
+        title: Text(
+          "MISSING", //S().magic_recovery_flow_step_3,
+          textAlign: TextAlign.start,
+          style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+        ),
+      ),
+    ]);
   }
 
   Widget _unsuccessfulRecovery(BuildContext context) {
@@ -227,8 +242,27 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           label: S().magic_setup_recovery_fail_ios_CTA2,
           light: true,
           onTap: () {
+            setState(() {
+              _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
+            });
+
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return ScannerPage(ScannerType.generic);
+              return ScannerPage(
+                ScannerType.seed,
+                callback: (seed) {
+                  EnvoySeed().restoreData(seed: seed).then((success) {
+                    setState(() {
+                      if (success) {
+                        _magicRecoverWalletState =
+                            MagicRecoveryWalletState.success;
+                      } else {
+                        _magicRecoverWalletState =
+                            MagicRecoveryWalletState.failure;
+                      }
+                    });
+                  });
+                },
+              );
             }));
           },
         ),

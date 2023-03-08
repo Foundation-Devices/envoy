@@ -68,8 +68,8 @@ class Backup {
         path != null ? path.toNativeUtf8().cast() : nullptr);
   }
 
-  static restore(SharedPreferences prefs, String seedWords, String serverUrl,
-      int proxyPort) {
+  static bool restore(SharedPreferences prefs, String seedWords,
+      String serverUrl, int proxyPort) {
     var lib = NativeLibrary(load("backup_ffi"));
     var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
@@ -85,5 +85,7 @@ class Backup {
     backupData.forEach((key, value) {
       prefs.setString(key, value);
     });
+
+    return true;
   }
 }
