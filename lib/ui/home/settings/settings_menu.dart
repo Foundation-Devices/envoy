@@ -13,6 +13,8 @@ import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 
+import '../../../business/envoy_seed.dart';
+
 class SettingsMenu extends StatefulWidget {
   @override
   State<SettingsMenu> createState() => _SettingsMenuState();
@@ -79,6 +81,14 @@ class SettingsMenuWidget extends StatelessWidget {
                       callback(SettingsPage());
                     },
                   ),
+                  if (EnvoySeed().walletDerived()) SizedBox(height: 50),
+                  if (EnvoySeed().walletDerived())
+                    MenuOption(
+                      label: S().menu_backups,
+                      onTap: () {
+                        callback(BackupPage());
+                      },
+                    ),
                   SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_settings_menu_support,
@@ -91,13 +101,6 @@ class SettingsMenuWidget extends StatelessWidget {
                     label: S().envoy_settings_menu_about,
                     onTap: () {
                       callback(AboutPage());
-                    },
-                  ),
-                  SizedBox(height: 50),
-                  MenuOption(
-                    label: "Backup",
-                    onTap: () {
-                      callback(BackupPage());
                     },
                   ),
                 ]),

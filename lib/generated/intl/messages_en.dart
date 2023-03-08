@@ -36,12 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
-        "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
-        "CoinText": MessageLookupByLibrary.simpleMessage("List"),
-        "Coins": MessageLookupByLibrary.simpleMessage("Coins"),
         "Cold": MessageLookupByLibrary.simpleMessage("Cold"),
         "Connect": MessageLookupByLibrary.simpleMessage("Connect"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
@@ -63,11 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ENVOY": MessageLookupByLibrary.simpleMessage("ENVOY"),
         "Edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "Entertain": MessageLookupByLibrary.simpleMessage("Entertain"),
-        "Entertainment": MessageLookupByLibrary.simpleMessage("Entertainment"),
         "Family": MessageLookupByLibrary.simpleMessage("Family"),
-        "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
-        "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
-        "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -84,20 +76,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "Multisig": MessageLookupByLibrary.simpleMessage("Multisig"),
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
         "Passport": MessageLookupByLibrary.simpleMessage("Passport"),
-        "PermissionDetails": MessageLookupByLibrary.simpleMessage(
-            "Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again."),
         "PermissionName": MessageLookupByLibrary.simpleMessage("Coinjoin"),
         "Personal": MessageLookupByLibrary.simpleMessage("Personal"),
         "Postmix": MessageLookupByLibrary.simpleMessage("Postmix"),
         "Primary": MessageLookupByLibrary.simpleMessage("Primary"),
         "RECOVERY": MessageLookupByLibrary.simpleMessage("RECOVERY\n"),
         "Receive": MessageLookupByLibrary.simpleMessage("Receive"),
-        "Rename": MessageLookupByLibrary.simpleMessage("Rename"),
-        "Sats": MessageLookupByLibrary.simpleMessage("123,345,679 SATS"),
         "Save": MessageLookupByLibrary.simpleMessage("Save"),
-        "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("12. catch"),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "Secondary": MessageLookupByLibrary.simpleMessage("-\$9.30"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -106,11 +92,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
         "StackWalker": MessageLookupByLibrary.simpleMessage("StackWalker"),
         "Status": MessageLookupByLibrary.simpleMessage("Sent"),
-        "Subheading":
-            MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Privacy"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Account Details"),
@@ -1470,6 +1453,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Backup Now"),
         "manual_toggle_on_seed_not_backedup_android_backups":
             MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "manual_toggle_on_seed_not_backedup_android_data_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
         "manual_toggle_on_seed_not_backedup_android_download_wallet_data":
             MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
@@ -1477,6 +1463,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_android_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_android_seed_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending Android Auto Backup (once daily)"),
         "manual_toggle_on_seed_not_backedup_android_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
         "manual_toggle_on_seed_not_backedup_android_wallet_data":
@@ -1489,11 +1478,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Back Up Now"),
         "manual_toggle_on_seed_not_backedup_iOS_backups":
             MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "manual_toggle_on_seed_not_backedup_iOS_data_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
         "manual_toggle_on_seed_not_backedup_iOS_download_wallet_data":
             MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
         "manual_toggle_on_seed_not_backedup_iOS_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_iOS_seed_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to iCloud Keychain"),
         "manual_toggle_on_seed_not_backedup_iOS_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
         "manual_toggle_on_seed_not_backedup_iOS_wallet_data":

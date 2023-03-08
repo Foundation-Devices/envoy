@@ -13,8 +13,10 @@ import 'package:collection/collection.dart';
 
 class WalletSecurityModal extends StatefulWidget {
   final Function onLastStep;
+  final bool confirmationStep;
 
-  const WalletSecurityModal({Key? key, required this.onLastStep})
+  const WalletSecurityModal(
+      {Key? key, required this.onLastStep, this.confirmationStep: false})
       : super(key: key);
 
   @override
@@ -43,16 +45,25 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
     S().wallet_security_modal_4_4_heading,
   ];
 
-  List<String> stepSubHeadings = [
-    Platform.isAndroid
-        ? S().wallet_security_modal_1_4_android_subheading
-        : S().wallet_security_modal_1_4_ios_subheading,
-    S().wallet_security_modal_2_4_subheading,
-    Platform.isAndroid
-        ? S().wallet_security_modal_3_4_android_subheading
-        : S().wallet_security_modal_34_ios_subheading,
-    S().wallet_security_modal_4_4_subheading,
-  ];
+  late List<String> stepSubHeadings;
+
+  @override
+  void initState() {
+    super.initState();
+
+    stepSubHeadings = [
+      Platform.isAndroid
+          ? S().wallet_security_modal_1_4_android_subheading
+          : S().wallet_security_modal_1_4_ios_subheading,
+      S().wallet_security_modal_2_4_subheading,
+      Platform.isAndroid
+          ? S().wallet_security_modal_3_4_android_subheading
+          : S().wallet_security_modal_34_ios_subheading,
+      widget.confirmationStep
+          ? S().manual_backups_export_flow_modal_4_4_subheading
+          : S().wallet_security_modal_4_4_subheading,
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,15 +137,19 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: EnvoyButton(
-                S().wallet_security_modal_4_4_CTA,
+                step == stepHeadings.length && widget.confirmationStep
+                    ? S().manual_backups_export_flow_modal_4_4_CTA
+                    : S().wallet_security_modal_4_4_CTA,
                 light: false,
                 onTap: () {
                   if (step == stepHeadings.length) {
                     widget.onLastStep();
                   } else {
-                    _pageController.animateToPage(step++,
-                        duration: Duration(milliseconds: 600),
-                        curve: Curves.easeInOut);
+                    setState(() {
+                      _pageController.animateToPage(step++,
+                          duration: Duration(milliseconds: 600),
+                          curve: Curves.easeInOut);
+                    });
                   }
                 },
               ),

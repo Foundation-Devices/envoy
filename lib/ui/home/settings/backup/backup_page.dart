@@ -54,15 +54,22 @@ class _BackupPageState extends State<BackupPage> {
                   children: [
                     SettingText(S().manual_toggle_off_autobackup),
                     SettingToggle(() => s.syncToCloud, (enabled) {
-                      setState(() {
-                        s.syncToCloud = enabled;
-                      });
+                      if (!enabled) {
+                        setState(() {
+                          s.syncToCloud = enabled;
+                        });
+                      }
 
                       if (enabled) {
                         showEnvoyDialog(
                             context: context,
                             dialog: WalletSecurityModal(
+                              confirmationStep: true,
                               onLastStep: () {
+                                setState(() {
+                                  s.syncToCloud = enabled;
+                                });
+
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
                                   return MagicSetupGenerate();
@@ -96,7 +103,8 @@ class _BackupPageState extends State<BackupPage> {
                               lastEnvoyServerBackup == null
                                   ? S()
                                       .manual_toggle_on_seed_not_backedup_android_pending_backup
-                                  : timeago.format(lastEnvoyServerBackup),
+                                  : timeago.format(lastEnvoyServerBackup) +
+                                      " to Foundation servers",
                               color: EnvoyColors.grey,
                             ),
                           ],
@@ -135,18 +143,23 @@ class _BackupPageState extends State<BackupPage> {
                                 future: lastCloudBackup,
                                 builder: (context, snapshot) {
                                   return SettingText(
-                                      !snapshot.hasData
+                                      Platform.isIOS
                                           ? S()
-                                              .manual_toggle_on_seed_not_backedup_iOS_pending_backup
-                                          : timeago.format(snapshot.data!),
+                                              .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                          : snapshot.hasData
+                                              ? S()
+                                                  .manual_toggle_on_seed_backedup_android_stored
+                                              : S()
+                                                  .manual_toggle_on_seed_not_backedup_android_seed_pending_backup,
                                       color: EnvoyColors.grey);
                                 }),
                           ],
                         ),
                       ),
                       if (Platform.isAndroid)
-                        SettingText("Back up to cloud", color: EnvoyColors.teal,
-                            onTap: () {
+                        SettingText(
+                            S().manual_toggle_on_seed_not_backedup_android_open_settings,
+                            color: EnvoyColors.teal, onTap: () {
                           EnvoySeed().showSettingsMenu();
                         }),
                     ],

@@ -70,8 +70,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -410,26 +408,6 @@ class S {
 
   // skipped getter for the 'Boost - 10’ - 5000 sats' key
 
-  /// `Business`
-  String get Business {
-    return Intl.message(
-      'Business',
-      name: 'Business',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -471,26 +449,6 @@ class S {
   // skipped getter for the 'Coin Control' key
 
   // skipped getter for the 'CoinAmount, SpendState' key
-
-  /// `List`
-  String get CoinText {
-    return Intl.message(
-      'List',
-      name: 'CoinText',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Coins`
-  String get Coins {
-    return Intl.message(
-      'Coins',
-      name: 'Coins',
-      desc: '',
-      args: [],
-    );
-  }
 
   /// `Cold`
   String get Cold {
@@ -728,16 +686,6 @@ class S {
 
   // skipped getter for the 'Entertain...' key
 
-  /// `Entertainment`
-  String get Entertainment {
-    return Intl.message(
-      'Entertainment',
-      name: 'Entertainment',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account (TBD) Vault Lightning' key
 
   // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account Vault' key
@@ -747,8 +695,6 @@ class S {
   // skipped getter for the 'Envoy wallet' key
 
   // skipped getter for the 'FW Update' key
-
-  // skipped getter for the 'FW_Version_No.' key
 
   /// `Family`
   String get Family {
@@ -766,41 +712,11 @@ class S {
 
   // skipped getter for the 'Fee selection overlay' key
 
-  /// `$25,721.00`
-  String get Fiat {
-    return Intl.message(
-      '\$25,721.00',
-      name: 'Fiat',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Fiat Currency' key
 
   // skipped getter for the 'File Storage Destination Screen' key
 
-  /// `Fuel`
-  String get Fuel {
-    return Intl.message(
-      'Fuel',
-      name: 'Fuel',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'GENERATED SEED DISPLAYED' key
-
-  /// `Groceries`
-  String get Groceries {
-    return Intl.message(
-      'Groceries',
-      name: 'Groceries',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Hex 009DB9' key
 
@@ -853,8 +769,6 @@ class S {
       args: [],
     );
   }
-
-  // skipped getter for the 'Include?' key
 
   /// `XXXXXXXXXXXXXXXXXXXXXX...`
   String get Index {
@@ -1026,21 +940,9 @@ class S {
     );
   }
 
-  // skipped getter for the 'Passport Name' key
-
   // skipped getter for the 'Passport Tutorial - Simple Bitcoin Wallet Set Up (Single Signature)' key
 
   // skipped getter for the 'Passport name' key
-
-  /// `Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.`
-  String get PermissionDetails {
-    return Intl.message(
-      'Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.',
-      name: 'PermissionDetails',
-      desc: '',
-      args: [],
-    );
-  }
 
   /// `Coinjoin`
   String get PermissionName {
@@ -1128,16 +1030,6 @@ class S {
 
   // skipped getter for the 'Recovery scenario iOS_subheading' key
 
-  /// `Rename`
-  String get Rename {
-    return Intl.message(
-      'Rename',
-      name: 'Rename',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Required inputs' key
 
   // skipped getter for the 'Required inputs:' key
@@ -1160,31 +1052,11 @@ class S {
 
   // skipped getter for the 'Sales revenue' key
 
-  /// `123,345,679 SATS`
-  String get Sats {
-    return Intl.message(
-      '123,345,679 SATS',
-      name: 'Sats',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Save`
   String get Save {
     return Intl.message(
       'Save',
       name: 'Save',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Savings`
-  String get Savings {
-    return Intl.message(
-      'Savings',
-      name: 'Savings',
       desc: '',
       args: [],
     );
@@ -1197,16 +1069,6 @@ class S {
     return Intl.message(
       '12. catch',
       name: 'ScreenHeading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `BACKUPS`
-  String get ScreenTitle {
-    return Intl.message(
-      'BACKUPS',
-      name: 'ScreenTitle',
       desc: '',
       args: [],
     );
@@ -1320,16 +1182,6 @@ class S {
 
   // skipped getter for the 'String Middle' key
 
-  /// `Store Your Encrypted Backup`
-  String get Subheading {
-    return Intl.message(
-      'Store Your Encrypted Backup',
-      name: 'Subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Swipe the card left & right to show & hide the balance.' key
 
   /// `Q`
@@ -1355,16 +1207,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Privacy`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Privacy',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -7898,6 +7740,16 @@ class S {
     );
   }
 
+  /// `Pending backup to Foundation servers`
+  String get manual_toggle_on_seed_not_backedup_android_data_pending_backup {
+    return Intl.message(
+      'Pending backup to Foundation servers',
+      name: 'manual_toggle_on_seed_not_backedup_android_data_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Download Wallet Data`
   String get manual_toggle_on_seed_not_backedup_android_download_wallet_data {
     return Intl.message(
@@ -7923,6 +7775,16 @@ class S {
     return Intl.message(
       'Pending backup to Foundation servers',
       name: 'manual_toggle_on_seed_not_backedup_android_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Android Auto Backup (once daily)`
+  String get manual_toggle_on_seed_not_backedup_android_seed_pending_backup {
+    return Intl.message(
+      'Pending Android Auto Backup (once daily)',
+      name: 'manual_toggle_on_seed_not_backedup_android_seed_pending_backup',
       desc: '',
       args: [],
     );
@@ -7988,6 +7850,16 @@ class S {
     );
   }
 
+  /// `Pending backup to Foundation servers`
+  String get manual_toggle_on_seed_not_backedup_iOS_data_pending_backup {
+    return Intl.message(
+      'Pending backup to Foundation servers',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_data_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Download Wallet Data`
   String get manual_toggle_on_seed_not_backedup_iOS_download_wallet_data {
     return Intl.message(
@@ -8003,6 +7875,16 @@ class S {
     return Intl.message(
       'Pending backup to Foundation servers',
       name: 'manual_toggle_on_seed_not_backedup_iOS_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to iCloud Keychain`
+  String get manual_toggle_on_seed_not_backedup_iOS_seed_pending_backup {
+    return Intl.message(
+      'Pending backup to iCloud Keychain',
+      name: 'manual_toggle_on_seed_not_backedup_iOS_seed_pending_backup',
       desc: '',
       args: [],
     );
