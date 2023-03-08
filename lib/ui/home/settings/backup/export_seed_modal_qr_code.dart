@@ -7,6 +7,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'export_seed_modal_words.dart';
@@ -18,7 +19,24 @@ class ExportSeedModalQrCode extends StatefulWidget {
   State<ExportSeedModalQrCode> createState() => _ExportSeedModalQrCodeState();
 }
 
+Future enableSecureScreen(bool secure) async {
+  final _platform = MethodChannel('envoy');
+  await _platform.invokeMethod("make_screen_secure", {"secure": secure});
+}
+
 class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
+  @override
+  void initState() {
+    super.initState();
+    enableSecureScreen(true);
+  }
+
+  @override
+  void dispose() {
+    enableSecureScreen(false);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme.bodyText2?.copyWith(
@@ -80,11 +98,15 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                   S().export_seed_modal_QR_code_CTA2,
                   light: true,
                   onTap: () {
-                    EnvoySeed().get().then((value) => showEnvoyDialog(
-                        context: context,
-                        dialog: ExportSeedModalWords(
-                          seed: value!.split(" "),
-                        )));
+                    EnvoySeed().get().then((value) async {
+                      enableSecureScreen(true);
+                      await showEnvoyDialog(
+                          context: context,
+                          dialog: ExportSeedModalWords(
+                            seed: value!.split(" "),
+                          ));
+                      enableSecureScreen(false);
+                    });
                   },
                 ),
                 Padding(
