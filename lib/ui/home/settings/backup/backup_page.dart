@@ -8,13 +8,16 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'dart:io' show Platform;
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
-//import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../onboard/magic/magic_setup_generate.dart';
-import '../../onboard/magic/wallet_security/wallet_security_modal.dart';
-import '../../widgets/blur_dialog.dart';
+import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
+import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
+
+import 'export_seed_modal.dart';
 
 class BackupPage extends StatefulWidget {
   @override
@@ -49,17 +52,24 @@ class _BackupPageState extends State<BackupPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SettingText("Auto Backup"),
+                    SettingText(S().manual_toggle_off_autobackup),
                     SettingToggle(() => s.syncToCloud, (enabled) {
-                      setState(() {
-                        s.syncToCloud = enabled;
-                      });
+                      if (!enabled) {
+                        setState(() {
+                          s.syncToCloud = enabled;
+                        });
+                      }
 
                       if (enabled) {
                         showEnvoyDialog(
                             context: context,
                             dialog: WalletSecurityModal(
+                              confirmationStep: true,
                               onLastStep: () {
+                                setState(() {
+                                  s.syncToCloud = enabled;
+                                });
+
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
                                   return MagicSetupGenerate();
@@ -87,18 +97,21 @@ class _BackupPageState extends State<BackupPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SettingText("Backup state"),
+                            SettingText(S()
+                                .manual_toggle_on_seed_backedup_android_wallet_data),
                             SettingText(
                               lastEnvoyServerBackup == null
-                                  ? "Never backed up"
-                                  : timeago.format(lastEnvoyServerBackup),
+                                  ? S()
+                                      .manual_toggle_on_seed_not_backedup_android_pending_backup
+                                  : timeago.format(lastEnvoyServerBackup) +
+                                      " to Foundation servers",
                               color: EnvoyColors.grey,
                             ),
                           ],
                         ),
                       ),
                       SettingText(
-                        "Backup Now",
+                        S().manual_toggle_on_seed_backedup_iOS_backup_now,
                         color: EnvoyColors.teal,
                         onTap: () {
                           EnvoySeed().backupData();
@@ -124,64 +137,50 @@ class _BackupPageState extends State<BackupPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SettingText("Seed state"),
+                            SettingText(S()
+                                .manual_toggle_on_seed_backedup_android_wallet_seed),
                             FutureBuilder<DateTime?>(
                                 future: lastCloudBackup,
                                 builder: (context, snapshot) {
                                   return SettingText(
-                                      !snapshot.hasData
-                                          ? "Never backed up"
-                                          : timeago.format(snapshot.data!),
+                                      Platform.isIOS
+                                          ? S()
+                                              .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                          : snapshot.hasData
+                                              ? S()
+                                                  .manual_toggle_on_seed_backedup_android_stored
+                                              : S()
+                                                  .manual_toggle_on_seed_not_backedup_android_seed_pending_backup,
                                       color: EnvoyColors.grey);
                                 }),
                           ],
                         ),
                       ),
-                      SettingText("Back up to cloud", color: EnvoyColors.teal,
-                          onTap: () {
-                        EnvoySeed().showSettingsMenu();
-                      }),
+                      if (Platform.isAndroid)
+                        SettingText(
+                            S().manual_toggle_on_seed_not_backedup_android_open_settings,
+                            color: EnvoyColors.teal, onTap: () {
+                          EnvoySeed().showSettingsMenu();
+                        }),
                     ],
                   ),
                 ),
                 Divider(),
-                SettingText("Download Backup File"),
+                SettingText(
+                  S().manual_toggle_off_download_backup_file,
+                  onTap: () {
+                    showEnvoyDialog(
+                        context: context, dialog: ExportBackupModal());
+                  },
+                ),
                 Divider(),
-                SettingText("View Seed Words"),
-                Divider(),
-                Divider(),
-                Divider(),
-                FutureBuilder<String?>(
-                    future: seed.get(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return AboutText(
-                            snapshot.data == null ? "NULL" : snapshot.data!);
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    }),
-                Divider(),
-                AboutText(Platform.isAndroid ? "Last Backup" : "Last Restore"),
-                FutureBuilder<DateTime?>(
-                    future: lastCloudBackup,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return AboutText(snapshot.data == null
-                            ? "NULL"
-                            : snapshot.data!.toIso8601String());
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    }),
-                if (Platform.isAndroid) Divider(),
-                if (Platform.isAndroid)
-                  AboutButton(
-                    "Backup Settings",
-                    onTap: () {
-                      seed.showSettingsMenu();
-                    },
-                  ),
+                SettingText(
+                  S().manual_toggle_off_view_seed_words,
+                  onTap: () {
+                    showEnvoyDialog(
+                        context: context, dialog: ExportSeedModal());
+                  },
+                ),
               ],
             )));
   }

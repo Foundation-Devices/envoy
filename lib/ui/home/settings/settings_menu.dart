@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/home/settings/backup_page.dart';
+import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -12,6 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+
+import '../../../business/envoy_seed.dart';
 
 class SettingsMenu extends StatefulWidget {
   @override
@@ -79,6 +81,14 @@ class SettingsMenuWidget extends StatelessWidget {
                       callback(SettingsPage());
                     },
                   ),
+                  if (EnvoySeed().walletDerived()) SizedBox(height: 50),
+                  if (EnvoySeed().walletDerived())
+                    MenuOption(
+                      label: S().menu_backups,
+                      onTap: () {
+                        callback(BackupPage());
+                      },
+                    ),
                   SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_settings_menu_support,
@@ -91,13 +101,6 @@ class SettingsMenuWidget extends StatelessWidget {
                     label: S().envoy_settings_menu_about,
                     onTap: () {
                       callback(AboutPage());
-                    },
-                  ),
-                  SizedBox(height: 50),
-                  MenuOption(
-                    label: "Backup",
-                    onTap: () {
-                      callback(BackupPage());
                     },
                   ),
                 ]),

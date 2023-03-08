@@ -22,9 +22,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(device) => "Are you sure you want to disconnect ${device}?";
 
-  static String m1(Keychain) =>
-      "Envoy securely and automatically backs up your wallet seed to iCloud {${Keychain}}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "A": MessageLookupByLibrary.simpleMessage("0"),
@@ -108,7 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "VIDEO": MessageLookupByLibrary.simpleMessage("VIDEO"),
         "Vault": MessageLookupByLibrary.simpleMessage("Vault"),
         "Z": MessageLookupByLibrary.simpleMessage("Z"),
-        "_": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
+        "_": MessageLookupByLibrary.simpleMessage("Export Seed"),
         "_fe_analyzer_shared":
             MessageLookupByLibrary.simpleMessage("_fe_analyzer_shared"),
         "accessibility": MessageLookupByLibrary.simpleMessage("accessibility"),
@@ -155,11 +152,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "The perfect mobile companion for your Passport hardware wallet."),
         "archive": MessageLookupByLibrary.simpleMessage("archive"),
         "backups_export_flow_advanced":
-            MessageLookupByLibrary.simpleMessage("Advanced"),
+            MessageLookupByLibrary.simpleMessage("Auto Backup"),
         "backups_export_flow_export_backup":
-            MessageLookupByLibrary.simpleMessage("Export Backup"),
+            MessageLookupByLibrary.simpleMessage("Seed state"),
         "backups_export_flow_export_seed":
-            MessageLookupByLibrary.simpleMessage("Export Seed"),
+            MessageLookupByLibrary.simpleMessage("You don’t have any seed"),
         "bc1cq313af51bh5k0lsmna21x": MessageLookupByLibrary.simpleMessage(""),
         "component_app_store_copyright": MessageLookupByLibrary.simpleMessage(
             "© 2022 Foundation Devices, Inc."),
@@ -1030,6 +1027,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_os_clock": MessageLookupByLibrary.simpleMessage("4321"),
         "envoy_welcome_right_action":
             MessageLookupByLibrary.simpleMessage("Skip"),
+        "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
+            "This encrypted file contains wallet metadata, such as tags, notes, accounts and app settings.\n\nThis file is encrypted with your wallet seed. Ensure you have that backed up securely. "),
         "export_backup_send_CTA1":
             MessageLookupByLibrary.simpleMessage("Download Backup File"),
         "export_backup_send_CTA2":
@@ -1226,6 +1225,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "magic_setup_tutorial_ios_subheading": MessageLookupByLibrary.simpleMessage(
             "The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}"),
+        "manual_backups_export_flow_modal_4_4_CTA":
+            MessageLookupByLibrary.simpleMessage("I understand"),
+        "manual_backups_export_flow_modal_4_4_heading":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "manual_backups_export_flow_modal_4_4_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup."),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
         "manual_setup_create_and_store_backup_heading":
@@ -1394,8 +1400,104 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Please carefully re-enter your passphrase."),
+        "manual_toggle_off_autobackup":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_off_download_backup_file":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_off_view_seed_words":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_backedup_android_2_hours_ago":
+            MessageLookupByLibrary.simpleMessage(
+                "2 hours ago to Foundation servers"),
+        "manual_toggle_on_seed_backedup_android_autobackups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_on_seed_backedup_android_backup_now":
+            MessageLookupByLibrary.simpleMessage("Backup Now"),
+        "manual_toggle_on_seed_backedup_android_backups":
+            MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "manual_toggle_on_seed_backedup_android_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_on_seed_backedup_android_open_settings":
+            MessageLookupByLibrary.simpleMessage("Open Android Settings"),
+        "manual_toggle_on_seed_backedup_android_stored":
+            MessageLookupByLibrary.simpleMessage(
+                "Stored in Android Auto Backup"),
+        "manual_toggle_on_seed_backedup_android_view_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_backedup_android_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+        "manual_toggle_on_seed_backedup_android_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("Wallet Seed"),
+        "manual_toggle_on_seed_backedup_iOS_2_hours_ago":
+            MessageLookupByLibrary.simpleMessage(
+                "2 hours ago to Foundation servers"),
+        "manual_toggle_on_seed_backedup_iOS_auto_backups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_on_seed_backedup_iOS_backup_now":
+            MessageLookupByLibrary.simpleMessage("Back Up Now"),
+        "manual_toggle_on_seed_backedup_iOS_backups":
+            MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "manual_toggle_on_seed_backedup_iOS_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
+            MessageLookupByLibrary.simpleMessage("Stored in iCloud Keychain"),
+        "manual_toggle_on_seed_backedup_iOS_view_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_backedup_iOS_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+        "manual_toggle_on_seed_backedup_iOS_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_android_autobackups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_on_seed_not_backedup_android_backup_now":
+            MessageLookupByLibrary.simpleMessage("Backup Now"),
+        "manual_toggle_on_seed_not_backedup_android_backups":
+            MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "manual_toggle_on_seed_not_backedup_android_data_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_android_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_android_open_settings":
+            MessageLookupByLibrary.simpleMessage("Open Android Settings"),
+        "manual_toggle_on_seed_not_backedup_android_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_android_seed_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending Android Auto Backup (once daily)"),
+        "manual_toggle_on_seed_not_backedup_android_view_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_android_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_android_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_iOS_autobackups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_on_seed_not_backedup_iOS_backup_now":
+            MessageLookupByLibrary.simpleMessage("Back Up Now"),
+        "manual_toggle_on_seed_not_backedup_iOS_backups":
+            MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "manual_toggle_on_seed_not_backedup_iOS_data_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_iOS_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_iOS_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_iOS_seed_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to iCloud Keychain"),
+        "manual_toggle_on_seed_not_backedup_iOS_view_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_iOS_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_iOS_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("Wallet seed"),
         "menu_about": MessageLookupByLibrary.simpleMessage("ABOUT"),
         "menu_backups": MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("SETTINGS"),
         "menu_support": MessageLookupByLibrary.simpleMessage("support"),
         "multisig": MessageLookupByLibrary.simpleMessage("multisig"),
@@ -1622,12 +1724,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("How Your Wallet is Secured"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google."),
+                "Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google."),
         "wallet_security_modal_1_4_iOS_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "wallet_security_modal_1_4_iOS_bheading":
             MessageLookupByLibrary.simpleMessage("How Your Wallet is Secured"),
-        "wallet_security_modal_1_4_iOS_subheading": m1,
+        "wallet_security_modal_1_4_iOS_heading":
+            MessageLookupByLibrary.simpleMessage("How Your Wallet is Secured"),
+        "wallet_security_modal_1_4_iOS_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple."),
         "wallet_security_modal_1_4_ios_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "wallet_security_modal_1_4_ios_heading":
