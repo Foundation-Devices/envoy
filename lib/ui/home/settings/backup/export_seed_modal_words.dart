@@ -45,13 +45,15 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                     child: CustomScrollView(
                       slivers: [
                         SliverGrid(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             childAspectRatio: 4,
                             crossAxisSpacing: 22.0,
                             mainAxisSpacing: 30,
                           ),
-                          delegate: SliverChildBuilderDelegate((context, index) {
+                          delegate:
+                              SliverChildBuilderDelegate((context, index) {
                             final TextStyle textTheme = TextStyle(
                                 fontSize: 15,
                                 color: Colors.black87,
