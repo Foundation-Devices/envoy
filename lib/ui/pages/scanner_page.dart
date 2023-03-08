@@ -21,7 +21,7 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/business/scv_server.dart';
 
-enum ScannerType { generic, scv, pair, validate, address, tx, nodeUrl }
+enum ScannerType { generic, scv, pair, validate, address, tx, nodeUrl, seed }
 
 class ScannerPage extends StatefulWidget {
   final UniformResourceReader _urDecoder = UniformResourceReader();
@@ -203,6 +203,13 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   _onDetect(String code) {
+    // Seed recovery flow
+    if (widget._type == ScannerType.seed) {
+      widget.callback!(code);
+      Navigator.of(context).pop();
+      return;
+    }
+
     if (widget._type == ScannerType.address) {
       String address = code;
       int amount = 0;
