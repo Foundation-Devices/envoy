@@ -52,9 +52,16 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
       }
     });
 
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-    _stateMachineController?.findInput<bool>("happy")?.change(false);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+    // TODO: nicer ways to do the same thing?
+    if (success) {
+      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
+      _stateMachineController?.findInput<bool>("happy")?.change(true);
+      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+    } else {
+      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
+      _stateMachineController?.findInput<bool>("happy")?.change(false);
+      _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+    }
   }
 
   _onRiveInit(Artboard artBoard) {
@@ -88,11 +95,11 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                       builder: (context) {
                         if (_magicRecoverWalletState ==
                             MagicRecoveryWalletState.recovering) {
-                          return _recoveryInstructions(context);
+                          return _recoveryInProgress(context);
                         }
                         if (_magicRecoverWalletState ==
                             MagicRecoveryWalletState.success) {
-                          return _recoveryInstructions(context);
+                          return _recoverySteps(context);
                         }
                         if (_magicRecoverWalletState ==
                             MagicRecoveryWalletState.failure) {
@@ -122,7 +129,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     );
   }
 
-  Widget _recoveryInstructions(BuildContext context) {
+  Widget _recoveryInProgress(BuildContext context) {
     return Column(
       children: [
         Text(
@@ -144,6 +151,17 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   //ignore: unused_element
   Widget _recoverySteps(BuildContext context) {
     return Column(children: [
+      Text(
+        S().magic_setup_recovery_heading,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headline6,
+      ),
+      Padding(padding: EdgeInsets.all(12)),
+      Text(
+        S().magic_setup_recovery_success_android_subheading,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+      ),
       ListTile(
         minLeadingWidth: 20,
         dense: true,
@@ -162,7 +180,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           ),
         ),
         title: Text(
-          "MISSING", //S().magic_recovery_flow_step_1,
+          Platform.isIOS ? S().magic_setup_recovery_success_iOS_instruction1 : S().magic_setup_recovery_success_android_instructions1,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
@@ -185,7 +203,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           ),
         ),
         title: Text(
-          "MISSING", //S().magic_recovery_flow_step_2,
+          Platform.isIOS ? S().magic_setup_recovery_success_iOS_instruction2 : S().magic_setup_recovery_success_android_instructions2,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
@@ -206,7 +224,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   ?.copyWith(color: Colors.white)),
         ),
         title: Text(
-          "MISSING", //S().magic_recovery_flow_step_3,
+          Platform.isIOS ? S().magic_setup_recovery_success_iOS_instruction3 : S().magic_setup_recovery_success_android_instructions3,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
