@@ -57,7 +57,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _initiateWalletCreate() async {
-    if (walletGenerated) {
+    if (!walletGenerated) {
       await EnvoySeed().generate();
     }
 
