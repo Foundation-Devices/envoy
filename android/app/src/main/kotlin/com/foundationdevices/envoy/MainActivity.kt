@@ -5,6 +5,7 @@ import android.app.backup.BackupManager
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
@@ -80,11 +81,25 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     pfd.close()
 
                     // Boolean down the chute means success
-                    sdCardEventSink?.success(true)
+                    Handler().postDelayed(
+                        {
+                            sdCardEventSink?.success(true)
+                        },
+                        1000
+                    )
                 }
             }
         }
+        else if (requestCode == saveFileRequestCode && resultCode == Activity.RESULT_CANCELED) {
+            Handler().postDelayed(
+                {
+                    sdCardEventSink?.success(false)
+                },
+                1000
+            )
+        }
     }
+
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         sdCardEventSink = events
@@ -151,13 +166,13 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     }
                     result.success(true)
                 }
-                 "make_screen_secure" -> {
+                "make_screen_secure" -> {
                     val secure = call.argument<Boolean>("secure") ?: false
-                     if(secure){
-                         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-                     }else{
-                         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-                     }
+                    if (secure) {
+                        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+                    } else {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    }
                     result.success(true)
                 }
                 else -> {
