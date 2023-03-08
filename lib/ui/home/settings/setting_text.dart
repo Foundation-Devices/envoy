@@ -24,12 +24,15 @@ class SettingText extends StatelessWidget {
           onTap!();
         }
       },
-      child: Text(label,
-          style: TextStyle(
-            color: color,
-            fontSize: 15.0,
-            fontWeight: FontWeight.w500,
-          )),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6,horizontal: 2),
+        child: Text(label,
+            style: TextStyle(
+              color: color,
+              fontSize: 15.0,
+              fontWeight: FontWeight.w500,
+            )),
+      ),
     );
   }
 }
