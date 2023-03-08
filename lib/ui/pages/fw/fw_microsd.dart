@@ -23,14 +23,15 @@ class FwMicrosdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var fw = FwUploader(UpdatesManager().getStoredFw(), onUploaded: () {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return Platform.isIOS
-            ? FwPassportPage(
-                onboarding: onboarding,
-              )
-            : FwProgressPage(onboarding: onboarding);
-      }));
+      if (Platform.isIOS) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return FwPassportPage(
+            onboarding: onboarding,
+          );
+        }));
+      }
     });
+
     return OnboardingPage(
       key: Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
@@ -45,10 +46,15 @@ class FwMicrosdPage extends StatelessWidget {
       buttons: [
         OnboardingButton(
             label: S().envoy_fw_microsd_cta,
-            onTap: () {
+            onTap: () async {
               try {
+                if (Platform.isAndroid) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return FwProgressPage(onboarding: onboarding);
+                  }));
+                }
                 fw.upload();
-
                 // Here we assume user has updated all his devices
                 Devices()
                     .markAllUpdated(UpdatesManager().getStoredFwVersion()!);
