@@ -104,6 +104,7 @@ pub unsafe extern "C" fn backup_perform(
     server_url: *const c_char,
     proxy_port: i32,
     path: *const c_char,
+    offline: bool
 ) -> *mut JoinHandle<()> {
     let mut backup_data: Vec<(&str, &str)> = vec![];
 
@@ -128,12 +129,11 @@ pub unsafe extern "C" fn backup_perform(
 
     let rt = RUNTIME.as_ref().unwrap();
 
-    if !path.is_null() {
-        // We are doing an offline backup, store the data at path
-        let path = CStr::from_ptr(path).to_str().unwrap();
+    // We are doing an offline backup, store the data at path
+    let path = CStr::from_ptr(path).to_str().unwrap();
+    let handle = rt.block_on(async move { tokio::fs::write(path, encrypted).await.unwrap() });
 
-        let handle = rt.spawn(async move { tokio::fs::write(path, encrypted).await.unwrap() });
-
+    if offline {
         let handle_box = Box::new(handle);
         return Box::into_raw(handle_box);
     }

@@ -30,7 +30,7 @@ class NotSupportedPlatform implements Exception {
 class Backup {
   static perform(SharedPreferences prefs, List<String> keysToBackUp,
       String seedWords, String serverUrl, int proxyPort,
-      {String? path}) {
+      {required String path, bool offline: false}) {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {
@@ -65,7 +65,8 @@ class Backup {
         seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(),
         proxyPort,
-        path != null ? path.toNativeUtf8().cast() : nullptr);
+        path.toNativeUtf8().cast(),
+        offline);
   }
 
   static bool restore(SharedPreferences prefs, String seedWords,

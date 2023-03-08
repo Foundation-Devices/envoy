@@ -9,13 +9,12 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
-
 import 'package:wallet/wallet.dart';
-
-import 'devices.dart';
-import 'fees.dart';
-import 'local_storage.dart';
-import 'notifications.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:file_saver/file_saver.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -32,8 +31,10 @@ class EnvoySeed {
   // Checksum is first 4 bits of SHA-256 of 16 bytes
 
   static const _platform = MethodChannel('envoy');
+
+  static String encryptedBackupFileName = "envoy_backup.mla";
   static String encryptedBackupFilePath =
-      LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
+      LocalStorage().appDocumentsDir.path + "/" + encryptedBackupFileName;
 
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
@@ -95,21 +96,24 @@ class EnvoySeed {
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
-  void backupData({bool offline: false}) {
+  Future<void> backupData({bool offline: false}) async {
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
-      offline = false;
+      offline = true;
     }
 
-    get().then((seed) {
-      Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
-          Settings().envoyServerAddress, Tor().port,
-          path: offline ? encryptedBackupFilePath : null);
+    final seed = await get();
+    Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
+        Settings().envoyServerAddress, Tor().port,
+        path: encryptedBackupFilePath,
+        offline: offline
+    );
 
+    if (!offline) {
       LocalStorage()
           .prefs
           .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
-    });
+    }
   }
 
   Future<bool> restoreData({String? seed: null}) async {
@@ -130,14 +134,20 @@ class EnvoySeed {
     return DateTime.parse(string);
   }
 
-  void saveOfflineData() {
-    backupData(offline: true);
+  Future<void> saveOfflineData() async {
+    await backupData(offline: true);
 
-    var argsMap = <String, dynamic>{
-      "from": encryptedBackupFilePath,
-      "path": ""
-    };
-    _platform.invokeMethod('save_file', argsMap);
+    final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
+    FileSaver.instance
+        .saveAs(encryptedBackupFileName, backupBytes, "", MimeType.TEXT);
+
+    // var argsMap = <String, dynamic>{
+    //   "from": encryptedBackupFilePath,
+    //   "path": ""
+    // };
+    // _platform.invokeMethod('save_file', argsMap);
+
+    //DocumentFileSavePlus.(backupBytes, encryptedBackupFileName, "text/plain");
   }
 
   Future<String?> get() async {
