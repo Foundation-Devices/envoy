@@ -35,102 +35,101 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
   Widget build(BuildContext context) {
     return OnboardPageBackground(
       child: Material(
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.chevron_left, color: Colors.black),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    S().manual_setup_import_seed_12_words_heading,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.59,
-                  child: MnemonicEntryGrid(
-                      seedLength: widget.seedLength,
-                      onSeedWordAdded: (List<String> words) {
-                        currentWords = words;
-                      }),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    Padding(padding: EdgeInsets.all(2)),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          hasPassphrase = !hasPassphrase;
-                          if (hasPassphrase == true) {
-                            showPassPhraseWarningDialog(context);
-                          } else {
-                            passPhrase = "";
-                          }
-                        });
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                  child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: Icon(Icons.chevron_left, color: Colors.black),
+                      onPressed: () {
+                        Navigator.pop(context);
                       },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            checkColor: EnvoyColors.white100,
-                            activeColor: EnvoyColors.darkTeal,
-                            value: hasPassphrase,
-                            onChanged: (value) {
-                              setState(() {
-                                hasPassphrase = value ?? false;
-                              });
-                              if (value == true) {
-                                showPassPhraseWarningDialog(context);
-                              } else {
-                                passPhrase = "";
-                              }
-                            },
-                          ),
-                          Text(
-                            S().manual_setup_import_seed_12_words_checkbox,
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ],
-                      ),
                     ),
-                    Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-                        child: OnboardingButton(
-                            label: S().manual_setup_import_seed_12_words_CTA,
-                            light: false,
-                            onTap: () {
-                              EnvoySeed()
-                                  .create(currentWords, passphrase: passPhrase)
-                                  .then((success) {
-                                if (success) {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return StorageSetupPage();
-                                  }));
-                                } else {
-                                  // TODO: Show a dialog of failure
-                                }
-                              });
-                            }))
-                  ],
-                ),
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        S().manual_setup_import_seed_12_words_heading,
+                        style: Theme.of(context).textTheme.headline6,
+                      )),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(top: 8),
+                    height: MediaQuery.of(context).size.height * 0.59,
+                    child: MnemonicEntryGrid(
+                        seedLength: widget.seedLength,
+                        onSeedWordAdded: (List<String> words) {
+                          currentWords = words;
+                        }),
+                  ))
+                ],
+              )),
+              Column(
+                children: [
+                  Padding(padding: EdgeInsets.all(2)),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        hasPassphrase = !hasPassphrase;
+                        if (hasPassphrase == true) {
+                          showPassPhraseWarningDialog(context);
+                        } else {
+                          passPhrase = "";
+                        }
+                      });
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          checkColor: EnvoyColors.white100,
+                          activeColor: EnvoyColors.darkTeal,
+                          value: hasPassphrase,
+                          onChanged: (value) {
+                            setState(() {
+                              hasPassphrase = value ?? false;
+                            });
+                            if (value == true) {
+                              showPassPhraseWarningDialog(context);
+                            } else {
+                              passPhrase = "";
+                            }
+                          },
+                        ),
+                        Text(
+                          S().manual_setup_import_seed_12_words_checkbox,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: OnboardingButton(
+                          label: S().manual_setup_import_seed_12_words_CTA,
+                          light: false,
+                          onTap: () {
+                            EnvoySeed()
+                                .create(currentWords, passphrase: passPhrase)
+                                .then((success) {
+                              if (success) {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return StorageSetupPage();
+                                }));
+                              } else {
+                                // TODO: Show a dialog of failure
+
+                              }
+                            });
+                          }))
+                ],
               )
             ],
           ),
