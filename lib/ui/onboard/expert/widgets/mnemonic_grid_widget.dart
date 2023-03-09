@@ -83,9 +83,12 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
             ],
           ),
         ),
-        DotsIndicator(
-          totalPages: 2,
-          pageController: _pageController,
+        Container(
+          margin: EdgeInsets.only(top: 8),
+          child: DotsIndicator(
+            totalPages: 2,
+            pageController: _pageController,
+          ),
         )
       ],
     );
@@ -96,60 +99,61 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
     double bottom = WidgetsBinding.instance.window.viewInsets.bottom;
     double pixRatio = MediaQuery.of(context).devicePixelRatio;
 
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 11),
-        child: CustomScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller:
-              page == 1 ? _scrollControllerPage1 : _scrollControllerPage2,
-          slivers: [
-            SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 0.0,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int listIndex) {
-                  int index = page == 1 ? listIndex : listIndex + 12;
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      right: listIndex % 2 == 0 ? 14 : 0,
-                      left: listIndex % 2 == 0 ? 0 : 14,
-                    ),
-                    child: MnemonicInput(
-                        controller: _controllers[index],
-                        onWordDetected: (focusNode, controller, word) {
-                          focusNode.nextFocus();
-                          _seedWords[index] = word;
-                          if (_showNextPage) {
-                            _pageController
-                                .nextPage(
-                                    duration: Duration(milliseconds: 300),
-                                    curve: Curves.easeIn)
-                                .then((value) {
-                              _currentFocusNode = _focusNodes[12];
-                              _currentFocusNode?.requestFocus();
-                            });
-                            _showNextPage = false;
-                          }
-                        },
-                        onWordAdded: (word) {
-                          _seedWords[index] = word;
-                          widget.onSeedWordAdded(_seedWords);
-                        },
-                        index: index,
-                        focusNode: _focusNodes[index]),
-                  );
-                },
-                childCount: _controllers.length != 0 ? 12 : 0,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 11),
+      child: CustomScrollView(
+        controller: page == 1 ? _scrollControllerPage1 : _scrollControllerPage2,
+        slivers: [
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200,
+              childAspectRatio: 2,
+              crossAxisSpacing: 18.0,
+              mainAxisSpacing: 0.0,
             ),
-            SliverPadding(padding: EdgeInsets.all((pixRatio * bottom)))
-          ],
-        ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int listIndex) {
+                int index = page == 1 ? listIndex : listIndex + 12;
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 140,
+                      margin: EdgeInsets.only(top: 10),
+                      child: MnemonicInput(
+                          controller: _controllers[index],
+                          onWordDetected: (focusNode, controller, word) {
+                            focusNode.nextFocus();
+                            _seedWords[index] = word;
+                            if (_showNextPage) {
+                              _pageController
+                                  .nextPage(
+                                      duration: Duration(milliseconds: 300),
+                                      curve: Curves.easeIn)
+                                  .then((value) {
+                                _currentFocusNode = _focusNodes[12];
+                                _currentFocusNode?.requestFocus();
+                              });
+                              _showNextPage = false;
+                            }
+                          },
+                          onWordAdded: (word) {
+                            _seedWords[index] = word;
+                            widget.onSeedWordAdded(_seedWords);
+                          },
+                          index: index,
+                          focusNode: _focusNodes[index]),
+                    ),
+                  ],
+                );
+              },
+              childCount: _controllers.length != 0 ? 12 : 0,
+            ),
+          ),
+          SliverPadding(padding: EdgeInsets.all((pixRatio * bottom)))
+        ],
       ),
     );
   }
@@ -319,7 +323,7 @@ class _DotsIndicatorState extends State<DotsIndicator> {
   @override
   Widget build(BuildContext context) {
     List<Widget> widgets = [];
-    for (int i = 0; i <= widget.totalPages; i++) {
+    for (int i = 0; i <= widget.totalPages - 1; i++) {
       widgets.add(_buildDot(i == page));
     }
 
@@ -379,9 +383,10 @@ class _MnemonicInputState extends State<MnemonicInput> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.focusNode.addListener(() {
-        setState(() {
-          _hasFocus = widget.focusNode.hasFocus;
-        });
+        if (this.mounted)
+          setState(() {
+            _hasFocus = widget.focusNode.hasFocus;
+          });
       });
       widget.controller.addListener(() {
         if (widget.controller.text.isEmpty) {
@@ -424,10 +429,8 @@ class _MnemonicInputState extends State<MnemonicInput> {
             if (!widget.readOnly) widget.focusNode.requestFocus();
           },
           child: Container(
-            height: 80,
-            margin: EdgeInsets.symmetric(vertical: 21),
             padding: EdgeInsets.symmetric(horizontal: 8),
-            constraints: BoxConstraints(maxWidth: 200, maxHeight: 12),
+            constraints: BoxConstraints(maxHeight: 40),
             decoration: BoxDecoration(
                 color: Colors.grey[300],
                 border: Border.all(width: 1, color: borderColor),
@@ -437,7 +440,6 @@ class _MnemonicInputState extends State<MnemonicInput> {
                 Text("${widget.index + 1}. ", style: textTheme),
                 Expanded(
                   child: Container(
-                    // color: Colors.green,
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
