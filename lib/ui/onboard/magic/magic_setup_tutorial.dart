@@ -136,7 +136,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                 Column(
                   children: [
                     Icon(EnvoyIcons.exclamation_warning,
-                        color: EnvoyColors.brown, size: 56),
+                        color: EnvoyColors.darkCopper, size: 56),
                     Padding(padding: EdgeInsets.all(12)),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),

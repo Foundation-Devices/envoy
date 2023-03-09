@@ -25,16 +25,29 @@ class WalletSecurityModal extends StatefulWidget {
 
 class _WalletSecurityModalState extends State<WalletSecurityModal> {
   PageController _pageController = PageController();
-  int step = 0;
 
   List<Widget> stepIllustration = [
-    Image.asset("assets/data_secured_1.png"),
-    Image.asset("assets/data_secured_2.png"),
-    Image.asset("assets/data_secured_3.png"),
     Image.asset(
-      "assets/exclamation_icon.png",
-      width: 100,
-      height: 100,
+      "assets/data_secured_1.png",
+      height: 180,
+    ),
+    Image.asset(
+      "assets/data_secured_2.png",
+      height: 180,
+    ),
+    Image.asset(
+      "assets/data_secured_3.png",
+      height: 180,
+    ),
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/exclamation_icon.png",
+          height: 120,
+        ),
+      ],
     ),
   ];
 
@@ -69,7 +82,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: 600,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -87,20 +100,23 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
           ),
           Flexible(
             child: PageView(
-              physics: NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: [
                 ...stepHeadings.mapIndexed((i, e) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        stepIllustration[i],
+                        SizedBox(
+                          height: 180,
+                          child: stepIllustration[i],
+                        ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 12),
                           child: Text(
                             stepHeadings[i],
                             textAlign: TextAlign.center,
@@ -108,7 +124,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 22),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 14),
                           child: AnimatedSwitcher(
                             duration: Duration(milliseconds: 400),
                             child: OnboardingHelperText(
@@ -129,7 +146,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
             ),
           ),
           DotsIndicator(
-            totalPages: stepHeadings.length - 1,
+            totalPages: stepHeadings.length,
             pageController: _pageController,
           ),
           Padding(
@@ -137,19 +154,22 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: EnvoyButton(
-                step == stepHeadings.length && widget.confirmationStep
+                (_pageController.hasClients
+                                ? _pageController.page?.toInt()
+                                : 0) ==
+                            stepHeadings.length &&
+                        widget.confirmationStep
                     ? S().manual_backups_export_flow_modal_4_4_CTA
                     : S().wallet_security_modal_4_4_CTA,
                 light: false,
                 onTap: () {
-                  if (step == stepHeadings.length) {
+                  int currentPage = _pageController.page?.toInt() ?? 0;
+                  if (stepHeadings.length == currentPage + 1) {
                     widget.onLastStep();
                   } else {
-                    setState(() {
-                      _pageController.animateToPage(step++,
-                          duration: Duration(milliseconds: 600),
-                          curve: Curves.easeInOut);
-                    });
+                    _pageController.nextPage(
+                        duration: Duration(milliseconds: 600),
+                        curve: Curves.easeInOut);
                   }
                 },
               ),
