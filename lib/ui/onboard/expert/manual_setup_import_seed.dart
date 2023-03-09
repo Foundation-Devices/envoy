@@ -316,7 +316,6 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
                     return null;
                   },
                   textAlign: TextAlign.center,
-                  obscureText: true,
                   decoration: InputDecoration(
                     // Disable the borders
                     border: InputBorder.none,
