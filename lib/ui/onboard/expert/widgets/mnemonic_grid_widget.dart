@@ -451,7 +451,15 @@ class _MnemonicInputState extends State<MnemonicInput> {
                                     ? TextInputAction.done
                                     : TextInputAction.next,
                             onChanged: (value) {
-                              if (seed_en.contains(value) &&
+                              //Check words that start with the entered value
+                              //this will reduce unnecessary suggestions like "fat" for "fatigue"
+                              List<String> matches = seed_en
+                                  .where((element) =>
+                                      element.startsWith(value.toLowerCase()))
+                                  .toList();
+                              //If there is only one match and it is the same as the entered value, then the word is suggested
+                              if (matches.length == 1 &&
+                                  matches[0] == value &&
                                   widget.focusNode.hasFocus) {
                                 widget.onWordDetected(
                                     widget.focusNode, widget.controller, value);
