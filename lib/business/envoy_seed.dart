@@ -96,20 +96,20 @@ class EnvoySeed {
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
-  Future<void> backupData({bool offline: false}) async {
+  Future<void> backupData({bool cloud: true}) async {
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
-      offline = true;
+      cloud = false;
     }
 
     final seed = await get();
     Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
         Settings().envoyServerAddress, Tor().port,
         path: encryptedBackupFilePath,
-        offline: offline
+        cloud: cloud
     );
 
-    if (!offline) {
+    if (cloud) {
       LocalStorage()
           .prefs
           .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
@@ -135,7 +135,7 @@ class EnvoySeed {
   }
 
   Future<void> saveOfflineData() async {
-    await backupData(offline: true);
+    await backupData(cloud: false);
 
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
     FileSaver.instance

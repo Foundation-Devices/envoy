@@ -47,28 +47,42 @@ class NativeLibrary {
     ffi.Pointer<ffi.Char> seed_words,
     ffi.Pointer<ffi.Char> server_url,
     int proxy_port,
-    ffi.Pointer<ffi.Char> path,
   ) {
     return _backup_perform(
       payload,
       seed_words,
       server_url,
       proxy_port,
-      path,
     );
   }
 
   late final _backup_performPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Int> Function(
-              BackupPayload,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Char>)>>('backup_perform');
+          ffi.Pointer<ffi.Int> Function(BackupPayload, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, ffi.Int32)>>('backup_perform');
   late final _backup_perform = _backup_performPtr.asFunction<
-      ffi.Pointer<ffi.Int> Function(BackupPayload, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
+      ffi.Pointer<ffi.Int> Function(
+          BackupPayload, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+
+  void backup_perform_offline(
+    BackupPayload payload,
+    ffi.Pointer<ffi.Char> seed_words,
+    ffi.Pointer<ffi.Char> path,
+  ) {
+    return _backup_perform_offline(
+      payload,
+      seed_words,
+      path,
+    );
+  }
+
+  late final _backup_perform_offlinePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(BackupPayload, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('backup_perform_offline');
+  late final _backup_perform_offline = _backup_perform_offlinePtr.asFunction<
+      void Function(
+          BackupPayload, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   BackupPayload backup_get(
     ffi.Pointer<ffi.Char> seed_words,
