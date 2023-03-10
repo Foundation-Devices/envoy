@@ -146,7 +146,7 @@ class _DevicesListState extends State<DevicesList> {
               EnvoyButton(
                 S().envoy_devices_existing_passport,
                 onTap: widget.addDevicesFunction,
-                type: EnvoyButtonTypes.SECONDARY,
+                type: EnvoyButtonTypes.secondary,
               )
             ],
             helperText: EmptyCardHelperText(

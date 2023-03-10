@@ -33,7 +33,7 @@ class SplashScreen extends StatelessWidget {
       buttons: [
         OnboardingButton(
             label: S().splash_screen_CTA3,
-            type: EnvoyButtonTypes.TERTIARY,
+            type: EnvoyButtonTypes.tertiary,
             textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: EnvoyColors.teal, fontWeight: FontWeight.w600),
             onTap: () {
@@ -42,7 +42,7 @@ class SplashScreen extends StatelessWidget {
               }));
             }),
         OnboardingButton(
-            type: EnvoyButtonTypes.SECONDARY,
+            type: EnvoyButtonTypes.secondary,
             label: S().splash_screen_CTA2,
             textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: EnvoyColors.teal, fontWeight: FontWeight.w600),

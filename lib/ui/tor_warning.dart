@@ -108,7 +108,7 @@ class _TorWarningState extends State<TorWarning> {
               children: [
                 EnvoyButton(
                   "Temporarily Disable Tor",
-                  type: EnvoyButtonTypes.SECONDARY,
+                  type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     ConnectivityManager().torTemporarilyDisabled = true;
                     Navigator.of(context).pop();

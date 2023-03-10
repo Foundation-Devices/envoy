@@ -23,7 +23,7 @@ class PpSetupIntroPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            type: EnvoyButtonTypes.SECONDARY,
+            type: EnvoyButtonTypes.secondary,
             label: S().envoy_pp_setup_intro_card4_heading,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -31,7 +31,7 @@ class PpSetupIntroPage extends StatelessWidget {
               }));
             }),
         OnboardingButton(
-            type: EnvoyButtonTypes.SECONDARY,
+            type: EnvoyButtonTypes.secondary,
             label: S().envoy_pp_setup_intro_card3_heading,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {

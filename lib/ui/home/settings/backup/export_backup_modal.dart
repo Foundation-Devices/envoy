@@ -67,7 +67,7 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
               children: [
                 EnvoyButton(
                   S().export_backup_send_CTA2,
-                  type: EnvoyButtonTypes.SECONDARY,
+                  type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     Navigator.of(context).pop();
                   },

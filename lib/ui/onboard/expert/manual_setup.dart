@@ -80,7 +80,7 @@ class _ManualSetupState extends State<ManualSetup> {
                   children: [
                     OnboardingButton(
                         label: S().manual_setup_tutorial_CTA2,
-                        type: EnvoyButtonTypes.SECONDARY,
+                        type: EnvoyButtonTypes.secondary,
                         fontWeight: FontWeight.w600,
                         onTap: () {
                           Navigator.of(context)
@@ -192,7 +192,7 @@ class SelectMode extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             OnboardingButton(
-                                type: EnvoyButtonTypes.SECONDARY,
+                                type: EnvoyButtonTypes.secondary,
                                 label: S().manual_setup_import_seed_CTA2,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {
@@ -206,7 +206,7 @@ class SelectMode extends StatelessWidget {
                                   }));
                                 }),
                             OnboardingButton(
-                                type: EnvoyButtonTypes.SECONDARY,
+                                type: EnvoyButtonTypes.secondary,
                                 label: S().manual_setup_import_seed_CTA1,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {

@@ -265,7 +265,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(padding: EdgeInsets.all(24)),
         OnboardingButton(
           label: S().magic_setup_recovery_fail_ios_CTA2,
-          type: EnvoyButtonTypes.SECONDARY,
+          type: EnvoyButtonTypes.secondary,
           onTap: () {
             setState(() {
               _magicRecoverWalletState = MagicRecoveryWalletState.recovering;

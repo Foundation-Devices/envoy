@@ -25,7 +25,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
           onTap: () {
             launchUrl(Uri.parse("mailto:hello@foundationdevices.com"));
           },
-          type: EnvoyButtonTypes.SECONDARY,
+          type: EnvoyButtonTypes.secondary,
         ),
         OnboardingButton(
             label: S().single_envoy_wallet_address_verify_confirm_cta,

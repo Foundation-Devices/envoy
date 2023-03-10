@@ -159,7 +159,7 @@ class _AccountsListState extends State<AccountsList> {
               EnvoyButton(
                 S().envoy_accounts_existing_passport,
                 onTap: widget.rightFunction!,
-                type: EnvoyButtonTypes.SECONDARY,
+                type: EnvoyButtonTypes.secondary,
               )
             ],
             helperText: EmptyCardHelperText(
