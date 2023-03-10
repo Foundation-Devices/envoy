@@ -345,6 +345,7 @@ class OnboardingButton extends StatelessWidget {
   final String label;
   final void Function() onTap;
   final TextStyle? textStyle;
+  final FontWeight? fontWeight;
 
   final EnvoyButtonTypes type;
 
@@ -353,6 +354,7 @@ class OnboardingButton extends StatelessWidget {
       required this.label,
       this.type = EnvoyButtonTypes.PRIMARY,
       this.textStyle,
+      this.fontWeight = null,
       required this.onTap})
       : super(key: key);
 
@@ -363,6 +365,7 @@ class OnboardingButton extends StatelessWidget {
       child: EnvoyButton(
         label,
         onTap: onTap,
+        fontWeight: fontWeight,
         textStyle: this.textStyle,
         type: type,
       ),

@@ -18,13 +18,17 @@ class EnvoyButton extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
   final TextStyle? textStyle;
+  final FontWeight? fontWeight;
 
-  EnvoyButton(this.label,
-      {this.onTap,
-      this.type = EnvoyButtonTypes.PRIMARY,
-      this.textStyle,
-      this.borderRadius,
-      this.backgroundColor});
+  EnvoyButton(
+    this.label, {
+    this.onTap,
+    this.type = EnvoyButtonTypes.PRIMARY,
+    this.textStyle,
+    this.borderRadius,
+    this.fontWeight = null,
+    this.backgroundColor,
+  });
 
   @override
   State<EnvoyButton> createState() => _EnvoyButtonState();
@@ -52,7 +56,8 @@ class _EnvoyButtonState extends State<EnvoyButton> {
       _textStyle = TextStyle(
         color: textColor,
         fontSize: 14.0,
-        fontWeight: FontWeight.w500,
+        fontWeight:
+            widget.fontWeight != null ? widget.fontWeight : FontWeight.w500,
       );
     }
     return AnimatedScale(

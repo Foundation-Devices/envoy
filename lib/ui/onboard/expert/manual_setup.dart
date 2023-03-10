@@ -81,6 +81,7 @@ class _ManualSetupState extends State<ManualSetup> {
                     OnboardingButton(
                         label: S().manual_setup_tutorial_CTA2,
                         type: EnvoyButtonTypes.SECONDARY,
+                        fontWeight: FontWeight.w600,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
@@ -91,6 +92,7 @@ class _ManualSetupState extends State<ManualSetup> {
                         }),
                     OnboardingButton(
                         label: S().manual_setup_tutorial_CTA1,
+                        fontWeight: FontWeight.w600,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
@@ -176,6 +178,7 @@ class SelectMode extends StatelessWidget {
                   generate
                       ? OnboardingButton(
                           label: S().manual_setup_generate_seed_CTA,
+                          fontWeight: FontWeight.w600,
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
@@ -191,6 +194,7 @@ class SelectMode extends StatelessWidget {
                             OnboardingButton(
                                 type: EnvoyButtonTypes.SECONDARY,
                                 label: S().manual_setup_import_seed_CTA2,
+                                fontWeight: FontWeight.w600,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
@@ -204,6 +208,7 @@ class SelectMode extends StatelessWidget {
                             OnboardingButton(
                                 type: EnvoyButtonTypes.SECONDARY,
                                 label: S().manual_setup_import_seed_CTA1,
+                                fontWeight: FontWeight.w600,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
