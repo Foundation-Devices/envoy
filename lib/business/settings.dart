@@ -138,7 +138,13 @@ class Settings extends ChangeNotifier {
   String nguServerAddress = "https://ngu.foundationdevices.com";
 
   @JsonKey(defaultValue: false)
-  bool syncToCloud = false;
+  bool _syncToCloud = false;
+
+  bool get syncToCloud => _syncToCloud;
+
+  set syncToCloud(bool syncToCloud) {
+    _syncToCloud = syncToCloud;
+  }
 
   static final Settings _instance = Settings._internal();
 

@@ -34,7 +34,7 @@ class _SettingToggleState extends State<SettingToggle> {
   Widget build(BuildContext context) {
     return NeumorphicSwitch(
         height: 35,
-        value: _toggleValue,
+        value: widget.getter(),
         style: NeumorphicSwitchStyle(
             inactiveThumbColor: EnvoyColors.whitePrint,
             inactiveTrackColor: widget.inactiveColor,

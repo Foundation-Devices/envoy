@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:math';
 import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
@@ -91,8 +90,11 @@ class EnvoySeed {
   }
 
   Future<void> store(String seed) async {
-    await saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
-    _platform.invokeMethod('data_changed');
+    if (Settings().syncToCloud) {
+      await saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
+      _platform.invokeMethod('data_changed');
+    }
+
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
@@ -134,18 +136,10 @@ class EnvoySeed {
 
   Future<void> saveOfflineData() async {
     await backupData(cloud: false);
-
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
+
     FileSaver.instance
         .saveAs(encryptedBackupFileName, backupBytes, "", MimeType.TEXT);
-
-    // var argsMap = <String, dynamic>{
-    //   "from": encryptedBackupFilePath,
-    //   "path": ""
-    // };
-    // _platform.invokeMethod('save_file', argsMap);
-
-    //DocumentFileSavePlus.(backupBytes, encryptedBackupFileName, "text/plain");
   }
 
   Future<String?> get() async {
@@ -180,16 +174,6 @@ class EnvoySeed {
     return seed!;
   }
 
-  List<int> getRandomBytes(int len) {
-    var rng = new Random.secure();
-    return List.generate(len, (_) => rng.nextInt(255));
-  }
-
-  List<int> xorBytes(List<int> first, List<int> second) {
-    assert(first.length == second.length);
-    return List.generate(first.length, (index) => first[index] ^ second[index]);
-  }
-
   Future<File> saveNonSecure(String data, String name) async {
     return LocalStorage().saveFile(name, data);
   }
@@ -200,16 +184,6 @@ class EnvoySeed {
     }
 
     return await LocalStorage().readFile(name);
-  }
-
-  List<int> convertFromString(String contents) {
-    // Dart doesn't do nice serialization so reverse .toString() manually
-    List<String> values = contents
-        .substring(1, contents.length - 1) // Get rid of enclosing []
-        .replaceAll(" ", "") // Get rid of spaces
-        .split(",");
-
-    return List.generate(values.length, (index) => int.parse(values[index]));
   }
 
   showSettingsMenu() {
