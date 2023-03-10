@@ -127,7 +127,7 @@ pub unsafe extern "C" fn backup_perform(
             hash.to_hex(),
             encrypted,
         )
-            .await;
+        .await;
     });
 
     let handle_box = Box::new(handle);
@@ -181,7 +181,10 @@ pub unsafe extern "C" fn backup_get(
     server_url: *const c_char,
     proxy_port: i32,
 ) -> BackupPayload {
-    let err_ret = BackupPayload { keys_nr: 0, data: ptr::null() };
+    let err_ret = BackupPayload {
+        keys_nr: 0,
+        data: ptr::null(),
+    };
 
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
@@ -193,9 +196,7 @@ pub unsafe extern "C" fn backup_get(
     let rt = RUNTIME.as_ref().unwrap();
 
     let response =
-        rt.block_on(async move {
-            get_backup_async(server_url, proxy_port, hash.to_hex()).await
-        });
+        rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_hex()).await });
 
     let payload = unwrap_or_return!(response, err_ret);
 
@@ -321,7 +322,11 @@ async fn post_backup_async(
     println!("{response:?}");
 }
 
-async fn get_backup_async(server_url: &str, proxy_port: i32, hash: String) -> Result<GetBackupResponse, reqwest::Error> {
+async fn get_backup_async(
+    server_url: &str,
+    proxy_port: i32,
+    hash: String,
+) -> Result<GetBackupResponse, reqwest::Error> {
     let client = get_reqwest_client(proxy_port);
     let response = client
         .get(server_url.to_owned() + "/backup?key=" + &*hash)
@@ -363,7 +368,7 @@ mod tests {
             "hey".to_owned(),
             vec![0, 1, 2],
         )
-            .await;
+        .await;
     }
 
     #[test]
@@ -371,7 +376,7 @@ mod tests {
         let mnemonic = Mnemonic::parse(
             "copper december enlist body dove discover cross help evidence fall rich clean",
         )
-            .unwrap();
+        .unwrap();
         let entropy = mnemonic.to_entropy_array().0;
         let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
 

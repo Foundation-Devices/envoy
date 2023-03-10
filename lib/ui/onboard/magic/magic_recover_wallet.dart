@@ -180,7 +180,9 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           ),
         ),
         title: Text(
-          Platform.isIOS ? S().magic_setup_recovery_success_iOS_instruction1 : S().magic_setup_recovery_success_android_instructions1,
+          Platform.isIOS
+              ? S().magic_setup_recovery_success_iOS_instruction1
+              : S().magic_setup_recovery_success_android_instructions1,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
@@ -203,7 +205,9 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           ),
         ),
         title: Text(
-          Platform.isIOS ? S().magic_setup_recovery_success_iOS_instruction2 : S().magic_setup_recovery_success_android_instructions2,
+          Platform.isIOS
+              ? S().magic_setup_recovery_success_iOS_instruction2
+              : S().magic_setup_recovery_success_android_instructions2,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),
@@ -224,7 +228,9 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   ?.copyWith(color: Colors.white)),
         ),
         title: Text(
-          Platform.isIOS ? S().magic_setup_recovery_success_iOS_instruction3 : S().magic_setup_recovery_success_android_instructions3,
+          Platform.isIOS
+              ? S().magic_setup_recovery_success_iOS_instruction3
+              : S().magic_setup_recovery_success_android_instructions3,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
         ),

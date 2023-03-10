@@ -5948,6 +5948,106 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get export_seed_modal_passphrase_2_3_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'export_seed_modal_passphrase_2_3_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Passphrase`
+  String get export_seed_modal_passphrase_2_3_heading {
+    return Intl.message(
+      'Enter Your Passphrase',
+      name: 'export_seed_modal_passphrase_2_3_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please carefully enter your passphrase. Failure to enter this correctly will result in unsuccessful recovery of your Envoy wallet.`
+  String get export_seed_modal_passphrase_2_3_subheading {
+    return Intl.message(
+      'Please carefully enter your passphrase. Failure to enter this correctly will result in unsuccessful recovery of your Envoy wallet.',
+      name: 'export_seed_modal_passphrase_2_3_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get export_seed_modal_passphrase_3_3_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'export_seed_modal_passphrase_3_3_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Passphrase`
+  String get export_seed_modal_passphrase_3_3_heading {
+    return Intl.message(
+      'Verify Your Passphrase',
+      name: 'export_seed_modal_passphrase_3_3_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please carefully re-enter your passphrase.`
+  String get export_seed_modal_passphrase_3_3_subheading {
+    return Intl.message(
+      'Please carefully re-enter your passphrase.',
+      name: 'export_seed_modal_passphrase_3_3_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get export_seed_modal_passphrase_question_1_3_CTA1 {
+    return Intl.message(
+      'No',
+      name: 'export_seed_modal_passphrase_question_1_3_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes I have a passphrase`
+  String get export_seed_modal_passphrase_question_1_3_CTA2 {
+    return Intl.message(
+      'Yes I have a passphrase',
+      name: 'export_seed_modal_passphrase_question_1_3_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Using a Passphrase?`
+  String get export_seed_modal_passphrase_question_1_3_heading {
+    return Intl.message(
+      'Using a Passphrase?',
+      name: 'export_seed_modal_passphrase_question_1_3_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Did you use a passphrase to protect your Envoy wallet? `
+  String get export_seed_modal_passphrase_question_1_3_subheading {
+    return Intl.message(
+      'Did you use a passphrase to protect your Envoy wallet? ',
+      name: 'export_seed_modal_passphrase_question_1_3_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `WARNING\nThe following screen displays highly sensitive information.\n\nAnyone with access to this data can steal your Bitcoin. Proceed with extreme caution.`
   String get export_seed_modal_subheading {
     return Intl.message(
@@ -7446,11 +7546,11 @@ class S {
     );
   }
 
-  /// `WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
+  /// `WARNING\nPassphrases are an advanced feature.\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
   String
       get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
     return Intl.message(
-      'WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
+      'WARNING\nPassphrases are an advanced feature.\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
       name:
           'manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading',
       desc: '',
@@ -7485,6 +7585,16 @@ class S {
       'Please carefully re-enter your passphrase.',
       name:
           'manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passphrases are case and space sensitive. Enter with care.`
+  String get manual_setup_verify_seed_24_words_enter_passphrase_modal {
+    return Intl.message(
+      'Passphrases are case and space sensitive. Enter with care.',
+      name: 'manual_setup_verify_seed_24_words_enter_passphrase_modal',
       desc: '',
       args: [],
     );
@@ -8586,6 +8696,56 @@ class S {
     );
   }
 
+  /// `View Amount in Sats`
+  String get settings_biometric_amount {
+    return Intl.message(
+      'View Amount in Sats',
+      name: 'settings_biometric_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Require Biometrics to Unlock`
+  String get settings_biometric_biometric {
+    return Intl.message(
+      'Require Biometrics to Unlock',
+      name: 'settings_biometric_biometric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect My Node`
+  String get settings_biometric_electrum {
+    return Intl.message(
+      'Connect My Node',
+      name: 'settings_biometric_electrum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display Fiat Values`
+  String get settings_biometric_show_fiat {
+    return Intl.message(
+      'Display Fiat Values',
+      name: 'settings_biometric_show_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect with Tor`
+  String get settings_biometric_tor {
+    return Intl.message(
+      'Connect with Tor',
+      name: 'settings_biometric_tor',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Connect Passport with Envoy`
   String get single_envoy_import_pp_intro_card1_heading {
     return Intl.message(
@@ -8886,10 +9046,10 @@ class S {
     );
   }
 
-  /// `Manage Your Passport`
+  /// `Only Manage Passport`
   String get splash_screen_CTA3 {
     return Intl.message(
-      'Manage Your Passport',
+      'Only Manage Passport',
       name: 'splash_screen_CTA3',
       desc: '',
       args: [],
