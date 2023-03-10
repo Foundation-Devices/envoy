@@ -301,7 +301,6 @@ class AccountOptions extends StatelessWidget {
                     actions: [
                       EnvoyButton(
                         S().component_save.toUpperCase(),
-                        light: false,
                         onTap: () {
                           AccountManager()
                               .renameAccount(account, textEntry.enteredText);
@@ -333,7 +332,6 @@ class AccountOptions extends StatelessWidget {
                     actions: [
                       EnvoyButton(
                         S().component_delete.toUpperCase(),
-                        light: false,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(account);

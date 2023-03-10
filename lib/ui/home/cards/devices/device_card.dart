@@ -120,7 +120,6 @@ class DeviceOptions extends StatelessWidget {
                     actions: [
                       EnvoyButton(
                         S().component_save.toUpperCase(),
-                        light: false,
                         onTap: () {
                           Devices().renameDevice(device, textEntry.enteredText);
                           Navigator.pop(context);
@@ -147,7 +146,6 @@ class DeviceOptions extends StatelessWidget {
                   actions: [
                     EnvoyButton(
                       S().component_delete.toUpperCase(),
-                      light: false,
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       onTap: () {
                         Devices().deleteDevice(device);

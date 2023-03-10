@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/pp/pp_new_seed.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_backup.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_seed.dart';
@@ -22,7 +23,7 @@ class PpSetupIntroPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            light: true,
+            type: EnvoyButtonTypes.secondary,
             label: S().envoy_pp_setup_intro_card4_heading,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -30,7 +31,7 @@ class PpSetupIntroPage extends StatelessWidget {
               }));
             }),
         OnboardingButton(
-            light: true,
+            type: EnvoyButtonTypes.secondary,
             label: S().envoy_pp_setup_intro_card3_heading,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {

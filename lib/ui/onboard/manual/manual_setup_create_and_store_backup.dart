@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -71,7 +72,7 @@ class _ManualSetupCreateAndStoreBackupState extends State<ManualSetupCreateAndSt
                 ),
                 Flexible(
                     child: OnboardingButton(
-                        light: false,
+                        type: EnvoyButtonTypes.primary,
                         label: S().manual_setup_create_and_store_backup_CTA,
                         onTap: () {
                           showEnvoyDialog(

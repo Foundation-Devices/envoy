@@ -130,7 +130,6 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                                   vertical: 4, horizontal: 0),
                               child: OnboardingButton(
                                   label: "Continue",
-                                  light: false,
                                   onTap: () {
                                     widget.onVerificationFinished(true);
                                   })),
