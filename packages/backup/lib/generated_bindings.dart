@@ -104,6 +104,23 @@ class NativeLibrary {
       BackupPayload Function(
           ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
+  BackupPayload backup_get_offline(
+    ffi.Pointer<ffi.Char> seed_words,
+    ffi.Pointer<ffi.Char> file_path,
+  ) {
+    return _backup_get_offline(
+      seed_words,
+      file_path,
+    );
+  }
+
+  late final _backup_get_offlinePtr = _lookup<
+      ffi.NativeFunction<
+          BackupPayload Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('backup_get_offline');
+  late final _backup_get_offline = _backup_get_offlinePtr.asFunction<
+      BackupPayload Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
   void backup_hello() {
     return _backup_hello();
   }

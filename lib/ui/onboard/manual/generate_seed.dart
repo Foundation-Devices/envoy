@@ -6,12 +6,12 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:flutter/services.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/expert/widgets/seed_word_verification.dart';
+import 'package:envoy/ui/onboard/manual/widgets/seed_word_verification.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +67,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                       if (success) {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return StorageSetupPage();
+                          return ManualSetupImportBackup();
                         }));
                       } else {
                         // TODO: Show a dialog of failure

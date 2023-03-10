@@ -7,8 +7,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
-import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
+import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -121,7 +121,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                               if (success) {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return StorageSetupPage();
+                                  return ManualSetupImportBackup();
                                 }));
                               } else {
                                 // TODO: Show a dialog of failure

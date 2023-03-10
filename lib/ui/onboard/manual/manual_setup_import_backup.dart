@@ -5,21 +5,24 @@
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
-import '../wallet_setup_success.dart';
 
-class StorageSetupPage extends StatefulWidget {
-  const StorageSetupPage({Key? key}) : super(key: key);
+class ManualSetupImportBackup extends StatefulWidget {
+  const ManualSetupImportBackup({Key? key}) : super(key: key);
 
   @override
-  State<StorageSetupPage> createState() => _StorageSetupPageState();
+  State<ManualSetupImportBackup> createState() => _ManualSetupImportBackupState();
 }
 
-class _StorageSetupPageState extends State<StorageSetupPage> {
+class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
@@ -39,7 +42,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                 Flexible(
                     child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/onboarding_lock_icon.png"),
+                  child: Image.asset("assets/fw_intro_png.png"),
                 )),
                 Flexible(
                     child: Container(
@@ -49,13 +52,13 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                     children: [
                       Padding(padding: EdgeInsets.all(8)),
                       Text(
-                        S().manual_setup_create_and_store_backup_heading,
+                        S().manual_setup_import_backup_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Padding(padding: EdgeInsets.all(12)),
                       Text(
-                        S().manual_setup_create_and_store_backup_subheading,
+                        S().manual_setup_import_backup_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -70,12 +73,30 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
-                    child: OnboardingButton(
-                        light: false,
-                        label: S().manual_setup_create_and_store_backup_CTA,
-                        onTap: () {
-                          showVerificationFailedDialog(context);
-                        }))
+                    child: Column(
+                      children: [
+                        OnboardingButton(
+                            light: true,
+                            label: S().manual_setup_import_backup_CTA2,
+                            onTap: () {
+                              FilePicker.platform.pickFiles().then((result) {
+                                if (result != null) {
+                                  EnvoySeed().restoreOfflineData(result.files.single.path!);
+                                }
+                              });
+
+                            }),
+                        OnboardingButton(
+                            light: false,
+                            label: S().manual_setup_import_backup_CTA1,
+                            onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return ManualSetupCreateAndStoreBackup();
+                              }));
+                            }),
+                      ],
+                    ))
               ],
             ),
           ),

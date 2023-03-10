@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/onboard/expert/generate_seed.dart';
-import 'package:envoy/ui/onboard/expert/manual_setup_import_seed.dart';
-import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/manual/generate_seed.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
+import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';

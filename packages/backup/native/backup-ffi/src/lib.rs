@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::io::Read;
 use std::os::raw::c_char;
-use std::{io, ptr};
+use std::{fs, io, ptr};
 
 use curve25519_parser::StaticSecret;
 
@@ -201,7 +201,10 @@ pub unsafe extern "C" fn backup_get(
     let payload = unwrap_or_return!(response, err_ret);
 
     let data = decrypt_backup(payload.backup.into(), password);
+    extract_kv_data(data)
+}
 
+unsafe fn extract_kv_data(data: Vec<(String, String)>) -> BackupPayload {
     let mut ret = vec![];
     for (k, v) in data.iter() {
         ret.push(k.as_ptr() as *const c_char);
@@ -213,6 +216,21 @@ pub unsafe extern "C" fn backup_get(
         keys_nr: data.len() as u8,
         data: ret.as_ptr(),
     }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn backup_get_offline(
+    seed_words: *const c_char,
+    file_path: *const c_char,
+) -> BackupPayload {
+    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+    let password = get_static_secret(seed_words);
+
+    let file_path = CStr::from_ptr(file_path).to_str().unwrap();
+    let file_data = fs::read(file_path).unwrap();
+
+    let data = decrypt_backup(file_data, password);
+    extract_kv_data(data)
 }
 
 fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {

@@ -87,6 +87,7 @@ dependencies:
   rive: 0.10.2
   local_auth: ^2.1.6
   file_saver: ^0.1.1
+  file_picker: ^5.2.5
 
 dev_dependencies:
   test: any
