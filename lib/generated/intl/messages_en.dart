@@ -1052,6 +1052,29 @@ class MessageLookup extends MessageLookupByLibrary {
         "export_seed_modal_QR_code_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code"),
+        "export_seed_modal_passphrase_2_3_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "export_seed_modal_passphrase_2_3_heading":
+            MessageLookupByLibrary.simpleMessage("Enter Your Passphrase"),
+        "export_seed_modal_passphrase_2_3_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Please carefully enter your passphrase. Failure to enter this correctly will result in unsuccessful recovery of your Envoy wallet."),
+        "export_seed_modal_passphrase_3_3_CTA":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "export_seed_modal_passphrase_3_3_heading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
+        "export_seed_modal_passphrase_3_3_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Please carefully re-enter your passphrase."),
+        "export_seed_modal_passphrase_question_1_3_CTA1":
+            MessageLookupByLibrary.simpleMessage("No"),
+        "export_seed_modal_passphrase_question_1_3_CTA2":
+            MessageLookupByLibrary.simpleMessage("Yes I have a passphrase"),
+        "export_seed_modal_passphrase_question_1_3_heading":
+            MessageLookupByLibrary.simpleMessage("Using a Passphrase?"),
+        "export_seed_modal_passphrase_question_1_3_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Did you use a passphrase to protect your Envoy wallet? "),
         "export_seed_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "WARNING\nThe following screen displays highly sensitive information.\n\nAnyone with access to this data can steal your Bitcoin. Proceed with extreme caution."),
         "heading": MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
@@ -1392,7 +1415,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "WARNING\nPassphrases are an advanced feature\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
+                "WARNING\nPassphrases are an advanced feature.\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
         "manual_setup_verify_seed_12_words_verify_passphrase_modal_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_verify_seed_12_words_verify_passphrase_modal_heading":
@@ -1400,6 +1423,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Please carefully re-enter your passphrase."),
+        "manual_setup_verify_seed_24_words_enter_passphrase_modal":
+            MessageLookupByLibrary.simpleMessage(
+                "Passphrases are case and space sensitive. Enter with care."),
         "manual_toggle_off_autobackup":
             MessageLookupByLibrary.simpleMessage("Automatic Backups"),
         "manual_toggle_off_download_backup_file":
@@ -1639,6 +1665,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_ios_subheading": MessageLookupByLibrary.simpleMessage(
             "To recover your Envoy wallet, follow these simple instructions."),
         "rtainment": MessageLookupByLibrary.simpleMessage("rtainment"),
+        "settings_biometric_amount":
+            MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
+        "settings_biometric_biometric": MessageLookupByLibrary.simpleMessage(
+            "Require Biometrics to Unlock"),
+        "settings_biometric_electrum":
+            MessageLookupByLibrary.simpleMessage("Connect My Node"),
+        "settings_biometric_show_fiat":
+            MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
+        "settings_biometric_tor":
+            MessageLookupByLibrary.simpleMessage("Connect with Tor"),
         "single_envoy_import_pp_intro_card1_heading":
             MessageLookupByLibrary.simpleMessage("Connect Passport with Envoy"),
         "single_envoy_import_pp_intro_card1_subheading":
@@ -1708,7 +1744,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "splash_screen_CTA2": MessageLookupByLibrary.simpleMessage(
             "Manually Configure Seed Words"),
         "splash_screen_CTA3":
-            MessageLookupByLibrary.simpleMessage("Manage Your Passport"),
+            MessageLookupByLibrary.simpleMessage("Only Manage Passport"),
         "splash_screen_heading":
             MessageLookupByLibrary.simpleMessage("Welcome to Envoy"),
         "splash_screen_skip": MessageLookupByLibrary.simpleMessage("Skip"),

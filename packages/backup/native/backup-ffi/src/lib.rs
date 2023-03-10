@@ -181,6 +181,11 @@ pub unsafe extern "C" fn backup_get(
     server_url: *const c_char,
     proxy_port: i32,
 ) -> BackupPayload {
+    let err_ret = BackupPayload {
+        keys_nr: 0,
+        data: ptr::null(),
+    };
+
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
 
@@ -193,7 +198,9 @@ pub unsafe extern "C" fn backup_get(
     let response =
         rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_hex()).await });
 
-    let data = decrypt_backup(response.backup.into(), password);
+    let payload = unwrap_or_return!(response, err_ret);
+
+    let data = decrypt_backup(payload.backup.into(), password);
 
     let mut ret = vec![];
     for (k, v) in data.iter() {
@@ -315,7 +322,11 @@ async fn post_backup_async(
     println!("{response:?}");
 }
 
-async fn get_backup_async(server_url: &str, proxy_port: i32, hash: String) -> GetBackupResponse {
+async fn get_backup_async(
+    server_url: &str,
+    proxy_port: i32,
+    hash: String,
+) -> Result<GetBackupResponse, reqwest::Error> {
     let client = get_reqwest_client(proxy_port);
     let response = client
         .get(server_url.to_owned() + "/backup?key=" + &*hash)
@@ -323,7 +334,7 @@ async fn get_backup_async(server_url: &str, proxy_port: i32, hash: String) -> Ge
         .await
         .unwrap();
 
-    response.json().await.unwrap()
+    response.json().await
 }
 
 fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {

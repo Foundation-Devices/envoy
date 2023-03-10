@@ -84,6 +84,11 @@ class Backup {
     var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
 
+    // TODO: throw an exception from Rust
+    if (payload.keys_nr == 0) {
+      return false;
+    }
+
     Map<String, String> backupData = {};
     for (var i = 0; i < payload.keys_nr; i++) {
       var key = payload.data.elementAt(i).cast<Utf8>().toDartString();
