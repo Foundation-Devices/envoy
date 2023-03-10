@@ -105,9 +105,7 @@ class EnvoySeed {
     final seed = await get();
     Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
         Settings().envoyServerAddress, Tor().port,
-        path: encryptedBackupFilePath,
-        cloud: cloud
-    );
+        path: encryptedBackupFilePath, cloud: cloud);
 
     if (cloud) {
       LocalStorage()
