@@ -23,9 +23,12 @@ class SplashScreen extends StatelessWidget {
       right: Text("Skip"),
       clipArt: Image.asset("assets/envoy.png"),
       text: [
-        OnboardingText(
-            header: S().splash_screen_heading,
-            text: S().splash_screen_subheading)
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: OnboardingText(
+              header: S().splash_screen_heading,
+              text: S().splash_screen_subheading),
+        )
       ],
       buttons: [
         OnboardingButton(
