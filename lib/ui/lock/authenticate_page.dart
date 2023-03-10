@@ -25,10 +25,11 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         image: new DecorationImage(
-          image: new ExactAssetImage('assets/splash_blank.png'),
-          fit: BoxFit.cover,
-        ),
+            image: new ExactAssetImage('assets/splash_blank.png'),
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.high),
       ),
     );
   }
@@ -37,15 +38,14 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     final LocalAuthentication auth = LocalAuthentication();
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
-    if (availableBiometrics.contains(BiometricType.strong) ||
-        availableBiometrics.contains(BiometricType.face)) {
+    if (availableBiometrics.isNotEmpty) {
       try {
         final bool didAuthenticate = await auth.authenticate(
             options: AuthenticationOptions(
               biometricOnly: false,
               stickyAuth: true,
             ),
-            localizedReason: 'Authenticate to access envoy');
+            localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
           if (Platform.isIOS) {
             await Future.delayed(Duration(milliseconds: 800));
@@ -57,7 +57,18 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         }
       } on PlatformException {
         showAuthFailed();
+      } on Exception catch (e) {
+        print("$e");
       }
+    } else {
+      showEnvoyDialog(
+          context: context,
+          dismissible: false,
+          dialog: EnvoyDialog(
+            title: "Biometrics Disabled",
+            dismissible: false,
+            content: Text("Please Enable Biometrics to Unlock Envoy"),
+          ));
     }
   }
 
@@ -72,7 +83,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               "Try Again",
               light: false,
               borderRadius: BorderRadius.all(Radius.circular(8)),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 initiateAuth();
               },

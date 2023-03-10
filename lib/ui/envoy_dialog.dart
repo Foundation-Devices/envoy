@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 
 class EnvoyDialog extends StatelessWidget {
   final String? title;
+  final bool dismissible;
   final Widget? content;
   final List<Widget>? actions;
 
-  EnvoyDialog({this.title, this.content, this.actions});
+  EnvoyDialog(
+      {this.title, this.content, this.actions, this.dismissible = true});
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +26,17 @@ class EnvoyDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Align(
-            alignment: Alignment.centerRight.add(Alignment(.1, 0)),
-            child: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+          dismissible
+              ? Align(
+                  alignment: Alignment.centerRight.add(Alignment(.1, 0)),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              : SizedBox(),
           Container(
             margin: EdgeInsets.only(right: 28),
             child: Text(this.title ?? '',
