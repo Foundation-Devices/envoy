@@ -136,7 +136,9 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                                       return StorageSetupPage();
                                     }));
                                   } else {
-                                    // TODO: Show a dialog of failure
+                                    showInvalidSeedDialog(
+                                      context: context,
+                                    );
                                   }
                                 });
                               }),
@@ -242,6 +244,49 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
         ),
         Padding(padding: EdgeInsets.all(8)),
       ],
+    );
+  }
+
+  void showInvalidSeedDialog({required BuildContext context}) {
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      builder: Builder(builder: (context) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(padding: EdgeInsets.all(24)),
+                Column(
+                  children: [
+                    Icon(EnvoyIcons.exclamation_warning,
+                        color: EnvoyColors.darkCopper, size: 56),
+                    Padding(padding: EdgeInsets.all(12)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        S().manual_setup_import_seed_12_words_fail_modal_subheading,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+                OnboardingButton(
+                    label: S().manual_setup_import_seed_12_words_fail_modal_CTA,
+                    onTap: () async {
+                      Navigator.pop(context);
+                    }),
+                Padding(padding: EdgeInsets.all(12)),
+              ],
+            ),
+          ),
+        );
+      }),
     );
   }
 }
