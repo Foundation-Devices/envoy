@@ -86,7 +86,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                       children: [
                         EnvoyButton(
                           S().export_seed_modal_12_words_CTA2,
-                          type: EnvoyButtonTypes.SECONDARY,
+                          type: EnvoyButtonTypes.secondary,
                           onTap: () {
                             Navigator.of(context).pop();
                           },

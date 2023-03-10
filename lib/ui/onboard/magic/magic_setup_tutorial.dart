@@ -92,7 +92,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                       width: double.infinity,
                       child: OnboardingButton(
                           fontWeight: FontWeight.w600,
-                          type: EnvoyButtonTypes.SECONDARY,
+                          type: EnvoyButtonTypes.secondary,
                           label: S().magic_setup_tutorial_ios_CTA2,
                           textStyle: Theme.of(context)
                               .textTheme

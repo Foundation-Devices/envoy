@@ -6,9 +6,9 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 enum EnvoyButtonTypes {
-  PRIMARY,
-  SECONDARY,
-  TERTIARY,
+  primary,
+  secondary,
+  tertiary,
 }
 
 class EnvoyButton extends StatefulWidget {
@@ -23,7 +23,7 @@ class EnvoyButton extends StatefulWidget {
   EnvoyButton(
     this.label, {
     this.onTap,
-    this.type = EnvoyButtonTypes.PRIMARY,
+    this.type = EnvoyButtonTypes.primary,
     this.textStyle,
     this.borderRadius,
     this.fontWeight = null,
@@ -43,13 +43,13 @@ class _EnvoyButtonState extends State<EnvoyButton> {
     if (widget.textStyle == null) {
       Color textColor = EnvoyColors.darkTeal;
       switch (this.widget.type) {
-        case EnvoyButtonTypes.PRIMARY:
+        case EnvoyButtonTypes.primary:
           textColor = Colors.white;
           break;
-        case EnvoyButtonTypes.SECONDARY:
+        case EnvoyButtonTypes.secondary:
           textColor = EnvoyColors.darkTeal;
           break;
-        case EnvoyButtonTypes.TERTIARY:
+        case EnvoyButtonTypes.tertiary:
           textColor = EnvoyColors.darkTeal;
           break;
       }
@@ -91,7 +91,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
 
   BoxDecoration _getBoxDecoration() {
     switch (this.widget.type) {
-      case EnvoyButtonTypes.PRIMARY:
+      case EnvoyButtonTypes.primary:
         {
           var gradientColors = [EnvoyColors.teal, EnvoyColors.darkTeal];
           return BoxDecoration(
@@ -105,7 +105,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
               borderRadius: this.widget.borderRadius ??
                   BorderRadius.all(Radius.circular(13.0)));
         }
-      case EnvoyButtonTypes.SECONDARY:
+      case EnvoyButtonTypes.secondary:
         {
           return BoxDecoration(
               color: this.widget.backgroundColor ?? EnvoyColors.grey15,
@@ -113,7 +113,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                   BorderRadius.all(Radius.circular(13.0)));
         }
 
-      case EnvoyButtonTypes.TERTIARY:
+      case EnvoyButtonTypes.tertiary:
         return BoxDecoration(
             color: this.widget.backgroundColor,
             borderRadius: this.widget.borderRadius ??

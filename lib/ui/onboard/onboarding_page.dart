@@ -352,7 +352,7 @@ class OnboardingButton extends StatelessWidget {
   const OnboardingButton(
       {Key? key,
       required this.label,
-      this.type = EnvoyButtonTypes.PRIMARY,
+      this.type = EnvoyButtonTypes.primary,
       this.textStyle,
       this.fontWeight = null,
       required this.onTap})

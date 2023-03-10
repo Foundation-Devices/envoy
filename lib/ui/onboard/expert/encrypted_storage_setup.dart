@@ -72,7 +72,7 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                 ),
                 Flexible(
                     child: OnboardingButton(
-                        type: EnvoyButtonTypes.PRIMARY,
+                        type: EnvoyButtonTypes.primary,
                         label: S().manual_setup_create_and_store_backup_CTA,
                         onTap: () {
                           showVerificationFailedDialog(context);
