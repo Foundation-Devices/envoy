@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -264,7 +265,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(padding: EdgeInsets.all(24)),
         OnboardingButton(
           label: S().magic_setup_recovery_fail_ios_CTA2,
-          light: true,
+          type: EnvoyButtonTypes.secondary,
           onTap: () {
             setState(() {
               _magicRecoverWalletState = MagicRecoveryWalletState.recovering;

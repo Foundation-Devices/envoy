@@ -344,15 +344,18 @@ class OnboardingHelperText extends StatelessWidget {
 class OnboardingButton extends StatelessWidget {
   final String label;
   final void Function() onTap;
-  final bool light;
   final TextStyle? textStyle;
+  final FontWeight? fontWeight;
+
+  final EnvoyButtonTypes type;
 
   const OnboardingButton(
       {Key? key,
       required this.label,
+      this.type = EnvoyButtonTypes.primary,
       this.textStyle,
-      required this.onTap,
-      this.light: false})
+      this.fontWeight = null,
+      required this.onTap})
       : super(key: key);
 
   @override
@@ -362,8 +365,9 @@ class OnboardingButton extends StatelessWidget {
       child: EnvoyButton(
         label,
         onTap: onTap,
+        fontWeight: fontWeight,
         textStyle: this.textStyle,
-        light: light,
+        type: type,
       ),
     );
   }

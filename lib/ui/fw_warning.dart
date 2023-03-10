@@ -94,7 +94,6 @@ class _FwWarningState extends State<FwWarning> {
               children: [
                 EnvoyButton(
                   "Try again later",
-                  light: true,
                   onTap: () {
                     widget.tryLater();
                   },
@@ -103,7 +102,6 @@ class _FwWarningState extends State<FwWarning> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     "Retry now",
-                    light: false,
                     onTap: () {
                       widget.tryNow();
                       Navigator.of(context).pop();

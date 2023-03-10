@@ -81,7 +81,6 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           actions: [
             EnvoyButton(
               "Try Again",
-              light: false,
               borderRadius: BorderRadius.all(Radius.circular(8)),
               onTap: () async {
                 Navigator.pop(context);

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
@@ -89,13 +90,17 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                   children: [
                     Container(
                       width: double.infinity,
-                      child: TextButton(
-                          child: Text(S().magic_setup_tutorial_ios_CTA2,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  ?.copyWith(color: EnvoyColors.teal)),
-                          onPressed: () {
+                      child: OnboardingButton(
+                          fontWeight: FontWeight.w600,
+                          type: EnvoyButtonTypes.secondary,
+                          label: S().magic_setup_tutorial_ios_CTA2,
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: EnvoyColors.darkTeal,
+                                  fontWeight: FontWeight.w600),
+                          onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
                               return MagicRecoverWallet();
@@ -103,7 +108,13 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                           }),
                     ),
                     OnboardingButton(
-                        light: false,
+                        fontWeight: FontWeight.w600,
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                                color: EnvoyColors.white100,
+                                fontWeight: FontWeight.w600),
                         label: S().magic_setup_tutorial_ios_CTA1,
                         onTap: () {
                           showCreateWarning(context);

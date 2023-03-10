@@ -26,6 +26,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
       buttons: [
         OnboardingButton(
             label: S().single_envoy_import_pp_intro_cta,
+            fontWeight: FontWeight.w600,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleImportPpScanPage();

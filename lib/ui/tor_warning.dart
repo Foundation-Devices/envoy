@@ -108,7 +108,7 @@ class _TorWarningState extends State<TorWarning> {
               children: [
                 EnvoyButton(
                   "Temporarily Disable Tor",
-                  light: true,
+                  type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     ConnectivityManager().torTemporarilyDisabled = true;
                     Navigator.of(context).pop();
@@ -118,7 +118,6 @@ class _TorWarningState extends State<TorWarning> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     "Retry Tor Connection",
-                    light: false,
                     onTap: () {
                       // We are continually retrying anyway
                       Navigator.of(context).pop();

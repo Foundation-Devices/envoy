@@ -96,7 +96,6 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
               children: [
                 EnvoyButton(
                   S().export_seed_modal_QR_code_CTA2,
-                  light: true,
                   onTap: () {
                     EnvoySeed().get().then((value) async {
                       enableSecureScreen(true);
@@ -113,7 +112,6 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     S().export_seed_modal_QR_code_CTA1,
-                    light: false,
                     onTap: () {
                       Navigator.of(context).pop();
                     },

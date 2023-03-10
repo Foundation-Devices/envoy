@@ -9,6 +9,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/expert/encrypted_storage_setup.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/expert/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -28,6 +29,7 @@ class ManualSetupImportSeed extends StatefulWidget {
 class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
   bool hasPassphrase = false;
   String passPhrase = "";
+  bool finishSeedEntries = false;
 
   List<String> currentWords = [];
 
@@ -65,6 +67,12 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                         seedLength: widget.seedLength,
                         onSeedWordAdded: (List<String> words) {
                           currentWords = words;
+                          bool isValid = currentWords
+                              .map((e) => seed_en.contains(e))
+                              .reduce((value, element) => value && element);
+                          setState(() {
+                            finishSeedEntries = isValid;
+                          });
                         }),
                   ))
                 ],
@@ -111,24 +119,29 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                   ),
                   Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: OnboardingButton(
-                          label: S().manual_setup_import_seed_12_words_CTA,
-                          light: false,
-                          onTap: () {
-                            EnvoySeed()
-                                .create(currentWords, passphrase: passPhrase)
-                                .then((success) {
-                              if (success) {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return StorageSetupPage();
-                                }));
-                              } else {
-                                // TODO: Show a dialog of failure
-
-                              }
-                            });
-                          }))
+                      child: IgnorePointer(
+                        ignoring: finishSeedEntries == false,
+                        child: Opacity(
+                          opacity: finishSeedEntries ? 1 : 0.5,
+                          child: OnboardingButton(
+                              label: S().manual_setup_import_seed_12_words_CTA,
+                              onTap: () {
+                                EnvoySeed()
+                                    .create(currentWords,
+                                        passphrase: passPhrase)
+                                    .then((success) {
+                                  if (success) {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return StorageSetupPage();
+                                    }));
+                                  } else {
+                                    // TODO: Show a dialog of failure
+                                  }
+                                });
+                              }),
+                        ),
+                      ))
                 ],
               )
             ],
@@ -335,7 +348,6 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
           Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
             S().recovery_scenario_ios_CTA,
-            light: false,
             borderRadius: BorderRadius.all(Radius.circular(8)),
             onTap: () {
               if (!verify && _textEditingController.text.isNotEmpty) {

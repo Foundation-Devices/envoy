@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/expert/generate_seed.dart';
 import 'package:envoy/ui/onboard/expert/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/expert/widgets/mnemonic_grid_widget.dart';
@@ -79,7 +80,8 @@ class _ManualSetupState extends State<ManualSetup> {
                   children: [
                     OnboardingButton(
                         label: S().manual_setup_tutorial_CTA2,
-                        light: true,
+                        type: EnvoyButtonTypes.secondary,
+                        fontWeight: FontWeight.w600,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
@@ -89,8 +91,8 @@ class _ManualSetupState extends State<ManualSetup> {
                           }));
                         }),
                     OnboardingButton(
-                        light: false,
                         label: S().manual_setup_tutorial_CTA1,
+                        fontWeight: FontWeight.w600,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
@@ -175,8 +177,8 @@ class SelectMode extends StatelessWidget {
                   ),
                   generate
                       ? OnboardingButton(
-                          light: false,
                           label: S().manual_setup_generate_seed_CTA,
+                          fontWeight: FontWeight.w600,
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
@@ -190,8 +192,9 @@ class SelectMode extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             OnboardingButton(
-                                light: true,
+                                type: EnvoyButtonTypes.secondary,
                                 label: S().manual_setup_import_seed_CTA2,
+                                fontWeight: FontWeight.w600,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
@@ -203,8 +206,9 @@ class SelectMode extends StatelessWidget {
                                   }));
                                 }),
                             OnboardingButton(
-                                light: true,
+                                type: EnvoyButtonTypes.secondary,
                                 label: S().manual_setup_import_seed_CTA1,
+                                fontWeight: FontWeight.w600,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
