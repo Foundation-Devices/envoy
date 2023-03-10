@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -12,14 +13,13 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:file_picker/file_picker.dart';
-import 'dart:io';
-
 
 class ManualSetupImportBackup extends StatefulWidget {
   const ManualSetupImportBackup({Key? key}) : super(key: key);
 
   @override
-  State<ManualSetupImportBackup> createState() => _ManualSetupImportBackupState();
+  State<ManualSetupImportBackup> createState() =>
+      _ManualSetupImportBackupState();
 }
 
 class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
@@ -74,29 +74,29 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                 ),
                 Flexible(
                     child: Column(
-                      children: [
-                        OnboardingButton(
-                            light: true,
-                            label: S().manual_setup_import_backup_CTA2,
-                            onTap: () {
-                              FilePicker.platform.pickFiles().then((result) {
-                                if (result != null) {
-                                  EnvoySeed().restoreOfflineData(result.files.single.path!);
-                                }
-                              });
-
-                            }),
-                        OnboardingButton(
-                            light: false,
-                            label: S().manual_setup_import_backup_CTA1,
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return ManualSetupCreateAndStoreBackup();
-                              }));
-                            }),
-                      ],
-                    ))
+                  children: [
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.secondary,
+                        label: S().manual_setup_import_backup_CTA2,
+                        onTap: () {
+                          FilePicker.platform.pickFiles().then((result) {
+                            if (result != null) {
+                              EnvoySeed().restoreOfflineData(
+                                  result.files.single.path!);
+                            }
+                          });
+                        }),
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.primary,
+                        label: S().manual_setup_import_backup_CTA1,
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return ManualSetupCreateAndStoreBackup();
+                          }));
+                        }),
+                  ],
+                ))
               ],
             ),
           ),

@@ -134,8 +134,7 @@ class EnvoySeed {
       seed = await get();
     }
 
-    return Backup.restoreOffline(
-        LocalStorage().prefs, seed!, filePath);
+    return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
   }
 
   DateTime? getLastBackupTime() {

@@ -78,8 +78,8 @@ class Backup {
     }
   }
 
-  static bool restoreOffline(SharedPreferences prefs, String seedWords,
-      String filePath) {
+  static bool restoreOffline(
+      SharedPreferences prefs, String seedWords, String filePath) {
     var lib = NativeLibrary(load("backup_ffi"));
     var payload = lib.backup_get_offline(seedWords.toNativeUtf8().cast<Char>(),
         filePath.toNativeUtf8().cast<Char>());
@@ -87,12 +87,13 @@ class Backup {
     return _restoreFromPayload(payload, prefs);
   }
 
-  static bool _restoreFromPayload(BackupPayload payload, SharedPreferences prefs) {
+  static bool _restoreFromPayload(
+      BackupPayload payload, SharedPreferences prefs) {
     // TODO: throw an exception from Rust
     if (payload.keys_nr == 0) {
       return false;
     }
-    
+
     Map<String, String> backupData = {};
     for (var i = 0; i < payload.keys_nr; i++) {
       var key = payload.data.elementAt(i).cast<Utf8>().toDartString();
@@ -100,11 +101,11 @@ class Backup {
       backupData[key] = value;
       i += 2;
     }
-    
+
     backupData.forEach((key, value) {
       prefs.setString(key, value);
     });
-    
+
     return true;
   }
 

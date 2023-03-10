@@ -133,7 +133,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                                   if (success) {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
-					return ManualSetupImportBackup();
+                                      return ManualSetupImportBackup();
                                     }));
                                   } else {
                                     showInvalidSeedDialog(

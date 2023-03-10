@@ -17,10 +17,12 @@ class ManualSetupCreateAndStoreBackup extends StatefulWidget {
   const ManualSetupCreateAndStoreBackup({Key? key}) : super(key: key);
 
   @override
-  State<ManualSetupCreateAndStoreBackup> createState() => _ManualSetupCreateAndStoreBackupState();
+  State<ManualSetupCreateAndStoreBackup> createState() =>
+      _ManualSetupCreateAndStoreBackupState();
 }
 
-class _ManualSetupCreateAndStoreBackupState extends State<ManualSetupCreateAndStoreBackup> {
+class _ManualSetupCreateAndStoreBackupState
+    extends State<ManualSetupCreateAndStoreBackup> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
