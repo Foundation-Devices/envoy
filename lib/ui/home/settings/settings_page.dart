@@ -130,7 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     options: AuthenticationOptions(
                                         biometricOnly: false),
                                     localizedReason:
-                                        "Authenticate to enabled biometrics");
+                                        "Authenticate to Enable Biometrics");
                                 if (authSuccess) {
                                   await LocalStorage().saveSecure(
                                       "useLocalAuth", enabled.toString());

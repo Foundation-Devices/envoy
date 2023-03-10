@@ -45,7 +45,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               biometricOnly: false,
               stickyAuth: true,
             ),
-            localizedReason: 'Authenticate to access envoy');
+            localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
           if (Platform.isIOS) {
             await Future.delayed(Duration(milliseconds: 800));
@@ -67,7 +67,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           dialog: EnvoyDialog(
             title: "Biometrics Disabled",
             dismissible: false,
-            content: Text("Please enable biometrics to unclock envoy"),
+            content: Text("Please Enable Biometrics to Unlock Envoy"),
           ));
     }
   }
