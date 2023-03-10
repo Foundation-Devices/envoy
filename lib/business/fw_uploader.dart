@@ -3,9 +3,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:envoy/business/local_storage.dart';
+
+const sdCardEventChannel = EventChannel('sd_card_events');
+final sdFwUploadStreamProvider = StreamProvider.autoDispose(
+    (ref) => sdCardEventChannel.receiveBroadcastStream().asBroadcastStream());
+//
+final sdFwUploadProgressProvider = StateProvider.autoDispose<bool?>((ref) {
+  dynamic streamData = ref.watch(sdFwUploadStreamProvider).value;
+  if (streamData is bool) {
+    return streamData;
+  } else {
+    return null;
+  }
+});
 
 class FwUploader {
   Function? onUploaded;
@@ -16,7 +30,6 @@ class FwUploader {
   static const String LAST_SD_CARD_PATH_PREFS = "last_sd_card_path";
 
   static const platform = MethodChannel('envoy');
-  static const sdCardEventChannel = EventChannel('sd_card_events');
 
   FwUploader(this.fw, {this.onUploaded}) {
     var prefs = LocalStorage().prefs;
@@ -27,15 +40,19 @@ class FwUploader {
     }
 
     // On iOS updates are received asynchronously from platform
-    sdCardEventChannel.receiveBroadcastStream().listen((event) {
+    sdCardEventChannel
+        .receiveBroadcastStream()
+        .asBroadcastStream()
+        .listen((event) {
+      print(" sdCardEventChannel.receiveBroadcastStream() ${event}");
       if (event is bool) {
         onUploaded!();
-      }
-
-      String pathFromPlatform = (event as String);
-      if (Platform.isIOS) {
-        _sdCardPath = pathFromPlatform.substring(7);
-        prefs.setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
+      } else {
+        String pathFromPlatform = (event as String);
+        if (Platform.isIOS) {
+          _sdCardPath = pathFromPlatform.substring(7);
+          prefs.setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
+        }
       }
     });
 

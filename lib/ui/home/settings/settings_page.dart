@@ -30,7 +30,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool _customElectrumServerVisible = Settings().customElectrumEnabled();
   bool _useLocalAuth = false;
-  bool _bioMetricAuthAvailable = false;
 
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -101,44 +100,55 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             Divider(),
-            Opacity(
-              opacity: _bioMetricAuthAvailable ? 1.0 : 0.4,
-              child: IgnorePointer(
-                ignoring: !_bioMetricAuthAvailable,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            FutureBuilder<bool>(
+              future: auth.canCheckBiometrics,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return SizedBox();
+                }
+                if (snapshot.hasData && snapshot.data! == false) {
+                  return SizedBox();
+                }
+                return Column(
                   children: [
-                    SettingText("Use biometrics to unlock"),
-                    NeumorphicSwitch(
-                        height: 35,
-                        value: _useLocalAuth,
-                        style: NeumorphicSwitchStyle(
-                            inactiveThumbColor: EnvoyColors.whitePrint,
-                            inactiveTrackColor: EnvoyColors.grey15,
-                            activeThumbColor: EnvoyColors.whitePrint,
-                            activeTrackColor: EnvoyColors.darkTeal,
-                            disableDepth: true),
-                        onChanged: (enabled) async {
-                          try {
-                            bool authSuccess = await auth.authenticate(
-                                localizedReason:
-                                    "Authenticate to enabled biometrics");
-                            if (authSuccess) {
-                              await LocalStorage().saveSecure(
-                                  "useLocalAuth", enabled.toString());
-                              setState(() {
-                                _useLocalAuth = enabled;
-                              });
-                            }
-                          } catch (e) {
-                            print(e);
-                          }
-                        })
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SettingText("Use Biometrics to Unlock"),
+                        NeumorphicSwitch(
+                            height: 35,
+                            value: _useLocalAuth,
+                            style: NeumorphicSwitchStyle(
+                                inactiveThumbColor: EnvoyColors.whitePrint,
+                                inactiveTrackColor: EnvoyColors.grey15,
+                                activeThumbColor: EnvoyColors.whitePrint,
+                                activeTrackColor: EnvoyColors.darkTeal,
+                                disableDepth: true),
+                            onChanged: (enabled) async {
+                              try {
+                                bool authSuccess = await auth.authenticate(
+                                    options: AuthenticationOptions(
+                                        biometricOnly: false),
+                                    localizedReason:
+                                        "Authenticate to Enable Biometrics");
+                                if (authSuccess) {
+                                  await LocalStorage().saveSecure(
+                                      "useLocalAuth", enabled.toString());
+                                  setState(() {
+                                    _useLocalAuth = enabled;
+                                  });
+                                }
+                              } catch (e) {
+                                print(e);
+                              }
+                            })
+                      ],
+                    ),
+                    Divider(),
                   ],
-                ),
-              ),
+                );
+              },
             ),
-            Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -173,19 +183,5 @@ class _SettingsPageState extends State<SettingsPage> {
         _useLocalAuth = value == "true";
       });
     });
-    _initLocalAuth();
-  }
-
-  _initLocalAuth() async {
-    bool canCheckBiometrics = await auth.canCheckBiometrics;
-    if (canCheckBiometrics) {
-      List<BiometricType> availableBiometrics =
-          await auth.getAvailableBiometrics();
-      if (availableBiometrics.isNotEmpty) {
-        setState(() {
-          _bioMetricAuthAvailable = true;
-        });
-      }
-    }
   }
 }

@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
   const MagicSetupGenerate({Key? key}) : super(key: key);
@@ -57,7 +58,8 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _initiateWalletCreate() async {
-    if (walletGenerated) {
+    if (!walletGenerated) {
+      Settings().syncToCloud = true;
       await EnvoySeed().generate();
     }
 

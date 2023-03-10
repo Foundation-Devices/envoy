@@ -2,20 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:math';
 import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
-
 import 'package:wallet/wallet.dart';
-
-import 'devices.dart';
-import 'fees.dart';
-import 'local_storage.dart';
-import 'notifications.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:file_saver/file_saver.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -32,8 +30,11 @@ class EnvoySeed {
   // Checksum is first 4 bits of SHA-256 of 16 bytes
 
   static const _platform = MethodChannel('envoy');
+
+  static String encryptedBackupFileExtension = "mla";
+  static String encryptedBackupFileName = "envoy_backup";
   static String encryptedBackupFilePath =
-      LocalStorage().appDocumentsDir.path + "/envoy_backup.mla";
+      LocalStorage().appDocumentsDir.path + "/" + encryptedBackupFileName + "." + encryptedBackupFileExtension;
 
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
@@ -90,26 +91,30 @@ class EnvoySeed {
   }
 
   Future<void> store(String seed) async {
-    await saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
-    _platform.invokeMethod('data_changed');
+    if (Settings().syncToCloud) {
+      await saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
+      _platform.invokeMethod('data_changed');
+    }
+
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
-  void backupData({bool offline: false}) {
+  Future<void> backupData({bool cloud: true}) async {
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
-      offline = false;
+      cloud = false;
     }
 
-    get().then((seed) {
-      Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
-          Settings().envoyServerAddress, Tor().port,
-          path: offline ? encryptedBackupFilePath : null);
+    final seed = await get();
+    Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
+        Settings().envoyServerAddress, Tor().port,
+        path: encryptedBackupFilePath, cloud: cloud);
 
+    if (cloud) {
       LocalStorage()
           .prefs
           .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
-    });
+    }
   }
 
   Future<bool> restoreData({String? seed: null}) async {
@@ -130,14 +135,12 @@ class EnvoySeed {
     return DateTime.parse(string);
   }
 
-  void saveOfflineData() {
-    backupData(offline: true);
+  Future<void> saveOfflineData() async {
+    await backupData(cloud: false);
+    final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
-    var argsMap = <String, dynamic>{
-      "from": encryptedBackupFilePath,
-      "path": ""
-    };
-    _platform.invokeMethod('save_file', argsMap);
+    FileSaver.instance
+        .saveAs(encryptedBackupFileName, backupBytes, encryptedBackupFileExtension, MimeType.TEXT);
   }
 
   Future<String?> get() async {
@@ -172,16 +175,6 @@ class EnvoySeed {
     return seed!;
   }
 
-  List<int> getRandomBytes(int len) {
-    var rng = new Random.secure();
-    return List.generate(len, (_) => rng.nextInt(255));
-  }
-
-  List<int> xorBytes(List<int> first, List<int> second) {
-    assert(first.length == second.length);
-    return List.generate(first.length, (index) => first[index] ^ second[index]);
-  }
-
   Future<File> saveNonSecure(String data, String name) async {
     return LocalStorage().saveFile(name, data);
   }
@@ -192,16 +185,6 @@ class EnvoySeed {
     }
 
     return await LocalStorage().readFile(name);
-  }
-
-  List<int> convertFromString(String contents) {
-    // Dart doesn't do nice serialization so reverse .toString() manually
-    List<String> values = contents
-        .substring(1, contents.length - 1) // Get rid of enclosing []
-        .replaceAll(" ", "") // Get rid of spaces
-        .split(",");
-
-    return List.generate(values.length, (index) => int.parse(values[index]));
   }
 
   showSettingsMenu() {

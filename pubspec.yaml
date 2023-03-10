@@ -86,6 +86,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   rive: 0.10.2
   local_auth: ^2.1.6
+  file_saver: ^0.1.1
 
 dev_dependencies:
   test: any
