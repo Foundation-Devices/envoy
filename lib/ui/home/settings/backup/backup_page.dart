@@ -93,6 +93,7 @@ class _BackupPageState extends State<BackupPage> {
                     duration: Duration(milliseconds: 200),
                     height: !s.syncToCloud ? 0 : 80,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,6 +131,7 @@ class _BackupPageState extends State<BackupPage> {
                     duration: Duration(milliseconds: 200),
                     height: !s.syncToCloud ? 0 : 80,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
