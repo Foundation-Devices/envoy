@@ -30,7 +30,7 @@ class NotSupportedPlatform implements Exception {
 class Backup {
   static perform(SharedPreferences prefs, List<String> keysToBackUp,
       String seedWords, String serverUrl, int proxyPort,
-      {String? path}) {
+      {required String path, bool cloud: true}) {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {
@@ -60,12 +60,22 @@ class Backup {
     payload.ref.data = nativeData;
 
     var lib = NativeLibrary(load("backup_ffi"));
-    lib.backup_perform(
+
+    // Always do offline backup
+    lib.backup_perform_offline(
+      payload.ref,
+      seedWords.toNativeUtf8().cast<Char>(),
+      path.toNativeUtf8().cast(),
+    );
+
+    if (cloud) {
+      lib.backup_perform(
         payload.ref,
         seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(),
         proxyPort,
-        path != null ? path.toNativeUtf8().cast() : nullptr);
+      );
+    }
   }
 
   static bool restore(SharedPreferences prefs, String seedWords,

@@ -103,22 +103,9 @@ pub unsafe extern "C" fn backup_perform(
     seed_words: *const c_char,
     server_url: *const c_char,
     proxy_port: i32,
-    path: *const c_char,
 ) -> *mut JoinHandle<()> {
-    let mut backup_data: Vec<(&str, &str)> = vec![];
-
-    for i in 0..payload.keys_nr {
-        let key = CStr::from_ptr(*payload.data.offset(i as isize))
-            .to_str()
-            .unwrap();
-        let value = CStr::from_ptr(*payload.data.offset((i + 1) as isize))
-            .to_str()
-            .unwrap();
-        backup_data.push((key, value));
-    }
-
+    let backup_data = extract_backup_data(payload);
     let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), ptr::null_mut());
-
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
 
     let server_url = CStr::from_ptr(server_url).to_str().unwrap();
@@ -127,17 +114,6 @@ pub unsafe extern "C" fn backup_perform(
     let encrypted = encrypt_backup(backup_data, &password);
 
     let rt = RUNTIME.as_ref().unwrap();
-
-    if !path.is_null() {
-        // We are doing an offline backup, store the data at path
-        let path = CStr::from_ptr(path).to_str().unwrap();
-
-        let handle = rt.spawn(async move { tokio::fs::write(path, encrypted).await.unwrap() });
-
-        let handle_box = Box::new(handle);
-        return Box::into_raw(handle_box);
-    }
-
     let handle = rt.spawn(async move {
         let (tx, mut _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 
@@ -158,7 +134,40 @@ pub unsafe extern "C" fn backup_perform(
     Box::into_raw(handle_box)
 }
 
-unsafe fn get_static_secret(seed_words: &str) -> StaticSecret {
+unsafe fn extract_backup_data(payload: BackupPayload) -> Vec<(&'static str, &'static str)> {
+    let mut backup_data: Vec<(&str, &str)> = vec![];
+
+    for i in 0..payload.keys_nr {
+        let key = CStr::from_ptr(*payload.data.offset(i as isize))
+            .to_str()
+            .unwrap();
+        let value = CStr::from_ptr(*payload.data.offset((i + 1) as isize))
+            .to_str()
+            .unwrap();
+        backup_data.push((key, value));
+    }
+    backup_data
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn backup_perform_offline(
+    payload: BackupPayload,
+    seed_words: *const c_char,
+    path: *const c_char,
+) {
+    let backup_data = extract_backup_data(payload);
+    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+    let password = get_static_secret(seed_words);
+    let encrypted = encrypt_backup(backup_data, &password);
+
+    let rt = RUNTIME.as_ref().unwrap();
+
+    // We are doing an offline backup, store the data at path
+    let path = CStr::from_ptr(path).to_str().unwrap();
+    rt.block_on(async move { tokio::fs::write(path, encrypted).await.unwrap() });
+}
+
+fn get_static_secret(seed_words: &str) -> StaticSecret {
     let mnemonic = Mnemonic::parse(seed_words).unwrap();
     let entropy = mnemonic.to_entropy_array().0;
     let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();

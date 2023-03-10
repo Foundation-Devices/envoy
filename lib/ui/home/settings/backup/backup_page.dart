@@ -74,6 +74,8 @@ class _BackupPageState extends State<BackupPage> {
                                     .push(MaterialPageRoute(builder: (context) {
                                   return MagicSetupGenerate();
                                 }));
+
+                                setState(() {});
                               },
                             ));
                       }
@@ -85,39 +87,37 @@ class _BackupPageState extends State<BackupPage> {
                   height: !s.syncToCloud ? 0 : 16,
                   child: Divider(),
                 ),
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  height: !s.syncToCloud ? 0 : 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    height: !s.syncToCloud ? 0 : 80,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SettingText(S()
                                 .manual_toggle_on_seed_backedup_android_wallet_data),
                             SettingText(
-                              lastEnvoyServerBackup == null
-                                  ? S()
-                                      .manual_toggle_on_seed_not_backedup_android_pending_backup
-                                  : timeago.format(lastEnvoyServerBackup) +
-                                      " to Foundation servers",
-                              color: EnvoyColors.grey,
+                              S().manual_toggle_on_seed_backedup_iOS_backup_now,
+                              color: EnvoyColors.teal,
+                              onTap: () {
+                                EnvoySeed().backupData();
+                              },
                             ),
                           ],
                         ),
-                      ),
-                      SettingText(
-                        S().manual_toggle_on_seed_backedup_iOS_backup_now,
-                        color: EnvoyColors.teal,
-                        onTap: () {
-                          EnvoySeed().backupData();
-                        },
-                      ),
-                    ],
+                        SettingText(
+                          lastEnvoyServerBackup == null
+                              ? S()
+                                  .manual_toggle_on_seed_not_backedup_android_pending_backup
+                              : "${timeago.format(lastEnvoyServerBackup)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup).substring(1).toLowerCase()} to Foundation server",
+                          color: EnvoyColors.grey,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 AnimatedContainer(
@@ -125,44 +125,43 @@ class _BackupPageState extends State<BackupPage> {
                   height: !s.syncToCloud ? 0 : 16,
                   child: Divider(),
                 ),
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  height: !s.syncToCloud ? 0 : 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    height: !s.syncToCloud ? 0 : 80,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SettingText(S()
                                 .manual_toggle_on_seed_backedup_android_wallet_seed),
-                            FutureBuilder<DateTime?>(
-                                future: lastCloudBackup,
-                                builder: (context, snapshot) {
-                                  return SettingText(
-                                      Platform.isIOS
-                                          ? S()
-                                              .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
-                                          : snapshot.hasData
-                                              ? S()
-                                                  .manual_toggle_on_seed_backedup_android_stored
-                                              : S()
-                                                  .manual_toggle_on_seed_not_backedup_android_seed_pending_backup,
-                                      color: EnvoyColors.grey);
-                                }),
+                            if (Platform.isAndroid)
+                              SettingText(
+                                  S().manual_toggle_on_seed_not_backedup_android_open_settings,
+                                  color: EnvoyColors.teal, onTap: () {
+                                EnvoySeed().showSettingsMenu();
+                              })
                           ],
                         ),
-                      ),
-                      if (Platform.isAndroid)
-                        SettingText(
-                            S().manual_toggle_on_seed_not_backedup_android_open_settings,
-                            color: EnvoyColors.teal, onTap: () {
-                          EnvoySeed().showSettingsMenu();
-                        }),
-                    ],
+                        FutureBuilder<DateTime?>(
+                            future: lastCloudBackup,
+                            builder: (context, snapshot) {
+                              return SettingText(
+                                  Platform.isIOS
+                                      ? S()
+                                          .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                      : snapshot.hasData
+                                          ? S()
+                                              .manual_toggle_on_seed_backedup_android_stored
+                                          : S()
+                                              .manual_toggle_on_seed_not_backedup_android_seed_pending_backup,
+                                  color: EnvoyColors.grey);
+                            }),
+                      ],
+                    ),
                   ),
                 ),
                 Divider(),
