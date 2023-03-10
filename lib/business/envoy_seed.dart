@@ -31,9 +31,10 @@ class EnvoySeed {
 
   static const _platform = MethodChannel('envoy');
 
-  static String encryptedBackupFileName = "envoy_backup.mla";
+  static String encryptedBackupFileExtension = "mla";
+  static String encryptedBackupFileName = "envoy_backup";
   static String encryptedBackupFilePath =
-      LocalStorage().appDocumentsDir.path + "/" + encryptedBackupFileName;
+      LocalStorage().appDocumentsDir.path + "/" + encryptedBackupFileName + "." + encryptedBackupFileExtension;
 
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
@@ -139,7 +140,7 @@ class EnvoySeed {
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
     FileSaver.instance
-        .saveAs(encryptedBackupFileName, backupBytes, "", MimeType.TEXT);
+        .saveAs(encryptedBackupFileName, backupBytes, encryptedBackupFileExtension, MimeType.TEXT);
   }
 
   Future<String?> get() async {
