@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/expert/manual_setup.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
@@ -27,17 +28,18 @@ class SplashScreen extends StatelessWidget {
             text: S().splash_screen_subheading)
       ],
       buttons: [
-        TextButton(
-            child: Text(S().splash_screen_CTA3,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: EnvoyColors.teal, fontWeight: FontWeight.w600)),
-            onPressed: () {
+        OnboardingButton(
+            label: S().splash_screen_CTA3,
+            type: EnvoyButtonTypes.TERTIARY,
+            textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: EnvoyColors.teal, fontWeight: FontWeight.w600),
+            onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleImportPpIntroPage();
               }));
             }),
         OnboardingButton(
-            light: true,
+            type: EnvoyButtonTypes.SECONDARY,
             label: S().splash_screen_CTA2,
             textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: EnvoyColors.teal, fontWeight: FontWeight.w600),

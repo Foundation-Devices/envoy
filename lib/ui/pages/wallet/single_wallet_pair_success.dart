@@ -25,7 +25,6 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            light: true,
             label: S().single_envoy_wallet_pair_success_cta1,
             onTap: () {
               OnboardingPage.goHome(context);

@@ -161,7 +161,6 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                         widget.confirmationStep
                     ? S().manual_backups_export_flow_modal_4_4_CTA
                     : S().wallet_security_modal_4_4_CTA,
-                light: false,
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
                   if (stepHeadings.length == currentPage + 1) {

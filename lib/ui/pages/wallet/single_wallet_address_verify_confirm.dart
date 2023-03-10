@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -24,7 +25,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
           onTap: () {
             launchUrl(Uri.parse("mailto:hello@foundationdevices.com"));
           },
-          light: true,
+          type: EnvoyButtonTypes.SECONDARY,
         ),
         OnboardingButton(
             label: S().single_envoy_wallet_address_verify_confirm_cta,

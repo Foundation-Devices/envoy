@@ -86,7 +86,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                       children: [
                         EnvoyButton(
                           S().export_seed_modal_12_words_CTA2,
-                          light: true,
+                          type: EnvoyButtonTypes.SECONDARY,
                           onTap: () {
                             Navigator.of(context).pop();
                           },
@@ -95,7 +95,6 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                           padding: const EdgeInsets.only(top: 10.0),
                           child: EnvoyButton(
                             S().export_seed_modal_12_words_CTA1,
-                            light: false,
                             onTap: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();

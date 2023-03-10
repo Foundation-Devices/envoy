@@ -113,7 +113,6 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                       padding: EdgeInsets.symmetric(horizontal: 24),
                       child: OnboardingButton(
                           label: S().manual_setup_import_seed_12_words_CTA,
-                          light: false,
                           onTap: () {
                             EnvoySeed()
                                 .create(currentWords, passphrase: passPhrase)
@@ -335,7 +334,6 @@ class _SeedPassPhraseEntryState extends State<SeedPassPhraseEntry> {
           Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
             S().recovery_scenario_ios_CTA,
-            light: false,
             borderRadius: BorderRadius.all(Radius.circular(8)),
             onTap: () {
               if (!verify && _textEditingController.text.isNotEmpty) {

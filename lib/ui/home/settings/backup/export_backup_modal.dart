@@ -67,7 +67,7 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
               children: [
                 EnvoyButton(
                   S().export_backup_send_CTA2,
-                  light: true,
+                  type: EnvoyButtonTypes.SECONDARY,
                   onTap: () {
                     Navigator.of(context).pop();
                   },
@@ -76,7 +76,6 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     S().export_backup_send_CTA1,
-                    light: false,
                     onTap: () {
                       Navigator.of(context).pop();
                       EnvoySeed().saveOfflineData();

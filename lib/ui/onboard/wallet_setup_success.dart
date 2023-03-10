@@ -42,7 +42,6 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                   S().wallet_setup_success_subheading,
                 ),
                 OnboardingButton(
-                    light: false,
                     label: S().wallet_setup_success_CTA,
                     onTap: () {
                       Navigator.of(context).popUntil(ModalRoute.withName("/"));

@@ -69,7 +69,6 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     S().component_continue,
-                    light: false,
                     onTap: () {
                       Navigator.of(context).pop();
                       showEnvoyDialog(
