@@ -73,7 +73,6 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   }
 
   void showAuthFailed() {
-    final LocalAuthentication auth = LocalAuthentication();
     showEnvoyDialog(
         context: context,
         dialog: EnvoyDialog(
