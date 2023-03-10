@@ -136,7 +136,9 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                                       return StorageSetupPage();
                                     }));
                                   } else {
-                                    // TODO: Show a dialog of failure
+                                    showInvalidSeedDialog(
+                                      context: context,
+                                    );
                                   }
                                 });
                               }),
@@ -242,6 +244,61 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
         ),
         Padding(padding: EdgeInsets.all(8)),
       ],
+    );
+  }
+
+  void showInvalidSeedDialog({required BuildContext context}) {
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      builder: Builder(builder: (context) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          height: 300,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Align(
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.close)),
+                        alignment: Alignment.topRight),
+                  ),
+                  Icon(EnvoyIcons.exclamation_warning,
+                      color: EnvoyColors.darkCopper, size: 58),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 38),
+                    child: Text(
+                      S().manual_setup_import_seed_12_words_fail_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: OnboardingButton(
+                    label: S().manual_setup_import_seed_12_words_fail_modal_CTA,
+                    onTap: () async {
+                      Navigator.pop(context);
+                    }),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
