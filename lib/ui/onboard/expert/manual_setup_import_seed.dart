@@ -254,36 +254,48 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
       builder: Builder(builder: (context) {
         return Container(
           width: MediaQuery.of(context).size.width * 0.8,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(padding: EdgeInsets.all(24)),
-                Column(
-                  children: [
-                    Icon(EnvoyIcons.exclamation_warning,
-                        color: EnvoyColors.darkCopper, size: 56),
-                    Padding(padding: EdgeInsets.all(12)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        S().manual_setup_import_seed_12_words_fail_modal_subheading,
-                        textAlign: TextAlign.center,
-                      ),
+          height: 300,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Align(
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.close)),
+                        alignment: Alignment.topRight),
+                  ),
+                  Icon(EnvoyIcons.exclamation_warning,
+                      color: EnvoyColors.darkCopper, size: 58),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 38),
+                    child: Text(
+                      S().manual_setup_import_seed_12_words_fail_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                  ],
-                ),
-                OnboardingButton(
+                  ),
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: OnboardingButton(
                     label: S().manual_setup_import_seed_12_words_fail_modal_CTA,
                     onTap: () async {
                       Navigator.pop(context);
                     }),
-                Padding(padding: EdgeInsets.all(12)),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       }),
