@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/onboard/expert/widgets/wordlist.dart';
+import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 

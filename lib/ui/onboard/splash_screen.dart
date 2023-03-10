@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/onboard/expert/manual_setup.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';

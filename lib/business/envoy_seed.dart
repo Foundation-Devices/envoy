@@ -129,6 +129,14 @@ class EnvoySeed {
         LocalStorage().prefs, seed!, Settings().envoyServerAddress, Tor().port);
   }
 
+  Future<bool> restoreOfflineData(String filePath, {String? seed: null}) async {
+    if (seed == null) {
+      seed = await get();
+    }
+
+    return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+  }
+
   DateTime? getLastBackupTime() {
     final string = LocalStorage().prefs.getString(LAST_BACKUP_PREFS);
     if (string == null) {

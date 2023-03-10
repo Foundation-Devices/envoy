@@ -10,17 +10,19 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 
-import '../wallet_setup_success.dart';
-
-class StorageSetupPage extends StatefulWidget {
-  const StorageSetupPage({Key? key}) : super(key: key);
+class ManualSetupCreateAndStoreBackup extends StatefulWidget {
+  const ManualSetupCreateAndStoreBackup({Key? key}) : super(key: key);
 
   @override
-  State<StorageSetupPage> createState() => _StorageSetupPageState();
+  State<ManualSetupCreateAndStoreBackup> createState() =>
+      _ManualSetupCreateAndStoreBackupState();
 }
 
-class _StorageSetupPageState extends State<StorageSetupPage> {
+class _ManualSetupCreateAndStoreBackupState
+    extends State<ManualSetupCreateAndStoreBackup> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
@@ -75,7 +77,8 @@ class _StorageSetupPageState extends State<StorageSetupPage> {
                         type: EnvoyButtonTypes.primary,
                         label: S().manual_setup_create_and_store_backup_CTA,
                         onTap: () {
-                          showVerificationFailedDialog(context);
+                          showEnvoyDialog(
+                              context: context, dialog: ExportBackupModal());
                         }))
               ],
             ),

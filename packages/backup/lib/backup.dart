@@ -78,12 +78,17 @@ class Backup {
     }
   }
 
-  static bool restore(SharedPreferences prefs, String seedWords,
-      String serverUrl, int proxyPort) {
+  static bool restoreOffline(
+      SharedPreferences prefs, String seedWords, String filePath) {
     var lib = NativeLibrary(load("backup_ffi"));
-    var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
-        serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
+    var payload = lib.backup_get_offline(seedWords.toNativeUtf8().cast<Char>(),
+        filePath.toNativeUtf8().cast<Char>());
 
+    return _restoreFromPayload(payload, prefs);
+  }
+
+  static bool _restoreFromPayload(
+      BackupPayload payload, SharedPreferences prefs) {
     // TODO: throw an exception from Rust
     if (payload.keys_nr == 0) {
       return false;
@@ -102,5 +107,14 @@ class Backup {
     });
 
     return true;
+  }
+
+  static bool restore(SharedPreferences prefs, String seedWords,
+      String serverUrl, int proxyPort) {
+    var lib = NativeLibrary(load("backup_ffi"));
+    var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
+        serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
+
+    return _restoreFromPayload(payload, prefs);
   }
 }
