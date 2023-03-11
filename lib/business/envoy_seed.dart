@@ -13,7 +13,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
-import 'package:file_saver/file_saver.dart';
+//import 'package:file_saver/file_saver.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -150,8 +150,8 @@ class EnvoySeed {
     await backupData(cloud: false);
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
-    FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
-        encryptedBackupFileExtension, MimeType.TEXT);
+    // FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
+    //     encryptedBackupFileExtension, MimeType.TEXT);
   }
 
   Future<String?> get() async {
