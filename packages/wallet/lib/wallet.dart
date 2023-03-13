@@ -266,6 +266,10 @@ class Wallet {
       defaultValue: false) // Migration from time when all the Wallets were cold
   final bool hot;
 
+  @JsonKey(
+      defaultValue: false) // Migration from time when all the Wallets were cold
+  final bool hasPassphrase;
+
   List<Transaction> transactions = [];
   int balance = 0;
 
@@ -333,6 +337,7 @@ class Wallet {
   Wallet(
       this.name, this.network, this.externalDescriptor, this.internalDescriptor,
       {this.hot: false,
+      this.hasPassphrase: false,
       this.publicExternalDescriptor: null,
       this.publicInternalDescriptor: null});
 
@@ -358,6 +363,7 @@ class Wallet {
   Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
       this.internalDescriptor, this._self,
       {this.hot: false,
+      this.hasPassphrase: false,
       this.publicExternalDescriptor: null,
       this.publicInternalDescriptor: null,
       required DynamicLibrary lib}) {
@@ -654,6 +660,7 @@ class Wallet {
     return Wallet.fromPointer(name, network, externalDescriptor,
         internalDescriptor, wallet.bkd_wallet_ptr.cast(),
         hot: privateKey,
+        hasPassphrase: passphrase != null,
         publicExternalDescriptor: publicExternalDescriptor,
         publicInternalDescriptor: publicInternalDescriptor,
         lib: lib);

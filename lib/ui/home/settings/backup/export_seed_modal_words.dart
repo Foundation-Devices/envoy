@@ -8,8 +8,11 @@ import 'package:envoy/generated/l10n.dart';
 
 class ExportSeedModalWords extends StatefulWidget {
   final List<String> seed;
+  final bool hasPassphrase;
 
-  const ExportSeedModalWords({Key? key, required this.seed}) : super(key: key);
+  const ExportSeedModalWords(
+      {Key? key, required this.seed, required this.hasPassphrase})
+      : super(key: key);
 
   @override
   State<ExportSeedModalWords> createState() => _ExportSeedModalWordsState();
@@ -80,6 +83,9 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                       ],
                     ),
                   ),
+                  if (!widget.hasPassphrase)
+                    Text("You set up a passphrase to protect this seed.",
+                        textAlign: TextAlign.center),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 28),
                     child: Column(

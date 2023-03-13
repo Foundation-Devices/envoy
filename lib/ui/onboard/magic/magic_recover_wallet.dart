@@ -14,6 +14,8 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 
 class MagicRecoverWallet extends StatefulWidget {
   const MagicRecoverWallet({Key? key}) : super(key: key);
@@ -274,7 +276,30 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return ScannerPage(
                 ScannerType.seed,
-                callback: (seed) {
+                callback: (seed) async {
+                  String? passphrase = null;
+                  List<String> seedList = seed.split(" ");
+
+                  if (seedList.length == 13 || seedList.length == 25) {
+                    seedList.removeLast();
+                    await showEnvoyDialog(
+                            dialog: Container(
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                height: 330,
+                                child: SeedPassphraseEntry(
+                                    onPassphraseEntered: (value) {
+                                  passphrase = value;
+                                  Navigator.pop(context);
+                                })),
+                            context: context)
+                        .then((value) {
+                      setState(() {
+                        passphrase = value;
+                      });
+                    });
+                  }
+
+                  EnvoySeed().create(seedList, passphrase: passphrase);
                   EnvoySeed().restoreData(seed: seed).then((success) {
                     setState(() {
                       if (success) {

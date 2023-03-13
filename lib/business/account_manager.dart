@@ -348,4 +348,21 @@ class AccountManager extends ChangeNotifier {
     accounts.insert(newIndex, movedAccount);
     storeAccounts();
   }
+
+  // There is only one hot wallet for now (mainnet/testnet pair)
+  Account? getHotWalletAccount({testnet: false}) {
+    for (var account in accounts) {
+      if (account.wallet.hot) {
+        if (account.wallet.network == Network.Testnet && testnet) {
+          return account;
+        }
+
+        if (account.wallet.network == Network.Mainnet && !testnet) {
+          return account;
+        }
+      }
+    }
+
+    return null;
+  }
 }
