@@ -95,13 +95,12 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      LocalStorage().readSecure("useLocalAuth").then((value) {
-        if (value == "true") {
-          initiateAuth();
-        } else {
-          Navigator.pushReplacementNamed(context, '/');
-        }
-      });
+      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
+      if (value == true) {
+        initiateAuth();
+      } else {
+        Navigator.pushReplacementNamed(context, '/');
+      }
     });
   }
 }
