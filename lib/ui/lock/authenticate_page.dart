@@ -85,20 +85,45 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
 
   void showAuthFailed() {
     showEnvoyDialog(
+        dismissible: false,
         context: context,
-        dialog: EnvoyDialog(
-          title: "Authentication Failed",
-          content: Text("Please try Again"),
-          actions: [
-            EnvoyButton(
-              "Try Again",
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              onTap: () async {
-                Navigator.pop(context);
-                initiateAuth();
-              },
-            ),
-          ],
+        dialog: Container(
+          height: 320,
+          width: MediaQuery.of(context).size.width * .8,
+          padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+          constraints: BoxConstraints(
+            minHeight: 270,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: EnvoyColors.darkTeal,
+                size: 84,
+              ),
+              ListTile(
+                title: Text("Authentication Failed",
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center),
+                subtitle: Text("Please try again",
+                    style: Theme.of(context).textTheme.labelMedium,
+                    textAlign: TextAlign.center),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: EnvoyButton(
+                  "Try Again",
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    initiateAuth();
+                  },
+                ),
+              ),
+            ],
+          ),
         ));
   }
 

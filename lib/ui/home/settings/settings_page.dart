@@ -114,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SettingText("Use Biometrics to Unlock"),
+                        SettingText("Require Biometrics to Unlock"),
                         NeumorphicSwitch(
                             height: 35,
                             value: _useLocalAuth,
