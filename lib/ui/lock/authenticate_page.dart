@@ -6,12 +6,14 @@ import 'dart:io';
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({Key? key}) : super(key: key);
@@ -68,6 +70,15 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             title: "Biometrics Disabled",
             dismissible: false,
             content: Text("Please Enable Biometrics to Unlock Envoy"),
+            actions: [
+              EnvoyButton(
+                "Open Settings",
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                onTap: () async {
+                  openAppSettings();
+                },
+              ),
+            ],
           ));
     }
   }
