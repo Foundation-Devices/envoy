@@ -70,10 +70,14 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                     future: EnvoySeed().get(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return QrImage(
-                            data: snapshot.data == null
-                                ? "NULL"
-                                : snapshot.data!);
+                        String seed = snapshot.data!;
+
+                        // Add a note to query the user for passphrase on other device
+                        if (EnvoySeed().getWallet()!.hasPassphrase) {
+                          seed = seed + (" passphrase");
+                        }
+
+                        return QrImage(data: seed);
                       } else {
                         return SizedBox.shrink();
                       }
@@ -99,10 +103,14 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                   onTap: () {
                     EnvoySeed().get().then((value) async {
                       enableSecureScreen(true);
+                      List<String> seed = value!.split(" ");
+
                       await showEnvoyDialog(
                           context: context,
                           dialog: ExportSeedModalWords(
-                            seed: value!.split(" "),
+                            seed: seed,
+                            hasPassphrase:
+                                EnvoySeed().getWallet()!.hasPassphrase,
                           ));
                       enableSecureScreen(false);
                     });

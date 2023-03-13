@@ -177,6 +177,10 @@ class EnvoySeed {
     return null;
   }
 
+  Wallet? getWallet() {
+    return AccountManager().getHotWalletAccount(testnet: false)?.wallet;
+  }
+
   Future<String?> getSecure() async {
     if (!await LocalStorage().containsSecure(SEED_KEY)) {
       return null;
