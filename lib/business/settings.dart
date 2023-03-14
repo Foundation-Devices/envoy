@@ -9,9 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
-
 import 'dart:convert';
-
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 
@@ -138,12 +136,13 @@ class Settings extends ChangeNotifier {
   String nguServerAddress = "https://ngu.foundationdevices.com";
 
   @JsonKey(defaultValue: false)
-  bool _syncToCloud = false;
+  bool syncToCloudSetting = false;
 
-  bool get syncToCloud => _syncToCloud;
+  @JsonKey(ignore: true)
+  bool get syncToCloud => syncToCloudSetting;
 
   set syncToCloud(bool syncToCloud) {
-    _syncToCloud = syncToCloud;
+    syncToCloudSetting = syncToCloud;
   }
 
   static final Settings _instance = Settings._internal();

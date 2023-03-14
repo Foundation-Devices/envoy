@@ -23,7 +23,7 @@ Video _$VideoFromJson(Map<String, dynamic> json) => Video(
     );
 
 Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
-      'type': _$VideoTypeEnumMap[instance.type],
+      'type': _$VideoTypeEnumMap[instance.type]!,
       'title': instance.title,
       'description': instance.description,
       'thumbnail': instance.thumbnail,

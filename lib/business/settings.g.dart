@@ -14,16 +14,18 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..usingDefaultElectrumServer =
       json['usingDefaultElectrumServer'] as bool? ?? true
   ..usingTor = json['usingTor'] as bool
-  ..nguServerAddress = json['nguServerAddress'] as String;
+  ..nguServerAddress = json['nguServerAddress'] as String
+  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
-      'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit],
+      'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
       'selectedFiat': instance.selectedFiat,
-      'environment': _$EnvironmentEnumMap[instance.environment],
+      'environment': _$EnvironmentEnumMap[instance.environment]!,
       'selectedElectrumAddress': instance.selectedElectrumAddress,
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,
       'usingTor': instance.usingTor,
       'nguServerAddress': instance.nguServerAddress,
+      'syncToCloudSetting': instance.syncToCloudSetting,
     };
 
 const _$DisplayUnitEnumMap = {
