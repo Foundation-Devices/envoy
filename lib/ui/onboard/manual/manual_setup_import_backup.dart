@@ -42,7 +42,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                 Flexible(
                     child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/fw_intro_png.png"),
+                  child: Image.asset("assets/fw_intro.png"),
                 )),
                 Flexible(
                     child: Container(

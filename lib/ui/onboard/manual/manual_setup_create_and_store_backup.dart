@@ -10,7 +10,6 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 
 class ManualSetupCreateAndStoreBackup extends StatefulWidget {
@@ -77,8 +76,7 @@ class _ManualSetupCreateAndStoreBackupState
                         type: EnvoyButtonTypes.primary,
                         label: S().manual_setup_create_and_store_backup_CTA,
                         onTap: () {
-                          showEnvoyDialog(
-                              context: context, dialog: ExportBackupModal());
+                          showWarningModal(context);
                         }))
               ],
             ),
@@ -88,7 +86,7 @@ class _ManualSetupCreateAndStoreBackupState
     ));
   }
 
-  void showVerificationFailedDialog(BuildContext context) {
+  void showWarningModal(BuildContext context) {
     showEnvoyDialog(
       context: context,
       dismissible: false,
@@ -98,11 +96,12 @@ class _ManualSetupCreateAndStoreBackupState
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(padding: EdgeInsets.all(8)),
                 Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.info_outline,
                         color: EnvoyColors.darkTeal, size: 68),
@@ -121,8 +120,8 @@ class _ManualSetupCreateAndStoreBackupState
                 OnboardingButton(
                     label: S().manual_setup_create_and_store_backup_modal_CTA,
                     onTap: () async {
-                      EnvoySeed().saveOfflineData();
                       Navigator.pop(context);
+                      await EnvoySeed().saveOfflineData();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
                         return WalletSetupSuccess();

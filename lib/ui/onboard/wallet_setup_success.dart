@@ -40,6 +40,7 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                 ),
                 Text(
                   S().wallet_setup_success_subheading,
+                  textAlign: TextAlign.center,
                 ),
                 OnboardingButton(
                     label: S().wallet_setup_success_CTA,
