@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:file_saver/file_saver.dart';
@@ -41,13 +40,13 @@ class EnvoySeed {
 
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
-    // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
-    // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
-    // ScvServer.SCV_CHALLENGE_PREFS,
-    Fees.FEE_RATE_PREFS,
     AccountManager.ACCOUNTS_PREFS,
     Notifications.NOTIFICATIONS_PREFS,
     Devices.DEVICES_PREFS,
+    // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
+    // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
+    // ScvServer.SCV_CHALLENGE_PREFS,
+    // Fees.FEE_RATE_PREFS,
   ];
 
   Future generate() async {
@@ -125,8 +124,11 @@ class EnvoySeed {
       seed = await get();
     }
 
-    return Backup.restore(
+    final ret = Backup.restore(
         LocalStorage().prefs, seed!, Settings().envoyServerAddress, Tor().port);
+
+    _restoreSingletons();
+    return ret;
   }
 
   Future<bool> restoreOfflineData(String filePath, {String? seed: null}) async {
@@ -134,7 +136,17 @@ class EnvoySeed {
       seed = await get();
     }
 
-    return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+    final ret = Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+
+    _restoreSingletons();
+    return ret;
+  }
+
+  _restoreSingletons() {
+    Settings.restore();
+    AccountManager.init();
+    Notifications.init();
+    Devices.init();
   }
 
   DateTime? getLastBackupTime() {
