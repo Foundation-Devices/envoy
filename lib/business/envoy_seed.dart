@@ -159,11 +159,15 @@ class EnvoySeed {
     String? nonSecure = await getNonSecure();
 
     if (secure != null && nonSecure != null) {
+      // We ignore the old nonSecure seed if we no longer sync to cloud
+      if (!Settings().syncToCloud) {
+        return secure;
+      }
+
+      // If we're syncing then the two being different is something to be handled
       if (secure != nonSecure) {
         throw Exception("Different seed in secure and non-secure!");
       }
-
-      return secure;
     }
 
     if (secure != null) {

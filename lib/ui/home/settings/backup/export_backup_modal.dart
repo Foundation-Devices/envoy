@@ -8,7 +8,9 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
 
 class ExportBackupModal extends StatefulWidget {
-  const ExportBackupModal({Key? key}) : super(key: key);
+  final Function? onExport;
+
+  const ExportBackupModal({Key? key, this.onExport: null}) : super(key: key);
 
   @override
   State<ExportBackupModal> createState() => _ExportBackupModalState();
@@ -76,9 +78,12 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     S().export_backup_send_CTA1,
-                    onTap: () {
+                    onTap: () async {
                       Navigator.of(context).pop();
-                      EnvoySeed().saveOfflineData();
+                      await EnvoySeed().saveOfflineData();
+                      if (widget.onExport != null) {
+                        widget.onExport!();
+                      }
                     },
                   ),
                 ),
