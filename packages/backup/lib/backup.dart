@@ -94,12 +94,13 @@ class Backup {
       return false;
     }
 
+    var data = payload.data;
+
     Map<String, String> backupData = {};
-    for (var i = 0; i < payload.keys_nr; i++) {
-      var key = payload.data.elementAt(i).cast<Utf8>().toDartString();
-      var value = payload.data.elementAt(i + 1).cast<Utf8>().toDartString();
+    for (var i = 0; i < payload.keys_nr * 2; i += 2) {
+      var key = data.elementAt(i).value.cast<Utf8>().toDartString();
+      var value = data.elementAt(i + 1).value.cast<Utf8>().toDartString();
       backupData[key] = value;
-      i += 2;
     }
 
     backupData.forEach((key, value) {
