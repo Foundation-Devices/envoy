@@ -21,7 +21,7 @@ Map<String, dynamic> _$EnvoyNotificationToJson(EnvoyNotification instance) =>
     <String, dynamic>{
       'title': instance.title,
       'date': instance.date.toIso8601String(),
-      'type': _$EnvoyNotificationTypeEnumMap[instance.type],
+      'type': _$EnvoyNotificationTypeEnumMap[instance.type]!,
       'body': instance.body,
       'id': instance.id,
       'amount': instance.amount,

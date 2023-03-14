@@ -19,7 +19,7 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'name': instance.name,
-      'type': _$DeviceTypeEnumMap[instance.type],
+      'type': _$DeviceTypeEnumMap[instance.type]!,
       'serial': instance.serial,
       'datePaired': instance.datePaired.toIso8601String(),
       'firmwareVersion': instance.firmwareVersion,

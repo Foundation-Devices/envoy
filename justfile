@@ -51,7 +51,10 @@ verify-sha sha:
     echo "ERROR: Hashes DO NOT match!"
   fi
 
+# https://github.com/dart-lang/build/issues/2835#issuecomment-1047849076
 generate:
+    rm pubspec.lock && \
+    flutter packages pub get && \
     flutter pub run build_runner build --delete-conflicting-outputs
 
 bump:
