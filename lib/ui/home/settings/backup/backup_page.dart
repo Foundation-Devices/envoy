@@ -57,6 +57,7 @@ class _BackupPageState extends State<BackupPage> {
                       if (!enabled) {
                         setState(() {
                           s.syncToCloud = enabled;
+                          s.store();
                         });
                       }
 
@@ -68,6 +69,7 @@ class _BackupPageState extends State<BackupPage> {
                               onLastStep: () {
                                 setState(() {
                                   s.syncToCloud = enabled;
+                                  s.store();
                                 });
 
                                 Navigator.of(context)
