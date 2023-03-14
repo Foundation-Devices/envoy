@@ -6,12 +6,14 @@ import 'dart:io';
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({Key? key}) : super(key: key);
@@ -68,26 +70,60 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             title: "Biometrics Disabled",
             dismissible: false,
             content: Text("Please Enable Biometrics to Unlock Envoy"),
+            actions: [
+              EnvoyButton(
+                "Open Settings",
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                onTap: () async {
+                  openAppSettings();
+                },
+              ),
+            ],
           ));
     }
   }
 
   void showAuthFailed() {
     showEnvoyDialog(
+        dismissible: false,
         context: context,
-        dialog: EnvoyDialog(
-          title: "Authentication Failed",
-          content: Text("Please try Again"),
-          actions: [
-            EnvoyButton(
-              "Try Again",
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              onTap: () async {
-                Navigator.pop(context);
-                initiateAuth();
-              },
-            ),
-          ],
+        dialog: Container(
+          height: 320,
+          width: MediaQuery.of(context).size.width * .8,
+          padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+          constraints: BoxConstraints(
+            minHeight: 270,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: EnvoyColors.darkTeal,
+                size: 84,
+              ),
+              ListTile(
+                title: Text("Authentication Failed",
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center),
+                subtitle: Text("Please try again",
+                    style: Theme.of(context).textTheme.labelMedium,
+                    textAlign: TextAlign.center),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: EnvoyButton(
+                  "Try Again",
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    initiateAuth();
+                  },
+                ),
+              ),
+            ],
+          ),
         ));
   }
 
@@ -95,13 +131,12 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      LocalStorage().readSecure("useLocalAuth").then((value) {
-        if (value == "true") {
-          initiateAuth();
-        } else {
-          Navigator.pushReplacementNamed(context, '/');
-        }
-      });
+      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
+      if (value == true) {
+        initiateAuth();
+      } else {
+        Navigator.pushReplacementNamed(context, '/');
+      }
     });
   }
 }
