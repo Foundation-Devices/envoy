@@ -8,6 +8,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:flutter/services.dart';
+import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -97,14 +98,26 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
             },
           ),
         ),
-        Padding(padding: EdgeInsets.all(14)),
         Expanded(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(
-                color: EnvoyColors.darkTeal,
+              Container(
+                width: 240,
+                height: 240,
+                child: RiveAnimation.asset(
+                  "assets/envoy_loader.riv",
+                  fit: BoxFit.contain,
+                  onInit: (artboard) {
+                    var _stateMachineController =
+                        StateMachineController.fromArtboard(artboard, 'STM');
+                    artboard.addController(_stateMachineController!);
+                    _stateMachineController
+                        .findInput<bool>("indeterminate")
+                        ?.change(true);
+                  },
+                ),
               ),
               Padding(padding: EdgeInsets.all(14)),
               Text("Generating Seed",

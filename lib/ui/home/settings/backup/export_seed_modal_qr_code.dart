@@ -44,7 +44,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
         );
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
+      width: MediaQuery.of(context).size.width * 0.80,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -100,6 +100,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
               children: [
                 EnvoyButton(
                   S().export_seed_modal_QR_code_CTA2,
+                  type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     EnvoySeed().get().then((value) async {
                       enableSecureScreen(true);

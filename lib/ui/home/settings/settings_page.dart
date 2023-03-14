@@ -114,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SettingText("Use Biometrics to Unlock"),
+                        SettingText("Require Biometrics to Unlock"),
                         NeumorphicSwitch(
                             height: 35,
                             value: _useLocalAuth,
@@ -132,8 +132,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                     localizedReason:
                                         "Authenticate to Enable Biometrics");
                                 if (authSuccess) {
-                                  await LocalStorage().saveSecure(
-                                      "useLocalAuth", enabled.toString());
+                                  LocalStorage()
+                                      .prefs
+                                      .setBool("useLocalAuth", enabled);
                                   setState(() {
                                     _useLocalAuth = enabled;
                                   });
@@ -178,10 +179,12 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    LocalStorage().readSecure("useLocalAuth").then((value) {
-      setState(() {
-        _useLocalAuth = value == "true";
-      });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
+      if (value != null)
+        setState(() {
+          _useLocalAuth = value;
+        });
     });
   }
 }
