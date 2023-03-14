@@ -21,13 +21,11 @@ class SettingToggle extends StatefulWidget {
 }
 
 class _SettingToggleState extends State<SettingToggle> {
-  late bool _toggleValue;
   Timer? _timer;
 
   @override
   initState() {
     super.initState();
-    _toggleValue = widget.getter();
   }
 
   @override
@@ -42,14 +40,18 @@ class _SettingToggleState extends State<SettingToggle> {
             activeTrackColor: EnvoyColors.darkTeal,
             disableDepth: true),
         onChanged: (enabled) {
-          setState(() {
-            _toggleValue = enabled;
-          });
-          if (_timer != null) _timer!.cancel();
-          _timer = Timer(Duration(seconds: widget.delay), () {
-            widget.setter(_toggleValue);
-            _toggleValue = widget.getter();
-          });
+          if (widget.delay > 0) {
+            _timer?.cancel();
+            _timer = Timer(Duration(seconds: widget.delay), () {
+              setState(() {
+                widget.setter(enabled);
+              });
+            });
+          } else {
+            setState(() {
+              widget.setter(enabled);
+            });
+          }
         });
   }
 }
