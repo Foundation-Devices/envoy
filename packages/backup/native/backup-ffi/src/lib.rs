@@ -8,6 +8,7 @@ extern crate core;
 extern crate log;
 
 use bdk::bitcoin;
+use bdk::bitcoin::hashes::hex::FromHex;
 use bdk::bitcoin::hashes::hex::ToHex;
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
@@ -137,7 +138,7 @@ pub unsafe extern "C" fn backup_perform(
 unsafe fn extract_backup_data(payload: BackupPayload) -> Vec<(&'static str, &'static str)> {
     let mut backup_data: Vec<(&str, &str)> = vec![];
 
-    for i in 0..payload.keys_nr {
+    for i in (0..payload.keys_nr * 2).step_by(2) {
         let key = CStr::from_ptr(*payload.data.offset(i as isize))
             .to_str()
             .unwrap();
@@ -199,22 +200,25 @@ pub unsafe extern "C" fn backup_get(
         rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_hex()).await });
 
     let payload = unwrap_or_return!(response, err_ret);
+    let parsed: Vec<u8> = FromHex::from_hex(&payload.backup).unwrap();
 
-    let data = decrypt_backup(payload.backup.into(), password);
+    let data = decrypt_backup(parsed, password);
     extract_kv_data(data)
 }
 
 unsafe fn extract_kv_data(data: Vec<(String, String)>) -> BackupPayload {
     let mut ret = vec![];
     for (k, v) in data.iter() {
-        ret.push(k.as_ptr() as *const c_char);
-        ret.push(v.as_ptr() as *const c_char);
+        ret.push(CString::new(k.to_string()).unwrap().into_raw() as *const c_char);
+        ret.push(CString::new(v.to_string()).unwrap().into_raw() as *const c_char);
     }
 
-    // TODO: std::mem::forget here?
+    let ret_ptr = ret.as_ptr();
+    std::mem::forget(ret);
+
     BackupPayload {
         keys_nr: data.len() as u8,
-        data: ret.as_ptr(),
+        data: ret_ptr,
     }
 }
 
@@ -275,9 +279,6 @@ fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> 
             let mut content = String::new();
 
             file.read_to_string(&mut content).unwrap();
-
-            println!("{content}");
-
             (name.to_owned(), content)
         })
         .collect()
