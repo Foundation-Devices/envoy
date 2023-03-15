@@ -81,8 +81,8 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                         onTap: () {
                           FilePicker.platform.pickFiles().then((result) {
                             if (result != null) {
-                              EnvoySeed().restoreOfflineData(
-                                  result.files.single.path!);
+                              EnvoySeed().restoreData(
+                                  filePath: result.files.single.path!);
                             }
                           });
                         }),

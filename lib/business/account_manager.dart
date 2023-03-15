@@ -49,7 +49,7 @@ class AccountManager extends ChangeNotifier {
 
   AccountManager._internal() {
     print("Instance of AccountManager created!");
-    _restoreAccounts();
+    restore();
   }
 
   void syncAll() {
@@ -244,7 +244,7 @@ class AccountManager extends ChangeNotifier {
     accounts.clear();
   }
 
-  _restoreAccounts() {
+  restore() {
     if (_syncTimer != null) {
       _syncTimer!.cancel();
     }
