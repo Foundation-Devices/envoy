@@ -81,8 +81,21 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                         onTap: () {
                           FilePicker.platform.pickFiles().then((result) {
                             if (result != null) {
-                              EnvoySeed().restoreData(
-                                  filePath: result.files.single.path!);
+                              EnvoySeed()
+                                  .restoreData(
+                                      filePath: result.files.single.path!)
+                                  .then((success) {
+                                if (success) {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return WalletSetupSuccess();
+                                  }));
+                                } else {
+                                  showRestoreFailedDialog(context);
+                                }
+                              });
+                            } else {
+                              showRestoreFailedDialog(context);
                             }
                           });
                         }),
@@ -105,7 +118,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
     ));
   }
 
-  void showVerificationFailedDialog(BuildContext context) {
+  void showRestoreFailedDialog(BuildContext context) {
     showEnvoyDialog(
       context: context,
       dismissible: false,
@@ -116,19 +129,19 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(padding: EdgeInsets.all(8)),
                 Column(
                   children: [
-                    Icon(Icons.info_outline,
+                    Icon(Icons.warning_amber,
                         color: EnvoyColors.darkTeal, size: 68),
                     Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       child: Text(
-                        S().manual_setup_create_and_store_backup_modal_heading,
+                        "Can't read Envoy Backup. Make sure you have selected the right file.",
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -136,14 +149,9 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   ],
                 ),
                 OnboardingButton(
-                    label: S().manual_setup_create_and_store_backup_modal_CTA,
-                    onTap: () async {
-                      EnvoySeed().saveOfflineData();
+                    label: "Continue",
+                    onTap: () {
                       Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return WalletSetupSuccess();
-                      }));
                     }),
                 Padding(padding: EdgeInsets.all(12)),
               ],
