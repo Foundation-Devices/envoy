@@ -11,7 +11,6 @@ import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/notifications.dart';
 import 'package:file_saver/file_saver.dart';
 
 const String SEED_KEY = "seed";
@@ -41,8 +40,8 @@ class EnvoySeed {
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
     AccountManager.ACCOUNTS_PREFS,
-    Notifications.NOTIFICATIONS_PREFS,
     Devices.DEVICES_PREFS,
+    // Notifications.NOTIFICATIONS_PREFS,
     // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
     // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
     // ScvServer.SCV_CHALLENGE_PREFS,
@@ -119,33 +118,29 @@ class EnvoySeed {
     }
   }
 
-  Future<bool> restoreData({String? seed: null}) async {
+  Future<bool> restoreData({String? seed: null, String? filePath}) async {
     if (seed == null) {
       seed = await get();
     }
 
-    final ret = Backup.restore(
-        LocalStorage().prefs, seed!, Settings().envoyServerAddress, Tor().port);
-
-    _restoreSingletons();
-    return ret;
-  }
-
-  Future<bool> restoreOfflineData(String filePath, {String? seed: null}) async {
-    if (seed == null) {
-      seed = await get();
+    bool success;
+    if (filePath == null) {
+      success = Backup.restore(LocalStorage().prefs, seed!,
+          Settings().envoyServerAddress, Tor().port);
+    } else {
+      success = Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
     }
 
-    final ret = Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+    if (success) {
+      _restoreSingletons();
+    }
 
-    _restoreSingletons();
-    return ret;
+    return success;
   }
 
   _restoreSingletons() {
     Settings.restore();
-    AccountManager.init();
-    Notifications.init();
+    AccountManager().restore();
     Devices.init();
   }
 
