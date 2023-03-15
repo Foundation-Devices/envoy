@@ -70,6 +70,8 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -408,6 +410,26 @@ class S {
 
   // skipped getter for the 'Boost - 10’ - 5000 sats' key
 
+  /// `Business`
+  String get Business {
+    return Intl.message(
+      'Business',
+      name: 'Business',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -449,6 +471,26 @@ class S {
   // skipped getter for the 'Coin Control' key
 
   // skipped getter for the 'CoinAmount, SpendState' key
+
+  /// `List`
+  String get CoinText {
+    return Intl.message(
+      'List',
+      name: 'CoinText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins`
+  String get Coins {
+    return Intl.message(
+      'Coins',
+      name: 'Coins',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Cold`
   String get Cold {
@@ -686,6 +728,16 @@ class S {
 
   // skipped getter for the 'Entertain...' key
 
+  /// `Entertainment`
+  String get Entertainment {
+    return Intl.message(
+      'Entertainment',
+      name: 'Entertainment',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account (TBD) Vault Lightning' key
 
   // skipped getter for the 'Envoy Account Passport Account Private Account / Privacy Account Vault' key
@@ -695,6 +747,10 @@ class S {
   // skipped getter for the 'Envoy wallet' key
 
   // skipped getter for the 'FW Update' key
+
+  // skipped getter for the 'FW_Version_No.' key
+
+  // skipped getter for the 'Face ID' key
 
   /// `Family`
   String get Family {
@@ -712,11 +768,41 @@ class S {
 
   // skipped getter for the 'Fee selection overlay' key
 
+  /// `$25,721.00`
+  String get Fiat {
+    return Intl.message(
+      '\$25,721.00',
+      name: 'Fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Fiat Currency' key
 
   // skipped getter for the 'File Storage Destination Screen' key
 
+  /// `Fuel`
+  String get Fuel {
+    return Intl.message(
+      'Fuel',
+      name: 'Fuel',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'GENERATED SEED DISPLAYED' key
+
+  /// `Groceries`
+  String get Groceries {
+    return Intl.message(
+      'Groceries',
+      name: 'Groceries',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Hex 009DB9' key
 
@@ -769,6 +855,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Include?' key
 
   /// `XXXXXXXXXXXXXXXXXXXXXX...`
   String get Index {
@@ -940,9 +1028,21 @@ class S {
     );
   }
 
+  // skipped getter for the 'Passport Name' key
+
   // skipped getter for the 'Passport Tutorial - Simple Bitcoin Wallet Set Up (Single Signature)' key
 
   // skipped getter for the 'Passport name' key
+
+  /// `Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.`
+  String get PermissionDetails {
+    return Intl.message(
+      'Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.',
+      name: 'PermissionDetails',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Coinjoin`
   String get PermissionName {
@@ -1030,6 +1130,16 @@ class S {
 
   // skipped getter for the 'Recovery scenario iOS_subheading' key
 
+  /// `Rename`
+  String get Rename {
+    return Intl.message(
+      'Rename',
+      name: 'Rename',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Required inputs' key
 
   // skipped getter for the 'Required inputs:' key
@@ -1052,11 +1162,31 @@ class S {
 
   // skipped getter for the 'Sales revenue' key
 
+  /// `123,345,679 SATS`
+  String get Sats {
+    return Intl.message(
+      '123,345,679 SATS',
+      name: 'Sats',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Save`
   String get Save {
     return Intl.message(
       'Save',
       name: 'Save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Savings`
+  String get Savings {
+    return Intl.message(
+      'Savings',
+      name: 'Savings',
       desc: '',
       args: [],
     );
@@ -1069,6 +1199,16 @@ class S {
     return Intl.message(
       '12. catch',
       name: 'ScreenHeading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACKUPS`
+  String get ScreenTitle {
+    return Intl.message(
+      'BACKUPS',
+      name: 'ScreenTitle',
       desc: '',
       args: [],
     );
@@ -1182,6 +1322,16 @@ class S {
 
   // skipped getter for the 'String Middle' key
 
+  /// `Store Your Encrypted Backup`
+  String get Subheading {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'Subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Swipe the card left & right to show & hide the balance.' key
 
   /// `Q`
@@ -1207,6 +1357,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -1885,6 +2045,46 @@ class S {
   }
 
   // skipped getter for the 'dARK TO LIGHT' key
+
+  /// `Connect`
+  String get devices_screen_CTA1 {
+    return Intl.message(
+      'Connect',
+      name: 'devices_screen_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get devices_screen_CTA2 {
+    return Intl.message(
+      'Learn More',
+      name: 'devices_screen_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DEVICES`
+  String get devices_screen_heading {
+    return Intl.message(
+      'DEVICES',
+      name: 'devices_screen_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport`
+  String get devices_screen_passport_card {
+    return Intl.message(
+      'Passport',
+      name: 'devices_screen_passport_card',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'dialogs Icons' key
 
@@ -5828,10 +6028,10 @@ class S {
     );
   }
 
-  /// `This encrypted file contains wallet metadata, such as tags, notes, accounts and app settings.\n\nThis file is encrypted with your wallet seed. Ensure you have that backed up securely. `
+  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your wallet seed. Ensure your seed is backed up securely. `
   String get export_backup_modal_subheading {
     return Intl.message(
-      'This encrypted file contains wallet metadata, such as tags, notes, accounts and app settings.\n\nThis file is encrypted with your wallet seed. Ensure you have that backed up securely. ',
+      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your wallet seed. Ensure your seed is backed up securely. ',
       name: 'export_backup_modal_subheading',
       desc: '',
       args: [],
@@ -5868,10 +6068,10 @@ class S {
     );
   }
 
-  /// `Back to QR Code`
+  /// `View as QR Code`
   String get export_seed_modal_12_words_CTA2 {
     return Intl.message(
-      'Back to QR Code',
+      'View as QR Code',
       name: 'export_seed_modal_12_words_CTA2',
       desc: '',
       args: [],
@@ -5888,10 +6088,10 @@ class S {
     );
   }
 
-  /// `Back to QR Code`
+  /// `View as QR Code`
   String get export_seed_modal_24_words_1_2_CTA2 {
     return Intl.message(
-      'Back to QR Code',
+      'View as QR Code',
       name: 'export_seed_modal_24_words_1_2_CTA2',
       desc: '',
       args: [],
@@ -5908,10 +6108,10 @@ class S {
     );
   }
 
-  /// `Back to QR Code`
+  /// `View as QR Code`
   String get export_seed_modal_24_words_2_2_CTA2 {
     return Intl.message(
-      'Back to QR Code',
+      'View as QR Code',
       name: 'export_seed_modal_24_words_2_2_CTA2',
       desc: '',
       args: [],
@@ -5938,10 +6138,10 @@ class S {
     );
   }
 
-  /// `To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code`
+  /// `This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.`
   String get export_seed_modal_QR_code_subheading {
     return Intl.message(
-      'To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code',
+      'This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.',
       name: 'export_seed_modal_QR_code_subheading',
       desc: '',
       args: [],
@@ -6080,6 +6280,36 @@ class S {
 
   // skipped getter for the 'how do we want to name those' key
 
+  /// `Try Again`
+  String get launch_screen_faceID_fail_CTA {
+    return Intl.message(
+      'Try Again',
+      name: 'launch_screen_faceID_fail_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Authentication Failed`
+  String get launch_screen_faceID_fail_heading {
+    return Intl.message(
+      'Authentication Failed',
+      name: 'launch_screen_faceID_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please try again`
+  String get launch_screen_faceID_fail_subheading {
+    return Intl.message(
+      'Please try again',
+      name: 'launch_screen_faceID_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'mAGIC SETUP fLOW' key
 
   // skipped getter for the 'mANUAL SETUP fLOW' key
@@ -6120,10 +6350,10 @@ class S {
     );
   }
 
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Google Drive.\n\nRemember to always secure your Google account with a strong password and 2FA.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Android backup.`
   String get magic_setup_generate_envoy_key_android_subheading {
     return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Google Drive.\n\nRemember to always secure your Google account with a strong password and 2FA.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Android backup.',
       name: 'magic_setup_generate_envoy_key_android_subheading',
       desc: '',
       args: [],
@@ -6140,10 +6370,10 @@ class S {
     );
   }
 
-  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.`
+  /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.`
   String get magic_setup_generate_envoy_key_ios_subheading {
     return Intl.message(
-      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.\n\nRemember to always secure your iCloud account with a strong password and 2FA.',
+      'Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.',
       name: 'magic_setup_generate_envoy_key_ios_subheading',
       desc: '',
       args: [],
@@ -6520,30 +6750,30 @@ class S {
     );
   }
 
-  /// `Sign into iCloud and install Envoy on the new device.`
+  /// `Sign into iCloud and restore your iCloud backup`
   String get magic_setup_recovery_success_iOS_instruction1 {
     return Intl.message(
-      'Sign into iCloud and install Envoy on the new device.',
+      'Sign into iCloud and restore your iCloud backup',
       name: 'magic_setup_recovery_success_iOS_instruction1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Open Envoy and tap ‘Recover Envoy Wallet’.`
+  /// `Install Envoy and tap “Recover Envoy Wallet”`
   String get magic_setup_recovery_success_iOS_instruction2 {
     return Intl.message(
-      'Open Envoy and tap ‘Recover Envoy Wallet’.',
+      'Install Envoy and tap “Recover Envoy Wallet”',
       name: 'magic_setup_recovery_success_iOS_instruction2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy will then automatically reinstate your existing Envoy wallet.`
+  /// `Envoy will then automatically restore your existing Envoy wallet`
   String get magic_setup_recovery_success_iOS_instruction3 {
     return Intl.message(
-      'Envoy will then automatically reinstate your existing Envoy wallet.',
+      'Envoy will then automatically restore your existing Envoy wallet',
       name: 'magic_setup_recovery_success_iOS_instruction3',
       desc: '',
       args: [],
@@ -6784,6 +7014,26 @@ class S {
     );
   }
 
+  /// `Turn on Auto Backup`
+  String get manual_backups_export_flow_modal_4_4_CTA1 {
+    return Intl.message(
+      'Turn on Auto Backup',
+      name: 'manual_backups_export_flow_modal_4_4_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Auto Backup Off`
+  String get manual_backups_export_flow_modal_4_4_CTA2 {
+    return Intl.message(
+      'Keep Auto Backup Off',
+      name: 'manual_backups_export_flow_modal_4_4_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `How Your Data is Secured`
   String get manual_backups_export_flow_modal_4_4_heading {
     return Intl.message(
@@ -6794,10 +7044,10 @@ class S {
     );
   }
 
-  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
+  /// `Now you know how they work, if you’d still prefer not to use automatic encrypted backups, no problem!\n\nSimply tap ‘Keep Auto Backup Off’ below and be sure to keep your manual backups safe and secure.`
   String get manual_backups_export_flow_modal_4_4_subheading {
     return Intl.message(
-      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
+      'Now you know how they work, if you’d still prefer not to use automatic encrypted backups, no problem!\n\nSimply tap ‘Keep Auto Backup Off’ below and be sure to keep your manual backups safe and secure.',
       name: 'manual_backups_export_flow_modal_4_4_subheading',
       desc: '',
       args: [],
@@ -6844,10 +7094,10 @@ class S {
     );
   }
 
-  /// `Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
+  /// `Your Envoy Backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
   String get manual_setup_create_and_store_backup_modal_subheading {
     return Intl.message(
-      'Your wallet backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
+      'Your Envoy Backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
       name: 'manual_setup_create_and_store_backup_modal_subheading',
       desc: '',
       args: [],
@@ -7244,40 +7494,40 @@ class S {
     );
   }
 
-  /// `Create New Backup`
+  /// `Create New Envoy Backup`
   String get manual_setup_import_backup_CTA1 {
     return Intl.message(
-      'Create New Backup',
+      'Create New Envoy Backup',
       name: 'manual_setup_import_backup_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Import Existing Backup`
+  /// `Import envoy Backup`
   String get manual_setup_import_backup_CTA2 {
     return Intl.message(
-      'Import Existing Backup',
+      'Import envoy Backup',
       name: 'manual_setup_import_backup_CTA2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Import Existing Backup`
+  /// `Import Envoy Backup`
   String get manual_setup_import_backup_heading {
     return Intl.message(
-      'Import Existing Backup',
+      'Import Envoy Backup',
       name: 'manual_setup_import_backup_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Do you have an existing backup file to be restored?\n\nIf no, tap Create New Backup for Envoy to create a new backup file for you.`
+  /// `Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file.`
   String get manual_setup_import_backup_subheading {
     return Intl.message(
-      'Do you have an existing backup file to be restored?\n\nIf no, tap Create New Backup for Envoy to create a new backup file for you.',
+      'Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file.',
       name: 'manual_setup_import_backup_subheading',
       desc: '',
       args: [],
@@ -7304,10 +7554,10 @@ class S {
     );
   }
 
-  /// `Store Your Encrypted Backup`
+  /// `Store Your Envoy Backup`
   String get manual_setup_import_existing_backup_heading {
     return Intl.message(
-      'Store Your Encrypted Backup',
+      'Store Your Envoy Backup',
       name: 'manual_setup_import_existing_backup_heading',
       desc: '',
       args: [],
