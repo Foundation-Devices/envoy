@@ -140,8 +140,8 @@ class EnvoySeed {
 
   _restoreSingletons() {
     Settings.restore();
+    Devices().restore();
     AccountManager().restore();
-    Devices.init();
   }
 
   DateTime? getLastBackupTime() {
