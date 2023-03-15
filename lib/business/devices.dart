@@ -54,7 +54,7 @@ class Devices extends ChangeNotifier {
   Devices._internal() {
     print("Instance of Devices created!");
     //_clearDevices();
-    _restoreDevices();
+    restore();
   }
 
   add(Device device) {
@@ -80,7 +80,7 @@ class Devices extends ChangeNotifier {
     _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
-  _restoreDevices() {
+  restore() {
     if (_ls.prefs.containsKey(DEVICES_PREFS)) {
       var storedDevices = jsonDecode(_ls.prefs.getString(DEVICES_PREFS)!);
       for (var device in storedDevices) {
