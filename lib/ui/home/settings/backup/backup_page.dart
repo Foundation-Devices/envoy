@@ -106,7 +106,9 @@ class _BackupPageState extends State<BackupPage> {
                               S().manual_toggle_on_seed_backedup_iOS_backup_now,
                               color: EnvoyColors.teal,
                               onTap: () {
-                                EnvoySeed().backupData();
+                                EnvoySeed().backupData().then((_) {
+                                  setState(() {});
+                                });
                               },
                             ),
                           ],
