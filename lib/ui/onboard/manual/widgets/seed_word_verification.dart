@@ -178,7 +178,6 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         options.shuffle();
         return options;
       });
-      print("Answers: $answers indexes: $_seedIndexes");
     });
   }
 }
