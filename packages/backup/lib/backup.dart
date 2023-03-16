@@ -84,16 +84,15 @@ class Backup {
     var payload = lib.backup_get_offline(seedWords.toNativeUtf8().cast<Char>(),
         filePath.toNativeUtf8().cast<Char>());
 
+    if (payload.keys_nr == 0) {
+      throwRustException(lib);
+    }
+
     return _restoreFromPayload(payload, prefs);
   }
 
   static bool _restoreFromPayload(
       BackupPayload payload, SharedPreferences prefs) {
-    // TODO: throw an exception from Rust
-    if (payload.keys_nr == 0) {
-      return false;
-    }
-
     var data = payload.data;
 
     Map<String, String> backupData = {};
@@ -116,6 +115,15 @@ class Backup {
     var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
 
+    if (payload.keys_nr == 0) {
+      throwRustException(lib);
+    }
+
     return _restoreFromPayload(payload, prefs);
+  }
+
+  static throwRustException(NativeLibrary lib) {
+    String rustError = lib.backup_last_error_message().cast<Utf8>().toDartString();
+    throw Exception(rustError);
   }
 }
