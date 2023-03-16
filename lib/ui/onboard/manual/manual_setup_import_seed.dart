@@ -16,6 +16,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ManualSetupImportSeed extends StatefulWidget {
   final SeedLength seedLength;
@@ -221,10 +222,39 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 48, vertical: 6),
-          child: Text(
-            S().manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading,
-            textAlign: TextAlign.center,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 6),
+          child: Builder(
+            builder: (context) {
+              List<String> warning = S()
+                  .manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading
+                  .split("\n");
+              List<TextSpan> spans =
+                  warning.map((e) => TextSpan(text: "${e}\n")).toList();
+              if (spans.length > 2) {
+                spans[1] = TextSpan(
+                    text: spans[1].text,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .copyWith(decoration: TextDecoration.underline));
+              }
+              return GestureDetector(
+                onTap: () async {
+                  try {
+                    await launchUrl(Uri.parse(
+                        "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
+                  } catch (e) {
+                    //no-op
+                  }
+                },
+                child: RichText(
+                  text: TextSpan(
+                      children: spans,
+                      style: Theme.of(context).textTheme.bodyText2),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            },
           ),
         ),
         Padding(
