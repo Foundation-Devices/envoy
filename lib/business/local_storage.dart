@@ -80,6 +80,10 @@ class LocalStorage {
     return file.readAsStringSync();
   }
 
+  Future<void> deleteFile(String name) async {
+    File(appSupportDir.path + '/' + name).delete();
+  }
+
   Future<File> saveFileBytes(String name, List<int> content) async {
     return File(appSupportDir.path + '/' + name).writeAsBytes(content);
   }

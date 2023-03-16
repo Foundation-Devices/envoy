@@ -73,7 +73,7 @@ class EnvoySeed {
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
 
-      await store(seed);
+      await _store(seed);
       LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
 
       return true;
@@ -91,9 +91,9 @@ class EnvoySeed {
     return derived;
   }
 
-  Future<void> store(String seed) async {
+  Future<void> _store(String seed) async {
     if (Settings().syncToCloud) {
-      await saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
+      await _saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
       _platform.invokeMethod('data_changed');
     }
 
@@ -132,6 +132,7 @@ class EnvoySeed {
     }
 
     if (success) {
+      LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
       _restoreSingletons();
     }
 
@@ -162,19 +163,17 @@ class EnvoySeed {
   }
 
   Future<String?> get() async {
-    String? secure = await getSecure();
-    String? nonSecure = await getNonSecure();
+    String? secure = await _getSecure();
+    String? nonSecure = await _getNonSecure();
 
     if (secure != null && nonSecure != null) {
-      // We ignore the old nonSecure seed if we no longer sync to cloud
-      if (!Settings().syncToCloud) {
-        return secure;
-      }
+      return secure;
 
+      // TODO: show a warning to user
       // If we're syncing then the two being different is something to be handled
-      if (secure != nonSecure) {
-        throw Exception("Different seed in secure and non-secure!");
-      }
+      // if (secure != nonSecure) {
+      //   throw Exception("Different seed in secure and non-secure!");
+      // }
     }
 
     if (secure != null) {
@@ -192,7 +191,7 @@ class EnvoySeed {
     return AccountManager().getHotWalletAccount(testnet: false)?.wallet;
   }
 
-  Future<String?> getSecure() async {
+  Future<String?> _getSecure() async {
     if (!await LocalStorage().containsSecure(SEED_KEY)) {
       return null;
     }
@@ -201,11 +200,11 @@ class EnvoySeed {
     return seed!;
   }
 
-  Future<File> saveNonSecure(String data, String name) async {
+  Future<File> _saveNonSecure(String data, String name) async {
     return LocalStorage().saveFile(name, data);
   }
 
-  Future<String?> restoreNonSecure(String name) async {
+  Future<String?> _restoreNonSecure(String name) async {
     if (!await LocalStorage().fileExists(name)) {
       return null;
     }
@@ -217,11 +216,21 @@ class EnvoySeed {
     _platform.invokeMethod('show_settings');
   }
 
-  Future<String?> getNonSecure() async {
-    return await restoreNonSecure(LOCAL_SECRET_FILE_NAME);
+  // When manual user decides to enable Auto-Backup
+  copySeedToNonSecure() async {
+    final seed = await _getNonSecure();
+    _store(seed!);
   }
 
-  Future<DateTime?> getLocalSecretLastBackupTimestamp() async {
+  removeSeedFromNonSecure() {
+    LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+  }
+
+  Future<String?> _getNonSecure() async {
+    return await _restoreNonSecure(LOCAL_SECRET_FILE_NAME);
+  }
+
+  Future<DateTime?> getNonSecureLastBackupTimestamp() async {
     if (!await LocalStorage()
         .fileExists(LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME)) {
       return null;
