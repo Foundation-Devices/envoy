@@ -5,6 +5,7 @@
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 
 class ExportSeedModalWords extends StatefulWidget {
   final List<String> seed;
@@ -23,7 +24,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.80,
-      height: 560,
+      //height: MediaQuery.of(context).size.height * 0.70,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -39,13 +40,14 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                 ),
               ),
             ),
-            Expanded(
+            Flexible(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
+                  Flexible(
                     child: CustomScrollView(
+                      shrinkWrap: true,
                       slivers: [
                         SliverPadding(
                             padding: EdgeInsets.symmetric(
@@ -87,17 +89,23 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                       ],
                     ),
                   ),
-                  if (!widget.hasPassphrase)
+                  if (widget.hasPassphrase)
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 34, vertical: 0),
+                      padding: EdgeInsets.only(left: 34, right: 34, top: 25),
                       child: Text(
-                          "You set up a passphrase to protect this seed.",
+                          S().export_seed_modal_QR_code_subheading_passphrase,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: EnvoyColors.grey),
                           textAlign: TextAlign.center),
                     ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 34, vertical: 28),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         EnvoyButton(
                           S().export_seed_modal_12_words_CTA2,
