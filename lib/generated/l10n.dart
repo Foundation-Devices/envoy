@@ -420,16 +420,6 @@ class S {
     );
   }
 
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -532,10 +522,10 @@ class S {
     );
   }
 
-  /// `If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support.`
+  /// `Confirm the transaction details are correct before sending.`
   String get CopyText {
     return Intl.message(
-      'If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support.',
+      'Confirm the transaction details are correct before sending.',
       name: 'CopyText',
       desc: '',
       args: [],
@@ -1310,10 +1300,10 @@ class S {
 
   // skipped getter for the 'Standard - 60’ - 500sats' key
 
-  /// `Sent`
+  /// `Fee`
   String get Status {
     return Intl.message(
-      'Sent',
+      'Fee',
       name: 'Status',
       desc: '',
       args: [],
@@ -1358,16 +1348,6 @@ class S {
 
   // skipped getter for the 'TX Screen' key
 
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Tag Name' key
 
   // skipped getter for the 'Terms of Use' key
@@ -1394,10 +1374,10 @@ class S {
 
   // skipped getter for the 'Testnet wallet from Envoy = toggle / press acocunt card' key
 
-  /// `Account Details`
+  /// `Privacy Shield`
   String get Text {
     return Intl.message(
-      'Account Details',
+      'Privacy Shield',
       name: 'Text',
       desc: '',
       args: [],
@@ -1532,10 +1512,10 @@ class S {
     );
   }
 
-  /// `Export Seed`
+  /// `This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.`
   String get _ {
     return Intl.message(
-      'Export Seed',
+      'This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.',
       name: '_',
       desc: '',
       args: [],
@@ -6078,6 +6058,16 @@ class S {
     );
   }
 
+  /// `This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.`
+  String get export_seed_modal_12_words_modal_subheading {
+    return Intl.message(
+      'This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.',
+      name: 'export_seed_modal_12_words_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get export_seed_modal_24_words_1_2_CTA1 {
     return Intl.message(
@@ -6138,11 +6128,21 @@ class S {
     );
   }
 
-  /// `This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.`
+  /// `To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code`
   String get export_seed_modal_QR_code_subheading {
     return Intl.message(
-      'This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.',
+      'To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code',
       name: 'export_seed_modal_QR_code_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.`
+  String get export_seed_modal_QR_code_subheading_passphrase {
+    return Intl.message(
+      'This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.',
+      name: 'export_seed_modal_QR_code_subheading_passphrase',
       desc: '',
       args: [],
     );
