@@ -217,9 +217,10 @@ class EnvoySeed {
   }
 
   // When manual user decides to enable Auto-Backup
-  copySeedToNonSecure() async {
-    final seed = await _getNonSecure();
-    _store(seed!);
+  copySeedToNonSecure() {
+    _getSecure().then((seed) {
+      _store(seed!);
+    });
   }
 
   removeSeedFromNonSecure() {
