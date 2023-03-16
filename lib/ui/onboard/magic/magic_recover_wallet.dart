@@ -43,9 +43,10 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   }
 
   void _initWalletRecovery() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 1));
 
     final success = await EnvoySeed().restoreData();
+
 
     setState(() {
       if (success) {
@@ -55,16 +56,23 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
       }
     });
 
-    // TODO: nicer ways to do the same thing?
     if (success) {
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      _setHappyState();
     } else {
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+      _setUnhappyState();
     }
+  }
+
+  void _setUnhappyState() {
+    _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
+    _stateMachineController?.findInput<bool>("happy")?.change(false);
+    _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+  }
+
+  void _setHappyState() {
+    _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
+    _stateMachineController?.findInput<bool>("happy")?.change(true);
+    _stateMachineController?.findInput<bool>("unhappy")?.change(false);
   }
 
   _onRiveInit(Artboard artBoard) {
@@ -322,25 +330,18 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             setState(() {
               _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
             });
-            _stateMachineController
-                ?.findInput<bool>("indeterminate")
-                ?.change(true);
-            _stateMachineController?.findInput<bool>("happy")?.change(false);
-            _stateMachineController?.findInput<bool>("unhappy")?.change(false);
 
-            await Future.delayed(Duration(seconds: 3));
-
-            setState(() {
-              _magicRecoverWalletState = MagicRecoveryWalletState.success;
-            });
-            _stateMachineController
-                ?.findInput<bool>("indeterminate")
-                ?.change(false);
-            _stateMachineController?.findInput<bool>("happy")?.change(true);
-            _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+            _setIndeterminateState();
+            _initWalletRecovery();
           },
         ),
       ],
     );
+  }
+
+  void _setIndeterminateState() {
+    _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
+    _stateMachineController?.findInput<bool>("happy")?.change(false);
+    _stateMachineController?.findInput<bool>("unhappy")?.change(false);
   }
 }

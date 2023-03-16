@@ -124,11 +124,16 @@ class EnvoySeed {
     }
 
     bool success;
-    if (filePath == null) {
-      success = Backup.restore(LocalStorage().prefs, seed!,
-          Settings().envoyServerAddress, Tor().port);
-    } else {
-      success = Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+    try {
+      if (filePath == null) {
+        success = Backup.restore(LocalStorage().prefs, seed!,
+            Settings().envoyServerAddress, Tor().port);
+      } else {
+        success = Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+      }
+    } on Exception catch (e) {
+      print("Error while recovering: " + e.toString() );
+      success = false;
     }
 
     if (success) {
