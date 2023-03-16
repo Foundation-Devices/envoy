@@ -52,7 +52,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           if (Platform.isIOS) {
             await Future.delayed(Duration(milliseconds: 800));
           }
-          Navigator.pushReplacementNamed(context, '/');
+          goSplashOrGoHome();
           return;
         } else {
           showAuthFailed();
@@ -131,12 +131,20 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
-      if (value == true) {
+      bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
+      if (useAuth == true) {
         initiateAuth();
       } else {
-        Navigator.pushReplacementNamed(context, '/');
+        goSplashOrGoHome();
       }
     });
+  }
+
+  void goSplashOrGoHome() {
+    if (LocalStorage().prefs.containsKey("onboarded")) {
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    } else {
+      Navigator.pushReplacementNamed(context, '/splash');
+    }
   }
 }
