@@ -93,14 +93,15 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                     style: textStyle,
                   ),
                 ),
-                if (hasPassphrase) Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: Text(
-                    S().export_seed_modal_QR_code_subheading_passphrase,
-                    textAlign: TextAlign.center,
-                    style: textStyle?.copyWith(color: EnvoyColors.grey),
+                if (hasPassphrase)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: Text(
+                      S().export_seed_modal_QR_code_subheading_passphrase,
+                      textAlign: TextAlign.center,
+                      style: textStyle?.copyWith(color: EnvoyColors.grey),
+                    ),
                   ),
-                ),
                 Padding(padding: EdgeInsets.all(4)),
               ],
             ),
