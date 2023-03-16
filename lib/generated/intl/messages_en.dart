@@ -37,7 +37,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -46,7 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Connect": MessageLookupByLibrary.simpleMessage("Connect"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
         "CopyText": MessageLookupByLibrary.simpleMessage(
-            "If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support."),
+            "Confirm the transaction details are correct before sending."),
         "Custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "DASHBOARD": MessageLookupByLibrary.simpleMessage("DASHBOARD"),
         "DEVICES": MessageLookupByLibrary.simpleMessage("DEVICES"),
@@ -105,15 +104,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "Specs": MessageLookupByLibrary.simpleMessage("Specs"),
         "Spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
         "StackWalker": MessageLookupByLibrary.simpleMessage("StackWalker"),
-        "Status": MessageLookupByLibrary.simpleMessage("Sent"),
+        "Status": MessageLookupByLibrary.simpleMessage("Fee"),
         "Subheading":
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
-        "Text": MessageLookupByLibrary.simpleMessage("Account Details"),
+        "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
         "Timestamp": MessageLookupByLibrary.simpleMessage("2 hours ago"),
         "Txs": MessageLookupByLibrary.simpleMessage("Security"),
         "USD": MessageLookupByLibrary.simpleMessage("USD"),
@@ -122,7 +120,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "VIDEO": MessageLookupByLibrary.simpleMessage("VIDEO"),
         "Vault": MessageLookupByLibrary.simpleMessage("Vault"),
         "Z": MessageLookupByLibrary.simpleMessage("Z"),
-        "_": MessageLookupByLibrary.simpleMessage("Export Seed"),
+        "_": MessageLookupByLibrary.simpleMessage(
+            "This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds."),
         "_fe_analyzer_shared":
             MessageLookupByLibrary.simpleMessage("_fe_analyzer_shared"),
         "accessibility": MessageLookupByLibrary.simpleMessage("accessibility"),
@@ -1061,6 +1060,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "export_seed_modal_12_words_CTA2":
             MessageLookupByLibrary.simpleMessage("View as QR Code"),
+        "export_seed_modal_12_words_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds."),
         "export_seed_modal_24_words_1_2_CTA1":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "export_seed_modal_24_words_1_2_CTA2":
@@ -1074,6 +1076,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "export_seed_modal_QR_code_CTA2":
             MessageLookupByLibrary.simpleMessage("View Seed"),
         "export_seed_modal_QR_code_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code"),
+        "export_seed_modal_QR_code_subheading_passphrase":
             MessageLookupByLibrary.simpleMessage(
                 "This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds."),
         "export_seed_modal_passphrase_2_3_CTA":

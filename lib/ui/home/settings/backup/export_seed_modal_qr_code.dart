@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -39,6 +40,8 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
 
   @override
   Widget build(BuildContext context) {
+    final hasPassphrase = EnvoySeed().getWallet()!.hasPassphrase;
+
     var textStyle = Theme.of(context).textTheme.bodyText2?.copyWith(
           fontWeight: FontWeight.w500,
         );
@@ -73,7 +76,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                         String seed = snapshot.data!;
 
                         // Add a note to query the user for passphrase on other device
-                        if (EnvoySeed().getWallet()!.hasPassphrase) {
+                        if (hasPassphrase) {
                           seed = seed + (" passphrase");
                         }
 
@@ -90,6 +93,15 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                     style: textStyle,
                   ),
                 ),
+                if (hasPassphrase)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: Text(
+                      S().export_seed_modal_QR_code_subheading_passphrase,
+                      textAlign: TextAlign.center,
+                      style: textStyle?.copyWith(color: EnvoyColors.grey),
+                    ),
+                  ),
                 Padding(padding: EdgeInsets.all(4)),
               ],
             ),
@@ -110,8 +122,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                           context: context,
                           dialog: ExportSeedModalWords(
                             seed: seed,
-                            hasPassphrase:
-                                EnvoySeed().getWallet()!.hasPassphrase,
+                            hasPassphrase: hasPassphrase,
                           ));
                       enableSecureScreen(false);
                     });
