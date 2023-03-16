@@ -38,7 +38,7 @@ class _BackupPageState extends State<BackupPage> {
     var s = Settings();
 
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
-    var lastCloudBackup = EnvoySeed().getLocalSecretLastBackupTimestamp();
+    var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
 
     return Container(
         color: Colors.black,
@@ -58,6 +58,10 @@ class _BackupPageState extends State<BackupPage> {
                         setState(() {
                           s.syncToCloud = enabled;
                           s.store();
+
+                          // Remove file from reach of OS backup mechanism
+                          // Note this doesn't mean seed that's already backed up will be immediately removed
+                          EnvoySeed().removeSeedFromNonSecure();
                         });
                       }
 
@@ -71,6 +75,9 @@ class _BackupPageState extends State<BackupPage> {
                                   s.syncToCloud = enabled;
                                   s.store();
                                 });
+
+                                // Once we copy to non-secure OS backup mechanisms can start working on it
+                                EnvoySeed().copySeedToNonSecure();
 
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
