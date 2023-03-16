@@ -60,6 +60,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
           children: [
             _buildSeedGenerating(context),
             _buildMnemonicGrid(context),
+            _buildSeedVerification(context),
             VerifySeedPuzzleWidget(
                 seed: seed,
                 onVerificationFinished: (bool verified) async {
@@ -192,7 +193,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                   children: [
                     OnboardingButton(
                       onTap: () {
-                        _pageController.animateToPage(2,
+                        _pageController.nextPage(
                             duration: Duration(milliseconds: 300),
                             curve: Curves.ease);
                       },
@@ -246,7 +247,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                       await Navigator.maybePop(context);
                       _pageController.animateToPage(1,
                           duration: Duration(milliseconds: 320),
-                          curve: Curves.easeInSine);
+                          curve: Curves.ease);
                     }),
                 Padding(padding: EdgeInsets.all(12)),
               ],
@@ -254,6 +255,74 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
           ),
         );
       }),
+    );
+  }
+
+  _buildSeedVerification(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: IconButton(
+            icon: Icon(Icons.chevron_left, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        Padding(padding: EdgeInsets.all(14)),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Image.asset("assets/shield_ok.png"),
+                )),
+                Flexible(
+                    child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        S().manual_setup_generate_seed_verify_seed_heading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Padding(padding: EdgeInsets.all(24)),
+                      Text(
+                        S().manual_setup_generate_seed_verify_seed_subheading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .caption!
+                            .copyWith(fontSize: 13),
+                      ),
+                    ],
+                  ),
+                )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox.shrink(),
+                ),
+                OnboardingButton(
+                    label: S().manual_setup_generate_seed_verify_seed_CTA,
+                    fontWeight: FontWeight.w600,
+                    onTap: () {
+                      _pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.ease);
+                    })
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
