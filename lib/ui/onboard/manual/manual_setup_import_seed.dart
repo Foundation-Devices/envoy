@@ -222,7 +222,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 6),
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
           child: Builder(
             builder: (context) {
               List<String> warning = S()
@@ -233,10 +233,9 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
               if (spans.length > 2) {
                 spans[1] = TextSpan(
                     text: spans[1].text,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(decoration: TextDecoration.underline));
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w500));
               }
               return GestureDetector(
                 onTap: () async {
@@ -250,7 +249,10 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                 child: RichText(
                   text: TextSpan(
                       children: spans,
-                      style: Theme.of(context).textTheme.bodyText2),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontWeight: FontWeight.w500)),
                   textAlign: TextAlign.center,
                 ),
               );
