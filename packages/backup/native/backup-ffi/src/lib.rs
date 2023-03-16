@@ -200,7 +200,7 @@ pub unsafe extern "C" fn backup_get(
         rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_hex()).await });
 
     let payload = unwrap_or_return!(response, err_ret);
-    let parsed: Vec<u8> = FromHex::from_hex(&payload.backup).unwrap();
+    let parsed: Vec<u8> = unwrap_or_return!(FromHex::from_hex(&payload.backup), err_ret);
 
     let data = decrypt_backup(parsed, password);
     extract_kv_data(data)
@@ -350,8 +350,7 @@ async fn get_backup_async(
     let response = client
         .get(server_url.to_owned() + "/backup?key=" + &*hash)
         .send()
-        .await
-        .unwrap();
+        .await?;
 
     response.json().await
 }

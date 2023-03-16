@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 name: backup
-description: A Flutter plugin for performing backup and restore from Envoy server
+description: A Tor-aware plugin for performing backup and restore from Envoy server
 version: 0.0.1
-homepage:
+publish_to: 'none'
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
@@ -16,6 +16,8 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.11
+  tor:
+    path: ../../packages/tor
 
 
 dev_dependencies:

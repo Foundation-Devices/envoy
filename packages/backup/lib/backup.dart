@@ -7,8 +7,8 @@ import 'dart:io';
 import 'package:ffi/ffi.dart';
 
 import 'generated_bindings.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tor/tor.dart';
 
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
@@ -28,9 +28,30 @@ class NotSupportedPlatform implements Exception {
 }
 
 class Backup {
+  static _goAhead(Tor tor) async {
+    if (tor.enabled) {
+      // Go right ahead if Tor is disabled
+      await Future.doWhile(() => Future.delayed(Duration(seconds: 1)).then((_) {
+            // We are waiting and making absolutely no request unless:
+            // Tor is disabled
+            if (!tor.enabled) {
+              return false;
+            }
+
+            // ...or Tor circuit is established
+            if (tor.circuitEstablished) {
+              return false;
+            }
+
+            // This way we avoid making clearnet req's while Tor is initialising
+            return true;
+          }));
+    }
+  }
+
   static perform(SharedPreferences prefs, List<String> keysToBackUp,
-      String seedWords, String serverUrl, int proxyPort,
-      {required String path, bool cloud: true}) {
+      String seedWords, String serverUrl, Tor tor,
+      {required String path, bool cloud: true}) async {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {
@@ -68,12 +89,14 @@ class Backup {
       path.toNativeUtf8().cast(),
     );
 
+    await _goAhead(tor);
+
     if (cloud) {
       lib.backup_perform(
         payload.ref,
         seedWords.toNativeUtf8().cast<Char>(),
         serverUrl.toNativeUtf8().cast<Char>(),
-        proxyPort,
+        tor.port,
       );
     }
   }
@@ -109,11 +132,13 @@ class Backup {
     return true;
   }
 
-  static bool restore(SharedPreferences prefs, String seedWords,
-      String serverUrl, int proxyPort) {
+  static Future<bool> restore(SharedPreferences prefs, String seedWords,
+      String serverUrl, Tor tor) async {
     var lib = NativeLibrary(load("backup_ffi"));
+
+    await _goAhead(tor);
     var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
-        serverUrl.toNativeUtf8().cast<Char>(), proxyPort);
+        serverUrl.toNativeUtf8().cast<Char>(), tor.port);
 
     if (payload.keys_nr == 0) {
       throwRustException(lib);
@@ -123,7 +148,8 @@ class Backup {
   }
 
   static throwRustException(NativeLibrary lib) {
-    String rustError = lib.backup_last_error_message().cast<Utf8>().toDartString();
+    String rustError =
+        lib.backup_last_error_message().cast<Utf8>().toDartString();
     throw Exception(rustError);
   }
 }
