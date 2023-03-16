@@ -87,12 +87,12 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                       ],
                     ),
                   ),
-                  if (!widget.hasPassphrase)
+                  if (widget.hasPassphrase)
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 34, vertical: 0),
                       child: Text(
-                          "You set up a passphrase to protect this seed.",
+                          S().export_seed_modal_QR_code_subheading_passphrase,
                           textAlign: TextAlign.center),
                     ),
                   Padding(
