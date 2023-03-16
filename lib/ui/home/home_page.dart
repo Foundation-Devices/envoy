@@ -104,14 +104,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!LocalStorage().prefs.containsKey("onboarded")) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return SplashScreen();
-        }));
-      }
-    });
-
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
