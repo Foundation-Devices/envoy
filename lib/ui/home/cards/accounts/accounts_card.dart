@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_list_fade_edge_shader.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/onboard/splash_screen.dart';
@@ -120,6 +121,8 @@ class AccountsList extends StatefulWidget with NavigationCard {
 }
 
 class _AccountsListState extends State<AccountsList> {
+  final ScrollController _scrollController = ScrollController();
+
   _redraw() {
     setState(() {});
   }
@@ -170,33 +173,37 @@ class _AccountsListState extends State<AccountsList> {
                 }))
         : Padding(
             padding: const EdgeInsets.all(20),
-            child: DragAndDropLists(
-              constrainDraggingAxis: false,
-              removeTopPadding: true,
-              children: [
-                DragAndDropList(
-                    children: AccountManager()
-                        .accounts
-                        .map((e) => DragAndDropItem(
-                                child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: AccountListTile(
-                                e,
-                                onTap: () {
-                                  widget.navigator!.push(AccountCard(e,
-                                      navigationCallback: widget.navigator));
-                                },
-                              ),
-                            )))
-                        .toList())
-              ],
-              onListReorder: (int oldListIndex, int newListIndex) {},
-              onItemReorder: (int oldItemIndex, int oldListIndex,
-                  int newItemIndex, int newListIndex) {
-                setState(() {
-                  AccountManager().moveAccount(oldItemIndex, newItemIndex);
-                });
-              },
+            child: FadeEdgeEffectShader(
+              controller: _scrollController,
+              child: DragAndDropLists(
+                constrainDraggingAxis: false,
+                removeTopPadding: true,
+                scrollController: _scrollController,
+                children: [
+                  DragAndDropList(
+                      children: AccountManager()
+                          .accounts
+                          .map((e) => DragAndDropItem(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child: AccountListTile(
+                                  e,
+                                  onTap: () {
+                                    widget.navigator!.push(AccountCard(e,
+                                        navigationCallback: widget.navigator));
+                                  },
+                                ),
+                              )))
+                          .toList())
+                ],
+                onListReorder: (int oldListIndex, int newListIndex) {},
+                onItemReorder: (int oldItemIndex, int oldListIndex,
+                    int newItemIndex, int newListIndex) {
+                  setState(() {
+                    AccountManager().moveAccount(oldItemIndex, newItemIndex);
+                  });
+                },
+              ),
             ),
           );
   }
