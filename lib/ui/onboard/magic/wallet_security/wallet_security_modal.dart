@@ -194,8 +194,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   }
                                 },
                               ),
-                              secondChild: Expanded(
-                                  child: Column(
+                              secondChild: Column(
                                 children: [
                                   Padding(padding: EdgeInsets.all(8)),
                                   EnvoyButton(
@@ -215,7 +214,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                     },
                                   ),
                                 ],
-                              )),
+                              ),
                               crossFadeState: _page > 2.5
                                   ? widget.confirmationStep
                                       ? CrossFadeState.showSecond
