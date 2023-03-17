@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/notifications/notifications_page.dart';
@@ -101,6 +102,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
     );
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      bool? onboarded = LocalStorage().prefs.getBool("onboarded");
+      if (onboarded != true) {
+        Navigator.pushNamed(context, "/splash");
+      }
+    });
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
