@@ -70,12 +70,12 @@ class _BackupPageState extends State<BackupPage> {
                             context: context,
                             dialog: WalletSecurityModal(
                               confirmationStep: true,
-                              onLastStep: () {
+                              onLastStep: () => {},
+                              onConfirmBackup: () {
                                 setState(() {
                                   s.syncToCloud = enabled;
                                   s.store();
                                 });
-
                                 // Once we copy to non-secure OS backup mechanisms can start working on it
                                 EnvoySeed().copySeedToNonSecure();
 
@@ -85,6 +85,14 @@ class _BackupPageState extends State<BackupPage> {
                                 }));
 
                                 setState(() {});
+                              },
+                              onDenyBackup: () {
+                                //TODO: disable auto-backup
+                                setState(() {
+                                  s.syncToCloud = false;
+                                  s.store();
+                                });
+                                Navigator.pop(context);
                               },
                             ));
                       }

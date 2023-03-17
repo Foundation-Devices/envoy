@@ -140,9 +140,21 @@ class SelectMode extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Image.asset("assets/fi_shield_off.png"),
+                      child: Container(
+                    child: generate
+                        ? Image.asset(
+                            "assets/shield_inspect.png",
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            "assets/fw_intro.png",
+                            width: 250,
+                            height: 250,
+                            fit: BoxFit.cover,
+                          ),
+                    padding: EdgeInsets.only(bottom: 12),
                   )),
                   Flexible(
                       child: Container(
