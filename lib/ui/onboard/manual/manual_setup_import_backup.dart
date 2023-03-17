@@ -33,7 +33,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -74,6 +74,9 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                 ),
                 Flexible(
                     child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     OnboardingButton(
                         type: EnvoyButtonTypes.secondary,
