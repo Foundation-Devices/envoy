@@ -101,7 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             Divider(),
             FutureBuilder<bool>(
-              future: auth.canCheckBiometrics,
+              future: auth.isDeviceSupported(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return SizedBox();

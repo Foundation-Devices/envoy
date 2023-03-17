@@ -155,12 +155,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
   }
 
   void showPassphraseWarningDialog(BuildContext context) {
-    showEnvoyDialog(
-            dialog: Container(
-                width: MediaQuery.of(context).size.width * 0.85,
-                height: 400,
-                child: _buildPassphraseWarning(context)),
-            context: context)
+    showEnvoyDialog(dialog: _buildPassphraseWarning(context), context: context)
         .then((value) {
       setState(() {
         hasPassphrase = passPhrase.isNotEmpty;
@@ -189,93 +184,95 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
   }
 
   Widget _buildPassphraseWarning(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
+    return Container(
+      constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.85, minHeight: 420),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    hasPassphrase = false;
+                  });
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(EnvoyIcons.exclamation_warning,
+                    color: EnvoyColors.darkCopper, size: 60),
+                Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+                  child: Builder(
+                    builder: (context) {
+                      List<String> warning = S()
+                          .manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading
+                          .split("\n");
+                      List<TextSpan> spans =
+                          warning.map((e) => TextSpan(text: "${e}\n")).toList();
+                      if (spans.length > 2) {
+                        spans[1] = TextSpan(
+                            text: spans[1].text,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.w500));
+                      }
+                      return GestureDetector(
+                        onTap: () async {
+                          try {
+                            await launchUrl(Uri.parse(
+                                "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
+                          } catch (e) {
+                            //no-op
+                          }
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                              children: spans,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  ?.copyWith(fontWeight: FontWeight.w500)),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 18),
+            child: EnvoyButton(
+              S().manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA,
+              onTap: () async {
                 Navigator.of(context).pop();
-                setState(() {
-                  hasPassphrase = false;
-                });
+                showPassphraseDialog(context);
               },
             ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 48),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(EnvoyIcons.exclamation_warning,
-                  color: EnvoyColors.darkCopper, size: 60),
-              Padding(padding: EdgeInsets.all(4)),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-          child: Builder(
-            builder: (context) {
-              List<String> warning = S()
-                  .manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading
-                  .split("\n");
-              List<TextSpan> spans =
-                  warning.map((e) => TextSpan(text: "${e}\n")).toList();
-              if (spans.length > 2) {
-                spans[1] = TextSpan(
-                    text: spans[1].text,
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.w500));
-              }
-              return GestureDetector(
-                onTap: () async {
-                  try {
-                    await launchUrl(Uri.parse(
-                        "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
-                  } catch (e) {
-                    //no-op
-                  }
-                },
-                child: RichText(
-                  text: TextSpan(
-                      children: spans,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          ?.copyWith(fontWeight: FontWeight.w500)),
-                  textAlign: TextAlign.center,
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 48, vertical: 8),
-          child: Column(
-            //Temporarily Disable Tor
-            children: [
-              EnvoyButton(
-                S().manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA,
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  showPassphraseDialog(context);
-                },
-              ),
-            ],
-          ),
-        ),
-        Padding(padding: EdgeInsets.all(8)),
-      ],
+          Padding(padding: EdgeInsets.only(bottom: 8))
+        ],
+      ),
     );
   }
 }

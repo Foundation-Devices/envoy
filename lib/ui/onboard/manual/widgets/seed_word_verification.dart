@@ -117,7 +117,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                           padding: EdgeInsets.symmetric(vertical: 8),
                           child: DotsIndicator(
                               pageController: _pageController,
-                              totalPages: _puzzleOptions.length - 1)),
+                              totalPages: _puzzleOptions.length)),
                       Padding(padding: EdgeInsets.all(6)),
                       !_finishedAnswers
                           ? Text("Choose a word to continue ",

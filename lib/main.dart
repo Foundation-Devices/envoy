@@ -27,7 +27,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initSingletons();
-  runApp(MyApp());
+
+  if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
+    runApp(AuthenticateApp());
+  } else {
+    runApp(EnvoyApp());
+  }
 }
 
 Future<void> initSingletons() async {
@@ -51,7 +56,7 @@ Future<void> initSingletons() async {
   ConnectivityManager.init();
 }
 
-class MyApp extends StatelessWidget {
+class EnvoyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Portrait mode only outside of video player
@@ -108,11 +113,10 @@ class MyApp extends StatelessWidget {
             variantColor: envoyVariantColor,
             depth: 0, // Flat for now
           ),
-          initialRoute: "/lock",
+          initialRoute: "/",
           routes: {
             '/': (context) => HomePage(),
             '/splash': (context) => SplashScreen(),
-            '/lock': (context) => AuthenticatePage(),
           }),
     );
   }

@@ -13,7 +13,7 @@ void main() {
       (WidgetTester tester) async {
     // Initialize singletons
     await initSingletons();
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(EnvoyApp());
 
     // var process = await Process.start('just', ['/home/igor/Code/passport-air/simulator/sim', 'color']);
     // process.stdout
