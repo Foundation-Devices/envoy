@@ -108,7 +108,7 @@ class EnvoySeed {
 
     final seed = await get();
     Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
-        Settings().envoyServerAddress, Tor().port,
+        Settings().envoyServerAddress, Tor(),
         path: encryptedBackupFilePath, cloud: cloud);
 
     if (cloud) {
@@ -123,20 +123,24 @@ class EnvoySeed {
       seed = await get();
     }
 
-    bool success;
-    if (filePath == null) {
-      success = Backup.restore(LocalStorage().prefs, seed!,
-          Settings().envoyServerAddress, Tor().port);
-    } else {
-      success = Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+    try {
+      if (filePath == null) {
+        return Backup.restore(LocalStorage().prefs, seed!,
+                Settings().envoyServerAddress, Tor())
+            .then((success) {
+          if (success) {
+            LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
+            _restoreSingletons();
+          }
+          return success;
+        });
+      } else {
+        return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+      }
+    } on Exception catch (e) {
+      print("Error while recovering: " + e.toString());
+      return false;
     }
-
-    if (success) {
-      LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
-      _restoreSingletons();
-    }
-
-    return success;
   }
 
   _restoreSingletons() {
