@@ -5,15 +5,53 @@
 import 'dart:io';
 
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/main.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:permission_handler/permission_handler.dart';
+
+class AuthenticateApp extends StatelessWidget {
+  const AuthenticateApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemStatusBarContrastEnforced: true,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark));
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+        overlays: [SystemUiOverlay.top]);
+
+    final envoyAccentColor = EnvoyColors.darkTeal;
+    final envoyVariantColor = EnvoyColors.darkCopper;
+    final envoyBaseColor = Colors.transparent;
+    final envoyTextTheme =
+        GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
+
+    return NeumorphicApp(
+        materialTheme: ThemeData(
+          primaryColor: envoyAccentColor,
+          brightness: Brightness.light,
+          textTheme: envoyTextTheme,
+          scaffoldBackgroundColor: envoyBaseColor,
+        ),
+        theme: NeumorphicThemeData(
+          textTheme: envoyTextTheme,
+          baseColor: envoyBaseColor,
+          accentColor: envoyAccentColor,
+          variantColor: envoyVariantColor,
+          depth: 0, // Flat for now
+        ),
+        home: Builder(builder: (c) => AuthenticatePage()));
+  }
+}
 
 class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({Key? key}) : super(key: key);
@@ -44,7 +82,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       try {
         final bool didAuthenticate = await auth.authenticate(
             options: AuthenticationOptions(
-              biometricOnly: false,
+              biometricOnly: true,
               stickyAuth: true,
             ),
             localizedReason: 'Authenticate to Access Envoy');
@@ -52,7 +90,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           if (Platform.isIOS) {
             await Future.delayed(Duration(milliseconds: 800));
           }
-          goSplashOrGoHome();
+          runApp(EnvoyApp());
           return;
         } else {
           showAuthFailed();
@@ -63,23 +101,19 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         print("$e");
       }
     } else {
-      showEnvoyDialog(
-          context: context,
-          dismissible: false,
-          dialog: EnvoyDialog(
-            title: "Biometrics Disabled",
-            dismissible: false,
-            content: Text("Please Enable Biometrics to Unlock Envoy"),
-            actions: [
-              EnvoyButton(
-                "Open Settings",
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-                onTap: () async {
-                  openAppSettings();
-                },
-              ),
-            ],
-          ));
+      final bool didAuthenticate = await auth.authenticate(
+          options: AuthenticationOptions(
+            biometricOnly: false,
+            stickyAuth: true,
+          ),
+          localizedReason: 'Authenticate to Access Envoy');
+      if (didAuthenticate) {
+        runApp(EnvoyApp());
+        return;
+      } else {
+        showAuthFailed();
+      }
+      return;
     }
   }
 
@@ -87,43 +121,57 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     showEnvoyDialog(
         dismissible: false,
         context: context,
-        dialog: Container(
-          height: 320,
-          width: MediaQuery.of(context).size.width * .8,
-          padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
-          constraints: BoxConstraints(
-            minHeight: 270,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: EnvoyColors.darkTeal,
-                size: 84,
-              ),
-              ListTile(
-                title: Text("Authentication Failed",
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center),
-                subtitle: Text("Please try again",
-                    style: Theme.of(context).textTheme.labelMedium,
-                    textAlign: TextAlign.center),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: EnvoyButton(
-                  "Try Again",
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    initiateAuth();
-                  },
+        cardColor: EnvoyColors.white100,
+        dialog: Builder(
+          builder: (context) {
+            return Theme(
+              data: ThemeData.light(),
+              child: Container(
+                height: 320,
+                width: MediaQuery.of(context).size.width * .8,
+                padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+                constraints: BoxConstraints(
+                  minHeight: 270,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: EnvoyColors.darkTeal,
+                      size: 84,
+                    ),
+                    ListTile(
+                      title: Text("Authentication Failed",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: Colors.black87),
+                          textAlign: TextAlign.center),
+                      subtitle: Text("Please try again",
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium
+                              ?.copyWith(color: Colors.black87),
+                          textAlign: TextAlign.center),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: EnvoyButton(
+                        "Try Again",
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        onTap: () async {
+                          Navigator.pop(context);
+                          runApp(EnvoyApp());
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            );
+          },
         ));
   }
 
@@ -135,16 +183,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       if (useAuth == true) {
         initiateAuth();
       } else {
-        goSplashOrGoHome();
+        runApp(EnvoyApp());
       }
     });
-  }
-
-  void goSplashOrGoHome() {
-    if (LocalStorage().prefs.containsKey("onboarded")) {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
-    } else {
-      Navigator.pushReplacementNamed(context, '/splash');
-    }
   }
 }
