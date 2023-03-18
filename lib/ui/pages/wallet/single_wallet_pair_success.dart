@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_address_verify.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -25,6 +26,7 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
+            type: EnvoyButtonTypes.secondary,
             label: S().single_envoy_wallet_pair_success_cta1,
             onTap: () {
               OnboardingPage.goHome(context);
