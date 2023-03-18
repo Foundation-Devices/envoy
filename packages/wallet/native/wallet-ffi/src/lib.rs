@@ -358,6 +358,10 @@ pub unsafe extern "C" fn wallet_get_address(
         .unwrap()
         .address
         .to_string();
+
+    // SFT-1580: unreliable fsync on mobile platforms occasionally causes address reuse
+    let _ = wallet.database().flush();
+
     CString::new(address).unwrap().into_raw()
 }
 
