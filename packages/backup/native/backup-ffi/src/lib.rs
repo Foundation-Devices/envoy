@@ -29,7 +29,6 @@ use bdk::keys::bip39::Mnemonic;
 use lazy_static::lazy_static;
 use tokio::runtime::{Builder, Runtime};
 use tokio::sync::broadcast::{Receiver, Sender};
-use tokio::task::JoinHandle;
 
 mod error;
 
@@ -89,24 +88,14 @@ pub struct BackupPayload {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn backup_perform_cancel(handle: *mut JoinHandle<()>) {
-    let handle = {
-        assert!(!handle.is_null());
-        &mut *handle
-    };
-
-    handle.abort();
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn backup_perform(
     payload: BackupPayload,
     seed_words: *const c_char,
     server_url: *const c_char,
     proxy_port: i32,
-) -> *mut JoinHandle<()> {
+) -> bool {
     let backup_data = extract_backup_data(payload);
-    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), ptr::null_mut());
+    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), false);
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
 
     let server_url = CStr::from_ptr(server_url).to_str().unwrap();
@@ -115,7 +104,7 @@ pub unsafe extern "C" fn backup_perform(
     let encrypted = encrypt_backup(backup_data, &password);
 
     let rt = RUNTIME.as_ref().unwrap();
-    let handle = rt.spawn(async move {
+    rt.block_on(async move {
         let (tx, mut _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 
         let challenge = get_challenge_async(server_url, proxy_port).await;
@@ -128,11 +117,8 @@ pub unsafe extern "C" fn backup_perform(
             hash.to_hex(),
             encrypted,
         )
-        .await;
-    });
-
-    let handle_box = Box::new(handle);
-    Box::into_raw(handle_box)
+        .await
+    })
 }
 
 unsafe fn extract_backup_data(payload: BackupPayload) -> Vec<(&'static str, &'static str)> {
@@ -322,9 +308,9 @@ async fn post_backup_async(
     solution: effort::Solution,
     hash: String,
     payload: Vec<u8>,
-) {
+) -> bool {
     let client = get_reqwest_client(proxy_port);
-    let response = client
+    match client
         .post(server_url.to_owned() + "/backup")
         .json(&BackupRequest {
             challenge: server_response.challenge,
@@ -336,9 +322,16 @@ async fn post_backup_async(
         })
         .send()
         .await
-        .unwrap();
-
-    println!("{response:?}");
+    {
+        Ok(r) => {
+            println!("Post backup success: {r:?}");
+            true
+        }
+        Err(e) => {
+            println!("Post backup failure: {e:?}");
+            false
+        }
+    }
 }
 
 async fn get_backup_async(

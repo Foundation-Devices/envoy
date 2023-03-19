@@ -107,15 +107,17 @@ class EnvoySeed {
     }
 
     final seed = await get();
-    Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
-        Settings().envoyServerAddress, Tor(),
-        path: encryptedBackupFilePath, cloud: cloud);
 
-    if (cloud) {
-      LocalStorage()
-          .prefs
-          .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
-    }
+    Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
+            Settings().envoyServerAddress, Tor(),
+            path: encryptedBackupFilePath, cloud: cloud)
+        .then((success) {
+      if (cloud && success) {
+        LocalStorage()
+            .prefs
+            .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
+      }
+    });
   }
 
   Future<bool> restoreData({String? seed: null, String? filePath}) async {
