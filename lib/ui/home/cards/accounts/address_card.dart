@@ -57,7 +57,7 @@ class AddressCard extends StatelessWidget with NavigationCard {
                         snapshot.data!,
                         style: Theme.of(context)
                             .textTheme
-                            .button!
+                            .labelLarge!
                             .copyWith(color: EnvoyColors.darkTeal),
                       ),
                     ),

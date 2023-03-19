@@ -138,7 +138,7 @@ class AmountDisplay extends StatelessWidget {
           children: [
             Text(
               displayAmountText.isEmpty ? "0" : displayAmountText,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 6.0),
@@ -151,7 +151,7 @@ class AmountDisplay extends StatelessWidget {
           ExchangeRate().getFormattedAmount(amountSats ?? 0),
           style: Theme.of(context)
               .textTheme
-              .subtitle2!
+              .titleSmall!
               .copyWith(color: EnvoyColors.darkTeal),
         ),
       ],
@@ -257,7 +257,7 @@ class NumpadButton extends StatelessWidget {
                       text,
                       style: NeumorphicStyle(
                         depth: 3,
-                        color: Typography.blackHelsinki.headline4!
+                        color: Typography.blackHelsinki.headlineMedium!
                             .color, // TODO: add black helsinki as EnvoyColor
                       ),
                       textStyle: NeumorphicTextStyle(
@@ -269,7 +269,7 @@ class NumpadButton extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 3, top: 2),
                       child: SvgPicture.asset(
                         "assets/backspace.svg",
-                        color: Typography.blackHelsinki.headline4!.color,
+                        color: Typography.blackHelsinki.headlineMedium!.color,
                       ),
                     )),
         ),

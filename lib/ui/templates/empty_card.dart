@@ -54,7 +54,7 @@ class EmptyCardHelperText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle defaultStyle = Theme.of(context).textTheme.bodyText1!;
+    TextStyle defaultStyle = Theme.of(context).textTheme.bodyLarge!;
     TextStyle linkStyle = TextStyle(color: EnvoyColors.darkTeal);
 
     List<TextSpan> spans = [];

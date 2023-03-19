@@ -136,7 +136,7 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                         widget.device.name,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6!
+                                            .titleLarge!
                                             .copyWith(
                                               color: Colors.white,
                                             ),
@@ -157,7 +157,7 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                             : "Founder's Edition",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .caption!
+                                            .bodySmall!
                                             .copyWith(color: Colors.white),
                                       ),
                                       widget.device.type ==
@@ -167,7 +167,7 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                   widget.device.firmwareVersion,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption!
+                                                  .bodySmall!
                                                   .copyWith(
                                                       color: Colors.white),
                                             )
@@ -240,7 +240,7 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .caption!
+                                                              .bodySmall!
                                                               .copyWith(
                                                                   color: Colors
                                                                       .white),

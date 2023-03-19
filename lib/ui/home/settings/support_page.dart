@@ -79,7 +79,7 @@ class MenuOption extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context)
                 .textTheme
-                .bodyText2!
+                .bodyMedium!
                 .copyWith(color: Colors.white),
           ),
         ),
