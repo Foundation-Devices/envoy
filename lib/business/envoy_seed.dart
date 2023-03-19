@@ -108,7 +108,7 @@ class EnvoySeed {
 
     final seed = await get();
 
-    Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
+    return Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
             Settings().envoyServerAddress, Tor(),
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) {
@@ -121,13 +121,19 @@ class EnvoySeed {
   }
 
   Future<bool> restoreData({String? seed = null, String? filePath}) async {
+    // Try to get seed from device
     if (seed == null) {
       seed = await get();
     }
 
+    // Still nothing? You're boned
+    if (seed == null) {
+      return false;
+    }
+
     if (filePath == null) {
       return Backup.restore(
-              LocalStorage().prefs, seed!, Settings().envoyServerAddress, Tor())
+              LocalStorage().prefs, seed, Settings().envoyServerAddress, Tor())
           .then((success) {
         if (success) {
           LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
@@ -139,7 +145,7 @@ class EnvoySeed {
         return false;
       });
     } else {
-      return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
+      return Backup.restoreOffline(LocalStorage().prefs, seed, filePath);
     }
   }
 
