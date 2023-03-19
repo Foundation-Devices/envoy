@@ -96,7 +96,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                           S().export_seed_modal_QR_code_subheading_passphrase,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(
                                   fontWeight: FontWeight.w500,
                                   color: EnvoyColors.grey),

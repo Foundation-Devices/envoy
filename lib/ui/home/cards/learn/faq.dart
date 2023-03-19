@@ -81,7 +81,7 @@ class FaqBodyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle defaultStyle = Theme.of(context).textTheme.bodyText2!;
+    TextStyle defaultStyle = Theme.of(context).textTheme.bodyMedium!;
     TextStyle linkStyle = TextStyle(color: EnvoyColors.darkTeal);
 
     List<TextSpan> spans = [];

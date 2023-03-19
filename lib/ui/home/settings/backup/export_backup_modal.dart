@@ -10,7 +10,7 @@ import 'package:envoy/business/envoy_seed.dart';
 class ExportBackupModal extends StatefulWidget {
   final Function? onExport;
 
-  const ExportBackupModal({Key? key, this.onExport: null}) : super(key: key);
+  const ExportBackupModal({Key? key, this.onExport = null}) : super(key: key);
 
   @override
   State<ExportBackupModal> createState() => _ExportBackupModalState();
@@ -19,7 +19,7 @@ class ExportBackupModal extends StatefulWidget {
 class _ExportBackupModalState extends State<ExportBackupModal> {
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyText2?.copyWith(
+    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
         );
 

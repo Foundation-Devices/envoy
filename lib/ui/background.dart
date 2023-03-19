@@ -65,8 +65,8 @@ class LinesPainter extends CustomPainter {
 
   LinesPainter(
       {this.angle = 160,
-      this.color: EnvoyColors.whitePrint,
-      this.opacity: 0.05});
+      this.color = EnvoyColors.whitePrint,
+      this.opacity = 0.05});
 
   @override
   void paint(Canvas canvas, Size size) {

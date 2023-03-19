@@ -14,7 +14,7 @@ class SettingToggle extends StatefulWidget {
   final int delay;
 
   SettingToggle(this.getter, this.setter,
-      {this.delay: 0, this.inactiveColor = EnvoyColors.grey15});
+      {this.delay = 0, this.inactiveColor = EnvoyColors.grey15});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();

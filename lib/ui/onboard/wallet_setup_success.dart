@@ -36,7 +36,7 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                 ),
                 Text(
                   S().wallet_setup_success_heading,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Text(
                   S().wallet_setup_success_subheading,

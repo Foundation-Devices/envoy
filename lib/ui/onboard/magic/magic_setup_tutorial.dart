@@ -60,7 +60,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                       Text(
                         S().magic_setup_tutorial_ios_heading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
                       OnboardingHelperText(

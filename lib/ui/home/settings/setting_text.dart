@@ -13,7 +13,7 @@ class SettingText extends StatelessWidget {
     this.label, {
     Key? key,
     this.onTap,
-    this.color: Colors.white,
+    this.color = Colors.white,
   }) : super(key: key);
 
   @override

@@ -38,7 +38,7 @@ class BroadcastCard extends StatelessWidget with NavigationCard {
               children: [
                 Text(
                   "Are you sure you want to send Bitcoin?",
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 SizedBox(
                   height: 40,
@@ -52,16 +52,16 @@ class BroadcastCard extends StatelessWidget with NavigationCard {
                     children: [
                       Text(
                         getFormattedAmount(-psbt.amount),
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(ExchangeRate().getFormattedAmount(-psbt.amount),
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2!
+                              .bodyMedium!
                               .copyWith(
                                   color: Theme.of(context)
                                       .textTheme
-                                      .caption!
+                                      .bodySmall!
                                       .color))
                     ],
                   ),
@@ -78,16 +78,16 @@ class BroadcastCard extends StatelessWidget with NavigationCard {
                     children: [
                       Text(
                         getFormattedAmount(psbt.fee),
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(ExchangeRate().getFormattedAmount(psbt.fee),
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2!
+                              .bodyMedium!
                               .copyWith(
                                   color: Theme.of(context)
                                       .textTheme
-                                      .caption!
+                                      .bodySmall!
                                       .color))
                     ],
                   ),
@@ -97,14 +97,14 @@ class BroadcastCard extends StatelessWidget with NavigationCard {
                 ),
                 Text(
                   "Transaction ID:",
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
                   psbt.txid,
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ]),
         ),

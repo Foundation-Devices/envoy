@@ -350,7 +350,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   // There is only one hot wallet for now (mainnet/testnet pair)
-  Account? getHotWalletAccount({testnet: false}) {
+  Account? getHotWalletAccount({testnet = false}) {
     for (var account in accounts) {
       if (account.wallet.hot) {
         if (account.wallet.network == Network.Testnet && testnet) {

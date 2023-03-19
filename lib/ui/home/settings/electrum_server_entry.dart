@@ -61,7 +61,7 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
               },
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1!
+                  .bodyLarge!
                   .copyWith(color: Colors.grey),
               controller: _controller,
               decoration: InputDecoration(

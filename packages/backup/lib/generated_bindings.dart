@@ -28,21 +28,7 @@ class NativeLibrary {
   late final _backup_last_error_message = _backup_last_error_messagePtr
       .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
-  void backup_perform_cancel(
-    ffi.Pointer<ffi.Int> handle,
-  ) {
-    return _backup_perform_cancel(
-      handle,
-    );
-  }
-
-  late final _backup_perform_cancelPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Int>)>>(
-          'backup_perform_cancel');
-  late final _backup_perform_cancel = _backup_perform_cancelPtr
-      .asFunction<void Function(ffi.Pointer<ffi.Int>)>();
-
-  ffi.Pointer<ffi.Int> backup_perform(
+  bool backup_perform(
     BackupPayload payload,
     ffi.Pointer<ffi.Char> seed_words,
     ffi.Pointer<ffi.Char> server_url,
@@ -58,10 +44,10 @@ class NativeLibrary {
 
   late final _backup_performPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Int> Function(BackupPayload, ffi.Pointer<ffi.Char>,
+          ffi.Bool Function(BackupPayload, ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Char>, ffi.Int32)>>('backup_perform');
   late final _backup_perform = _backup_performPtr.asFunction<
-      ffi.Pointer<ffi.Int> Function(
+      bool Function(
           BackupPayload, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
   void backup_perform_offline(

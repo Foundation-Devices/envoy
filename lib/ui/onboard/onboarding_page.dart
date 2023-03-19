@@ -53,8 +53,8 @@ class OnboardingPage extends StatelessWidget {
     this.helperTextBelow,
     this.qrCodeUrBinary,
     this.qrCodeUrCryptoRequest,
-    this.rightFunction: goHome,
-    this.leftFunction: goBack,
+    this.rightFunction = goHome,
+    this.leftFunction = goBack,
     this.right,
   }) : super(key: key);
 
@@ -90,7 +90,7 @@ class OnboardingPage extends StatelessWidget {
                             snapshot.data!,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(
                                     fontWeight: FontWeight.w600, fontSize: 12),
                           ),
@@ -247,7 +247,7 @@ class OnboardingText extends StatelessWidget {
                   child: Text(
                     header!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 )
               : SizedBox.shrink(),
@@ -259,7 +259,7 @@ class OnboardingText extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
-                        .caption!
+                        .bodySmall!
                         .copyWith(fontSize: 13),
                   ),
                 )
@@ -289,7 +289,7 @@ class ActionText extends StatelessWidget {
               Text(
                 header,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Text(
                 text,
@@ -310,7 +310,7 @@ class OnboardingHelperText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle defaultStyle =
-        Theme.of(context).textTheme.caption!.copyWith(fontSize: 13);
+        Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13);
     TextStyle linkStyle = TextStyle(color: EnvoyColors.darkTeal);
 
     List<TextSpan> spans = [];

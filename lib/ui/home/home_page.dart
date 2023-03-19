@@ -44,8 +44,8 @@ class HomePageNotification extends Notification {
       this.rightFunction,
       this.optionsWidget,
       this.rightFunctionIcon,
-      this.modal: false,
-      this.showOptions: false});
+      this.modal = false,
+      this.showOptions = false});
 }
 
 class HomePageCard {
@@ -347,7 +347,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ignoring: _backgroundShown || _modalShown,
                             child: TabBar(
                               indicatorColor: Colors.white10,
-                              labelStyle: Theme.of(context).textTheme.bodyText1,
+                              labelStyle: Theme.of(context).textTheme.bodyLarge,
                               unselectedLabelColor: Colors.black54,
                               labelColor: EnvoyColors.darkTeal,
                               controller: _tabController,

@@ -173,7 +173,7 @@ class NotificationsToggleElement implements ToggleElement {
 
 class NotificationsToggleButton extends StatelessWidget {
   const NotificationsToggleButton({
-    this.dark: false,
+    this.dark = false,
     Key? key,
     required this.label,
   }) : super(key: key);

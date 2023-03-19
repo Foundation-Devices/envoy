@@ -22,12 +22,12 @@ class AnimatedQrImage extends StatefulWidget {
   final double? size;
 
   AnimatedQrImage(Uint8List message,
-      {this.refreshRate: 3,
-      int maxFragmentLength: 100,
+      {this.refreshRate = 3,
+      int maxFragmentLength = 100,
       this.size,
       this.cryptoRequest,
-      String urType: "bytes",
-      bool binaryCborTag: false}) {
+      String urType = "bytes",
+      bool binaryCborTag = false}) {
     List<int> tag = [];
     if (binaryCborTag) {
       // https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md#canonical-cbor
@@ -50,7 +50,7 @@ class AnimatedQrImage extends StatefulWidget {
   }
 
   AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
-      {this.refreshRate: 5, this.size, this.urEncoder})
+      {this.refreshRate = 5, this.size, this.urEncoder})
       : cryptoRequest = request;
 
   void onLoad(BuildContext context) {}

@@ -59,7 +59,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                       alignment: Alignment.center,
                       child: Text(
                         S().manual_setup_import_seed_12_words_heading,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       )),
                   Expanded(
                       child: Container(
@@ -230,7 +230,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                             text: spans[1].text,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2!
+                                .bodyMedium!
                                 .copyWith(
                                     decoration: TextDecoration.underline,
                                     fontWeight: FontWeight.w500));
@@ -249,7 +249,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                               children: spans,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(fontWeight: FontWeight.w500)),
                           textAlign: TextAlign.center,
                         ),

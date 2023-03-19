@@ -10,7 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 //ignore: must_be_immutable
 class FwPassportPage extends StatelessWidget {
   bool onboarding;
-  FwPassportPage({this.onboarding: true});
+  FwPassportPage({this.onboarding = true});
 
   @override
   Widget build(BuildContext context) {
