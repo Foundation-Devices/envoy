@@ -16,7 +16,7 @@ import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 class FwIntroPage extends StatelessWidget {
   bool onboarding;
 
-  FwIntroPage({this.onboarding: true});
+  FwIntroPage({this.onboarding = true});
 
   @override
   Widget build(BuildContext context) {

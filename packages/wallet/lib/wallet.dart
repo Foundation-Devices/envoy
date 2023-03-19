@@ -336,10 +336,10 @@ class Wallet {
 
   Wallet(
       this.name, this.network, this.externalDescriptor, this.internalDescriptor,
-      {this.hot: false,
-      this.hasPassphrase: false,
-      this.publicExternalDescriptor: null,
-      this.publicInternalDescriptor: null});
+      {this.hot = false,
+      this.hasPassphrase = false,
+      this.publicExternalDescriptor = null,
+      this.publicInternalDescriptor = null});
 
   init(String walletsDirectory) {
     _lib = load(_libName);
@@ -362,10 +362,10 @@ class Wallet {
 
   Wallet.fromPointer(this.name, this.network, this.externalDescriptor,
       this.internalDescriptor, this._self,
-      {this.hot: false,
-      this.hasPassphrase: false,
-      this.publicExternalDescriptor: null,
-      this.publicInternalDescriptor: null,
+      {this.hot = false,
+      this.hasPassphrase = false,
+      this.publicExternalDescriptor = null,
+      this.publicInternalDescriptor = null,
       required DynamicLibrary lib}) {
     _lib = lib;
   }
@@ -609,7 +609,7 @@ class Wallet {
         .toDartString();
   }
 
-  static String generateSeed({bool testnet: false}) {
+  static String generateSeed({bool testnet = false}) {
     final lib = load(_libName);
 
     final rustFunction = lib
@@ -625,7 +625,7 @@ class Wallet {
 
   static Wallet deriveWallet(
       String seed, String path, String directory, Network network,
-      {String? passphrase, bool privateKey: false}) {
+      {String? passphrase, bool privateKey = false}) {
     final lib = load(_libName);
     final native = NativeLibrary(lib);
     var wallet = native.wallet_derive(

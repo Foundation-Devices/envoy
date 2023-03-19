@@ -9,10 +9,10 @@ import 'package:envoy/ui/envoy_colors.dart';
 class Glow extends StatelessWidget {
   const Glow({
     Key? key,
-    this.innerColor: EnvoyColors.transparent,
-    this.middleColor: EnvoyColors.grey,
-    this.outerColor: EnvoyColors.white100,
-    this.stops: const [0.0, 0.5, 1.0],
+    this.innerColor = EnvoyColors.transparent,
+    this.middleColor = EnvoyColors.grey,
+    this.outerColor = EnvoyColors.white100,
+    this.stops = const [0.0, 0.5, 1.0],
   }) : super(key: key);
 
   final Color innerColor;

@@ -18,7 +18,7 @@ import 'package:envoy/business/devices.dart';
 class FwMicrosdPage extends StatelessWidget {
   bool onboarding;
 
-  FwMicrosdPage({this.onboarding: true});
+  FwMicrosdPage({this.onboarding = true});
 
   @override
   Widget build(BuildContext context) {

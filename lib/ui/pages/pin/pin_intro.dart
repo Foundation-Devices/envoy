@@ -11,7 +11,7 @@ import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 //ignore: must_be_immutable
 class PinIntroPage extends StatelessWidget {
   bool mustUpdateFirmware;
-  PinIntroPage({this.mustUpdateFirmware: true});
+  PinIntroPage({this.mustUpdateFirmware = true});
 
   @override
   Widget build(BuildContext context) {

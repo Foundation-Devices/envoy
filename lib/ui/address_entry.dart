@@ -26,7 +26,7 @@ class AddressEntry extends StatelessWidget {
       {String? initalAddress,
       this.onAddressChanged,
       this.onAmountChanged,
-      this.canEdit: true,
+      this.canEdit = true,
       required this.wallet}) {
     if (initalAddress != null) {
       _controller.text = initalAddress;

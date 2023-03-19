@@ -56,7 +56,7 @@ class _ManualSetupState extends State<ManualSetup> {
                       Text(
                         S().manual_setup_tutorial_heading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
                       Text(
@@ -64,7 +64,7 @@ class _ManualSetupState extends State<ManualSetup> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
-                            .caption!
+                            .bodySmall!
                             .copyWith(fontSize: 13),
                       ),
                     ],
@@ -167,7 +167,7 @@ class SelectMode extends StatelessWidget {
                               ? S().manual_setup_generate_seed_heading
                               : S().manual_setup_import_seed_heading,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                         Padding(padding: EdgeInsets.all(24)),
                         Text(
@@ -177,7 +177,7 @@ class SelectMode extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
-                              .caption!
+                              .bodySmall!
                               .copyWith(fontSize: 13),
                         ),
                       ],

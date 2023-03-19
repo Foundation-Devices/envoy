@@ -22,7 +22,7 @@ class WalletSecurityModal extends StatefulWidget {
       required this.onLastStep,
       this.onDenyBackup,
       this.onConfirmBackup,
-      this.confirmationStep: false})
+      this.confirmationStep = false})
       : super(key: key);
 
   @override
@@ -138,7 +138,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                 child: Text(
                                   stepHeadings[i],
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ),
                               Padding(

@@ -53,8 +53,8 @@ class OnboardingPage extends StatelessWidget {
     this.helperTextBelow,
     this.qrCodeUrBinary,
     this.qrCodeUrCryptoRequest,
-    this.rightFunction: goHome,
-    this.leftFunction: goBack,
+    this.rightFunction = goHome,
+    this.leftFunction = goBack,
     this.right,
   }) : super(key: key);
 

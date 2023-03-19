@@ -44,8 +44,8 @@ class HomePageNotification extends Notification {
       this.rightFunction,
       this.optionsWidget,
       this.rightFunctionIcon,
-      this.modal: false,
-      this.showOptions: false});
+      this.modal = false,
+      this.showOptions = false});
 }
 
 class HomePageCard {

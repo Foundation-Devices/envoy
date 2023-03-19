@@ -53,7 +53,7 @@ class _ManualSetupCreateAndStoreBackupState
                       Text(
                         S().manual_setup_create_and_store_backup_heading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Padding(padding: EdgeInsets.all(12)),
                       Text(
@@ -61,7 +61,7 @@ class _ManualSetupCreateAndStoreBackupState
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
-                            .caption!
+                            .bodySmall!
                             .copyWith(fontSize: 13),
                       ),
                     ],

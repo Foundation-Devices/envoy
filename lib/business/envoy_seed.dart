@@ -100,7 +100,7 @@ class EnvoySeed {
     await LocalStorage().saveSecure(SEED_KEY, seed);
   }
 
-  Future<void> backupData({bool cloud: true}) async {
+  Future<void> backupData({bool cloud = true}) async {
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
       cloud = false;
@@ -120,7 +120,7 @@ class EnvoySeed {
     });
   }
 
-  Future<bool> restoreData({String? seed: null, String? filePath}) async {
+  Future<bool> restoreData({String? seed = null, String? filePath}) async {
     if (seed == null) {
       seed = await get();
     }

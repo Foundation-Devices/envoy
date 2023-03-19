@@ -123,7 +123,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                           ? Text("Choose a word to continue ",
                               style: Theme.of(context)
                                   .textTheme
-                                  .caption
+                                  .bodySmall
                                   ?.copyWith(fontWeight: FontWeight.w400))
                           : Padding(
                               padding: EdgeInsets.symmetric(
@@ -290,7 +290,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 S().manual_setup_generate_seed_verify_seed_quiz_success_success,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: EnvoyColors.teal),
               )
             ],
@@ -306,7 +306,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_error,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: EnvoyColors.darkCopper),
               )
             ],

@@ -54,7 +54,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                       Text(
                         S().manual_setup_import_backup_heading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Padding(padding: EdgeInsets.all(12)),
                       Text(
@@ -62,7 +62,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
-                            .caption!
+                            .bodySmall!
                             .copyWith(fontSize: 13),
                       ),
                     ],

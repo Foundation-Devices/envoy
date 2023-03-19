@@ -14,7 +14,7 @@ class LoaderGhost extends StatefulWidget {
       {Key? key,
       required this.width,
       required this.height,
-      this.diagonal: false})
+      this.diagonal = false})
       : super(key: key);
 
   @override

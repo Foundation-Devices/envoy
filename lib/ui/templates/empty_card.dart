@@ -96,7 +96,7 @@ class EmptyCardButton extends StatelessWidget {
     required this.label,
     required this.onClicked,
     required this.icon,
-    this.shieldShape: false,
+    this.shieldShape = false,
   }) : super(key: key);
 
   @override

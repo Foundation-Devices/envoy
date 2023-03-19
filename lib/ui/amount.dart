@@ -18,7 +18,7 @@ class AmountEntry extends StatefulWidget {
   final int initalSatAmount;
 
   AmountEntry(
-      {this.wallet, this.onAmountChanged, this.initalSatAmount: 0, Key? key})
+      {this.wallet, this.onAmountChanged, this.initalSatAmount = 0, Key? key})
       : super(key: key);
 
   @override
@@ -229,7 +229,7 @@ class NumpadButton extends StatelessWidget {
   final bool backspace;
 
   const NumpadButton(this.text,
-      {Key? key, required this.onTap, this.backspace: false})
+      {Key? key, required this.onTap, this.backspace = false})
       : super(key: key);
 
   @override
@@ -278,7 +278,7 @@ class NumpadButton extends StatelessWidget {
   }
 }
 
-String convertSatsToBtcString(int amountSats, {bool trailingZeroes: false}) {
+String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
   final amountBtc = amountSats / 100000000;
 
   NumberFormat formatter = NumberFormat();
@@ -302,7 +302,7 @@ int convertBtcStringToSats(String amountBtc) {
   return (double.parse(amountBtc) * 100000000).toInt();
 }
 
-String getFormattedAmount(int amountSats, {bool includeUnit: false}) {
+String getFormattedAmount(int amountSats, {bool includeUnit = false}) {
   // TODO: this should be locale dependent?
   NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
 

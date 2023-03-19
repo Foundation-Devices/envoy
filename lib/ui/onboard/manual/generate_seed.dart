@@ -300,7 +300,7 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
-                            .caption!
+                            .bodySmall!
                             .copyWith(fontSize: 13),
                       ),
                     ],

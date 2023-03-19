@@ -229,11 +229,11 @@ class TransactionListTile extends StatelessWidget {
             // Styled as ListTile.title and ListTile.subtitle respectively
             Text(
               getFormattedAmount(transaction.amount),
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             Text(ExchangeRate().getFormattedAmount(transaction.amount),
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                    color: Theme.of(context).textTheme.caption!.color))
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall!.color))
           ],
         ),
       ),
