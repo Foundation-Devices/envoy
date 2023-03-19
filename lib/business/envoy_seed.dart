@@ -123,23 +123,21 @@ class EnvoySeed {
       seed = await get();
     }
 
-    try {
-      if (filePath == null) {
-        return Backup.restore(LocalStorage().prefs, seed!,
-                Settings().envoyServerAddress, Tor())
-            .then((success) {
-          if (success) {
-            LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
-            _restoreSingletons();
-          }
-          return success;
-        });
-      } else {
-        return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
-      }
-    } on Exception catch (e) {
-      print("Error while recovering: " + e.toString());
-      return false;
+    if (filePath == null) {
+      return Backup.restore(
+              LocalStorage().prefs, seed!, Settings().envoyServerAddress, Tor())
+          .then((success) {
+        if (success) {
+          LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
+          _restoreSingletons();
+        }
+        return success;
+      }).catchError((e) {
+        print("Error while recovering: " + e.toString());
+        return false;
+      });
+    } else {
+      return Backup.restoreOffline(LocalStorage().prefs, seed!, filePath);
     }
   }
 
