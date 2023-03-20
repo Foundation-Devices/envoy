@@ -18,7 +18,7 @@ class FeeToggle extends StatefulWidget {
   FeeToggle(
       {Key? key,
       this.onToggled,
-      this.initialIndex: 0,
+      this.initialIndex = 0,
       required this.standardFee,
       required this.boostFee})
       : super(key: key);

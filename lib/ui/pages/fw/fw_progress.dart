@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class FwProgressPage extends ConsumerStatefulWidget {
   bool onboarding;
 
-  FwProgressPage({this.onboarding: true});
+  FwProgressPage({this.onboarding = true});
 
   @override
   ConsumerState<FwProgressPage> createState() => _FwProgressPageState();

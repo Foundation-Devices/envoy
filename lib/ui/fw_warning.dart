@@ -23,7 +23,7 @@ class FwWarning extends StatefulWidget {
 class _FwWarningState extends State<FwWarning> {
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyText2?.copyWith(
+    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
         );
 

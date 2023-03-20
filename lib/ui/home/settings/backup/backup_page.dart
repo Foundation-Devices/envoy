@@ -251,7 +251,7 @@ class AboutText extends StatelessWidget {
 
   const AboutText(
     this.label, {
-    this.dark: false,
+    this.dark = false,
     Key? key,
   }) : super(key: key);
 

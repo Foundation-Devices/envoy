@@ -79,14 +79,14 @@ class QrTab extends StatelessWidget {
                           title,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(color: Colors.white),
                         ),
                         subtitle: Text(
                           subtitle,
                           style: Theme.of(context)
                               .textTheme
-                              .caption!
+                              .bodySmall!
                               .copyWith(color: Colors.white),
                         ),
                       ),

@@ -146,7 +146,7 @@ class CryptoRequest extends UniformResourceWriter {
   // Can embed multiple requests in form of CBOR objects
   List<CborObject> objects = [];
 
-  CryptoRequest({int fragmentLen: 50}) {
+  CryptoRequest({int fragmentLen = 50}) {
     fragmentLength = fragmentLen;
     cborEncoder = inst.encoder;
     generateUuid();

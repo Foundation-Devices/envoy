@@ -73,7 +73,7 @@ class Tor {
     print("Instance of Tor created!");
   }
 
-  Future<int> _getRandomUnusedPort({List<int> excluded: const []}) async {
+  Future<int> _getRandomUnusedPort({List<int> excluded = const []}) async {
     var random = Random.secure();
     int potentialPort = 0;
 

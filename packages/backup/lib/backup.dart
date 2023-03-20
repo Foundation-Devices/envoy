@@ -2,8 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 
 import 'generated_bindings.dart';
@@ -49,9 +51,9 @@ class Backup {
     }
   }
 
-  static perform(SharedPreferences prefs, List<String> keysToBackUp,
-      String seedWords, String serverUrl, Tor tor,
-      {required String path, bool cloud: true}) async {
+  static Future<bool> perform(SharedPreferences prefs,
+      List<String> keysToBackUp, String seedWords, String serverUrl, Tor tor,
+      {required String path, bool cloud = true}) async {
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
       if (prefs.containsKey(key)) {
@@ -60,25 +62,10 @@ class Backup {
     }
 
     if (backupData.isEmpty) {
-      return;
+      return true;
     }
 
-    // Convert map
-    int keysNumber = backupData.length;
-    Pointer<Pointer<Char>> nativeData = nullptr;
-
-    nativeData = calloc(keysNumber * 2);
-
-    int i = 0;
-    for (var key in backupData.keys) {
-      nativeData[i] = key.toNativeUtf8().cast<Char>();
-      nativeData[i + 1] = backupData[key]!.toNativeUtf8().cast<Char>();
-      i += 2;
-    }
-
-    final Pointer<BackupPayload> payload = calloc<BackupPayload>();
-    payload.ref.keys_nr = keysNumber;
-    payload.ref.data = nativeData;
+    Pointer<BackupPayload> payload = getBackupPayloadPointer(backupData);
 
     var lib = NativeLibrary(load("backup_ffi"));
 
@@ -89,16 +76,43 @@ class Backup {
       path.toNativeUtf8().cast(),
     );
 
-    await _goAhead(tor);
+    if (!cloud) {
+      return true;
+    } else {
+      await _goAhead(tor);
 
-    if (cloud) {
-      lib.backup_perform(
-        payload.ref,
-        seedWords.toNativeUtf8().cast<Char>(),
-        serverUrl.toNativeUtf8().cast<Char>(),
-        tor.port,
-      );
+      int torPort = tor.port;
+      return Isolate.run(() async {
+        var lib = NativeLibrary(load("backup_ffi"));
+        Pointer<BackupPayload> payload = getBackupPayloadPointer(backupData);
+
+        return lib.backup_perform(
+          payload.ref,
+          seedWords.toNativeUtf8().cast<Char>(),
+          serverUrl.toNativeUtf8().cast<Char>(),
+          torPort,
+        );
+      });
     }
+  }
+
+  static Pointer<BackupPayload> getBackupPayloadPointer(
+      Map<String, String> backupData) {
+    Pointer<Pointer<Char>> nativeData = nullptr;
+
+    nativeData = calloc(backupData.length * 2);
+
+    int i = 0;
+    for (var key in backupData.keys) {
+      nativeData[i] = key.toNativeUtf8().cast<Char>();
+      nativeData[i + 1] = backupData[key]!.toNativeUtf8().cast<Char>();
+      i += 2;
+    }
+
+    final Pointer<BackupPayload> payload = calloc<BackupPayload>();
+    payload.ref.keys_nr = backupData.length;
+    payload.ref.data = nativeData;
+    return payload;
   }
 
   static bool restoreOffline(

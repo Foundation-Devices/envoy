@@ -113,7 +113,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                     widget.account.name,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle1!
+                                        .titleMedium!
                                         .copyWith(color: Colors.white),
                                   ),
                                   Text(
@@ -121,7 +121,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                         widget.account.deviceSerial),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle2!
+                                        .titleSmall!
                                         .copyWith(color: Colors.white),
                                   ),
                                 ],
@@ -159,7 +159,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                                 "Testnet",
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .subtitle2!
+                                                    .titleSmall!
                                                     .copyWith(
                                                         fontSize: 12,
                                                         color: Colors.white),
@@ -254,7 +254,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                                 includeUnit: true),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5!
+                                                .headlineSmall!
                                                 .copyWith(
                                                     color: EnvoyColors.grey),
                                           ),
@@ -269,7 +269,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                               widget.account.wallet.balance),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2!
+                                              .titleSmall!
                                               .copyWith(
                                                   color: EnvoyColors.grey),
                                         )

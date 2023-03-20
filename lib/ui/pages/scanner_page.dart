@@ -360,6 +360,7 @@ class _ScannerPageState extends State<ScannerPage> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Account already connected"),
       ));
+      return null;
     }, test: (e) => e is AccountAlreadyPaired).then((account) {
       if (account == null) {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));

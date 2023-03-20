@@ -17,7 +17,7 @@ class FiatCurrency {
   final String symbol;
   final int decimalPoints;
 
-  FiatCurrency(this.code, this.symbol, {this.decimalPoints: 2});
+  FiatCurrency(this.code, this.symbol, {this.decimalPoints = 2});
 
   @override
   bool operator ==(Object other) =>

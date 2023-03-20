@@ -29,8 +29,8 @@ class EnvoyToggle extends StatefulWidget {
 
   EnvoyToggle(
       {Key? key,
-      this.width: 500,
-      this.height: 200,
+      this.width = 500,
+      this.height = 200,
       required this.options,
       this.onToggled})
       : super(key: key);

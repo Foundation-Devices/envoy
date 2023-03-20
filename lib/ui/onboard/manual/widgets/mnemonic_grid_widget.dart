@@ -168,7 +168,7 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
     var _suggestions = [];
     TextEditingController controller = _controllers[index];
     controller.addListener(() {
-      overlayState?.setState(() {
+      overlayState.setState(() {
         value = controller.text;
         if (value.length >= 3) {
           _suggestions =
@@ -247,10 +247,10 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
       );
     });
     _animationController!.addListener(() {
-      overlayState!.setState(() {});
+      overlayState.setState(() {});
     });
     // inserting overlay entry
-    overlayState!.insert(_overlayEntry!);
+    overlayState.insert(_overlayEntry!);
     _animationController!.forward();
   }
 

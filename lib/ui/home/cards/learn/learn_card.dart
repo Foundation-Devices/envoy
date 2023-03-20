@@ -51,7 +51,7 @@ class DefaultLearnCard extends StatelessWidget with NavigationCard {
                 Material(
                   color: Colors.transparent,
                   child: TabBar(
-                    labelStyle: Theme.of(context).textTheme.subtitle2,
+                    labelStyle: Theme.of(context).textTheme.titleSmall,
                     indicatorColor: EnvoyColors.darkTeal,
                     labelColor: Colors.black,
                     tabs: [

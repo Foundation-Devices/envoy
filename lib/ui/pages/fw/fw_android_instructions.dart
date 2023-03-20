@@ -11,7 +11,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 //ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {
   bool onboarding;
-  FwAndroidInstructionsPage({this.onboarding: true});
+  FwAndroidInstructionsPage({this.onboarding = true});
 
   @override
   Widget build(BuildContext context) {

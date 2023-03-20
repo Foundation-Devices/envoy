@@ -42,7 +42,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
   Widget build(BuildContext context) {
     final hasPassphrase = EnvoySeed().getWallet()!.hasPassphrase;
 
-    var textStyle = Theme.of(context).textTheme.bodyText2?.copyWith(
+    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
         );
 

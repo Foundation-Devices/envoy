@@ -36,7 +36,7 @@ class _MagicCreateWalletState extends State<MagicCreateWallet> {
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
                     "Enter Your Seed",
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
               ),

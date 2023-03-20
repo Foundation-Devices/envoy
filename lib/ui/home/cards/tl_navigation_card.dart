@@ -15,14 +15,14 @@ mixin TopLevelNavigationCardState<T extends TopLevelNavigationCard>
     on State<T> {
   List<NavigationCard> cardStack = [];
 
-  void push(NavigationCard card, {bool modal: false}) {
+  void push(NavigationCard card, {bool modal = false}) {
     setState(() {
       cardStack.add(card);
     });
     notifyHomePage();
   }
 
-  void pop({int depth: 1}) {
+  void pop({int depth = 1}) {
     setState(() {
       if (depth == -1) {
         cardStack.clear();

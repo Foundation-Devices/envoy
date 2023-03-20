@@ -139,7 +139,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                               Text(
                                 stepsHeadings[step],
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -154,7 +154,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .bodySmall
                                         ?.copyWith(fontSize: 14),
                                   ),
                                 ),
@@ -214,7 +214,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                             Text(
                               S().android_backup_info_heading,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                             Padding(padding: EdgeInsets.all(12)),
                             Text(
@@ -222,7 +222,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
-                                  .caption
+                                  .bodySmall
                                   ?.copyWith(fontSize: 14),
                             ),
                           ],
@@ -264,7 +264,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                 ? S().recovery_scenario_android_subheading
                 : S().recovery_scenario_ios_heading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           Padding(padding: EdgeInsets.all(12)),
           Text(
@@ -272,7 +272,8 @@ class MagicRecoveryInfo extends StatelessWidget {
                 ? S().recovery_scenario_android_subheading
                 : S().recovery_scenario_ios_subheading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
           ),
           Padding(padding: EdgeInsets.all(12)),
           ListTile(
@@ -298,7 +299,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                   : S().recovery_scenario_ios_instructions1,
               textAlign: TextAlign.start,
               style:
-                  Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
             ),
           ),
           ListTile(
@@ -324,7 +325,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                   : S().recovery_scenario_ios_instructions2,
               textAlign: TextAlign.start,
               style:
-                  Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
             ),
           ),
           ListTile(
@@ -348,7 +349,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                   : S().recovery_scenario_ios_instructions3,
               textAlign: TextAlign.start,
               style:
-                  Theme.of(context).textTheme.caption?.copyWith(fontSize: 14),
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
             ),
           ),
         ],
