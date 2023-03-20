@@ -210,14 +210,13 @@ func getSdCardBookmark() -> URL {
     }
 
     var field = UITextField()
-    //adds UITextField with isSecureTextEntry to prevent screenshots
     func makeSecure(window:UIWindow, secure:Bool) {
         if(secure){
+            //adds UITextField with isSecureTextEntry to prevent screenshots
             field.isSecureTextEntry = true
+            field.isOpaque = false
             if(!window.subviews.contains(field)){
                 window.addSubview(field)
-                field.centerYAnchor.constraint(equalTo: window.centerYAnchor).isActive = true
-                field.centerXAnchor.constraint(equalTo: window.centerXAnchor).isActive = true
                 window.layer.superlayer?.addSublayer(field.layer)
                 field.layer.sublayers?.first?.addSublayer(window.layer)
             }
