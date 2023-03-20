@@ -54,7 +54,8 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   void initState() {
     super.initState();
     step = walletGenerated ? 1 : 0;
-    _initiateWalletCreate();
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => _initiateWalletCreate());
   }
 
   void _initiateWalletCreate() async {
@@ -65,24 +66,24 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       await EnvoySeed().generate();
     }
 
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      step = 1;
-    });
-
+    if (!walletGenerated) {
+      await Future.delayed(Duration(seconds: 2));
+      setState(() {
+        step = 1;
+      });
+      _updateProgress();
+      //delay
+    }
     _updateProgress();
-    //delay
     await Future.delayed(Duration(seconds: 4));
     setState(() {
       step = 2;
     });
-
     _updateProgress();
 
     await Future.delayed(Duration(seconds: 2));
-
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return MagicRecoveryInfo();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return MagicRecoveryInfo(skipSuccessScreen: walletGenerated);
     }));
   }
 
@@ -182,7 +183,9 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 }
 
 class MagicRecoveryInfo extends StatelessWidget {
-  const MagicRecoveryInfo({Key? key}) : super(key: key);
+  final bool skipSuccessScreen;
+  const MagicRecoveryInfo({Key? key, this.skipSuccessScreen = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -227,14 +230,18 @@ class MagicRecoveryInfo extends StatelessWidget {
                       )
                     : _iosBackupInfo(context),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return WalletSetupSuccess();
-                      }));
+                      if (skipSuccessScreen) {
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return WalletSetupSuccess();
+                        }));
+                      }
                     },
                   ),
                 ),

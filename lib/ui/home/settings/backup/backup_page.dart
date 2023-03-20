@@ -71,19 +71,18 @@ class _BackupPageState extends State<BackupPage> {
                             dialog: WalletSecurityModal(
                               confirmationStep: true,
                               onLastStep: () => {},
-                              onConfirmBackup: () {
+                              onConfirmBackup: () async {
                                 setState(() {
                                   s.syncToCloud = enabled;
                                   s.store();
                                 });
                                 // Once we copy to non-secure OS backup mechanisms can start working on it
                                 EnvoySeed().copySeedToNonSecure();
-
-                                Navigator.of(context)
+                                Navigator.pop(context);
+                                await Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
                                   return MagicSetupGenerate();
                                 }));
-
                                 setState(() {});
                               },
                               onDenyBackup: () {

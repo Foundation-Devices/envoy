@@ -23,7 +23,7 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
           child: Container(
             child: Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   width: 240,
@@ -34,19 +34,32 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                     animations: ["happy"],
                   ),
                 ),
-                Text(
-                  S().wallet_setup_success_heading,
-                  style: Theme.of(context).textTheme.headline6,
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        S().wallet_setup_success_heading,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Padding(padding: EdgeInsets.all(16)),
+                      Text(
+                        S().wallet_setup_success_subheading,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  S().wallet_setup_success_subheading,
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: OnboardingButton(
+                      label: S().wallet_setup_success_CTA,
+                      onTap: () {
+                        Navigator.of(context)
+                            .popUntil(ModalRoute.withName("/"));
+                      }),
                 ),
-                OnboardingButton(
-                    label: S().wallet_setup_success_CTA,
-                    onTap: () {
-                      Navigator.of(context).popUntil(ModalRoute.withName("/"));
-                    }),
               ],
             ),
           ),
