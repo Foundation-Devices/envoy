@@ -37,6 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
+        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -109,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
+        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1057,7 +1059,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "export_backup_send_CTA2":
             MessageLookupByLibrary.simpleMessage("Discard"),
         "export_seed_modal_12_words_CTA1":
-            MessageLookupByLibrary.simpleMessage("Continue"),
+            MessageLookupByLibrary.simpleMessage("Done"),
         "export_seed_modal_12_words_CTA2":
             MessageLookupByLibrary.simpleMessage("View as QR Code"),
         "export_seed_modal_12_words_modal_subheading":
@@ -1704,6 +1706,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_ios_subheading": MessageLookupByLibrary.simpleMessage(
             "To recover your Envoy wallet, follow these simple instructions."),
         "rtainment": MessageLookupByLibrary.simpleMessage("rtainment"),
+        "settings_amount":
+            MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
+        "settings_biometric": MessageLookupByLibrary.simpleMessage(
+            "Unlock with Biometrics or PIN"),
         "settings_biometric_amount":
             MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
         "settings_biometric_biometric": MessageLookupByLibrary.simpleMessage(
@@ -1713,6 +1719,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_biometric_show_fiat":
             MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
         "settings_biometric_tor":
+            MessageLookupByLibrary.simpleMessage("Connect with Tor"),
+        "settings_electrum":
+            MessageLookupByLibrary.simpleMessage("Connect My Node"),
+        "settings_show_fiat":
+            MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
+        "settings_tor":
             MessageLookupByLibrary.simpleMessage("Connect with Tor"),
         "single_envoy_import_pp_intro_card1_heading":
             MessageLookupByLibrary.simpleMessage("Connect Passport with Envoy"),

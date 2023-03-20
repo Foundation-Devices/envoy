@@ -420,6 +420,16 @@ class S {
     );
   }
 
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -1347,6 +1357,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -6038,10 +6058,10 @@ class S {
     );
   }
 
-  /// `Continue`
+  /// `Done`
   String get export_seed_modal_12_words_CTA1 {
     return Intl.message(
-      'Continue',
+      'Done',
       name: 'export_seed_modal_12_words_CTA1',
       desc: '',
       args: [],
@@ -8947,6 +8967,26 @@ class S {
   }
 
   /// `View Amount in Sats`
+  String get settings_amount {
+    return Intl.message(
+      'View Amount in Sats',
+      name: 'settings_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlock with Biometrics or PIN`
+  String get settings_biometric {
+    return Intl.message(
+      'Unlock with Biometrics or PIN',
+      name: 'settings_biometric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Amount in Sats`
   String get settings_biometric_amount {
     return Intl.message(
       'View Amount in Sats',
@@ -8991,6 +9031,36 @@ class S {
     return Intl.message(
       'Connect with Tor',
       name: 'settings_biometric_tor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect My Node`
+  String get settings_electrum {
+    return Intl.message(
+      'Connect My Node',
+      name: 'settings_electrum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display Fiat Values`
+  String get settings_show_fiat {
+    return Intl.message(
+      'Display Fiat Values',
+      name: 'settings_show_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect with Tor`
+  String get settings_tor {
+    return Intl.message(
+      'Connect with Tor',
+      name: 'settings_tor',
       desc: '',
       args: [],
     );
