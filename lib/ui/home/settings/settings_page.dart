@@ -52,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText(S().envoy_settings_show_fiat),
+                SettingText(S().settings_show_fiat),
                 SettingToggle(() => s.displayFiat() != null, (enabled) {
                   setState(() {
                     s.setDisplayFiat(enabled ? "USD" : null);
@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText(S().envoy_settings_sat_amount),
+                SettingText(S().settings_amount),
                 SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
               ],
             ),
@@ -91,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText(S().envoy_settings_tor_connectivity),
+                SettingText(S().settings_tor),
                 SettingToggle(
                   s.torEnabled,
                   s.setTorEnabled,
@@ -114,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SettingText("Require Biometrics to Unlock"),
+                        SettingText(S().settings_biometric),
                         NeumorphicSwitch(
                             height: 35,
                             value: _useLocalAuth,
@@ -153,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SettingText(S().envoy_settings_custom_electrum_server),
+                SettingText(S().settings_electrum),
                 SettingToggle(() => _customElectrumServerVisible,
                     _customElectrumServerToggled),
               ],

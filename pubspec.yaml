@@ -88,6 +88,7 @@ dependencies:
   local_auth: ^2.1.6
   file_saver: ^0.1.1
   file_picker: ^5.2.5
+  intl_utils: ^2.8.2
 
 dev_dependencies:
   test: any
