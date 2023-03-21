@@ -136,7 +136,6 @@ class EnvoySeed {
               LocalStorage().prefs, seed, Settings().envoyServerAddress, Tor())
           .then((success) {
         if (success) {
-          LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
           _restoreSingletons();
         }
         return success;
@@ -145,11 +144,18 @@ class EnvoySeed {
         return false;
       });
     } else {
-      return Backup.restoreOffline(LocalStorage().prefs, seed, filePath);
+      var success = Backup.restoreOffline(LocalStorage().prefs, seed, filePath);
+      if (success) {
+        _restoreSingletons();
+      }
+
+      return success;
     }
   }
 
   _restoreSingletons() {
+    LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
+
     Settings.restore();
     Devices().restore();
     AccountManager().restore();
