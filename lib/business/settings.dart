@@ -138,7 +138,7 @@ class Settings extends ChangeNotifier {
   @JsonKey(defaultValue: false)
   bool syncToCloudSetting = false;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool get syncToCloud => syncToCloudSetting;
 
   set syncToCloud(bool syncToCloud) {
