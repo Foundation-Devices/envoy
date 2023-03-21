@@ -37,7 +37,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -110,7 +109,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1454,9 +1452,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_verify_seed_12_words_passphrase_warning_modal_heading":
+            MessageLookupByLibrary.simpleMessage("WARNING"),
+        "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink":
+            MessageLookupByLibrary.simpleMessage(
+                "Passphrases are an advanced feature."),
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "WARNING\nPassphrases are an advanced feature.\n\nIf you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
+                "If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
         "manual_setup_verify_seed_12_words_verify_passphrase_modal_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_verify_seed_12_words_verify_passphrase_modal_heading":
