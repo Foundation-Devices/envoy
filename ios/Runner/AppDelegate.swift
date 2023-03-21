@@ -18,6 +18,8 @@ func getSdCardBookmark() -> URL {
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, UIDocumentPickerDelegate, FlutterStreamHandler {
+    
+    let secureTextField = UITextField()
 
     override func application(
             _ application: UIApplication,
@@ -26,10 +28,13 @@ func getSdCardBookmark() -> URL {
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         FlutterEventChannel(name: sdCardEventChannel, binaryMessenger: controller.binaryMessenger)
                 .setStreamHandler(self)
+        
 
         let envoyMethodChannel = FlutterMethodChannel(name: methodChannel,
                 binaryMessenger: controller.binaryMessenger)
-
+ 
+        setUpSecureScreen(window: window)
+        
         envoyMethodChannel.setMethodCallHandler({
             [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
             // Note: this method is invoked on the UI thread.\
@@ -208,25 +213,21 @@ func getSdCardBookmark() -> URL {
 
         eventSink?(url.absoluteString)
     }
-
-    var field = UITextField()
     func makeSecure(window:UIWindow, secure:Bool) {
-        if(secure){
-            //adds UITextField with isSecureTextEntry to prevent screenshots
-            field.isSecureTextEntry = true
-            field.isOpaque = false
-            if(!window.subviews.contains(field)){
-                window.addSubview(field)
-                window.layer.superlayer?.addSublayer(field.layer)
-                field.layer.sublayers?.first?.addSublayer(window.layer)
-            }
-         }else{
-            if(window.subviews.contains(field)){
-                field.isSecureTextEntry = false
-             }
-       }
+        secureTextField.isSecureTextEntry = secure
     }
 
+    func setUpSecureScreen(window: UIWindow?){
+        if let _window = window as? UIWindow {
+            _window.addSubview(secureTextField)
+            secureTextField.centerYAnchor.constraint(equalTo: _window.centerYAnchor).isActive = true
+            secureTextField.centerXAnchor.constraint(equalTo: _window.centerXAnchor).isActive = true
+            _window.layer.superlayer?.addSublayer(secureTextField.layer)
+            secureTextField.layer.sublayers?.first?.addSublayer(_window.layer)
+            secureTextField.isSecureTextEntry = false
+        }
+
+    }
     
     private func accessFolder(url: URL, result: FlutterResult) {
         guard url.startAccessingSecurityScopedResource() else {
