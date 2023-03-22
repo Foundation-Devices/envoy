@@ -1008,6 +1008,8 @@
   "manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA": "Continue",
   "manual_setup_verify_seed_12_words_passphrase_warning_modal_heading": "WARNING",
   "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink": "Passphrases are an advanced feature.",
+  "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_off": "are an advanced feature.",
+  "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_on": "Passphrases ",
   "manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading": "If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.",
   "manual_setup_verify_seed_12_words_verify_passphrase_modal_CTA": "Continue",
   "manual_setup_verify_seed_12_words_verify_passphrase_modal_heading": "Verify Your Passphrase",
