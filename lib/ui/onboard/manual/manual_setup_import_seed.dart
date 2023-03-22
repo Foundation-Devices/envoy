@@ -15,6 +15,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,126 +33,137 @@ class ManualSetupImportSeed extends StatefulWidget {
 class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
   bool hasPassphrase = false;
   String passPhrase = "";
+  int currentPage = 0;
   bool finishSeedEntries = false;
-
+  GlobalKey<MnemonicEntryGridState> _mnemonicEntryGridKey =
+      GlobalKey<MnemonicEntryGridState>();
   List<String> currentWords = [];
 
   @override
   Widget build(BuildContext context) {
-    return OnboardPageBackground(
-      child: Material(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                  child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: Icon(Icons.chevron_left, color: Colors.black),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+    return WillPopScope(
+      onWillPop: () async {
+        return handleBackPress(context);
+      },
+      child: OnboardPageBackground(
+        child: Material(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                    child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: Icon(Icons.chevron_left, color: Colors.black),
+                        onPressed: () async {
+                          if (await handleBackPress(context)) {
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                  Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        S().manual_setup_import_seed_12_words_heading,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      )),
-                  Expanded(
-                      child: Container(
-                    margin: EdgeInsets.only(top: 8),
-                    height: MediaQuery.of(context).size.height * 0.59,
-                    child: MnemonicEntryGrid(
-                        seedLength: widget.seedLength,
-                        onSeedWordAdded: (List<String> words) {
-                          currentWords = words;
-                          bool isValid = currentWords
-                              .map((e) => seed_en.contains(e))
-                              .reduce((value, element) => value && element);
-                          setState(() {
-                            finishSeedEntries = isValid;
-                          });
-                        }),
-                  ))
-                ],
-              )),
-              Column(
-                children: [
-                  Padding(padding: EdgeInsets.all(2)),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        hasPassphrase = !hasPassphrase;
-                        if (hasPassphrase == true) {
-                          showPassphraseWarningDialog(context);
-                        } else {
-                          passPhrase = "";
-                        }
-                      });
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Checkbox(
-                          checkColor: EnvoyColors.white100,
-                          activeColor: EnvoyColors.darkTeal,
-                          value: hasPassphrase,
-                          onChanged: (value) {
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          S().manual_setup_import_seed_12_words_heading,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        )),
+                    Expanded(
+                        child: Container(
+                      margin: EdgeInsets.only(top: 8),
+                      height: MediaQuery.of(context).size.height * 0.59,
+                      child: MnemonicEntryGrid(
+                          key: _mnemonicEntryGridKey,
+                          seedLength: widget.seedLength,
+                          onSeedWordAdded: (List<String> words) {
+                            currentWords = words;
+                            bool isValid = currentWords
+                                .map((e) => seed_en.contains(e))
+                                .reduce((value, element) => value && element);
                             setState(() {
-                              hasPassphrase = value ?? false;
+                              finishSeedEntries = isValid;
                             });
-                            if (value == true) {
-                              showPassphraseWarningDialog(context);
-                            } else {
-                              passPhrase = "";
-                            }
-                          },
-                        ),
-                        Text(
-                          S().manual_setup_import_seed_12_words_checkbox,
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ],
+                          }),
+                    ))
+                  ],
+                )),
+                Column(
+                  children: [
+                    Padding(padding: EdgeInsets.all(2)),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          hasPassphrase = !hasPassphrase;
+                          if (hasPassphrase == true) {
+                            showPassphraseWarningDialog(context);
+                          } else {
+                            passPhrase = "";
+                          }
+                        });
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            checkColor: EnvoyColors.white100,
+                            activeColor: EnvoyColors.darkTeal,
+                            value: hasPassphrase,
+                            onChanged: (value) {
+                              setState(() {
+                                hasPassphrase = value ?? false;
+                              });
+                              if (value == true) {
+                                showPassphraseWarningDialog(context);
+                              } else {
+                                passPhrase = "";
+                              }
+                            },
+                          ),
+                          Text(
+                            S().manual_setup_import_seed_12_words_checkbox,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: IgnorePointer(
-                        ignoring: finishSeedEntries == false,
-                        child: Opacity(
-                          opacity: finishSeedEntries ? 1 : 0.5,
-                          child: OnboardingButton(
-                              label: S().manual_setup_import_seed_12_words_CTA,
-                              onTap: () {
-                                EnvoySeed()
-                                    .create(currentWords,
-                                        passphrase: passPhrase)
-                                    .then((success) {
-                                  if (success) {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                      return ManualSetupImportBackup();
-                                    }));
-                                  } else {
-                                    showInvalidSeedDialog(
-                                      context: context,
-                                    );
-                                  }
-                                });
-                              }),
-                        ),
-                      ))
-                ],
-              )
-            ],
-          ),
-          color: Colors.transparent),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: IgnorePointer(
+                          ignoring: finishSeedEntries == false,
+                          child: Opacity(
+                            opacity: finishSeedEntries ? 1 : 0.5,
+                            child: OnboardingButton(
+                                label:
+                                    S().manual_setup_import_seed_12_words_CTA,
+                                onTap: () {
+                                  EnvoySeed()
+                                      .create(currentWords,
+                                          passphrase: passPhrase)
+                                      .then((success) {
+                                    if (success) {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return ManualSetupImportBackup();
+                                      }));
+                                    } else {
+                                      showInvalidSeedDialog(
+                                        context: context,
+                                      );
+                                    }
+                                  });
+                                }),
+                          ),
+                        ))
+                  ],
+                )
+              ],
+            ),
+            color: Colors.transparent),
+      ),
     );
   }
 
@@ -182,6 +194,20 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
         hasPassphrase = passPhrase.isNotEmpty;
       });
     });
+  }
+
+  Future<bool> handleBackPress(BuildContext context) async {
+    if (MediaQuery.of(context).viewInsets.bottom != 0) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      return false;
+    } else {
+      if (_mnemonicEntryGridKey.currentState?.currentPage != 0) {
+        _mnemonicEntryGridKey.currentState?.showPage(0);
+        return false;
+      } else {
+        return true;
+      }
+    }
   }
 
   Widget _buildPassphraseWarning(BuildContext context) {
