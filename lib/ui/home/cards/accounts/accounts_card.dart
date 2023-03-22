@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_list_fade_edge_shader.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/onboard/splash_screen.dart';
