@@ -100,73 +100,76 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
   @override
   Widget build(BuildContext context) {
-    return OnboardPageBackground(
-      child: Material(
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.topCenter,
-                  height: 280,
-                  width: 280,
-                  child: RiveAnimation.asset(
-                    'assets/envoy_magic_setup.riv',
-                    stateMachines: ["STM"],
-                    onInit: _onRiveInit,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.center,
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: OnboardPageBackground(
+        child: Material(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    height: 280,
+                    width: 280,
+                    child: RiveAnimation.asset(
+                      'assets/envoy_magic_setup.riv',
+                      stateMachines: ["STM"],
+                      onInit: _onRiveInit,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                    ),
                   ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 280,
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    children: [
-                      ...stepsHeadings.map((e) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                stepsHeadings[step],
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 44, horizontal: 22),
-                                child: AnimatedSwitcher(
-                                  duration: Duration(milliseconds: 400),
-                                  child: Text(
-                                    stepSubHeadings[step],
-                                    key: ValueKey<String>(
-                                      stepSubHeadings[step],
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(fontSize: 14),
-                                  ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 280,
+                    child: PageView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      children: [
+                        ...stepsHeadings.map((e) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  stepsHeadings[step],
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                              )
-                            ],
-                          ),
-                        );
-                      }).toList()
-                    ],
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 44, horizontal: 22),
+                                  child: AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 400),
+                                    child: Text(
+                                      stepSubHeadings[step],
+                                      key: ValueKey<String>(
+                                        stepSubHeadings[step],
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(fontSize: 14),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList()
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-          color: Colors.transparent),
+                )
+              ],
+            ),
+            color: Colors.transparent),
+      ),
     );
   }
 
