@@ -7818,6 +7818,30 @@ class S {
     );
   }
 
+  /// `are an advanced feature.`
+  String
+      get manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_off {
+    return Intl.message(
+      'are an advanced feature.',
+      name:
+          'manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_off',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passphrases `
+  String
+      get manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_on {
+    return Intl.message(
+      'Passphrases ',
+      name:
+          'manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_on',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
   String
       get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
