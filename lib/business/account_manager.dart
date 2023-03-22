@@ -20,8 +20,8 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/connectivity_manager.dart';
-
-import 'envoy_seed.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:schedulers/schedulers.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -31,6 +31,9 @@ class AccountManager extends ChangeNotifier {
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
+
+  // SFT-1544: never sync more than 4 account at once
+  final _syncScheduler = ParallelScheduler(4);
 
   static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
@@ -64,42 +67,45 @@ class AccountManager extends ChangeNotifier {
       if (!ConnectivityManager().torEnabled ||
           ConnectivityManager().torCircuitEstablished) {
         for (Account account in accounts) {
-          account.wallet
-              .sync(Settings().electrumAddress(account.wallet.network),
-                  Tor().port)
-              .then((changed) {
-            if (changed != null) {
-              // Let ConnectivityManager know that we've synced
-              if (account.wallet.network == Network.Mainnet) {
-                ConnectivityManager().electrumSuccess();
-              }
-
-              // This does away with amounts "ghosting" in UI
-              if (account.initialSyncCompleted == false) {
-                account.initialSyncCompleted = true;
-                notifyListeners();
-              }
-
-              // Update the Fees singleton
-              Fees().electrumFastRate = account.wallet.feeRateFast;
-              Fees().electrumSlowRate = account.wallet.feeRateSlow;
-
-              // Notify UI if txs or balance changed
-              if (changed) {
-                notifyListeners();
-              }
-
-              storeAccounts();
-            }
-          }, onError: (_) {
-            // Let ConnectivityManager know that we can't reach Electrum
-            if (account.wallet.network == Network.Mainnet) {
-              ConnectivityManager().electrumFailure();
-            }
-          });
+          _syncScheduler.run(() => _syncAccount(account));
         }
       }
     }
+  }
+
+  void _syncAccount(Account account) {
+    account.wallet
+        .sync(Settings().electrumAddress(account.wallet.network), Tor().port)
+        .then((changed) {
+      if (changed != null) {
+        // Let ConnectivityManager know that we've synced
+        if (account.wallet.network == Network.Mainnet) {
+          ConnectivityManager().electrumSuccess();
+        }
+
+        // This does away with amounts "ghosting" in UI
+        if (account.initialSyncCompleted == false) {
+          account.initialSyncCompleted = true;
+          notifyListeners();
+        }
+
+        // Update the Fees singleton
+        Fees().electrumFastRate = account.wallet.feeRateFast;
+        Fees().electrumSlowRate = account.wallet.feeRateSlow;
+
+        // Notify UI if txs or balance changed
+        if (changed) {
+          notifyListeners();
+        }
+
+        storeAccounts();
+      }
+    }, onError: (_) {
+      // Let ConnectivityManager know that we can't reach Electrum
+      if (account.wallet.network == Network.Mainnet) {
+        ConnectivityManager().electrumFailure();
+      }
+    });
   }
 
   Future<Account?> addHotWalletAccount(Wallet wallet) async {
