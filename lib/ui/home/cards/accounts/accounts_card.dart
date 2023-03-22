@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_list_fade_edge_shader.dart';
+import 'package:envoy/ui/home/cards/accounts/fadingEdgeScrollView.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/onboard/splash_screen.dart';
@@ -190,15 +190,15 @@ class _AccountsListState extends State<AccountsList> {
                 scrollController: _scrollController,
                 children: [
                   DragAndDropList(
-                      children: [1, 5, 1, 89, 6, 3, 8, 52, 1, 499, 63]
+                      children: AccountManager()
+                          .accounts
                           .map((e) => DragAndDropItem(
                                   child: Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child: AccountListTile(
-                                  AccountManager().accounts[0],
+                                  e,
                                   onTap: () {
-                                    widget.navigator!.push(AccountCard(
-                                        AccountManager().accounts[0],
+                                    widget.navigator!.push(AccountCard(e,
                                         navigationCallback: widget.navigator));
                                   },
                                 ),
