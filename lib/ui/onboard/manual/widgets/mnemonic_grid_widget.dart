@@ -6,7 +6,6 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum SeedLength {
   MNEMONIC_12,

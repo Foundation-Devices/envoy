@@ -126,7 +126,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                           children: [
                             ...stepHeadings.mapIndexed((i, e) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 22),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 22),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,7 +143,9 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                       child: Text(
                                         stepHeadings[i],
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context).textTheme.titleLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
                                     ),
                                     Padding(
@@ -153,7 +156,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                         child: OnboardingHelperText(
                                           text: stepSubHeadings[i],
                                           onTap: () {
-                                            launchUrl(Uri.parse(Platform.isAndroid
+                                            launchUrl(Uri.parse(Platform
+                                                    .isAndroid
                                                 ? "https://developer.android.com/guide/topics/data/autobackup"
                                                 : "https://support.apple.com/en-us/HT202303"));
                                           },
