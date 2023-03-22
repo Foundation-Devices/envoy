@@ -181,9 +181,9 @@ class _AccountsListState extends State<AccountsList> {
                       Uri.parse("https://foundationdevices.com/passport"));
                 }))
         : Padding(
-            padding: const EdgeInsets.all(20),
-            child: FadeEdgeEffectShader(
-              controller: _scrollController,
+            padding: const EdgeInsets.all(20).add(EdgeInsets.only(bottom: 12)),
+            child: FadingEdgeScrollView.fromScrollView(
+              scrollController: _scrollController,
               child: DragAndDropLists(
                 constrainDraggingAxis: false,
                 removeTopPadding: true,
