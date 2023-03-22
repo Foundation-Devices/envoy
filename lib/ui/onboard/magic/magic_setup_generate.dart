@@ -106,20 +106,6 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
             slivers: [
               SliverToBoxAdapter(
                 child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.chevron_left, color: Colors.black),
-                    onPressed: () {
-                      // stateMachineController?.findInput<bool>('showKey')?.change(false);
-                      // stateMachineController?.findInput<bool>('showLock')?.change(true);
-                      // stateMachineController?.findInput<bool>('showShield')?.change(false);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
                   alignment: Alignment.topCenter,
                   height: 280,
                   width: 280,
@@ -195,7 +181,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
     }
     _pageController.animateToPage(step,
-        duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+        duration: Duration(milliseconds: 580), curve: Curves.easeInOut);
   }
 
   @override
