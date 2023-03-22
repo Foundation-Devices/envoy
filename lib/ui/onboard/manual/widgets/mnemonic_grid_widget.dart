@@ -25,10 +25,10 @@ class MnemonicEntryGrid extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<MnemonicEntryGrid> createState() => _MnemonicEntryGridState();
+  State<MnemonicEntryGrid> createState() => MnemonicEntryGridState();
 }
 
-class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
+class MnemonicEntryGridState extends State<MnemonicEntryGrid>
     with TickerProviderStateMixin {
   AnimationController? _animationController;
   double _suggestionOverlayHeight = 50;
@@ -92,6 +92,11 @@ class _MnemonicEntryGridState extends State<MnemonicEntryGrid>
         )
       ],
     );
+  }
+
+  showPage(int page) {
+    _pageController.animateToPage(page,
+        duration: Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
   Widget _buildMnemonicView(int page, BuildContext context) {

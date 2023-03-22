@@ -44,18 +44,27 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     S().magic_setup_send_backup_to_envoy_server_subheading,
   ];
 
+  bool isRiveInitialized = false;
+
   _onRiveInit(Artboard artboard) {
     stateMachineController =
         StateMachineController.fromArtboard(artboard, 'STM');
     artboard.addController(stateMachineController!);
+    if (walletGenerated) {
+      stateMachineController?.findInput<bool>('ShowKey')?.change(false);
+      stateMachineController?.findInput<bool>('showLock')?.change(true);
+      stateMachineController?.findInput<bool>('showShield')?.change(false);
+    }
+    if (!isRiveInitialized) {
+      _initiateWalletCreate();
+      isRiveInitialized = true;
+    }
   }
 
   @override
   void initState() {
     super.initState();
     step = walletGenerated ? 1 : 0;
-    WidgetsBinding.instance
-        .addPostFrameCallback((timeStamp) => _initiateWalletCreate());
   }
 
   void _initiateWalletCreate() async {
@@ -68,9 +77,10 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
     if (!walletGenerated) {
       await Future.delayed(Duration(seconds: 2));
-      setState(() {
-        step = 1;
-      });
+      if (mounted)
+        setState(() {
+          step = 1;
+        });
       _updateProgress();
       //delay
     }
@@ -82,6 +92,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     _updateProgress();
 
     await Future.delayed(Duration(seconds: 2));
+
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return MagicRecoveryInfo(skipSuccessScreen: walletGenerated);
     }));
@@ -89,101 +100,103 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
   @override
   Widget build(BuildContext context) {
-    return OnboardPageBackground(
-      child: Material(
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.chevron_left, color: Colors.black),
-                    onPressed: () {
-                      // stateMachineController?.findInput<bool>('showKey')?.change(false);
-                      // stateMachineController?.findInput<bool>('showLock')?.change(true);
-                      // stateMachineController?.findInput<bool>('showShield')?.change(false);
-                      Navigator.pop(context);
-                    },
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: OnboardPageBackground(
+        child: Material(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    height: 280,
+                    width: 280,
+                    child: RiveAnimation.asset(
+                      'assets/envoy_magic_setup.riv',
+                      stateMachines: ["STM"],
+                      onInit: _onRiveInit,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                    ),
                   ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.topCenter,
-                  height: 280,
-                  width: 280,
-                  child: RiveAnimation.asset(
-                    'assets/envoy_magic_setup.riv',
-                    stateMachines: ["STM"],
-                    onInit: _onRiveInit,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.center,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 280,
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    children: [
-                      ...stepsHeadings.map((e) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                stepsHeadings[step],
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 44, horizontal: 22),
-                                child: AnimatedSwitcher(
-                                  duration: Duration(milliseconds: 400),
-                                  child: Text(
-                                    stepSubHeadings[step],
-                                    key: ValueKey<String>(
-                                      stepSubHeadings[step],
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(fontSize: 14),
-                                  ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 280,
+                    child: PageView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      children: [
+                        ...stepsHeadings.map((e) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  stepsHeadings[step],
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                              )
-                            ],
-                          ),
-                        );
-                      }).toList()
-                    ],
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 44, horizontal: 22),
+                                  child: AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 400),
+                                    child: Text(
+                                      stepSubHeadings[step],
+                                      key: ValueKey<String>(
+                                        stepSubHeadings[step],
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(fontSize: 14),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList()
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-          color: Colors.transparent),
+                )
+              ],
+            ),
+            color: Colors.transparent),
+      ),
     );
   }
 
   //Update page view and state machine
-  _updateProgress() {
+  _updateProgress() async {
+    if (walletGenerated) {
+      stateMachineController?.findInput<bool>('ShowKey')?.change(step == 0);
+      stateMachineController?.findInput<bool>('showLock')?.change(step == 1);
+      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
+    } else {
+      stateMachineController?.findInput<bool>('showLock')?.change(step != 2);
+      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
+    }
     _pageController.animateToPage(step,
-        duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
-    stateMachineController?.findInput<bool>('showLock')?.change(step != 2);
-    stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
+        duration: Duration(milliseconds: 580), curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    stateMachineController?.dispose();
+    super.dispose();
   }
 }
 
 class MagicRecoveryInfo extends StatelessWidget {
   final bool skipSuccessScreen;
+
   const MagicRecoveryInfo({Key? key, this.skipSuccessScreen = false})
       : super(key: key);
 
@@ -195,13 +208,16 @@ class MagicRecoveryInfo extends StatelessWidget {
       child: Material(
           child: Container(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 180,
-                  width: 180,
+                Container(
+                  child: Image.asset(
+                    "assets/exclamation_icon.png",
+                    height: 180,
+                    width: 180,
+                  ),
+                  height: 250,
                 ),
                 isAndroid
                     ? Container(

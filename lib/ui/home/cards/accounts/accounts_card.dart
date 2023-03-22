@@ -84,20 +84,29 @@ class AccountsCardState extends State<AccountsCard>
       navigator.push(AccountsList(navigator, _showAddAccountPage));
     }
 
-    return IndexedTransitionSwitcher(
-      children: cardStack,
-      index: cardStack.length - 1,
-      transitionBuilder: (
-        Widget child,
-        Animation<double> primaryAnimation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return FadeThroughTransition(
-          animation: primaryAnimation,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
-        );
+    return WillPopScope(
+      onWillPop: () async {
+        if (cardStack.length > 1) {
+          pop();
+          return false;
+        }
+        return true;
       },
+      child: IndexedTransitionSwitcher(
+        children: cardStack,
+        index: cardStack.length - 1,
+        transitionBuilder: (
+          Widget child,
+          Animation<double> primaryAnimation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
+      ),
     );
   }
 

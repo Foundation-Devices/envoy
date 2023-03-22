@@ -163,7 +163,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
                           Navigator.pop(context);
-                          runApp(EnvoyApp());
+                          initiateAuth();
                         },
                       ),
                     ),

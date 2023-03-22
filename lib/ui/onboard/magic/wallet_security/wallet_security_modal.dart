@@ -99,7 +99,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
       child: Scrollbar(
         child: SingleChildScrollView(
           child: Container(
-            height: 600,
+            width: MediaQuery.of(context).size.width * 0.85,
+            height: MediaQuery.of(context).size.height * 0.75,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,61 +117,71 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                     ),
                   ),
                 ),
-                Flexible(
-                  child: PageView(
-                    controller: _pageController,
+                Expanded(
+                  child: Column(
                     children: [
-                      ...stepHeadings.mapIndexed((i, e) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 22),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 180,
-                                child: stepIllustration[i],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 22, vertical: 12),
-                                child: Text(
-                                  stepHeadings[i],
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                      Expanded(
+                        child: PageView(
+                          controller: _pageController,
+                          children: [
+                            ...stepHeadings.mapIndexed((i, e) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 22),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 180,
+                                      child: stepIllustration[i],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 22, vertical: 12),
+                                      child: Text(
+                                        stepHeadings[i],
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 22, vertical: 14),
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(milliseconds: 400),
+                                        child: OnboardingHelperText(
+                                          text: stepSubHeadings[i],
+                                          onTap: () {
+                                            launchUrl(Uri.parse(Platform
+                                                    .isAndroid
+                                                ? "https://developer.android.com/guide/topics/data/autobackup"
+                                                : "https://support.apple.com/en-us/HT202303"));
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 22, vertical: 14),
-                                child: AnimatedSwitcher(
-                                  duration: Duration(milliseconds: 400),
-                                  child: OnboardingHelperText(
-                                    text: stepSubHeadings[i],
-                                    onTap: () {
-                                      launchUrl(Uri.parse(Platform.isAndroid
-                                          ? "https://developer.android.com/guide/topics/data/autobackup"
-                                          : "https://support.apple.com/en-us/HT202303"));
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList()
+                              );
+                            }).toList()
+                          ],
+                        ),
+                      ),
+                      DotsIndicator(
+                        totalPages: stepHeadings.length,
+                        pageController: _pageController,
+                      ),
                     ],
                   ),
                 ),
-                DotsIndicator(
-                  totalPages: stepHeadings.length,
-                  pageController: _pageController,
-                ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 48, vertical: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
                   child: Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 14),
                       child: Column(
                         children: [
                           AnimatedCrossFade(
