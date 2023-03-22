@@ -1457,6 +1457,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink":
             MessageLookupByLibrary.simpleMessage(
                 "Passphrases are an advanced feature."),
+        "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_off":
+            MessageLookupByLibrary.simpleMessage("are an advanced feature."),
+        "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_on":
+            MessageLookupByLibrary.simpleMessage("Passphrases "),
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase."),
