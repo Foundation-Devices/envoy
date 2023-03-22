@@ -263,7 +263,6 @@ class _FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
       _isScrolledToEnd = offset >= maxOffset;
       _isScrolledToStart = offset <= minOffset;
     }
-  print("CALLED ${_isScrolledToStart} ${_isScrolledToEnd} }");
     return ShaderMask(
       shaderCallback: (bounds) => LinearGradient(
         begin: _gradientStart,
