@@ -37,6 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
+        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -109,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
+        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1476,14 +1478,28 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Passphrases are case and space sensitive. Enter with care."),
         "manual_toggle_off_autobackup":
             MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_off_automatic_backups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_off_disabled_for_manual_seed_configuration":
+            MessageLookupByLibrary.simpleMessage(
+                "Disabled for Manual Seed Configuration "),
         "manual_toggle_off_download_backup_file":
             MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_off_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
         "manual_toggle_off_view_seed_words":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_off_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
         "manual_toggle_on_seed_backedup_android_2_hours_ago":
             MessageLookupByLibrary.simpleMessage(
                 "2 hours ago to Foundation servers"),
+        "manual_toggle_on_seed_backedup_android_auto_backup_coming_soon_beta":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic backup toggling coming soon"),
         "manual_toggle_on_seed_backedup_android_autobackups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_on_seed_backedup_android_automatic_backups":
             MessageLookupByLibrary.simpleMessage("Automatic Backups"),
         "manual_toggle_on_seed_backedup_android_backup_now":
             MessageLookupByLibrary.simpleMessage("Backup Now"),
@@ -1504,7 +1520,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Wallet Seed"),
         "manual_toggle_on_seed_backedup_iOS_2_hours_ago":
             MessageLookupByLibrary.simpleMessage(
-                "2 hours ago to Foundation servers"),
+                "2 hours ago to Foundation Servers"),
+        "manual_toggle_on_seed_backedup_iOS_auto_backup_coming_soon":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic backup toggling coming soon"),
         "manual_toggle_on_seed_backedup_iOS_auto_backups":
             MessageLookupByLibrary.simpleMessage("Automatic Backups"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
@@ -1518,9 +1537,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
         "manual_toggle_on_seed_backedup_iOS_wallet_data":
-            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
         "manual_toggle_on_seed_backedup_iOS_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Wallet Seed"),
+        "manual_toggle_on_seed_backedup_pending_android_auto_backup_coming_soon_beta":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic backup toggling coming soon"),
+        "manual_toggle_on_seed_backedup_pending_android_automatic_backups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
+        "manual_toggle_on_seed_backedup_pending_iOS_automatic_backups":
+            MessageLookupByLibrary.simpleMessage("Automatic Backups"),
         "manual_toggle_on_seed_not_backedup_android_autobackups":
             MessageLookupByLibrary.simpleMessage("Automatic Backups"),
         "manual_toggle_on_seed_not_backedup_android_backup_now":
@@ -1568,6 +1594,39 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_iOS_wallet_data":
             MessageLookupByLibrary.simpleMessage("Wallet Data"),
         "manual_toggle_on_seed_not_backedup_iOS_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("Wallet seed"),
+        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_pending_android_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending Android Auto Backup (once daily)"),
+        "manual_toggle_on_seed_not_backedup_pending_android_view_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_pending_android_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_pending_android_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_auto_backup_coming_soon_beta":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatic backup toggling coming soon"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_backup_now":
+            MessageLookupByLibrary.simpleMessage("Back Up Now"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_data_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to Foundation servers"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_download_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Download Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup":
+            MessageLookupByLibrary.simpleMessage(
+                "Pending backup to iCloud Keychain"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_view_wallet_seed":
+            MessageLookupByLibrary.simpleMessage("View Wallet Seed"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_wallet_data":
+            MessageLookupByLibrary.simpleMessage("Wallet Data"),
+        "manual_toggle_on_seed_not_backedup_pending_iOS_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Wallet seed"),
         "menu_about": MessageLookupByLibrary.simpleMessage("ABOUT"),
         "menu_backups": MessageLookupByLibrary.simpleMessage("BACKUPS"),

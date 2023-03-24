@@ -12,9 +12,12 @@ class SettingToggle extends StatefulWidget {
   final bool Function() getter;
   final Color inactiveColor;
   final int delay;
+  final bool enabled;
 
   SettingToggle(this.getter, this.setter,
-      {this.delay = 0, this.inactiveColor = EnvoyColors.grey15});
+      {this.delay = 0,
+      this.inactiveColor = EnvoyColors.grey15,
+      this.enabled = true});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
@@ -30,28 +33,31 @@ class _SettingToggleState extends State<SettingToggle> {
 
   @override
   Widget build(BuildContext context) {
-    return NeumorphicSwitch(
-        height: 35,
-        value: widget.getter(),
-        style: NeumorphicSwitchStyle(
-            inactiveThumbColor: EnvoyColors.whitePrint,
-            inactiveTrackColor: widget.inactiveColor,
-            activeThumbColor: EnvoyColors.whitePrint,
-            activeTrackColor: EnvoyColors.darkTeal,
-            disableDepth: true),
-        onChanged: (enabled) {
-          if (widget.delay > 0) {
-            _timer?.cancel();
-            _timer = Timer(Duration(seconds: widget.delay), () {
+    return IgnorePointer(
+      ignoring: !widget.enabled,
+      child: NeumorphicSwitch(
+          height: 35,
+          value: widget.getter(),
+          style: NeumorphicSwitchStyle(
+              inactiveThumbColor: EnvoyColors.whitePrint,
+              inactiveTrackColor: widget.inactiveColor,
+              activeThumbColor: EnvoyColors.whitePrint,
+              activeTrackColor: EnvoyColors.darkTeal,
+              disableDepth: true),
+          onChanged: (enabled) {
+            if (widget.delay > 0) {
+              _timer?.cancel();
+              _timer = Timer(Duration(seconds: widget.delay), () {
+                setState(() {
+                  widget.setter(enabled);
+                });
+              });
+            } else {
               setState(() {
                 widget.setter(enabled);
               });
-            });
-          } else {
-            setState(() {
-              widget.setter(enabled);
-            });
-          }
-        });
+            }
+          }),
+    );
   }
 }
