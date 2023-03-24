@@ -53,50 +53,62 @@ class _BackupPageState extends State<BackupPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SettingText(S().manual_toggle_off_autobackup),
-                    SettingToggle(() => s.syncToCloud, (enabled) {
-                      if (!enabled) {
-                        setState(() {
-                          s.syncToCloud = enabled;
-                          s.store();
+                    SettingToggle(
+                      () => s.syncToCloud,
+                      (enabled) {
+                        if (!enabled) {
+                          setState(() {
+                            s.syncToCloud = enabled;
+                            s.store();
 
-                          // Remove file from reach of OS backup mechanism
-                          // Note this doesn't mean seed that's already backed up will be immediately removed
-                          EnvoySeed().removeSeedFromNonSecure();
-                        });
-                      }
+                            // Remove file from reach of OS backup mechanism
+                            // Note this doesn't mean seed that's already backed up will be immediately removed
+                            EnvoySeed().removeSeedFromNonSecure();
+                          });
+                        }
 
-                      if (enabled) {
-                        showEnvoyDialog(
-                            context: context,
-                            dialog: WalletSecurityModal(
-                              confirmationStep: true,
-                              onLastStep: () => {},
-                              onConfirmBackup: () async {
-                                setState(() {
-                                  s.syncToCloud = enabled;
-                                  s.store();
-                                });
-                                // Once we copy to non-secure OS backup mechanisms can start working on it
-                                EnvoySeed().copySeedToNonSecure();
-                                Navigator.pop(context);
-                                await Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return MagicSetupGenerate();
-                                }));
-                                setState(() {});
-                              },
-                              onDenyBackup: () {
-                                //TODO: disable auto-backup
-                                setState(() {
-                                  s.syncToCloud = false;
-                                  s.store();
-                                });
-                                Navigator.pop(context);
-                              },
-                            ));
-                      }
-                    }),
+                        if (enabled) {
+                          showEnvoyDialog(
+                              context: context,
+                              dialog: WalletSecurityModal(
+                                confirmationStep: true,
+                                onLastStep: () => {},
+                                onConfirmBackup: () async {
+                                  setState(() {
+                                    s.syncToCloud = enabled;
+                                    s.store();
+                                  });
+                                  // Once we copy to non-secure OS backup mechanisms can start working on it
+                                  EnvoySeed().copySeedToNonSecure();
+                                  Navigator.pop(context);
+                                  await Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return MagicSetupGenerate();
+                                  }));
+                                  setState(() {});
+                                },
+                                onDenyBackup: () {
+                                  //TODO: disable auto-backup
+                                  setState(() {
+                                    s.syncToCloud = false;
+                                    s.store();
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ));
+                        }
+                      },
+                      enabled: false,
+                    ),
                   ],
+                ),
+                SettingText(
+                  s.syncToCloud
+                      ? S()
+                          .manual_toggle_on_seed_backedup_iOS_auto_backup_coming_soon
+                      : S()
+                          .manual_toggle_off_disabled_for_manual_seed_configuration,
+                  color: EnvoyColors.grey,
                 ),
                 AnimatedContainer(
                   duration: Duration(milliseconds: 200),

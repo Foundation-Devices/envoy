@@ -70,6 +70,8 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -413,6 +415,16 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
       desc: '',
       args: [],
     );
@@ -1345,6 +1357,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -7906,11 +7928,41 @@ class S {
     );
   }
 
+  /// `Automatic Backups`
+  String get manual_toggle_off_automatic_backups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_off_automatic_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disabled for Manual Seed Configuration `
+  String get manual_toggle_off_disabled_for_manual_seed_configuration {
+    return Intl.message(
+      'Disabled for Manual Seed Configuration ',
+      name: 'manual_toggle_off_disabled_for_manual_seed_configuration',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Download Wallet Data`
   String get manual_toggle_off_download_backup_file {
     return Intl.message(
       'Download Wallet Data',
       name: 'manual_toggle_off_download_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get manual_toggle_off_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'manual_toggle_off_download_wallet_data',
       desc: '',
       args: [],
     );
@@ -7926,6 +7978,16 @@ class S {
     );
   }
 
+  /// `View Wallet Seed`
+  String get manual_toggle_off_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_off_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `2 hours ago to Foundation servers`
   String get manual_toggle_on_seed_backedup_android_2_hours_ago {
     return Intl.message(
@@ -7936,11 +7998,33 @@ class S {
     );
   }
 
+  /// `Automatic backup toggling coming soon`
+  String
+      get manual_toggle_on_seed_backedup_android_auto_backup_coming_soon_beta {
+    return Intl.message(
+      'Automatic backup toggling coming soon',
+      name:
+          'manual_toggle_on_seed_backedup_android_auto_backup_coming_soon_beta',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Automatic Backups`
   String get manual_toggle_on_seed_backedup_android_autobackups {
     return Intl.message(
       'Automatic Backups',
       name: 'manual_toggle_on_seed_backedup_android_autobackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_backedup_android_automatic_backups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_backedup_android_automatic_backups',
       desc: '',
       args: [],
     );
@@ -8026,11 +8110,21 @@ class S {
     );
   }
 
-  /// `2 hours ago to Foundation servers`
+  /// `2 hours ago to Foundation Servers`
   String get manual_toggle_on_seed_backedup_iOS_2_hours_ago {
     return Intl.message(
-      '2 hours ago to Foundation servers',
+      '2 hours ago to Foundation Servers',
       name: 'manual_toggle_on_seed_backedup_iOS_2_hours_ago',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic backup toggling coming soon`
+  String get manual_toggle_on_seed_backedup_iOS_auto_backup_coming_soon {
+    return Intl.message(
+      'Automatic backup toggling coming soon',
+      name: 'manual_toggle_on_seed_backedup_iOS_auto_backup_coming_soon',
       desc: '',
       args: [],
     );
@@ -8096,10 +8190,10 @@ class S {
     );
   }
 
-  /// `Wallet Data`
+  /// `Automatic Backups`
   String get manual_toggle_on_seed_backedup_iOS_wallet_data {
     return Intl.message(
-      'Wallet Data',
+      'Automatic Backups',
       name: 'manual_toggle_on_seed_backedup_iOS_wallet_data',
       desc: '',
       args: [],
@@ -8111,6 +8205,38 @@ class S {
     return Intl.message(
       'Wallet Seed',
       name: 'manual_toggle_on_seed_backedup_iOS_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic backup toggling coming soon`
+  String
+      get manual_toggle_on_seed_backedup_pending_android_auto_backup_coming_soon_beta {
+    return Intl.message(
+      'Automatic backup toggling coming soon',
+      name:
+          'manual_toggle_on_seed_backedup_pending_android_auto_backup_coming_soon_beta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_backedup_pending_android_automatic_backups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_backedup_pending_android_automatic_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic Backups`
+  String get manual_toggle_on_seed_backedup_pending_iOS_automatic_backups {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'manual_toggle_on_seed_backedup_pending_iOS_automatic_backups',
       desc: '',
       args: [],
     );
@@ -8321,6 +8447,162 @@ class S {
     return Intl.message(
       'Wallet seed',
       name: 'manual_toggle_on_seed_not_backedup_iOS_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to Foundation servers`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup {
+    return Intl.message(
+      'Pending backup to Foundation servers',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_android_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_android_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Android Auto Backup (once daily)`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
+    return Intl.message(
+      'Pending Android Auto Backup (once daily)',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_android_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_android_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Data`
+  String get manual_toggle_on_seed_not_backedup_pending_android_wallet_data {
+    return Intl.message(
+      'Wallet Data',
+      name: 'manual_toggle_on_seed_not_backedup_pending_android_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Seed`
+  String get manual_toggle_on_seed_not_backedup_pending_android_wallet_seed {
+    return Intl.message(
+      'Wallet Seed',
+      name: 'manual_toggle_on_seed_not_backedup_pending_android_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic backup toggling coming soon`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_iOS_auto_backup_coming_soon_beta {
+    return Intl.message(
+      'Automatic backup toggling coming soon',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_iOS_auto_backup_coming_soon_beta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back Up Now`
+  String get manual_toggle_on_seed_not_backedup_pending_iOS_backup_now {
+    return Intl.message(
+      'Back Up Now',
+      name: 'manual_toggle_on_seed_not_backedup_pending_iOS_backup_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to Foundation servers`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_iOS_data_pending_backup {
+    return Intl.message(
+      'Pending backup to Foundation servers',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_iOS_data_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_iOS_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_iOS_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to iCloud Keychain`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
+    return Intl.message(
+      'Pending backup to iCloud Keychain',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get manual_toggle_on_seed_not_backedup_pending_iOS_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'manual_toggle_on_seed_not_backedup_pending_iOS_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet Data`
+  String get manual_toggle_on_seed_not_backedup_pending_iOS_wallet_data {
+    return Intl.message(
+      'Wallet Data',
+      name: 'manual_toggle_on_seed_not_backedup_pending_iOS_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet seed`
+  String get manual_toggle_on_seed_not_backedup_pending_iOS_wallet_seed {
+    return Intl.message(
+      'Wallet seed',
+      name: 'manual_toggle_on_seed_not_backedup_pending_iOS_wallet_seed',
       desc: '',
       args: [],
     );
