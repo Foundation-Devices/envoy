@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_list_fade_edge_shader.dart';
+import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/onboard/splash_screen.dart';
@@ -181,9 +181,10 @@ class _AccountsListState extends State<AccountsList> {
                       Uri.parse("https://foundationdevices.com/passport"));
                 }))
         : Padding(
-            padding: const EdgeInsets.all(20),
-            child: FadeEdgeEffectShader(
-              controller: _scrollController,
+            padding:
+                const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
+            child: FadingEdgeScrollView.fromScrollView(
+              scrollController: _scrollController,
               child: DragAndDropLists(
                 constrainDraggingAxis: false,
                 removeTopPadding: true,
