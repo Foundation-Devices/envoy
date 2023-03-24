@@ -977,7 +977,7 @@
   "manual_setup_generate_seed_write_words_CTA": "Done",
   "manual_setup_generate_seed_write_words_heading": "Write Down these 12 Words",
   "manual_setup_import_backup_CTA1": "Create New Envoy Backup",
-  "manual_setup_import_backup_CTA2": "Import envoy Backup",
+  "manual_setup_import_backup_CTA2": "Import Envoy Backup",
   "manual_setup_import_backup_heading": "Import Envoy Backup",
   "manual_setup_import_backup_subheading": "Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file.",
   "manual_setup_import_existing_backup_CTA": "Choose Destination",

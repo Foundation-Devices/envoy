@@ -7502,10 +7502,10 @@ class S {
     );
   }
 
-  /// `Import envoy Backup`
+  /// `Import Envoy Backup`
   String get manual_setup_import_backup_CTA2 {
     return Intl.message(
-      'Import envoy Backup',
+      'Import Envoy Backup',
       name: 'manual_setup_import_backup_CTA2',
       desc: '',
       args: [],

@@ -1391,7 +1391,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_import_backup_CTA1":
             MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
         "manual_setup_import_backup_CTA2":
-            MessageLookupByLibrary.simpleMessage("Import envoy Backup"),
+            MessageLookupByLibrary.simpleMessage("Import Envoy Backup"),
         "manual_setup_import_backup_heading":
             MessageLookupByLibrary.simpleMessage("Import Envoy Backup"),
         "manual_setup_import_backup_subheading":
