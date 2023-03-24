@@ -91,6 +91,14 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SettingText("Allow Screenshots"),
+                SettingToggle(s.allowScreenshots, s.setAllowScreenshots),
+              ],
+            ),
+            Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 SettingText(S().settings_tor),
                 SettingToggle(
                   s.torEnabled,

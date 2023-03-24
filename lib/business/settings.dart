@@ -145,6 +145,17 @@ class Settings extends ChangeNotifier {
     syncToCloudSetting = syncToCloud;
   }
 
+  @JsonKey(defaultValue: false)
+  bool allowScreenshotsSetting = false;
+
+  bool allowScreenshots() {
+    return allowScreenshotsSetting;
+  }
+
+  setAllowScreenshots(bool allowScreenshots) {
+    allowScreenshotsSetting = allowScreenshots;
+  }
+
   static final Settings _instance = Settings._internal();
 
   factory Settings() {

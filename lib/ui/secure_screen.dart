@@ -1,0 +1,19 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import 'package:flutter/services.dart';
+import 'package:envoy/business/settings.dart';
+
+final _platformChannel = MethodChannel('envoy');
+final _screenSecureMethod = "make_screen_secure";
+
+Future enableSecureScreen() async {
+  if (!Settings().allowScreenshots())
+    await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": true});
+}
+
+Future disableSecureScreen() async {
+  if (!Settings().allowScreenshots())
+    await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
+}
