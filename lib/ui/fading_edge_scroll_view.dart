@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: BSD-3-Clause
+
+// Based on https://github.com/mponkin/fading_edge_scrollview
 
 import 'package:flutter/material.dart';
 
-//Based on https://github.com/mponkin/fading_edge_scrollview
 class FadingEdgeScrollView extends StatefulWidget {
   /// child widget
   final Widget child;
