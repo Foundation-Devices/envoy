@@ -4,11 +4,11 @@
 
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/secure_screen.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'export_seed_modal_words.dart';
@@ -20,21 +20,16 @@ class ExportSeedModalQrCode extends StatefulWidget {
   State<ExportSeedModalQrCode> createState() => _ExportSeedModalQrCodeState();
 }
 
-Future enableSecureScreen(bool secure) async {
-  final _platform = MethodChannel('envoy');
-  await _platform.invokeMethod("make_screen_secure", {"secure": secure});
-}
-
 class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
   @override
   void initState() {
     super.initState();
-    enableSecureScreen(true);
+    enableSecureScreen();
   }
 
   @override
   void dispose() {
-    enableSecureScreen(false);
+    disableSecureScreen();
     super.dispose();
   }
 
@@ -115,7 +110,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     EnvoySeed().get().then((value) async {
-                      enableSecureScreen(true);
+                      enableSecureScreen();
                       List<String> seed = value!.split(" ");
 
                       await showEnvoyDialog(
@@ -124,7 +119,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                             seed: seed,
                             hasPassphrase: hasPassphrase,
                           ));
-                      enableSecureScreen(false);
+                      disableSecureScreen();
                     });
                   },
                 ),
