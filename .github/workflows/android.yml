@@ -4,7 +4,9 @@
 
 name: Android build
 
-on: workflow_dispatch
+on:
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-android:
