@@ -37,6 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
+        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -109,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
+        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1645,13 +1647,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_existing_device_address_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support."),
+        "pair_existing_device_intro_CTA":
+            MessageLookupByLibrary.simpleMessage("Get Started"),
         "pair_existing_device_intro_cta":
             MessageLookupByLibrary.simpleMessage("Get Started"),
         "pair_existing_device_intro_heading":
             MessageLookupByLibrary.simpleMessage("Connect Passport with Envoy"),
         "pair_existing_device_intro_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "On Passport, select Connect Wallet > Envoy\n\nIf you want to use Envoy for firmware updates only, feel free to skip this step"),
+                "On Passport, select Manage Account > \nConnect Wallet > Envoy"),
         "pair_existing_device_qr_code_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "pair_existing_device_qr_code_heading":

@@ -70,6 +70,8 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -413,6 +415,16 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
       desc: '',
       args: [],
     );
@@ -1345,6 +1357,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -8711,6 +8733,16 @@ class S {
   }
 
   /// `Get Started`
+  String get pair_existing_device_intro_CTA {
+    return Intl.message(
+      'Get Started',
+      name: 'pair_existing_device_intro_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Started`
   String get pair_existing_device_intro_cta {
     return Intl.message(
       'Get Started',
@@ -8730,10 +8762,10 @@ class S {
     );
   }
 
-  /// `On Passport, select Connect Wallet > Envoy\n\nIf you want to use Envoy for firmware updates only, feel free to skip this step`
+  /// `On Passport, select Manage Account > \nConnect Wallet > Envoy`
   String get pair_existing_device_intro_subheading {
     return Intl.message(
-      'On Passport, select Connect Wallet > Envoy\n\nIf you want to use Envoy for firmware updates only, feel free to skip this step',
+      'On Passport, select Manage Account > \nConnect Wallet > Envoy',
       name: 'pair_existing_device_intro_subheading',
       desc: '',
       args: [],
