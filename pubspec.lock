@@ -72,6 +72,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  breez_sdk:
+    dependency: "direct main"
+    description:
+      path: "breez-sdk/libs/sdk-flutter"
+      relative: true
+    source: path
+    version: "0.0.4"
   bs58check:
     dependency: transitive
     description:
@@ -88,6 +95,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  build_cli_annotations:
+    dependency: transitive
+    description:
+      name: build_cli_annotations
+      sha256: b59d2769769efd6c9ff6d4c4cede0be115a566afc591705c2040b707534b1172
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   build_config:
     dependency: transitive
     description:
@@ -200,6 +215,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
+  colorize:
+    dependency: transitive
+    description:
+      name: colorize
+      sha256: "584746cd6ba1cba0633b6720f494fe6f9601c4170f0666c1579d2aa2a61071ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   convert:
     dependency: transitive
     description:
@@ -328,6 +351,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.1"
+  fimber:
+    dependency: transitive
+    description:
+      name: fimber
+      sha256: "1415768ddd9fd66f134dbc53f731107554c98175a63d4e93234478a113ffabb8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.6"
   fixnum:
     dependency: transitive
     description:
@@ -383,6 +414,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  flutter_rust_bridge:
+    dependency: transitive
+    description:
+      name: flutter_rust_bridge
+      sha256: d92711479cc66e71310015e2bbcb6ef75fa5d495aeecd777bf7524fb8ec784e4
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.70.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -467,6 +506,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed:
+    dependency: transitive
+    description:
+      name: freezed
+      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.2"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: aeac15850ef1b38ee368d4c53ba9a847e900bb2c53a4db3f6881cbb3cb684338
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -940,6 +995,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.2"
+  puppeteer:
+    dependency: transitive
+    description:
+      name: puppeteer
+      sha256: dd49117259867d0ce0de33ddd95628fb70cff94581a6432c08272447b8dd1d27
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.24.0"
   qr:
     dependency: transitive
     description:
@@ -989,6 +1052,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   schedulers:
     dependency: "direct main"
     description:
@@ -1281,6 +1352,14 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  tuple:
+    dependency: transitive
+    description:
+      name: tuple
+      sha256: "0ea99cd2f9352b2586583ab2ce6489d1f95a5f6de6fb9492faaf97ae2060f0aa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -1464,5 +1543,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.0 <3.0.0"
-  flutter: ">=3.3.0"
+  dart: ">=2.19.4 <3.0.0"
+  flutter: ">=3.7.7"

@@ -12,6 +12,9 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:breez_sdk/breez_bridge.dart';
+import 'package:breez_sdk/bridge_generated.dart' as breez;
+
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -59,6 +62,22 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
+    // TODO: add lightning
+    
+    var bridge = BreezBridge();
+
+
+
+    var breezConfig = breez.Config(breezserver: "", maxfeepercent: 0.0, mempoolspaceUrl: "", network: breez.Network.Testnet, paymentTimeoutSec: 30, workingDir: "");
+    final Uint8List breezSeed = Uint8List.fromList(List.generate(32, (index) => index));
+
+    var breezCreds = await bridge.registerNode(config: breezConfig, network: breez.Network.Testnet, seed: breezSeed);
+
+    //var breezCreds = breez.GreenlightCredentials(deviceKey: deviceKey, deviceCert: deviceCert);
+
+    await bridge.initServices(config: breezConfig, seed: breezSeed, creds: breezCreds);
+
+
     final mainnetPath = "m/84'/0'/0'";
     final testnetPath = "m/84'/1'/0'";
 

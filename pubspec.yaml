@@ -44,6 +44,9 @@ dependencies:
   backup:
     path: packages/backup
 
+  # Breez SDK
+  breez_sdk:
+    path: breez-sdk/libs/sdk-flutter
 
   # qr_code_scanner fork
   qr_code_scanner:
