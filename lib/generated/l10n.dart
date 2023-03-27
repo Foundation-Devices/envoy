@@ -70,8 +70,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -415,16 +413,6 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
       desc: '',
       args: [],
     );
@@ -1357,16 +1345,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -7823,6 +7801,18 @@ class S {
       'WARNING',
       name:
           'manual_setup_verify_seed_12_words_passphrase_warning_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `[[Passphrases]] are an advanced feature.`
+  String
+      get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
+    return Intl.message(
+      '[[Passphrases]] are an advanced feature.',
+      name:
+          'manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2',
       desc: '',
       args: [],
     );

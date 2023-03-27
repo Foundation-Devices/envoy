@@ -26,9 +26,9 @@ class OnboardingPage extends StatelessWidget {
   final List<Widget>? text; // Header/text pairs
   final int navigationDots;
   final int navigationDotsIndex;
-  final OnboardingHelperText? helperTextAbove;
+  final LinkText? helperTextAbove;
   final List<Widget>? buttons;
-  final OnboardingHelperText? helperTextBelow;
+  final LinkText? helperTextBelow;
 
   // Default functions need to be static:
   //https://github.com/dart-lang/language/issues/1048
@@ -301,40 +301,59 @@ class ActionText extends StatelessWidget {
   }
 }
 
-class OnboardingHelperText extends StatelessWidget {
+class LinkText extends StatelessWidget {
   final String text;
   final Function onTap;
 
-  const OnboardingHelperText({required this.text, required this.onTap});
+  final TextStyle? textStyle;
+  final TextStyle? linkStyle;
+
+  LinkText(
+      {required this.text,
+      required this.onTap,
+      this.textStyle,
+      this.linkStyle});
 
   @override
   Widget build(BuildContext context) {
-    TextStyle defaultStyle =
-        Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13);
-    TextStyle linkStyle = TextStyle(color: EnvoyColors.darkTeal);
+    TextStyle textStyleBuild = textStyle == null
+        ? Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13)
+        : textStyle!;
+    TextStyle linkStyleBuild =
+        linkStyle == null ? TextStyle(color: EnvoyColors.darkTeal) : linkStyle!;
 
     List<TextSpan> spans = [];
 
-    var firstPass = text.split("{{");
+    // Due to intl weirdness let's split on either {{ or [[
+    String openingBraces = "{{";
+    String closingBraces = "}}";
+
+    var firstPass = text.split(openingBraces);
+
+    if (firstPass.length == 1) {
+      openingBraces = "[[";
+      closingBraces = "]]";
+      firstPass = text.split(openingBraces);
+    }
 
     for (var span in firstPass) {
-      if (!span.contains("}}")) {
+      if (!span.contains(closingBraces)) {
         spans.add(TextSpan(text: span));
       } else {
         spans.add(TextSpan(
-            text: span.split("}}")[0],
-            style: linkStyle,
+            text: span.split(closingBraces)[0],
+            style: linkStyleBuild,
             recognizer: TapGestureRecognizer()
               ..onTap = onTap as GestureTapCallback?));
 
-        spans.add(TextSpan(text: span.split("}}")[1]));
+        spans.add(TextSpan(text: span.split(closingBraces)[1]));
       }
     }
 
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        style: defaultStyle,
+        style: textStyleBuild,
         children: <TextSpan>[...spans],
       ),
     );

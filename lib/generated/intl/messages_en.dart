@@ -37,7 +37,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -110,7 +109,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Store Your Encrypted Backup"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1456,6 +1454,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_heading":
             MessageLookupByLibrary.simpleMessage("WARNING"),
+        "manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2":
+            MessageLookupByLibrary.simpleMessage(
+                "[[Passphrases]] are an advanced feature."),
         "manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink":
             MessageLookupByLibrary.simpleMessage(
                 "Passphrases are an advanced feature."),

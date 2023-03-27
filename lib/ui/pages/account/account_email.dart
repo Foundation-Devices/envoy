@@ -17,7 +17,7 @@ class AccountEmailPage extends StatelessWidget {
             header: S().envoy_account_email_card1_heading,
             text: S().envoy_account_email_card1_subheading)
       ],
-      helperTextAbove: OnboardingHelperText(
+      helperTextAbove: LinkText(
         text: S().envoy_account_email_card2_subheading1,
         onTap: () {},
       ),

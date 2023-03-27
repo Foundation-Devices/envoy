@@ -25,7 +25,7 @@ class FwIntroPage extends StatelessWidget {
       clipArt: Image.asset("assets/fw_intro.png"),
       text: [
         OnboardingText(header: S().envoy_fw_intro_heading),
-        OnboardingHelperText(
+        LinkText(
             text: S().envoy_fw_intro_subheading,
             onTap: () {
               launchUrlString(
