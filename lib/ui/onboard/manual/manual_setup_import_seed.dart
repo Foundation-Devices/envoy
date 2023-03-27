@@ -13,7 +13,6 @@ import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
@@ -254,33 +253,16 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                         children: [
                           Text(S()
                               .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading),
-                          RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 13),
-                                  text: S()
-                                      .manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_on,
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      launchUrl(Uri.parse(
-                                          "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
-                                    }),
-                              TextSpan(
-                                text: S()
-                                    .manual_setup_verify_seed_12_words_passphrase_warning_modal_hyperlink_off,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(fontSize: 13),
-                              )
-                            ]),
-                          ),
+                          LinkText(
+                              text: S()
+                                  .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,
+                              textStyle: Theme.of(context).textTheme.bodyMedium,
+                              linkStyle: TextStyle(
+                                  decoration: TextDecoration.underline),
+                              onTap: () {
+                                launchUrl(Uri.parse(
+                                    "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
+                              }),
                           Padding(padding: EdgeInsets.all(8)),
                           Text(
                             S().manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading,

@@ -153,7 +153,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                           horizontal: 22, vertical: 14),
                                       child: AnimatedSwitcher(
                                         duration: Duration(milliseconds: 400),
-                                        child: OnboardingHelperText(
+                                        child: LinkText(
                                           text: stepSubHeadings[i],
                                           onTap: () {
                                             launchUrl(Uri.parse(Platform

@@ -63,7 +63,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Padding(padding: EdgeInsets.all(24)),
-                      OnboardingHelperText(
+                      LinkText(
                         text: Platform.isAndroid
                             ? S().magic_setup_tutorial_android_subheading
                             : S().magic_setup_tutorial_ios_subheading,
