@@ -147,12 +147,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        Padding(padding: EdgeInsets.all(12)),
-        Text(
-          S().magic_setup_recovery_subheading,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-        ),
       ],
     );
   }
