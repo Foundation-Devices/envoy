@@ -271,14 +271,15 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           label: S().magic_setup_recovery_fail_ios_CTA2,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
-            setState(() {
-              _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
-            });
-
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return ScannerPage(
                 ScannerType.seed,
                 callback: (seed) async {
+                  setState(() {
+                    _magicRecoverWalletState =
+                        MagicRecoveryWalletState.recovering;
+                  });
+
                   String? passphrase = null;
                   List<String> seedList = seed.split(" ");
 
