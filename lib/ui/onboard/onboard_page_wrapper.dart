@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
+
   const OnboardPageBackground({Key? key, required this.child})
       : super(key: key);
 
@@ -35,17 +36,26 @@ class OnboardPageBackground extends StatelessWidget {
               return AnimatedBuilder(
                 animation: animation,
                 builder: (BuildContext context, Widget? child) {
-                  return Stack(children: [
-                    flightDirection == HeroFlightDirection.push
-                        ? toHeroContext.widget
-                        : fromHeroContext.widget,
-                    Opacity(
-                      opacity: 1 - animation.value,
-                      child: flightDirection == HeroFlightDirection.push
-                          ? fromHeroContext.widget
-                          : toHeroContext.widget,
-                    )
-                  ]);
+                  return flightDirection == HeroFlightDirection.push
+                      ? Stack(children: [
+                          Opacity(
+                              opacity: 1 - animation.value,
+                              child: fromHeroContext.widget),
+                          Opacity(
+                              opacity: animation.value,
+                              child: toHeroContext.widget)
+                        ])
+                      : Stack(children: [
+                          Opacity(
+                            opacity: 1 - animation.value,
+                            child: toHeroContext.widget,
+                          ),
+                          Opacity(
+                              opacity: animation.value,
+                              child: Shield(
+                                child: SizedBox.expand(),
+                              ))
+                        ]);
                 },
               );
             },
