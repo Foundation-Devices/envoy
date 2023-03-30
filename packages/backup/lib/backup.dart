@@ -9,7 +9,6 @@ import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 
 import 'generated_bindings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tor/tor.dart';
 
 DynamicLibrary load(name) {
@@ -51,16 +50,9 @@ class Backup {
     }
   }
 
-  static Future<bool> perform(SharedPreferences prefs,
-      List<String> keysToBackUp, String seedWords, String serverUrl, Tor tor,
+  static Future<bool> perform(Map<String, String> backupData, String seedWords,
+      String serverUrl, Tor tor,
       {required String path, bool cloud = true}) async {
-    Map<String, String> backupData = {};
-    for (var key in keysToBackUp) {
-      if (prefs.containsKey(key)) {
-        backupData[key] = prefs.getString(key)!;
-      }
-    }
-
     if (backupData.isEmpty) {
       return true;
     }
@@ -115,8 +107,8 @@ class Backup {
     return payload;
   }
 
-  static bool restoreOffline(
-      SharedPreferences prefs, String seedWords, String filePath) {
+  static Map<String, String>? restoreOffline(
+      String seedWords, String filePath) {
     var lib = NativeLibrary(load("backup_ffi"));
     var payload = lib.backup_get_offline(seedWords.toNativeUtf8().cast<Char>(),
         filePath.toNativeUtf8().cast<Char>());
@@ -125,11 +117,10 @@ class Backup {
       throwRustException(lib);
     }
 
-    return _restoreFromPayload(payload, prefs);
+    return _extractDataFromPayload(payload);
   }
 
-  static bool _restoreFromPayload(
-      BackupPayload payload, SharedPreferences prefs) {
+  static Map<String, String> _extractDataFromPayload(BackupPayload payload) {
     var data = payload.data;
 
     Map<String, String> backupData = {};
@@ -139,15 +130,11 @@ class Backup {
       backupData[key] = value;
     }
 
-    backupData.forEach((key, value) {
-      prefs.setString(key, value);
-    });
-
-    return true;
+    return backupData;
   }
 
-  static Future<bool> restore(SharedPreferences prefs, String seedWords,
-      String serverUrl, Tor tor) async {
+  static Future<Map<String, String>?> restore(
+      String seedWords, String serverUrl, Tor tor) async {
     var lib = NativeLibrary(load("backup_ffi"));
 
     await _goAhead(tor);
@@ -158,7 +145,7 @@ class Backup {
       throwRustException(lib);
     }
 
-    return _restoreFromPayload(payload, prefs);
+    return _extractDataFromPayload(payload);
   }
 
   static throwRustException(NativeLibrary lib) {

@@ -251,11 +251,11 @@ class Wallet {
   bool _currentlySyncing = false;
 
   final String name;
-  final String externalDescriptor;
-  final String internalDescriptor;
+  String? externalDescriptor;
+  String? internalDescriptor;
 
-  final String? publicExternalDescriptor;
-  final String? publicInternalDescriptor;
+  String? publicExternalDescriptor;
+  String? publicInternalDescriptor;
 
   @JsonKey(
       defaultValue:
@@ -350,8 +350,8 @@ class Wallet {
 
     _self = dartFunction(
         name.toNativeUtf8(),
-        externalDescriptor.toNativeUtf8(),
-        internalDescriptor.toNativeUtf8(),
+        externalDescriptor!.toNativeUtf8(),
+        internalDescriptor!.toNativeUtf8(),
         (walletsDirectory + name).toNativeUtf8(),
         network.index);
 
@@ -625,18 +625,19 @@ class Wallet {
 
   static Wallet deriveWallet(
       String seed, String path, String directory, Network network,
-      {String? passphrase, bool privateKey = false}) {
+      {String? passphrase, bool privateKey = false, bool initWallet = true}) {
     final lib = load(_libName);
     final native = NativeLibrary(lib);
     var wallet = native.wallet_derive(
         seed.toNativeUtf8().cast(),
         passphrase != null ? passphrase.toNativeUtf8().cast() : nullptr,
         path.toNativeUtf8().cast(),
-        directory.toNativeUtf8().cast(),
         network.index,
+        initWallet,
+        directory.toNativeUtf8().cast(),
         privateKey);
 
-    if (wallet.bkd_wallet_ptr == nullptr) {
+    if (wallet.name == nullptr) {
       throwRustException(lib);
     }
 

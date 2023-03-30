@@ -243,8 +243,9 @@ pub unsafe extern "C" fn wallet_derive(
     seed_words: *const c_char,
     passphrase: *const c_char,
     path: *const c_char,
-    data_dir: *const c_char,
     network: NetworkType,
+    init_wallet: bool,
+    data_dir: *const c_char,
     private: bool, // Which BDK wallet to return
 ) -> Wallet {
     let error_return = Wallet {
@@ -259,7 +260,6 @@ pub unsafe extern "C" fn wallet_derive(
 
     let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), error_return);
     let path = unwrap_or_return!(CStr::from_ptr(path).to_str(), error_return);
-    let data_dir = unwrap_or_return!(CStr::from_ptr(data_dir).to_str(), error_return);
 
     // Parse seed words
     let mnemonic_words = unwrap_or_return!(Mnemonic::parse(seed_words), error_return);
@@ -314,10 +314,14 @@ pub unsafe extern "C" fn wallet_derive(
     let network_str: String = network.into();
 
     let name = format!("{xfp}-{network_str}");
+
+    let data_dir = unwrap_or_return!(CStr::from_ptr(data_dir).to_str(), error_return);
     let wallet_dir = format!("{data_dir}{name}");
 
     let ptr = {
-        if private {
+        if !init_wallet {
+            null_mut()
+        } else if private {
             init(
                 network,
                 &*name,
