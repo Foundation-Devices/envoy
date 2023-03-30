@@ -78,14 +78,14 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
       buttons: [
         IgnorePointer(
           ignoring: !done,
-          child: Opacity(
+          child: AnimatedOpacity(
             opacity: done ? 1.0 : 0.4,
+            duration: Duration(milliseconds: 500),
             child: OnboardingButton(
                 label: "Continue",
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
                     return FwPassportPage(
                       onboarding: widget.onboarding,
                     );
