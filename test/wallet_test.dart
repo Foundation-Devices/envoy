@@ -147,7 +147,7 @@ void main() async {
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: false);
-    expect(wallet.internalDescriptor.contains("xpub"), true);
+    expect(wallet.internalDescriptor!.contains("xpub"), true);
   });
 
   test('Derive private wallet from seed and path', () async {
@@ -160,6 +160,6 @@ void main() async {
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true);
-    expect(wallet.internalDescriptor.contains("xprv"), true);
+    expect(wallet.internalDescriptor!.contains("xprv"), true);
   });
 }

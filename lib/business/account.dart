@@ -28,7 +28,7 @@ class Account {
   // Not yet supported in BDK but showing it as such
   String get descriptor {
     return (wallet.publicExternalDescriptor == null
-            ? wallet.externalDescriptor
+            ? wallet.externalDescriptor!
             : wallet.publicExternalDescriptor!)
         .replaceAll("/0/", "/<0;1>/");
   }

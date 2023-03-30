@@ -30,8 +30,8 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       json['name'] as String,
       $enumDecodeNullable(_$NetworkEnumMap, json['network']) ?? Network.Mainnet,
-      json['externalDescriptor'] as String,
-      json['internalDescriptor'] as String,
+      json['externalDescriptor'] as String?,
+      json['internalDescriptor'] as String?,
       hot: json['hot'] as bool? ?? false,
       hasPassphrase: json['hasPassphrase'] as bool? ?? false,
       publicExternalDescriptor:

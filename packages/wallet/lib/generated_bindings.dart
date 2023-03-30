@@ -45,16 +45,18 @@ class NativeLibrary {
     ffi.Pointer<ffi.Char> seed_words,
     ffi.Pointer<ffi.Char> passphrase,
     ffi.Pointer<ffi.Char> path,
-    ffi.Pointer<ffi.Char> data_dir,
     int network,
+    bool init_wallet,
+    ffi.Pointer<ffi.Char> data_dir,
     bool private_,
   ) {
     return _wallet_derive(
       seed_words,
       passphrase,
       path,
-      data_dir,
       network,
+      init_wallet,
+      data_dir,
       private_,
     );
   }
@@ -65,12 +67,13 @@ class NativeLibrary {
               ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
               ffi.Int32,
+              ffi.Bool,
+              ffi.Pointer<ffi.Char>,
               ffi.Bool)>>('wallet_derive');
   late final _wallet_derive = _wallet_derivePtr.asFunction<
       Wallet Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, bool)>();
+          ffi.Pointer<ffi.Char>, int, bool, ffi.Pointer<ffi.Char>, bool)>();
 
   ffi.Pointer<ffi.Char> wallet_get_address(
     int arg0,

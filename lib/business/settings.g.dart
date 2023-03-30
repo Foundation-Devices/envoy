@@ -15,7 +15,8 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
       json['usingDefaultElectrumServer'] as bool? ?? true
   ..usingTor = json['usingTor'] as bool
   ..nguServerAddress = json['nguServerAddress'] as String
-  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false;
+  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false
+  ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
@@ -26,6 +27,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'usingTor': instance.usingTor,
       'nguServerAddress': instance.nguServerAddress,
       'syncToCloudSetting': instance.syncToCloudSetting,
+      'allowScreenshotsSetting': instance.allowScreenshotsSetting,
     };
 
 const _$DisplayUnitEnumMap = {

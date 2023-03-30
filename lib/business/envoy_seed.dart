@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
@@ -37,6 +38,9 @@ class EnvoySeed {
       "." +
       encryptedBackupFileExtension;
 
+  final HOT_WALLET_MAINNET_PATH = "m/84'/0'/0'";
+  final HOT_WALLET_TESTNET_PATH = "m/84'/1'/0'";
+
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
     AccountManager.ACCOUNTS_PREFS,
@@ -59,15 +63,12 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
-    final mainnetPath = "m/84'/0'/0'";
-    final testnetPath = "m/84'/1'/0'";
-
     try {
-      var mainnet = Wallet.deriveWallet(
-          seed, mainnetPath, AccountManager.walletsDirectory, Network.Mainnet,
+      var mainnet = Wallet.deriveWallet(seed, HOT_WALLET_MAINNET_PATH,
+          AccountManager.walletsDirectory, Network.Mainnet,
           privateKey: true, passphrase: passphrase);
-      var testnet = Wallet.deriveWallet(
-          seed, testnetPath, AccountManager.walletsDirectory, Network.Testnet,
+      var testnet = Wallet.deriveWallet(seed, HOT_WALLET_TESTNET_PATH,
+          AccountManager.walletsDirectory, Network.Testnet,
           privateKey: true, passphrase: passphrase);
 
       AccountManager().addHotWalletAccount(mainnet);
@@ -108,8 +109,35 @@ class EnvoySeed {
 
     final seed = await get();
 
-    return Backup.perform(LocalStorage().prefs, keysToBackUp, seed!,
-            Settings().envoyServerAddress, Tor(),
+    Map<String, String> backupData = {};
+    for (var key in keysToBackUp) {
+      if (LocalStorage().prefs.containsKey(key)) {
+        backupData[key] = LocalStorage().prefs.getString(key)!;
+      }
+    }
+
+    // Strip keys from hot wallets
+    if (backupData.containsKey(AccountManager.ACCOUNTS_PREFS)) {
+      var json = jsonDecode(backupData[AccountManager.ACCOUNTS_PREFS]!);
+
+      for (var account in json) {
+        Wallet wallet = Wallet.fromJson(account["wallet"]);
+
+        if (wallet.hot) {
+          wallet.externalDescriptor = null;
+          wallet.internalDescriptor = null;
+          wallet.publicExternalDescriptor = null;
+          wallet.publicInternalDescriptor = null;
+        }
+
+        account["wallet"] = wallet.toJson();
+      }
+
+      backupData[AccountManager.ACCOUNTS_PREFS] = jsonEncode(json);
+    }
+
+    return Backup.perform(
+            backupData, seed!, Settings().envoyServerAddress, Tor(),
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) {
       if (cloud && success) {
@@ -132,25 +160,58 @@ class EnvoySeed {
     }
 
     if (filePath == null) {
-      return Backup.restore(
-              LocalStorage().prefs, seed, Settings().envoyServerAddress, Tor())
-          .then((success) {
-        if (success) {
-          _restoreSingletons();
-        }
-        return success;
+      return Backup.restore(seed, Settings().envoyServerAddress, Tor())
+          .then((data) {
+        return _processRecoveryData(seed!, data);
       }).catchError((e) {
         print("Error while recovering: " + e.toString());
         return false;
       });
     } else {
-      var success = Backup.restoreOffline(LocalStorage().prefs, seed, filePath);
-      if (success) {
-        _restoreSingletons();
+      var data = Backup.restoreOffline(seed, filePath);
+      return _processRecoveryData(seed, data);
+    }
+  }
+
+  bool _processRecoveryData(String seed, Map<String, String>? data) {
+    bool success = data != null;
+    if (success) {
+      if (data.containsKey(AccountManager.ACCOUNTS_PREFS)) {
+        var json = jsonDecode(data[AccountManager.ACCOUNTS_PREFS]!);
+
+        for (var account in json) {
+          Wallet wallet = Wallet.fromJson(account["wallet"]);
+          if (wallet.hot) {
+            var derived = Wallet.deriveWallet(
+                seed,
+                wallet.network == Network.Mainnet
+                    ? HOT_WALLET_MAINNET_PATH
+                    : HOT_WALLET_TESTNET_PATH,
+                AccountManager.walletsDirectory,
+                wallet.network,
+                privateKey: true,
+                passphrase: null,
+                initWallet: false);
+
+            wallet.internalDescriptor = derived.internalDescriptor;
+            wallet.externalDescriptor = derived.externalDescriptor;
+            wallet.publicInternalDescriptor = derived.publicInternalDescriptor;
+            wallet.publicExternalDescriptor = derived.publicExternalDescriptor;
+
+            account["wallet"] = wallet.toJson();
+          }
+        }
+
+        data[AccountManager.ACCOUNTS_PREFS] = jsonEncode(json);
       }
 
-      return success;
+      data.forEach((key, value) {
+        LocalStorage().prefs.setString(key, value);
+      });
+
+      _restoreSingletons();
     }
+    return success;
   }
 
   _restoreSingletons() {
