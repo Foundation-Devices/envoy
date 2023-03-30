@@ -24,13 +24,22 @@ class BackupPage extends StatefulWidget {
   State<BackupPage> createState() => _BackupPageState();
 }
 
-class _BackupPageState extends State<BackupPage> {
+class _BackupPageState extends State<BackupPage> with WidgetsBindingObserver {
   late EnvoySeed seed;
 
   @override
   void initState() {
     seed = EnvoySeed();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // SFT-1737: refresh everything when app comes back into focus
+    if (state == AppLifecycleState.resumed) {
+      setState(() {});
+    }
   }
 
   @override
