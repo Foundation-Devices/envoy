@@ -91,43 +91,44 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                 Column(
                   children: [
                     Padding(padding: EdgeInsets.all(2)),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          hasPassphrase = !hasPassphrase;
-                          if (hasPassphrase == true) {
-                            showPassphraseWarningDialog(context);
-                          } else {
-                            passPhrase = "";
-                          }
-                        });
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            checkColor: EnvoyColors.white100,
-                            activeColor: EnvoyColors.darkTeal,
-                            value: hasPassphrase,
-                            onChanged: (value) {
-                              setState(() {
-                                hasPassphrase = value ?? false;
-                              });
-                              if (value == true) {
-                                showPassphraseWarningDialog(context);
-                              } else {
-                                passPhrase = "";
-                              }
-                            },
-                          ),
-                          Text(
-                            S().manual_setup_import_seed_12_words_checkbox,
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // SFT-1749: disable passphrases for beta
+                    // InkWell(
+                    //   onTap: () {
+                    //     setState(() {
+                    //       hasPassphrase = !hasPassphrase;
+                    //       if (hasPassphrase == true) {
+                    //         showPassphraseWarningDialog(context);
+                    //       } else {
+                    //         passPhrase = "";
+                    //       }
+                    //     });
+                    //   },
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.center,
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Checkbox(
+                    //         checkColor: EnvoyColors.white100,
+                    //         activeColor: EnvoyColors.darkTeal,
+                    //         value: hasPassphrase,
+                    //         onChanged: (value) {
+                    //           setState(() {
+                    //             hasPassphrase = value ?? false;
+                    //           });
+                    //           if (value == true) {
+                    //             showPassphraseWarningDialog(context);
+                    //           } else {
+                    //             passPhrase = "";
+                    //           }
+                    //         },
+                    //       ),
+                    //       Text(
+                    //         S().manual_setup_import_seed_12_words_checkbox,
+                    //         style: Theme.of(context).textTheme.labelLarge,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24),
                         child: IgnorePointer(
