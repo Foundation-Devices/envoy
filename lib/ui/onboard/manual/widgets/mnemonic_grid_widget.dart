@@ -130,7 +130,11 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                       child: MnemonicInput(
                           controller: _controllers[index],
                           onWordDetected: (focusNode, controller, word) {
-                            focusNode.nextFocus();
+                            if (index != _focusNodes.length - 1) {
+                              focusNode.nextFocus();
+                            } else {
+                              focusNode.unfocus();
+                            }
                             _seedWords[index] = word;
                             if (_showNextPage) {
                               _pageController
@@ -217,7 +221,11 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                       text: _suggestions[index],
                                     );
                                     if (_currentFocusNode?.hasFocus == true) {
-                                      _currentFocusNode?.nextFocus();
+                                      if (_focusNodes
+                                              .indexOf(_currentFocusNode!) ==
+                                          _focusNodes.length - 1) {
+                                        _currentFocusNode?.unfocus();
+                                      }
                                     }
                                     if (_showNextPage) {
                                       _pageController
