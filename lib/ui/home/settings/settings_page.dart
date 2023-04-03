@@ -88,14 +88,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SettingText("Allow Screenshots"),
-                SettingToggle(s.allowScreenshots, s.setAllowScreenshots),
-              ],
-            ),
-            Divider(),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     SettingText("Allow Screenshots"),
+            //     SettingToggle(s.allowScreenshots, s.setAllowScreenshots),
+            //   ],
+            // ),
+            // Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
