@@ -127,7 +127,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                       physics: NeverScrollableScrollPhysics(),
                       controller: _pageController,
                       children: [
-                        ...stepsHeadings.map((e) {
+                        ...stepsHeadings.map((heading) {
                           return Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 12, horizontal: 14),
@@ -136,26 +136,25 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  stepsHeadings[step],
+                                  heading,
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 44, horizontal: 22),
-                                  child: AnimatedSwitcher(
-                                    duration: Duration(milliseconds: 400),
-                                    child: Text(
-                                      stepSubHeadings[step],
-                                      key: ValueKey<String>(
-                                        stepSubHeadings[step],
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(fontSize: 14),
+                                  child: Text(
+                                    stepSubHeadings[
+                                        stepsHeadings.indexOf(heading)],
+                                    key: ValueKey<String>(
+                                      stepSubHeadings[
+                                          stepsHeadings.indexOf(heading)],
                                     ),
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(fontSize: 14),
                                   ),
                                 )
                               ],
