@@ -221,9 +221,9 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                       text: _suggestions[index],
                                     );
                                     if (_currentFocusNode?.hasFocus == true) {
-                                      if (index != _focusNodes.length - 1) {
-                                        _currentFocusNode?.nextFocus();
-                                      } else {
+                                      if (_focusNodes
+                                              .indexOf(_currentFocusNode!) ==
+                                          _focusNodes.length - 1) {
                                         _currentFocusNode?.unfocus();
                                       }
                                     }
