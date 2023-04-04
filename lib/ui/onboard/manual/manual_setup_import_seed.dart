@@ -141,7 +141,9 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                                 onTap: () {
                                   EnvoySeed()
                                       .create(currentWords,
-                                          passphrase: passPhrase)
+                                          passphrase: passPhrase.isEmpty
+                                              ? null
+                                              : passPhrase)
                                       .then((success) {
                                     if (success) {
                                       Navigator.of(context).push(
