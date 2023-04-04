@@ -135,17 +135,20 @@ class Backup {
 
   static Future<Map<String, String>?> restore(
       String seedWords, String serverUrl, Tor tor) async {
-    var lib = NativeLibrary(load("backup_ffi"));
-
     await _goAhead(tor);
-    var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
-        serverUrl.toNativeUtf8().cast<Char>(), tor.port);
 
-    if (payload.keys_nr == 0) {
-      throwRustException(lib);
-    }
+    int torPort = tor.port;
+    return Isolate.run(() async {
+      var lib = NativeLibrary(load("backup_ffi"));
+      var payload = lib.backup_get(seedWords.toNativeUtf8().cast<Char>(),
+          serverUrl.toNativeUtf8().cast<Char>(), torPort);
 
-    return _extractDataFromPayload(payload);
+      if (payload.keys_nr == 0) {
+        throwRustException(lib);
+      }
+
+      return _extractDataFromPayload(payload);
+    });
   }
 
   static throwRustException(NativeLibrary lib) {
