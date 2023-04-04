@@ -120,6 +120,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   _notifyAboutTor() {
     EnvoyToast(
       backgroundColor: Colors.lightBlue,
+      replaceExisting: true,
       message: "Issue establishing Tor connectivity",
       icon: Icon(
         Icons.error_outline_rounded,
