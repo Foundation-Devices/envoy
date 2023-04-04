@@ -144,64 +144,68 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
         Expanded(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Text(S().manual_setup_generate_seed_write_words_heading,
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center),
-              ),
-              SliverPadding(padding: EdgeInsets.all(24)),
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 4,
-                  crossAxisSpacing: 22.0,
-                  mainAxisSpacing: 30,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Text(
+                      S().manual_setup_generate_seed_write_words_heading,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.center),
                 ),
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final TextStyle textTheme = TextStyle(
-                      fontSize: 15,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold);
-                  return Container(
-                    height: 40,
-                    margin: EdgeInsets.symmetric(vertical: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
-                    decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Row(
-                      children: [
-                        Text("${index + 1}. ", style: textTheme),
-                        Expanded(
-                            child: Text("${seed[index]}", style: textTheme)),
-                      ],
-                    ),
-                  );
-                }, childCount: seed.length),
-              ),
-              SliverPadding(padding: EdgeInsets.all(32)),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    OnboardingButton(
-                      onTap: () {
-                        _pageController.nextPage(
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.ease);
-                      },
-                      label: S().manual_setup_generate_seed_write_words_CTA,
-                    )
-                  ],
+                SliverPadding(padding: EdgeInsets.all(24)),
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 4,
+                    crossAxisSpacing: 22.0,
+                    mainAxisSpacing: 30,
+                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final TextStyle textTheme = TextStyle(
+                        fontSize: 15,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold);
+                    return Container(
+                      height: 40,
+                      margin: EdgeInsets.symmetric(vertical: 0),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                        children: [
+                          Text("${index + 1}. ", style: textTheme),
+                          Expanded(
+                              child: Text("${seed[index]}", style: textTheme)),
+                        ],
+                      ),
+                    );
+                  }, childCount: seed.length),
                 ),
-              )
-            ],
+                SliverPadding(padding: EdgeInsets.all(24)),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [],
+                  ),
+                )
+              ],
+            ),
+            floatingActionButton: OnboardingButton(
+              onTap: () {
+                _pageController.nextPage(
+                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+              },
+              label: S().manual_setup_generate_seed_write_words_CTA,
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
           ),
         ))
       ],
