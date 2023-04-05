@@ -85,69 +85,81 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   Widget build(BuildContext context) {
     return OnboardPageBackground(
       child: Material(
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  width: 240,
-                  height: 240,
-                  child: RiveAnimation.asset(
-                    "assets/envoy_loader.riv",
-                    fit: BoxFit.contain,
-                    onInit: _onRiveInit,
-                  ),
-                ),
-                AnimatedContainer(
-                    duration: Duration(milliseconds: 500),
-                    child: Builder(
-                      builder: (context) {
-                        if (_magicRecoverWalletState ==
-                            MagicRecoveryWalletState.recovering) {
-                          return _recoveryInProgress(context);
-                        }
-                        if (_magicRecoverWalletState ==
-                            MagicRecoveryWalletState.success) {
-                          return _recoverySteps(context);
-                        }
-                        if (_magicRecoverWalletState ==
-                            MagicRecoveryWalletState.failure) {
-                          return _unsuccessfulRecovery(context);
-                        }
-                        return SizedBox();
-                      },
-                    )),
-                _magicRecoverWalletState == MagicRecoveryWalletState.success
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: OnboardingButton(
-                          label: "Continue",
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return WalletSetupSuccess();
-                            }));
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      width: 240,
+                      height: 240,
+                      child: RiveAnimation.asset(
+                        "assets/envoy_loader.riv",
+                        fit: BoxFit.contain,
+                        onInit: _onRiveInit,
+                      ),
+                    ),
+                    AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        child: Builder(
+                          builder: (context) {
+                            if (_magicRecoverWalletState ==
+                                MagicRecoveryWalletState.recovering) {
+                              return _recoveryInProgress(context);
+                            }
+                            if (_magicRecoverWalletState ==
+                                MagicRecoveryWalletState.success) {
+                              return _recoverySteps(context);
+                            }
+                            if (_magicRecoverWalletState ==
+                                MagicRecoveryWalletState.failure) {
+                              return _unsuccessfulRecovery(context);
+                            }
+                            return SizedBox();
                           },
-                        ),
-                      )
-                    : SizedBox(),
-              ],
-            ),
+                        )),
+                    _magicRecoverWalletState == MagicRecoveryWalletState.success
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: OnboardingButton(
+                              label: "Continue",
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return WalletSetupSuccess();
+                                }));
+                              },
+                            ),
+                          )
+                        : SizedBox(),
+                  ],
+                ),
+              ),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: _magicRecoverWalletState ==
+                          MagicRecoveryWalletState.failure
+                      ? IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.close))
+                      : SizedBox())
+            ],
           ),
           color: Colors.transparent),
     );
   }
 
   Widget _recoveryInProgress(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          S().magic_setup_recovery_heading,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-      ],
+    return Text(
+      S().magic_setup_recovery_heading,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.titleLarge,
     );
   }
 

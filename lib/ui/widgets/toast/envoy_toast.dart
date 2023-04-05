@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 
 typedef OnTap = void Function(EnvoyToast toast);
 
+//Store the last toast
+EnvoyToast<dynamic>? _toast = null;
+
 class EnvoyToast<T> extends StatefulWidget {
   late final EnvoyToastRoute<T?> envoyToastRoute;
   final OnTap? onTap;
@@ -18,6 +21,7 @@ class EnvoyToast<T> extends StatefulWidget {
   final Color? backgroundColor;
   final Widget? icon;
   final String? message;
+  final bool replaceExisting;
   final String? actionButtonText;
   final WidgetBuilder? builder;
   final ToastStatusCallback? onStatusChanged;
@@ -38,6 +42,7 @@ class EnvoyToast<T> extends StatefulWidget {
     this.onStatusChanged,
     this.endOffset,
     this.duration,
+    this.replaceExisting = false,
     this.margin = const EdgeInsets.all(0.0),
     this.padding = const EdgeInsets.all(16),
     this.icon,
@@ -55,8 +60,19 @@ class EnvoyToast<T> extends StatefulWidget {
       context: context,
       toast: this,
     ) as EnvoyToastRoute<T?>;
-    return await Navigator.of(context, rootNavigator: false)
+
+    // do not show toast if it is already showing with the same message
+    if (replaceExisting && _toast != null) {
+      if (_toast!.message == this.message) {
+        return null;
+      }
+    }
+    ;
+    _toast = this;
+    T? result = await Navigator.of(context, rootNavigator: false)
         .push(envoyToastRoute as Route<T>);
+    _toast = null;
+    return result;
   }
 
   // clear all previous toasts overlays

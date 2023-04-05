@@ -34,9 +34,27 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                     animations: ["happy"],
                   ),
                 ),
-                Text(
-                  S().wallet_setup_success_heading,
-                  style: Theme.of(context).textTheme.titleLarge,
+                Padding(
+                  padding: const EdgeInsets.all(44.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        S().wallet_setup_success_heading,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 36),
+                        child: Text(
+                          S().wallet_setup_success_subheading,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
