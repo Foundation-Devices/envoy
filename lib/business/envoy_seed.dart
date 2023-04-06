@@ -168,8 +168,12 @@ class EnvoySeed {
         return false;
       });
     } else {
-      var data = Backup.restoreOffline(seed, filePath);
-      return _processRecoveryData(seed, data);
+      try {
+        var data = Backup.restoreOffline(seed, filePath);
+        return _processRecoveryData(seed, data);
+      } on Exception catch (_) {
+        return false;
+      }
     }
   }
 

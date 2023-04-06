@@ -5,7 +5,6 @@
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -134,17 +133,40 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
                 Padding(padding: EdgeInsets.all(8)),
                 Column(
                   children: [
-                    Icon(Icons.warning_amber,
-                        color: EnvoyColors.darkTeal, size: 68),
+                    Image.asset(
+                      "assets/exclamation_triangle.png",
+                      height: 80,
+                      width: 80,
+                    ),
                     Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       child: Text(
-                        "Can't read Envoy Backup. Make sure you have selected the right file.",
+                          S().manual_setup_import_backup_fails_modal_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().manual_setup_import_backup_fails_modal_subheading,
                         textAlign: TextAlign.center,
                       ),
                     ),
