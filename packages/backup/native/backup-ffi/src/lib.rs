@@ -188,7 +188,7 @@ pub unsafe extern "C" fn backup_get(
     let payload = unwrap_or_return!(response, err_ret);
     let parsed: Vec<u8> = unwrap_or_return!(FromHex::from_hex(&payload.backup), err_ret);
 
-    let data = decrypt_backup(parsed, password);
+    let data = unwrap_or_return!(decrypt_backup(parsed, password), err_ret);
     extract_kv_data(data)
 }
 
@@ -213,13 +213,18 @@ pub unsafe extern "C" fn backup_get_offline(
     seed_words: *const c_char,
     file_path: *const c_char,
 ) -> BackupPayload {
+    let err_ret = BackupPayload {
+        keys_nr: 0,
+        data: ptr::null(),
+    };
+
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
     let password = get_static_secret(seed_words);
 
     let file_path = CStr::from_ptr(file_path).to_str().unwrap();
     let file_data = fs::read(file_path).unwrap();
 
-    let data = decrypt_backup(file_data, password);
+    let data = unwrap_or_return!(decrypt_backup(file_data, password), err_ret);
     extract_kv_data(data)
 }
 
@@ -247,7 +252,10 @@ fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
     buf
 }
 
-fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> {
+fn decrypt_backup(
+    data: Vec<u8>,
+    secret: StaticSecret,
+) -> Result<Vec<(String, String)>, mla::errors::Error> {
     // Specify the key for the Reader
     let mut config = ArchiveReaderConfig::new();
     config.add_private_keys(&[secret]);
@@ -255,10 +263,10 @@ fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> 
     // Read from buf, which needs Read + Seek
     let buf = io::Cursor::new(data);
 
-    let mut mla_read = ArchiveReader::from_config(buf, config).unwrap();
-    let files: Vec<String> = mla_read.list_files().unwrap().cloned().collect();
+    let mut mla_read = ArchiveReader::from_config(buf, config)?;
+    let files: Vec<String> = mla_read.list_files()?.cloned().collect();
 
-    files
+    Ok(files
         .iter()
         .map(|name| {
             let mut file = mla_read.get_file(name.clone()).unwrap().unwrap().data;
@@ -267,7 +275,7 @@ fn decrypt_backup(data: Vec<u8>, secret: StaticSecret) -> Vec<(String, String)> 
             file.read_to_string(&mut content).unwrap();
             (name.to_owned(), content)
         })
-        .collect()
+        .collect())
 }
 
 fn _get_challenge(server_url: &str, proxy_port: i32) -> ChallengeResponse {
@@ -394,7 +402,10 @@ mod tests {
         let encrypted = encrypt_backup(vec![("hello", "there")], &StaticSecret::from(entropy_32));
         let decrypted = decrypt_backup(encrypted, StaticSecret::from(entropy_32));
 
-        assert_eq!(decrypted, [("hello".to_owned(), "there".to_owned())]);
+        assert_eq!(
+            decrypted.unwrap(),
+            [("hello".to_owned(), "there".to_owned())]
+        );
     }
 }
 
