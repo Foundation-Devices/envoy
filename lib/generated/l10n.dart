@@ -54,6 +54,8 @@ class S {
 
   // skipped getter for the '\$0.00' key
 
+  // skipped getter for the '\$165.71' key
+
   // skipped getter for the '\$2.49' key
 
   // skipped getter for the '\$K' key
@@ -70,8 +72,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -83,6 +83,8 @@ class S {
   // skipped getter for the '1 Unspendable Coin' key
 
   // skipped getter for the '1 license' key
+
+  // skipped getter for the '1,500 Sats ~ \$5.43' key
 
   // skipped getter for the '1.0.1' key
 
@@ -97,6 +99,8 @@ class S {
   // skipped getter for the '10 Mins' key
 
   // skipped getter for the '10 Minutes' key
+
+  // skipped getter for the '10 min' key
 
   // skipped getter for the '10,000 sats' key
 
@@ -222,6 +226,8 @@ class S {
 
   // skipped getter for the '500 Sats' key
 
+  // skipped getter for the '500 Sats ~ \$0.43' key
+
   // skipped getter for the '500 sats' key
 
   // skipped getter for the '5K Sats' key
@@ -238,7 +244,11 @@ class S {
 
   // skipped getter for the '60 Mins' key
 
+  // skipped getter for the '60 min' key
+
   // skipped getter for the '60’ - 500 sats' key
+
+  // skipped getter for the '619,560' key
 
   // skipped getter for the '7' key
 
@@ -408,6 +418,16 @@ class S {
     );
   }
 
+  /// `Boost`
+  String get Boost {
+    return Intl.message(
+      'Boost',
+      name: 'Boost',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Boost - 10’ - 5000 sats' key
 
   /// `Business`
@@ -415,16 +435,6 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
       desc: '',
       args: [],
     );
@@ -1080,10 +1090,10 @@ class S {
 
   // skipped getter for the 'Powered by Flutter' key
 
-  /// `Primary`
+  /// `0.0001721`
   String get Primary {
     return Intl.message(
-      'Primary',
+      '0.0001721',
       name: 'Primary',
       desc: '',
       args: [],
@@ -1150,6 +1160,16 @@ class S {
 
   // skipped getter for the 'Robust fee selection toggle' key
 
+  /// `SATS`
+  String get SATS {
+    return Intl.message(
+      'SATS',
+      name: 'SATS',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'SEED WORDS' key
 
   // skipped getter for the 'SEEDWORD VERIFICATION' key
@@ -1214,10 +1234,10 @@ class S {
     );
   }
 
-  /// `-$9.30`
+  /// `$3.66`
   String get Secondary {
     return Intl.message(
-      '-\$9.30',
+      '\$3.66',
       name: 'Secondary',
       desc: '',
       args: [],
@@ -1308,6 +1328,16 @@ class S {
     );
   }
 
+  /// `Standard`
+  String get Standard {
+    return Intl.message(
+      'Standard',
+      name: 'Standard',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Standard - 60’ - 500sats' key
 
   /// `Fee`
@@ -1357,16 +1387,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -1796,6 +1816,146 @@ class S {
     );
   }
 
+  /// `Automatic Backups`
+  String get backups_auto_backups_heading {
+    return Intl.message(
+      'Automatic Backups',
+      name: 'backups_auto_backups_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disabled for Manual Seed Configuration `
+  String get backups_automatic_backups_subheading {
+    return Intl.message(
+      'Disabled for Manual Seed Configuration ',
+      name: 'backups_automatic_backups_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Wallet Data`
+  String get backups_download_wallet_data {
+    return Intl.message(
+      'Download Wallet Data',
+      name: 'backups_download_wallet_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erase Wallets and Backups`
+  String get backups_erase_wallets_and_backups {
+    return Intl.message(
+      'Erase Wallets and Backups',
+      name: 'backups_erase_wallets_and_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Sats to Another Wallet`
+  String get backups_erase_wallets_and_backups_check_balance_cta1 {
+    return Intl.message(
+      'Send Sats to Another Wallet',
+      name: 'backups_erase_wallets_and_backups_check_balance_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erase Wallets and Backups`
+  String get backups_erase_wallets_and_backups_check_balance_cta2 {
+    return Intl.message(
+      'Erase Wallets and Backups',
+      name: 'backups_erase_wallets_and_backups_check_balance_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Wallet Is Not Empty`
+  String get backups_erase_wallets_and_backups_check_balance_heading {
+    return Intl.message(
+      'Your Wallet Is Not Empty',
+      name: 'backups_erase_wallets_and_backups_check_balance_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Before erasing your wallets and backups, we highly recommend you to send your sats to another wallet .`
+  String get backups_erase_wallets_and_backups_check_balance_subheading {
+    return Intl.message(
+      'Before erasing your wallets and backups, we highly recommend you to send your sats to another wallet .',
+      name: 'backups_erase_wallets_and_backups_check_balance_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get backups_erase_wallets_and_backups_modal_1_2_android_cta {
+    return Intl.message(
+      'Continue',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_android_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get backups_erase_wallets_and_backups_modal_1_2_android_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. `
+  String get backups_erase_wallets_and_backups_modal_1_2_android_subheading {
+    return Intl.message(
+      'You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. ',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get backups_erase_wallets_and_backups_modal_1_2_ios_cta {
+    return Intl.message(
+      'Continue',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_ios_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get backups_erase_wallets_and_backups_modal_1_2_ios_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_ios_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. `
+  String get backups_erase_wallets_and_backups_modal_1_2_ios_subheading {
+    return Intl.message(
+      'You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. ',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto Backup`
   String get backups_export_flow_advanced {
     return Intl.message(
@@ -1826,11 +1986,41 @@ class S {
     );
   }
 
+  /// `BACKUPS`
+  String get backups_title {
+    return Intl.message(
+      'BACKUPS',
+      name: 'backups_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Wallet Seed`
+  String get backups_view_wallet_seed {
+    return Intl.message(
+      'View Wallet Seed',
+      name: 'backups_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// ``
   String get bc1cq313af51bh5k0lsmna21x {
     return Intl.message(
       '',
       name: 'bc1cq313af51bh5k0lsmna21x',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `bc1cq313af51bh5k0lsmna21xpw`
+  String get bc1cq313af51bh5k0lsmna21xpw {
+    return Intl.message(
+      'bc1cq313af51bh5k0lsmna21xpw',
+      name: 'bc1cq313af51bh5k0lsmna21xpw',
       desc: '',
       args: [],
     );
@@ -2045,6 +2235,96 @@ class S {
   }
 
   // skipped getter for the 'dARK TO LIGHT' key
+
+  /// `Go to Settings`
+  String get delete_wallet_for_good_instant_android_cta1 {
+    return Intl.message(
+      'Go to Settings',
+      name: 'delete_wallet_for_good_instant_android_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get delete_wallet_for_good_instant_android_cta2 {
+    return Intl.message(
+      'Skip',
+      name: 'delete_wallet_for_good_instant_android_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Android Backs Up Every 24h`
+  String get delete_wallet_for_good_instant_android_heading {
+    return Intl.message(
+      'Android Backs Up Every 24h',
+      name: 'delete_wallet_for_good_instant_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Wallet seed from Google Drive, you can perform a manual backup in your device Settings.`
+  String get delete_wallet_for_good_instant_android_subheading {
+    return Intl.message(
+      'Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Wallet seed from Google Drive, you can perform a manual backup in your device Settings.',
+      name: 'delete_wallet_for_good_instant_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting your Envoy wallet`
+  String get delete_wallet_for_good_loading_heading {
+    return Intl.message(
+      'Deleting your Envoy wallet',
+      name: 'delete_wallet_for_good_loading_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get delete_wallet_for_good_modal_cta1 {
+    return Intl.message(
+      'Cancel',
+      name: 'delete_wallet_for_good_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `delete wallet`
+  String get delete_wallet_for_good_modal_cta2 {
+    return Intl.message(
+      'delete wallet',
+      name: 'delete_wallet_for_good_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `As you sure you want to DELETE your Envoy wallet?`
+  String get delete_wallet_for_good_modal_subheading {
+    return Intl.message(
+      'As you sure you want to DELETE your Envoy wallet?',
+      name: 'delete_wallet_for_good_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your wallet was successfully deleted`
+  String get delete_wallet_for_good_success_heading {
+    return Intl.message(
+      'Your wallet was successfully deleted',
+      name: 'delete_wallet_for_good_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Connect`
   String get devices_screen_CTA1 {
@@ -6288,6 +6568,26 @@ class S {
     );
   }
 
+  /// `Swipe the card left & right to show & hide the balance.`
+  String get hide_amount_first_time_text {
+    return Intl.message(
+      'Swipe the card left & right to show & hide the balance.',
+      name: 'hide_amount_first_time_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get hide_amount_first_time_text_button {
+    return Intl.message(
+      'Dismiss',
+      name: 'hide_amount_first_time_text_button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `hotwallet`
   String get hotwallet {
     return Intl.message(
@@ -6540,6 +6840,86 @@ class S {
     );
   }
 
+  /// `Retry`
+  String get magic_setup_recovery_fail_backup_cta1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_backup_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_backup_cta2 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_backup_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup File not found`
+  String get magic_setup_recovery_fail_backup_heading {
+    return Intl.message(
+      'Backup File not found',
+      name: 'magic_setup_recovery_fail_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate an Envoy Wallet backup on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used an Envoy automatic backup.`
+  String get magic_setup_recovery_fail_backup_subheading {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used an Envoy automatic backup.',
+      name: 'magic_setup_recovery_fail_backup_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get magic_setup_recovery_fail_connectivity_cta1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_connectivity_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_connectivity_cta2 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_connectivity_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is your connectivity ok?`
+  String get magic_setup_recovery_fail_connectivity_heading {
+    return Intl.message(
+      'Is your connectivity ok?',
+      name: 'magic_setup_recovery_fail_connectivity_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nPlease double check your connectivity and try again.`
+  String get magic_setup_recovery_fail_connectivity_subheading {
+    return Intl.message(
+      'Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nPlease double check your connectivity and try again.',
+      name: 'magic_setup_recovery_fail_connectivity_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Recovery Unsuccessful`
   String get magic_setup_recovery_fail_iOS_2_heading {
     return Intl.message(
@@ -6635,6 +7015,86 @@ class S {
     return Intl.message(
       'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
       name: 'magic_setup_recovery_fail_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get magic_setup_recovery_fail_seed_android_cta1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_seed_android_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_seed_android_cta2 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_seed_android_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We can’t find your seed`
+  String get magic_setup_recovery_fail_seed_android_heading {
+    return Intl.message(
+      'We can’t find your seed',
+      name: 'magic_setup_recovery_fail_seed_android_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate your secure seed.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest backup.`
+  String get magic_setup_recovery_fail_seed_android_subheading {
+    return Intl.message(
+      'Envoy is unable to locate your secure seed.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest backup.',
+      name: 'magic_setup_recovery_fail_seed_android_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get magic_setup_recovery_fail_seed_ios_cta1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_seed_ios_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get magic_setup_recovery_fail_seed_ios_cta2 {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'magic_setup_recovery_fail_seed_ios_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We can’t find your seed`
+  String get magic_setup_recovery_fail_seed_ios_heading {
+    return Intl.message(
+      'We can’t find your seed',
+      name: 'magic_setup_recovery_fail_seed_ios_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to locate your secure seed.\n\nPlease confirm you are logged in with the correct iCloud account and that you’ve restored your latest backup.`
+  String get magic_setup_recovery_fail_seed_ios_subheading {
+    return Intl.message(
+      'Envoy is unable to locate your secure seed.\n\nPlease confirm you are logged in with the correct iCloud account and that you’ve restored your latest backup.',
+      name: 'magic_setup_recovery_fail_seed_ios_subheading',
       desc: '',
       args: [],
     );
@@ -7075,6 +7535,36 @@ class S {
   }
 
   /// `Choose Destination`
+  String get manual_setup_choose_backup_destination_cta {
+    return Intl.message(
+      'Choose Destination',
+      name: 'manual_setup_choose_backup_destination_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Store Your Encrypted Backup`
+  String get manual_setup_choose_backup_destination_heading {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'manual_setup_choose_backup_destination_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_choose_backup_destination_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_choose_backup_destination_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Destination`
   String get manual_setup_create_and_store_backup_CTA {
     return Intl.message(
       'Choose Destination',
@@ -7099,6 +7589,26 @@ class S {
     return Intl.message(
       'I understand',
       name: 'manual_setup_create_and_store_backup_modal_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-type Passphrase`
+  String get manual_setup_create_and_store_backup_modal_fail_CTA1 {
+    return Intl.message(
+      'Re-type Passphrase',
+      name: 'manual_setup_create_and_store_backup_modal_fail_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose other Backup File`
+  String get manual_setup_create_and_store_backup_modal_fail_CTA2 {
+    return Intl.message(
+      'Choose other Backup File',
+      name: 'manual_setup_create_and_store_backup_modal_fail_CTA2',
       desc: '',
       args: [],
     );
@@ -7534,6 +8044,36 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get manual_setup_import_backup_fails_modal_continue {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_import_backup_fails_modal_continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We can’t read Envoy Backup`
+  String get manual_setup_import_backup_fails_modal_heading {
+    return Intl.message(
+      'We can’t read Envoy Backup',
+      name: 'manual_setup_import_backup_fails_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make sure you have selected the right file.`
+  String get manual_setup_import_backup_fails_modal_subheading {
+    return Intl.message(
+      'Make sure you have selected the right file.',
+      name: 'manual_setup_import_backup_fails_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Import Envoy Backup`
   String get manual_setup_import_backup_heading {
     return Intl.message(
@@ -7549,6 +8089,36 @@ class S {
     return Intl.message(
       'Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file.',
       name: 'manual_setup_import_backup_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get manual_setup_import_enter_passphrase_modal_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_import_enter_passphrase_modal_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Passphrase`
+  String get manual_setup_import_enter_passphrase_modal_heading {
+    return Intl.message(
+      'Enter Your Passphrase',
+      name: 'manual_setup_import_enter_passphrase_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This seed is protected by a passphrase. Enter it below to import your Envoy Wallet.`
+  String get manual_setup_import_enter_passphrase_modal_subheading {
+    return Intl.message(
+      'This seed is protected by a passphrase. Enter it below to import your Envoy Wallet.',
+      name: 'manual_setup_import_enter_passphrase_modal_subheading',
       desc: '',
       args: [],
     );
@@ -9086,6 +9656,258 @@ class S {
 
   // skipped getter for the 'quiz successful' key
 
+  /// `Retry`
+  String get recovery_manual_setup_fail_cta1 {
+    return Intl.message(
+      'Retry',
+      name: 'recovery_manual_setup_fail_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Seed Words`
+  String get recovery_manual_setup_fail_cta2 {
+    return Intl.message(
+      'Import Seed Words',
+      name: 'recovery_manual_setup_fail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to scan QR Code`
+  String get recovery_manual_setup_fail_heading {
+    return Intl.message(
+      'Unable to scan QR Code',
+      name: 'recovery_manual_setup_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try scanning again or manually import your seed words instead.`
+  String get recovery_manual_setup_fail_subheading {
+    return Intl.message(
+      'Try scanning again or manually import your seed words instead.',
+      name: 'recovery_manual_setup_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Envoy Backup`
+  String get recovery_manual_setup_import_backup_cta1 {
+    return Intl.message(
+      'Create New Envoy Backup',
+      name: 'recovery_manual_setup_import_backup_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Envoy Backup`
+  String get recovery_manual_setup_import_backup_cta2 {
+    return Intl.message(
+      'Import Envoy Backup',
+      name: 'recovery_manual_setup_import_backup_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Envoy Backup`
+  String get recovery_manual_setup_import_backup_heading {
+    return Intl.message(
+      'Import Envoy Backup',
+      name: 'recovery_manual_setup_import_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy can’t open this Envoy Backup file`
+  String get recovery_manual_setup_import_backup_modal_fail_heading {
+    return Intl.message(
+      'Envoy can’t open this Envoy Backup file',
+      name: 'recovery_manual_setup_import_backup_modal_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.`
+  String get recovery_manual_setup_import_backup_modal_fail_subheading {
+    return Intl.message(
+      'This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.',
+      name: 'recovery_manual_setup_import_backup_modal_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get recovery_manual_setup_import_backup_re_enter_passphrase_cta {
+    return Intl.message(
+      'Continue',
+      name: 'recovery_manual_setup_import_backup_re_enter_passphrase_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-type Your \nPassphrase`
+  String get recovery_manual_setup_import_backup_re_enter_passphrase_heading {
+    return Intl.message(
+      'Re-type Your \nPassphrase',
+      name: 'recovery_manual_setup_import_backup_re_enter_passphrase_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup file.`
+  String
+      get recovery_manual_setup_import_backup_re_enter_passphrase_subheading {
+    return Intl.message(
+      'Carefully re-type your passphrase so Envoy can open your Envoy Backup file.',
+      name:
+          'recovery_manual_setup_import_backup_re_enter_passphrase_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file for you.`
+  String get recovery_manual_setup_import_backup_subheading {
+    return Intl.message(
+      'Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file for you.',
+      name: 'recovery_manual_setup_import_backup_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get recovery_manual_setup_import_seed_checkbox {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'recovery_manual_setup_import_seed_checkbox',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `24 Word Seed`
+  String get recovery_manual_setup_import_seed_cta2 {
+    return Intl.message(
+      '24 Word Seed',
+      name: 'recovery_manual_setup_import_seed_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import with QR code`
+  String get recovery_manual_setup_import_seed_cta3 {
+    return Intl.message(
+      'Import with QR code',
+      name: 'recovery_manual_setup_import_seed_cta3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import your Seed`
+  String get recovery_manual_setup_import_seed_heading {
+    return Intl.message(
+      'Import your Seed',
+      name: 'recovery_manual_setup_import_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.`
+  String get recovery_manual_setup_import_seed_subheading {
+    return Intl.message(
+      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.',
+      name: 'recovery_manual_setup_import_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Destination`
+  String get recovery_manual_setup_store_backup_cta {
+    return Intl.message(
+      'Choose Destination',
+      name: 'recovery_manual_setup_store_backup_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Store Your Encrypted Backup`
+  String get recovery_manual_setup_store_backup_heading {
+    return Intl.message(
+      'Store Your Encrypted Backup',
+      name: 'recovery_manual_setup_store_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get recovery_manual_setup_store_backup_modal_cta {
+    return Intl.message(
+      'Continue',
+      name: 'recovery_manual_setup_store_backup_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Wallet Is Ready`
+  String get recovery_manual_setup_store_backup_modal_heading {
+    return Intl.message(
+      'Your Wallet Is Ready',
+      name: 'recovery_manual_setup_store_backup_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Wallet is set up and ready for your Bitcoin!`
+  String get recovery_manual_setup_store_backup_modal_subheading {
+    return Intl.message(
+      'Envoy Wallet is set up and ready for your Bitcoin!',
+      name: 'recovery_manual_setup_store_backup_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get recovery_manual_setup_store_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'recovery_manual_setup_store_backup_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importing your Seed`
+  String get recovery_manual_setup_success_heading {
+    return Intl.message(
+      'Importing your Seed',
+      name: 'recovery_manual_setup_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `How to Recover?`
   String get recovery_scenario_Android_heading {
     return Intl.message(
@@ -9739,6 +10561,236 @@ class S {
   // skipped getter for the 'ssl://mainnet.foundationdevices.com:50002' key
 
   // skipped getter for the 'ssl:mainnet.foundationdevices' key
+
+  /// `Account name`
+  String get stalls_before_sending_tx_account_name {
+    return Intl.message(
+      'Account name',
+      name: 'stalls_before_sending_tx_account_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Note`
+  String get stalls_before_sending_tx_add_note {
+    return Intl.message(
+      'Add Note',
+      name: 'stalls_before_sending_tx_add_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get stalls_before_sending_tx_address {
+    return Intl.message(
+      'Address',
+      name: 'stalls_before_sending_tx_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tb1q33xnrjena6apwnhx5t375...`
+  String get stalls_before_sending_tx_address_content {
+    return Intl.message(
+      'tb1q33xnrjena6apwnhx5t375...',
+      name: 'stalls_before_sending_tx_address_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get stalls_before_sending_tx_amount {
+    return Intl.message(
+      'Amount',
+      name: 'stalls_before_sending_tx_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send transaction`
+  String get stalls_before_sending_tx_cta1 {
+    return Intl.message(
+      'Send transaction',
+      name: 'stalls_before_sending_tx_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get stalls_before_sending_tx_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'stalls_before_sending_tx_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$3.25`
+  String get stalls_before_sending_tx_fiat {
+    return Intl.message(
+      '\$3.25',
+      name: 'stalls_before_sending_tx_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be sent`
+  String get stalls_before_sending_tx_heading {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'stalls_before_sending_tx_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport name`
+  String get stalls_before_sending_tx_pp_name {
+    return Intl.message(
+      'Passport name',
+      name: 'stalls_before_sending_tx_pp_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` 25.000 sats`
+  String get stalls_before_sending_tx_sats {
+    return Intl.message(
+      ' 25.000 sats',
+      name: 'stalls_before_sending_tx_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try Again`
+  String get stalls_before_sending_tx_scanning_broadcasting_fail_cta1 {
+    return Intl.message(
+      'Try Again',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_fail_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review Transaction`
+  String get stalls_before_sending_tx_scanning_broadcasting_fail_cta2 {
+    return Intl.message(
+      'Review Transaction',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_fail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction couldn’t be sent`
+  String get stalls_before_sending_tx_scanning_broadcasting_fail_heading {
+    return Intl.message(
+      'Your transaction couldn’t be sent',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check your connection and try again.`
+  String get stalls_before_sending_tx_scanning_broadcasting_fail_subheading {
+    return Intl.message(
+      'Please check your connection and try again.',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get stalls_before_sending_tx_scanning_broadcasting_success_cta {
+    return Intl.message(
+      'Continue',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_success_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction was successfully sent`
+  String get stalls_before_sending_tx_scanning_broadcasting_success_heading {
+    return Intl.message(
+      'Your transaction was successfully sent',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review the details by tapping on the transaction from the account screen`
+  String get stalls_before_sending_tx_scanning_broadcasting_success_subheading {
+    return Intl.message(
+      'Review the details by tapping on the transaction from the account screen',
+      name: 'stalls_before_sending_tx_scanning_broadcasting_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sending transaction`
+  String get stalls_before_sending_tx_scanning_heading {
+    return Intl.message(
+      'Sending transaction',
+      name: 'stalls_before_sending_tx_scanning_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This might take few seconds`
+  String get stalls_before_sending_tx_scanning_subheading {
+    return Intl.message(
+      'This might take few seconds',
+      name: 'stalls_before_sending_tx_scanning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details are correct before sending.`
+  String get stalls_before_sending_tx_subheading {
+    return Intl.message(
+      'Confirm the transaction details are correct before sending.',
+      name: 'stalls_before_sending_tx_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TX ID`
+  String get stalls_before_sending_tx_txid {
+    return Intl.message(
+      'TX ID',
+      name: 'stalls_before_sending_tx_txid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XXXXXXXXXXXXXXXXXXXXXX...`
+  String get stalls_before_sending_tx_txid_content {
+    return Intl.message(
+      'XXXXXXXXXXXXXXXXXXXXXX...',
+      name: 'stalls_before_sending_tx_txid_content',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7`
   String get tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7 {
