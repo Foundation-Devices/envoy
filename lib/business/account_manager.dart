@@ -371,4 +371,16 @@ class AccountManager extends ChangeNotifier {
 
     return null;
   }
+
+  bool hotWalletAccountsEmpty() {
+    for (var account in accounts) {
+      if (account.wallet.hot) {
+        if (account.wallet.balance > 0) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
 }

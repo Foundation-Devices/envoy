@@ -9,6 +9,9 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
+
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({Key? key}) : super(key: key);
 
@@ -101,7 +104,18 @@ class _EraseWalletsAndBackupsWarningState
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
                   if (currentPage == 1) {
-                    // TODO: go to full screen save page
+                    if (AccountManager().hotWalletAccountsEmpty()) {
+                      // Safe to delete
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return SeedIntroScreen(
+                          mode: SeedIntroScreenType.verify,
+                        );
+                      }));
+                    }
+                    else {
+
+                    }
                   } else {
                     _pageController.nextPage(
                         duration: Duration(milliseconds: 600),

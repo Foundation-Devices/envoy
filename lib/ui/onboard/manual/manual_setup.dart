@@ -85,8 +85,8 @@ class _ManualSetupState extends State<ManualSetup> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return SelectMode(
-                              generate: false,
+                            return SeedIntroScreen(
+                              mode: SeedIntroScreenType.import,
                             );
                           }));
                         }),
@@ -96,7 +96,8 @@ class _ManualSetupState extends State<ManualSetup> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return SelectMode(generate: true);
+                            return SeedIntroScreen(
+                                mode: SeedIntroScreenType.generate);
                           }));
                         }),
                   ],
@@ -110,10 +111,16 @@ class _ManualSetupState extends State<ManualSetup> {
   }
 }
 
-class SelectMode extends StatelessWidget {
-  final bool generate;
+enum SeedIntroScreenType {
+  generate,
+  import,
+  verify,
+}
 
-  const SelectMode({Key? key, required this.generate}) : super(key: key);
+class SeedIntroScreen extends StatelessWidget {
+  final SeedIntroScreenType mode;
+
+  const SeedIntroScreen({Key? key, required this.mode}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +148,8 @@ class SelectMode extends StatelessWidget {
                 children: [
                   Flexible(
                       child: Container(
-                    child: generate
+                    child: mode == SeedIntroScreenType.generate ||
+                            mode == SeedIntroScreenType.verify
                         ? Image.asset(
                             "assets/shield_inspect.png",
                             width: 200,
@@ -163,7 +171,8 @@ class SelectMode extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          generate
+                          mode == SeedIntroScreenType.generate ||
+                                  mode == SeedIntroScreenType.verify
                               ? S().manual_setup_generate_seed_heading
                               : S().manual_setup_import_seed_heading,
                           textAlign: TextAlign.center,
@@ -171,7 +180,8 @@ class SelectMode extends StatelessWidget {
                         ),
                         Padding(padding: EdgeInsets.all(24)),
                         Text(
-                          generate
+                          mode == SeedIntroScreenType.generate ||
+                                  mode == SeedIntroScreenType.verify
                               ? S().manual_setup_generate_seed_subheading
                               : S().manual_setup_import_seed_subheading,
                           textAlign: TextAlign.center,
@@ -187,15 +197,21 @@ class SelectMode extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox.shrink(),
                   ),
-                  generate
+                  mode == SeedIntroScreenType.generate ||
+                          mode == SeedIntroScreenType.verify
                       ? OnboardingButton(
-                          label: S().manual_setup_generate_seed_CTA,
+                          label: mode == SeedIntroScreenType.generate
+                              ? S().manual_setup_generate_seed_CTA
+                              : S()
+                                  .backups_erase_wallets_and_backups_show_seed_CTA,
                           fontWeight: FontWeight.w600,
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
                               return Builder(builder: (context) {
-                                return GenerateSeedScreen();
+                                return SeedScreen(
+                                    generate:
+                                        mode == SeedIntroScreenType.generate);
                               });
                             }));
                           })
@@ -205,7 +221,7 @@ class SelectMode extends StatelessWidget {
                           children: [
                             OnboardingButton(
                                 type: EnvoyButtonTypes.secondary,
-                                label: S().manual_setup_import_seed_CTA2,
+                                label: S().manual_setup_import_seed_CTA3,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {
                                   Navigator.of(context).push(
@@ -219,7 +235,7 @@ class SelectMode extends StatelessWidget {
                                 }),
                             OnboardingButton(
                                 type: EnvoyButtonTypes.secondary,
-                                label: S().manual_setup_import_seed_CTA1,
+                                label: S().manual_setup_import_seed_CTA2,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {
                                   Navigator.of(context).push(

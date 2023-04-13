@@ -418,6 +418,7 @@
   "backups_erase_wallets_and_backups_modal_1_2_ios_heading": "WARNING",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. ",
   "backups_erase_wallets_and_backups_modal_2_2_subheading": "Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n",
+  "backups_erase_wallets_and_backups_show_seed_CTA": "Show Seed",
   "backups_export_flow_advanced": "Auto Backup",
   "backups_export_flow_export_backup": "Seed state",
   "backups_export_flow_export_seed": "You don’t have any seed",

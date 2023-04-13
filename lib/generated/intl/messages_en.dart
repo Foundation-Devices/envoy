@@ -213,6 +213,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n"),
+        "backups_erase_wallets_and_backups_show_seed_CTA":
+            MessageLookupByLibrary.simpleMessage("Show Seed"),
         "backups_export_flow_advanced":
             MessageLookupByLibrary.simpleMessage("Auto Backup"),
         "backups_export_flow_export_backup":

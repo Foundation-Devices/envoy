@@ -2008,6 +2008,16 @@ class S {
     );
   }
 
+  /// `Show Seed`
+  String get backups_erase_wallets_and_backups_show_seed_CTA {
+    return Intl.message(
+      'Show Seed',
+      name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto Backup`
   String get backups_export_flow_advanced {
     return Intl.message(
