@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -17,7 +18,7 @@ import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dar
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
 
-import 'export_seed_modal.dart';
+import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
 
 class BackupPage extends StatefulWidget {
   @override
@@ -229,60 +230,32 @@ class _BackupPageState extends State<BackupPage> with WidgetsBindingObserver {
                         context: context, dialog: ExportSeedModal());
                   },
                 ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 30.0),
+                      child: InkWell(
+                        onTap: () {
+                          showEraseWalletsAndBackupsWarning(context);
+                        },
+                        child: Text(S().backups_erase_wallets_and_backups,
+                            style: TextStyle(
+                              color: EnvoyColors.danger,
+                              fontWeight: FontWeight.w900,
+                            )),
+                      ),
+                    ),
+                  ),
+                )
               ],
             )));
   }
-}
 
-class AboutButton extends StatelessWidget {
-  final String label;
-  final Function()? onTap;
-
-  AboutButton(this.label, {this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-          height: 25.0,
-          decoration: BoxDecoration(
-              color: EnvoyColors.darkTeal,
-              borderRadius: BorderRadius.all(Radius.circular(15.0))),
-          child: Center(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              label,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ))),
-    );
-  }
-}
-
-class AboutText extends StatelessWidget {
-  final String label;
-  final bool dark;
-
-  const AboutText(
-    this.label, {
-    this.dark = false,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(label,
-        style: TextStyle(
-          color: dark ? Colors.white38 : Colors.white,
-          fontSize: 15.0,
-          fontWeight: FontWeight.w500,
-        ));
+  void showEraseWalletsAndBackupsWarning(BuildContext context) {
+    showEnvoyDialog(
+        context: context,
+        dismissible: false,
+        dialog: EraseWalletsAndBackupsWarning());
   }
 }
