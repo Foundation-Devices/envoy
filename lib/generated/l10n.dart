@@ -72,8 +72,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -437,16 +435,6 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
       desc: '',
       args: [],
     );
@@ -1400,16 +1388,6 @@ class S {
 
   // skipped getter for the 'TX Screen' key
 
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Tag Name' key
 
   // skipped getter for the 'Terms of Use' key
@@ -1998,6 +1976,16 @@ class S {
     );
   }
 
+  /// `WARNING`
+  String get backups_erase_wallets_and_backups_modal_2_2_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'backups_erase_wallets_and_backups_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n`
   String get backups_erase_wallets_and_backups_modal_2_2_subheading {
     return Intl.message(
@@ -2013,6 +2001,26 @@ class S {
     return Intl.message(
       'Show Seed',
       name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Your Seed Private`
+  String get backups_erase_wallets_and_backups_show_seed_heading {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'backups_erase_wallets_and_backups_show_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!`
+  String get backups_erase_wallets_and_backups_show_seed_subheading {
+    return Intl.message(
+      'Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!',
+      name: 'backups_erase_wallets_and_backups_show_seed_subheading',
       desc: '',
       args: [],
     );
@@ -2358,10 +2366,10 @@ class S {
     );
   }
 
-  /// `delete wallet`
+  /// `Delete Wallet`
   String get delete_wallet_for_good_modal_cta2 {
     return Intl.message(
-      'delete wallet',
+      'Delete Wallet',
       name: 'delete_wallet_for_good_modal_cta2',
       desc: '',
       args: [],
@@ -6365,6 +6373,46 @@ class S {
     return Intl.message(
       'Skip',
       name: 'envoy_welcome_right_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Return to my Accounts`
+  String get erase_wallet_with_balance_modal_CTA1 {
+    return Intl.message(
+      'Return to my Accounts',
+      name: 'erase_wallet_with_balance_modal_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Accounts anyway`
+  String get erase_wallet_with_balance_modal_CTA2 {
+    return Intl.message(
+      'Delete Accounts anyway',
+      name: 'erase_wallet_with_balance_modal_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get erase_wallet_with_balance_modal_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'erase_wallet_with_balance_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done.`
+  String get erase_wallet_with_balance_modal_subheading {
+    return Intl.message(
+      'Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done.',
+      name: 'erase_wallet_with_balance_modal_subheading',
       desc: '',
       args: [],
     );
@@ -10836,10 +10884,10 @@ class S {
     );
   }
 
-  /// `$165.71`
+  /// `$3.25`
   String get stalls_before_sending_tx_fiat {
     return Intl.message(
-      '\$165.71',
+      '\$3.25',
       name: 'stalls_before_sending_tx_fiat',
       desc: '',
       args: [],
@@ -10866,10 +10914,10 @@ class S {
     );
   }
 
-  /// `619,560 sats`
+  /// ` 25.000 sats`
   String get stalls_before_sending_tx_sats {
     return Intl.message(
-      '619,560 sats',
+      ' 25.000 sats',
       name: 'stalls_before_sending_tx_sats',
       desc: '',
       args: [],

@@ -41,7 +41,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -116,7 +115,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -210,11 +208,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. "),
+        "backups_erase_wallets_and_backups_modal_2_2_heading":
+            MessageLookupByLibrary.simpleMessage("WARNING"),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n"),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Show Seed"),
+        "backups_erase_wallets_and_backups_show_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Keep Your Seed Private"),
+        "backups_erase_wallets_and_backups_show_seed_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!"),
         "backups_export_flow_advanced":
             MessageLookupByLibrary.simpleMessage("Auto Backup"),
         "backups_export_flow_export_backup":
@@ -273,7 +278,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete_wallet_for_good_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "delete_wallet_for_good_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("delete wallet"),
+            MessageLookupByLibrary.simpleMessage("Delete Wallet"),
         "delete_wallet_for_good_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "As you sure you want to DELETE your Envoy wallet?"),
@@ -1124,6 +1129,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_os_clock": MessageLookupByLibrary.simpleMessage("4321"),
         "envoy_welcome_right_action":
             MessageLookupByLibrary.simpleMessage("Skip"),
+        "erase_wallet_with_balance_modal_CTA1":
+            MessageLookupByLibrary.simpleMessage("Return to my Accounts"),
+        "erase_wallet_with_balance_modal_CTA2":
+            MessageLookupByLibrary.simpleMessage("Delete Accounts anyway"),
+        "erase_wallet_with_balance_modal_heading":
+            MessageLookupByLibrary.simpleMessage("WARNING"),
+        "erase_wallet_with_balance_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done."),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your wallet seed. Ensure your seed is backed up securely. "),
         "export_backup_send_CTA1":
@@ -2115,14 +2129,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_cta2":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "stalls_before_sending_tx_fiat":
-            MessageLookupByLibrary.simpleMessage("\$165.71"),
+            MessageLookupByLibrary.simpleMessage("\$3.25"),
         "stalls_before_sending_tx_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Your transaction is ready \nto be sent"),
         "stalls_before_sending_tx_pp_name":
             MessageLookupByLibrary.simpleMessage("Passport name"),
         "stalls_before_sending_tx_sats":
-            MessageLookupByLibrary.simpleMessage("619,560 sats"),
+            MessageLookupByLibrary.simpleMessage(" 25.000 sats"),
         "stalls_before_sending_tx_scanning_broadcasting_fail_cta1":
             MessageLookupByLibrary.simpleMessage("Try Again"),
         "stalls_before_sending_tx_scanning_broadcasting_fail_cta2":

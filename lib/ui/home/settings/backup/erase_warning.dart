@@ -3,14 +3,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({Key? key}) : super(key: key);
@@ -104,17 +110,13 @@ class _EraseWalletsAndBackupsWarningState
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
                   if (currentPage == 1) {
-                    if (AccountManager().hotWalletAccountsEmpty()) {
+                    if (!AccountManager().hotWalletAccountsEmpty()) {
                       // Safe to delete
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return SeedIntroScreen(
-                          mode: SeedIntroScreenType.verify,
-                        );
-                      }));
-                    }
-                    else {
-
+                      displaySeedBeforeNuke(context);
+                    } else {
+                      showEnvoyDialog(
+                          context: context,
+                          dialog: EraseWalletsBalanceWarning());
                     }
                   } else {
                     _pageController.nextPage(
@@ -128,4 +130,174 @@ class _EraseWalletsAndBackupsWarningState
       ),
     );
   }
+}
+
+class EraseWalletsBalanceWarning extends ConsumerStatefulWidget {
+  const EraseWalletsBalanceWarning({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<EraseWalletsBalanceWarning> createState() =>
+      _EraseWalletsBalanceWarningState();
+}
+
+class _EraseWalletsBalanceWarningState
+    extends ConsumerState<EraseWalletsBalanceWarning> {
+  @override
+  Widget build(BuildContext context) {
+    final homePageState = ref.watch(homePageStateProvider.notifier);
+
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(8)),
+            Column(
+              children: [
+                Image.asset(
+                  "assets/exclamation_triangle.png",
+                  height: 80,
+                  width: 80,
+                ),
+                Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Text(
+                      S().backups_erase_wallets_and_backups_modal_1_2_ios_heading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Text(
+                    S().erase_wallet_with_balance_modal_subheading,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(5)),
+              ],
+            ),
+            OnboardingButton(
+                type: EnvoyButtonTypes.tertiary,
+                label: S().erase_wallet_with_balance_modal_CTA2,
+                textStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: EnvoyColors.danger),
+                onTap: () {
+                  displaySeedBeforeNuke(context);
+                }),
+            OnboardingButton(
+                label: S().erase_wallet_with_balance_modal_CTA1,
+                onTap: () {
+                  // Navigate to accounts
+                  homePageState.state = HomePageState.accounts;
+                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                }),
+            Padding(padding: EdgeInsets.all(12)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EraseWalletsConfirmation extends ConsumerStatefulWidget {
+  const EraseWalletsConfirmation({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<EraseWalletsConfirmation> createState() =>
+      _EraseWalletsConfirmationState();
+}
+
+class _EraseWalletsConfirmationState
+    extends ConsumerState<EraseWalletsConfirmation> {
+  @override
+  Widget build(BuildContext context) {
+    final homePageState = ref.watch(homePageStateProvider.notifier);
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(8)),
+            Column(
+              children: [
+                Image.asset(
+                  "assets/exclamation_triangle.png",
+                  height: 80,
+                  width: 80,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Text(
+                    S().delete_wallet_for_good_modal_subheading,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(5)),
+              ],
+            ),
+            OnboardingButton(
+                type: EnvoyButtonTypes.tertiary,
+                label: S().delete_wallet_for_good_modal_cta2,
+                onTap: () {
+                  EnvoySeed().delete().then((_) {
+                    // Navigate to accounts
+                    homePageState.state = HomePageState.accounts;
+                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  });
+                }),
+            OnboardingButton(
+                label: S().delete_wallet_for_good_modal_cta1,
+                onTap: () {
+                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                }),
+            Padding(padding: EdgeInsets.all(12)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void displaySeedBeforeNuke(BuildContext context) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    return SeedIntroScreen(
+      mode: SeedIntroScreenType.verify,
+    );
+  }));
 }

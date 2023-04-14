@@ -383,4 +383,17 @@ class AccountManager extends ChangeNotifier {
 
     return true;
   }
+
+  deleteHotWalletAccounts() {
+    List<Account> accountsToDelete = [];
+    for (var account in accounts) {
+      if (account.wallet.hot) {
+        accountsToDelete.add(account);
+      }
+    }
+
+    for (var account in accountsToDelete) {
+      deleteAccount(account);
+    }
+  }
 }

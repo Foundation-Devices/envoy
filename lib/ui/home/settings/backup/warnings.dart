@@ -17,15 +17,18 @@ import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
-
 import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BackupPage extends StatefulWidget {
+import 'package:envoy/ui/state/global_state.dart';
+
+class BackupPage extends ConsumerStatefulWidget {
   @override
-  State<BackupPage> createState() => _BackupPageState();
+  ConsumerState<BackupPage> createState() => _BackupPageState();
 }
 
-class _BackupPageState extends State<BackupPage> with WidgetsBindingObserver {
+class _BackupPageState extends ConsumerState<BackupPage>
+    with WidgetsBindingObserver {
   late EnvoySeed seed;
 
   @override
@@ -45,6 +48,7 @@ class _BackupPageState extends State<BackupPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final globalState = ref.watch(globalStateProvider.notifier);
     var s = Settings();
 
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
@@ -237,6 +241,7 @@ class _BackupPageState extends State<BackupPage> with WidgetsBindingObserver {
                       padding: const EdgeInsets.only(bottom: 30.0),
                       child: InkWell(
                         onTap: () {
+                          globalState.state = GlobalState.nuclearDelete;
                           showEraseWalletsAndBackupsWarning(context);
                         },
                         child: Text(S().backups_erase_wallets_and_backups,

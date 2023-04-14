@@ -27,6 +27,7 @@ use mla::ArchiveReader;
 use crate::bitcoin::hashes::Hash;
 use bdk::keys::bip39::Mnemonic;
 use lazy_static::lazy_static;
+use reqwest::Response;
 use tokio::runtime::{Builder, Runtime};
 use tokio::sync::broadcast::{Receiver, Sender};
 
@@ -252,6 +253,24 @@ fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
     buf
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn backup_delete(
+    seed_words: *const c_char,
+    server_url: *const c_char,
+    proxy_port: i32,
+) -> u16 {
+    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+    let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
+    let server_url = CStr::from_ptr(server_url).to_str().unwrap();
+
+    let rt = RUNTIME.as_ref().unwrap();
+
+    let response = rt
+        .block_on(async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await });
+
+    unwrap_or_return!(response, 0).status().as_u16()
+}
+
 fn decrypt_backup(
     data: Vec<u8>,
     secret: StaticSecret,
@@ -354,6 +373,20 @@ async fn get_backup_async(
         .await?;
 
     response.json().await
+}
+
+async fn delete_backup_async(
+    server_url: &str,
+    proxy_port: i32,
+    hash: String,
+) -> Result<Response, reqwest::Error> {
+    let client = get_reqwest_client(proxy_port);
+    let response = client
+        .delete(server_url.to_owned() + "/backup?key=" + &*hash)
+        .send()
+        .await?;
+
+    Ok(response)
 }
 
 fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {

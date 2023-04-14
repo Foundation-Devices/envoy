@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/cards/learn/learn_card.dart';
 import 'package:envoy/ui/home/settings/settings_menu.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/indicator_shield.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -25,6 +26,7 @@ import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -56,12 +58,13 @@ class HomePageCard {
   HomePageCard(this.icon, this.label, this.widget);
 }
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _HomePageState extends ConsumerState<HomePage>
+    with TickerProviderStateMixin {
   late final TabController _tabController;
 
   Widget _background = Container();
@@ -180,6 +183,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<HomePageState>(homePageStateProvider,
+        (HomePageState? _, HomePageState newState) {
+      _navigateToCard(newState.index);
+    });
+
     // After we render everything find out the options widgets height
     SchedulerBinding.instance.addPostFrameCallback(_getOptionsHeight);
 
@@ -353,16 +361,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               labelColor: EnvoyColors.darkTeal,
                               controller: _tabController,
                               onTap: (selectedIndex) {
+                                ref.read(homePageStateProvider.notifier).state =
+                                    HomePageState.values[selectedIndex];
                                 setState(() {
-                                  _tlCardIndex = selectedIndex;
-                                  _appBarTitle = _tlCardList[_tlCardIndex]
-                                      .label
-                                      .toUpperCase();
-
-                                  if (_leftAction != null &&
-                                      _leftAction != _toggleSettings) {
-                                    _leftAction!();
-                                  }
+                                  _navigateToCard(selectedIndex);
                                 });
                               },
                               tabs: _tlCardList
@@ -448,6 +450,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               )),
         ));
+  }
+
+  void _navigateToCard(int selectedIndex) {
+    _backgroundShown = false;
+    _tabController.animateTo(selectedIndex);
+    _tlCardIndex = selectedIndex;
+    _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
+
+    if (_leftAction != null && _leftAction != _toggleSettings) {
+      _leftAction!();
+    }
   }
 
   AbsorbPointer buildRightAction() {

@@ -151,6 +151,24 @@ class Backup {
     });
   }
 
+  static Future<bool> delete(
+      String seedWords, String serverUrl, Tor tor) async {
+    await _goAhead(tor);
+
+    int torPort = tor.port;
+    return Isolate.run(() async {
+      var lib = NativeLibrary(load("backup_ffi"));
+      var res = lib.backup_delete(seedWords.toNativeUtf8().cast<Char>(),
+          serverUrl.toNativeUtf8().cast<Char>(), torPort);
+
+      if (res == 0) {
+        throwRustException(lib);
+      }
+
+      return res == 202;
+    });
+  }
+
   static throwRustException(NativeLibrary lib) {
     String rustError =
         lib.backup_last_error_message().cast<Utf8>().toDartString();
