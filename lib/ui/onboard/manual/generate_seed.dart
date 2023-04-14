@@ -16,29 +16,41 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/secure_screen.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 
-class GenerateSeedScreen extends StatefulWidget {
-  const GenerateSeedScreen({Key? key}) : super(key: key);
+class SeedScreen extends StatefulWidget {
+  final bool generate;
+
+  const SeedScreen({Key? key, this.generate = true}) : super(key: key);
 
   @override
-  State<GenerateSeedScreen> createState() => _GenerateSeedScreenState();
+  State<SeedScreen> createState() => _SeedScreenState();
 }
 
-class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
+class _SeedScreenState extends State<SeedScreen> {
   PageController _pageController = PageController();
-  List<String> seed = [];
+  List<String> seedList = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       enableSecureScreen();
-      await Future.delayed(Duration(seconds: 1));
-      setState(() {
-        seed = Wallet.generateSeed().split(" ");
-      });
-      _pageController.animateToPage(1,
-          duration: Duration(milliseconds: 300), curve: Curves.ease);
+
+      if (widget.generate) {
+        await Future.delayed(Duration(seconds: 1));
+        setState(() {
+          seedList = Wallet.generateSeed().split(" ");
+        });
+        _pageController.animateToPage(1,
+            duration: Duration(milliseconds: 300), curve: Curves.ease);
+      } else {
+        final seed = await EnvoySeed().get();
+
+        setState(() {
+          seedList = seed!.split(" ");
+        });
+      }
     });
   }
 
@@ -57,23 +69,28 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
           controller: _pageController,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            _buildSeedGenerating(context),
+            if (widget.generate) _buildSeedGenerating(context),
             _buildMnemonicGrid(context),
             _buildSeedVerification(context),
             VerifySeedPuzzleWidget(
-                seed: seed,
+                seed: seedList,
                 onVerificationFinished: (bool verified) async {
                   if (verified) {
-                    EnvoySeed().create(seed).then((success) {
-                      if (success) {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return ManualSetupImportBackup();
-                        }));
-                      } else {
-                        // TODO: Show a dialog of failure
-                      }
-                    });
+                    if (widget.generate) {
+                      EnvoySeed().create(seedList).then((success) {
+                        if (success) {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return ManualSetupImportBackup();
+                          }));
+                        }
+                      });
+                    } else {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return ManualSetupCreateAndStoreBackup();
+                      }));
+                    }
                   } else {
                     await Future.delayed(Duration(milliseconds: 100));
                     Haptics.heavyImpact();
@@ -179,11 +196,12 @@ class _GenerateSeedScreenState extends State<GenerateSeedScreen> {
                         children: [
                           Text("${index + 1}. ", style: textTheme),
                           Expanded(
-                              child: Text("${seed[index]}", style: textTheme)),
+                              child:
+                                  Text("${seedList[index]}", style: textTheme)),
                         ],
                       ),
                     );
-                  }, childCount: seed.length),
+                  }, childCount: seedList.length),
                 ),
                 SliverPadding(padding: EdgeInsets.all(24)),
                 SliverFillRemaining(

@@ -1224,10 +1224,10 @@ class S {
     );
   }
 
-  /// `BACKUPS`
+  /// `Accounts`
   String get ScreenTitle {
     return Intl.message(
-      'BACKUPS',
+      'Accounts',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -1352,10 +1352,10 @@ class S {
 
   // skipped getter for the 'String Middle' key
 
-  /// `Store Your Encrypted Backup`
+  /// `Verify Your Passphrase`
   String get Subheading {
     return Intl.message(
-      'Store Your Encrypted Backup',
+      'Verify Your Passphrase',
       name: 'Subheading',
       desc: '',
       args: [],
@@ -1552,10 +1552,10 @@ class S {
     );
   }
 
-  /// `This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.`
+  /// `Testnet`
   String get _ {
     return Intl.message(
-      'This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds.',
+      'Testnet',
       name: '_',
       desc: '',
       args: [],
@@ -1906,6 +1906,16 @@ class S {
     );
   }
 
+  /// `Cancel`
+  String get backups_erase_wallets_and_backups_modal_1_2_android_cta1 {
+    return Intl.message(
+      'Cancel',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_android_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `WARNING`
   String get backups_erase_wallets_and_backups_modal_1_2_android_heading {
     return Intl.message(
@@ -1936,6 +1946,16 @@ class S {
     );
   }
 
+  /// `Cancel`
+  String get backups_erase_wallets_and_backups_modal_1_2_ios_cta1 {
+    return Intl.message(
+      'Cancel',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_ios_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `WARNING`
   String get backups_erase_wallets_and_backups_modal_1_2_ios_heading {
     return Intl.message(
@@ -1951,6 +1971,56 @@ class S {
     return Intl.message(
       'You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get backups_erase_wallets_and_backups_modal_2_2_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'backups_erase_wallets_and_backups_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n`
+  String get backups_erase_wallets_and_backups_modal_2_2_subheading {
+    return Intl.message(
+      'Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n',
+      name: 'backups_erase_wallets_and_backups_modal_2_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show Seed`
+  String get backups_erase_wallets_and_backups_show_seed_CTA {
+    return Intl.message(
+      'Show Seed',
+      name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Your Seed Private`
+  String get backups_erase_wallets_and_backups_show_seed_heading {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'backups_erase_wallets_and_backups_show_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!`
+  String get backups_erase_wallets_and_backups_show_seed_subheading {
+    return Intl.message(
+      'Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!',
+      name: 'backups_erase_wallets_and_backups_show_seed_subheading',
       desc: '',
       args: [],
     );
@@ -2296,10 +2366,10 @@ class S {
     );
   }
 
-  /// `delete wallet`
+  /// `Delete Wallet`
   String get delete_wallet_for_good_modal_cta2 {
     return Intl.message(
-      'delete wallet',
+      'Delete Wallet',
       name: 'delete_wallet_for_good_modal_cta2',
       desc: '',
       args: [],
@@ -6308,6 +6378,46 @@ class S {
     );
   }
 
+  /// `Return to my Accounts`
+  String get erase_wallet_with_balance_modal_CTA1 {
+    return Intl.message(
+      'Return to my Accounts',
+      name: 'erase_wallet_with_balance_modal_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Accounts anyway`
+  String get erase_wallet_with_balance_modal_CTA2 {
+    return Intl.message(
+      'Delete Accounts anyway',
+      name: 'erase_wallet_with_balance_modal_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get erase_wallet_with_balance_modal_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'erase_wallet_with_balance_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done.`
+  String get erase_wallet_with_balance_modal_subheading {
+    return Intl.message(
+      'Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done.',
+      name: 'erase_wallet_with_balance_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your wallet seed. Ensure your seed is backed up securely. `
   String get export_backup_modal_subheading {
     return Intl.message(
@@ -7320,10 +7430,10 @@ class S {
     );
   }
 
-  /// `Uploading Encrypted Backup`
+  /// `Uploading Envoy Backup`
   String get magic_setup_send_backup_to_envoy_server_heading {
     return Intl.message(
-      'Uploading Encrypted Backup',
+      'Uploading Envoy Backup',
       name: 'magic_setup_send_backup_to_envoy_server_heading',
       desc: '',
       args: [],
@@ -8134,36 +8244,6 @@ class S {
     );
   }
 
-  /// `Choose Destination`
-  String get manual_setup_import_existing_backup_CTA1 {
-    return Intl.message(
-      'Choose Destination',
-      name: 'manual_setup_import_existing_backup_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Store Your Envoy Backup`
-  String get manual_setup_import_existing_backup_heading {
-    return Intl.message(
-      'Store Your Envoy Backup',
-      name: 'manual_setup_import_existing_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_import_existing_backup_subheading {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_import_existing_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get manual_setup_import_seed_12_words_CTA {
     return Intl.message(
@@ -8224,21 +8304,41 @@ class S {
     );
   }
 
-  /// `24 Word Seed`
+  /// `Import with QR code`
   String get manual_setup_import_seed_CTA1 {
     return Intl.message(
-      '24 Word Seed',
+      'Import with QR code',
       name: 'manual_setup_import_seed_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `12 Word Seed`
+  /// `24 Word Seed`
   String get manual_setup_import_seed_CTA2 {
     return Intl.message(
-      '12 Word Seed',
+      '24 Word Seed',
       name: 'manual_setup_import_seed_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `12 Word Seed`
+  String get manual_setup_import_seed_CTA3 {
+    return Intl.message(
+      '12 Word Seed',
+      name: 'manual_setup_import_seed_CTA3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get manual_setup_import_seed_checkbox {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'manual_setup_import_seed_checkbox',
       desc: '',
       args: [],
     );
@@ -8259,6 +8359,158 @@ class S {
     return Intl.message(
       'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.',
       name: 'manual_setup_import_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get manual_setup_recovery_fail_cta1 {
+    return Intl.message(
+      'Retry',
+      name: 'manual_setup_recovery_fail_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Seed Words`
+  String get manual_setup_recovery_fail_cta2 {
+    return Intl.message(
+      'Import Seed Words',
+      name: 'manual_setup_recovery_fail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to scan QR Code`
+  String get manual_setup_recovery_fail_heading {
+    return Intl.message(
+      'Unable to scan QR Code',
+      name: 'manual_setup_recovery_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try scanning again or manually import your seed words instead.`
+  String get manual_setup_recovery_fail_subheading {
+    return Intl.message(
+      'Try scanning again or manually import your seed words instead.',
+      name: 'manual_setup_recovery_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-type Passphrase`
+  String get manual_setup_recovery_import_backup_modal_fail_cta1 {
+    return Intl.message(
+      'Re-type Passphrase',
+      name: 'manual_setup_recovery_import_backup_modal_fail_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose other Backup File`
+  String get manual_setup_recovery_import_backup_modal_fail_cta2 {
+    return Intl.message(
+      'Choose other Backup File',
+      name: 'manual_setup_recovery_import_backup_modal_fail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy can’t open this Envoy Backup file`
+  String get manual_setup_recovery_import_backup_modal_fail_heading {
+    return Intl.message(
+      'Envoy can’t open this Envoy Backup file',
+      name: 'manual_setup_recovery_import_backup_modal_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.`
+  String get manual_setup_recovery_import_backup_modal_fail_subheading {
+    return Intl.message(
+      'This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.',
+      name: 'manual_setup_recovery_import_backup_modal_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get manual_setup_recovery_import_backup_re_enter_passphrase_cta {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_recovery_import_backup_re_enter_passphrase_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-type Your \nPassphrase`
+  String get manual_setup_recovery_import_backup_re_enter_passphrase_heading {
+    return Intl.message(
+      'Re-type Your \nPassphrase',
+      name: 'manual_setup_recovery_import_backup_re_enter_passphrase_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup file.`
+  String
+      get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
+    return Intl.message(
+      'Carefully re-type your passphrase so Envoy can open your Envoy Backup file.',
+      name:
+          'manual_setup_recovery_import_backup_re_enter_passphrase_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get manual_setup_recovery_passphrase_modal_cta {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_recovery_passphrase_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Passphrase`
+  String get manual_setup_recovery_passphrase_modal_heading {
+    return Intl.message(
+      'Enter Your Passphrase',
+      name: 'manual_setup_recovery_passphrase_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This seed is protected by a passphrase. Enter it below to import your Envoy Wallet.`
+  String get manual_setup_recovery_passphrase_modal_subheading {
+    return Intl.message(
+      'This seed is protected by a passphrase. Enter it below to import your Envoy Wallet.',
+      name: 'manual_setup_recovery_passphrase_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importing your Seed`
+  String get manual_setup_recovery_success_heading {
+    return Intl.message(
+      'Importing your Seed',
+      name: 'manual_setup_recovery_success_heading',
       desc: '',
       args: [],
     );
@@ -8732,10 +8984,10 @@ class S {
     );
   }
 
-  /// `BACKUPS`
+  /// `ENVOY`
   String get manual_toggle_on_seed_backedup_iOS_backups {
     return Intl.message(
-      'BACKUPS',
+      'ENVOY',
       name: 'manual_toggle_on_seed_backedup_iOS_backups',
       desc: '',
       args: [],
@@ -10834,10 +11086,10 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  /// `Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
   String get wallet_security_modal_1_4_android_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed with Android Auto Backup.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      'Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
       name: 'wallet_security_modal_1_4_android_subheading',
       desc: '',
       args: [],
@@ -10874,13 +11126,13 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
-  String get wallet_security_modal_1_4_iOS_subheading {
+  /// `Envoy securely and automatically backs up your wallet seed to iCloud {{Keychain}}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
+  String wallet_security_modal_1_4_iOS_subheading(Object Keychain) {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed to iCloud Keychain.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
+      'Envoy securely and automatically backs up your wallet seed to iCloud {$Keychain}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
       name: 'wallet_security_modal_1_4_iOS_subheading',
       desc: '',
-      args: [],
+      args: [Keychain],
     );
   }
 

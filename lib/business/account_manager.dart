@@ -371,4 +371,29 @@ class AccountManager extends ChangeNotifier {
 
     return null;
   }
+
+  bool hotWalletAccountsEmpty() {
+    for (var account in accounts) {
+      if (account.wallet.hot) {
+        if (account.wallet.balance > 0) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  deleteHotWalletAccounts() {
+    List<Account> accountsToDelete = [];
+    for (var account in accounts) {
+      if (account.wallet.hot) {
+        accountsToDelete.add(account);
+      }
+    }
+
+    for (var account in accountsToDelete) {
+      deleteAccount(account);
+    }
+  }
 }

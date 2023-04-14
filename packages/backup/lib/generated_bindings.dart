@@ -107,6 +107,25 @@ class NativeLibrary {
   late final _backup_get_offline = _backup_get_offlinePtr.asFunction<
       BackupPayload Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
+  int backup_delete(
+    ffi.Pointer<ffi.Char> seed_words,
+    ffi.Pointer<ffi.Char> server_url,
+    int proxy_port,
+  ) {
+    return _backup_delete(
+      seed_words,
+      server_url,
+      proxy_port,
+    );
+  }
+
+  late final _backup_deletePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Uint16 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Int32)>>('backup_delete');
+  late final _backup_delete = _backup_deletePtr.asFunction<
+      int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+
   void backup_hello() {
     return _backup_hello();
   }

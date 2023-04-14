@@ -6,11 +6,14 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ManualSetupCreateAndStoreBackup extends StatefulWidget {
   const ManualSetupCreateAndStoreBackup({Key? key}) : super(key: key);
@@ -88,51 +91,62 @@ class _ManualSetupCreateAndStoreBackupState
 
   void showWarningModal(BuildContext context) {
     showEnvoyDialog(
-      context: context,
-      dismissible: false,
-      builder: Builder(builder: (context) {
-        return Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
+        context: context, dismissible: false, dialog: BackupWarningModal());
+  }
+}
+
+class BackupWarningModal extends ConsumerWidget {
+  const BackupWarningModal({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final globalState = ref.watch(globalStateProvider);
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(padding: EdgeInsets.all(8)),
+            Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(padding: EdgeInsets.all(8)),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.info_outline,
-                        color: EnvoyColors.darkTeal, size: 68),
-                    Padding(padding: EdgeInsets.all(4)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                        S().manual_setup_create_and_store_backup_modal_heading,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(2)),
-                  ],
+                Icon(Icons.info_outline, color: EnvoyColors.darkTeal, size: 68),
+                Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Text(
+                    S().manual_setup_create_and_store_backup_modal_heading,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                OnboardingButton(
-                    label: S().manual_setup_create_and_store_backup_modal_CTA,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await EnvoySeed().saveOfflineData();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return WalletSetupSuccess();
-                      }));
-                    }),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(2)),
               ],
             ),
-          ),
-        );
-      }),
+            OnboardingButton(
+                label: S().manual_setup_create_and_store_backup_modal_CTA,
+                onTap: () async {
+                  Navigator.pop(context);
+                  await EnvoySeed().saveOfflineData();
+                  if (globalState == GlobalState.nuclearDelete) {
+                    showEnvoyDialog(
+                        context: context, dialog: EraseWalletsConfirmation());
+                  } else {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return WalletSetupSuccess();
+                    }));
+                  }
+                }),
+            Padding(padding: EdgeInsets.all(12)),
+          ],
+        ),
+      ),
     );
   }
 }

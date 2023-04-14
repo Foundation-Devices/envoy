@@ -52,6 +52,8 @@ class EnvoyColors {
   static const Color glowMiddle = midCopper;
   static const Color glowOuter = transparent;
 
+  static const Color danger = Color(0xFFBB6E5A);
+
   static List<Color> listAccountTileColors = [
     Color(0xFFBF755F),
     Color(0xFF009DB9),

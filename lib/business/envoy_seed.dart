@@ -148,6 +148,18 @@ class EnvoySeed {
     });
   }
 
+  Future<bool> delete() async {
+    final seed = await get();
+
+    AccountManager().deleteHotWalletAccounts();
+    LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, false);
+
+    removeSeedFromNonSecure();
+    removeSeedFromSecure();
+
+    return Backup.delete(seed!, Settings().envoyServerAddress, Tor());
+  }
+
   Future<bool> restoreData({String? seed = null, String? filePath}) async {
     // Try to get seed from device
     if (seed == null) {
@@ -306,6 +318,10 @@ class EnvoySeed {
 
   removeSeedFromNonSecure() {
     LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+  }
+
+  removeSeedFromSecure() {
+    LocalStorage().deleteSecure(SEED_KEY);
   }
 
   Future<String?> _getNonSecure() async {

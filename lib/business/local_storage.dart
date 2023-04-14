@@ -71,6 +71,14 @@ class LocalStorage {
     }
   }
 
+  Future<void> deleteSecure(String key) async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      secureStorage.delete(key: key);
+    } else {
+      prefs.remove(key);
+    }
+  }
+
   Future<File> saveFile(String name, String content) async {
     return File(appSupportDir.path + '/' + name).writeAsString(content);
   }
