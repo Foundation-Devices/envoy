@@ -124,7 +124,9 @@ class _ManualSetupCreateAndStoreBackupState
                       await EnvoySeed().saveOfflineData();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return WalletSetupSuccess();
+
+                            // TODO: goto delete seed page
+                            return WalletSetupSuccess();
                       }));
                     }),
                 Padding(padding: EdgeInsets.all(12)),
