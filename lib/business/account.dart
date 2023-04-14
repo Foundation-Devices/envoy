@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class Account {
   String name;
   final DateTime dateAdded;
   final int number;
+  @JsonKey(defaultValue: generateNewId)
+  final String? id;
 
   // Flipped the first time we sync
   @JsonKey(
@@ -43,12 +46,16 @@ class Account {
     return EnvoyColors.listAccountTileColors[colorIndex];
   }
 
-  Account(
-      this.wallet, this.name, this.deviceSerial, this.dateAdded, this.number);
+  Account(this.wallet, this.name, this.deviceSerial, this.dateAdded,
+      this.number, this.id);
 
   // Serialisation
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);
+
+  static generateNewId() {
+    return Uuid().v4();
+  }
 
   Map<String, dynamic> toJson() => _$AccountToJson(this);
 }
