@@ -110,7 +110,7 @@ class _EraseWalletsAndBackupsWarningState
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
                   if (currentPage == 1) {
-                    if (!AccountManager().hotWalletAccountsEmpty()) {
+                    if (AccountManager().hotWalletAccountsEmpty()) {
                       // Safe to delete
                       displaySeedBeforeNuke(context);
                     } else {
