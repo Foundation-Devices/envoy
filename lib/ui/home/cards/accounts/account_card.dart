@@ -15,11 +15,13 @@ import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -96,7 +98,8 @@ class _AccountCardState extends State<AccountCard> {
                   itemCount: widget.account.wallet.transactions.length,
                   itemBuilder: (BuildContext context, int index) {
                     return TransactionListTile(
-                        transaction: widget.account.wallet.transactions[index]);
+                        transaction: widget.account.wallet.transactions[index],
+                        account: widget.account);
                   },
                 ),
         ),
@@ -199,9 +202,11 @@ class TransactionListTile extends StatelessWidget {
   const TransactionListTile({
     Key? key,
     required this.transaction,
+    required this.account,
   }) : super(key: key);
 
   final Transaction transaction;
+  final Account account;
 
   @override
   Widget build(BuildContext context) {
@@ -227,9 +232,28 @@ class TransactionListTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             // Styled as ListTile.title and ListTile.subtitle respectively
-            Text(
-              getFormattedAmount(transaction.amount),
-              style: Theme.of(context).textTheme.titleMedium,
+            Consumer(
+              builder: (context, ref, child) {
+                bool hide = ref.watch(balanceHideStateStatusProvider(account));
+                if (hide) {
+                  return SizedBox(
+                      width: 100,
+                      height: 15,
+                      child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Color(0xffEEEEEE),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)))));
+                } else {
+                  return child ?? Container();
+                }
+              },
+              child: Text(
+                getFormattedAmount(transaction.amount),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             Text(ExchangeRate().getFormattedAmount(transaction.amount),
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
