@@ -10,14 +10,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HideStateNotifier extends ChangeNotifier {
-  Set<int> amountHiddenAccounts = {};
+  Set<String> amountHiddenAccounts = {};
 
   HideStateNotifier() {
     LocalStorage().readSecure("balance_hidden").then((value) {
       if (value != null) {
         List<dynamic> savedState = jsonDecode(value);
         savedState.forEach((element) {
-          amountHiddenAccounts.add(element);
+          if (element is String) amountHiddenAccounts.add(element);
         });
         notifyListeners();
       }
@@ -25,11 +25,11 @@ class HideStateNotifier extends ChangeNotifier {
   }
 
   setHideState(bool hide, Account account) {
-    if (hide) {
-      amountHiddenAccounts.add(account.number);
+    if (hide && account.id != null) {
+      amountHiddenAccounts.add(account.id!);
     } else {
-      if (amountHiddenAccounts.contains(account.number)) {
-        amountHiddenAccounts.remove(account.number);
+      if (amountHiddenAccounts.contains(account.id)) {
+        amountHiddenAccounts.remove(account.id);
       }
     }
     var stateAsList = amountHiddenAccounts.toList();
@@ -49,6 +49,6 @@ final balanceHideNotifierProvider =
 final balanceHideStateStatusProvider = Provider.family<bool, Account>(
   (ref, account) {
     var hideStates = ref.watch(balanceHideNotifierProvider);
-    return hideStates.amountHiddenAccounts.contains(account.number);
+    return hideStates.amountHiddenAccounts.contains(account.id);
   },
 );
