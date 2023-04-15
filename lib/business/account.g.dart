@@ -12,6 +12,7 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       json['deviceSerial'] as String,
       DateTime.parse(json['dateAdded'] as String),
       json['number'] as int,
+      json['id'] as String? ?? Account.generateNewId(),
     )..initialSyncCompleted = json['initialSyncCompleted'] as bool? ?? true;
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
@@ -20,5 +21,6 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'name': instance.name,
       'dateAdded': instance.dateAdded.toIso8601String(),
       'number': instance.number,
+      'id': instance.id,
       'initialSyncCompleted': instance.initialSyncCompleted,
     };

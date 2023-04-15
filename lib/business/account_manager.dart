@@ -115,7 +115,8 @@ class AccountManager extends ChangeNotifier {
         "Hot Wallet",
         "envoy", // Device code for wallets derived on phone
         DateTime.now(),
-        0);
+        0,
+        Account.generateNewId());
 
     addAccount(account);
     return account;
@@ -177,7 +178,8 @@ class AccountManager extends ChangeNotifier {
         "Account " + (accounts.length + 1).toString(),
         device.serial,
         DateTime.now(),
-        0);
+        0,
+        Account.generateNewId());
 
     addAccount(account);
     return account;
@@ -236,7 +238,8 @@ class AccountManager extends ChangeNotifier {
         json["acct_name"] + " (#" + accountNumber.toString() + ")",
         device.serial,
         DateTime.now(),
-        accountNumber);
+        accountNumber,
+        Account.generateNewId());
 
     addAccount(account);
     return account;
