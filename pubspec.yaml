@@ -90,6 +90,8 @@ dependencies:
   file_picker: ^5.2.5
   intl_utils: ^2.8.2
   schedulers: ^1.0.1
+  sembast: ^3.4.3+1
+  path_provider: ^2.0.14
 
 dev_dependencies:
   test: any
@@ -116,6 +118,7 @@ flutter:
   uses-material-design: true
   assets:
     - google_fonts/
+    - assets/icons/
     - assets/
 
   fonts:
