@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
+import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/exceptions.dart';
@@ -14,8 +15,6 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/accounts/fee_toggle.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
-
-import 'common.dart';
 
 //ignore: must_be_immutable
 class ConfirmationCard extends StatefulWidget with NavigationCard {
@@ -152,8 +151,14 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                     navigationCallback: widget.navigator,
                   ));
                 } else {
-                  broadcast(_boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                      context, widget.account.wallet, widget.navigator!);
+                  widget.navigator!.push(TxReview(
+                    _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                    widget.account,
+                    navigationCallback: widget.navigator,
+                    onFinishNavigationClick: () {
+                      widget.navigator?.pop(depth: 3);
+                    },
+                  ));
                 }
               },
               label: S().envoy_confirmation_confirm))
