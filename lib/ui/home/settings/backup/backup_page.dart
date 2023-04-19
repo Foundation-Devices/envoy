@@ -54,6 +54,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
     var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
 
+    final _bottomOffset = MediaQuery.of(context).padding.bottom;
+
     return Container(
         color: Colors.black,
         child: Padding(
@@ -238,7 +240,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
+                      padding: EdgeInsets.only(bottom: _bottomOffset + 30.0),
                       child: InkWell(
                         onTap: () {
                           globalState.state = GlobalState.nuclearDelete;

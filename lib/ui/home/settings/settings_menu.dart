@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/home/settings/backup/warnings.dart';
+import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -13,7 +13,7 @@ import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 
-import '../../../business/envoy_seed.dart';
+import 'package:envoy/business/envoy_seed.dart';
 
 class SettingsMenu extends StatefulWidget {
   @override
