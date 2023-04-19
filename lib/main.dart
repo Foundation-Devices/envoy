@@ -9,6 +9,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/onboard/splash_screen.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -42,6 +43,7 @@ Future<void> initSingletons() async {
   Tor.init();
   UpdatesManager.init();
   ScvServer.init();
+  EnvoyStorage();
 
   if (Settings().usingTor) {
     Tor().enable();
