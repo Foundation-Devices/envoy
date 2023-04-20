@@ -255,9 +255,31 @@ class TransactionListTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            Text(ExchangeRate().getFormattedAmount(transaction.amount),
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall!.color))
+            Consumer(
+              builder: (context, ref, child) {
+                bool hide = ref.watch(balanceHideStateStatusProvider(account));
+                if (hide) {
+                  return Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 15,
+                        child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Color(0xffEEEEEE),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))))),
+                  );
+                } else {
+                  return child ?? Container();
+                }
+              },
+              child: Text(ExchangeRate().getFormattedAmount(transaction.amount),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Theme.of(context).textTheme.bodySmall!.color)),
+            ),
           ],
         ),
       ),

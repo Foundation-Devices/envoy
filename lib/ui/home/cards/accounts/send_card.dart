@@ -6,6 +6,7 @@ import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:envoy/ui/home/cards/accounts/confirmation_card.dart';
 import 'package:envoy/ui/address_entry.dart';
@@ -13,8 +14,12 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
+//For review screens
+final spendAddressProvider = StateProvider((ref) => "");
+final spendAmountProvider = StateProvider((ref) => 0);
+
 //ignore: must_be_immutable
-class SendCard extends StatefulWidget with NavigationCard {
+class SendCard extends ConsumerStatefulWidget with NavigationCard {
   final Account account;
   final String? address;
 
@@ -27,17 +32,17 @@ class SendCard extends StatefulWidget with NavigationCard {
   }
 
   @override
-  State<SendCard> createState() => _SendCardState();
+  ConsumerState<SendCard> createState() => _SendCardState();
 }
 
-class _SendCardState extends State<SendCard>
+class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
   bool _addressValid = false;
   bool _amountSufficient = true;
 
   int _amount = 0;
 
-  var _address;
+  AddressEntry? _address;
   var _amountEntry = AmountEntry();
 
   @override
@@ -62,6 +67,9 @@ class _SendCardState extends State<SendCard>
             setState(() {
               _addressValid = valid;
             });
+            if (valid) {
+              ref.read(spendAddressProvider.notifier).state = _address!.text;
+            }
           });
         });
 
@@ -79,6 +87,7 @@ class _SendCardState extends State<SendCard>
     setState(() {
       _amount = amount;
       _amountSufficient = !(amount > widget.account.wallet.balance);
+      ref.read(spendAmountProvider.notifier).state = _amount;
     });
   }
 
@@ -116,7 +125,7 @@ class _SendCardState extends State<SendCard>
                   if (_amount != widget.account.wallet.balance) {
                     try {
                       await widget.account.wallet
-                          .createPsbt(_address.text, _amount, Fees().fastRate);
+                          .createPsbt(_address!.text, _amount, Fees().fastRate);
                     } on InsufficientFunds {
                       // If amount is equal to balance user wants to send max
                       if (_amount != widget.account.wallet.balance) {
@@ -131,7 +140,7 @@ class _SendCardState extends State<SendCard>
                   widget.navigator!.push(ConfirmationCard(
                     widget.account,
                     _amount,
-                    _address.text,
+                    _address!.text,
                     pushCallback: widget.navigator,
                   ));
                 }
@@ -149,4 +158,12 @@ class _SendCardState extends State<SendCard>
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    //reset states
+    ref.read(spendAddressProvider.notifier).state = "";
+    ref.read(spendAmountProvider.notifier).state = 0;
+    super.dispose();
+  }
 }

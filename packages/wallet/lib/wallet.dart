@@ -564,22 +564,27 @@ class Wallet {
 
   Future<String> broadcastTx(
       String electrumAddress, int torPort, String tx) async {
-    final rustFunction = _lib
-        .lookup<NativeFunction<WalletBroadcastTxRust>>('wallet_broadcast_tx');
-    final dartFunction = rustFunction.asFunction<WalletBroadcastTxDart>();
+    Future<String> _broadcastTx(Map params) async {
+      DynamicLibrary lib = load(_libName);
 
-    return Future(() {
+      int _torPort = params['port'];
+      String _tx = params['tx'];
+
+      final rustFunction = lib
+          .lookup<NativeFunction<WalletBroadcastTxRust>>('wallet_broadcast_tx');
+      final dartFunction = rustFunction.asFunction<WalletBroadcastTxDart>();
       var txid = dartFunction(
-              electrumAddress.toNativeUtf8(), torPort, tx.toNativeUtf8())
+              electrumAddress.toNativeUtf8(), _torPort, _tx.toNativeUtf8())
           .cast<Utf8>()
           .toDartString();
 
       if (txid.isEmpty) {
         throwRustException(_lib);
       }
-
       return txid;
-    });
+    }
+
+    return compute(_broadcastTx, {"tx": tx, "port": torPort});
   }
 
   bool validateAddress(String address) {
