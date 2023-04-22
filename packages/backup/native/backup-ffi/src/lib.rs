@@ -440,6 +440,18 @@ mod tests {
             [("hello".to_owned(), "there".to_owned())]
         );
     }
+
+    #[test]
+    fn test_create_hash_from_seed() {
+        let seed_words =
+            "copper december enlist body dove discover cross help evidence fall rich clean";
+        let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes()).to_hex();
+
+        assert_eq!(
+            hash,
+            "fbf05d44bf48541e2fb0ab36e86611d1236368ec3a223135c2aeb2c9bd2fa66a"
+        );
+    }
 }
 
 // Due to its simple signature this dummy function is the one added (unused) to iOS swift codebase to force Xcode to link the lib
