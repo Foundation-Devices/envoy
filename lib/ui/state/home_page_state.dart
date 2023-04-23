@@ -4,7 +4,20 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum HomePageState { devices, accounts, learn }
+enum HomePageTabState { devices, accounts, learn }
 
-final homePageStateProvider =
-    StateProvider<HomePageState>((ref) => HomePageState.devices);
+enum HomePageBackgroundState {
+  hidden,
+  menu,
+  notifications,
+  settings,
+  backups,
+  support,
+  about
+}
+
+final homePageTab =
+    StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
+
+final homePageBackground = StateProvider<HomePageBackgroundState>(
+    (ref) => HomePageBackgroundState.hidden);

@@ -144,8 +144,6 @@ class _EraseWalletsBalanceWarningState
     extends ConsumerState<EraseWalletsBalanceWarning> {
   @override
   Widget build(BuildContext context) {
-    final homePageState = ref.watch(homePageStateProvider.notifier);
-
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
@@ -207,8 +205,11 @@ class _EraseWalletsBalanceWarningState
             OnboardingButton(
                 label: S().erase_wallet_with_balance_modal_CTA1,
                 onTap: () {
-                  // Navigate to accounts
-                  homePageState.state = HomePageState.accounts;
+                  // Show home page and navigate to accounts
+                  ref.read(homePageBackground.notifier).state =
+                      HomePageBackgroundState.hidden;
+                  ref.read(homePageTab.notifier).state =
+                      HomePageTabState.accounts;
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 }),
             Padding(padding: EdgeInsets.all(12)),
@@ -231,7 +232,6 @@ class _EraseWalletsConfirmationState
     extends ConsumerState<EraseWalletsConfirmation> {
   @override
   Widget build(BuildContext context) {
-    final homePageState = ref.watch(homePageStateProvider.notifier);
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
@@ -276,8 +276,11 @@ class _EraseWalletsConfirmationState
                 label: S().delete_wallet_for_good_modal_cta2,
                 onTap: () {
                   EnvoySeed().delete().then((_) {
-                    // Navigate to accounts
-                    homePageState.state = HomePageState.accounts;
+                    // Show home page and navigate to accounts
+                    ref.read(homePageBackground.notifier).state =
+                        HomePageBackgroundState.hidden;
+                    ref.read(homePageTab.notifier).state =
+                        HomePageTabState.accounts;
                     Navigator.of(context).popUntil(ModalRoute.withName("/"));
                   });
                 }),

@@ -5,8 +5,10 @@
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/home/home_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
@@ -15,54 +17,82 @@ import 'package:envoy/generated/l10n.dart';
 
 import 'package:envoy/business/envoy_seed.dart';
 
-class SettingsMenu extends StatefulWidget {
+class SettingsMenu extends ConsumerStatefulWidget {
   @override
-  State<SettingsMenu> createState() => _SettingsMenuState();
+  ConsumerState<SettingsMenu> createState() => _SettingsMenuState();
 }
 
-class _SettingsMenuState extends State<SettingsMenu> {
-  Widget? _menuPage;
-  Widget? _currentPage;
+class _SettingsMenuState extends ConsumerState<SettingsMenu> {
+  Widget _currentPage = SettingsMenuWidget();
 
   void _goBackToMenu() {
-    setState(() {
-      _currentPage = _menuPage;
-    });
-
+    ref.read(homePageBackground.notifier).state = HomePageBackgroundState.menu;
     Settings().store();
-    HomePageNotification(leftFunction: null, title: "Envoy".toUpperCase())
-      ..dispatch(context);
-  }
-
-  void initState() {
-    super.initState();
-    _menuPage = SettingsMenuWidget((widget) {
-      setState(() {
-        _currentPage = widget;
-      });
-
-      HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
-    });
-
-    _currentPage = _menuPage;
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<HomePageBackgroundState>(homePageBackground, (_, next) {
+      selectPage(next, context);
+    });
+
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 250),
-      child: _currentPage!,
+      child: _currentPage,
     );
+  }
+
+  @override
+  void initState() {
+    selectPage(ref.read(homePageBackground), context);
+    super.initState();
+  }
+
+  void selectPage(HomePageBackgroundState state, BuildContext context) {
+    switch (state) {
+      case HomePageBackgroundState.menu:
+        setState(() {
+          _currentPage = SettingsMenuWidget();
+          HomePageNotification(leftFunction: null, title: "Envoy".toUpperCase())
+            ..dispatch(context);
+        });
+        break;
+      case HomePageBackgroundState.settings:
+        setState(() {
+          _currentPage = SettingsPage();
+          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+        });
+        break;
+      case HomePageBackgroundState.backups:
+        setState(() {
+          _currentPage = BackupPage();
+          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+        });
+        break;
+      case HomePageBackgroundState.support:
+        setState(() {
+          _currentPage = SupportPage();
+          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+        });
+        break;
+      case HomePageBackgroundState.about:
+        setState(() {
+          _currentPage = AboutPage();
+          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+        });
+        break;
+      default:
+        break;
+    }
   }
 }
 
-class SettingsMenuWidget extends StatelessWidget {
-  final Function(Widget) callback;
-
-  SettingsMenuWidget(this.callback);
+class SettingsMenuWidget extends ConsumerWidget {
+  SettingsMenuWidget();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
+    var background = ref.read(homePageBackground.notifier);
     return Padding(
       padding: const EdgeInsets.only(top: 100, bottom: 50),
       child: Center(
@@ -78,7 +108,7 @@ class SettingsMenuWidget extends StatelessWidget {
                   MenuOption(
                     label: S().envoy_settings_menu_settings,
                     onTap: () {
-                      callback(SettingsPage());
+                      background.state = HomePageBackgroundState.settings;
                     },
                   ),
                   if (EnvoySeed().walletDerived()) SizedBox(height: 50),
@@ -86,21 +116,21 @@ class SettingsMenuWidget extends StatelessWidget {
                     MenuOption(
                       label: S().menu_backups,
                       onTap: () {
-                        callback(BackupPage());
+                        background.state = HomePageBackgroundState.backups;
                       },
                     ),
                   SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_settings_menu_support,
                     onTap: () {
-                      callback(SupportPage());
+                      background.state = HomePageBackgroundState.support;
                     },
                   ),
                   SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_settings_menu_about,
                     onTap: () {
-                      callback(AboutPage());
+                      background.state = HomePageBackgroundState.about;
                     },
                   ),
                 ]),

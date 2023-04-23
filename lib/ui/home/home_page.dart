@@ -138,34 +138,26 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   void _toggleSettings() {
-    setState(() {
-      _backgroundShown = !_backgroundShown;
-      if (_backgroundShown) {
-        _background = SettingsMenu();
-        _appBarTitle = "Envoy".toUpperCase();
-      } else {
-        _background = Container();
-        _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
-        //reset right action
-        _rightAction = _toggleOptions;
-      }
-    });
+    final background = ref.read(homePageBackground.notifier);
+    _backgroundShown = !_backgroundShown;
+
+    if (_backgroundShown) {
+      background.state = HomePageBackgroundState.menu;
+    } else {
+      background.state = HomePageBackgroundState.hidden;
+    }
   }
 
   void _toggleNotifications() async {
-    setState(() {
-      if (!_backgroundShown) {
-        _appBarTitle = "Activity".toUpperCase();
-        _background = NotificationsPage();
-        _leftAction = _toggleNotifications;
-      } else {
-        _background = Container();
-        _tlCardList[_tlCardIndex].widget.tlCardState!.notifyHomePage();
-      }
+    final background = ref.read(homePageBackground.notifier);
+    _backgroundShown = !_backgroundShown;
+    _notificationsShown = _backgroundShown;
 
-      _backgroundShown = !_backgroundShown;
-      _notificationsShown = _backgroundShown;
-    });
+    if (_backgroundShown) {
+      background.state = HomePageBackgroundState.notifications;
+    } else {
+      background.state = HomePageBackgroundState.hidden;
+    }
   }
 
   void _toggleOptions() {
@@ -183,9 +175,47 @@ class _HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<HomePageState>(homePageStateProvider,
-        (HomePageState? _, HomePageState newState) {
+    ref.listen<HomePageTabState>(homePageTab,
+        (HomePageTabState? _, HomePageTabState newState) {
       _navigateToCard(newState.index);
+    });
+
+    ref.listen<HomePageBackgroundState>(homePageBackground,
+        (HomePageBackgroundState? oldState, HomePageBackgroundState newState) {
+      // TODO: use ref.watch instead (when we're using riverpod throughout)
+      setState(() {
+        switch (newState) {
+          case HomePageBackgroundState.hidden:
+            _backgroundShown = false;
+            _notificationsShown = false;
+            _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
+            //reset right action
+            _rightAction = _toggleOptions;
+
+            _background = Container();
+            _tlCardList[_tlCardIndex].widget.tlCardState!.notifyHomePage();
+            break;
+          case HomePageBackgroundState.menu:
+          case HomePageBackgroundState.settings:
+          case HomePageBackgroundState.backups:
+          case HomePageBackgroundState.support:
+          case HomePageBackgroundState.about:
+            _backgroundShown = true;
+            _notificationsShown = false;
+            _background = SettingsMenu();
+            _appBarTitle = "Envoy".toUpperCase();
+            break;
+          case HomePageBackgroundState.notifications:
+            _backgroundShown = true;
+            _notificationsShown = true;
+            _appBarTitle = "Activity".toUpperCase();
+            _background = NotificationsPage();
+            _leftAction = _toggleNotifications;
+            break;
+          default:
+            break;
+        }
+      });
     });
 
     // After we render everything find out the options widgets height
@@ -361,8 +391,8 @@ class _HomePageState extends ConsumerState<HomePage>
                               labelColor: EnvoyColors.darkTeal,
                               controller: _tabController,
                               onTap: (selectedIndex) {
-                                ref.read(homePageStateProvider.notifier).state =
-                                    HomePageState.values[selectedIndex];
+                                ref.read(homePageTab.notifier).state =
+                                    HomePageTabState.values[selectedIndex];
                                 setState(() {
                                   _navigateToCard(selectedIndex);
                                 });
@@ -453,7 +483,6 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   void _navigateToCard(int selectedIndex) {
-    _backgroundShown = false;
     _tabController.animateTo(selectedIndex);
     _tlCardIndex = selectedIndex;
     _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
