@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
+import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -15,8 +16,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/business/account.dart';
-
-import 'common.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends StatelessWidget with NavigationCard {
@@ -72,7 +71,14 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                       .push(MaterialPageRoute(builder: (context) {
                     return ScannerPage.tx((psbt) {
                       account.wallet.decodePsbt(psbt).then((decoded) {
-                        broadcast(decoded, context, account.wallet, navigator!);
+                        navigator!.push(TxReview(
+                          decoded,
+                          account,
+                          navigationCallback: navigator,
+                          onFinishNavigationClick: () {
+                            navigator?.pop(depth: 4);
+                          },
+                        ));
                       });
                     });
                   }));

@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -193,6 +194,7 @@ class _NumpadState extends State<Numpad> {
           return NumpadButton(
             digit,
             onTap: () {
+              Haptics.lightImpact();
               widget.events.sink.add(digit);
             },
           );
@@ -201,6 +203,7 @@ class _NumpadState extends State<Numpad> {
             ? NumpadButton(
                 ".",
                 onTap: () {
+                  Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.dot);
                 },
               )
@@ -208,12 +211,14 @@ class _NumpadState extends State<Numpad> {
         NumpadButton(
           "0",
           onTap: () {
+            Haptics.lightImpact();
             widget.events.sink.add("0");
           },
         ),
         NumpadButton(
           "<",
           onTap: () {
+            Haptics.lightImpact();
             widget.events.sink.add(NumpadEvents.backspace);
           },
           backspace: true,

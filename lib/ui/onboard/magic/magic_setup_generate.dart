@@ -195,8 +195,10 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
 class MagicRecoveryInfo extends StatelessWidget {
   final bool skipSuccessScreen;
+  final GestureTapCallback? onContinue;
 
-  const MagicRecoveryInfo({Key? key, this.skipSuccessScreen = false})
+  const MagicRecoveryInfo(
+      {Key? key, this.skipSuccessScreen = false, this.onContinue = null})
       : super(key: key);
 
   @override
@@ -249,6 +251,10 @@ class MagicRecoveryInfo extends StatelessWidget {
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
+                      if (onContinue != null) {
+                        onContinue!.call();
+                        return;
+                      }
                       if (skipSuccessScreen) {
                         Navigator.pop(context);
                       } else {

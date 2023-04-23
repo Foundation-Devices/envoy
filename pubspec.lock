@@ -853,7 +853,7 @@ packages:
     source: hosted
     version: "1.0.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: c7edf82217d4b2952b2129a61d3ad60f1075b9299e629e149a8d2e39c2e6aad4
@@ -1085,6 +1085,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  sembast:
+    dependency: "direct main"
+    description:
+      name: sembast
+      sha256: "24829715d11c2c437e67b413f29ff91b5325daa9632f851d44deeea7a29bde9e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.3+1"
   share_plus:
     dependency: "direct main"
     description:
@@ -1314,6 +1322,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "33b31b6beb98100bf9add464a36a8dd03eb10c7a8cf15aeec535e9b054aaf04b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   term_glyph:
     dependency: transitive
     description:

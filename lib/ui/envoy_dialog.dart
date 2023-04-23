@@ -37,15 +37,15 @@ class EnvoyDialog extends StatelessWidget {
                   ),
                 )
               : SizedBox(),
-          Container(
-            margin: EdgeInsets.only(right: 28),
-            child: Text(this.title ?? '',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24)),
-          ),
-          Padding(padding: EdgeInsets.all(8)),
+          this.title != null
+              ? Container(
+                  margin: EdgeInsets.only(right: 28),
+                  child: Text(this.title ?? '',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w500, fontSize: 24)),
+                )
+              : SizedBox(),
+          Padding(padding: EdgeInsets.all(this.title != null ? 8 : 0)),
           content ?? Container(),
           Padding(padding: EdgeInsets.all(12)),
           ...actions?.map((widget) {

@@ -5,7 +5,9 @@
 import 'dart:io';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:rive/rive.dart' as Rive;
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({Key? key}) : super(key: key);
@@ -275,14 +278,8 @@ class _EraseWalletsConfirmationState
                 type: EnvoyButtonTypes.tertiary,
                 label: S().delete_wallet_for_good_modal_cta2,
                 onTap: () {
-                  EnvoySeed().delete().then((_) {
-                    // Show home page and navigate to accounts
-                    ref.read(homePageBackground.notifier).state =
-                        HomePageBackgroundState.hidden;
-                    ref.read(homePageTab.notifier).state =
-                        HomePageTabState.accounts;
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
-                  });
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => EraseProgress()));
                 }),
             OnboardingButton(
                 label: S().delete_wallet_for_good_modal_cta1,
@@ -303,4 +300,116 @@ void displaySeedBeforeNuke(BuildContext context) {
       mode: SeedIntroScreenType.verify,
     );
   }));
+}
+
+class EraseProgress extends ConsumerStatefulWidget {
+  const EraseProgress({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<EraseProgress> createState() => _EraseProgressState();
+}
+
+class _EraseProgressState extends ConsumerState<EraseProgress> {
+  Rive.StateMachineController? _stateMachineController;
+
+  bool _deleteInProgress = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return OnboardPageBackground(
+        child: Material(
+      color: Colors.transparent,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Container(
+                height: 260,
+                child: Rive.RiveAnimation.asset(
+                  "assets/envoy_loader.riv",
+                  fit: BoxFit.contain,
+                  onInit: (artboard) {
+                    _stateMachineController =
+                        Rive.StateMachineController.fromArtboard(
+                            artboard, 'STM');
+                    artboard.addController(_stateMachineController!);
+                    _stateMachineController
+                        ?.findInput<bool>("indeterminate")
+                        ?.change(true);
+                    _onInit();
+                  },
+                ),
+              ),
+            ),
+            SliverPadding(padding: EdgeInsets.all(28)),
+            SliverToBoxAdapter(
+              child: Builder(
+                builder: (context) {
+                  String title = S().delete_wallet_for_good_loading_heading;
+                  if (!_deleteInProgress) {
+                    title = S().delete_wallet_for_good_success_heading;
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Padding(padding: EdgeInsets.all(18)),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
+  _onInit() async {
+    try {
+      setState(() {
+        _deleteInProgress = true;
+      });
+      _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
+      _stateMachineController?.findInput<bool>("happy")?.change(false);
+      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      //wait for animation
+      await Future.delayed(Duration(seconds: 1));
+      await EnvoySeed().delete();
+      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
+      _stateMachineController?.findInput<bool>("happy")?.change(true);
+      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      setState(() {
+        _deleteInProgress = false;
+      });
+      await Future.delayed(Duration(milliseconds: 2000));
+
+      // Show home page and navigate to accounts
+      ref.read(homePageBackground.notifier).state =
+          HomePageBackgroundState.hidden;
+      ref.read(homePageTab.notifier).state = HomePageTabState.accounts;
+
+      //Show android backup info
+      if (Platform.isAndroid) {
+        Navigator.of(context).popUntil(ModalRoute.withName("/"));
+        await Future.delayed(Duration(milliseconds: 300));
+        await Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => MagicRecoveryInfo(
+                  onContinue: () {
+                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  },
+                )));
+      } else {
+        Navigator.of(context).popUntil(ModalRoute.withName("/"));
+      }
+    } catch (e) {}
+  }
 }

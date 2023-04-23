@@ -106,6 +106,7 @@ class DeviceOptions extends StatelessWidget {
                 dialog: Builder(builder: (BuildContext context) {
                   var textEntry = TextEntry(
                     focusNode: focusNode,
+                    maxLength: 20,
                     placeholder: device.name,
                   );
                   if (!isKeyboardShown) {
