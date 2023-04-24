@@ -10,19 +10,14 @@ import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:envoy/ui/home/cards/text_entry.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
-import 'package:path/path.dart' as path;
 import 'package:wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
@@ -49,7 +44,8 @@ class TxReview extends StatefulWidget with NavigationCard {
 
 class _TxReviewState extends State<TxReview> {
   bool _showBroadcastProgress = false;
-  String _txNote = "";
+  //TODO: disable note
+  // String _txNote = "";
 
   @override
   Widget build(BuildContext context) {
@@ -484,62 +480,63 @@ class _TxReviewState extends State<TxReview> {
     );
   }
 
-  void _showNoteDialog(BuildContext context) {
-    FocusNode focusNode = FocusNode();
-    bool isKeyboardShown = false;
-    showEnvoyDialog(
-      context: context,
-      dialog: Builder(
-        builder: (context) {
-          var textEntry = TextEntry(
-            focusNode: focusNode,
-            placeholder: _txNote,
-          );
-          if (!isKeyboardShown) {
-            Future.delayed(Duration(milliseconds: 200)).then((value) {
-              FocusScope.of(context).requestFocus(focusNode);
-            });
-            isKeyboardShown = true;
-          }
-          return EnvoyDialog(
-            content: Column(
-              children: [
-                Padding(padding: EdgeInsets.all(8)),
-                Text(
-                  S().stalls_before_sending_tx_add_note,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Text(
-                    "Transaction notes can be useful when making future spends.",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(8)),
-                textEntry
-              ],
-            ),
-            actions: [
-              EnvoyButton(
-                S().component_save.toUpperCase(),
-                onTap: () async {
-                  await EnvoyStorage()
-                      .addTxNote(textEntry.enteredText, widget.psbt.txid);
-                  setState(() {
-                    _txNote = textEntry.enteredText;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
+  //TODO: disable notes
+  // void _showNoteDialog(BuildContext context) {
+  //   FocusNode focusNode = FocusNode();
+  //   bool isKeyboardShown = false;
+  //   showEnvoyDialog(
+  //     context: context,
+  //     dialog: Builder(
+  //       builder: (context) {
+  //         var textEntry = TextEntry(
+  //           focusNode: focusNode,
+  //           placeholder: _txNote,
+  //         );
+  //         if (!isKeyboardShown) {
+  //           Future.delayed(Duration(milliseconds: 200)).then((value) {
+  //             FocusScope.of(context).requestFocus(focusNode);
+  //           });
+  //           isKeyboardShown = true;
+  //         }
+  //         return EnvoyDialog(
+  //           content: Column(
+  //             children: [
+  //               Padding(padding: EdgeInsets.all(8)),
+  //               Text(
+  //                 S().stalls_before_sending_tx_add_note,
+  //                 style: Theme.of(context).textTheme.titleLarge,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //               Padding(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+  //                 child: Text(
+  //                   "Transaction notes can be useful when making future spends.",
+  //                   textAlign: TextAlign.center,
+  //                 ),
+  //               ),
+  //               Padding(padding: EdgeInsets.all(8)),
+  //               textEntry
+  //             ],
+  //           ),
+  //           actions: [
+  //             EnvoyButton(
+  //               S().component_save.toUpperCase(),
+  //               onTap: () async {
+  //                 await EnvoyStorage()
+  //                     .addTxNote(textEntry.enteredText, widget.psbt.txid);
+  //                 setState(() {
+  //                   _txNote = textEntry.enteredText;
+  //                 });
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Rive.StateMachineController? _stateMachineController;
 
