@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
+import 'package:path/path.dart' as path;
 import 'package:wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
@@ -103,7 +104,7 @@ class _TxReviewState extends State<TxReview> {
                     ),
                     SliverToBoxAdapter(
                       child: Container(
-                        height: 200,
+                        height: 164,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           border: Border.all(
@@ -250,6 +251,9 @@ class _TxReviewState extends State<TxReview> {
                                                                     spendAddressProvider);
                                                             return Text(
                                                                 "${value}",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .end,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis);
@@ -285,10 +289,13 @@ class _TxReviewState extends State<TxReview> {
                                                                 .end,
                                                         children: [
                                                           Text(
-                                                              "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? "BTC" : "SATS"}",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis),
+                                                            "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? "BTC" : "SATS"}",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.end,
+                                                          ),
                                                           Padding(
                                                               padding:
                                                                   EdgeInsets
@@ -323,68 +330,71 @@ class _TxReviewState extends State<TxReview> {
                                                       Expanded(
                                                         child: Text(
                                                             "${widget.psbt.txid}",
+                                                            textAlign:
+                                                                TextAlign.end,
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis),
                                                       )
                                                     ],
                                                   )),
-                                              _buildTxListItem(
-                                                  icon: EnvoyIcon(
-                                                    icon: 'ic_note.svg',
-                                                    size: 16,
-                                                  ),
-                                                  title: S()
-                                                      .stalls_before_sending_tx_add_note,
-                                                  tail: InkWell(
-                                                    onTap: () {
-                                                      _showNoteDialog(context);
-                                                    },
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                          "${_txNote}",
-                                                          maxLines: 2,
-                                                          textAlign:
-                                                              TextAlign.end,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        )),
-                                                        Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    4)),
-                                                        InkWell(
-                                                          onTap: () {
-                                                            _showNoteDialog(
-                                                                context);
-                                                          },
-                                                          child: Container(
-                                                            height: 18,
-                                                            width: 18,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: EnvoyColors
-                                                                  .darkTeal,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18),
-                                                            ),
-                                                            child: Icon(
-                                                              Icons.add,
-                                                              size: 18,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
+                                              //TODO: disable notes
+                                              // _buildTxListItem(
+                                              //     icon: EnvoyIcon(
+                                              //       icon: 'ic_note.svg',
+                                              //       size: 16,
+                                              //     ),
+                                              //     title: S()
+                                              //         .stalls_before_sending_tx_add_note,
+                                              //     tail: InkWell(
+                                              //       onTap: () {
+                                              //         _showNoteDialog(context);
+                                              //       },
+                                              //       child: Row(
+                                              //         mainAxisAlignment:
+                                              //             MainAxisAlignment.end,
+                                              //         children: [
+                                              //           Expanded(
+                                              //               child: Text(
+                                              //             "${_txNote}",
+                                              //             maxLines: 2,
+                                              //             textAlign:
+                                              //                 TextAlign.end,
+                                              //             overflow: TextOverflow
+                                              //                 .ellipsis,
+                                              //           )),
+                                              //           Padding(
+                                              //               padding:
+                                              //                   EdgeInsets.all(
+                                              //                       4)),
+                                              //           InkWell(
+                                              //             onTap: () {
+                                              //               _showNoteDialog(
+                                              //                   context);
+                                              //             },
+                                              //             child: Container(
+                                              //               height: 18,
+                                              //               width: 18,
+                                              //               decoration:
+                                              //                   BoxDecoration(
+                                              //                 color: EnvoyColors
+                                              //                     .darkTeal,
+                                              //                 borderRadius:
+                                              //                     BorderRadius
+                                              //                         .circular(
+                                              //                             18),
+                                              //               ),
+                                              //               child: Icon(
+                                              //                 Icons.add,
+                                              //                 size: 18,
+                                              //                 color:
+                                              //                     Colors.white,
+                                              //               ),
+                                              //             ),
+                                              //           )
+                                              //         ],
+                                              //       ),
+                                              //     )),
                                             ],
                                           ),
                                         ),
