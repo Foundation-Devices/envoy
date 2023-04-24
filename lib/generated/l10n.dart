@@ -856,6 +856,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'Improved Privacy' key
+
   /// `Include`
   String get Include {
     return Intl.message(
@@ -1044,10 +1046,10 @@ class S {
 
   // skipped getter for the 'Passport name' key
 
-  /// `Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.`
+  /// `This is explainer text to educate and inform the user about granting this permission.`
   String get PermissionDetails {
     return Intl.message(
-      'Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again.',
+      'This is explainer text to educate and inform the user about granting this permission.',
       name: 'PermissionDetails',
       desc: '',
       args: [],
@@ -1224,10 +1226,10 @@ class S {
     );
   }
 
-  /// `Accounts`
+  /// `privacy shield`
   String get ScreenTitle {
     return Intl.message(
-      'Accounts',
+      'privacy shield',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -1926,10 +1928,10 @@ class S {
     );
   }
 
-  /// `You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. `
+  /// `You’re about to permanently delete your Envoy Wallet. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. `
   String get backups_erase_wallets_and_backups_modal_1_2_android_subheading {
     return Intl.message(
-      'You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. ',
+      'You’re about to permanently delete your Envoy Wallet. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_android_subheading',
       desc: '',
       args: [],
@@ -1966,10 +1968,10 @@ class S {
     );
   }
 
-  /// `You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. `
+  /// `You’re about to permanently delete your Envoy Wallet.\n\nIf you are using automatic backups, your seed will also be deleted from iCloud. `
   String get backups_erase_wallets_and_backups_modal_1_2_ios_subheading {
     return Intl.message(
-      'You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. ',
+      'You’re about to permanently delete your Envoy Wallet.\n\nIf you are using automatic backups, your seed will also be deleted from iCloud. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_ios_subheading',
       desc: '',
       args: [],
@@ -1986,10 +1988,10 @@ class S {
     );
   }
 
-  /// `Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n`
+  /// `Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n`
   String get backups_erase_wallets_and_backups_modal_2_2_subheading {
     return Intl.message(
-      'Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n',
+      'Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n',
       name: 'backups_erase_wallets_and_backups_modal_2_2_subheading',
       desc: '',
       args: [],
@@ -6378,6 +6380,56 @@ class S {
     );
   }
 
+  /// `Set Up Envoy Wallet`
+  String get envoy_welcome_screen_cta1 {
+    return Intl.message(
+      'Set Up Envoy Wallet',
+      name: 'envoy_welcome_screen_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manually Configure Seed Words`
+  String get envoy_welcome_screen_cta2 {
+    return Intl.message(
+      'Manually Configure Seed Words',
+      name: 'envoy_welcome_screen_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Wallet`
+  String get envoy_welcome_screen_heading {
+    return Intl.message(
+      'Create New Wallet',
+      name: 'envoy_welcome_screen_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get envoy_welcome_screen_skip {
+    return Intl.message(
+      'Skip',
+      name: 'envoy_welcome_screen_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We recommend setting up Envoy Wallet, which includes automatic backups.\n\nPower users can manually create or restore a wallet seed.`
+  String get envoy_welcome_screen_subheading {
+    return Intl.message(
+      'We recommend setting up Envoy Wallet, which includes automatic backups.\n\nPower users can manually create or restore a wallet seed.',
+      name: 'envoy_welcome_screen_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Return to my Accounts`
   String get erase_wallet_with_balance_modal_CTA1 {
     return Intl.message(
@@ -9864,6 +9916,66 @@ class S {
     );
   }
 
+  /// `Set up a new Passport`
+  String get passport_welcome_screen_cta1 {
+    return Intl.message(
+      'Set up a new Passport',
+      name: 'passport_welcome_screen_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect an existing Passport`
+  String get passport_welcome_screen_cta2 {
+    return Intl.message(
+      'Connect an existing Passport',
+      name: 'passport_welcome_screen_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I don’t have a Passport. Buy One`
+  String get passport_welcome_screen_cta3 {
+    return Intl.message(
+      'I don’t have a Passport. Buy One',
+      name: 'passport_welcome_screen_cta3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to Passport`
+  String get passport_welcome_screen_heading {
+    return Intl.message(
+      'Welcome to Passport',
+      name: 'passport_welcome_screen_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get passport_welcome_screen_skip {
+    return Intl.message(
+      'Skip',
+      name: 'passport_welcome_screen_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.`
+  String get passport_welcome_screen_subheading {
+    return Intl.message(
+      'Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.',
+      name: 'passport_welcome_screen_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy by Foundation`
   String get play_store_app_name {
     return Intl.message(
@@ -9899,6 +10011,376 @@ class S {
     return Intl.message(
       'postmix',
       name: 'postmix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect`
+  String get privacy_setting_add_node_modal_cta {
+    return Intl.message(
+      'Connect',
+      name: 'privacy_setting_add_node_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Node`
+  String get privacy_setting_add_node_modal_heading {
+    return Intl.message(
+      'Add Node',
+      name: 'privacy_setting_add_node_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your node address here`
+  String get privacy_setting_add_node_modal_text_field {
+    return Intl.message(
+      'Enter your node address here',
+      name: 'privacy_setting_add_node_modal_text_field',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Better \nPerformance`
+  String get privacy_setting_clearnet_node_better_performance {
+    return Intl.message(
+      'Better \nPerformance',
+      name: 'privacy_setting_clearnet_node_better_performance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get privacy_setting_clearnet_node_cta {
+    return Intl.message(
+      'Continue',
+      name: 'privacy_setting_clearnet_node_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Node`
+  String get privacy_setting_clearnet_node_edit_note {
+    return Intl.message(
+      'Edit Node',
+      name: 'privacy_setting_clearnet_node_edit_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Node Connected`
+  String get privacy_setting_clearnet_node_heading {
+    return Intl.message(
+      'Node Connected',
+      name: 'privacy_setting_clearnet_node_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Node is connected via Clearnet.`
+  String get privacy_setting_clearnet_node_subheading {
+    return Intl.message(
+      'Your Node is connected via Clearnet.',
+      name: 'privacy_setting_clearnet_node_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy’s connection will be fast and reliable with Tor turned OFF.`
+  String get privacy_setting_clearnet_node_tor_off {
+    return Intl.message(
+      'Envoy’s connection will be fast and reliable with Tor turned OFF.',
+      name: 'privacy_setting_clearnet_node_tor_off',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get privacy_setting_connecting_node_fails_modal_cta {
+    return Intl.message(
+      'Retry',
+      name: 'privacy_setting_connecting_node_fails_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn’t connect your node`
+  String get privacy_setting_connecting_node_fails_modal_failed {
+    return Intl.message(
+      'We couldn’t connect your node',
+      name: 'privacy_setting_connecting_node_fails_modal_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Node`
+  String get privacy_setting_connecting_node_fails_modal_heading {
+    return Intl.message(
+      'Add Node',
+      name: 'privacy_setting_connecting_node_fails_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect`
+  String get privacy_setting_connecting_node_modal_cta {
+    return Intl.message(
+      'Connect',
+      name: 'privacy_setting_connecting_node_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Node`
+  String get privacy_setting_connecting_node_modal_heading {
+    return Intl.message(
+      'Add Node',
+      name: 'privacy_setting_connecting_node_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting Your Node`
+  String get privacy_setting_connecting_node_modal_loading {
+    return Intl.message(
+      'Connecting Your Node',
+      name: 'privacy_setting_connecting_node_modal_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Node`
+  String get privacy_setting_connecting_node_success_modal_heading {
+    return Intl.message(
+      'Add Node',
+      name: 'privacy_setting_connecting_node_success_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get privacy_setting_connecting_node_success_modal_heading_cta {
+    return Intl.message(
+      'Continue',
+      name: 'privacy_setting_connecting_node_success_modal_heading_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Node connected`
+  String get privacy_setting_connecting_node_success_modal_heading_success {
+    return Intl.message(
+      'Node connected',
+      name: 'privacy_setting_connecting_node_success_modal_heading_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get privacy_setting_onion_node_cta {
+    return Intl.message(
+      'Continue',
+      name: 'privacy_setting_onion_node_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Node`
+  String get privacy_setting_onion_node_edit_node {
+    return Intl.message(
+      'Edit Node',
+      name: 'privacy_setting_onion_node_edit_node',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Node Connected`
+  String get privacy_setting_onion_node_heading {
+    return Intl.message(
+      'Node Connected',
+      name: 'privacy_setting_onion_node_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Improved Privacy`
+  String get privacy_setting_onion_node_improved_privacy {
+    return Intl.message(
+      'Improved Privacy',
+      name: 'privacy_setting_onion_node_improved_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Node is connected via Tor.`
+  String get privacy_setting_onion_node_sbheading {
+    return Intl.message(
+      'Your Node is connected via Tor.',
+      name: 'privacy_setting_onion_node_sbheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.`
+  String get privacy_setting_onion_node_tor_on {
+    return Intl.message(
+      'Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.',
+      name: 'privacy_setting_onion_node_tor_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Node`
+  String get privacy_setting_perfomance_add_node {
+    return Intl.message(
+      'Add Node',
+      name: 'privacy_setting_perfomance_add_node',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Better \nPerformance`
+  String get privacy_setting_perfomance_better_performance {
+    return Intl.message(
+      'Better \nPerformance',
+      name: 'privacy_setting_perfomance_better_performance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get privacy_setting_perfomance_cta {
+    return Intl.message(
+      'Continue',
+      name: 'privacy_setting_perfomance_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your Privacy`
+  String get privacy_setting_perfomance_heading {
+    return Intl.message(
+      'Choose your Privacy',
+      name: 'privacy_setting_perfomance_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Improved Privacy`
+  String get privacy_setting_perfomance_improved_privacy {
+    return Intl.message(
+      'Improved Privacy',
+      name: 'privacy_setting_perfomance_improved_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How would you like Envoy to connect to the Internet?`
+  String get privacy_setting_perfomance_subheading {
+    return Intl.message(
+      'How would you like Envoy to connect to the Internet?',
+      name: 'privacy_setting_perfomance_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy’s connection will be fast and reliable with Tor turned OFF.`
+  String get privacy_setting_perfomance_tor_off {
+    return Intl.message(
+      'Envoy’s connection will be fast and reliable with Tor turned OFF.',
+      name: 'privacy_setting_perfomance_tor_off',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Better \nPerformance`
+  String get privacy_setting_privacy_better_performance {
+    return Intl.message(
+      'Better \nPerformance',
+      name: 'privacy_setting_privacy_better_performance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Improved Privacy`
+  String get privacy_setting_privacy_better_privacy {
+    return Intl.message(
+      'Improved Privacy',
+      name: 'privacy_setting_privacy_better_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get privacy_setting_privacy_cta {
+    return Intl.message(
+      'Continue',
+      name: 'privacy_setting_privacy_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your Privacy`
+  String get privacy_setting_privacy_heading {
+    return Intl.message(
+      'Choose your Privacy',
+      name: 'privacy_setting_privacy_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How would you like Envoy to connect to the Internet?`
+  String get privacy_setting_privacy_subheading {
+    return Intl.message(
+      'How would you like Envoy to connect to the Internet?',
+      name: 'privacy_setting_privacy_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.`
+  String get privacy_setting_privacy_tor_on {
+    return Intl.message(
+      'Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.',
+      name: 'privacy_setting_privacy_tor_on',
       desc: '',
       args: [],
     );
@@ -11351,6 +11833,46 @@ class S {
     return Intl.message(
       'Envoy Wallet is set up and ready for your Bitcoin!',
       name: 'wallet_setup_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Envoy Wallet`
+  String get welcome_screen_ctA1 {
+    return Intl.message(
+      'Set Up Envoy Wallet',
+      name: 'welcome_screen_ctA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage Passport`
+  String get welcome_screen_cta2 {
+    return Intl.message(
+      'Manage Passport',
+      name: 'welcome_screen_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to Envoy`
+  String get welcome_screen_heading {
+    return Intl.message(
+      'Welcome to Envoy',
+      name: 'welcome_screen_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.`
+  String get welcome_screen_subheading {
+    return Intl.message(
+      'Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.',
+      name: 'welcome_screen_subheading',
       desc: '',
       args: [],
     );
