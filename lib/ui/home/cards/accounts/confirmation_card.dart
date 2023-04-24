@@ -4,9 +4,11 @@
 
 import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
+import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/address_entry.dart';
@@ -17,7 +19,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
 //ignore: must_be_immutable
-class ConfirmationCard extends StatefulWidget with NavigationCard {
+class ConfirmationCard extends ConsumerStatefulWidget with NavigationCard {
   @override
   bool get modal => true;
 
@@ -38,10 +40,10 @@ class ConfirmationCard extends StatefulWidget with NavigationCard {
   }
 
   @override
-  State<ConfirmationCard> createState() => _ConfirmationCardState();
+  ConsumerState<ConfirmationCard> createState() => _ConfirmationCardState();
 }
 
-class _ConfirmationCardState extends State<ConfirmationCard> {
+class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
   static Psbt _emptyPtsb = Psbt(0, 0, 0, "", "", "");
 
   Psbt _currentPsbt = _emptyPtsb;
@@ -124,6 +126,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
           setState(() {
             _amount = widget.amount - fee;
           });
+          ref.read(spendAmountProvider.notifier).state = widget.amount - fee;
         }
       },
     );

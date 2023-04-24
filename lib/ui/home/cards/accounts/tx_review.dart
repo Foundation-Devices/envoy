@@ -10,14 +10,10 @@ import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:envoy/ui/home/cards/text_entry.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
@@ -48,7 +44,8 @@ class TxReview extends StatefulWidget with NavigationCard {
 
 class _TxReviewState extends State<TxReview> {
   bool _showBroadcastProgress = false;
-  String _txNote = "";
+  //TODO: disable note
+  // String _txNote = "";
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +100,7 @@ class _TxReviewState extends State<TxReview> {
                     ),
                     SliverToBoxAdapter(
                       child: Container(
-                        height: 200,
+                        height: 164,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           border: Border.all(
@@ -250,6 +247,9 @@ class _TxReviewState extends State<TxReview> {
                                                                     spendAddressProvider);
                                                             return Text(
                                                                 "${value}",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .end,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis);
@@ -285,10 +285,13 @@ class _TxReviewState extends State<TxReview> {
                                                                 .end,
                                                         children: [
                                                           Text(
-                                                              "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? "BTC" : "SATS"}",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis),
+                                                            "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? "BTC" : "SATS"}",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.end,
+                                                          ),
                                                           Padding(
                                                               padding:
                                                                   EdgeInsets
@@ -323,68 +326,71 @@ class _TxReviewState extends State<TxReview> {
                                                       Expanded(
                                                         child: Text(
                                                             "${widget.psbt.txid}",
+                                                            textAlign:
+                                                                TextAlign.end,
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis),
                                                       )
                                                     ],
                                                   )),
-                                              _buildTxListItem(
-                                                  icon: EnvoyIcon(
-                                                    icon: 'ic_note.svg',
-                                                    size: 16,
-                                                  ),
-                                                  title: S()
-                                                      .stalls_before_sending_tx_add_note,
-                                                  tail: InkWell(
-                                                    onTap: () {
-                                                      _showNoteDialog(context);
-                                                    },
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                          "${_txNote}",
-                                                          maxLines: 2,
-                                                          textAlign:
-                                                              TextAlign.end,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        )),
-                                                        Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    4)),
-                                                        InkWell(
-                                                          onTap: () {
-                                                            _showNoteDialog(
-                                                                context);
-                                                          },
-                                                          child: Container(
-                                                            height: 18,
-                                                            width: 18,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: EnvoyColors
-                                                                  .darkTeal,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18),
-                                                            ),
-                                                            child: Icon(
-                                                              Icons.add,
-                                                              size: 18,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
+                                              //TODO: disable notes
+                                              // _buildTxListItem(
+                                              //     icon: EnvoyIcon(
+                                              //       icon: 'ic_note.svg',
+                                              //       size: 16,
+                                              //     ),
+                                              //     title: S()
+                                              //         .stalls_before_sending_tx_add_note,
+                                              //     tail: InkWell(
+                                              //       onTap: () {
+                                              //         _showNoteDialog(context);
+                                              //       },
+                                              //       child: Row(
+                                              //         mainAxisAlignment:
+                                              //             MainAxisAlignment.end,
+                                              //         children: [
+                                              //           Expanded(
+                                              //               child: Text(
+                                              //             "${_txNote}",
+                                              //             maxLines: 2,
+                                              //             textAlign:
+                                              //                 TextAlign.end,
+                                              //             overflow: TextOverflow
+                                              //                 .ellipsis,
+                                              //           )),
+                                              //           Padding(
+                                              //               padding:
+                                              //                   EdgeInsets.all(
+                                              //                       4)),
+                                              //           InkWell(
+                                              //             onTap: () {
+                                              //               _showNoteDialog(
+                                              //                   context);
+                                              //             },
+                                              //             child: Container(
+                                              //               height: 18,
+                                              //               width: 18,
+                                              //               decoration:
+                                              //                   BoxDecoration(
+                                              //                 color: EnvoyColors
+                                              //                     .darkTeal,
+                                              //                 borderRadius:
+                                              //                     BorderRadius
+                                              //                         .circular(
+                                              //                             18),
+                                              //               ),
+                                              //               child: Icon(
+                                              //                 Icons.add,
+                                              //                 size: 18,
+                                              //                 color:
+                                              //                     Colors.white,
+                                              //               ),
+                                              //             ),
+                                              //           )
+                                              //         ],
+                                              //       ),
+                                              //     )),
                                             ],
                                           ),
                                         ),
@@ -474,62 +480,63 @@ class _TxReviewState extends State<TxReview> {
     );
   }
 
-  void _showNoteDialog(BuildContext context) {
-    FocusNode focusNode = FocusNode();
-    bool isKeyboardShown = false;
-    showEnvoyDialog(
-      context: context,
-      dialog: Builder(
-        builder: (context) {
-          var textEntry = TextEntry(
-            focusNode: focusNode,
-            placeholder: _txNote,
-          );
-          if (!isKeyboardShown) {
-            Future.delayed(Duration(milliseconds: 200)).then((value) {
-              FocusScope.of(context).requestFocus(focusNode);
-            });
-            isKeyboardShown = true;
-          }
-          return EnvoyDialog(
-            content: Column(
-              children: [
-                Padding(padding: EdgeInsets.all(8)),
-                Text(
-                  S().stalls_before_sending_tx_add_note,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Text(
-                    "Transaction notes can be useful when making future spends.",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(8)),
-                textEntry
-              ],
-            ),
-            actions: [
-              EnvoyButton(
-                S().component_save.toUpperCase(),
-                onTap: () async {
-                  await EnvoyStorage()
-                      .addTxNote(textEntry.enteredText, widget.psbt.txid);
-                  setState(() {
-                    _txNote = textEntry.enteredText;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
+  //TODO: disable notes
+  // void _showNoteDialog(BuildContext context) {
+  //   FocusNode focusNode = FocusNode();
+  //   bool isKeyboardShown = false;
+  //   showEnvoyDialog(
+  //     context: context,
+  //     dialog: Builder(
+  //       builder: (context) {
+  //         var textEntry = TextEntry(
+  //           focusNode: focusNode,
+  //           placeholder: _txNote,
+  //         );
+  //         if (!isKeyboardShown) {
+  //           Future.delayed(Duration(milliseconds: 200)).then((value) {
+  //             FocusScope.of(context).requestFocus(focusNode);
+  //           });
+  //           isKeyboardShown = true;
+  //         }
+  //         return EnvoyDialog(
+  //           content: Column(
+  //             children: [
+  //               Padding(padding: EdgeInsets.all(8)),
+  //               Text(
+  //                 S().stalls_before_sending_tx_add_note,
+  //                 style: Theme.of(context).textTheme.titleLarge,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //               Padding(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+  //                 child: Text(
+  //                   "Transaction notes can be useful when making future spends.",
+  //                   textAlign: TextAlign.center,
+  //                 ),
+  //               ),
+  //               Padding(padding: EdgeInsets.all(8)),
+  //               textEntry
+  //             ],
+  //           ),
+  //           actions: [
+  //             EnvoyButton(
+  //               S().component_save.toUpperCase(),
+  //               onTap: () async {
+  //                 await EnvoyStorage()
+  //                     .addTxNote(textEntry.enteredText, widget.psbt.txid);
+  //                 setState(() {
+  //                   _txNote = textEntry.enteredText;
+  //                 });
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Rive.StateMachineController? _stateMachineController;
 
