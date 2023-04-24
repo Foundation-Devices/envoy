@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
         "Passport": MessageLookupByLibrary.simpleMessage("Passport"),
         "PermissionDetails": MessageLookupByLibrary.simpleMessage(
-            "Envoy is unable to validate your seed. Please confirm that you correctly entered your seed words and try again."),
+            "This is explainer text to educate and inform the user about granting this permission."),
         "PermissionName": MessageLookupByLibrary.simpleMessage("Coinjoin"),
         "Personal": MessageLookupByLibrary.simpleMessage("Personal"),
         "Postmix": MessageLookupByLibrary.simpleMessage("Postmix"),
@@ -101,7 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Save": MessageLookupByLibrary.simpleMessage("Save"),
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("12. catch"),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Accounts"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("privacy shield"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -198,7 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("WARNING"),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. "),
+                "You’re about to permanently delete your Envoy Wallet. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. "),
         "backups_erase_wallets_and_backups_modal_1_2_ios_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "backups_erase_wallets_and_backups_modal_1_2_ios_cta1":
@@ -207,12 +207,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("WARNING"),
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You’re about to permanently delete your Envoy Wallet. This includes all accounts, including those connected from Passport. \n\nIf you are using automatic backups, your seed will also be deleted from iCloud. "),
+                "You’re about to permanently delete your Envoy Wallet.\n\nIf you are using automatic backups, your seed will also be deleted from iCloud. "),
         "backups_erase_wallets_and_backups_modal_2_2_heading":
             MessageLookupByLibrary.simpleMessage("WARNING"),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Passport accounts will remain secure on Passport, and can be re-paired with a wallet at any time.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n"),
+                "Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n"),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Show Seed"),
         "backups_erase_wallets_and_backups_show_seed_heading":
@@ -1129,6 +1129,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_os_clock": MessageLookupByLibrary.simpleMessage("4321"),
         "envoy_welcome_right_action":
             MessageLookupByLibrary.simpleMessage("Skip"),
+        "envoy_welcome_screen_cta1":
+            MessageLookupByLibrary.simpleMessage("Set Up Envoy Wallet"),
+        "envoy_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
+            "Manually Configure Seed Words"),
+        "envoy_welcome_screen_heading":
+            MessageLookupByLibrary.simpleMessage("Create New Wallet"),
+        "envoy_welcome_screen_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "envoy_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
+            "We recommend setting up Envoy Wallet, which includes automatic backups.\n\nPower users can manually create or restore a wallet seed."),
         "erase_wallet_with_balance_modal_CTA1":
             MessageLookupByLibrary.simpleMessage("Return to my Accounts"),
         "erase_wallet_with_balance_modal_CTA2":
@@ -1900,6 +1910,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_new_device_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is now connected to your Passport."),
+        "passport_welcome_screen_cta1":
+            MessageLookupByLibrary.simpleMessage("Set up a new Passport"),
+        "passport_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
+            "Connect an existing Passport"),
+        "passport_welcome_screen_cta3": MessageLookupByLibrary.simpleMessage(
+            "I don’t have a Passport. Buy One"),
+        "passport_welcome_screen_heading":
+            MessageLookupByLibrary.simpleMessage("Welcome to Passport"),
+        "passport_welcome_screen_skip":
+            MessageLookupByLibrary.simpleMessage("Skip"),
+        "passport_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
+            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
         "play_store_app_name":
             MessageLookupByLibrary.simpleMessage("Envoy by Foundation"),
         "play_store_full_description": MessageLookupByLibrary.simpleMessage(
@@ -1907,6 +1929,87 @@ class MessageLookup extends MessageLookupByLibrary {
         "play_store_short_description": MessageLookupByLibrary.simpleMessage(
             "The perfect mobile companion for your Passport hardware wallet."),
         "postmix": MessageLookupByLibrary.simpleMessage("postmix"),
+        "privacy_setting_add_node_modal_cta":
+            MessageLookupByLibrary.simpleMessage("Connect"),
+        "privacy_setting_add_node_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Add Node"),
+        "privacy_setting_add_node_modal_text_field":
+            MessageLookupByLibrary.simpleMessage(
+                "Enter your node address here"),
+        "privacy_setting_clearnet_node_better_performance":
+            MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
+        "privacy_setting_clearnet_node_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "privacy_setting_clearnet_node_edit_note":
+            MessageLookupByLibrary.simpleMessage("Edit Node"),
+        "privacy_setting_clearnet_node_heading":
+            MessageLookupByLibrary.simpleMessage("Node Connected"),
+        "privacy_setting_clearnet_node_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Node is connected via Clearnet."),
+        "privacy_setting_clearnet_node_tor_off":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy’s connection will be fast and reliable with Tor turned OFF."),
+        "privacy_setting_connecting_node_fails_modal_cta":
+            MessageLookupByLibrary.simpleMessage("Retry"),
+        "privacy_setting_connecting_node_fails_modal_failed":
+            MessageLookupByLibrary.simpleMessage(
+                "We couldn’t connect your node"),
+        "privacy_setting_connecting_node_fails_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Add Node"),
+        "privacy_setting_connecting_node_modal_cta":
+            MessageLookupByLibrary.simpleMessage("Connect"),
+        "privacy_setting_connecting_node_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Add Node"),
+        "privacy_setting_connecting_node_modal_loading":
+            MessageLookupByLibrary.simpleMessage("Connecting Your Node"),
+        "privacy_setting_connecting_node_success_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Add Node"),
+        "privacy_setting_connecting_node_success_modal_heading_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "privacy_setting_connecting_node_success_modal_heading_success":
+            MessageLookupByLibrary.simpleMessage("Node connected"),
+        "privacy_setting_onion_node_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "privacy_setting_onion_node_edit_node":
+            MessageLookupByLibrary.simpleMessage("Edit Node"),
+        "privacy_setting_onion_node_heading":
+            MessageLookupByLibrary.simpleMessage("Node Connected"),
+        "privacy_setting_onion_node_improved_privacy":
+            MessageLookupByLibrary.simpleMessage("Improved Privacy"),
+        "privacy_setting_onion_node_sbheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Node is connected via Tor."),
+        "privacy_setting_onion_node_tor_on": MessageLookupByLibrary.simpleMessage(
+            "Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable."),
+        "privacy_setting_perfomance_add_node":
+            MessageLookupByLibrary.simpleMessage("Add Node"),
+        "privacy_setting_perfomance_better_performance":
+            MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
+        "privacy_setting_perfomance_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "privacy_setting_perfomance_heading":
+            MessageLookupByLibrary.simpleMessage("Choose your Privacy"),
+        "privacy_setting_perfomance_improved_privacy":
+            MessageLookupByLibrary.simpleMessage("Improved Privacy"),
+        "privacy_setting_perfomance_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "How would you like Envoy to connect to the Internet?"),
+        "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
+            "Envoy’s connection will be fast and reliable with Tor turned OFF."),
+        "privacy_setting_privacy_better_performance":
+            MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
+        "privacy_setting_privacy_better_privacy":
+            MessageLookupByLibrary.simpleMessage("Improved Privacy"),
+        "privacy_setting_privacy_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "privacy_setting_privacy_heading":
+            MessageLookupByLibrary.simpleMessage("Choose your Privacy"),
+        "privacy_setting_privacy_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "How would you like Envoy to connect to the Internet?"),
+        "privacy_setting_privacy_tor_on": MessageLookupByLibrary.simpleMessage(
+            "Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable."),
         "recovery_manual_setup_fail_cta1":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "recovery_manual_setup_fail_cta2":
@@ -2234,6 +2337,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_setup_success_heading":
             MessageLookupByLibrary.simpleMessage("Your Wallet Is Ready"),
         "wallet_setup_success_subheading": MessageLookupByLibrary.simpleMessage(
-            "Envoy Wallet is set up and ready for your Bitcoin!")
+            "Envoy Wallet is set up and ready for your Bitcoin!"),
+        "welcome_screen_ctA1":
+            MessageLookupByLibrary.simpleMessage("Set Up Envoy Wallet"),
+        "welcome_screen_cta2":
+            MessageLookupByLibrary.simpleMessage("Manage Passport"),
+        "welcome_screen_heading":
+            MessageLookupByLibrary.simpleMessage("Welcome to Envoy"),
+        "welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
+            "Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.")
       };
 }
