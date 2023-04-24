@@ -28,6 +28,7 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends StatefulWidget with NavigationCard {
@@ -287,14 +288,14 @@ class TransactionListTile extends StatelessWidget {
   }
 }
 
-class AccountOptions extends StatelessWidget {
+class AccountOptions extends ConsumerWidget {
   final Account account;
   final CardNavigator? navigator;
 
   AccountOptions(this.account, {this.navigator});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -368,23 +369,28 @@ class AccountOptions extends StatelessWidget {
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             navigator!.hideOptions();
-            showEnvoyDialog(
-                context: context,
-                dialog: EnvoyDialog(
-                  title: S().envoy_account_delete_are_you_sure,
-                  content: Text(S().envoy_account_delete_explainer),
-                  actions: [
-                    EnvoyButton(
-                      S().component_delete.toUpperCase(),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      onTap: () {
-                        AccountManager().deleteAccount(account);
-                        navigator!.pop();
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ));
+            if (!account.wallet.hot) {
+              showEnvoyDialog(
+                  context: context,
+                  dialog: EnvoyDialog(
+                    title: S().envoy_account_delete_are_you_sure,
+                    content: Text(S().envoy_account_delete_explainer),
+                    actions: [
+                      EnvoyButton(
+                        S().component_delete.toUpperCase(),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        onTap: () {
+                          AccountManager().deleteAccount(account);
+                          navigator!.pop();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ));
+            } else {
+              ref.read(homePageBackground.notifier).state =
+                  HomePageBackgroundState.backups;
+            }
           },
         ),
       ],

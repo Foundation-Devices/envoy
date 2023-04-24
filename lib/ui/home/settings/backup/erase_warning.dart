@@ -147,8 +147,6 @@ class _EraseWalletsBalanceWarningState
     extends ConsumerState<EraseWalletsBalanceWarning> {
   @override
   Widget build(BuildContext context) {
-    final homePageState = ref.watch(homePageStateProvider.notifier);
-
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
@@ -210,8 +208,11 @@ class _EraseWalletsBalanceWarningState
             OnboardingButton(
                 label: S().erase_wallet_with_balance_modal_CTA1,
                 onTap: () {
-                  // Navigate to accounts
-                  homePageState.state = HomePageState.accounts;
+                  // Show home page and navigate to accounts
+                  ref.read(homePageBackground.notifier).state =
+                      HomePageBackgroundState.hidden;
+                  ref.read(homePageTab.notifier).state =
+                      HomePageTabState.accounts;
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 }),
             Padding(padding: EdgeInsets.all(12)),
@@ -373,7 +374,6 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   }
 
   _onInit() async {
-    final homePageState = ref.read(homePageStateProvider.notifier);
     try {
       setState(() {
         _deleteInProgress = true;
@@ -391,7 +391,12 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         _deleteInProgress = false;
       });
       await Future.delayed(Duration(milliseconds: 2000));
-      homePageState.state = HomePageState.accounts;
+
+      // Show home page and navigate to accounts
+      ref.read(homePageBackground.notifier).state =
+          HomePageBackgroundState.hidden;
+      ref.read(homePageTab.notifier).state = HomePageTabState.accounts;
+
       //Show android backup info
       if (Platform.isAndroid) {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));
