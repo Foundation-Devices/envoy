@@ -63,6 +63,8 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
+    await _store(seed);
+
     try {
       var mainnet = Wallet.deriveWallet(seed, HOT_WALLET_MAINNET_PATH,
           AccountManager.walletsDirectory, Network.Mainnet,
@@ -74,7 +76,6 @@ class EnvoySeed {
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
 
-      await _store(seed);
       LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
 
       return true;
