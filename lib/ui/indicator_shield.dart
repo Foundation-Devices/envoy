@@ -31,7 +31,9 @@ class IndicatorShieldState extends State<IndicatorShield>
     _circuitEstablishingAnimation = _circuitEstablishingAnimationController
         .drive(Tween(begin: 1.0, end: 0.5));
     _circuitEstablishingAnimationController.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
 
     _circuitEstablishingAnimationController.addStatusListener((status) {
@@ -44,9 +46,11 @@ class IndicatorShieldState extends State<IndicatorShield>
 
     _connectivityStream = ConnectivityManager().events.stream.listen((_) {
       // Update UI on connectivity changes
-      setState(() {
-        _updateShield();
-      });
+      if (mounted) {
+        setState(() {
+          _updateShield();
+        });
+      }
     });
   }
 
@@ -87,6 +91,7 @@ class IndicatorShieldState extends State<IndicatorShield>
 
   @override
   void dispose() {
+    _circuitEstablishingAnimationController.dispose();
     _connectivityStream.cancel();
     super.dispose();
   }
