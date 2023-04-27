@@ -19,7 +19,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
 //ignore: must_be_immutable
-class ConfirmationCard extends ConsumerStatefulWidget with NavigationCard {
+class ConfirmationCard extends StatefulWidget with NavigationCard {
   @override
   bool get modal => true;
 
@@ -40,10 +40,10 @@ class ConfirmationCard extends ConsumerStatefulWidget with NavigationCard {
   }
 
   @override
-  ConsumerState<ConfirmationCard> createState() => _ConfirmationCardState();
+  State<ConfirmationCard> createState() => _ConfirmationCardState();
 }
 
-class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
+class _ConfirmationCardState extends State<ConfirmationCard> {
   static Psbt _emptyPtsb = Psbt(0, 0, 0, "", "", "");
 
   Psbt _currentPsbt = _emptyPtsb;
@@ -126,7 +126,6 @@ class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
           setState(() {
             _amount = widget.amount - fee;
           });
-          ref.read(spendAmountProvider.notifier).state = widget.amount - fee;
         }
       },
     );
@@ -145,26 +144,35 @@ class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
       _feeToggle,
       Padding(
           padding: const EdgeInsets.all(50.0),
-          child: EnvoyTextButton(
-              onTap: () {
-                if (!widget.account.wallet.hot) {
-                  widget.navigator!.push(PsbtCard(
-                    _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                    widget.account,
-                    navigationCallback: widget.navigator,
-                  ));
-                } else {
-                  widget.navigator!.push(TxReview(
-                    _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                    widget.account,
-                    navigationCallback: widget.navigator,
-                    onFinishNavigationClick: () {
-                      widget.navigator?.pop(depth: 3);
-                    },
-                  ));
-                }
-              },
-              label: S().envoy_confirmation_confirm))
+          child: Consumer(
+            builder: (context, ref, child) {
+              return EnvoyTextButton(
+                  onTap: () {
+                    print("CALLED ${_amount} ${widget.initialAddress}");
+                    ref.read(spendAmountProvider.notifier).state = _amount;
+                    ref.read(spendAddressProvider.notifier).state =
+                        widget.initialAddress;
+
+                    if (!widget.account.wallet.hot) {
+                      widget.navigator!.push(PsbtCard(
+                        _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                        widget.account,
+                        navigationCallback: widget.navigator,
+                      ));
+                    } else {
+                      widget.navigator!.push(TxReview(
+                        _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                        widget.account,
+                        navigationCallback: widget.navigator,
+                        onFinishNavigationClick: () {
+                          widget.navigator?.pop(depth: 3);
+                        },
+                      ));
+                    }
+                  },
+                  label: S().envoy_confirmation_confirm);
+            },
+          ))
     ]);
   }
 }
