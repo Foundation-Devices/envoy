@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/haptics.dart';
