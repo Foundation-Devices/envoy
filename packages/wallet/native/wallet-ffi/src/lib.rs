@@ -9,8 +9,6 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::ptr;
 
-extern crate rand;
-
 use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::error::Error;
@@ -811,8 +809,7 @@ pub unsafe extern "C" fn wallet_sign_psbt(
 pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     let secp = Secp256k1::new();
 
-    let mut rng = rand::thread_rng();
-    let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 12).unwrap();
+    let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
 
     let mnemonic_string = mnemonic.to_string();
 
