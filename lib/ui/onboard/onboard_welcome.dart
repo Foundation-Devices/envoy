@@ -26,7 +26,7 @@ class WelcomeScreen extends StatelessWidget {
         header: Container(
           height: 220,
           child: Image.asset(
-            "assets/envoy_logo_rast.png",
+            "assets/envoy_logo_with_title.png",
             fit: BoxFit.fitHeight,
             height: 220,
             width: 220,
