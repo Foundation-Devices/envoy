@@ -37,6 +37,13 @@ class NotSupportedPlatform implements Exception {
   NotSupportedPlatform(String s);
 }
 
+enum TorStatus {
+  started,
+  running,
+  stopped,
+  error,
+}
+
 class Tor {
   static late String _libName = "tor_ffi";
   static late DynamicLibrary _lib;
@@ -94,12 +101,13 @@ class Tor {
 
   enable() async {
     enabled = true;
-    events.add(port);
-
-    start();
+    if (!started) {
+      start();
+    }
   }
 
   start() async {
+    events.add(port);
     if (_connectionChecker != null) _connectionChecker!.cancel();
     final rustFunction = _lib.lookup<NativeFunction<TorStartRust>>('tor_start');
     final dartFunction = rustFunction.asFunction<TorStartDart>();
@@ -290,5 +298,42 @@ class Tor {
     final rustFunction = _lib.lookup<NativeFunction<TorHelloRust>>('tor_hello');
     final dartFunction = rustFunction.asFunction<TorHelloDart>();
     dartFunction();
+  }
+
+  Stream<TorStatus> getTorStatus() {
+    return events.stream.map((port) {
+      if (!this.enabled) {
+        return TorStatus.stopped;
+      }
+      if (started && !circuitEstablished) {
+        return TorStatus.started;
+      }
+      if (port == -1) {
+        return TorStatus.stopped;
+      }
+      if (this.circuitEstablished) {
+        return TorStatus.running;
+      }
+      return TorStatus.stopped;
+    });
+  }
+
+  Future<bool?> waitForTor() async {
+    return await Future.doWhile(
+        () => Future.delayed(Duration(seconds: 1)).then((_) {
+              // We are waiting and making absolutely no request unless:
+              // Tor is disabled
+              if (!this.enabled) {
+                return false;
+              }
+
+              // ...or Tor circuit is established
+              if (this.circuitEstablished) {
+                return false;
+              }
+
+              // This way we avoid making clearnet req's while Tor is initialising
+              return true;
+            }));
   }
 }

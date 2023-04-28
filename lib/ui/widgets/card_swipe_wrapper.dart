@@ -157,7 +157,12 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
           },
           onHorizontalDragUpdate: (details) {
             double dragRate = (_offsetX * size.width * .5) / size.width;
+            //Limit the drag
+            if (dragRate.abs() >= 0.4) {
+              return;
+            }
             setState(() {
+              //set the the current offset for translation
               _offsetX += details.delta.dx / (size.width / 2);
               if ((dragRate.abs()) >= threshold && thresholdReached == false) {
                 thresholdReached = true;
@@ -175,6 +180,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             }
           },
           onHorizontalDragEnd: (details) {
+            //return to the original position with spring animation
             _runSpringSimulation(details.velocity.pixelsPerSecond, size);
           },
           child: Transform.translate(

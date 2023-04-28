@@ -16,8 +16,8 @@ enum HomePageBackgroundState {
   about
 }
 
-final homePageTab =
+final homePageTabProvider =
     StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
 
-final homePageBackground = StateProvider<HomePageBackgroundState>(
+final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
     (ref) => HomePageBackgroundState.hidden);

@@ -19,10 +19,12 @@ class EnvoyButton extends StatefulWidget {
   final Color? backgroundColor;
   final TextStyle? textStyle;
   final FontWeight? fontWeight;
+  final bool? readOnly;
 
   EnvoyButton(
     this.label, {
     this.onTap,
+    this.readOnly = false,
     this.type = EnvoyButtonTypes.primary,
     this.textStyle,
     this.borderRadius,
@@ -93,6 +95,12 @@ class _EnvoyButtonState extends State<EnvoyButton> {
     switch (this.widget.type) {
       case EnvoyButtonTypes.primary:
         {
+          if (widget.readOnly == true) {
+            return BoxDecoration(
+                color: EnvoyColors.grey85,
+                borderRadius: this.widget.borderRadius ??
+                    BorderRadius.all(Radius.circular(13.0)));
+          }
           var gradientColors = [EnvoyColors.teal, EnvoyColors.darkTeal];
           return BoxDecoration(
               color: this.widget.backgroundColor,

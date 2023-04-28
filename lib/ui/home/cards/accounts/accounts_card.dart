@@ -6,7 +6,8 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/onboard/splash_screen.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -21,7 +22,6 @@ import 'package:animations/animations.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -44,9 +44,9 @@ class AccountsCardState extends State<AccountsCard>
   void _showAddAccountPage() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       if (EnvoySeed().walletDerived()) {
-        return SingleImportPpIntroPage();
+        return OnboardPassportWelcomeScreen();
       } else {
-        return SplashScreen();
+        return OnboardEnvoyWelcomeScreen();
       }
     }));
   }
