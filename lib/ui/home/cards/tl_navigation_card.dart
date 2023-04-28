@@ -39,21 +39,24 @@ mixin TopLevelNavigationCardState<T extends TopLevelNavigationCard>
 
   void notifyHomePage() {
     if (cardStack.isNotEmpty) {
-      NavigationCard currentCard = cardStack.last;
-
-      HomePageNotification(
-          modal: currentCard.modal,
-          optionsWidget: currentCard.optionsWidget,
-          title: currentCard.title,
-          rightFunctionIcon:
-              cardStack.length > 1 ? Icons.more_horiz : Icons.add,
-          rightFunction: currentCard.rightFunction,
-          leftFunction: cardStack.length > 1
-              ? () {
-                  pop();
-                }
-              : null)
-        ..dispatch(context);
+      try {
+        NavigationCard currentCard = cardStack.last;
+        HomePageNotification(
+            modal: currentCard.modal,
+            optionsWidget: currentCard.optionsWidget,
+            title: currentCard.title,
+            rightFunctionIcon:
+                cardStack.length > 1 ? Icons.more_horiz : Icons.add,
+            rightFunction: currentCard.rightFunction,
+            leftFunction: cardStack.length > 1
+                ? () {
+                    pop();
+                  }
+                : null)
+          ..dispatch(context);
+      } catch (e) {
+        // ignore
+      }
     }
   }
 }
