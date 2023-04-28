@@ -4,15 +4,15 @@
 
 import 'dart:math';
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class OnboardEnvoyWelcomeScreen extends StatefulWidget {
@@ -31,89 +31,6 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
         margin: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         padding: EdgeInsets.only(top: 44),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Container(
-                width: 380,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      S().passport_welcome_screen_heading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    Padding(padding: EdgeInsets.all(6)),
-                    Text(
-                      S().passport_welcome_screen_subheading,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(padding: EdgeInsets.all(4)),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "I don’t have a Passport.",
-                          ),
-                          TextSpan(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      color: EnvoyColors.teal),
-                              text: "  Buy One",
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {}),
-                        ],
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: EnvoyColors.grey)),
-                  ),
-                  Padding(padding: EdgeInsets.all(8)),
-                  EnvoyButton(
-                    S().passport_welcome_screen_cta2,
-                    type: EnvoyButtonTypes.secondary,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OnboardEnvoyWelcomeScreen(),
-                          ));
-                    },
-                  ),
-                  Padding(padding: EdgeInsets.all(8)),
-                  EnvoyButton(
-                    S().passport_welcome_screen_cta1,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OnboardEnvoyWelcomeScreen(),
-                          ));
-                    },
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -243,5 +160,16 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (await EnvoySeed().get() != null) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => MagicRecoverWallet()));
+      }
+    });
+    super.initState();
   }
 }
