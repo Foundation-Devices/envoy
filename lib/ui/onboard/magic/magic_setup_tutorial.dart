@@ -117,7 +117,11 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                                 fontWeight: FontWeight.w600),
                         label: S().magic_setup_tutorial_ios_CTA1,
                         onTap: () {
-                          showCreateWarning(context);
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return MagicSetupGenerate();
+                          }));
+                          // showCreateWarning(context);
                         }),
                   ],
                 ))
@@ -129,56 +133,56 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
     ));
   }
 
-  void showCreateWarning(BuildContext context) {
-    showEnvoyDialog(
-      context: context,
-      dismissible: true,
-      builder: Builder(builder: (context) {
-        return Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(padding: EdgeInsets.all(24)),
-                Column(
-                  children: [
-                    Icon(EnvoyIcons.exclamation_warning,
-                        color: EnvoyColors.darkCopper, size: 56),
-                    Padding(padding: EdgeInsets.all(12)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        Platform.isAndroid
-                            ? S()
-                                .magic_setup_generate_wallet_modal_android_subheading
-                            : S()
-                                .magic_setup_generate_wallet_modal_ios_subheading,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-                OnboardingButton(
-                    label: Platform.isAndroid
-                        ? S().magic_setup_generate_wallet_modal_android_CTA
-                        : S().magic_setup_generate_wallet_modal_ios_CTA,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return MagicSetupGenerate();
-                      }));
-                    }),
-                Padding(padding: EdgeInsets.all(12)),
-              ],
-            ),
-          ),
-        );
-      }),
-    );
-  }
+  // void showCreateWarning(BuildContext context) {
+  //   showEnvoyDialog(
+  //     context: context,
+  //     dismissible: true,
+  //     builder: Builder(builder: (context) {
+  //       return Container(
+  //         width: MediaQuery.of(context).size.width * 0.8,
+  //         child: Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 24),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.center,
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               Padding(padding: EdgeInsets.all(24)),
+  //               Column(
+  //                 children: [
+  //                   Icon(EnvoyIcons.exclamation_warning,
+  //                       color: EnvoyColors.darkCopper, size: 56),
+  //                   Padding(padding: EdgeInsets.all(12)),
+  //                   Padding(
+  //                     padding: const EdgeInsets.symmetric(vertical: 8),
+  //                     child: Text(
+  //                       Platform.isAndroid
+  //                           ? S()
+  //                               .magic_setup_generate_wallet_modal_android_subheading
+  //                           : S()
+  //                               .magic_setup_generate_wallet_modal_ios_subheading,
+  //                       textAlign: TextAlign.center,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               OnboardingButton(
+  //                   label: Platform.isAndroid
+  //                       ? S().magic_setup_generate_wallet_modal_android_CTA
+  //                       : S().magic_setup_generate_wallet_modal_ios_CTA,
+  //                   onTap: () async {
+  //                     Navigator.pop(context);
+  //                     Navigator.of(context)
+  //                         .push(MaterialPageRoute(builder: (context) {
+  //                       return MagicSetupGenerate();
+  //                     }));
+  //                   }),
+  //               Padding(padding: EdgeInsets.all(12)),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     }),
+  //   );
+  // }
 }
