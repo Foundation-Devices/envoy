@@ -209,9 +209,9 @@ class _EraseWalletsBalanceWarningState
                 label: S().erase_wallet_with_balance_modal_CTA1,
                 onTap: () {
                   // Show home page and navigate to accounts
-                  ref.read(homePageBackground.notifier).state =
+                  ref.read(homePageBackgroundProvider.notifier).state =
                       HomePageBackgroundState.hidden;
-                  ref.read(homePageTab.notifier).state =
+                  ref.read(homePageTabProvider.notifier).state =
                       HomePageTabState.accounts;
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 }),
@@ -392,23 +392,32 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       });
       await Future.delayed(Duration(milliseconds: 2000));
 
-      // Show home page and navigate to accounts
-      ref.read(homePageBackground.notifier).state =
-          HomePageBackgroundState.hidden;
-      ref.read(homePageTab.notifier).state = HomePageTabState.accounts;
-
       //Show android backup info
       if (Platform.isAndroid) {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));
         await Future.delayed(Duration(milliseconds: 300));
         await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MagicRecoveryInfo(
-                  onContinue: () {
+                  onContinue: () async {
                     Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                    //wait for pop animation to finish
+                    await Future.delayed(Duration(milliseconds: 300));
+                    // Show home page and navigate to accounts
+                    ref.read(homePageBackgroundProvider.notifier).state =
+                        HomePageBackgroundState.hidden;
+                    ref.read(homePageTabProvider.notifier).state =
+                        HomePageTabState.accounts;
                   },
                 )));
       } else {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));
+        //wait for pop animation to finish
+        await Future.delayed(Duration(milliseconds: 300));
+        // Show home page and navigate to accounts
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        ref.read(homePageTabProvider.notifier).state =
+            HomePageTabState.accounts;
       }
     } catch (e) {}
   }

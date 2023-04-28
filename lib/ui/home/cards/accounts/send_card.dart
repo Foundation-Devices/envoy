@@ -87,7 +87,6 @@ class _SendCardState extends ConsumerState<SendCard>
     setState(() {
       _amount = amount;
       _amountSufficient = !(amount > widget.account.wallet.balance);
-      ref.read(spendAmountProvider.notifier).state = _amount;
     });
   }
 
@@ -162,8 +161,6 @@ class _SendCardState extends ConsumerState<SendCard>
   @override
   void dispose() {
     //reset states
-    ref.read(spendAddressProvider.notifier).state = "";
-    ref.read(spendAmountProvider.notifier).state = 0;
     super.dispose();
   }
 }

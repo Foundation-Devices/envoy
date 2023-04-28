@@ -389,7 +389,7 @@ class AccountOptions extends ConsumerWidget {
                   ));
             } else {
               navigator!.pop();
-              ref.read(homePageBackground.notifier).state =
+              ref.read(homePageBackgroundProvider.notifier).state =
                   HomePageBackgroundState.backups;
             }
           },

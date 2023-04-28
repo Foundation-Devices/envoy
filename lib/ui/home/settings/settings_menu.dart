@@ -26,13 +26,14 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
   Widget _currentPage = SettingsMenuWidget();
 
   void _goBackToMenu() {
-    ref.read(homePageBackground.notifier).state = HomePageBackgroundState.menu;
+    ref.read(homePageBackgroundProvider.notifier).state =
+        HomePageBackgroundState.menu;
     Settings().store();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<HomePageBackgroundState>(homePageBackground, (_, next) {
+    ref.listen<HomePageBackgroundState>(homePageBackgroundProvider, (_, next) {
       selectPage(next, context);
     });
 
@@ -44,7 +45,7 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
 
   @override
   void initState() {
-    selectPage(ref.read(homePageBackground), context);
+    selectPage(ref.read(homePageBackgroundProvider), context);
     super.initState();
   }
 
@@ -92,7 +93,7 @@ class SettingsMenuWidget extends ConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    var background = ref.read(homePageBackground.notifier);
+    var background = ref.read(homePageBackgroundProvider.notifier);
     return Padding(
       padding: const EdgeInsets.only(top: 100, bottom: 50),
       child: Center(

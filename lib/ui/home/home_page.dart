@@ -138,7 +138,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   void _toggleSettings() {
-    final background = ref.read(homePageBackground.notifier);
+    final background = ref.read(homePageBackgroundProvider.notifier);
     _backgroundShown = !_backgroundShown;
 
     if (_backgroundShown) {
@@ -149,7 +149,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   void _toggleNotifications() async {
-    final background = ref.read(homePageBackground.notifier);
+    final background = ref.read(homePageBackgroundProvider.notifier);
     _backgroundShown = !_backgroundShown;
     _notificationsShown = _backgroundShown;
 
@@ -175,12 +175,12 @@ class _HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<HomePageTabState>(homePageTab,
+    ref.listen<HomePageTabState>(homePageTabProvider,
         (HomePageTabState? _, HomePageTabState newState) {
       _navigateToCard(newState.index);
     });
 
-    ref.listen<HomePageBackgroundState>(homePageBackground,
+    ref.listen<HomePageBackgroundState>(homePageBackgroundProvider,
         (HomePageBackgroundState? oldState, HomePageBackgroundState newState) {
       // TODO: use ref.watch instead (when we're using riverpod throughout)
       setState(() {
@@ -391,7 +391,7 @@ class _HomePageState extends ConsumerState<HomePage>
                               labelColor: EnvoyColors.darkTeal,
                               controller: _tabController,
                               onTap: (selectedIndex) {
-                                ref.read(homePageTab.notifier).state =
+                                ref.read(homePageTabProvider.notifier).state =
                                     HomePageTabState.values[selectedIndex];
                                 setState(() {
                                   _navigateToCard(selectedIndex);
