@@ -13,7 +13,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/envoy_icons.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
   const MagicSetupTutorial({Key? key}) : super(key: key);
