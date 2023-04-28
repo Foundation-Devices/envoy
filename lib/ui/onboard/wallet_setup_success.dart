@@ -5,7 +5,9 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 
 class WalletSetupSuccess extends StatefulWidget {
@@ -58,12 +60,22 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: OnboardingButton(
-                      label: S().wallet_setup_success_CTA,
-                      onTap: () {
-                        Navigator.of(context)
-                            .popUntil(ModalRoute.withName("/"));
-                      }),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return OnboardingButton(
+                          label: S().wallet_setup_success_CTA,
+                          onTap: () async {
+                            Navigator.of(context)
+                                .popUntil(ModalRoute.withName("/"));
+                            await Future.delayed(Duration(milliseconds: 200));
+                            ref.read(homePageTabProvider.notifier).state =
+                                HomePageTabState.devices;
+                            ref
+                                .read(homePageBackgroundProvider.notifier)
+                                .state = HomePageBackgroundState.hidden;
+                          });
+                    },
+                  ),
                 ),
               ],
             ),

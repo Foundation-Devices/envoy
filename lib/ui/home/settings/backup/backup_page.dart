@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -241,16 +242,17 @@ class _BackupPageState extends ConsumerState<BackupPage>
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: EdgeInsets.only(bottom: _bottomOffset + 30.0),
-                      child: InkWell(
+                      child: EnvoyButton(
+                        S().backups_erase_wallets_and_backups,
+                        textStyle: TextStyle(
+                          color: EnvoyColors.danger,
+                          fontWeight: FontWeight.w900,
+                        ),
+                        type: EnvoyButtonTypes.tertiary,
                         onTap: () {
                           globalState.state = GlobalState.nuclearDelete;
                           showEraseWalletsAndBackupsWarning(context);
                         },
-                        child: Text(S().backups_erase_wallets_and_backups,
-                            style: TextStyle(
-                              color: EnvoyColors.danger,
-                              fontWeight: FontWeight.w900,
-                            )),
                       ),
                     ),
                   ),
