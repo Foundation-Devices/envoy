@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -180,6 +181,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   EnvoyButton(
                     S().privacy_setting_perfomance_cta,
                     onTap: () {
+                      LocalStorage().prefs.setBool("onboarded", true);
                       if (!widget.setUpEnvoyWallet) {
                         Navigator.push(
                             context,
