@@ -103,7 +103,7 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
-  bool usingTor = false;
+  bool usingTor = true;
 
   bool torEnabled() {
     return usingTor;
