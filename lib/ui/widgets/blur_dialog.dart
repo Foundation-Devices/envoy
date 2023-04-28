@@ -14,6 +14,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   double blur = 6;
   Color blurColor;
   Color? cardColor;
+  final Alignment alignment;
   bool dismissible;
 
   Builder builder;
@@ -26,6 +27,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     this.blur = 6,
     this.blurColor = Colors.black,
     this.dismissible = true,
+    this.alignment = Alignment.center,
     this.cardColor,
   }) : super(settings: settings);
 
@@ -51,7 +53,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
               container: true,
               explicitChildNodes: true,
               child: Align(
-                alignment: Alignment.center,
+                alignment: alignment,
                 child: Material(
                   color: Colors.transparent,
                   child: SafeArea(
@@ -230,6 +232,7 @@ Future<T?> showEnvoyDialog<T>(
     double blur = 6,
     routeSettings,
     Widget? dialog,
+    Alignment alignment = Alignment.center,
     Builder? builder,
     bool dismissible = true}) async {
   var route = BlurDialogRoute<T>(
@@ -237,6 +240,7 @@ Future<T?> showEnvoyDialog<T>(
       builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
       blurColor: blurColor,
       cardColor: cardColor,
+      alignment: alignment,
       dismissible: dismissible,
       settings: routeSettings);
   return await Navigator.of(context, rootNavigator: false).push(route);

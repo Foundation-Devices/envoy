@@ -8,7 +8,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
-import 'package:envoy/ui/onboard/splash_screen.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -46,7 +46,7 @@ Future<void> initSingletons() async {
   EnvoyStorage();
 
   if (Settings().usingTor) {
-    Tor().enable();
+    Tor().start();
   } else {
     Tor().disable();
   }
@@ -118,7 +118,7 @@ class EnvoyApp extends StatelessWidget {
           initialRoute: "/",
           routes: {
             '/': (context) => HomePage(),
-            '/splash': (context) => SplashScreen(),
+            '/splash': (context) => WelcomeScreen(),
           }),
     );
   }
