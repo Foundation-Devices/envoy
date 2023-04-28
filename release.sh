@@ -8,12 +8,20 @@
 set -e
 
 # Get the version
-version=$(grep 'version: ' pubspec.yaml | sed 's/version: //')
+version=$1
 
 cd release
 
-for filename in *.zip; do
-    mv "$filename" "envoy-$filename-$version.zip"
+for filename in *.apk; do
+    zip "envoy-apk-$version.zip" "$filename"
+done
+
+for filename in *.aab; do
+    zip "envoy-aab-$version.zip" "$filename"
+done
+
+for filename in *.ipa; do
+    zip "envoy-ipa-$version.zip" "$filename"
 done
 
 for filename in *.zip; do
