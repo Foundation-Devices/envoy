@@ -5463,7 +5463,7 @@ class S {
   /// `CONTACT US`
   String get envoy_scv_result_fail_cta1 {
     return Intl.message(
-      'CONTACT US',
+      'Contact us',
       name: 'envoy_scv_result_fail_cta1',
       desc: '',
       args: [],

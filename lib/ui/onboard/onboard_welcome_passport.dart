@@ -4,7 +4,6 @@
 
 import 'dart:math';
 
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -15,21 +14,8 @@ import 'package:envoy/ui/shield.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class OnboardPassportWelcomeScreen extends StatefulWidget {
+class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<OnboardPassportWelcomeScreen> createState() =>
-      _OnboardPassportWelcomeScreenState();
-}
-
-class _OnboardPassportWelcomeScreenState
-    extends State<OnboardPassportWelcomeScreen> {
-  @override
-  void initState() {
-    LocalStorage().prefs.setBool("onboarded", true);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

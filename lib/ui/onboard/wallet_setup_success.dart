@@ -65,14 +65,14 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
                       return OnboardingButton(
                           label: S().wallet_setup_success_CTA,
                           onTap: () async {
-                            Navigator.of(context)
-                                .popUntil(ModalRoute.withName("/"));
-                            await Future.delayed(Duration(milliseconds: 200));
                             ref.read(homePageTabProvider.notifier).state =
-                                HomePageTabState.devices;
+                                HomePageTabState.accounts;
                             ref
                                 .read(homePageBackgroundProvider.notifier)
                                 .state = HomePageBackgroundState.hidden;
+                            await Future.delayed(Duration(milliseconds: 200));
+                            Navigator.of(context)
+                                .popUntil(ModalRoute.withName("/"));
                           });
                     },
                   ),

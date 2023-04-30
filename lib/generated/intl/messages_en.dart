@@ -939,7 +939,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_scv_result_fail_cta":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "envoy_scv_result_fail_cta1":
-            MessageLookupByLibrary.simpleMessage("CONTACT US"),
+            MessageLookupByLibrary.simpleMessage("Contact us"),
         "envoy_scv_result_fail_heading": MessageLookupByLibrary.simpleMessage(
             "Your Passport may be insecure"),
         "envoy_scv_result_fail_right_action":

@@ -14,8 +14,8 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
@@ -100,7 +100,7 @@ class _TxReviewState extends State<TxReview> {
                     ),
                     SliverToBoxAdapter(
                       child: Container(
-                        height: 164,
+                        height: 184,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           border: Border.all(
@@ -138,6 +138,7 @@ class _TxReviewState extends State<TxReview> {
                                 Positioned.fill(
                                     child: Column(
                                   children: [
+                                    Padding(padding: EdgeInsets.all(6)),
                                     Expanded(
                                       flex: 2,
                                       child: Padding(
@@ -199,11 +200,13 @@ class _TxReviewState extends State<TxReview> {
                                                     child: Container(
                                                       alignment:
                                                           Alignment.center,
-                                                      child: Icon(
-                                                        CupertinoIcons
-                                                            .exclamationmark,
-                                                        size: 28,
-                                                        color: Colors.white,
+                                                      child: Container(
+                                                        child: SvgPicture.asset(
+                                                          "assets/i.svg",
+                                                          height: 22,
+                                                          width: 22,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   )),
@@ -212,6 +215,7 @@ class _TxReviewState extends State<TxReview> {
                                         ),
                                       ),
                                     ),
+                                    Padding(padding: EdgeInsets.all(6)),
                                     Expanded(
                                       flex: 5,
                                       child: Container(
@@ -395,7 +399,7 @@ class _TxReviewState extends State<TxReview> {
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ))
                               ]),
