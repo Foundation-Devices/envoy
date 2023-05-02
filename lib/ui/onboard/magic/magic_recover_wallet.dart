@@ -46,8 +46,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   void _initWalletRecovery() async {
     await Future.delayed(Duration(seconds: 1));
 
-    final success = false;
-    // final success = await EnvoySeed().restoreData();
+    final success = await EnvoySeed().restoreData();
 
     setState(() {
       if (success) {
