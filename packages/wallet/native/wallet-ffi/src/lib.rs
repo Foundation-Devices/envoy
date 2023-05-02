@@ -368,6 +368,24 @@ pub unsafe extern "C" fn wallet_get_address(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn wallet_get_change_address(
+    wallet: *mut Mutex<bdk::Wallet<Tree>>,
+) -> *const c_char {
+    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+
+    let address = wallet
+        .get_internal_address(AddressIndex::New)
+        .unwrap()
+        .address
+        .to_string();
+
+    // SFT-1580: unreliable fsync on mobile platforms occasionally causes address reuse
+    let _ = wallet.database().flush();
+
+    CString::new(address).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn wallet_sync(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     electrum_address: *const c_char,
@@ -640,6 +658,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
 
     let mut builder = wallet.build_tx();
     builder
+        .change_address_index(AddressIndex::Current)
         .ordering(TxOrdering::Shuffle)
         .only_witness_utxo()
         .add_recipient(send_to.script_pubkey(), amount)

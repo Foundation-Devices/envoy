@@ -334,6 +334,14 @@ class Wallet {
         .toDartString();
   }
 
+  static String _getChangeAddress(int walletAddress) {
+    var lib = NativeLibrary(load(_libName));
+    return lib
+        .wallet_get_change_address(walletAddress)
+        .cast<Utf8>()
+        .toDartString();
+  }
+
   Wallet(
       this.name, this.network, this.externalDescriptor, this.internalDescriptor,
       {this.hot = false,
@@ -380,6 +388,10 @@ class Wallet {
 
   Future<String> getAddress() async {
     return compute(_getAddress, _self.address);
+  }
+
+  Future<String> getChangeAddress() async {
+    return compute(_getChangeAddress, _self.address);
   }
 
   // Returns true if there have been changes

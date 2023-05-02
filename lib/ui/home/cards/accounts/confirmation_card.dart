@@ -154,6 +154,9 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                         widget.initialAddress;
 
                     if (!widget.account.wallet.hot) {
+                      // Increment the change index before displaying the PSBT
+                      widget.account.wallet.getChangeAddress();
+
                       widget.navigator!.push(PsbtCard(
                         _boostEnabled ? _currentPsbtBoost : _currentPsbt,
                         widget.account,

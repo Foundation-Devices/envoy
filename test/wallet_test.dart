@@ -25,6 +25,21 @@ void main() async {
     expect(address2, "tb1q79crajpg7y838vmqngerx6eqv5tuytzlk7cx3n");
   });
 
+  test('Get new change address', () async {
+    var wallet = Wallet(
+        Random().nextInt(9999).toString(),
+        Network.Testnet,
+        "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/0/*)",
+        "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)")
+      ..init(dir.path);
+
+    var address = await wallet.getChangeAddress();
+    expect(address, "tb1qha9pfdu5cpdr6xhdceavwegdwar4py46qqspz3");
+
+    var address2 = await wallet.getChangeAddress();
+    expect(address2, "tb1qhmlys6r70dc52capnhuke0rznnk5rsjvzvupec");
+  });
+
   test('Decode PSBT', () async {
     var wallet = Wallet(
         Random().nextInt(9999).toString(),

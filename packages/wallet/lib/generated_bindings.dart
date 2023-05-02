@@ -88,6 +88,20 @@ class NativeLibrary {
   late final _wallet_get_address =
       _wallet_get_addressPtr.asFunction<ffi.Pointer<ffi.Char> Function(int)>();
 
+  ffi.Pointer<ffi.Char> wallet_get_change_address(
+    int arg0,
+  ) {
+    return _wallet_get_change_address(
+      arg0,
+    );
+  }
+
+  late final _wallet_get_change_addressPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Int)>>(
+          'wallet_get_change_address');
+  late final _wallet_get_change_address = _wallet_get_change_addressPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(int)>();
+
   bool wallet_sync(
     int arg0,
   ) {
