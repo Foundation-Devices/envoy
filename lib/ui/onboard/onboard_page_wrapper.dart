@@ -16,7 +16,6 @@ class OnboardPageBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     double _shieldTop = MediaQuery.of(context).padding.top + 6.0;
     double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
-
     return Stack(
       children: [
         AppBackground(),

@@ -11,6 +11,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -113,11 +114,12 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          toolbarHeight: kToolbarHeight,
           backgroundColor: Colors.transparent,
-          // leading: CupertinoNavigationBarBackButton(
-          //   color: Colors.white,
-          //   onPressed: () => Navigator.pop(context),
-          // ),
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.pop(context),
+          ),
           automaticallyImplyLeading: false,
           actions: [
             Padding(

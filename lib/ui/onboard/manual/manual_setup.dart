@@ -9,6 +9,7 @@ import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ManualSetup extends StatefulWidget {
@@ -24,21 +25,30 @@ class _ManualSetupState extends State<ManualSetup> {
     return OnboardPageBackground(
         child: Column(
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: TextButton(
-              child: Text("Skip",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.black)),
-              onPressed: () {
-                OnboardingPage.goHome(context);
-              },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CupertinoNavigationBarBackButton(
+              color: Colors.black,
+              onPressed: () => Navigator.pop(context),
             ),
-          ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: TextButton(
+                  child: Text("Skip",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black)),
+                  onPressed: () {
+                    OnboardingPage.goHome(context);
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: Container(

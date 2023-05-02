@@ -8,6 +8,7 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
@@ -27,21 +28,27 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
     return OnboardPageBackground(
         child: Column(
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: TextButton(
-              child: Text(S().magic_setup_tutorial_ios_skip,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.black)),
-              onPressed: () {
-                OnboardingPage.goHome(context);
-              },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CupertinoNavigationBarBackButton(
+              color: Colors.black,
+              onPressed: () => Navigator.pop(context),
             ),
-          ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: TextButton(
+                child: Text(S().magic_setup_tutorial_ios_skip,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.black)),
+                onPressed: () {
+                  OnboardingPage.goHome(context);
+                },
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: Container(

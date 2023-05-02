@@ -93,26 +93,25 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
       },
       child: OnboardPageBackground(
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading:
-                _magicRecoverWalletState == MagicRecoveryWalletState.failure
-                    ? IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          CupertinoIcons.back,
-                          color: Colors.black,
-                        ))
-                    : SizedBox(),
-          ),
           body: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: _magicRecoverWalletState ==
+                          MagicRecoveryWalletState.failure
+                      ? IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            CupertinoIcons.back,
+                            color: Colors.black,
+                          ))
+                      : SizedBox(),
+                ),
                 Container(
                   height: 240,
                   margin: EdgeInsets.only(bottom: 24),
