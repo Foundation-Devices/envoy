@@ -207,67 +207,65 @@ class MagicRecoveryInfo extends StatelessWidget {
 
     return OnboardPageBackground(
       child: Material(
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  child: Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 180,
-                    width: 180,
-                  ),
-                  height: 250,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                child: Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 180,
+                  width: 180,
                 ),
-                isAndroid
-                    ? Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              S().android_backup_info_heading,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Padding(padding: EdgeInsets.all(12)),
-                            Text(
-                              S().android_backup_info_subheading,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      )
-                    : _iosBackupInfo(context),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: OnboardingButton(
-                    label: S().component_continue,
-                    onTap: () {
-                      if (onContinue != null) {
-                        onContinue!.call();
-                        return;
-                      }
-                      if (skipSuccessScreen) {
-                        Navigator.pop(context);
-                      } else {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return WalletSetupSuccess();
-                        }));
-                      }
-                    },
-                  ),
+                height: 250,
+              ),
+              isAndroid
+                  ? Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            S().android_backup_info_heading,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Padding(padding: EdgeInsets.all(12)),
+                          Text(
+                            S().android_backup_info_subheading,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    )
+                  : _iosBackupInfo(context),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: OnboardingButton(
+                  label: S().component_continue,
+                  onTap: () {
+                    if (onContinue != null) {
+                      onContinue!.call();
+                      return;
+                    }
+                    if (skipSuccessScreen) {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return WalletSetupSuccess();
+                      }));
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           color: Colors.transparent),
     );

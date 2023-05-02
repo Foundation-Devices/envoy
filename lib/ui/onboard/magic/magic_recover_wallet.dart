@@ -46,7 +46,8 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   void _initWalletRecovery() async {
     await Future.delayed(Duration(seconds: 1));
 
-    final success = await EnvoySeed().restoreData();
+    final success = false;
+    // final success = await EnvoySeed().restoreData();
 
     setState(() {
       if (success) {
@@ -92,59 +93,141 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         return true;
       },
       child: OnboardPageBackground(
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: _magicRecoverWalletState ==
-                          MagicRecoveryWalletState.failure
-                      ? IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            CupertinoIcons.back,
-                            color: Colors.black,
-                          ))
-                      : SizedBox(),
-                ),
-                Container(
-                  height: 240,
-                  margin: EdgeInsets.only(bottom: 24),
-                  child: RiveAnimation.asset(
-                    "assets/envoy_loader.riv",
-                    fit: BoxFit.contain,
-                    onInit: _onRiveInit,
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.only(top: 16),
+                height: 44,
+                child:
+                    _magicRecoverWalletState == MagicRecoveryWalletState.failure
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CupertinoNavigationBarBackButton(
+                                color: Colors.black,
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          )
+                        : SizedBox(),
+              ),
+              Expanded(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 240,
+                    margin: EdgeInsets.only(bottom: 24),
+                    child: RiveAnimation.asset(
+                      "assets/envoy_loader.riv",
+                      fit: BoxFit.contain,
+                      onInit: _onRiveInit,
+                    ),
                   ),
-                ),
-                AnimatedContainer(
-                    duration: Duration(milliseconds: 500),
-                    child: Builder(
-                      builder: (context) {
-                        if (_magicRecoverWalletState ==
-                            MagicRecoveryWalletState.recovering) {
-                          return _recoveryInProgress(context);
-                        }
-                        if (_magicRecoverWalletState ==
-                            MagicRecoveryWalletState.success) {
-                          return _recoverySteps(context);
-                        }
-                        if (_magicRecoverWalletState ==
-                            MagicRecoveryWalletState.failure) {
-                          return _unsuccessfulRecovery(context);
-                        }
-                        return SizedBox();
-                      },
-                    )),
-              ],
-            ),
+                  AnimatedContainer(
+                      duration: Duration(milliseconds: 500),
+                      child: Builder(
+                        builder: (context) {
+                          if (_magicRecoverWalletState ==
+                              MagicRecoveryWalletState.recovering) {
+                            return _recoveryInProgress(context);
+                          }
+                          if (_magicRecoverWalletState ==
+                              MagicRecoveryWalletState.success) {
+                            return _recoverySteps(context);
+                          }
+                          if (_magicRecoverWalletState ==
+                              MagicRecoveryWalletState.failure) {
+                            return _unsuccessfulRecovery(context);
+                          }
+                          return SizedBox();
+                        },
+                      )),
+                ],
+              )),
+              getBottomButtons() ?? SizedBox(),
+            ],
           ),
-          bottomNavigationBar: getBottomButtons(),
         ),
+        // child: Scaffold(
+        //   body: Container(
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.max,
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         Container(
+        //           padding: EdgeInsets.only(top: 16),
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //             children: [
+        //               CupertinoNavigationBarBackButton(
+        //                 color: Colors.black,
+        //                 onPressed: () => Navigator.pop(context),
+        //               ),
+        //               // Align(
+        //               //   alignment: Alignment.centerRight,
+        //               //   child: Container(
+        //               //     padding: EdgeInsets.symmetric(vertical: 12),
+        //               //     child: TextButton(
+        //               //       child: Text("Skip",
+        //               //           style: Theme.of(context)
+        //               //               .textTheme
+        //               //               .bodyMedium
+        //               //               ?.copyWith(color: Colors.black)),
+        //               //       onPressed: () {
+        //               //         OnboardingPage.goHome(context);
+        //               //       },
+        //               //     ),
+        //               //   ),
+        //               // ),
+        //             ],
+        //           ),
+        //         ),
+        //         Expanded(child: Column(
+        //           mainAxisAlignment: MainAxisAlignment.start,
+        //           mainAxisSize: MainAxisSize.max,
+        //           crossAxisAlignment: CrossAxisAlignment.center,
+        //           children: [
+        //             Container(
+        //               height: 240,
+        //               margin: EdgeInsets.only(bottom: 24),
+        //               child: RiveAnimation.asset(
+        //                 "assets/envoy_loader.riv",
+        //                 fit: BoxFit.contain,
+        //                 onInit: _onRiveInit,
+        //               ),
+        //             ),
+        //             AnimatedContainer(
+        //                 duration: Duration(milliseconds: 500),
+        //                 child: Builder(
+        //                   builder: (context) {
+        //                     if (_magicRecoverWalletState ==
+        //                         MagicRecoveryWalletState.recovering) {
+        //                       return _recoveryInProgress(context);
+        //                     }
+        //                     if (_magicRecoverWalletState ==
+        //                         MagicRecoveryWalletState.success) {
+        //                       return _recoverySteps(context);
+        //                     }
+        //                     if (_magicRecoverWalletState ==
+        //                         MagicRecoveryWalletState.failure) {
+        //                       return _unsuccessfulRecovery(context);
+        //                     }
+        //                     return SizedBox();
+        //                   },
+        //                 )),
+        //           ],
+        //         ))
+        //       ],
+        //     ),
+        //   ),
+        //   bottomNavigationBar: getBottomButtons(),
+        // ),
       ),
     );
   }

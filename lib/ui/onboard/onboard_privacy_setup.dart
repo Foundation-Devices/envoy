@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
@@ -11,6 +12,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
@@ -180,7 +182,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   //TODO: localization
                   EnvoyButton(
                     S().privacy_setting_perfomance_cta,
-                    onTap: () {
+                    onTap: () async {
                       LocalStorage().prefs.setBool("onboarded", true);
                       if (!widget.setUpEnvoyWallet) {
                         Navigator.push(
@@ -190,11 +192,30 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                                   OnboardPassportWelcomeScreen(),
                             ));
                       } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OnboardEnvoyWelcomeScreen(),
-                            ));
+                        //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
+                        try {
+                          if (await EnvoySeed().get() != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MagicRecoverWallet()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      OnboardEnvoyWelcomeScreen(),
+                                ));
+                          }
+                        } catch (e) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    OnboardEnvoyWelcomeScreen(),
+                              ));
+                        }
                       }
                     },
                   )
