@@ -11,8 +11,10 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);
@@ -113,11 +115,12 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          toolbarHeight: kToolbarHeight,
           backgroundColor: Colors.transparent,
-          // leading: CupertinoNavigationBarBackButton(
-          //   color: Colors.white,
-          //   onPressed: () => Navigator.pop(context),
-          // ),
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.pop(context),
+          ),
           automaticallyImplyLeading: false,
           actions: [
             Padding(
@@ -211,7 +214,9 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                   text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: "I don’t have a Passport.",
+                                          text: S()
+                                              .envoy_welcome_cta03
+                                              .replaceAll("{{Buy One}}", ""),
                                         ),
                                         TextSpan(
                                             style: Theme.of(context)
@@ -222,7 +227,10 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                                     color: EnvoyColors.teal),
                                             text: "  Buy One",
                                             recognizer: TapGestureRecognizer()
-                                              ..onTap = () {}),
+                                              ..onTap = () {
+                                                launchUrl(Uri.parse(
+                                                    "https://foundationdevices.com/passport"));
+                                              }),
                                       ],
                                       style: Theme.of(context)
                                           .textTheme

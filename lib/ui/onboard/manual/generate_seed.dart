@@ -171,48 +171,22 @@ class _SeedScreenState extends State<SeedScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center),
                 ),
-                SliverPadding(padding: EdgeInsets.all(24)),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 4,
-                    crossAxisSpacing: 22.0,
-                    mainAxisSpacing: 30,
-                  ),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final TextStyle textTheme = TextStyle(
-                        fontSize: 15,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold);
-                    return Container(
-                      height: 40,
-                      margin: EdgeInsets.symmetric(vertical: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        children: [
-                          Text("${index + 1}. ", style: textTheme),
-                          Expanded(
-                              child:
-                                  Text("${seedList[index]}", style: textTheme)),
-                        ],
-                      ),
-                    );
-                  }, childCount: seedList.length),
-                ),
-                SliverPadding(padding: EdgeInsets.all(24)),
+                SliverPadding(padding: EdgeInsets.all(18)),
                 SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [],
-                  ),
-                )
+                  child: Builder(builder: (context) {
+                    List<String> section1 = seedList.sublist(0, 6);
+                    List<String> section2 = seedList.sublist(6, 12);
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Flexible(child: _buildMnemonicColumn(section1)),
+                        Flexible(child: _buildMnemonicColumn(section2)),
+                      ],
+                    );
+                  }),
+                ),
               ],
             ),
             floatingActionButton: OnboardingButton(
@@ -227,6 +201,29 @@ class _SeedScreenState extends State<SeedScreen> {
           ),
         ))
       ],
+    );
+  }
+
+  Widget _buildMnemonicColumn(List<String> list) {
+    final TextStyle textTheme = TextStyle(
+        fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
+    return Column(
+      children: list.map((word) {
+        return Container(
+          height: 40,
+          margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
+          decoration: BoxDecoration(
+              color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
+          child: Row(
+            children: [
+              Text("${seedList.indexOf(word) + 1}. ", style: textTheme),
+              Expanded(child: Text("${word}", style: textTheme)),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 

@@ -148,7 +148,6 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
             builder: (context, ref, child) {
               return EnvoyTextButton(
                   onTap: () {
-                    print("CALLED ${_amount} ${widget.initialAddress}");
                     ref.read(spendAmountProvider.notifier).state = _amount;
                     ref.read(spendAddressProvider.notifier).state =
                         widget.initialAddress;
