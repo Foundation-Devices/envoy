@@ -109,60 +109,80 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
       child: CustomScrollView(
         controller: page == 1 ? _scrollControllerPage1 : _scrollControllerPage2,
         slivers: [
-          SliverGrid(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 2,
-              crossAxisSpacing: 18.0,
-              mainAxisSpacing: 0.0,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int listIndex) {
-                int index = page == 1 ? listIndex : listIndex + 12;
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
+          SliverFillRemaining(
+            child: Builder(
+              builder: (context) {
+                int pageIndexOffset = page == 1 ? 1 : 12;
+                List<TextEditingController> seeds = page == 1
+                    ? _controllers.sublist(0, 12)
+                    : _controllers.sublist(12, 24);
+                List<TextEditingController> section1 = seeds.sublist(0, 6);
+                List<TextEditingController> section2 = seeds.sublist(6, 12);
+                return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
-                      height: 40,
-                      width: 140,
-                      margin: EdgeInsets.only(top: 10),
-                      child: MnemonicInput(
-                          controller: _controllers[index],
-                          onWordDetected: (focusNode, controller, word) {
-                            if (index != _focusNodes.length - 1) {
-                              focusNode.nextFocus();
-                            } else {
-                              focusNode.unfocus();
-                            }
-                            _seedWords[index] = word;
-                            if (_showNextPage) {
-                              _pageController
-                                  .nextPage(
-                                      duration: Duration(milliseconds: 300),
-                                      curve: Curves.easeIn)
-                                  .then((value) {
-                                _currentFocusNode = _focusNodes[12];
-                                _currentFocusNode?.requestFocus();
-                              });
-                              _showNextPage = false;
-                            }
-                          },
-                          onWordAdded: (word) {
-                            _seedWords[index] = word;
-                            widget.onSeedWordAdded(_seedWords);
-                          },
-                          index: index,
-                          focusNode: _focusNodes[index]),
-                    ),
+                    Flexible(
+                        child: _buildMnemonicColumn(section1, pageIndexOffset)),
+                    Flexible(
+                        child: _buildMnemonicColumn(section2, pageIndexOffset)),
                   ],
                 );
               },
-              childCount: _controllers.length != 0 ? 12 : 0,
             ),
           ),
           SliverPadding(padding: EdgeInsets.all((pixRatio * bottom)))
         ],
+      ),
+    );
+  }
+
+  Widget _buildMnemonicColumn(
+      List<TextEditingController> section, int pageIndexOffset) {
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: section.map((word) {
+          int index = _controllers.indexOf(word);
+          return FocusTraversalOrder(
+            order: NumericFocusOrder((index).toDouble()),
+            child: Container(
+              height: 40,
+              width: 140,
+              margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              child: MnemonicInput(
+                  controller: _controllers[index],
+                  onWordDetected: (focusNode, controller, word) {
+                    if (index != _focusNodes.length - 1) {
+                      focusNode.nextFocus();
+                    } else {
+                      focusNode.unfocus();
+                    }
+                    _seedWords[index] = word;
+                    if (_showNextPage) {
+                      _pageController
+                          .nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeIn)
+                          .then((value) {
+                        _currentFocusNode = _focusNodes[12];
+                        _currentFocusNode?.requestFocus();
+                      });
+                      _showNextPage = false;
+                    }
+                  },
+                  onWordAdded: (word) {
+                    _seedWords[index] = word;
+                    widget.onSeedWordAdded(_seedWords);
+                  },
+                  index: index,
+                  focusNode: _focusNodes[index]),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -283,11 +303,11 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           foundFocusElement = true;
           _currentFocusNode = _focusNodes[i];
           _showOverlay(context, i);
-          if (i > 7 && i <= 11) {
+          if ((i >= 4 && i <= 6) || (i >= 10 && i <= 12)) {
             _scrollControllerPage1.animateTo(200,
                 duration: Duration(milliseconds: 200), curve: Curves.ease);
           }
-          if (i > 19) {
+          if ((i >= 16 && i <= 18) || (i >= 22 && i <= 24)) {
             _scrollControllerPage2.animateTo(180,
                 duration: Duration(milliseconds: 200), curve: Curves.ease);
           }
