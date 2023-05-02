@@ -682,6 +682,10 @@ class _TxReviewState extends State<TxReview> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
       await Future.delayed(Duration(seconds: 1));
+
+      // Increment the change index before broadcasting
+      await widget.account.wallet.getChangeAddress();
+
       //Broadcast transaction
       await widget.account.wallet.broadcastTx(
           Settings().electrumAddress(widget.account.wallet.network),
