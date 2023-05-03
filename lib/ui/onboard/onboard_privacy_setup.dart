@@ -490,6 +490,13 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   @override
   void initState() {
     _loadRiveAnimations();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (ref.read(nodeConnectionStateProvider).isConnected) {
+        setState(() {
+          _betterPerformance = !Tor().enabled;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -505,9 +512,6 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   @override
   Widget build(BuildContext context) {
     //turns off the flag that enables tor. this wont affect tor process if it is already running
-    Settings().usingTor = !_betterPerformance;
-    Tor().enabled = !_betterPerformance;
-
     ref.listen<bool>(privacyOnboardSelectionProvider, (previous, next) {
       if (mounted) {
         //Setting tor state
@@ -533,7 +537,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
           : Rive.Rive(artboard: _performanceArtBoard!);
       String text = S().privacy_setting_perfomance_better_performance;
 
-      if (isTorRequired || !_betterPerformance) {
+      if ((isTorRequired) || !_betterPerformance) {
         text = S().privacy_setting_privacy_better_privacy;
         icon = _privacyIconArtBoard == null
             ? Container()
@@ -714,6 +718,12 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 
       _privacyIconController?.findInput<bool>("toggle")?.change(false);
       _improvedPerformanceController?.findInput<bool>("enable")?.change(true);
+      if (!_betterPerformance &&
+          ref.read(nodeConnectionStateProvider).isConnected) {
+        Future.delayed(Duration(milliseconds: 100)).then((value) {
+          _privacyIconController?.findInput<bool>("toggle")?.change(true);
+        });
+      }
     } catch (e) {
       print(e);
     }
