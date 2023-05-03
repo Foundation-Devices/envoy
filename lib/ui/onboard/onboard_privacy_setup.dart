@@ -179,7 +179,6 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(6)),
-                  //TODO: localization
                   EnvoyButton(
                     S().privacy_setting_perfomance_cta,
                     onTap: () async {
