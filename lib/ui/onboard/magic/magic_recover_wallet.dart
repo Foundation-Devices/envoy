@@ -122,11 +122,14 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
-                      height: 220,
-                      child: RiveAnimation.asset(
-                        "assets/envoy_loader.riv",
-                        fit: BoxFit.contain,
-                        onInit: _onRiveInit,
+                      height: 180,
+                      child: Transform.scale(
+                        scale: 1.3,
+                        child: RiveAnimation.asset(
+                          "assets/envoy_loader.riv",
+                          fit: BoxFit.contain,
+                          onInit: _onRiveInit,
+                        ),
                       ),
                     ),
                     AnimatedContainer(

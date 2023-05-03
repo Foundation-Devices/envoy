@@ -38,7 +38,7 @@ class _ManualSetupCreateAndStoreBackupState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -48,17 +48,17 @@ class _ManualSetupCreateAndStoreBackupState
                 )),
                 Flexible(
                     child: Container(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(padding: EdgeInsets.all(8)),
+                      Padding(padding: EdgeInsets.all(6)),
                       Text(
                         S().manual_setup_create_and_store_backup_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(12)),
+                      Padding(padding: EdgeInsets.all(8)),
                       Text(
                         S().manual_setup_create_and_store_backup_subheading,
                         textAlign: TextAlign.center,
@@ -71,7 +71,7 @@ class _ManualSetupCreateAndStoreBackupState
                   ),
                 )),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(4.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
