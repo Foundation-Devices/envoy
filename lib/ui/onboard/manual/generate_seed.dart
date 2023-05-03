@@ -174,6 +174,9 @@ class _SeedScreenState extends State<SeedScreen> {
                 SliverPadding(padding: EdgeInsets.all(18)),
                 SliverFillRemaining(
                   child: Builder(builder: (context) {
+                    if (seedList.isEmpty) {
+                      return Container();
+                    }
                     List<String> section1 = seedList.sublist(0, 6);
                     List<String> section2 = seedList.sublist(6, 12);
                     return Row(

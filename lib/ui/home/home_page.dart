@@ -188,9 +188,6 @@ class _HomePageState extends ConsumerState<HomePage>
         _backgroundShown = false;
         _notificationsShown = false;
         _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
-        //reset right action
-        _rightAction = _toggleOptions;
-
         _background = Container();
         _tlCardList[_tlCardIndex].widget.tlCardState?.notifyHomePage();
         break;
@@ -256,18 +253,12 @@ class _HomePageState extends ConsumerState<HomePage>
                   _toggleOptions();
                 }
               }
-
               if (notification.rightFunctionIcon != null) {
                 _rightActionIcon = notification.rightFunctionIcon;
               }
-
               _modalShown = notification.modal;
               if (notification.title != null) {
                 _appBarTitle = notification.title!;
-              }
-
-              if (_optionsShown && !notification.showOptions) {
-                _toggleOptions();
               }
             });
           });
