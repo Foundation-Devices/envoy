@@ -356,6 +356,8 @@ class AccountManager extends ChangeNotifier {
     accounts.remove(movedAccount);
     accounts.insert(newIndex, movedAccount);
     storeAccounts();
+
+    notifyListeners();
   }
 
   // There is only one hot wallet for now (mainnet/testnet pair)

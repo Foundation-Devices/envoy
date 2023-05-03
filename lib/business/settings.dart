@@ -23,6 +23,9 @@ enum Environment { local, development, staging, production }
 enum DisplayUnit { btc, sat }
 
 final settingsProvider = ChangeNotifierProvider((ref) => Settings());
+final showTestnetAccountsProvider = Provider((ref) {
+  return ref.watch(settingsProvider).showTestnetAccounts();
+});
 
 @JsonSerializable()
 class Settings extends ChangeNotifier {
@@ -154,6 +157,18 @@ class Settings extends ChangeNotifier {
 
   setAllowScreenshots(bool allowScreenshots) {
     allowScreenshotsSetting = allowScreenshots;
+  }
+
+  @JsonKey(defaultValue: false)
+  bool showTestnetAccountsSetting = false;
+
+  bool showTestnetAccounts() {
+    return showTestnetAccountsSetting;
+  }
+
+  setShowTestnetAccounts(bool showTestnetAccounts) {
+    showTestnetAccountsSetting = showTestnetAccounts;
+    notifyListeners();
   }
 
   static final Settings _instance = Settings._internal();

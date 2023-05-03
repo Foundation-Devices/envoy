@@ -28,6 +28,8 @@ class _SettingsPageState extends State<SettingsPage> {
     Settings().useDefaultElectrumServer(!enabled);
   }
 
+  final _animationsDuration = Duration(milliseconds: 200);
+  bool _advancedVisible = false;
   bool _customElectrumServerVisible = Settings().customElectrumEnabled();
   bool _useLocalAuth = false;
 
@@ -61,12 +63,12 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: _animationsDuration,
               height: s.selectedFiat == null ? 0 : 16,
               child: Divider(),
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: _animationsDuration,
               height: s.selectedFiat == null ? 0 : 50,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,18 +168,53 @@ class _SettingsPageState extends State<SettingsPage> {
                     _customElectrumServerToggled),
               ],
             ),
-            IgnorePointer(
-              ignoring: !_customElectrumServerVisible,
-              child: AnimatedOpacity(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: ElectrumServerEntry(
-                      s.customElectrumAddress, s.setCustomElectrumAddress),
-                ),
+            AnimatedContainer(
                 duration: Duration(milliseconds: 200),
-                opacity: _customElectrumServerVisible ? 1.0 : 0.0,
-              ),
+                height: _customElectrumServerVisible ? 120 : 0,
+                child: AnimatedOpacity(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: ElectrumServerEntry(
+                        s.customElectrumAddress, s.setCustomElectrumAddress),
+                  ),
+                  duration: _animationsDuration,
+                  opacity: _customElectrumServerVisible ? 1.0 : 0.0,
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SettingText("Advanced"),
+                IconButton(
+                  icon: AnimatedRotation(
+                    duration: _animationsDuration,
+                    turns: _advancedVisible ? 0.0 : 0.5,
+                    child: Icon(
+                      Icons.keyboard_arrow_up_sharp,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _advancedVisible = !_advancedVisible;
+                    });
+                  },
+                ),
+              ],
             ),
+            AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                height: _advancedVisible ? 40 : 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SettingText("Enable Testnet"),
+                      SettingToggle(
+                          s.showTestnetAccounts, s.setShowTestnetAccounts),
+                    ],
+                  ),
+                )),
           ],
         ),
       ),
