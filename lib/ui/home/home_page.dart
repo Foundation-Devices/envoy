@@ -180,37 +180,42 @@ class _HomePageState extends ConsumerState<HomePage>
       _navigateToCard(newState.index);
     });
 
-    HomePageBackgroundState homePageBackgroundState =
-        ref.watch(homePageBackgroundProvider);
-
-    switch (homePageBackgroundState) {
-      case HomePageBackgroundState.hidden:
-        _backgroundShown = false;
-        _notificationsShown = false;
-        _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
-        _background = Container();
-        _tlCardList[_tlCardIndex].widget.tlCardState?.notifyHomePage();
-        break;
-      case HomePageBackgroundState.menu:
-      case HomePageBackgroundState.settings:
-      case HomePageBackgroundState.backups:
-      case HomePageBackgroundState.support:
-      case HomePageBackgroundState.about:
-        _backgroundShown = true;
-        _notificationsShown = false;
-        _background = SettingsMenu();
-        _appBarTitle = "Envoy".toUpperCase();
-        break;
-      case HomePageBackgroundState.notifications:
-        _backgroundShown = true;
-        _notificationsShown = true;
-        _appBarTitle = "Activity".toUpperCase();
-        _background = NotificationsPage();
-        _leftAction = _toggleNotifications;
-        break;
-      default:
-        break;
-    }
+    ref.listen<HomePageBackgroundState>(homePageBackgroundProvider,
+        (HomePageBackgroundState? oldState, HomePageBackgroundState newState) {
+      // TODO: use ref.watch instead (when we're using riverpod throughout)
+      setState(() {
+        switch (newState) {
+          case HomePageBackgroundState.hidden:
+            _backgroundShown = false;
+            _notificationsShown = false;
+            _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
+            //reset right action
+            _background = Container();
+            _tlCardList[_tlCardIndex].widget.tlCardState!.notifyHomePage();
+            break;
+          case HomePageBackgroundState.menu:
+          case HomePageBackgroundState.settings:
+          case HomePageBackgroundState.backups:
+          case HomePageBackgroundState.support:
+          case HomePageBackgroundState.about:
+            _backgroundShown = true;
+            _notificationsShown = false;
+            _background = SettingsMenu();
+            _appBarTitle = "Envoy".toUpperCase();
+            break;
+          case HomePageBackgroundState.notifications:
+            _backgroundShown = true;
+            _notificationsShown = true;
+            _appBarTitle = "Activity".toUpperCase();
+            _background = NotificationsPage();
+            _leftAction = _toggleNotifications;
+            break;
+          default:
+            break;
+        }
+        ;
+      });
+    });
     // After we render everything find out the options widgets height
     SchedulerBinding.instance.addPostFrameCallback(_getOptionsHeight);
 
