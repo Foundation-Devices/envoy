@@ -12,12 +12,12 @@ import 'package:envoy/ui/shield_path.dart';
 //ignore: must_be_immutable
 class EmptyCard extends StatelessWidget with NavigationCard {
   final List<Widget> buttons;
-  final EmptyCardHelperText helperText;
+  final EmptyCardHelperText? helperText;
 
   EmptyCard(
     Function() addFunction, {
     required this.buttons,
-    required this.helperText,
+    this.helperText,
   }) : super(key: UniqueKey()) {
     modal = false;
     rightFunction = addFunction;
@@ -31,7 +31,7 @@ class EmptyCard extends StatelessWidget with NavigationCard {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          helperText,
+          helperText != null ? helperText! : SizedBox.shrink(),
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: Column(

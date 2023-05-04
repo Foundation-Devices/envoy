@@ -27,6 +27,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tor/tor.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -102,6 +103,7 @@ class _HomePageState extends ConsumerState<HomePage>
 
     _tabController = TabController(
       length: _tlCardList.length,
+      initialIndex: 1,
       vsync: this,
     );
 
@@ -115,7 +117,9 @@ class _HomePageState extends ConsumerState<HomePage>
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
-        _notifyAboutTor();
+        if (Tor().enabled) {
+          _notifyAboutTor();
+        }
       }
     });
   }
@@ -359,8 +363,13 @@ class _HomePageState extends ConsumerState<HomePage>
                               _animationsDuration.inMilliseconds - 50),
                       child: AppBackground()),
                   // Variable background
-                  AnimatedSwitcher(
-                      duration: _animationsDuration, child: _background),
+                  SafeArea(
+                    child: AnimatedSwitcher(
+                        duration: _animationsDuration,
+                        child: Container(
+                          child: _background,
+                        )),
+                  ),
                   // Tab bar
                   Padding(
                     padding: EdgeInsets.only(bottom: _bottomOffset),

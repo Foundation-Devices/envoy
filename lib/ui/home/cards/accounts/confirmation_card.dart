@@ -69,7 +69,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
   }
 
   Future<void> _getPsbts() async {
-    _getPsbt(Fees().slowRate).then((psbt) {
+    _getPsbt(Fees().slowRate(widget.account.wallet.network)).then((psbt) {
       setState(() {
         _currentPsbt = psbt;
         if (widget.sendMax) {
@@ -77,7 +77,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
         }
       });
     });
-    _getPsbt(Fees().fastRate).then((psbt) {
+    _getPsbt(Fees().fastRate(widget.account.wallet.network)).then((psbt) {
       setState(() {
         _currentPsbtBoost = psbt;
       });
@@ -153,6 +153,9 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                         widget.initialAddress;
 
                     if (!widget.account.wallet.hot) {
+                      // Increment the change index before displaying the PSBT
+                      widget.account.wallet.getChangeAddress();
+
                       widget.navigator!.push(PsbtCard(
                         _boostEnabled ? _currentPsbtBoost : _currentPsbt,
                         widget.account,

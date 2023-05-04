@@ -13,7 +13,7 @@ name = "tor_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-libtor-sys = { git = "https://github.com/icota/libtor-sys", rev = "9199df8beabf3d055c0858b3123fd0761c8f660c", features = ["vendored-openssl"] }
+libtor-sys = { version = "=47.13.0", features = ["vendored-openssl"] }
 
 [build-dependencies]
 cbindgen = "0.24.3"

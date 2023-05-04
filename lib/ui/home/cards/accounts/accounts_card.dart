@@ -6,13 +6,15 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/empty_card.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_card.dart';
@@ -46,7 +48,7 @@ class AccountsCardState extends State<AccountsCard>
       if (EnvoySeed().walletDerived()) {
         return OnboardPassportWelcomeScreen();
       } else {
-        return OnboardEnvoyWelcomeScreen();
+        return MagicSetupTutorial();
       }
     }));
   }
@@ -61,15 +63,11 @@ class AccountsCardState extends State<AccountsCard>
 
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
-
-    // Redraw when we there are changes in accounts
-    AccountManager().addListener(_redraw);
   }
 
   @override
   void dispose() {
     super.dispose();
-    AccountManager().removeListener(_redraw);
     ExchangeRate().removeListener(_redraw);
   }
 
@@ -115,7 +113,7 @@ class AccountsCardState extends State<AccountsCard>
 }
 
 //ignore: must_be_immutable
-class AccountsList extends StatefulWidget with NavigationCard {
+class AccountsList extends ConsumerStatefulWidget with NavigationCard {
   AccountsList(CardNavigator? navigationCallback, Function() addAccountFunction)
       : super(key: UniqueKey()) {
     optionsWidget = null;
@@ -126,10 +124,10 @@ class AccountsList extends StatefulWidget with NavigationCard {
   }
 
   @override
-  State<AccountsList> createState() => _AccountsListState();
+  ConsumerState<AccountsList> createState() => _AccountsListState();
 }
 
-class _AccountsListState extends State<AccountsList> {
+class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
 
   _redraw() {
@@ -142,40 +140,39 @@ class _AccountsListState extends State<AccountsList> {
 
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
-
-    // Redraw when we there are changes in devices
-    AccountManager().addListener(_redraw);
   }
 
   @override
   void dispose() {
     super.dispose();
-    AccountManager().removeListener(_redraw);
     ExchangeRate().removeListener(_redraw);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AccountManager().accounts.isEmpty
+    var accounts = ref.watch(accountsProvider);
+    return accounts.isEmpty
         ? EmptyCard(widget.rightFunction!,
             buttons: [
               EnvoyButton(
-                S().envoy_accounts_new_passport,
+                "Set up Envoy Wallet",
+                onTap: widget.rightFunction!,
+                type: EnvoyButtonTypes.primary,
+              ),
+              EnvoyButton(
+                S().envoy_welcome_screen_cta2,
+                type: EnvoyButtonTypes.secondary,
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return TouPage();
+                    return ManualSetup();
                   }));
                 },
               ),
-              EnvoyButton(
-                S().envoy_accounts_existing_passport,
-                onTap: widget.rightFunction!,
-                type: EnvoyButtonTypes.secondary,
-              )
             ],
             helperText: EmptyCardHelperText(
-                text: S().envoy_accounts_no_devices,
+                text: "No accounts are set up.\n"
+                    "Create a new wallet below.",
                 onTap: () {
                   launchUrl(
                       Uri.parse("https://foundationdevices.com/passport"));
@@ -191,8 +188,7 @@ class _AccountsListState extends State<AccountsList> {
                 scrollController: _scrollController,
                 children: [
                   DragAndDropList(
-                      children: AccountManager()
-                          .accounts
+                      children: accounts
                           .map((e) => DragAndDropItem(
                                   child: Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
@@ -209,9 +205,7 @@ class _AccountsListState extends State<AccountsList> {
                 onListReorder: (int oldListIndex, int newListIndex) {},
                 onItemReorder: (int oldItemIndex, int oldListIndex,
                     int newItemIndex, int newListIndex) {
-                  setState(() {
-                    AccountManager().moveAccount(oldItemIndex, newItemIndex);
-                  });
+                  AccountManager().moveAccount(oldItemIndex, newItemIndex);
                 },
               ),
             ),

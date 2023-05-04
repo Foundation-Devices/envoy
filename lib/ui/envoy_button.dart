@@ -59,7 +59,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
         color: textColor,
         fontSize: 14.0,
         fontWeight:
-            widget.fontWeight != null ? widget.fontWeight : FontWeight.w500,
+            widget.fontWeight != null ? widget.fontWeight : FontWeight.w700,
       );
     }
     return AnimatedScale(
