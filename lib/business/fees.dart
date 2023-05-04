@@ -27,8 +27,31 @@ class Fees {
     return fees[network]!.mempoolHourRate;
   }
 
-  @JsonKey(defaultValue: {Network.Mainnet: null, Network.Testnet: null})
-  var fees = {Network.Mainnet: FeeRates(), Network.Testnet: FeeRates()};
+  static _defaultFees() {
+    return {Network.Mainnet: FeeRates(), Network.Testnet: FeeRates()};
+  }
+
+  static _feesToJson(Map<Network, FeeRates> fees) {
+    Map<String, dynamic> jsonMap = {};
+    for (var entry in fees.entries) {
+      jsonMap[entry.key.name] = entry.value.toJson();
+    }
+
+    return jsonMap;
+  }
+
+  static _feesFromJson(Map<String, dynamic> fees) {
+    Map<Network, FeeRates> map = {};
+    for (var entry in fees.entries) {
+      map[Network.values.byName(entry.key)] = FeeRates.fromJson(entry.value);
+    }
+
+    return map;
+  }
+
+  @JsonKey(
+      defaultValue: _defaultFees, toJson: _feesToJson, fromJson: _feesFromJson)
+  var fees = _defaultFees();
 
   static const String FEE_RATE_PREFS = "fees";
   static final Fees _instance = Fees._internal();
