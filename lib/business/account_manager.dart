@@ -90,8 +90,8 @@ class AccountManager extends ChangeNotifier {
         }
 
         // Update the Fees singleton
-        Fees().electrumFastRate = account.wallet.feeRateFast;
-        Fees().electrumSlowRate = account.wallet.feeRateSlow;
+        Fees().fees[account.wallet.network]!.electrumFastRate = account.wallet.feeRateFast;
+        Fees().fees[account.wallet.network]!.electrumSlowRate = account.wallet.feeRateSlow;
 
         // Notify UI if txs or balance changed
         if (changed) {

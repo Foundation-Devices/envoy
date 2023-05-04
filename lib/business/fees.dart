@@ -8,6 +8,8 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
+import 'package:wallet/wallet.dart';
+import 'package:envoy/business/fee_rates.dart';
 
 // Generated
 part 'fees.g.dart';
@@ -17,20 +19,24 @@ LocalStorage _ls = LocalStorage();
 @JsonSerializable()
 class Fees {
   // All in BTC per kb
-  double get fastRate => mempoolFastestRate;
-  double get slowRate => mempoolHourRate;
+  double fastRate(Network network) {
+    return fees[network]!.mempoolFastestRate;
+  }
 
-  double mempoolFastestRate = 0;
-  double mempoolHalfHourRate = 0;
-  double mempoolHourRate = 0;
-  double mempoolEconomyRate = 0;
-  double mempoolMinimumRate = 0;
+  double slowRate(Network network) {
+    return fees[network]!.mempoolHourRate;
+  }
 
-  double electrumFastRate = 0;
-  double electrumSlowRate = 0;
+  var fees = {Network.Mainnet: FeeRates(), Network.Testnet: FeeRates()};
 
   static const String FEE_RATE_PREFS = "fees";
   static final Fees _instance = Fees._internal();
+
+  static const _mempoolUrls = {
+    Network.Mainnet: "https://mempool.space/api/v1/fees/recommended",
+    Network.Testnet: "https://mempool.space/testnet/api/v1/fees/recommended",
+    Network.Signet: "https://mempool.space/signet/api/v1/fees/recommended"
+  };
 
   factory Fees() {
     return _instance;
@@ -45,12 +51,18 @@ class Fees {
     print("Instance of Fees created!");
 
     // Fetch the latest from mempool.space
-    _getMempoolRates();
+    _getRates();
 
     // Refresh from time to time
     Timer.periodic(Duration(minutes: 5), (_) {
-      _getMempoolRates();
+      _getRates();
     });
+  }
+
+  void _getRates() {
+    // Just mainnet and testnet for now
+    _getMempoolRates(Network.Mainnet);
+    _getMempoolRates(Network.Testnet);
   }
 
   static restore() {
@@ -67,18 +79,18 @@ class Fees {
     _ls.prefs.setString(FEE_RATE_PREFS, json);
   }
 
-  _getMempoolRates() {
+  _getMempoolRates(Network network) {
     HttpTor(Tor())
-        .get("https://mempool.space/api/v1/fees/recommended")
+        .get(_mempoolUrls[network]!)
         .then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
-        mempoolFastestRate = json["fastestFee"].toDouble() / 100000.0;
-        mempoolHalfHourRate = json["halfHourFee"].toDouble() / 100000.0;
-        mempoolHourRate = json["hourFee"].toDouble() / 100000.0;
-        mempoolEconomyRate = json["economyFee"].toDouble() / 100000.0;
-        mempoolMinimumRate = json["minimumFee"].toDouble() / 100000.0;
+        fees[network]!.mempoolFastestRate = json["fastestFee"].toDouble() / 100000.0;
+        fees[network]!.mempoolHalfHourRate = json["halfHourFee"].toDouble() / 100000.0;
+        fees[network]!.mempoolHourRate = json["hourFee"].toDouble() / 100000.0;
+        fees[network]!.mempoolEconomyRate = json["economyFee"].toDouble() / 100000.0;
+        fees[network]!.mempoolMinimumRate = json["minimumFee"].toDouble() / 100000.0;
 
         _storeRates();
       } else {
