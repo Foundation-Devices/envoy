@@ -28,6 +28,10 @@ class NotSupportedPlatform implements Exception {
   NotSupportedPlatform(String s);
 }
 
+class ServerUnreachable implements Exception {}
+
+class BackupNotFound implements Exception {}
+
 class Backup {
   static _goAhead(Tor tor) async {
     if (tor.enabled) {
@@ -172,6 +176,17 @@ class Backup {
   static throwRustException(NativeLibrary lib) {
     String rustError =
         lib.backup_last_error_message().cast<Utf8>().toDartString();
-    throw Exception(rustError);
+
+    throw _getRustException(rustError);
+  }
+
+  static Exception _getRustException(String rustError) {
+    if (rustError.contains('unreachable')) {
+      return ServerUnreachable();
+    } else if (rustError.contains('EOF')) {
+      return BackupNotFound();
+    } else {
+      return Exception(rustError);
+    }
   }
 }

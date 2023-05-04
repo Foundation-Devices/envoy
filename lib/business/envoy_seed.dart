@@ -176,9 +176,6 @@ class EnvoySeed {
       return Backup.restore(seed, Settings().envoyServerAddress, Tor())
           .then((data) {
         return _processRecoveryData(seed!, data);
-      }).catchError((e) {
-        print("Error while recovering: " + e.toString());
-        return false;
       });
     } else {
       try {
