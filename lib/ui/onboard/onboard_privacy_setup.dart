@@ -337,13 +337,23 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                 ),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                child: Icon(
-                                  CupertinoIcons.link,
-                                  color: EnvoyColors.teal,
-                                ),
-                              ),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Clipboard.getData("text/plain")
+                                          .then((value) {
+                                        if (value != null) {
+                                          _nodeTextEditingController.text =
+                                              value.text!;
+                                        }
+                                      });
+                                    },
+                                    child: Icon(
+                                      CupertinoIcons.link,
+                                      color: EnvoyColors.teal,
+                                    ),
+                                  )),
                             ],
                           ),
                         ),
