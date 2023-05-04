@@ -60,7 +60,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     return Container(
         color: Colors.black,
         child: Padding(
-            padding: const EdgeInsets.only(top: 100, left: 40, right: 40),
+            padding: const EdgeInsets.only(top: 14, left: 40, right: 40),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
