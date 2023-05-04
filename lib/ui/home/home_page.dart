@@ -115,7 +115,9 @@ class _HomePageState extends ConsumerState<HomePage>
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
-        _notifyAboutTor();
+        if(Tor().enabled){
+          _notifyAboutTor();
+        }
       }
     });
   }
