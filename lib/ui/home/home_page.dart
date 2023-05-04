@@ -27,6 +27,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tor/tor.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
