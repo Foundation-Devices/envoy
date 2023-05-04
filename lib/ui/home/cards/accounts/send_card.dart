@@ -123,10 +123,8 @@ class _SendCardState extends ConsumerState<SendCard>
                   // Only check amount if we are not sending max
                   if (_amount != widget.account.wallet.balance) {
                     try {
-                      await widget.account.wallet.createPsbt(
-                          _address!.text,
-                          _amount,
-                          Fees().fastRate(widget.account.wallet.network));
+                      await widget.account.wallet
+                          .createPsbt(_address!.text, _amount, Fees().fastRate);
                     } on InsufficientFunds {
                       // If amount is equal to balance user wants to send max
                       if (_amount != widget.account.wallet.balance) {
