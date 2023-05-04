@@ -354,8 +354,13 @@ class _HomePageState extends ConsumerState<HomePage>
                               _animationsDuration.inMilliseconds - 50),
                       child: AppBackground()),
                   // Variable background
-                  AnimatedSwitcher(
-                      duration: _animationsDuration, child: _background),
+                  SafeArea(
+                    child: AnimatedSwitcher(
+                        duration: _animationsDuration,
+                        child: Container(
+                          child: _background,
+                        )),
+                  ),
                   // Tab bar
                   Padding(
                     padding: EdgeInsets.only(bottom: _bottomOffset),

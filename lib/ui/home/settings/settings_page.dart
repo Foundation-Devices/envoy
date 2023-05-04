@@ -46,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Container(
       color: Colors.black,
       child: Padding(
-        padding: const EdgeInsets.only(top: 100, left: 40, right: 40),
+        padding: const EdgeInsets.only(top: 14, left: 40, right: 40),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -155,52 +155,35 @@ class _SettingsPageState extends State<SettingsPage> {
                             })
                       ],
                     ),
-                    Divider(),
                   ],
                 );
               },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SettingText(S().settings_electrum),
-                SettingToggle(() => _customElectrumServerVisible,
-                    _customElectrumServerToggled),
-              ],
-            ),
-            AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                height: _customElectrumServerVisible ? 120 : 0,
-                child: AnimatedOpacity(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: ElectrumServerEntry(
-                        s.customElectrumAddress, s.setCustomElectrumAddress),
-                  ),
-                  duration: _animationsDuration,
-                  opacity: _customElectrumServerVisible ? 1.0 : 0.0,
-                )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SettingText("Advanced"),
-                IconButton(
-                  icon: AnimatedRotation(
-                    duration: _animationsDuration,
-                    turns: _advancedVisible ? 0.0 : 0.5,
-                    child: Icon(
-                      Icons.keyboard_arrow_up_sharp,
-                      color: Colors.white,
+            //Advanced section
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SettingText("Advanced"),
+                  IconButton(
+                    icon: AnimatedRotation(
+                      duration: _animationsDuration,
+                      turns: _advancedVisible ? 0.0 : 0.5,
+                      child: Icon(
+                        Icons.keyboard_arrow_up_sharp,
+                        color: Colors.white,
+                      ),
                     ),
+                    onPressed: () {
+                      setState(() {
+                        _advancedVisible = !_advancedVisible;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _advancedVisible = !_advancedVisible;
-                    });
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
+            Padding(padding: EdgeInsets.all(8)),
             AnimatedContainer(
                 duration: Duration(milliseconds: 200),
                 height: _advancedVisible ? 40 : 0,
@@ -213,6 +196,42 @@ class _SettingsPageState extends State<SettingsPage> {
                       SettingToggle(
                           s.showTestnetAccounts, s.setShowTestnetAccounts),
                     ],
+                  ),
+                )),
+            Padding(padding: EdgeInsets.all(8)),
+            AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                height: _advancedVisible ? 40 : 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SettingText(S().settings_electrum),
+                      SettingToggle(() => _customElectrumServerVisible,
+                          _customElectrumServerToggled),
+                    ],
+                  ),
+                )),
+
+            AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                height: _advancedVisible ? 120 : 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 14.0),
+                  child: SingleChildScrollView(
+                    child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        height: _customElectrumServerVisible ? 130 : 0,
+                        child: AnimatedOpacity(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 0.0),
+                            child: ElectrumServerEntry(s.customElectrumAddress,
+                                s.setCustomElectrumAddress),
+                          ),
+                          duration: _animationsDuration,
+                          opacity: _customElectrumServerVisible ? 1.0 : 0.0,
+                        )),
                   ),
                 )),
           ],
