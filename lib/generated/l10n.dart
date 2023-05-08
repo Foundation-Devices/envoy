@@ -114,6 +114,8 @@ class S {
 
   // skipped getter for the '12 seedword' key
 
+  // skipped getter for the '12:30' key
+
   // skipped getter for the '15 licenses' key
 
   // skipped getter for the '2' key
@@ -487,16 +489,6 @@ class S {
     return Intl.message(
       'List',
       name: 'CoinText',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Coins`
-  String get Coins {
-    return Intl.message(
-      'Coins',
-      name: 'Coins',
       desc: '',
       args: [],
     );
@@ -1128,10 +1120,10 @@ class S {
 
   // skipped getter for the 'RGB (0, 189, 205)' key
 
-  /// `Receive`
+  /// `Send`
   String get Receive {
     return Intl.message(
-      'Receive',
+      'Send',
       name: 'Receive',
       desc: '',
       args: [],
@@ -1226,16 +1218,6 @@ class S {
     );
   }
 
-  /// `privacy shield`
-  String get ScreenTitle {
-    return Intl.message(
-      'privacy shield',
-      name: 'ScreenTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1254,10 +1236,10 @@ class S {
 
   // skipped getter for the 'Select fee' key
 
-  /// `Send`
+  /// `Receive`
   String get Send {
     return Intl.message(
-      'Send',
+      'Receive',
       name: 'Send',
       desc: '',
       args: [],
@@ -1354,10 +1336,10 @@ class S {
 
   // skipped getter for the 'String Middle' key
 
-  /// `Verify Your Passphrase`
+  /// `Zen-like mobile wallet`
   String get Subheading {
     return Intl.message(
-      'Verify Your Passphrase',
+      'Zen-like mobile wallet',
       name: 'Subheading',
       desc: '',
       args: [],
@@ -1554,10 +1536,10 @@ class S {
     );
   }
 
-  /// `Testnet`
+  /// `Bitcoin Simplified`
   String get _ {
     return Intl.message(
-      'Testnet',
+      'Bitcoin Simplified',
       name: '_',
       desc: '',
       args: [],
@@ -1813,6 +1795,156 @@ class S {
     return Intl.message(
       'archive',
       name: 'archive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Voucher`
+  String get azteco_account_tx_history_pending_voucher {
+    return Intl.message(
+      'Pending Voucher',
+      name: 'azteco_account_tx_history_pending_voucher',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive`
+  String get azteco_account_tx_history_receive {
+    return Intl.message(
+      'Receive',
+      name: 'azteco_account_tx_history_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Redeem`
+  String get azteco_redeem_modal_CTA1 {
+    return Intl.message(
+      'Redeem',
+      name: 'azteco_redeem_modal_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Later`
+  String get azteco_redeem_modal_CTA2 {
+    return Intl.message(
+      'Later',
+      name: 'azteco_redeem_modal_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VOUCHER CODE\n5464 9508 3092 1015`
+  String get azteco_redeem_modal__voucher_code {
+    return Intl.message(
+      'VOUCHER CODE\n5464 9508 3092 1015',
+      name: 'azteco_redeem_modal__voucher_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount\n0.05900500 BTC\n$979,72`
+  String get azteco_redeem_modal_amount {
+    return Intl.message(
+      'Amount\n0.05900500 BTC\n\$979,72',
+      name: 'azteco_redeem_modal_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again`
+  String get azteco_redeem_modal_fail_CTA1 {
+    return Intl.message(
+      'Try again',
+      name: 'azteco_redeem_modal_fail_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try later`
+  String get azteco_redeem_modal_fail_CTA2 {
+    return Intl.message(
+      'Try later',
+      name: 'azteco_redeem_modal_fail_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong...`
+  String get azteco_redeem_modal_fail_heading {
+    return Intl.message(
+      'Something went wrong...',
+      name: 'azteco_redeem_modal_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please double check that your voucher is still valid.`
+  String get azteco_redeem_modal_fail_subheading {
+    return Intl.message(
+      'Please double check that your voucher is still valid.',
+      name: 'azteco_redeem_modal_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Redeem your Azteco Voucher?`
+  String get azteco_redeem_modal_heading {
+    return Intl.message(
+      'Redeem your Azteco Voucher?',
+      name: 'azteco_redeem_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify your Voucher Code.`
+  String get azteco_redeem_modal_subheading {
+    return Intl.message(
+      'Verify your Voucher Code.',
+      name: 'azteco_redeem_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get azteco_redeem_modal_success_CTA {
+    return Intl.message(
+      'Continue',
+      name: 'azteco_redeem_modal_success_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You redeemed your bitcoin!`
+  String get azteco_redeem_modal_success_heading {
+    return Intl.message(
+      'You redeemed your bitcoin!',
+      name: 'azteco_redeem_modal_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’ll see an incoming transaction in your account shortly.`
+  String get azteco_redeem_modal_success_subheading {
+    return Intl.message(
+      'You’ll see an incoming transaction in your account shortly.',
+      name: 'azteco_redeem_modal_success_subheading',
       desc: '',
       args: [],
     );
@@ -5460,7 +5592,7 @@ class S {
     );
   }
 
-  /// `CONTACT US`
+  /// `Contact us`
   String get envoy_scv_result_fail_cta1 {
     return Intl.message(
       'Contact us',
@@ -7012,10 +7144,10 @@ class S {
     );
   }
 
-  /// `Recover with QR Code`
+  /// `Import Envoy Backup`
   String get magic_setup_recovery_fail_backup_cta2 {
     return Intl.message(
-      'Recover with QR Code',
+      'Import Envoy Backup',
       name: 'magic_setup_recovery_fail_backup_cta2',
       desc: '',
       args: [],
@@ -7062,6 +7194,16 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get magic_setup_recovery_fail_connectivity_cta3 {
+    return Intl.message(
+      'Continue',
+      name: 'magic_setup_recovery_fail_connectivity_cta3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Is your connectivity ok?`
   String get magic_setup_recovery_fail_connectivity_heading {
     return Intl.message(
@@ -7072,10 +7214,10 @@ class S {
     );
   }
 
-  /// `Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nPlease double check your connectivity and try again.`
+  /// `Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nYou can try again, import your own Backup file if you have one, or continue without one.\n`
   String get magic_setup_recovery_fail_connectivity_subheading {
     return Intl.message(
-      'Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nPlease double check your connectivity and try again.',
+      'Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nYou can try again, import your own Backup file if you have one, or continue without one.\n',
       name: 'magic_setup_recovery_fail_connectivity_subheading',
       desc: '',
       args: [],
@@ -8456,6 +8598,38 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get manual_setup_recovery_import_backup_modal_fail_connectivity_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_recovery_import_backup_modal_fail_connectivity_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go Back`
+  String get manual_setup_recovery_import_backup_modal_fail_connectivity_cta2 {
+    return Intl.message(
+      'Go Back',
+      name: 'manual_setup_recovery_import_backup_modal_fail_connectivity_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String
+      get manual_setup_recovery_import_backup_modal_fail_connectivity_heading {
+    return Intl.message(
+      'WARNING',
+      name:
+          'manual_setup_recovery_import_backup_modal_fail_connectivity_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Re-type Passphrase`
   String get manual_setup_recovery_import_backup_modal_fail_cta1 {
     return Intl.message(
@@ -8486,10 +8660,10 @@ class S {
     );
   }
 
-  /// `This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.`
+  /// `If you continue without a backup file, your wallet settings, additional accounts, plus Tags and Labels will not be restored.`
   String get manual_setup_recovery_import_backup_modal_fail_subheading {
     return Intl.message(
-      'This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.',
+      'If you continue without a backup file, your wallet settings, additional accounts, plus Tags and Labels will not be restored.',
       name: 'manual_setup_recovery_import_backup_modal_fail_subheading',
       desc: '',
       args: [],
@@ -9936,10 +10110,10 @@ class S {
     );
   }
 
-  /// `I don’t have a Passport. Buy One`
+  /// `I don’t have a Passport. Learn more.`
   String get passport_welcome_screen_cta3 {
     return Intl.message(
-      'I don’t have a Passport. Buy One',
+      'I don’t have a Passport. Learn more.',
       name: 'passport_welcome_screen_cta3',
       desc: '',
       args: [],
@@ -10662,10 +10836,10 @@ class S {
     );
   }
 
-  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  /// `Install Envoy and tap “Set Up Envoy Wallet”`
   String get recovery_scenario_Android_instruction2 {
     return Intl.message(
-      'Install Envoy and tap “Recover Envoy Wallet”',
+      'Install Envoy and tap “Set Up Envoy Wallet”',
       name: 'recovery_scenario_Android_instruction2',
       desc: '',
       args: [],
@@ -10762,10 +10936,10 @@ class S {
     );
   }
 
-  /// `Install Envoy and tap “Recover Envoy Wallet”`
+  /// `Install Envoy and tap “Set Up Envoy Wallet”`
   String get recovery_scenario_iOS_instruction2 {
     return Intl.message(
-      'Install Envoy and tap “Recover Envoy Wallet”',
+      'Install Envoy and tap “Set Up Envoy Wallet”',
       name: 'recovery_scenario_iOS_instruction2',
       desc: '',
       args: [],
@@ -10852,6 +11026,26 @@ class S {
     );
   }
 
+  /// `Advanced`
+  String get settings_advanced {
+    return Intl.message(
+      'Advanced',
+      name: 'settings_advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Testnet`
+  String get settings_advanced_testnet {
+    return Intl.message(
+      'Enable Testnet',
+      name: 'settings_advanced_testnet',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `View Amount in Sats`
   String get settings_amount {
     return Intl.message(
@@ -10922,10 +11116,10 @@ class S {
     );
   }
 
-  /// `Connect My Node`
+  /// `Connect my Node`
   String get settings_electrum {
     return Intl.message(
-      'Connect My Node',
+      'Connect my Node',
       name: 'settings_electrum',
       desc: '',
       args: [],
@@ -11466,10 +11660,10 @@ class S {
     );
   }
 
-  /// `Review the details by tapping on the transaction from the account screen`
+  /// `Review the details by tapping on the transaction from the account screen.`
   String get stalls_before_sending_tx_scanning_broadcasting_success_subheading {
     return Intl.message(
-      'Review the details by tapping on the transaction from the account screen',
+      'Review the details by tapping on the transaction from the account screen.',
       name: 'stalls_before_sending_tx_scanning_broadcasting_success_subheading',
       desc: '',
       args: [],
@@ -11486,10 +11680,10 @@ class S {
     );
   }
 
-  /// `This might take few seconds`
+  /// `This might a take few seconds.`
   String get stalls_before_sending_tx_scanning_subheading {
     return Intl.message(
-      'This might take few seconds',
+      'This might a take few seconds.',
       name: 'stalls_before_sending_tx_scanning_subheading',
       desc: '',
       args: [],

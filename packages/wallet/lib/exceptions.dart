@@ -39,9 +39,9 @@ Exception getIsolateException(String isolateError) {
 }
 
 Exception _getRustException(String rustError) {
-  if (rustError.startsWith('InsufficientFunds')) {
-    int needed = int.parse(captureBetween(rustError, 'needed: ', ', '));
-    int available = int.parse(captureBetween(rustError, 'available: ', ' }'));
+  if (rustError.startsWith('Insufficient')) {
+    int available = int.parse(captureBetween(rustError, 'funds: ', ' sat'));
+    int needed = int.parse(captureBetween(rustError, 'of ', ' sat needed'));
     return InsufficientFunds(rustError, needed, available);
   } else if (rustError.startsWith('invalid port')) {
     return InvalidPort();
