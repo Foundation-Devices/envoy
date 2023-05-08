@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/notifications/notifications_page.dart';
@@ -27,7 +28,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tor/tor.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -117,7 +117,7 @@ class _HomePageState extends ConsumerState<HomePage>
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
-        if (Tor().enabled) {
+        if (Settings().usingTor) {
           _notifyAboutTor();
         }
       }

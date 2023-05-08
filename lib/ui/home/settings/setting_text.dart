@@ -29,7 +29,7 @@ class SettingText extends StatelessWidget {
         child: Text(label,
             style: TextStyle(
               color: color,
-              fontSize: 15.0,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
             )),
       ),
