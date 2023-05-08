@@ -182,6 +182,14 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   EnvoyButton(
                     S().privacy_setting_perfomance_cta,
                     onTap: () async {
+                      //tor is necessary if user selects onion node
+                      bool torRequire = ref.read(isNodeRequiredTorProvider);
+                      //tor is not required if user selects better performance
+                      bool betterPerformance =
+                          ref.read(privacyOnboardSelectionProvider);
+                      //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                      Settings()
+                          .setTorEnabled(torRequire || !betterPerformance);
                       LocalStorage().prefs.setBool("onboarded", true);
                       if (!widget.setUpEnvoyWallet) {
                         Navigator.push(
