@@ -2,6 +2,7 @@ package com.foundationdevices.envoy
 
 import android.app.Activity
 import android.app.backup.BackupManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
@@ -163,6 +164,17 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                 "get_manage_files_permission" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         getManageAllFilesPermission()
+                    }
+                    result.success(true)
+                }
+                "open_settings" -> {
+                    try {
+                        val intent = Intent()
+                        intent.component = ComponentName("com.android.settings",
+                            "com.android.settings.backup.UserBackupSettingsActivity")
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                      startActivity(Intent(Settings.ACTION_SETTINGS))
                     }
                     result.success(true)
                 }
