@@ -195,7 +195,7 @@ class _HomePageState extends ConsumerState<HomePage>
             _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
             //reset right action
             _background = Container();
-            _tlCardList[_tlCardIndex].widget.tlCardState!.notifyHomePage();
+            _tlCardList[_tlCardIndex].widget.tlCardState?.notifyHomePage();
             break;
           case HomePageBackgroundState.menu:
           case HomePageBackgroundState.settings:
