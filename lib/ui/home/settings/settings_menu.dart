@@ -196,35 +196,35 @@ class MenuOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 18),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: onTap,
-              child: Text(
-                label.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(color: Colors.white),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(left: 18),
+        child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 142,
+                child: Text(
+                  label.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(color: Colors.white, fontSize: 18),
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 8),
-              alignment: Alignment.centerLeft,
-              child: GestureDetector(
-                onTap: onTap,
+              Container(
+                alignment: Alignment.centerLeft,
                 child: Icon(
                   Icons.arrow_forward_ios,
                   color: Colors.white,
+                  size: 16,
                 ),
-              ),
-            )
-          ]),
+              )
+            ]),
+      ),
     );
   }
 }

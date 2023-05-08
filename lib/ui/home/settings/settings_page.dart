@@ -38,20 +38,20 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     var s = Settings();
+    double nestedMargin = 8;
+    double marginBetweenItems = 8;
 
     Map<String, String?> fiatMap = {
       for (var fiat in supportedFiat) fiat.code: fiat.code
     };
 
     return Container(
-      color: Colors.black,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 14, left: 40, right: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
+      // color: Colors.black,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 34),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SettingText(S().settings_show_fiat),
@@ -62,43 +62,37 @@ class _SettingsPageState extends State<SettingsPage> {
                 }),
               ],
             ),
-            AnimatedContainer(
-              duration: _animationsDuration,
-              height: s.selectedFiat == null ? 0 : 16,
-              child: Divider(),
-            ),
-            AnimatedContainer(
-              duration: _animationsDuration,
-              height: s.selectedFiat == null ? 0 : 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 16.0),
-                    child: SettingText(S().envoy_settings_currency),
-                  ),
-                  SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
-                ],
-              ),
-            ),
-            Divider(),
-            Row(
+          ),
+          SliverToBoxAdapter(
+            child: AnimatedContainer(
+                duration: _animationsDuration,
+                margin: EdgeInsets.only(
+                    top: s.selectedFiat != null ? marginBetweenItems : 0),
+                height: s.selectedFiat == null ? 0 : 38,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: nestedMargin),
+                      child: SettingText(S().envoy_settings_currency),
+                    ),
+                    SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
+                  ],
+                )),
+          ),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SettingText(S().settings_amount),
                 SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
               ],
             ),
-            Divider(),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     SettingText("Allow Screenshots"),
-            //     SettingToggle(s.allowScreenshots, s.setAllowScreenshots),
-            //   ],
-            // ),
-            // Divider(),
-            Row(
+          ),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SettingText(S().settings_tor),
@@ -109,8 +103,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
-            Divider(),
-            FutureBuilder<bool>(
+          ),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
+            child: FutureBuilder<bool>(
               future: auth.isDeviceSupported(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -159,83 +155,93 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
-            //Advanced section
-            Container(
+          ),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _advancedVisible = !_advancedVisible;
+                });
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SettingText("Advanced"),
-                  IconButton(
-                    icon: AnimatedRotation(
-                      duration: _animationsDuration,
-                      turns: _advancedVisible ? 0.0 : 0.5,
-                      child: Icon(
-                        Icons.keyboard_arrow_up_sharp,
-                        color: Colors.white,
-                      ),
+                  SettingText("Advanced", onTap: () {
+                    setState(() {
+                      _advancedVisible = !_advancedVisible;
+                    });
+                  }),
+                  AnimatedRotation(
+                    duration: _animationsDuration,
+                    turns: _advancedVisible ? 0.0 : 0.5,
+                    child: Icon(
+                      Icons.keyboard_arrow_up_sharp,
+                      color: Colors.white,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _advancedVisible = !_advancedVisible;
-                      });
-                    },
-                  ),
+                  )
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.all(8)),
-            AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                height: _advancedVisible ? 40 : 0,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SettingText("Enable Testnet"),
-                      SettingToggle(
-                          s.showTestnetAccounts, s.setShowTestnetAccounts),
-                    ],
-                  ),
-                )),
-            Padding(padding: EdgeInsets.all(8)),
-            AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                height: _advancedVisible ? 40 : 0,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SettingText(S().settings_electrum),
-                      SettingToggle(() => _customElectrumServerVisible,
-                          _customElectrumServerToggled),
-                    ],
-                  ),
-                )),
-
-            AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                height: _advancedVisible ? 120 : 0,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0, top: 14.0),
-                  child: SingleChildScrollView(
-                    child: AnimatedContainer(
-                        duration: Duration(milliseconds: 200),
-                        height: _customElectrumServerVisible ? 130 : 0,
-                        child: AnimatedOpacity(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 0.0),
-                            child: ElectrumServerEntry(s.customElectrumAddress,
-                                s.setCustomElectrumAddress),
-                          ),
-                          duration: _animationsDuration,
-                          opacity: _customElectrumServerVisible ? 1.0 : 0.0,
-                        )),
-                  ),
-                )),
-          ],
-        ),
+          ),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    height: _advancedVisible ? 40 : 0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SettingText("Enable Testnet"),
+                          SettingToggle(
+                              s.showTestnetAccounts, s.setShowTestnetAccounts),
+                        ],
+                      ),
+                    )),
+                Padding(padding: EdgeInsets.all(marginBetweenItems)),
+                AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    height: _advancedVisible ? 40 : 0,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: nestedMargin),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SettingText(S().settings_electrum),
+                          SettingToggle(() => _customElectrumServerVisible,
+                              _customElectrumServerToggled),
+                        ],
+                      ),
+                    )),
+                AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    height: _advancedVisible ? 120 : 0,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: nestedMargin, top: 14.0),
+                      child: SingleChildScrollView(
+                        child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            height: _customElectrumServerVisible ? 130 : 0,
+                            child: AnimatedOpacity(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 0.0),
+                                child: ElectrumServerEntry(
+                                    s.customElectrumAddress,
+                                    s.setCustomElectrumAddress),
+                              ),
+                              duration: _animationsDuration,
+                              opacity: _customElectrumServerVisible ? 1.0 : 0.0,
+                            )),
+                      ),
+                    )),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
