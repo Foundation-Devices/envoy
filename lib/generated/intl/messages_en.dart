@@ -158,7 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "android_backup_info_heading":
             MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
-            "Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device Settings."),
+            "Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device [[Settings.]]"),
         "angle": MessageLookupByLibrary.simpleMessage("angle"),
         "animations": MessageLookupByLibrary.simpleMessage("animations"),
         "app_store_copyright": MessageLookupByLibrary.simpleMessage(
