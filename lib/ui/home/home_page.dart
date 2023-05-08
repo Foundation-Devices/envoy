@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/notifications/notifications_page.dart';
