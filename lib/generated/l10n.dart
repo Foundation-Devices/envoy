@@ -1208,10 +1208,10 @@ class S {
 
   // skipped getter for the 'Scan the QR with your Passport' key
 
-  /// `12. catch`
+  /// `My seed has a passphrase`
   String get ScreenHeading {
     return Intl.message(
-      '12. catch',
+      'My seed has a passphrase',
       name: 'ScreenHeading',
       desc: '',
       args: [],
@@ -1720,10 +1720,10 @@ class S {
     );
   }
 
-  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device Settings.`
+  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device Settings.`
   String get android_backup_info_subheading {
     return Intl.message(
-      'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Envoy Wallet backup is complete, we recommend performing a manual backup in your device Settings.',
+      'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device Settings.',
       name: 'android_backup_info_subheading',
       desc: '',
       args: [],
@@ -1950,10 +1950,10 @@ class S {
     );
   }
 
-  /// `Automatic Backups`
+  /// `Magic Backups`
   String get backups_auto_backups_heading {
     return Intl.message(
-      'Automatic Backups',
+      'Magic Backups',
       name: 'backups_auto_backups_heading',
       desc: '',
       args: [],
@@ -1970,10 +1970,10 @@ class S {
     );
   }
 
-  /// `Download Wallet Data`
+  /// `Download Envoy Backup File`
   String get backups_download_wallet_data {
     return Intl.message(
-      'Download Wallet Data',
+      'Download Envoy Backup File',
       name: 'backups_download_wallet_data',
       desc: '',
       args: [],
@@ -2060,10 +2060,10 @@ class S {
     );
   }
 
-  /// `You’re about to permanently delete your Envoy Wallet. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. `
+  /// `You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. `
   String get backups_erase_wallets_and_backups_modal_1_2_android_subheading {
     return Intl.message(
-      'You’re about to permanently delete your Envoy Wallet. \n\nIf you are using automatic backups, your seed will also be deleted from Google Drive. ',
+      'You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_android_subheading',
       desc: '',
       args: [],
@@ -2100,10 +2100,10 @@ class S {
     );
   }
 
-  /// `You’re about to permanently delete your Envoy Wallet.\n\nIf you are using automatic backups, your seed will also be deleted from iCloud. `
+  /// `You’re about to permanently delete your Envoy Wallet.\n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from iCloud Keychain. `
   String get backups_erase_wallets_and_backups_modal_1_2_ios_subheading {
     return Intl.message(
-      'You’re about to permanently delete your Envoy Wallet.\n\nIf you are using automatic backups, your seed will also be deleted from iCloud. ',
+      'You’re about to permanently delete your Envoy Wallet.\n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from iCloud Keychain. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_ios_subheading',
       desc: '',
       args: [],
@@ -2200,10 +2200,10 @@ class S {
     );
   }
 
-  /// `View Wallet Seed`
+  /// `View Envoy Seed`
   String get backups_view_wallet_seed {
     return Intl.message(
-      'View Wallet Seed',
+      'View Envoy Seed',
       name: 'backups_view_wallet_seed',
       desc: '',
       args: [],
@@ -2470,20 +2470,20 @@ class S {
     );
   }
 
-  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Wallet seed from Google Drive, you can perform a manual backup in your device Settings.`
+  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Seed from Android Auto Backups, you can perform a manual backup in your device [[Settings.]]`
   String get delete_wallet_for_good_instant_android_subheading {
     return Intl.message(
-      'Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Wallet seed from Google Drive, you can perform a manual backup in your device Settings.',
+      'Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Seed from Android Auto Backups, you can perform a manual backup in your device [[Settings.]]',
       name: 'delete_wallet_for_good_instant_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Deleting your Envoy wallet`
+  /// `Deleting your Envoy Wallet`
   String get delete_wallet_for_good_loading_heading {
     return Intl.message(
-      'Deleting your Envoy wallet',
+      'Deleting your Envoy Wallet',
       name: 'delete_wallet_for_good_loading_heading',
       desc: '',
       args: [],
@@ -2510,10 +2510,10 @@ class S {
     );
   }
 
-  /// `As you sure you want to DELETE your Envoy wallet?`
+  /// `As you sure you want to DELETE your Envoy Wallet?`
   String get delete_wallet_for_good_modal_subheading {
     return Intl.message(
-      'As you sure you want to DELETE your Envoy wallet?',
+      'As you sure you want to DELETE your Envoy Wallet?',
       name: 'delete_wallet_for_good_modal_subheading',
       desc: '',
       args: [],
@@ -6512,10 +6512,10 @@ class S {
     );
   }
 
-  /// `Set Up Envoy Wallet`
+  /// `Enable Magic Backups`
   String get envoy_welcome_screen_cta1 {
     return Intl.message(
-      'Set Up Envoy Wallet',
+      'Enable Magic Backups',
       name: 'envoy_welcome_screen_cta1',
       desc: '',
       args: [],
@@ -6552,10 +6552,10 @@ class S {
     );
   }
 
-  /// `We recommend setting up Envoy Wallet, which includes automatic backups.\n\nPower users can manually create or restore a wallet seed.`
+  /// `For a seamless setup, we recommend enabling Magic Backups.\n\nAdvanced users can manually create or restore a wallet seed.`
   String get envoy_welcome_screen_subheading {
     return Intl.message(
-      'We recommend setting up Envoy Wallet, which includes automatic backups.\n\nPower users can manually create or restore a wallet seed.',
+      'For a seamless setup, we recommend enabling Magic Backups.\n\nAdvanced users can manually create or restore a wallet seed.',
       name: 'envoy_welcome_screen_subheading',
       desc: '',
       args: [],
@@ -6602,10 +6602,10 @@ class S {
     );
   }
 
-  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your wallet seed. Ensure your seed is backed up securely. `
+  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. `
   String get export_backup_modal_subheading {
     return Intl.message(
-      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your wallet seed. Ensure your seed is backed up securely. ',
+      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. ',
       name: 'export_backup_modal_subheading',
       desc: '',
       args: [],
@@ -6722,10 +6722,10 @@ class S {
     );
   }
 
-  /// `To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code`
+  /// `To use this QR code in Envoy on a new phone, go to Set Up Envoy Wallet > Recover Magic Backup > Recover with QR code`
   String get export_seed_modal_QR_code_subheading {
     return Intl.message(
-      'To use this QR code in Envoy on a new phone, go to Setup Envoy Wallet > Recover Envoy Wallet > Recover with QR code',
+      'To use this QR code in Envoy on a new phone, go to Set Up Envoy Wallet > Recover Magic Backup > Recover with QR code',
       name: 'export_seed_modal_QR_code_subheading',
       desc: '',
       args: [],
@@ -6954,10 +6954,10 @@ class S {
     );
   }
 
-  /// `Creating Your Envoy Key`
+  /// `Creating Your Envoy Seed`
   String get magic_setup_generate_envoy_key_android_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
+      'Creating Your Envoy Seed',
       name: 'magic_setup_generate_envoy_key_android_heading',
       desc: '',
       args: [],
@@ -6974,10 +6974,10 @@ class S {
     );
   }
 
-  /// `Creating Your Envoy Key`
+  /// `Creating Your Envoy Seed`
   String get magic_setup_generate_envoy_key_ios_heading {
     return Intl.message(
-      'Creating Your Envoy Key',
+      'Creating Your Envoy Seed',
       name: 'magic_setup_generate_envoy_key_ios_heading',
       desc: '',
       args: [],
@@ -7004,20 +7004,20 @@ class S {
     );
   }
 
-  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.`
+  /// `WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account.`
   String get magic_setup_generate_wallet_modal_android_subheading {
     return Intl.message(
-      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your Google account.',
+      'WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account.',
       name: 'magic_setup_generate_wallet_modal_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.`
+  /// `WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account.`
   String get magic_setup_generate_wallet_modal_iOS_subheading {
     return Intl.message(
-      'WARNING\n\nCreating a new Envoy Wallet will erase any existing Envoy Wallet associated with your iCloud account.',
+      'WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account.',
       name: 'magic_setup_generate_wallet_modal_iOS_subheading',
       desc: '',
       args: [],
@@ -7084,10 +7084,10 @@ class S {
     );
   }
 
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
+  /// `Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
   String get magic_setup_recovery_fail_Android_subheading {
     return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
+      'Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.',
       name: 'magic_setup_recovery_fail_Android_subheading',
       desc: '',
       args: [],
@@ -7144,30 +7144,40 @@ class S {
     );
   }
 
-  /// `Import Envoy Backup`
+  /// `Import Envoy Backup File`
   String get magic_setup_recovery_fail_backup_cta2 {
     return Intl.message(
-      'Import Envoy Backup',
+      'Import Envoy Backup File',
       name: 'magic_setup_recovery_fail_backup_cta2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Backup File not found`
+  /// `Continue`
+  String get magic_setup_recovery_fail_backup_cta3 {
+    return Intl.message(
+      'Continue',
+      name: 'magic_setup_recovery_fail_backup_cta3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backup Not Found`
   String get magic_setup_recovery_fail_backup_heading {
     return Intl.message(
-      'Backup File not found',
+      'Magic Backup Not Found',
       name: 'magic_setup_recovery_fail_backup_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is unable to locate an Envoy Wallet backup on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used an Envoy automatic backup.`
+  /// `Envoy is unable to locate a Magic Backup file on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used Magic Backups.`
   String get magic_setup_recovery_fail_backup_subheading {
     return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used an Envoy automatic backup.',
+      'Envoy is unable to locate a Magic Backup file on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used Magic Backups.',
       name: 'magic_setup_recovery_fail_backup_subheading',
       desc: '',
       args: [],
@@ -7184,10 +7194,10 @@ class S {
     );
   }
 
-  /// `Recover with QR Code`
+  /// `Import Envoy Backup File`
   String get magic_setup_recovery_fail_connectivity_cta2 {
     return Intl.message(
-      'Recover with QR Code',
+      'Import Envoy Backup File',
       name: 'magic_setup_recovery_fail_connectivity_cta2',
       desc: '',
       args: [],
@@ -7204,20 +7214,20 @@ class S {
     );
   }
 
-  /// `Is your connectivity ok?`
+  /// `Connection Error`
   String get magic_setup_recovery_fail_connectivity_heading {
     return Intl.message(
-      'Is your connectivity ok?',
+      'Connection Error',
       name: 'magic_setup_recovery_fail_connectivity_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nYou can try again, import your own Backup file if you have one, or continue without one.\n`
+  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n`
   String get magic_setup_recovery_fail_connectivity_subheading {
     return Intl.message(
-      'Envoy is unable to connect to the Foundation server to retrieve your Envoy Wallet backup.\n\nYou can try again, import your own Backup file if you have one, or continue without one.\n',
+      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n',
       name: 'magic_setup_recovery_fail_connectivity_subheading',
       desc: '',
       args: [],
@@ -7274,10 +7284,10 @@ class S {
     );
   }
 
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
+  /// `Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
   String get magic_setup_recovery_fail_iOS_subheading {
     return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
+      'Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
       name: 'magic_setup_recovery_fail_iOS_subheading',
       desc: '',
       args: [],
@@ -7624,10 +7634,10 @@ class S {
     );
   }
 
-  /// `Uploading Envoy Backup`
+  /// `Uploading Your Backup`
   String get magic_setup_send_backup_to_envoy_server_heading {
     return Intl.message(
-      'Uploading Envoy Backup',
+      'Uploading Your Backup',
       name: 'magic_setup_send_backup_to_envoy_server_heading',
       desc: '',
       args: [],
@@ -7644,30 +7654,30 @@ class S {
     );
   }
 
-  /// `Create New Wallet`
+  /// `Create Magic Backup`
   String get magic_setup_tutorial_android_CTA1 {
     return Intl.message(
-      'Create New Wallet',
+      'Create Magic Backup',
       name: 'magic_setup_tutorial_android_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recover Envoy Wallet`
+  /// `Recover Magic Backup`
   String get magic_setup_tutorial_android_CTA2 {
     return Intl.message(
-      'Recover Envoy Wallet',
+      'Recover Magic Backup',
       name: 'magic_setup_tutorial_android_CTA2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Set Up Your Wallet`
+  /// `Magic Backups`
   String get magic_setup_tutorial_android_heading {
     return Intl.message(
-      'Set Up Your Wallet',
+      'Magic Backups',
       name: 'magic_setup_tutorial_android_heading',
       desc: '',
       args: [],
@@ -7684,50 +7694,50 @@ class S {
     );
   }
 
-  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}`
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nMagic Backups automatically backs up your wallet and settings with Android Auto Backup, 100% end-to-end encrypted. \n\n[[Learn more]].`
   String get magic_setup_tutorial_android_subheading {
     return Intl.message(
-      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet with Android Auto Backup, always end-to-end encrypted. \n\n{{Learn more.}}',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nMagic Backups automatically backs up your wallet and settings with Android Auto Backup, 100% end-to-end encrypted. \n\n[[Learn more]].',
       name: 'magic_setup_tutorial_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Create New Wallet`
+  /// `Create Magic Backup`
   String get magic_setup_tutorial_iOS_CTA1 {
     return Intl.message(
-      'Create New Wallet',
+      'Create Magic Backup',
       name: 'magic_setup_tutorial_iOS_CTA1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recover Envoy Wallet`
+  /// `Recover Magic Backup`
   String get magic_setup_tutorial_iOS_CTA2 {
     return Intl.message(
-      'Recover Envoy Wallet',
+      'Recover Magic Backup',
       name: 'magic_setup_tutorial_iOS_CTA2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Set Up Your Wallet`
+  /// `Magic Backups`
   String get magic_setup_tutorial_iOS_heading {
     return Intl.message(
-      'Set Up Your Wallet',
+      'Magic Backups',
       name: 'magic_setup_tutorial_iOS_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}`
+  /// `The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nMagic Backups automatically back up your wallet and settings with iCloud Keychain, 100% end-to-end encrypted. \n\n[[Learn more]].`
   String get magic_setup_tutorial_iOS_subheading {
     return Intl.message(
-      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nEnvoy Wallet securely and automatically backs up your wallet to iCloud Keychain, always end-to-end encrypted. \n\n{{Learn more.}}',
+      'The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nMagic Backups automatically back up your wallet and settings with iCloud Keychain, 100% end-to-end encrypted. \n\n[[Learn more]].',
       name: 'magic_setup_tutorial_iOS_subheading',
       desc: '',
       args: [],
@@ -7878,10 +7888,10 @@ class S {
     );
   }
 
-  /// `Store Your Encrypted Backup`
+  /// `Save Envoy Backup File`
   String get manual_setup_create_and_store_backup_heading {
     return Intl.message(
-      'Store Your Encrypted Backup',
+      'Save Envoy Backup File',
       name: 'manual_setup_create_and_store_backup_heading',
       desc: '',
       args: [],
@@ -7928,10 +7938,10 @@ class S {
     );
   }
 
-  /// `Your Envoy Backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
+  /// `Your Envoy Backup File is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.`
   String get manual_setup_create_and_store_backup_modal_subheading {
     return Intl.message(
-      'Your Envoy Backup is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
+      'Your Envoy Backup File is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup.',
       name: 'manual_setup_create_and_store_backup_modal_subheading',
       desc: '',
       args: [],
@@ -8548,10 +8558,10 @@ class S {
     );
   }
 
-  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.`
+  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy Backup File.`
   String get manual_setup_import_seed_subheading {
     return Intl.message(
-      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy backup file.',
+      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy Backup File.',
       name: 'manual_setup_import_seed_subheading',
       desc: '',
       args: [],
@@ -8630,6 +8640,18 @@ class S {
     );
   }
 
+  /// `If you continue without a backup file, your wallet settings, additional accounts, and Tags & Labels will not be restored.`
+  String
+      get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
+    return Intl.message(
+      'If you continue without a backup file, your wallet settings, additional accounts, and Tags & Labels will not be restored.',
+      name:
+          'manual_setup_recovery_import_backup_modal_fail_connectivity_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Re-type Passphrase`
   String get manual_setup_recovery_import_backup_modal_fail_cta1 {
     return Intl.message(
@@ -8650,20 +8672,20 @@ class S {
     );
   }
 
-  /// `Envoy can’t open this Envoy Backup file`
+  /// `Envoy can’t open this Envoy Backup File`
   String get manual_setup_recovery_import_backup_modal_fail_heading {
     return Intl.message(
-      'Envoy can’t open this Envoy Backup file',
+      'Envoy can’t open this Envoy Backup File',
       name: 'manual_setup_recovery_import_backup_modal_fail_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `If you continue without a backup file, your wallet settings, additional accounts, plus Tags and Labels will not be restored.`
+  /// `This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.`
   String get manual_setup_recovery_import_backup_modal_fail_subheading {
     return Intl.message(
-      'If you continue without a backup file, your wallet settings, additional accounts, plus Tags and Labels will not be restored.',
+      'This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.',
       name: 'manual_setup_recovery_import_backup_modal_fail_subheading',
       desc: '',
       args: [],
@@ -8690,11 +8712,11 @@ class S {
     );
   }
 
-  /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup file.`
+  /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup File.`
   String
       get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
     return Intl.message(
-      'Carefully re-type your passphrase so Envoy can open your Envoy Backup file.',
+      'Carefully re-type your passphrase so Envoy can open your Envoy Backup File.',
       name:
           'manual_setup_recovery_import_backup_re_enter_passphrase_subheading',
       desc: '',
@@ -8988,10 +9010,10 @@ class S {
     );
   }
 
-  /// `Automatic Backups`
+  /// `Magic Backups`
   String get manual_toggle_off_automatic_backups {
     return Intl.message(
-      'Automatic Backups',
+      'Magic Backups',
       name: 'manual_toggle_off_automatic_backups',
       desc: '',
       args: [],
@@ -9018,10 +9040,10 @@ class S {
     );
   }
 
-  /// `Download Wallet Data`
+  /// `Download Envoy Backup File`
   String get manual_toggle_off_download_wallet_data {
     return Intl.message(
-      'Download Wallet Data',
+      'Download Envoy Backup File',
       name: 'manual_toggle_off_download_wallet_data',
       desc: '',
       args: [],
@@ -9038,10 +9060,10 @@ class S {
     );
   }
 
-  /// `View Wallet Seed`
+  /// `View Envoy Seed`
   String get manual_toggle_off_view_wallet_seed {
     return Intl.message(
-      'View Wallet Seed',
+      'View Envoy Seed',
       name: 'manual_toggle_off_view_wallet_seed',
       desc: '',
       args: [],
@@ -9080,10 +9102,10 @@ class S {
     );
   }
 
-  /// `Automatic Backups`
+  /// `Magic Backups`
   String get manual_toggle_on_seed_backedup_android_automatic_backups {
     return Intl.message(
-      'Automatic Backups',
+      'Magic Backups',
       name: 'manual_toggle_on_seed_backedup_android_automatic_backups',
       desc: '',
       args: [],
@@ -9110,10 +9132,10 @@ class S {
     );
   }
 
-  /// `Download Wallet Data`
+  /// `Download Envoy Backup File`
   String get manual_toggle_on_seed_backedup_android_download_wallet_data {
     return Intl.message(
-      'Download Wallet Data',
+      'Download Envoy Backup File',
       name: 'manual_toggle_on_seed_backedup_android_download_wallet_data',
       desc: '',
       args: [],
@@ -9140,30 +9162,30 @@ class S {
     );
   }
 
-  /// `View Wallet Seed`
+  /// `View Envoy Seed`
   String get manual_toggle_on_seed_backedup_android_view_wallet_seed {
     return Intl.message(
-      'View Wallet Seed',
+      'View Envoy Seed',
       name: 'manual_toggle_on_seed_backedup_android_view_wallet_seed',
       desc: '',
       args: [],
     );
   }
 
-  /// `Wallet Data`
+  /// `Envoy Backup File`
   String get manual_toggle_on_seed_backedup_android_wallet_data {
     return Intl.message(
-      'Wallet Data',
+      'Envoy Backup File',
       name: 'manual_toggle_on_seed_backedup_android_wallet_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `Wallet Seed`
+  /// `Envoy Seed`
   String get manual_toggle_on_seed_backedup_android_wallet_seed {
     return Intl.message(
-      'Wallet Seed',
+      'Envoy Seed',
       name: 'manual_toggle_on_seed_backedup_android_wallet_seed',
       desc: '',
       args: [],
@@ -9220,10 +9242,10 @@ class S {
     );
   }
 
-  /// `Download Wallet Data`
+  /// `Download Envoy Backup File`
   String get manual_toggle_on_seed_backedup_iOS_download_wallet_data {
     return Intl.message(
-      'Download Wallet Data',
+      'Download Envoy Backup File',
       name: 'manual_toggle_on_seed_backedup_iOS_download_wallet_data',
       desc: '',
       args: [],
@@ -9240,30 +9262,30 @@ class S {
     );
   }
 
-  /// `View Wallet Seed`
+  /// `View Envoy Seed`
   String get manual_toggle_on_seed_backedup_iOS_view_wallet_seed {
     return Intl.message(
-      'View Wallet Seed',
+      'View Envoy Seed',
       name: 'manual_toggle_on_seed_backedup_iOS_view_wallet_seed',
       desc: '',
       args: [],
     );
   }
 
-  /// `Automatic Backups`
+  /// `Magic Backups`
   String get manual_toggle_on_seed_backedup_iOS_wallet_data {
     return Intl.message(
-      'Automatic Backups',
+      'Magic Backups',
       name: 'manual_toggle_on_seed_backedup_iOS_wallet_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `Wallet Seed`
+  /// `Envoy Seed`
   String get manual_toggle_on_seed_backedup_iOS_wallet_seed {
     return Intl.message(
-      'Wallet Seed',
+      'Envoy Seed',
       name: 'manual_toggle_on_seed_backedup_iOS_wallet_seed',
       desc: '',
       args: [],
@@ -9282,20 +9304,20 @@ class S {
     );
   }
 
-  /// `Automatic Backups`
+  /// `Magic Backups`
   String get manual_toggle_on_seed_backedup_pending_android_automatic_backups {
     return Intl.message(
-      'Automatic Backups',
+      'Magic Backups',
       name: 'manual_toggle_on_seed_backedup_pending_android_automatic_backups',
       desc: '',
       args: [],
     );
   }
 
-  /// `Automatic Backups`
+  /// `Magic Backups`
   String get manual_toggle_on_seed_backedup_pending_iOS_automatic_backups {
     return Intl.message(
-      'Automatic Backups',
+      'Magic Backups',
       name: 'manual_toggle_on_seed_backedup_pending_iOS_automatic_backups',
       desc: '',
       args: [],
@@ -9524,11 +9546,11 @@ class S {
     );
   }
 
-  /// `Download Wallet Data`
+  /// `Download Envoy Backup File`
   String
       get manual_toggle_on_seed_not_backedup_pending_android_download_wallet_data {
     return Intl.message(
-      'Download Wallet Data',
+      'Download Envoy Backup File',
       name:
           'manual_toggle_on_seed_not_backedup_pending_android_download_wallet_data',
       desc: '',
@@ -9548,11 +9570,11 @@ class S {
     );
   }
 
-  /// `View Wallet Seed`
+  /// `View Envoy Seed`
   String
       get manual_toggle_on_seed_not_backedup_pending_android_view_wallet_seed {
     return Intl.message(
-      'View Wallet Seed',
+      'View Envoy Seed',
       name:
           'manual_toggle_on_seed_not_backedup_pending_android_view_wallet_seed',
       desc: '',
@@ -9560,20 +9582,20 @@ class S {
     );
   }
 
-  /// `Wallet Data`
+  /// `Envoy Backup File`
   String get manual_toggle_on_seed_not_backedup_pending_android_wallet_data {
     return Intl.message(
-      'Wallet Data',
+      'Envoy Backup File',
       name: 'manual_toggle_on_seed_not_backedup_pending_android_wallet_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `Wallet Seed`
+  /// `Envoy Seed`
   String get manual_toggle_on_seed_not_backedup_pending_android_wallet_seed {
     return Intl.message(
-      'Wallet Seed',
+      'Envoy Seed',
       name: 'manual_toggle_on_seed_not_backedup_pending_android_wallet_seed',
       desc: '',
       args: [],
@@ -9614,11 +9636,11 @@ class S {
     );
   }
 
-  /// `Download Wallet Data`
+  /// `Download Envoy Backup File`
   String
       get manual_toggle_on_seed_not_backedup_pending_iOS_download_wallet_data {
     return Intl.message(
-      'Download Wallet Data',
+      'Download Envoy Backup File',
       name:
           'manual_toggle_on_seed_not_backedup_pending_iOS_download_wallet_data',
       desc: '',
@@ -9638,30 +9660,30 @@ class S {
     );
   }
 
-  /// `View Wallet Seed`
+  /// `View Envoy Seed`
   String get manual_toggle_on_seed_not_backedup_pending_iOS_view_wallet_seed {
     return Intl.message(
-      'View Wallet Seed',
+      'View Envoy Seed',
       name: 'manual_toggle_on_seed_not_backedup_pending_iOS_view_wallet_seed',
       desc: '',
       args: [],
     );
   }
 
-  /// `Wallet Data`
+  /// `Envoy Backup File`
   String get manual_toggle_on_seed_not_backedup_pending_iOS_wallet_data {
     return Intl.message(
-      'Wallet Data',
+      'Envoy Backup File',
       name: 'manual_toggle_on_seed_not_backedup_pending_iOS_wallet_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `Wallet seed`
+  /// `Envoy seed`
   String get manual_toggle_on_seed_not_backedup_pending_iOS_wallet_seed {
     return Intl.message(
-      'Wallet seed',
+      'Envoy seed',
       name: 'manual_toggle_on_seed_not_backedup_pending_iOS_wallet_seed',
       desc: '',
       args: [],
@@ -10110,10 +10132,10 @@ class S {
     );
   }
 
-  /// `I don’t have a Passport. Learn more.`
+  /// `I don’t have a Passport. [[Learn more.]]`
   String get passport_welcome_screen_cta3 {
     return Intl.message(
-      'I don’t have a Passport. Learn more.',
+      'I don’t have a Passport. [[Learn more.]]',
       name: 'passport_welcome_screen_cta3',
       desc: '',
       args: [],
@@ -10270,10 +10292,10 @@ class S {
     );
   }
 
-  /// `Envoy’s connection will be fast and reliable with Tor turned OFF.`
+  /// `Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.`
   String get privacy_setting_clearnet_node_tor_off {
     return Intl.message(
-      'Envoy’s connection will be fast and reliable with Tor turned OFF.',
+      'Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.',
       name: 'privacy_setting_clearnet_node_tor_off',
       desc: '',
       args: [],
@@ -10420,10 +10442,10 @@ class S {
     );
   }
 
-  /// `Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.`
+  /// `Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.`
   String get privacy_setting_onion_node_tor_on {
     return Intl.message(
-      'Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.',
+      'Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.',
       name: 'privacy_setting_onion_node_tor_on',
       desc: '',
       args: [],
@@ -10490,10 +10512,10 @@ class S {
     );
   }
 
-  /// `Envoy’s connection will be fast and reliable with Tor turned OFF.`
+  /// `Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.`
   String get privacy_setting_perfomance_tor_off {
     return Intl.message(
-      'Envoy’s connection will be fast and reliable with Tor turned OFF.',
+      'Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.',
       name: 'privacy_setting_perfomance_tor_off',
       desc: '',
       args: [],
@@ -10550,10 +10572,10 @@ class S {
     );
   }
 
-  /// `Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.`
+  /// `Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.`
   String get privacy_setting_privacy_tor_on {
     return Intl.message(
-      'Tor will be turned ON for improved privacy. Envoy’s connection may be unreliable.',
+      'Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.',
       name: 'privacy_setting_privacy_tor_on',
       desc: '',
       args: [],
@@ -10846,20 +10868,20 @@ class S {
     );
   }
 
-  /// `Envoy will then automatically restore your existing Envoy wallet`
+  /// `Envoy will then automatically restore your Magic Backup`
   String get recovery_scenario_Android_instruction3 {
     return Intl.message(
-      'Envoy will then automatically restore your existing Envoy wallet',
+      'Envoy will then automatically restore your Magic Backup',
       name: 'recovery_scenario_Android_instruction3',
       desc: '',
       args: [],
     );
   }
 
-  /// `To recover your Envoy wallet, follow these simple instructions.`
+  /// `To recover your Magic Backup, follow these simple instructions.`
   String get recovery_scenario_Android_subheading {
     return Intl.message(
-      'To recover your Envoy wallet, follow these simple instructions.',
+      'To recover your Magic Backup, follow these simple instructions.',
       name: 'recovery_scenario_Android_subheading',
       desc: '',
       args: [],
@@ -10946,10 +10968,10 @@ class S {
     );
   }
 
-  /// `Envoy will then automatically restore your existing Envoy wallet`
+  /// `Envoy will then automatically restore your Magic Backup`
   String get recovery_scenario_iOS_instruction3 {
     return Intl.message(
-      'Envoy will then automatically restore your existing Envoy wallet',
+      'Envoy will then automatically restore your Magic Backup',
       name: 'recovery_scenario_iOS_instruction3',
       desc: '',
       args: [],
@@ -11762,10 +11784,10 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  /// `Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
   String get wallet_security_modal_1_4_android_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed with {{Android Auto Backup}}.\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      'Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
       name: 'wallet_security_modal_1_4_android_subheading',
       desc: '',
       args: [],
@@ -11802,13 +11824,13 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed to iCloud {{Keychain}}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
-  String wallet_security_modal_1_4_iOS_subheading(Object Keychain) {
+  /// `Envoy securely and automatically backs up your wallet seed to[[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
+  String get wallet_security_modal_1_4_iOS_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed to iCloud {$Keychain}.\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
+      'Envoy securely and automatically backs up your wallet seed to[[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
       name: 'wallet_security_modal_1_4_iOS_subheading',
       desc: '',
-      args: [Keychain],
+      args: [],
     );
   }
 
@@ -11862,10 +11884,10 @@ class S {
     );
   }
 
-  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.`
+  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data.`
   String get wallet_security_modal_2_4_subehading {
     return Intl.message(
-      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is end-to-end encrypted with your wallet seed, ensuring that Foundation can never access your data.',
+      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data.',
       name: 'wallet_security_modal_2_4_subehading',
       desc: '',
       args: [],
@@ -11992,10 +12014,10 @@ class S {
     );
   }
 
-  /// `If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.`
+  /// `If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words.`
   String get wallet_security_modal_4_4_subheading {
     return Intl.message(
-      'If you prefer to opt out of automatic encrypted backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manual Wallet Setup.',
+      'If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words.',
       name: 'wallet_security_modal_4_4_subheading',
       desc: '',
       args: [],
@@ -12022,10 +12044,10 @@ class S {
     );
   }
 
-  /// `Envoy Wallet is set up and ready for your Bitcoin!`
+  /// `Envoy is set up and ready for your Bitcoin!`
   String get wallet_setup_success_subheading {
     return Intl.message(
-      'Envoy Wallet is set up and ready for your Bitcoin!',
+      'Envoy is set up and ready for your Bitcoin!',
       name: 'wallet_setup_success_subheading',
       desc: '',
       args: [],
@@ -12062,10 +12084,10 @@ class S {
     );
   }
 
-  /// `Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.`
+  /// `Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful account management and privacy features.`
   String get welcome_screen_subheading {
     return Intl.message(
-      'Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful sovereignty and privacy features.',
+      'Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful account management and privacy features.',
       name: 'welcome_screen_subheading',
       desc: '',
       args: [],

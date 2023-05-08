@@ -2,23 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
+import 'package:envoy/ui/onboard/manual/dialogs.dart';
 
 class MagicRecoverWallet extends StatefulWidget {
   const MagicRecoverWallet({Key? key}) : super(key: key);
@@ -63,7 +60,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
       });
     } on ServerUnreachable {
-      print("Server {}");
       setState(() {
         _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
       });
@@ -211,23 +207,21 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             OnboardingButton(
-              //TODO: localize
-              label: "Import Envoy Backup",
-              type: EnvoyButtonTypes.secondary,
-              onTap: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  allowMultiple: false,
-                  dialogTitle: "Choose Envoy backup file",
-                );
-                if (result != null) {
-                  if (result.files.single.path != null) {
-                    _recoverManually(path: result.files.single.path);
-                  }
-                }
+              label: S().magic_setup_recovery_fail_backup_cta3,
+              type: EnvoyButtonTypes.tertiary,
+              onTap: () {
+                showContinueWarningDialog(context);
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_ios_CTA1,
+              label: S().magic_setup_recovery_fail_backup_cta2,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {
+                openBackupFile(context);
+              },
+            ),
+            OnboardingButton(
+              label: S().magic_setup_recovery_fail_backup_cta1,
               onTap: () async {
                 setState(() {
                   _magicRecoverWalletState =
@@ -249,30 +243,21 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             OnboardingButton(
-              //TODO: localize  key: magic_setup_recovery_fail_connectivity_cta3
-              label: "Continue",
+              label: S().magic_setup_recovery_fail_connectivity_cta3,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
                 showContinueWarningDialog(context);
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_ios_CTA2,
+              label: S().magic_setup_recovery_fail_connectivity_cta2,
               type: EnvoyButtonTypes.secondary,
               onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage(
-                    ScannerType.seed,
-                    callback: (seed) async {
-                      _recoverManually(seed: seed);
-                    },
-                  );
-                }));
+                openBackupFile(context);
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_ios_CTA1,
+              label: S().magic_setup_recovery_fail_connectivity_cta1,
               onTap: () async {
                 setState(() {
                   _magicRecoverWalletState =
@@ -290,6 +275,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   }
 
   //Recover using seed or backup file
+  //ignore: unused_element
   _recoverManually({String? path, String? seed}) async {
     setState(() {
       _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
@@ -403,7 +389,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   }
 
   Widget _backupNotFound(BuildContext context) {
-    bool isAndroid = Platform.isAndroid;
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -411,7 +396,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_setup_recovery_fail_ios_heading,
+            S().magic_setup_recovery_fail_backup_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
@@ -420,9 +405,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            isAndroid
-                ? S().magic_setup_recovery_fail_android_subheading
-                : S().magic_setup_recovery_fail_ios_subheading,
+            S().magic_setup_recovery_fail_backup_subheading,
             textAlign: TextAlign.center,
             style:
                 Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
@@ -502,8 +485,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       child: Text(
-                        //TODO: Localize key:manual_setup_recovery_import_backup_modal_fail_connectivity_heading
-                        "WARNING",
+                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.labelLarge,
                       ),
@@ -512,9 +494,8 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
-                      //TODO: localize key:manual_setup_recovery_import_backup_modal_fail_subheading
                       child: Text(
-                        "If you continue without a backup file, your wallet settings, additional accounts, plus Tags and Labels will not be restored.",
+                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
@@ -523,8 +504,8 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   ],
                 ),
                 OnboardingButton(
-                    //TODO: localize key:manual_setup_recovery_import_backup_modal_fail_connectivity_cta2
-                    label: "Go Back",
+                    label: S()
+                        .manual_setup_recovery_import_backup_modal_fail_connectivity_cta2,
                     type: EnvoyButtonTypes.tertiary,
                     onTap: () async {
                       Navigator.pop(context);
@@ -533,16 +514,20 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                 Consumer(
                   builder: (context, ref, child) {
                     return OnboardingButton(
-                        //TODO: localize key:manual_setup_recovery_import_backup_modal_fail_connectivity_cta1
-                        label: "Continue",
-                        onTap: () async {
-                          ref.read(homePageTabProvider.notifier).state =
-                              HomePageTabState.accounts;
-                          ref.read(homePageBackgroundProvider.notifier).state =
-                              HomePageBackgroundState.hidden;
-                          await Future.delayed(Duration(milliseconds: 200));
-                          Navigator.of(context)
-                              .popUntil(ModalRoute.withName("/"));
+                        label: S()
+                            .manual_setup_recovery_import_backup_modal_fail_connectivity_cta1,
+                        onTap: () {
+                          EnvoySeed().get().then((seed) async {
+                            EnvoySeed().deriveAndAddWallets(seed!);
+                            ref.read(homePageTabProvider.notifier).state =
+                                HomePageTabState.accounts;
+                            ref
+                                .read(homePageBackgroundProvider.notifier)
+                                .state = HomePageBackgroundState.hidden;
+                            await Future.delayed(Duration(milliseconds: 200));
+                            Navigator.of(context)
+                                .popUntil(ModalRoute.withName("/"));
+                          });
                         });
                   },
                 ),
