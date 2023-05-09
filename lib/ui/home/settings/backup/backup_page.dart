@@ -130,16 +130,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 AnimatedContainer(
                   duration: Duration(milliseconds: 200),
                   height: !s.syncToCloud ? 0 : 16,
-                  child: Divider(),
+                  child: Padding(padding: EdgeInsets.all(8)),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(left: 12.0),
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),
-                    height: !s.syncToCloud ? 0 : 80,
+                    height: !s.syncToCloud ? 0 : 60,
                     child: SingleChildScrollView(
                       child: Container(
-                        height: 80,
+                        height: 60,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -175,16 +175,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 AnimatedContainer(
                   duration: Duration(milliseconds: 200),
                   height: !s.syncToCloud ? 0 : 16,
-                  child: Divider(),
+                  child: Padding(padding: EdgeInsets.all(8)),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(left: 12.0),
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),
-                    height: !s.syncToCloud ? 0 : 80,
+                    height: !s.syncToCloud ? 0 : 60,
                     child: SingleChildScrollView(
                       child: Container(
-                        height: 80,
+                        height: 60,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
