@@ -209,10 +209,10 @@ class MenuOption extends StatelessWidget {
                 child: Text(
                   label.toUpperCase(),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(color: Colors.white, fontSize: 18),
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               Container(
