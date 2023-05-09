@@ -191,7 +191,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                       children: accounts
                           .map((e) => DragAndDropItem(
                                   child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
+                                padding: const EdgeInsets.only(bottom: 4 * 5),
                                 child: AccountListTile(
                                   e,
                                   onTap: () {
