@@ -106,6 +106,15 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
           SliverToBoxAdapter(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SettingText("Allow Screenshots"),
+              SettingToggle(s.allowScreenshots, s.setAllowScreenshots),
+            ],
+          )),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
             child: FutureBuilder<bool>(
               future: auth.isDeviceSupported(),
               builder: (context, snapshot) {
