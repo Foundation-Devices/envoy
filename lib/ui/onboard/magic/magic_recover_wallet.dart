@@ -2,15 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
+import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
+import 'package:envoy/ui/onboard/manual/dialogs.dart';
 
 class MagicRecoverWallet extends StatefulWidget {
   const MagicRecoverWallet({Key? key}) : super(key: key);
@@ -29,7 +27,8 @@ class MagicRecoverWallet extends StatefulWidget {
 enum MagicRecoveryWalletState {
   recovering,
   success,
-  failure,
+  backupNotFound,
+  serverNotReachable,
 }
 
 class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
@@ -41,26 +40,39 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
   @override
   void initState() {
     super.initState();
-    _initWalletRecovery();
+    _tryAutomaticRecovery();
   }
 
-  void _initWalletRecovery() async {
+  void _tryAutomaticRecovery() async {
     await Future.delayed(Duration(seconds: 1));
-
-    final success = await EnvoySeed().restoreData();
-
-    setState(() {
+    var success = false;
+    try {
+      success = await EnvoySeed().restoreData();
+      setState(() {
+        if (success) {
+          _magicRecoverWalletState = MagicRecoveryWalletState.success;
+        } else {
+          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+        }
+      });
+    } on BackupNotFound {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+      });
+    } on ServerUnreachable {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
+      });
+    } catch (e) {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+      });
+    } finally {
       if (success) {
-        _magicRecoverWalletState = MagicRecoveryWalletState.success;
+        _setHappyState();
       } else {
-        _magicRecoverWalletState = MagicRecoveryWalletState.failure;
+        _setUnhappyState();
       }
-    });
-
-    if (success) {
-      _setHappyState();
-    } else {
-      _setUnhappyState();
     }
   }
 
@@ -104,7 +116,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   padding: EdgeInsets.only(top: 8),
                   height: 44,
                   child: _magicRecoverWalletState ==
-                          MagicRecoveryWalletState.failure
+                          MagicRecoveryWalletState.backupNotFound
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -132,25 +144,11 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                         ),
                       ),
                     ),
-                    AnimatedContainer(
-                        duration: Duration(milliseconds: 500),
-                        child: Builder(
-                          builder: (context) {
-                            if (_magicRecoverWalletState ==
-                                MagicRecoveryWalletState.recovering) {
-                              return _recoveryInProgress(context);
-                            }
-                            if (_magicRecoverWalletState ==
-                                MagicRecoveryWalletState.success) {
-                              return _recoverySteps(context);
-                            }
-                            if (_magicRecoverWalletState ==
-                                MagicRecoveryWalletState.failure) {
-                              return _unsuccessfulRecovery(context);
-                            }
-                            return SizedBox();
-                          },
-                        )),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: 800),
+                          child: getMainWidget()),
+                    ),
                   ],
                 )),
                 getBottomButtons() ?? SizedBox(),
@@ -160,6 +158,23 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         ),
       ),
     );
+  }
+
+  Widget getMainWidget() {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering) {
+      return _recoveryInProgress(context);
+    }
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.success) {
+      return _successMessage(context);
+    }
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.backupNotFound) {
+      return _backupNotFound(context);
+    }
+    if (_magicRecoverWalletState ==
+        MagicRecoveryWalletState.serverNotReachable) {
+      return _serverNotReachable(context);
+    }
+    return SizedBox();
   }
 
   Widget? getBottomButtons() {
@@ -185,73 +200,71 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         },
       );
     }
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.failure) {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.backupNotFound) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_ios_CTA2,
-              type: EnvoyButtonTypes.secondary,
+              label: S().magic_setup_recovery_fail_backup_cta3,
+              type: EnvoyButtonTypes.tertiary,
               onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage(
-                    ScannerType.seed,
-                    callback: (seed) async {
-                      setState(() {
-                        _magicRecoverWalletState =
-                            MagicRecoveryWalletState.recovering;
-                      });
-                      String? passphrase = null;
-                      List<String> seedList = seed.split(" ");
-                      if (seedList.length == 13 || seedList.length == 25) {
-                        seedList.removeLast();
-                        await showEnvoyDialog(
-                                dialog: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.85,
-                                    height: 330,
-                                    child: SeedPassphraseEntry(
-                                        onPassphraseEntered: (value) {
-                                      passphrase = value;
-                                      Navigator.pop(context);
-                                    })),
-                                context: context)
-                            .then((value) {
-                          setState(() {
-                            passphrase = value;
-                          });
-                        });
-                      }
-
-                      EnvoySeed().create(seedList, passphrase: passphrase);
-                      EnvoySeed().restoreData(seed: seed).then((success) {
-                        setState(() {
-                          if (success) {
-                            _magicRecoverWalletState =
-                                MagicRecoveryWalletState.success;
-                          } else {
-                            _magicRecoverWalletState =
-                                MagicRecoveryWalletState.failure;
-                          }
-                        });
-                      });
-                    },
-                  );
-                }));
+                showContinueWarningDialog(context);
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_ios_CTA1,
+              label: S().magic_setup_recovery_fail_backup_cta2,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {
+                openBackupFile(context);
+              },
+            ),
+            OnboardingButton(
+              label: S().magic_setup_recovery_fail_backup_cta1,
               onTap: () async {
                 setState(() {
                   _magicRecoverWalletState =
                       MagicRecoveryWalletState.recovering;
                 });
                 _setIndeterminateState();
-                _initWalletRecovery();
+                _tryAutomaticRecovery();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+    if (_magicRecoverWalletState ==
+        MagicRecoveryWalletState.serverNotReachable) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            OnboardingButton(
+              label: S().magic_setup_recovery_fail_connectivity_cta3,
+              type: EnvoyButtonTypes.tertiary,
+              onTap: () {
+                showContinueWarningDialog(context);
+              },
+            ),
+            OnboardingButton(
+              label: S().magic_setup_recovery_fail_connectivity_cta2,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {
+                openBackupFile(context);
+              },
+            ),
+            OnboardingButton(
+              label: S().magic_setup_recovery_fail_connectivity_cta1,
+              onTap: () async {
+                setState(() {
+                  _magicRecoverWalletState =
+                      MagicRecoveryWalletState.recovering;
+                });
+                _setIndeterminateState();
+                _tryAutomaticRecovery();
               },
             ),
           ],
@@ -261,124 +274,129 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     return null;
   }
 
+  //Recover using seed or backup file
+  //ignore: unused_element
+  _recoverManually({String? path, String? seed}) async {
+    setState(() {
+      _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
+    });
+
+    _setIndeterminateState();
+
+    String? seed = null;
+    String? passphrase = null;
+    List<String> seedList = [];
+    bool success = false;
+    try {
+      if (seed != null) {
+        seedList = seed.split(" ");
+        if (seedList.length == 13 || seedList.length == 25) {
+          seedList.removeLast();
+          await showEnvoyDialog(
+              dialog: Container(
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  height: 330,
+                  child: SeedPassphraseEntry(onPassphraseEntered: (value) {
+                    passphrase = value;
+                    Navigator.pop(context);
+                  })),
+              context: context);
+        }
+      }
+      if (seedList.isNotEmpty) {
+        await EnvoySeed().create(seedList, passphrase: passphrase);
+      }
+      await Future.delayed(Duration(seconds: 1));
+      success = await EnvoySeed().restoreData(seed: seed);
+      setState(() {
+        if (success) {
+          _magicRecoverWalletState = MagicRecoveryWalletState.success;
+        } else {
+          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+        }
+      });
+    } on BackupNotFound {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+      });
+    } on ServerUnreachable {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+      });
+    } catch (e) {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+      });
+    } finally {
+      if (success) {
+        _setHappyState();
+      } else {
+        _setUnhappyState();
+      }
+    }
+  }
+
   Widget _recoveryInProgress(BuildContext context) {
-    return Text(
-      S().magic_setup_recovery_heading,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.titleLarge,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              S().magic_setup_recovery_heading,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   // Might have use for this in the future?
   //ignore: unused_element
-  Widget _recoverySteps(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-      child: Column(children: [
-        Text(
-          S().magic_setup_recovery_heading,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        Padding(padding: EdgeInsets.all(12)),
-        Container(
-          width: 300,
-          child: Text(
-            S().magic_setup_recovery_success_android_subheading,
-            textAlign: TextAlign.center,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
-          ),
-        ),
-        Padding(padding: EdgeInsets.all(14)),
-        ListTile(
-          minLeadingWidth: 20,
-          dense: true,
-          leading: Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: EnvoyColors.teal,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              "1",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.white),
-            ),
-          ),
-          title: Text(
-            Platform.isIOS
-                ? S().magic_setup_recovery_success_iOS_instruction1
-                : S().magic_setup_recovery_success_android_instructions1,
-            textAlign: TextAlign.start,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
-          ),
-        ),
-        ListTile(
-          minLeadingWidth: 20,
-          dense: true,
-          leading: Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: EnvoyColors.teal,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              "2",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.white),
-            ),
-          ),
-          title: Text(
-            Platform.isIOS
-                ? S().magic_setup_recovery_success_iOS_instruction2
-                : S().magic_setup_recovery_success_android_instructions2,
-            textAlign: TextAlign.start,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
-          ),
-        ),
-        ListTile(
-          minLeadingWidth: 20,
-          dense: true,
-          leading: Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: EnvoyColors.teal,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text("3",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.white)),
-          ),
-          title: Text(
-            Platform.isIOS
-                ? S().magic_setup_recovery_success_iOS_instruction3
-                : S().magic_setup_recovery_success_android_instructions3,
-            textAlign: TextAlign.start,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
-          ),
-        ),
-      ]),
+  Widget _successMessage(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                S().wallet_setup_success_heading,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 36),
+                child: Text(
+                  S().wallet_setup_success_subheading,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ]),
+      ),
     );
   }
 
-  Widget _unsuccessfulRecovery(BuildContext context) {
-    bool isAndroid = Platform.isAndroid;
+  Widget _backupNotFound(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_setup_recovery_fail_ios_heading,
+            S().magic_setup_recovery_fail_backup_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
@@ -387,9 +405,34 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            isAndroid
-                ? S().magic_setup_recovery_fail_android_subheading
-                : S().magic_setup_recovery_fail_ios_subheading,
+            S().magic_setup_recovery_fail_backup_subheading,
+            textAlign: TextAlign.center,
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _serverNotReachable(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            S().magic_setup_recovery_fail_connectivity_heading,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Padding(padding: EdgeInsets.all(28)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            S().magic_setup_recovery_fail_connectivity_subheading,
             textAlign: TextAlign.center,
             style:
                 Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
@@ -403,5 +446,95 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
     _stateMachineController?.findInput<bool>("happy")?.change(false);
     _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+  }
+
+  void showContinueWarningDialog(BuildContext context) {
+    showEnvoyDialog(
+        context: context,
+        dismissible: false,
+        dialog: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 18),
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_triangle.png",
+                      height: 80,
+                      width: 80,
+                    ),
+                    Padding(padding: EdgeInsets.all(4)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_heading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(2)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(2)),
+                  ],
+                ),
+                OnboardingButton(
+                    label: S()
+                        .manual_setup_recovery_import_backup_modal_fail_connectivity_cta2,
+                    type: EnvoyButtonTypes.tertiary,
+                    onTap: () async {
+                      Navigator.pop(context);
+                    }),
+                Padding(padding: EdgeInsets.all(2)),
+                Consumer(
+                  builder: (context, ref, child) {
+                    return OnboardingButton(
+                        label: S()
+                            .manual_setup_recovery_import_backup_modal_fail_connectivity_cta1,
+                        onTap: () {
+                          EnvoySeed().get().then((seed) async {
+                            EnvoySeed().deriveAndAddWallets(seed!);
+                            ref.read(homePageTabProvider.notifier).state =
+                                HomePageTabState.accounts;
+                            ref
+                                .read(homePageBackgroundProvider.notifier)
+                                .state = HomePageBackgroundState.hidden;
+                            await Future.delayed(Duration(milliseconds: 200));
+                            Navigator.of(context)
+                                .popUntil(ModalRoute.withName("/"));
+                          });
+                        });
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(12)),
+              ],
+            ),
+          ),
+        ));
   }
 }

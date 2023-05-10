@@ -166,8 +166,12 @@ class EnvoySeed {
 
   Future<bool> restoreData({String? seed = null, String? filePath}) async {
     // Try to get seed from device
-    if (seed == null) {
-      seed = await get();
+    try {
+      if (seed == null) {
+        seed = await get();
+      }
+    } catch (e) {
+      throw BackupNotFound();
     }
 
     // Still nothing? You're boned
@@ -176,19 +180,20 @@ class EnvoySeed {
     }
 
     if (filePath == null) {
-      return Backup.restore(seed, Settings().envoyServerAddress, Tor())
-          .then((data) {
-        return _processRecoveryData(seed!, data);
-      }).catchError((e) {
-        print("Error while recovering: " + e.toString());
-        return false;
-      });
+      try {
+        return Backup.restore(seed, Settings().envoyServerAddress, Tor())
+            .then((data) {
+          return _processRecoveryData(seed!, data);
+        });
+      } catch (e) {
+        throw e;
+      }
     } else {
       try {
         var data = Backup.restoreOffline(seed, filePath);
         return _processRecoveryData(seed, data);
-      } on Exception catch (_) {
-        return false;
+      } on Exception catch (ex) {
+        throw ex;
       }
     }
   }

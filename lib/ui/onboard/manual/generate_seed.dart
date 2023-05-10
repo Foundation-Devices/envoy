@@ -15,7 +15,7 @@ import 'package:envoy/ui/onboard/manual/widgets/seed_word_verification.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/secure_screen.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 
 class SeedScreen extends StatefulWidget {

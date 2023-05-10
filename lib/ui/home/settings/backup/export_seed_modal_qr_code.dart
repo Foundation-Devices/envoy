@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/secure_screen.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';

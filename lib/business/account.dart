@@ -41,8 +41,8 @@ class Account {
     if (number == 2147483646) {
       return Colors.red;
     }
-
-    int colorIndex = number % (EnvoyColors.listAccountTileColors.length);
+    int colorIndex = (wallet.hot ? number + 1 : number) %
+        (EnvoyColors.listAccountTileColors.length);
     return EnvoyColors.listAccountTileColors[colorIndex];
   }
 

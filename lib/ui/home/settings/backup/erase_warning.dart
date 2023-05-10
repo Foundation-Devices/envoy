@@ -399,14 +399,13 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MagicRecoveryInfo(
                   onContinue: () async {
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
-                    //wait for pop animation to finish
-                    await Future.delayed(Duration(milliseconds: 300));
                     // Show home page and navigate to accounts
                     ref.read(homePageBackgroundProvider.notifier).state =
                         HomePageBackgroundState.hidden;
                     ref.read(homePageTabProvider.notifier).state =
                         HomePageTabState.accounts;
+                    await Future.delayed(Duration(milliseconds: 100));
+                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
                   },
                 )));
       } else {

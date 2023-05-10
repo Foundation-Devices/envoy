@@ -9,6 +9,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -233,10 +234,16 @@ class MagicRecoveryInfo extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Padding(padding: EdgeInsets.all(12)),
-                          Text(
-                            S().android_backup_info_subheading,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
+                          LinkText(
+                            text: S().android_backup_info_subheading,
+                            onTap: () {
+                              openAndroidSettings();
+                            },
+                            linkStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontSize: 14, color: Colors.blue),
+                            textStyle: Theme.of(context)
                                 .textTheme
                                 .bodySmall
                                 ?.copyWith(fontSize: 14),
