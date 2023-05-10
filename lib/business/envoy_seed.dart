@@ -109,6 +109,9 @@ class EnvoySeed {
     }
 
     final seed = await get();
+    if (seed == null) {
+      return;
+    }
 
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
@@ -138,7 +141,7 @@ class EnvoySeed {
     }
 
     return Backup.perform(
-            backupData, seed!, Settings().envoyServerAddress, Tor(),
+            backupData, seed, Settings().envoyServerAddress, Tor(),
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) {
       if (cloud && success) {
