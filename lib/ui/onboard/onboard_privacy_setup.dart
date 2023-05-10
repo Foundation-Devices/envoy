@@ -182,6 +182,14 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   EnvoyButton(
                     S().privacy_setting_perfomance_cta,
                     onTap: () async {
+                      //tor is necessary if user selects onion node
+                      bool torRequire = ref.read(isNodeRequiredTorProvider);
+                      //tor is not required if user selects better performance
+                      bool betterPerformance =
+                          ref.read(privacyOnboardSelectionProvider);
+                      //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                      Settings()
+                          .setTorEnabled(torRequire || !betterPerformance);
                       LocalStorage().prefs.setBool("onboarded", true);
                       if (!widget.setUpEnvoyWallet) {
                         Navigator.push(
@@ -299,25 +307,6 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                child: GestureDetector(
-                                  child: Icon(Icons.qr_code,
-                                      color: EnvoyColors.teal),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                      return ScannerPage.nodeUrl((result) {
-                                        var parsedUrl = parseNodeUrl(result);
-                                        _nodeTextEditingController.text =
-                                            parsedUrl;
-                                        connect();
-                                      });
-                                    }));
-                                  },
-                                ),
-                              ),
                               Expanded(
                                 child: TextFormField(
                                   controller: _nodeTextEditingController,
@@ -328,21 +317,66 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                             .notifier)
                                         .reset();
                                   },
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                  onTap: () {
+                                    if (_nodeTextEditingController.text ==
+                                            Settings.DEFAULT_ELECTRUM_SERVER ||
+                                        _nodeTextEditingController.text ==
+                                            Settings.TESTNET_ELECTRUM_SERVER) {
+                                      _nodeTextEditingController.text = "";
+                                    }
+                                  },
                                   decoration: InputDecoration(
                                       fillColor: Colors.transparent,
                                       border: InputBorder.none,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 8),
                                       hintText: S()
                                           .privacy_setting_add_node_modal_text_field,
                                       hintStyle: TextStyle(height: 1.3)),
                                 ),
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                child: Icon(
-                                  CupertinoIcons.link,
-                                  color: EnvoyColors.teal,
-                                ),
+                              Row(
+                                children: [
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Clipboard.getData("text/plain")
+                                              .then((value) {
+                                            if (value != null) {
+                                              _nodeTextEditingController.text =
+                                                  value.text!;
+                                            }
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.paste,
+                                          color: EnvoyColors.teal,
+                                        ),
+                                      )),
+                                  GestureDetector(
+                                    child: Icon(Icons.qr_code,
+                                        color: EnvoyColors.teal),
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return ScannerPage.nodeUrl((result) {
+                                          var parsedUrl = parseNodeUrl(result);
+                                          _nodeTextEditingController.text =
+                                              parsedUrl;
+                                          connect();
+                                        });
+                                      }));
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           ),

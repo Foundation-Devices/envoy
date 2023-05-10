@@ -165,14 +165,7 @@ class _AccountListTileState extends State<AccountListTile> {
                                                         color: Colors.white),
                                               ),
                                             ),
-                                          SvgPicture.asset(
-                                            widget.account.wallet.hot
-                                                ? "assets/wallet.svg"
-                                                : "assets/bitcoin.svg",
-                                            height: 20,
-                                            width: 20,
-                                            color: Colors.white,
-                                          )
+                                          getAccountIcon(widget.account),
                                         ],
                                       ),
                                     ),
@@ -287,6 +280,31 @@ class _AccountListTileState extends State<AccountListTile> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget getAccountIcon(Account account) {
+    if (widget.account.wallet.hot) {
+      return SvgPicture.asset(
+        "assets/icons/ic_wallet_coins.svg",
+        height: 20,
+        width: 20,
+        color: Colors.white,
+      );
+    }
+    if (!widget.account.wallet.hot) {
+      return SvgPicture.asset(
+        "assets/icons/ic_passport_account.svg",
+        height: 26,
+        width: 26,
+        color: Colors.white,
+      );
+    }
+    return SvgPicture.asset(
+      "assets/icons/bitcoin.svg",
+      height: 20,
+      width: 20,
+      color: Colors.white,
     );
   }
 }

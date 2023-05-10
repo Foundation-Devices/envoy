@@ -18,3 +18,7 @@ Future disableSecureScreen() async {
   if (!Settings().allowScreenshots() && !Platform.isLinux)
     await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
 }
+
+Future openAndroidSettings() async {
+  if (Platform.isAndroid) await _platformChannel.invokeMethod("open_settings");
+}

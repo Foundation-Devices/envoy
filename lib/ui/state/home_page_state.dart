@@ -20,4 +20,5 @@ final homePageTabProvider =
     StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
 
 final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
-    (ref) => HomePageBackgroundState.hidden);
+  (ref) => HomePageBackgroundState.hidden,
+);

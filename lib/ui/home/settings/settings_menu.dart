@@ -95,7 +95,7 @@ class SettingsMenuWidget extends ConsumerWidget {
   Widget build(context, ref) {
     var background = ref.read(homePageBackgroundProvider.notifier);
     return Padding(
-      padding: const EdgeInsets.only(top: 100, bottom: 50),
+      padding: const EdgeInsets.only(top: 0, bottom: 50),
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,7 +105,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(height: 50),
+                  SizedBox(height: 34),
                   MenuOption(
                     label: S().envoy_settings_menu_settings,
                     onTap: () {
@@ -196,35 +196,35 @@ class MenuOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Expanded(flex: 3, child: SizedBox.shrink()),
-      Expanded(
-        flex: 4,
-        child: GestureDetector(
-          onTap: onTap,
-          child: Text(
-            label.toUpperCase(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall!
-                .copyWith(color: Colors.white),
-          ),
-        ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(left: 18),
+        child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 142,
+                child: Text(
+                  label.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              )
+            ]),
       ),
-      Expanded(
-        flex: 3,
-        child: Container(
-          alignment: Alignment.centerLeft,
-          child: GestureDetector(
-            onTap: onTap,
-            child: Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      )
-    ]);
+    );
   }
 }
