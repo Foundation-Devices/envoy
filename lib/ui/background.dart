@@ -47,7 +47,7 @@ class AppBackgroundState extends State<AppBackground> {
                     radius: 0.5,
                     colors: [
                       Colors.transparent,
-                      Color.fromRGBO(104, 104, 104, 1.0),
+                      EnvoyColors.grey,
                       Colors.white
                     ],
                     stops: [0.0, 0.60, 0.85],
