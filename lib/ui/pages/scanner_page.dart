@@ -205,9 +205,13 @@ class _ScannerPageState extends State<ScannerPage> {
   _onDetect(String code) {
     // Seed recovery flow
     if (widget._type == ScannerType.seed) {
-      widget.callback!(code);
-      Navigator.of(context).pop();
-      return;
+      List<String> seedList = code.split(" ");
+      //TODO: bip39 validation
+      if (seedList.length == 12 || seedList.length == 24) {
+        widget.callback!(code);
+        Navigator.of(context).pop();
+        return;
+      }
     }
 
     if (widget._type == ScannerType.address) {
