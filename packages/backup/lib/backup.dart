@@ -32,6 +32,10 @@ class ServerUnreachable implements Exception {}
 
 class BackupNotFound implements Exception {}
 
+class SeedNotFound implements Exception {}
+
+class UnableToDecryptBackup implements Exception {}
+
 class Backup {
   static _goAhead(Tor tor) async {
     if (tor.enabled) {
@@ -181,7 +185,7 @@ class Backup {
   }
 
   static Exception _getRustException(String rustError) {
-    if (rustError.contains('unreachable')) {
+    if (rustError.contains('unreachable') || rustError.contains('dns error')) {
       return ServerUnreachable();
     } else if (rustError.contains('EOF')) {
       return BackupNotFound();
