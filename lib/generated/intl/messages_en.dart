@@ -2309,7 +2309,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "How would you like Envoy to connect to the Internet?"),
         "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users."),
+            "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "privacy_setting_privacy_better_performance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "privacy_setting_privacy_better_privacy":
