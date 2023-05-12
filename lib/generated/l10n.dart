@@ -11828,10 +11828,10 @@ class S {
     );
   }
 
-  /// `Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.`
+  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
   String get privacy_setting_perfomance_tor_off {
     return Intl.message(
-      'Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.',
+      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
       name: 'privacy_setting_perfomance_tor_off',
       desc: '',
       args: [],

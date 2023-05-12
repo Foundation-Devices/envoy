@@ -1423,7 +1423,7 @@
   "privacy_setting_perfomance_heading": "Choose your Privacy",
   "privacy_setting_perfomance_improved_privacy": "Improved Privacy",
   "privacy_setting_perfomance_subheading": "How would you like Envoy to connect to the Internet?",
-  "privacy_setting_perfomance_tor_off": "Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.",
+  "privacy_setting_perfomance_tor_off": "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.",
   "privacy_setting_privacy_better_performance": "Better \nPerformance",
   "privacy_setting_privacy_better_privacy": "Improved Privacy",
   "privacy_setting_privacy_cta": "Continue",
