@@ -14,8 +14,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'onboarding_page.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class OnboardEnvoyWelcomeScreen extends StatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);

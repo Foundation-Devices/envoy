@@ -8,8 +8,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../generated/l10n.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class FwWarning extends StatefulWidget {
   const FwWarning({Key? key, required this.tryNow, required this.tryLater})

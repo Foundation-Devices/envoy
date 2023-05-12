@@ -13,8 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
-
-import '../../generated/l10n.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class AuthenticateApp extends StatelessWidget {
   const AuthenticateApp({Key? key}) : super(key: key);

@@ -149,7 +149,6 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                         return _betterPerformance
                             ? LinkText(
                                 text: S().privacy_setting_perfomance_tor_off,
-                                onTap: () {},
                                 linkStyle: _messageStyle?.copyWith(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w900,
@@ -157,7 +156,6 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                                         EnvoyColors.listAccountTileColors[0]))
                             : LinkText(
                                 text: S().privacy_setting_privacy_tor_on,
-                                onTap: () {},
                                 linkStyle: _messageStyle?.copyWith(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w900,
