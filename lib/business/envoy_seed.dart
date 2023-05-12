@@ -63,7 +63,7 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
-    await _store(seed);
+    await store(seed);
 
     try {
       var mainnet = Wallet.deriveWallet(seed, HOT_WALLET_MAINNET_PATH,
@@ -93,7 +93,7 @@ class EnvoySeed {
     return derived;
   }
 
-  Future<void> _store(String seed) async {
+  Future<void> store(String seed) async {
     if (Settings().syncToCloud) {
       await _saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
       _platform.invokeMethod('data_changed');
@@ -109,6 +109,9 @@ class EnvoySeed {
     }
 
     final seed = await get();
+    if (seed == null) {
+      return;
+    }
 
     Map<String, String> backupData = {};
     for (var key in keysToBackUp) {
@@ -138,7 +141,7 @@ class EnvoySeed {
     }
 
     return Backup.perform(
-            backupData, seed!, Settings().envoyServerAddress, Tor(),
+            backupData, seed, Settings().envoyServerAddress, Tor(),
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) {
       if (cloud && success) {
@@ -168,7 +171,7 @@ class EnvoySeed {
         seed = await get();
       }
     } catch (e) {
-      throw BackupNotFound();
+      throw SeedNotFound();
     }
 
     // Still nothing? You're boned
@@ -318,7 +321,7 @@ class EnvoySeed {
   // When manual user decides to enable Auto-Backup
   copySeedToNonSecure() {
     _getSecure().then((seed) {
-      _store(seed!);
+      store(seed!);
     });
   }
 

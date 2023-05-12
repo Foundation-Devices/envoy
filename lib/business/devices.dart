@@ -81,6 +81,8 @@ class Devices extends ChangeNotifier {
   }
 
   restore() {
+    devices.clear();
+
     if (_ls.prefs.containsKey(DEVICES_PREFS)) {
       var storedDevices = jsonDecode(_ls.prefs.getString(DEVICES_PREFS)!);
       for (var device in storedDevices) {

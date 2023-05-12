@@ -13,44 +13,35 @@ class ColorPair {
 }
 
 class EnvoyColors {
-  static const Color tilesLineDarkColor = Color.fromRGBO(35, 39, 40, 1);
-  static const Color deviceBackgroundGradientGrey =
-      Color.fromRGBO(211, 211, 211, 1.0);
+  static const Color tilesLineDarkColor = Color(0xFF232728);
+  static const Color deviceBackgroundGradientGrey = Color(0xFFD3D3D3);
 
-  static const Color blue = Color.fromRGBO(80, 159, 181, 1);
-  static const Color lightBlue = Color.fromRGBO(168, 221, 229, 1);
+  static const Color blue = Color(0xFF509FB5);
+  static const Color lightBlue = Color(0xFFA8DDE5);
 
-  static const Color brown = Color.fromRGBO(138, 98, 81, 1);
-  static const Color lightBrown = Color.fromRGBO(238, 196, 179, 1);
+  static const Color brown = Color(0xFF8A6251);
+  static const Color lightBrown = Color(0xFFEEC4B3);
 
-  static const Color blackish = Color.fromRGBO(37, 41, 42, 1);
-  static const Color lightBlackish = Color.fromRGBO(115, 122, 123, 1);
+  static const Color blackish = Color(0xFF25292A);
+  static const Color lightBlackish = Color(0xFF737A7B);
 
-  static const Color whitePrint = Color.fromRGBO(248, 248, 248, 1);
+  static const Color whitePrint = Color(0xFFF8F8F8);
+  static const Color white95 = Color(0xF2FFFFFF);
+  static const Color white80 = Color(0xCCFFFFFF);
+  static const Color white100 = Color(0xFFFFFFFF);
 
-  static const Color white95 = Color.fromRGBO(255, 255, 255, 0.95);
-  static const Color white80 = Color.fromRGBO(255, 255, 255, 0.80);
+  static const Color transparent = Color(0x00FFFFFF);
 
-  static const Color white100 = Color.fromRGBO(255, 255, 255, 1);
-  static const Color grey = Color.fromRGBO(104, 104, 104, 2);
-  static const Color transparent = Color.fromRGBO(255, 255, 255, 0.0);
+  static const Color grey = Color(0xFF686868);
+  static const Color grey15 = Color(0x26C0C0C0);
+  static const Color grey22 = Color(0x38C0C0C0);
+  static const Color grey85 = Color(0xD9C0C0C0);
 
-  static const Color darkTeal = Color.fromRGBO(0, 157, 185, 1);
-  static const Color teal = Color.fromRGBO(0, 189, 205, 1);
+  static const Color darkTeal = Color(0xFF009DB9);
+  static const Color teal = Color(0xFF00BDCD);
 
-  static const Color white30 = Color.fromRGBO(255, 255, 255, 0.3);
-  static const Color grey15 = Color.fromRGBO(192, 192, 192, 0.15);
-  static const Color grey22 = Color.fromRGBO(192, 192, 192, 0.22);
-  static const Color grey50 = Color.fromRGBO(192, 192, 192, 0.50);
-  static const Color grey85 = Color.fromRGBO(192, 192, 192, 0.85);
-
-  static const Color darkCopper = Color.fromRGBO(191, 117, 95, 1.0);
-  static const Color midCopper = Color.fromRGBO(214, 139, 110, 1.0);
-  static const Color lightCopper = Color.fromRGBO(251, 196, 170, 1.0);
-
-  static const Color glowInner = Color.fromRGBO(150, 92, 75, 1.0);
-  static const Color glowMiddle = midCopper;
-  static const Color glowOuter = transparent;
+  static const Color darkCopper = Color(0xFFBF755F);
+  static const Color lightCopper = Color(0xFFFBC4AA);
 
   static const Color danger = Color(0xFFBB6E5A);
 

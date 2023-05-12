@@ -8,13 +8,13 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 
 class MagicRecoverWallet extends StatefulWidget {
@@ -29,6 +29,8 @@ enum MagicRecoveryWalletState {
   success,
   backupNotFound,
   serverNotReachable,
+  seedNotFound,
+  unableToDecryptBackup,
 }
 
 class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
@@ -59,13 +61,18 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
       setState(() {
         _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
       });
+    } on SeedNotFound {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
+      });
     } on ServerUnreachable {
       setState(() {
         _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
       });
     } catch (e) {
       setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+        _magicRecoverWalletState =
+            MagicRecoveryWalletState.unableToDecryptBackup;
       });
     } finally {
       if (success) {
@@ -174,6 +181,9 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         MagicRecoveryWalletState.serverNotReachable) {
       return _serverNotReachable(context);
     }
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound) {
+      return _seedNotFound(context);
+    }
     return SizedBox();
   }
 
@@ -235,6 +245,46 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         ),
       );
     }
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            OnboardingButton(
+              label: S().magic_setup_recovery_fail_Android_CTA2,
+              type: EnvoyButtonTypes.tertiary,
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_c) {
+                  return ScannerPage(
+                    ScannerType.seed,
+                    callback: (seed) {
+                      _restoreFromSeed(seed, context);
+                    },
+                  );
+                }));
+              },
+            ),
+            Consumer(
+              builder: (context, ref, child) {
+                return OnboardingButton(
+                  label: S().magic_setup_recovery_fail_backup_cta3,
+                  type: EnvoyButtonTypes.primary,
+                  onTap: () async {
+                    ref.read(homePageTabProvider.notifier).state =
+                        HomePageTabState.accounts;
+                    ref.read(homePageBackgroundProvider.notifier).state =
+                        HomePageBackgroundState.hidden;
+                    await Future.delayed(Duration(milliseconds: 200));
+                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    }
     if (_magicRecoverWalletState ==
         MagicRecoveryWalletState.serverNotReachable) {
       return Padding(
@@ -249,11 +299,15 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                 showContinueWarningDialog(context);
               },
             ),
-            OnboardingButton(
-              label: S().magic_setup_recovery_fail_connectivity_cta2,
-              type: EnvoyButtonTypes.secondary,
-              onTap: () {
-                openBackupFile(context);
+            Consumer(
+              builder: (context, ref, child) {
+                return OnboardingButton(
+                  label: S().magic_setup_recovery_fail_connectivity_cta2,
+                  type: EnvoyButtonTypes.secondary,
+                  onTap: () {
+                    openBackupFile(context);
+                  },
+                );
               },
             ),
             OnboardingButton(
@@ -272,68 +326,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
       );
     }
     return null;
-  }
-
-  //Recover using seed or backup file
-  //ignore: unused_element
-  _recoverManually({String? path, String? seed}) async {
-    setState(() {
-      _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
-    });
-
-    _setIndeterminateState();
-
-    String? seed = null;
-    String? passphrase = null;
-    List<String> seedList = [];
-    bool success = false;
-    try {
-      if (seed != null) {
-        seedList = seed.split(" ");
-        if (seedList.length == 13 || seedList.length == 25) {
-          seedList.removeLast();
-          await showEnvoyDialog(
-              dialog: Container(
-                  width: MediaQuery.of(context).size.width * 0.85,
-                  height: 330,
-                  child: SeedPassphraseEntry(onPassphraseEntered: (value) {
-                    passphrase = value;
-                    Navigator.pop(context);
-                  })),
-              context: context);
-        }
-      }
-      if (seedList.isNotEmpty) {
-        await EnvoySeed().create(seedList, passphrase: passphrase);
-      }
-      await Future.delayed(Duration(seconds: 1));
-      success = await EnvoySeed().restoreData(seed: seed);
-      setState(() {
-        if (success) {
-          _magicRecoverWalletState = MagicRecoveryWalletState.success;
-        } else {
-          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-        }
-      });
-    } on BackupNotFound {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-      });
-    } on ServerUnreachable {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-      });
-    } catch (e) {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-      });
-    } finally {
-      if (success) {
-        _setHappyState();
-      } else {
-        _setUnhappyState();
-      }
-    }
   }
 
   Widget _recoveryInProgress(BuildContext context) {
@@ -442,6 +434,33 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     );
   }
 
+  Widget _seedNotFound(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            S().magic_setup_recovery_fail_Android_heading,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Padding(padding: EdgeInsets.all(28)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            S().magic_setup_recovery_fail_Android_subheading,
+            textAlign: TextAlign.center,
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _setIndeterminateState() {
     _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
     _stateMachineController?.findInput<bool>("happy")?.change(false);
@@ -536,5 +555,48 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             ),
           ),
         ));
+  }
+
+  void _restoreFromSeed(String seed, BuildContext context) async {
+    bool success = false;
+    setState(() {
+      _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
+    });
+    _setIndeterminateState();
+
+    try {
+      await EnvoySeed().store(seed);
+      success = await EnvoySeed().restoreData(seed: seed);
+      setState(() {
+        if (success) {
+          _magicRecoverWalletState = MagicRecoveryWalletState.success;
+        } else {
+          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+        }
+      });
+    } on BackupNotFound {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+      });
+    } on SeedNotFound {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
+      });
+    } on ServerUnreachable {
+      setState(() {
+        _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
+      });
+    } catch (e) {
+      setState(() {
+        _magicRecoverWalletState =
+            MagicRecoveryWalletState.unableToDecryptBackup;
+      });
+    } finally {
+      if (success) {
+        _setHappyState();
+      } else {
+        _setUnhappyState();
+      }
+    }
   }
 }

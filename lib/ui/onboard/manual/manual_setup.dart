@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
@@ -100,16 +101,18 @@ class _ManualSetupState extends State<ManualSetup> {
                             );
                           }));
                         }),
-                    OnboardingButton(
-                        label: S().manual_setup_tutorial_CTA1,
-                        fontWeight: FontWeight.w600,
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return SeedIntroScreen(
-                                mode: SeedIntroScreenType.generate);
-                          }));
-                        }),
+                    !EnvoySeed().walletDerived()
+                        ? OnboardingButton(
+                            label: S().manual_setup_tutorial_CTA1,
+                            fontWeight: FontWeight.w600,
+                            onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return SeedIntroScreen(
+                                    mode: SeedIntroScreenType.generate);
+                              }));
+                            })
+                        : SizedBox.shrink(),
                   ],
                 ))
               ],
