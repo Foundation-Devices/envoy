@@ -14,6 +14,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class OnboardEnvoyWelcomeScreen extends StatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: EnvoyButton(
-                "Skip",
+                S().envoy_welcome_right_action,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -111,11 +112,14 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
                                         Theme.of(context).textTheme.titleLarge,
                                   ),
                                   Padding(padding: EdgeInsets.all(6)),
-                                  Text(
-                                    S().envoy_welcome_screen_subheading,
-                                    style:
+                                  LinkText(
+                                    text: S().envoy_welcome_screen_subheading,
+                                    textStyle:
                                         Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.center,
+                                    linkStyle: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(fontWeight: FontWeight.w700),
                                   ),
                                 ],
                               ),

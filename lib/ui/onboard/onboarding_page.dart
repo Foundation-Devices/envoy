@@ -303,16 +303,12 @@ class ActionText extends StatelessWidget {
 
 class LinkText extends StatelessWidget {
   final String text;
-  final Function onTap;
+  final Function? onTap;
 
   final TextStyle? textStyle;
   final TextStyle? linkStyle;
 
-  LinkText(
-      {required this.text,
-      required this.onTap,
-      this.textStyle,
-      this.linkStyle});
+  LinkText({required this.text, this.onTap, this.textStyle, this.linkStyle});
 
   @override
   Widget build(BuildContext context) {

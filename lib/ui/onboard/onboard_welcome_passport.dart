@@ -8,6 +8,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/shield.dart';
@@ -59,27 +60,16 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(padding: EdgeInsets.all(4)),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "I don’t have a Passport.",
-                          ),
-                          TextSpan(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      color: EnvoyColors.teal),
-                              text: "  Buy One",
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {}),
-                        ],
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: EnvoyColors.grey)),
+                  LinkText(
+                    text: S().passport_welcome_screen_cta3,
+                    textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w800, color: EnvoyColors.grey),
+                    linkStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w800, color: EnvoyColors.teal),
+                    onTap: () {
+                      launchUrl(
+                          Uri.parse("https://foundationdevices.com/passport"));
+                    },
                   ),
                   Padding(padding: EdgeInsets.all(8)),
                   EnvoyButton(
@@ -126,7 +116,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: EnvoyButton(
-                "Skip",
+                S().passport_welcome_screen_skip,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -209,40 +199,29 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Padding(padding: EdgeInsets.all(4)),
-                                RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: S()
-                                              .envoy_welcome_cta03
-                                              .replaceAll("{{Buy One}}", ""),
-                                        ),
-                                        TextSpan(
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelLarge
-                                                ?.copyWith(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: EnvoyColors.teal),
-                                            text: "  Buy One",
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () {
-                                                launchUrl(Uri.parse(
-                                                    "https://foundationdevices.com/passport"));
-                                              }),
-                                      ],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w800,
-                                              color: EnvoyColors.grey)),
+                                LinkText(
+                                  text: S().passport_welcome_screen_cta3,
+                                  textStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          color: EnvoyColors.grey),
+                                  linkStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          color: EnvoyColors.teal),
+                                  onTap: () {
+                                    launchUrl(Uri.parse(
+                                        "https://foundationdevices.com/passport"));
+                                  },
                                 ),
                                 Padding(padding: EdgeInsets.all(8)),
                                 EnvoyButton(
                                   S().passport_welcome_screen_cta2,
-                                  type: EnvoyButtonTypes.primary,
+                                  type: EnvoyButtonTypes.secondary,
                                   onTap: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {

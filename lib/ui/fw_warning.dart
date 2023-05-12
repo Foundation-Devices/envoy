@@ -8,6 +8,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class FwWarning extends StatefulWidget {
   const FwWarning({Key? key, required this.tryNow, required this.tryLater})
@@ -77,7 +78,7 @@ class _FwWarningState extends State<FwWarning> {
                                   mode: LaunchMode.externalApplication);
                             },
                           style: linkStyle,
-                          text: "Download from GitHub",
+                          text: S().envoy_fw_error_modal_cta_3,
                         ),
                       ],
                     ),
@@ -93,7 +94,7 @@ class _FwWarningState extends State<FwWarning> {
               //Temporarily Disable Tor
               children: [
                 EnvoyButton(
-                  "Try again later",
+                  S().envoy_fw_error_modal_cta_2,
                   onTap: () {
                     widget.tryLater();
                   },
@@ -101,7 +102,7 @@ class _FwWarningState extends State<FwWarning> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
-                    "Retry now",
+                    S().envoy_fw_error_modal_cta_1,
                     onTap: () {
                       widget.tryNow();
                       Navigator.of(context).pop();
