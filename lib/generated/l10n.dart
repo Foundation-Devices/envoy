@@ -302,16 +302,6 @@ class S {
 
   // skipped getter for the 'Account name' key
 
-  /// `include?`
-  String get Action {
-    return Intl.message(
-      'include?',
-      name: 'Action',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `FAQs`
   String get Active {
     return Intl.message(
@@ -323,6 +313,8 @@ class S {
   }
 
   // skipped getter for the 'Add memo? Y/N (optional)' key
+
+  // skipped getter for the 'Add note' key
 
   // skipped getter for the 'Add tag' key
 
@@ -355,6 +347,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Amount To Send' key
 
   // skipped getter for the 'App Version' key
 
@@ -496,6 +490,16 @@ class S {
 
   // skipped getter for the 'Cold storage' key
 
+  /// `Conference`
+  String get Conference {
+    return Intl.message(
+      'Conference',
+      name: 'Conference',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Confirm and Broadcast transaction' key
 
   // skipped getter for the 'Confirm and Broadcast tx' key
@@ -628,6 +632,16 @@ class S {
     );
   }
 
+  /// `Destination`
+  String get Destination {
+    return Intl.message(
+      'Destination',
+      name: 'Destination',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Dialog`
   String get Dialog {
     return Intl.message(
@@ -738,6 +752,16 @@ class S {
 
   // skipped getter for the 'Envoy wallet' key
 
+  /// `Exchange`
+  String get Exchange {
+    return Intl.message(
+      'Exchange',
+      name: 'Exchange',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'FW Update' key
 
   // skipped getter for the 'Face ID' key
@@ -747,6 +771,16 @@ class S {
     return Intl.message(
       'Family',
       name: 'Family',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee`
+  String get Fee {
+    return Intl.message(
+      'Fee',
+      name: 'Fee',
       desc: '',
       args: [],
     );
@@ -912,10 +946,10 @@ class S {
     );
   }
 
-  /// `Choose destination`
+  /// `Continue`
   String get Lavel {
     return Intl.message(
-      'Choose destination',
+      'Continue',
       name: 'Lavel',
       desc: '',
       args: [],
@@ -951,6 +985,10 @@ class S {
   // skipped getter for the 'List Item Active' key
 
   // skipped getter for the 'List Item Inactive' key
+
+  // skipped getter for the 'Low fee' key
+
+  // skipped getter for the 'Lowest fee' key
 
   // skipped getter for the 'MAGIC RECOVERY' key
 
@@ -1088,6 +1126,8 @@ class S {
 
   // skipped getter for the 'Private wallet' key
 
+  // skipped getter for the 'Processing Time : 1 hour' key
+
   // skipped getter for the 'Property 1=Tx details, Property2=SingleTag, Change=False' key
 
   // skipped getter for the 'QR CODES' key
@@ -1143,6 +1183,8 @@ class S {
   // skipped getter for the 'Restore Backup' key
 
   // skipped getter for the 'Restore Seed' key
+
+  // skipped getter for the 'Review address' key
 
   // skipped getter for the 'Robust fee selection toggle' key
 
@@ -1271,6 +1313,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Show details' key
 
   /// `Skip`
   String get Skip {
@@ -1430,6 +1474,16 @@ class S {
 
   // skipped getter for the 'Tor Connectivity' key
 
+  /// `Total`
+  String get Total {
+    return Intl.message(
+      'Total',
+      name: 'Total',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Total inputs' key
 
   // skipped getter for the 'Total inputs:' key
@@ -1538,10 +1592,10 @@ class S {
     );
   }
 
-  /// `Bitcoin Simplified`
+  /// `Skip`
   String get _ {
     return Intl.message(
-      'Bitcoin Simplified',
+      'Skip',
       name: '_',
       desc: '',
       args: [],
@@ -1565,6 +1619,146 @@ class S {
     return Intl.message(
       'accessibility',
       name: 'accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get account_empty_coin_view_first_tx_dismiss {
+    return Intl.message(
+      'Dismiss',
+      name: 'account_empty_coin_view_first_tx_dismiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use the filter to choose how to display your coins.`
+  String get account_empty_coin_view_first_tx_text_explainer {
+    return Intl.message(
+      'Use the filter to choose how to display your coins.',
+      name: 'account_empty_coin_view_first_tx_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get account_empty_coin_view_second_tx_learn_more {
+    return Intl.message(
+      'Dismiss',
+      name: 'account_empty_coin_view_second_tx_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use the filter to choose how to display your coins.`
+  String get account_empty_coin_view_second_tx_text_explainer {
+    return Intl.message(
+      'Use the filter to choose how to display your coins.',
+      name: 'account_empty_coin_view_second_tx_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get account_empty_tx_history_first_tx_learn_more {
+    return Intl.message(
+      'Dismiss',
+      name: 'account_empty_tx_history_first_tx_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Toggle right the List button to view more.`
+  String get account_empty_tx_history_first_tx_text_explainer {
+    return Intl.message(
+      'Toggle right the List button to view more.',
+      name: 'account_empty_tx_history_first_tx_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get account_empty_tx_history_learn_more {
+    return Intl.message(
+      'Learn More',
+      name: 'account_empty_tx_history_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get account_empty_tx_history_second_tx_dismiss {
+    return Intl.message(
+      'Dismiss',
+      name: 'account_empty_tx_history_second_tx_dismiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use the filter to choose how to display your transactions.`
+  String get account_empty_tx_history_second_tx_text_explainer {
+    return Intl.message(
+      'Use the filter to choose how to display your transactions.',
+      name: 'account_empty_tx_history_second_tx_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction history is currently empty.`
+  String get account_empty_tx_history_text_explainer {
+    return Intl.message(
+      'Your transaction history is currently empty.',
+      name: 'account_empty_tx_history_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Account`
+  String get accounts_empty_modal_video_cta1 {
+    return Intl.message(
+      'Create Account',
+      name: 'accounts_empty_modal_video_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watch Later`
+  String get accounts_empty_modal_video_cta2 {
+    return Intl.message(
+      'Watch Later',
+      name: 'accounts_empty_modal_video_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get started by creating your first Envoy Wallet.`
+  String get accounts_empty_text_explainer {
+    return Intl.message(
+      'Get started by creating your first Envoy Wallet.',
+      name: 'accounts_empty_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn more`
+  String get accounts_empty_text_learn_more {
+    return Intl.message(
+      'Learn more',
+      name: 'accounts_empty_text_learn_more',
       desc: '',
       args: [],
     );
@@ -1690,7 +1884,69 @@ class S {
     );
   }
 
+  /// `Learn more`
+  String get accounts_second_transaction_learn_more {
+    return Intl.message(
+      'Learn more',
+      name: 'accounts_second_transaction_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'accounts_second_transaction_text-explainer' key
+
   // skipped getter for the 'add passphrase' key
+
+  /// `Save`
+  String get add_note_modal_cta {
+    return Intl.message(
+      'Save',
+      name: 'add_note_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a Note`
+  String get add_note_modal_heading {
+    return Intl.message(
+      'Add a Note',
+      name: 'add_note_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchased a Passport hardware wallet`
+  String get add_note_modal_ie_text_field {
+    return Intl.message(
+      'Purchased a Passport hardware wallet',
+      name: 'add_note_modal_ie_text_field',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0/480`
+  String get add_note_modal_max_characters {
+    return Intl.message(
+      '0/480',
+      name: 'add_note_modal_max_characters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write some details about your transaction below.`
+  String get add_note_modal_subheading {
+    return Intl.message(
+      'Write some details about your transaction below.',
+      name: 'add_note_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `analyzer`
   String get analyzer {
@@ -2212,16 +2468,6 @@ class S {
     );
   }
 
-  /// ``
-  String get bc1cq313af51bh5k0lsmna21x {
-    return Intl.message(
-      '',
-      name: 'bc1cq313af51bh5k0lsmna21x',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `bc1cq313af51bh5k0lsmna21xpw`
   String get bc1cq313af51bh5k0lsmna21xpw {
     return Intl.message(
@@ -2236,7 +2482,557 @@ class S {
 
   // skipped getter for the 'casa only / not displayed on Envoy' key
 
+  /// `Continue`
+  String get change_output_from_multiple_tags_modal_cta {
+    return Intl.message(
+      'Continue',
+      name: 'change_output_from_multiple_tags_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a Tag`
+  String get change_output_from_multiple_tags_modal_heading {
+    return Intl.message(
+      'Create a Tag',
+      name: 'change_output_from_multiple_tags_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most frequently used`
+  String get change_output_from_multiple_tags_modal_most_frequently_used_tags {
+    return Intl.message(
+      'Most frequently used',
+      name: 'change_output_from_multiple_tags_modal_most_frequently_used_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here’s some infotext about change outputs from different tags.`
+  String get change_output_from_multiple_tags_modal_subheading {
+    return Intl.message(
+      'Here’s some infotext about change outputs from different tags.',
+      name: 'change_output_from_multiple_tags_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'check PP design system icon' key
+
+  /// `Do not remind me`
+  String get coincontrol_coin_change_spendable_tate_modal_checkbox {
+    return Intl.message(
+      'Do not remind me',
+      name: 'coincontrol_coin_change_spendable_tate_modal_checkbox',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Return to my Coins`
+  String get coincontrol_coin_change_spendable_tate_modal_cta1 {
+    return Intl.message(
+      'Return to my Coins',
+      name: 'coincontrol_coin_change_spendable_tate_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get coincontrol_coin_change_spendable_tate_modal_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'coincontrol_coin_change_spendable_tate_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\n\nThis action will override your Coin Selection`
+  String get coincontrol_coin_change_spendable_tate_modal_subheading {
+    return Intl.message(
+      'WARNING\n\nThis action will override your Coin Selection',
+      name: 'coincontrol_coin_change_spendable_tate_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required coins`
+  String get coincontrol_edit_transaction_required_inputs {
+    return Intl.message(
+      'Required coins',
+      name: 'coincontrol_edit_transaction_required_inputs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `11,500 sats`
+  String get coincontrol_edit_transaction_required_inputs_sats {
+    return Intl.message(
+      '11,500 sats',
+      name: 'coincontrol_edit_transaction_required_inputs_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected coins`
+  String get coincontrol_edit_transaction_selected_inputs {
+    return Intl.message(
+      'Selected coins',
+      name: 'coincontrol_edit_transaction_selected_inputs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `45,000 sats`
+  String get coincontrol_edit_transaction_selected_inputs_sats {
+    return Intl.message(
+      '45,000 sats',
+      name: 'coincontrol_edit_transaction_selected_inputs_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lock coins`
+  String get coincontrol_lock_coin_modal_cta {
+    return Intl.message(
+      'Lock coins',
+      name: 'coincontrol_lock_coin_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not remind me`
+  String get coincontrol_lock_coin_modal_cta2 {
+    return Intl.message(
+      'Do not remind me',
+      name: 'coincontrol_lock_coin_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\n\nYou’re about to lock coins.\nInfo text about locking label and consequences`
+  String get coincontrol_lock_coin_modal_subheading {
+    return Intl.message(
+      'WARNING\n\nYou’re about to lock coins.\nInfo text about locking label and consequences',
+      name: 'coincontrol_lock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `500 SATS`
+  String get coincontrol_tx_detail_ {
+    return Intl.message(
+      '500 SATS',
+      name: 'coincontrol_tx_detail_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show details`
+  String get coincontrol_tx_detail_amount_details {
+    return Intl.message(
+      'Show details',
+      name: 'coincontrol_tx_detail_amount_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$5.65`
+  String get coincontrol_tx_detail_amount_fiat {
+    return Intl.message(
+      '\$5.65',
+      name: 'coincontrol_tx_detail_amount_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `11,000 SATS`
+  String get coincontrol_tx_detail_amount_sats {
+    return Intl.message(
+      '11,000 SATS',
+      name: 'coincontrol_tx_detail_amount_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount to send`
+  String get coincontrol_tx_detail_amount_to_sent {
+    return Intl.message(
+      'Amount to send',
+      name: 'coincontrol_tx_detail_amount_to_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send transaction`
+  String get coincontrol_tx_detail_cta {
+    return Intl.message(
+      'Send transaction',
+      name: 'coincontrol_tx_detail_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Transaction`
+  String get coincontrol_tx_detail_cta2 {
+    return Intl.message(
+      'Edit Transaction',
+      name: 'coincontrol_tx_detail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get coincontrol_tx_detail_custom_fee_cta {
+    return Intl.message(
+      'Continue',
+      name: 'coincontrol_tx_detail_custom_fee_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `19 sats /vb`
+  String get coincontrol_tx_detail_custom_fee_sats1_3 {
+    return Intl.message(
+      '19 sats /vb',
+      name: 'coincontrol_tx_detail_custom_fee_sats1_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `20 sats/vb`
+  String get coincontrol_tx_detail_custom_fee_sats_2_3 {
+    return Intl.message(
+      '20 sats/vb',
+      name: 'coincontrol_tx_detail_custom_fee_sats_2_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `30 sats/vb`
+  String get coincontrol_tx_detail_custom_fee_sats_3_3 {
+    return Intl.message(
+      '30 sats/vb',
+      name: 'coincontrol_tx_detail_custom_fee_sats_3_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XX min`
+  String get coincontrol_tx_detail_custom_fee_time_1_3 {
+    return Intl.message(
+      'XX min',
+      name: 'coincontrol_tx_detail_custom_fee_time_1_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XX min`
+  String get coincontrol_tx_detail_custom_fee_time_2_3 {
+    return Intl.message(
+      'XX min',
+      name: 'coincontrol_tx_detail_custom_fee_time_2_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XX min`
+  String get coincontrol_tx_detail_custom_fee_time_3_3 {
+    return Intl.message(
+      'XX min',
+      name: 'coincontrol_tx_detail_custom_fee_time_3_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destination`
+  String get coincontrol_tx_detail_destination {
+    return Intl.message(
+      'Destination',
+      name: 'coincontrol_tx_detail_destination',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tb1q33xn...x5t375`
+  String get coincontrol_tx_detail_destination_address {
+    return Intl.message(
+      'tb1q33xn...x5t375',
+      name: 'coincontrol_tx_detail_destination_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review address`
+  String get coincontrol_tx_detail_destination_details {
+    return Intl.message(
+      'Review address',
+      name: 'coincontrol_tx_detail_destination_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change received`
+  String get coincontrol_tx_detail_expand_change_received {
+    return Intl.message(
+      'Change received',
+      name: 'coincontrol_tx_detail_expand_change_received',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `22,500 sats  $3.05`
+  String get coincontrol_tx_detail_expand_change_received_amount {
+    return Intl.message(
+      '22,500 sats  \$3.05',
+      name: 'coincontrol_tx_detail_expand_change_received_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$5.65`
+  String get coincontrol_tx_detail_expand_fiat {
+    return Intl.message(
+      '\$5.65',
+      name: 'coincontrol_tx_detail_expand_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TRANSACTION Details`
+  String get coincontrol_tx_detail_expand_heading {
+    return Intl.message(
+      'TRANSACTION Details',
+      name: 'coincontrol_tx_detail_expand_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get coincontrol_tx_detail_expand_note {
+    return Intl.message(
+      'Note',
+      name: 'coincontrol_tx_detail_expand_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `11,000 SATS`
+  String get coincontrol_tx_detail_expand_sats {
+    return Intl.message(
+      '11,000 SATS',
+      name: 'coincontrol_tx_detail_expand_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spent from  2 Coins`
+  String get coincontrol_tx_detail_expand_spent_from {
+    return Intl.message(
+      'Spent from  2 Coins',
+      name: 'coincontrol_tx_detail_expand_spent_from',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` 25.000 sats $3.25`
+  String get coincontrol_tx_detail_expand_spent_from_amount {
+    return Intl.message(
+      ' 25.000 sats \$3.25',
+      name: 'coincontrol_tx_detail_expand_spent_from_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be sent`
+  String get coincontrol_tx_detail_heading {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'coincontrol_tx_detail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details are correct before sending.`
+  String get coincontrol_tx_detail_subheading {
+    return Intl.message(
+      'Confirm the transaction details are correct before sending.',
+      name: 'coincontrol_tx_detail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$5.65`
+  String get coincontrol_tx_detail_total_fiat {
+    return Intl.message(
+      '\$5.65',
+      name: 'coincontrol_tx_detail_total_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `11,500 SATS`
+  String get coincontrol_tx_detail_total_sats {
+    return Intl.message(
+      '11,500 SATS',
+      name: 'coincontrol_tx_detail_total_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get coincontrol_tx_history_tx_details_address {
+    return Intl.message(
+      'Address',
+      name: 'coincontrol_tx_history_tx_details_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tb1q33xnrjena6apwnhx5t375...`
+  String get coincontrol_tx_history_tx_details_address_details {
+    return Intl.message(
+      'tb1q33xnrjena6apwnhx5t375...',
+      name: 'coincontrol_tx_history_tx_details_address_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee`
+  String get coincontrol_tx_history_tx_details_fee {
+    return Intl.message(
+      'Fee',
+      name: 'coincontrol_tx_history_tx_details_fee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `500 sats   $0.13`
+  String get coincontrol_tx_history_tx_details_fee_details {
+    return Intl.message(
+      '500 sats   \$0.13',
+      name: 'coincontrol_tx_history_tx_details_fee_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag`
+  String get coincontrol_tx_history_tx_details_history {
+    return Intl.message(
+      'Tag',
+      name: 'coincontrol_tx_history_tx_details_history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exchange`
+  String get coincontrol_tx_history_tx_details_history_details {
+    return Intl.message(
+      'Exchange',
+      name: 'coincontrol_tx_history_tx_details_history_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TX ID`
+  String get coincontrol_tx_history_tx_details_tx_id {
+    return Intl.message(
+      'TX ID',
+      name: 'coincontrol_tx_history_tx_details_tx_id',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XXXXXXXXXXXXXXXXXXXXXX...`
+  String get coincontrol_tx_history_tx_details_tx_id_details {
+    return Intl.message(
+      'XXXXXXXXXXXXXXXXXXXXXX...',
+      name: 'coincontrol_tx_history_tx_details_tx_id_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlock coins`
+  String get coincontrol_unlock_coin_modal_cta {
+    return Intl.message(
+      'Unlock coins',
+      name: 'coincontrol_unlock_coin_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not remind me`
+  String get coincontrol_unlock_coin_modal_cta2 {
+    return Intl.message(
+      'Do not remind me',
+      name: 'coincontrol_unlock_coin_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\n\nYou’re about to unlock coins.\nInfo text about locking label and consequences`
+  String get coincontrol_unlock_coin_modal_subheading {
+    return Intl.message(
+      'WARNING\n\nYou’re about to unlock coins.\nInfo text about locking label and consequences',
+      name: 'coincontrol_unlock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'cold storage' key
 
@@ -2442,6 +3238,12 @@ class S {
 
   // skipped getter for the 'dARK TO LIGHT' key
 
+  // skipped getter for the 'delete tag_modal_cta1' key
+
+  // skipped getter for the 'delete tag_modal_cta2' key
+
+  // skipped getter for the 'delete tag_modal_subheading' key
+
   /// `Go to Settings`
   String get delete_wallet_for_good_instant_android_cta1 {
     return Intl.message(
@@ -2542,6 +3344,56 @@ class S {
     );
   }
 
+  /// `ENVOY WALLET\n\nPASSPORT ACCOUNT`
+  String get devices_empty_add_menu {
+    return Intl.message(
+      'ENVOY WALLET\n\nPASSPORT ACCOUNT',
+      name: 'devices_empty_add_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy Passport`
+  String get devices_empty_modal_video_cta1 {
+    return Intl.message(
+      'Buy Passport',
+      name: 'devices_empty_modal_video_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watch Later`
+  String get devices_empty_modal_video_cta2 {
+    return Intl.message(
+      'Watch Later',
+      name: 'devices_empty_modal_video_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LEARN`
+  String get devices_empty_modal_video_header {
+    return Intl.message(
+      'LEARN',
+      name: 'devices_empty_modal_video_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get devices_learn_more {
+    return Intl.message(
+      'Learn More',
+      name: 'devices_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Connect`
   String get devices_screen_CTA1 {
     return Intl.message(
@@ -2582,7 +3434,89 @@ class S {
     );
   }
 
+  /// `Don’t have a Passport?`
+  String get devices_text_explainer {
+    return Intl.message(
+      'Don’t have a Passport?',
+      name: 'devices_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'dialogs Icons' key
+
+  /// `Continue`
+  String get edit_tag_modal_1_2_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'edit_tag_modal_1_2_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not remind me`
+  String get edit_tag_modal_1_2_cta2 {
+    return Intl.message(
+      'Do not remind me',
+      name: 'edit_tag_modal_1_2_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a Tag`
+  String get edit_tag_modal_1_2_heading {
+    return Intl.message(
+      'Create a Tag',
+      name: 'edit_tag_modal_1_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Info text about name consequences on every UTXO`
+  String get edit_tag_modal_1_2_subheading {
+    return Intl.message(
+      'Info text about name consequences on every UTXO',
+      name: 'edit_tag_modal_1_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get edit_tag_modal_2_2_cta {
+    return Intl.message(
+      'Continue',
+      name: 'edit_tag_modal_2_2_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a Tag`
+  String get edit_tag_modal_2_2_heading {
+    return Intl.message(
+      'Create a Tag',
+      name: 'edit_tag_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'edit_tag_modal_2_2_ie_text-field' key
+
+  /// `Most frequently used`
+  String get edit_tag_modal_2_2_subheading {
+    return Intl.message(
+      'Most frequently used',
+      name: 'edit_tag_modal_2_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `App Version`
   String get envoy_about_app_version {
@@ -6684,10 +7618,10 @@ class S {
     );
   }
 
-  /// `For a seamless setup, we recommend enabling Magic Backups.\n\nAdvanced users can manually create or restore a wallet seed.`
+  /// `For a seamless setup, we recommend enabling [[Magic Backups]].\n\nAdvanced users can manually create or restore a wallet seed.`
   String get envoy_welcome_screen_subheading {
     return Intl.message(
-      'For a seamless setup, we recommend enabling Magic Backups.\n\nAdvanced users can manually create or restore a wallet seed.',
+      'For a seamless setup, we recommend enabling [[Magic Backups]].\n\nAdvanced users can manually create or restore a wallet seed.',
       name: 'envoy_welcome_screen_subheading',
       desc: '',
       args: [],
@@ -7009,6 +7943,36 @@ class S {
     return Intl.message(
       'Dismiss',
       name: 'hide_amount_first_time_text_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get hot_wallet_accounts_creation_done_devices_empty_learn_more {
+    return Intl.message(
+      'Learn More',
+      name: 'hot_wallet_accounts_creation_done_devices_empty_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage your bitcoin using Passport.`
+  String get hot_wallet_accounts_creation_done_devices_empty_text_explainer {
+    return Intl.message(
+      'Manage your bitcoin using Passport.',
+      name: 'hot_wallet_accounts_creation_done_devices_empty_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap your Account card to receive your first bitcoin.`
+  String get hot_wallet_accounts_creation_done_text_explainer {
+    return Intl.message(
+      'Tap your Account card to receive your first bitcoin.',
+      name: 'hot_wallet_accounts_creation_done_text_explainer',
       desc: '',
       args: [],
     );
@@ -8850,10 +9814,10 @@ class S {
     );
   }
 
-  /// `Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy Backup File.`
+  /// `Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later.`
   String get manual_setup_import_seed_subheading {
     return Intl.message(
-      'Continue below to import an existing seed.\n\nYou’ll have the option to apply a passphrase and import an existing Envoy Backup File.',
+      'Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later.',
       name: 'manual_setup_import_seed_subheading',
       desc: '',
       args: [],
@@ -10444,6 +11408,26 @@ class S {
     );
   }
 
+  /// `Copy is TBD here.`
+  String get passport_accounts_empty_text_explainer {
+    return Intl.message(
+      'Copy is TBD here.',
+      name: 'passport_accounts_empty_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn more`
+  String get passport_accounts_empty_text_learn_more {
+    return Intl.message(
+      'Learn more',
+      name: 'passport_accounts_empty_text_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Set up a new Passport`
   String get passport_welcome_screen_cta1 {
     return Intl.message(
@@ -11450,6 +12434,26 @@ class S {
     );
   }
 
+  /// `Learn more`
+  String get secure_wallet_learn_more {
+    return Intl.message(
+      'Learn more',
+      name: 'secure_wallet_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secure your bitcoin using Passport hardware wallet.`
+  String get secure_wallet_text_explainer {
+    return Intl.message(
+      'Secure your bitcoin using Passport hardware wallet.',
+      name: 'secure_wallet_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get send_keyboard_address_confirm {
     return Intl.message(
@@ -12274,6 +13278,76 @@ class S {
     );
   }
 
+  /// `Select valid amount`
+  String get tagged_coin_details_inputs_fails_cta {
+    return Intl.message(
+      'Select valid amount',
+      name: 'tagged_coin_details_inputs_fails_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required coins`
+  String get tagged_coin_details_inputs_fails_required_inputs {
+    return Intl.message(
+      'Required coins',
+      name: 'tagged_coin_details_inputs_fails_required_inputs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `11,500 sats`
+  String get tagged_coin_details_inputs_fails_required_inputs_sats {
+    return Intl.message(
+      '11,500 sats',
+      name: 'tagged_coin_details_inputs_fails_required_inputs_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected coins`
+  String get tagged_coin_details_inputs_fails_selected_inputs {
+    return Intl.message(
+      'Selected coins',
+      name: 'tagged_coin_details_inputs_fails_selected_inputs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0 sats`
+  String get tagged_coin_details_inputs_fails_selected_inputs_sats {
+    return Intl.message(
+      '0 sats',
+      name: 'tagged_coin_details_inputs_fails_selected_inputs_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get tagged_coin_details_inputs_success_cta {
+    return Intl.message(
+      'Continue',
+      name: 'tagged_coin_details_inputs_success_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `EDIT TAG NAME\n\nDELETE TAG`
+  String get tagged_coin_details_menu {
+    return Intl.message(
+      'EDIT TAG NAME\n\nDELETE TAG',
+      name: 'tagged_coin_details_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7`
   String get tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7 {
     return Intl.message(
@@ -12289,6 +13363,106 @@ class S {
     return Intl.message(
       'testnet',
       name: 'testnet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 of 5 Coins Spendable`
+  String get untagged_coin_details_half_spendable_coin_spendable {
+    return Intl.message(
+      '1 of 5 Coins Spendable',
+      name: 'untagged_coin_details_half_spendable_coin_spendable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `send selected`
+  String get untagged_coin_details_half_spendable_cta1 {
+    return Intl.message(
+      'send selected',
+      name: 'untagged_coin_details_half_spendable_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tag selected`
+  String get untagged_coin_details_half_spendable_cta2 {
+    return Intl.message(
+      'tag selected',
+      name: 'untagged_coin_details_half_spendable_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untagged`
+  String get untagged_coin_details_half_spendable_name {
+    return Intl.message(
+      'Untagged',
+      name: 'untagged_coin_details_half_spendable_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 of 5 Coins Spendable`
+  String get untagged_coin_details_spendable_coin_spendable {
+    return Intl.message(
+      '1 of 5 Coins Spendable',
+      name: 'untagged_coin_details_spendable_coin_spendable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `send selected`
+  String get untagged_coin_details_spendable_cta1 {
+    return Intl.message(
+      'send selected',
+      name: 'untagged_coin_details_spendable_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tag selected`
+  String get untagged_coin_details_spendable_cta2 {
+    return Intl.message(
+      'tag selected',
+      name: 'untagged_coin_details_spendable_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$0.02`
+  String get untagged_coin_details_spendable_fiat {
+    return Intl.message(
+      '\$0.02',
+      name: 'untagged_coin_details_spendable_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untagged`
+  String get untagged_coin_details_spendable_name {
+    return Intl.message(
+      'Untagged',
+      name: 'untagged_coin_details_spendable_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `200 SATS`
+  String get untagged_coin_details_spendable_sats {
+    return Intl.message(
+      '200 SATS',
+      name: 'untagged_coin_details_spendable_sats',
       desc: '',
       args: [],
     );

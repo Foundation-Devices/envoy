@@ -64,7 +64,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     text: TextSpan(
                         children: [
                           TextSpan(
-                            text: "I don’t have a Passport.",
+                            text: "I don’t have a Passport.", // TODO localize
                           ),
                           TextSpan(
                               style: Theme.of(context)
@@ -73,7 +73,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                   ?.copyWith(
                                       fontWeight: FontWeight.w800,
                                       color: EnvoyColors.teal),
-                              text: "  Buy One",
+                              text: " Learn more",
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {}),
                         ],
@@ -126,7 +126,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: EnvoyButton(
-                "Skip",
+                S().passport_welcome_screen_skip,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium

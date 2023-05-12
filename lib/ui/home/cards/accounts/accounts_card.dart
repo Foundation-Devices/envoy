@@ -154,7 +154,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         ? EmptyCard(widget.rightFunction!,
             buttons: [
               EnvoyButton(
-                "Set up Envoy Wallet",
+                S().splash_screen_CTA1,
                 onTap: widget.rightFunction!,
                 type: EnvoyButtonTypes.primary,
               ),

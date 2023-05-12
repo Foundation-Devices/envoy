@@ -16,6 +16,7 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -140,41 +141,28 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 children: [
                   Padding(padding: EdgeInsets.all(4)),
                   Container(
-                    height: 26,
+                    height: 40,
                     child: Consumer(
                       builder: (context, ref, child) {
                         bool _betterPerformance =
                             ref.watch(privacyOnboardSelectionProvider);
                         return _betterPerformance
-                            ? RichText(
-                                text: TextSpan(style: _messageStyle, children: [
-                                  //TODO: localization
-                                  TextSpan(
-                                      text:
-                                          "Envoy’s connection will be fast and reliable with Tor turned "),
-                                  TextSpan(
-                                      text: "OFF",
-                                      style: _messageStyle?.copyWith(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w900,
-                                          color: Color(0xffBF755F)))
-                                ]),
-                                textAlign: TextAlign.center)
-                            : RichText(
-                                text: TextSpan(style: _messageStyle, children: [
-                                  TextSpan(text: "Tor will be turned "),
-                                  TextSpan(
-                                    text: "ON",
-                                    style: _messageStyle?.copyWith(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff009DB9)),
-                                  ),
-                                  TextSpan(
-                                      text:
-                                          " for improved privacy. Envoy’s connection may be unreliable."),
-                                ]),
-                                textAlign: TextAlign.center);
+                            ? LinkText(
+                                text: S().privacy_setting_perfomance_tor_off,
+                                onTap: () {},
+                                linkStyle: _messageStyle?.copyWith(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w900,
+                                    color:
+                                        EnvoyColors.listAccountTileColors[0]))
+                            : LinkText(
+                                text: S().privacy_setting_privacy_tor_on,
+                                onTap: () {},
+                                linkStyle: _messageStyle?.copyWith(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w900,
+                                    color:
+                                        EnvoyColors.listAccountTileColors[1]));
                       },
                     ),
                   ),

@@ -14,6 +14,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../../generated/l10n.dart';
+
 class AuthenticateApp extends StatelessWidget {
   const AuthenticateApp({Key? key}) : super(key: key);
 
@@ -143,13 +145,13 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                       size: 84,
                     ),
                     ListTile(
-                      title: Text("Authentication Failed",
+                      title: Text(S().launch_screen_faceID_fail_heading,
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
                               ?.copyWith(color: Colors.black87),
                           textAlign: TextAlign.center),
-                      subtitle: Text("Please try again",
+                      subtitle: Text(S().launch_screen_faceID_fail_subheading,
                           style: Theme.of(context)
                               .textTheme
                               .labelMedium
@@ -159,7 +161,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: EnvoyButton(
-                        "Try Again",
+                        S().launch_screen_faceID_fail_CTA,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
                           Navigator.pop(context);
