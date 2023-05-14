@@ -28,6 +28,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
 
   @override
   Widget build(BuildContext context) {
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return OnboardPageBackground(
         child: Column(
       children: [
@@ -70,13 +71,13 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                         path: "assets/videos/magic_backups.mp4",
                         key: _playerKey,
                       ),
-                      Padding(padding: EdgeInsets.all(16)),
+                      Padding(padding: EdgeInsets.all(_iphoneSE ? 8 : 16)),
                       Text(
                         S().magic_setup_tutorial_ios_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(24)),
+                      Padding(padding: EdgeInsets.all(_iphoneSE ? 0 : 24)),
                       LinkText(
                         text: Platform.isAndroid
                             ? S().magic_setup_tutorial_android_subheading

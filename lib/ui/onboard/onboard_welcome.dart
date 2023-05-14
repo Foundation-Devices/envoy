@@ -15,6 +15,7 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: EnvoyPatternScaffold(
@@ -24,12 +25,12 @@ class WelcomeScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
         ),
         header: Container(
-          height: 220,
+          height: _iphoneSE ? 180 : 220,
           child: Image.asset(
             "assets/envoy_logo_with_title.png",
             fit: BoxFit.fitHeight,
-            height: 220,
-            width: 220,
+            height: _iphoneSE ? 180 : 220,
+            width: _iphoneSE ? 180 : 220,
           ),
         ),
         shield: Container(
@@ -153,6 +154,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   Widget build(BuildContext context) {
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return Stack(
       children: [
         SizedBox.expand(
@@ -179,7 +181,8 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 ),
                 bottomNavigationBar: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.5,
+                  height: MediaQuery.of(context).size.height *
+                      (_iphoneSE ? 0.56 : 0.5),
                   child: Container(
                     padding: EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(

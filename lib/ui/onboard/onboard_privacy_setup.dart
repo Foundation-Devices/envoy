@@ -140,29 +140,24 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(padding: EdgeInsets.all(4)),
-                  Container(
-                    height: 40,
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        bool _betterPerformance =
-                            ref.watch(privacyOnboardSelectionProvider);
-                        return _betterPerformance
-                            ? LinkText(
-                                text: S().privacy_setting_perfomance_tor_off,
-                                linkStyle: _messageStyle?.copyWith(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w900,
-                                    color:
-                                        EnvoyColors.listAccountTileColors[0]))
-                            : LinkText(
-                                text: S().privacy_setting_privacy_tor_on,
-                                linkStyle: _messageStyle?.copyWith(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w900,
-                                    color:
-                                        EnvoyColors.listAccountTileColors[1]));
-                      },
-                    ),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      bool _betterPerformance =
+                          ref.watch(privacyOnboardSelectionProvider);
+                      return _betterPerformance
+                          ? LinkText(
+                              text: S().privacy_setting_perfomance_tor_off,
+                              linkStyle: _messageStyle?.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                  color: EnvoyColors.listAccountTileColors[0]))
+                          : LinkText(
+                              text: S().privacy_setting_privacy_tor_on,
+                              linkStyle: _messageStyle?.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                  color: EnvoyColors.listAccountTileColors[1]));
+                    },
                   ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
@@ -787,16 +782,17 @@ class _PrivacyShieldAnimatedState extends State<PrivacyShieldAnimated>
 
   @override
   Widget build(BuildContext context) {
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return SlideTransition(
       position: animation,
       child: Container(
-        height: 220,
+        height: _iphoneSE ? 180 : 220,
         alignment: Alignment.center,
         child: Image.asset(
           "assets/onboarding_shield.png",
           fit: BoxFit.fitHeight,
-          height: 220,
-          width: 220,
+          height: _iphoneSE ? 180 : 220,
+          width: _iphoneSE ? 180 : 220,
         ),
       ),
     );
