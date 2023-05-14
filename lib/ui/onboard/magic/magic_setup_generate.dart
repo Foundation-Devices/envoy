@@ -205,7 +205,7 @@ class MagicRecoveryInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isAndroid = Platform.isAndroid;
-
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return OnboardPageBackground(
       child: Material(
           child: Column(
@@ -218,7 +218,7 @@ class MagicRecoveryInfo extends StatelessWidget {
                   height: 180,
                   width: 180,
                 ),
-                height: 250,
+                height: _iphoneSE ? 220 : 250,
               ),
               isAndroid
                   ? Container(

@@ -21,6 +21,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return EnvoyPatternScaffold(
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
@@ -136,13 +137,15 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
           child: Image.asset(
             "assets/passport_envoy.png",
             scale: 1,
-            width: (MediaQuery.of(context).size.width * 0.7).clamp(250, 400),
+            width: (MediaQuery.of(context).size.width * (_iphoneSE ? 0.5 : 0.7))
+                .clamp(250, 400),
           ),
         ),
         bottomNavigationBar: SingleChildScrollView(
           child: Container(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.5,
+            height:
+                MediaQuery.of(context).size.height * (_iphoneSE ? 0.56 : 0.5),
             child: Container(
               padding: EdgeInsets.only(bottom: 24),
               decoration: BoxDecoration(
