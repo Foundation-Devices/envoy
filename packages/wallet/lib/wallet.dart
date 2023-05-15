@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -16,6 +17,8 @@ part 'wallet.g.dart';
 
 enum Network { Mainnet, Testnet, Signet, Regtest }
 
+enum TransactionType { normal, azteco }
+
 @JsonSerializable()
 class Transaction {
   final String memo;
@@ -25,13 +28,15 @@ class Transaction {
   final int sent;
   final int received;
   final int blockHeight;
+  final TransactionType type;
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
 
   get amount => received - sent;
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
-      this.sent, this.blockHeight);
+      this.sent, this.blockHeight,
+      {this.type = TransactionType.normal});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>

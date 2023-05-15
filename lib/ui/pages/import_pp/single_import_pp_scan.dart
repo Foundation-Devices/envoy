@@ -26,7 +26,7 @@ class SingleImportPpScanPage extends OnboardingPage {
             label: S().single_envoy_import_pp_scan_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ScannerPage(ScannerType.pair);
+                return ScannerPage([ScannerType.pair]);
               }));
             }),
       ],

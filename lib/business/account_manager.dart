@@ -89,6 +89,8 @@ class AccountManager extends ChangeNotifier {
           notifyListeners();
         }
 
+        //Todo: sync azteco trnasactions
+        //example AztecoManager.sync(account);
         // Update the Fees singleton
         Fees().fees[account.wallet.network]!.electrumFastRate =
             account.wallet.feeRateFast;
