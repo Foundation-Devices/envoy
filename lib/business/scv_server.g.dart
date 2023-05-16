@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of envoy.scv_server;
+part of 'scv_server.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

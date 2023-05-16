@@ -50,7 +50,7 @@ class _SendCardState extends ConsumerState<SendCard>
     super.initState();
 
     _address = AddressEntry(
-        wallet: widget.account.wallet,
+        account: widget.account,
         initalAddress: widget.address,
         onAmountChanged: (amount) {
           setState(() {

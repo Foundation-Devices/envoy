@@ -106,7 +106,7 @@ class EmptyCardButton extends StatelessWidget {
           boxShape: shieldShape ? NeumorphicBoxShape.path(ShieldPath()) : null,
           shape: NeumorphicShape.flat,
           border: NeumorphicBorder(
-            color: Color(0xFF00BDCD), // TODO: Add these to a library
+            color: EnvoyColors.teal,
             width: 3,
           ),
           depth: 8,
@@ -114,7 +114,7 @@ class EmptyCardButton extends StatelessWidget {
           intensity: 1,
           shadowLightColor: Colors.transparent),
       onPressed: onClicked,
-      child: Icon(icon, color: Color(0xFF00BDCD)),
+      child: Icon(icon, color: EnvoyColors.teal),
     );
   }
 }

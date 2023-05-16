@@ -14,7 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-
 import 'package:envoy/business/envoy_seed.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {

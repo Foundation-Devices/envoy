@@ -7,14 +7,14 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:wallet/wallet.dart';
+import 'package:envoy/business/account.dart';
 
 class AddressEntry extends StatelessWidget {
   final _controller = TextEditingController();
   final Function(bool)? onAddressChanged;
   final Function(int)? onAmountChanged;
   final bool canEdit;
-  final Wallet wallet;
+  final Account account;
 
   String get text => _controller.text;
 
@@ -27,7 +27,7 @@ class AddressEntry extends StatelessWidget {
       this.onAddressChanged,
       this.onAmountChanged,
       this.canEdit = true,
-      required this.wallet}) {
+      required this.account}) {
     if (initalAddress != null) {
       _controller.text = initalAddress;
     }
@@ -46,7 +46,7 @@ class AddressEntry extends StatelessWidget {
               enabled: canEdit,
               controller: _controller,
               validator: (value) {
-                if (value!.isEmpty || !wallet.validateAddress(value)) {
+                if (value!.isEmpty || !account.wallet.validateAddress(value)) {
                   onAddressChanged!(false);
                 } else {
                   onAddressChanged!(true);
@@ -114,7 +114,7 @@ class AddressEntry extends StatelessWidget {
                                   if (onAmountChanged != null) {
                                     onAmountChanged!(amount);
                                   }
-                                }, wallet);
+                                }, account);
                               }));
                             },
                           )

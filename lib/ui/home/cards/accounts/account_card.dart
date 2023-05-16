@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +32,7 @@ import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 
 //ignore: must_be_immutable
-class AccountCard extends StatefulWidget with NavigationCard {
+class AccountCard extends ConsumerStatefulWidget with NavigationCard {
   final Account account;
 
   AccountCard(this.account, {CardNavigator? navigationCallback})
@@ -46,10 +47,10 @@ class AccountCard extends StatefulWidget with NavigationCard {
   }
 
   @override
-  State<AccountCard> createState() => _AccountCardState();
+  ConsumerState<AccountCard> createState() => _AccountCardState();
 }
 
-class _AccountCardState extends State<AccountCard> {
+class _AccountCardState extends ConsumerState<AccountCard> {
   _redraw() {
     setState(() {});
   }
@@ -57,24 +58,25 @@ class _AccountCardState extends State<AccountCard> {
   @override
   void initState() {
     super.initState();
-
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
 
     // Redraw when we there are changes in accounts
-    AccountManager().addListener(_redraw);
+    // AccountManager().addListener(_redraw);
   }
 
   @override
   void dispose() {
     super.dispose();
-    AccountManager().removeListener(_redraw);
+    // AccountManager().removeListener(_redraw);
     ExchangeRate().removeListener(_redraw);
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
+    List<Transaction> transactions =
+        ref.watch(transactionsProvider(widget.account.id));
 
     return Column(children: [
       Padding(
@@ -96,10 +98,10 @@ class _AccountCardState extends State<AccountCard> {
                 )
               : ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: widget.account.wallet.transactions.length,
+                  itemCount: transactions.length,
                   itemBuilder: (BuildContext context, int index) {
                     return TransactionListTile(
-                        transaction: widget.account.wallet.transactions[index],
+                        transaction: transactions[index],
                         account: widget.account);
                   },
                 ),
@@ -128,11 +130,13 @@ class _AccountCardState extends State<AccountCard> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage.address((address, amount) {
+                  return ScannerPage([ScannerType.address, ScannerType.azteco],
+                      account: widget.account,
+                      addressCallback: (address, amount) {
                     widget.navigator!.push(SendCard(widget.account,
                         address: address,
                         navigationCallback: widget.navigator));
-                  }, widget.account.wallet);
+                  });
                 }));
               },
             ),
@@ -211,6 +215,11 @@ class TransactionListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO : Add transaction type
+    // TransactionType transactionType = this.transaction.type;
+    // if(transaction == TransactionType.azteco){
+    //   //do azteco voucher transaction
+    // }
     return GestureDetector(
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: transaction.txId));

@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -17,42 +18,54 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:wallet/utils.dart';
-import 'package:wallet/wallet.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/business/account.dart';
 
-enum ScannerType { generic, scv, pair, validate, address, tx, nodeUrl, seed }
+enum ScannerType {
+  generic,
+  scv,
+  pair,
+  validate,
+  address,
+  tx,
+  nodeUrl,
+  seed,
+  azteco
+}
 
 class ScannerPage extends StatefulWidget {
   final UniformResourceReader _urDecoder = UniformResourceReader();
-  final ScannerType _type;
+  final List<ScannerType> _acceptableTypes;
 
-  final Wallet? walletToValidate;
+  final Account? account;
   final Challenge? challengeToValidate;
   final Function(String)? callback;
   final Function(String, int)? addressCallback;
 
-  ScannerPage(this._type,
-      {this.walletToValidate,
+  ScannerPage(this._acceptableTypes,
+      {this.account,
       this.challengeToValidate,
       this.callback,
       this.addressCallback});
 
-  ScannerPage.address(Function(String, int) callback, Wallet walletToValidate)
-      : this(ScannerType.address,
-            addressCallback: callback, walletToValidate: walletToValidate);
+  ScannerPage.address(Function(String, int) callback, Account account)
+      : this([ScannerType.address],
+            addressCallback: callback, account: account);
 
   ScannerPage.tx(Function(String) callback)
-      : this(ScannerType.tx, callback: callback);
+      : this([ScannerType.tx], callback: callback);
 
   ScannerPage.nodeUrl(Function(String) callback)
-      : this(ScannerType.nodeUrl, callback: callback);
+      : this([ScannerType.nodeUrl], callback: callback);
 
-  ScannerPage.validate(Wallet walletToValidate)
-      : this(ScannerType.validate, walletToValidate: walletToValidate);
+  ScannerPage.validate(Account account)
+      : this([ScannerType.validate], account: account);
 
   ScannerPage.scv(Challenge challengeToValidate)
-      : this(ScannerType.scv, challengeToValidate: challengeToValidate);
+      : this([ScannerType.scv], challengeToValidate: challengeToValidate);
 
   @override
   State<StatefulWidget> createState() => _ScannerPageState(_urDecoder);
@@ -203,18 +216,23 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   _onDetect(String code) {
-    // Seed recovery flow
-    if (widget._type == ScannerType.seed) {
-      List<String> seedList = code.split(" ");
-      //TODO: bip39 validation
-      if (seedList.length == 12 || seedList.length == 24) {
-        widget.callback!(code);
+    if (widget._acceptableTypes.contains(ScannerType.azteco)) {
+      if (AztecoVoucher.isVoucher(code)) {
+        final voucher = AztecoVoucher(code);
         Navigator.of(context).pop();
-        return;
+        showEnvoyDialog(
+            context: context, dialog: AztecoDialog(voucher, widget.account!));
       }
     }
 
-    if (widget._type == ScannerType.address) {
+    // Seed recovery flow
+    if (widget._acceptableTypes.contains(ScannerType.seed)) {
+      widget.callback!(code);
+      Navigator.of(context).pop();
+      return;
+    }
+
+    if (widget._acceptableTypes.contains(ScannerType.address)) {
       String address = code;
       int amount = 0;
 
@@ -235,7 +253,7 @@ class _ScannerPageState extends State<ScannerPage> {
       // Remove bitcoin: prefix in case BIP-21 parsing failed
       address = address.replaceFirst("bitcoin:", "");
 
-      if (!widget.walletToValidate!.validateAddress(address)) {
+      if (!widget.account!.wallet.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Not a valid address"),
         ));
@@ -249,7 +267,7 @@ class _ScannerPageState extends State<ScannerPage> {
     String scannedData = code.toLowerCase();
     _checkIfMultipartUr(scannedData);
 
-    if (widget._type == ScannerType.nodeUrl) {
+    if (widget._acceptableTypes.contains(ScannerType.nodeUrl)) {
       widget.callback!(scannedData);
       Navigator.of(context).pop();
       return;
@@ -259,12 +277,12 @@ class _ScannerPageState extends State<ScannerPage> {
 
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
-      if (widget._type == ScannerType.scv) {
+      if (widget._acceptableTypes.contains(ScannerType.scv)) {
         _validateScvData(_urDecoder.decoded);
-      } else if (widget._type == ScannerType.tx) {
+      } else if (widget._acceptableTypes.contains(ScannerType.tx)) {
         widget.callback!((_urDecoder.decoded as CryptoPsbt).decoded);
         Navigator.of(context).pop();
-      } else if (widget._type == ScannerType.pair) {
+      } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded)) {
           if (_urDecoder.decoded is Binary) {
             _binaryValidated(_urDecoder.decoded as Binary);

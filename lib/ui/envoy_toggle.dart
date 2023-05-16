@@ -4,6 +4,8 @@
 
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
+import 'envoy_colors.dart';
+
 class EnvoyToggleOption {
   final String name;
   final String? innerDescription;
@@ -17,7 +19,7 @@ class EnvoyToggle extends StatefulWidget {
   final double height;
   final List<EnvoyToggleOption> options;
 
-  final Color selectedOptionColor = Color(0xFF00BDCD);
+  final Color selectedOptionColor = EnvoyColors.teal;
   final Color selectedOptionSecondaryColor = Colors.white;
   final Color deselectedOptionColor = Colors.black;
 
@@ -111,7 +113,7 @@ class _EnvoyToggleState extends State<EnvoyToggle> {
               .toList(),
           thumb: Container(
               decoration: BoxDecoration(
-            color: Color(0xFF00BDCD),
+            color: EnvoyColors.teal,
           )),
         ),
         Row(

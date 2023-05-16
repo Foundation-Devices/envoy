@@ -401,6 +401,11 @@ class Transaction extends ffi.Struct {
 
   @ffi.Int()
   external int confirmation_time;
+
+  @ffi.Int()
+  external int outputs_len;
+
+  external ffi.Pointer<ffi.Pointer<ffi.Char>> outputs;
 }
 
 class TransactionList extends ffi.Struct {
