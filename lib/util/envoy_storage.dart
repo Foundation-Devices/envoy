@@ -7,12 +7,14 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:wallet/wallet.dart' as wallet;
 
 class EnvoyStorage {
   String dbName = 'envoy.db';
   late Database db;
 
   StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
+  StoreRef aztecoPendingTxStore = StoreRef.main();
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -28,6 +30,38 @@ class EnvoyStorage {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
     db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
+  }
+
+  Future addAztecoTx(
+      String address, String accountId, DateTime timestamp) async {
+    await aztecoPendingTxStore.record(address).put(db,
+        {'account': accountId, 'timestamp': timestamp.millisecondsSinceEpoch});
+    return true;
+  }
+
+  Future<List<wallet.Transaction>> getAztecoTxs(String accountId) async {
+    var finder = Finder(filter: Filter.equals('account', accountId));
+    var records = await aztecoPendingTxStore.find(db, finder: finder);
+
+    return records
+        .map((e) => wallet.Transaction(
+            e["address"] as String,
+            "",
+            DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+            0,
+            0,
+            0,
+            0,
+            type: wallet.TransactionType.azteco))
+        .toList();
+  }
+
+  Future<bool> deleteAztecoTx(String address) async {
+    if (await aztecoPendingTxStore.record(address).exists(db)) {
+      await aztecoPendingTxStore.record(address).delete(db);
+      return true;
+    }
+    return false;
   }
 
   Future addTxNote(String note, String txId) async {

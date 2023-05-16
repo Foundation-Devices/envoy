@@ -131,7 +131,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return ScannerPage([ScannerType.address, ScannerType.azteco],
-                      wallet: widget.account.wallet,
+                      account: widget.account,
                       addressCallback: (address, amount) {
                     widget.navigator!.push(SendCard(widget.account,
                         address: address,

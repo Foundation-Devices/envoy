@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
+import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/xfp_endian.dart';
@@ -89,8 +90,8 @@ class AccountManager extends ChangeNotifier {
           notifyListeners();
         }
 
-        //Todo: sync azteco trnasactions
-        //example AztecoManager.sync(account);
+        aztecoSync(account);
+
         // Update the Fees singleton
         Fees().fees[account.wallet.network]!.electrumFastRate =
             account.wallet.feeRateFast;

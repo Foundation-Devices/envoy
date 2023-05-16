@@ -2,21 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:wallet/wallet.dart';
+import 'package:envoy/business/account.dart';
 
 class AztecoLoadingModal extends StatefulWidget {
   final AztecoVoucher voucher;
   final PageController controller;
-  final Wallet wallet;
+  final Account account;
 
   AztecoLoadingModal(
       {Key? key,
       required this.voucher,
       required this.controller,
-      required this.wallet})
+      required this.account})
       : super(key: key);
 
   @override
@@ -31,10 +32,12 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
   }
 
   Future<void> _checkVoucher() async {
-    String address = await widget.wallet.getAddress();
+    String address = await widget.account.wallet.getAddress();
     bool success = await widget.voucher.redeem(address);
 
     if (success) {
+      await EnvoyStorage()
+          .addAztecoTx(address, widget.account.id!, DateTime.now());
       widget.controller.jumpToPage(3); // success
     } else {
       widget.controller.jumpToPage(2); // fail

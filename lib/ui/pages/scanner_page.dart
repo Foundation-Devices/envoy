@@ -18,12 +18,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:wallet/utils.dart';
-import 'package:wallet/wallet.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/business/scv_server.dart';
-
-import '../home/cards/accounts/azteco/azteco_dialog.dart';
-import '../widgets/blur_dialog.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/business/account.dart';
 
 enum ScannerType {
   generic,
@@ -41,20 +40,20 @@ class ScannerPage extends StatefulWidget {
   final UniformResourceReader _urDecoder = UniformResourceReader();
   final List<ScannerType> _acceptableTypes;
 
-  final Wallet? wallet;
+  final Account? account;
   final Challenge? challengeToValidate;
   final Function(String)? callback;
   final Function(String, int)? addressCallback;
 
   ScannerPage(this._acceptableTypes,
-      {this.wallet,
+      {this.account,
       this.challengeToValidate,
       this.callback,
       this.addressCallback});
 
-  ScannerPage.address(Function(String, int) callback, Wallet walletToValidate)
+  ScannerPage.address(Function(String, int) callback, Account account)
       : this([ScannerType.address],
-            addressCallback: callback, wallet: walletToValidate);
+            addressCallback: callback, account: account);
 
   ScannerPage.tx(Function(String) callback)
       : this([ScannerType.tx], callback: callback);
@@ -62,8 +61,8 @@ class ScannerPage extends StatefulWidget {
   ScannerPage.nodeUrl(Function(String) callback)
       : this([ScannerType.nodeUrl], callback: callback);
 
-  ScannerPage.validate(Wallet walletToValidate)
-      : this([ScannerType.validate], wallet: walletToValidate);
+  ScannerPage.validate(Account account)
+      : this([ScannerType.validate], account: account);
 
   ScannerPage.scv(Challenge challengeToValidate)
       : this([ScannerType.scv], challengeToValidate: challengeToValidate);
@@ -222,7 +221,7 @@ class _ScannerPageState extends State<ScannerPage> {
         final voucher = AztecoVoucher(code);
         Navigator.of(context).pop();
         showEnvoyDialog(
-            context: context, dialog: AztecoDialog(voucher, widget.wallet!));
+            context: context, dialog: AztecoDialog(voucher, widget.account!));
       }
     }
 
@@ -254,7 +253,7 @@ class _ScannerPageState extends State<ScannerPage> {
       // Remove bitcoin: prefix in case BIP-21 parsing failed
       address = address.replaceFirst("bitcoin:", "");
 
-      if (!widget.wallet!.validateAddress(address)) {
+      if (!widget.account!.wallet.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Not a valid address"),
         ));

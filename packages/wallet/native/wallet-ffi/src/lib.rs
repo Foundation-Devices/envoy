@@ -82,6 +82,8 @@ pub struct Transaction {
     fee: u64,
     confirmation_height: u32,
     confirmation_time: u64,
+    outputs_len: u8,
+    outputs: *const *const c_char,
 }
 
 #[repr(C)]
@@ -569,6 +571,28 @@ pub unsafe extern "C" fn wallet_get_transactions(
             }
         }
 
+        //let txout = Address::from_script(&transaction.transaction.unwrap().output[1].script_pubkey, wallet.network()).unwrap().to_string();
+
+        let outputs: Vec<_> = transaction
+            .transaction
+            .unwrap()
+            .output
+            .into_iter()
+            .map(|o| {
+                CString::new(
+                    Address::from_script(&o.script_pubkey, wallet.network())
+                        .unwrap()
+                        .to_string(),
+                )
+                .unwrap()
+                .into_raw() as *const c_char
+            })
+            .collect();
+
+        let outputs_len = outputs.len() as u8;
+        let outputs_ptr = outputs.as_ptr();
+        std::mem::forget(outputs);
+
         let tx = Transaction {
             txid: CString::new(format!("{}", transaction.txid))
                 .unwrap()
@@ -578,6 +602,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
             fee: transaction.fee.unwrap(),
             confirmation_height,
             confirmation_time,
+            outputs_len,
+            outputs: outputs_ptr,
         };
 
         transactions_vec.push(tx);

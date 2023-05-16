@@ -595,47 +595,4 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           ),
         ));
   }
-
-  void _restoreFromSeed(String seed, BuildContext context) async {
-    bool success = false;
-    setState(() {
-      _magicRecoverWalletState = MagicRecoveryWalletState.recovering;
-    });
-    _setIndeterminateState();
-
-    try {
-      await EnvoySeed().store(seed);
-      success = await EnvoySeed().restoreData(seed: seed);
-      setState(() {
-        if (success) {
-          _magicRecoverWalletState = MagicRecoveryWalletState.success;
-        } else {
-          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-        }
-      });
-    } on BackupNotFound {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-      });
-    } on SeedNotFound {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
-      });
-    } on ServerUnreachable {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
-      });
-    } catch (e) {
-      setState(() {
-        _magicRecoverWalletState =
-            MagicRecoveryWalletState.unableToDecryptBackup;
-      });
-    } finally {
-      if (success) {
-        _setHappyState();
-      } else {
-        _setUnhappyState();
-      }
-    }
-  }
 }

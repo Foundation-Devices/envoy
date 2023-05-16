@@ -62,7 +62,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
     address = AddressEntry(
       initalAddress: widget.initialAddress,
       canEdit: false,
-      wallet: widget.account.wallet,
+      account: widget.account,
     );
 
     _getPsbts();

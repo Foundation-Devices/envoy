@@ -2,8 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
+
+import 'account.dart';
 
 class AztecoVoucher {
   List<String> code = [];
@@ -58,5 +61,19 @@ class AztecoVoucher {
   static bool isVoucher(String url) {
     Uri uri = Uri.parse(url);
     return uri.host == "azte.co";
+  }
+}
+
+aztecoSync(Account account) async {
+  final aztecoTxs = await EnvoyStorage().getAztecoTxs(account.id!);
+
+  if (aztecoTxs.isEmpty) return;
+
+  for (var aztecoTx in aztecoTxs) {
+    account.wallet.transactions
+        .where((tx) => tx.outputs!.contains(aztecoTx.memo))
+        .forEach((txToRemove) {
+      EnvoyStorage().deleteAztecoTx(aztecoTx.memo);
+    });
   }
 }

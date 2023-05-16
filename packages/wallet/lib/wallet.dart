@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:ffi';
-import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -28,6 +27,7 @@ class Transaction {
   final int sent;
   final int received;
   final int blockHeight;
+  final List<String>? outputs;
   final TransactionType type;
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
@@ -36,7 +36,7 @@ class Transaction {
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight,
-      {this.type = TransactionType.normal});
+      {this.type = TransactionType.normal, this.outputs});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -63,6 +63,9 @@ class NativeTransaction extends Struct {
   external int confirmationHeight;
   @Uint64()
   external int confirmationTime;
+  @Uint8()
+  external int outputsLen;
+  external Pointer<Pointer<Uint8>> outputs;
 }
 
 class NativeSeed extends Struct {
@@ -573,10 +576,21 @@ class Wallet {
           tx.fee,
           tx.received,
           tx.sent,
-          tx.confirmationHeight));
+          tx.confirmationHeight,
+          outputs: _extractStringList(tx.outputs, tx.outputsLen)));
     }
 
     return transactions;
+  }
+
+  static List<String> _extractStringList(
+      Pointer<Pointer<Uint8>> strings, int stringsLen) {
+    List<String> ret = [];
+    for (var i = 0; i < stringsLen; i++) {
+      ret.add(strings.elementAt(i).value.cast<Utf8>().toDartString());
+    }
+
+    return ret;
   }
 
   Future<String> broadcastTx(
