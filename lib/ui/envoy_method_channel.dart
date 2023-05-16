@@ -19,6 +19,7 @@ Future disableSecureScreen() async {
     await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
 }
 
+//Opens android backup settings
 Future openAndroidSettings() async {
   if (Platform.isAndroid) await _platformChannel.invokeMethod("open_settings");
 }

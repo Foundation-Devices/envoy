@@ -169,14 +169,12 @@ class EnvoySeed {
     try {
       if (seed == null) {
         seed = await get();
+        if (seed == null) {
+          throw SeedNotFound();
+        }
       }
     } catch (e) {
       throw SeedNotFound();
-    }
-
-    // Still nothing? You're boned
-    if (seed == null) {
-      return false;
     }
 
     if (filePath == null) {
