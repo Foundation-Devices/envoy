@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -481,7 +483,9 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_setup_recovery_fail_Android_heading,
+            Platform.isAndroid
+                ? S().magic_setup_recovery_fail_Android_heading
+                : S().magic_setup_recovery_fail_ios_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
@@ -490,7 +494,9 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            S().magic_setup_recovery_fail_Android_subheading,
+            Platform.isAndroid
+                ? S().magic_setup_recovery_fail_Android_subheading
+                : S().magic_setup_recovery_fail_ios_subheading,
             textAlign: TextAlign.center,
             style:
                 Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),

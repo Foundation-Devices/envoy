@@ -242,7 +242,8 @@ class MagicRecoveryInfo extends StatelessWidget {
                             linkStyle: Theme.of(context)
                                 .textTheme
                                 .bodySmall
-                                ?.copyWith(fontSize: 14, color: Colors.blue),
+                                ?.copyWith(
+                                    fontSize: 14, color: EnvoyColors.blue),
                             textStyle: Theme.of(context)
                                 .textTheme
                                 .bodySmall
