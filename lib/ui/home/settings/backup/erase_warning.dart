@@ -5,10 +5,12 @@
 import 'dart:io';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -397,7 +399,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));
         await Future.delayed(Duration(milliseconds: 300));
         await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MagicRecoveryInfo(
+            builder: (context) => AndroidBackupWarning(
                   onContinue: () async {
                     // Show home page and navigate to accounts
                     ref.read(homePageBackgroundProvider.notifier).state =
@@ -419,5 +421,98 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
             HomePageTabState.accounts;
       }
     } catch (e) {}
+  }
+}
+
+class AndroidBackupWarning extends StatelessWidget {
+  final bool skipSuccessScreen;
+  final GestureTapCallback? onContinue;
+
+  const AndroidBackupWarning(
+      {Key? key, this.skipSuccessScreen = false, this.onContinue = null})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return WalletSetupSuccess();
+        }));
+        return Future.value(false);
+      },
+      child: OnboardPageBackground(
+        child: Material(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Image.asset(
+                    "assets/exclamation_icon.png",
+                    height: 180,
+                    width: 180,
+                  ),
+                  height: _iphoneSE ? 220 : 250,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        S().delete_wallet_for_good_instant_android_heading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Padding(padding: EdgeInsets.all(12)),
+                      LinkText(
+                        text: S()
+                            .delete_wallet_for_good_instant_android_subheading,
+                        onTap: () {
+                          openAndroidSettings();
+                        },
+                        linkStyle: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontSize: 14, color: EnvoyColors.blue),
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      OnboardingButton(
+                        type: EnvoyButtonTypes.tertiary,
+                        label: S().delete_wallet_for_good_instant_android_cta2,
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return WalletSetupSuccess();
+                          }));
+                        },
+                      ),
+                      OnboardingButton(
+                        label: S().delete_wallet_for_good_instant_android_cta1,
+                        onTap: () {
+                          openAndroidSettings();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            color: Colors.transparent),
+      ),
+    );
   }
 }
