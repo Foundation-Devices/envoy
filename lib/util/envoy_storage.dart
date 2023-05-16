@@ -45,7 +45,7 @@ class EnvoyStorage {
 
     return records
         .map((e) => wallet.Transaction(
-            e["address"] as String,
+            e.key as String,
             "",
             DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
             0,

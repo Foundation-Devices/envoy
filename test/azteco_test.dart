@@ -46,6 +46,6 @@ void main() {
     await EnvoyStorage().addAztecoTx("address", "account", DateTime.now());
     var txs = await EnvoyStorage().getAztecoTxs("account");
 
-    expect(txs[0].received, 0);
+    expect(txs[0].memo, "address");
   });
 }
