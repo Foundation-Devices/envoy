@@ -8,8 +8,12 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -257,6 +261,51 @@ class SeedIntroScreen extends StatelessWidget {
                                       return ManualSetupImportSeed(
                                         seedLength: SeedLength.MNEMONIC_24,
                                       );
+                                    });
+                                  }));
+                                }),
+                            OnboardingButton(
+                                type: EnvoyButtonTypes.primary,
+                                label: S().manual_setup_import_seed_CTA1,
+                                fontWeight: FontWeight.w600,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return ScannerPage(ScannerType.seed,
+                                        callback: (result) {
+                                      List<String> seedWords =
+                                          result.split(" ");
+                                      String passPhrase = "";
+                                      bool isValid = seedWords
+                                          .map((e) => seed_en.contains(e))
+                                          .reduce((value, element) =>
+                                              value && element);
+                                      if (!isValid) {
+                                        showInvalidSeedDialog(
+                                          context: context,
+                                        );
+                                        return;
+                                      }
+                                      print("isValid ${isValid} ${seedWords}");
+                                      //TODO: Passphrase
+                                      EnvoySeed()
+                                          .create(seedWords,
+                                              passphrase: passPhrase.isEmpty
+                                                  ? null
+                                                  : passPhrase)
+                                          .then((success) {
+                                        if (success) {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return WalletSetupSuccess();
+                                          }));
+                                        } else {
+                                          showInvalidSeedDialog(
+                                            context: context,
+                                          );
+                                        }
+                                      });
                                     });
                                   }));
                                 }),

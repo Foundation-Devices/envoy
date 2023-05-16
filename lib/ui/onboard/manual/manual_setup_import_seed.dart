@@ -7,11 +7,11 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -146,9 +146,9 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                                               : passPhrase)
                                       .then((success) {
                                     if (success) {
-                                      Navigator.of(context).push(
+                                      Navigator.push(context,
                                           MaterialPageRoute(builder: (context) {
-                                        return ManualSetupImportBackup();
+                                        return WalletSetupSuccess();
                                       }));
                                     } else {
                                       showInvalidSeedDialog(
