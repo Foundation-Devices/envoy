@@ -3,13 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/settings.dart';
 
 import 'envoy_colors.dart';
 
@@ -84,6 +85,11 @@ class AmountEntryState extends State<AmountEntry> {
                 _enteredAmount = event;
               } else {
                 _enteredAmount = _enteredAmount + event;
+              }
+              //limit entered amount
+              if (amountSats >= 2.1e15) {
+                _enteredAmount =
+                    _enteredAmount.substring(0, _enteredAmount.length - 1);
               }
             });
           }
@@ -297,7 +303,11 @@ int convertSatsStringToSats(String amountSats) {
   if (amountSats.isEmpty) {
     return 0;
   }
-  return int.parse(amountSats);
+  try {
+    return int.parse(amountSats);
+  } catch (e) {
+    return 0;
+  }
 }
 
 int convertBtcStringToSats(String amountBtc) {
