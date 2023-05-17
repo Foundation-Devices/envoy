@@ -22,6 +22,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
   Timer? _updatePositionTimer;
   int _position = 0;
   int _duration = 3;
+  bool _muted = false;
 
   @override
   void initState() {
@@ -58,12 +59,18 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          child: VlcPlayer(
-            controller: _videoPlayerController!,
-            aspectRatio: 4 / 3,
-            placeholder: Center(child: CircularProgressIndicator()),
+        Card(
+          elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            child: VlcPlayer(
+              controller: _videoPlayerController!,
+              aspectRatio: 4 / 3,
+              placeholder: Center(child: CircularProgressIndicator()),
+            ),
           ),
         ),
         Positioned.fill(
@@ -84,6 +91,26 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
             ),
           ),
         ),
+        Align(
+          child: Material(
+            color: Colors.transparent,
+            child: IconButton(
+              color: Colors.white,
+              icon: Icon(_muted ? Icons.volume_off_sharp : Icons.volume_up),
+              onPressed: () async {
+                setState(() {
+                  _muted = !_muted;
+                  if (_muted) {
+                    _videoPlayerController?.setVolume(0);
+                  } else {
+                    _videoPlayerController?.setVolume(100);
+                  }
+                });
+              },
+            ),
+          ),
+          alignment: Alignment.topRight,
+        )
       ],
     );
   }
