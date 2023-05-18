@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
+        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -69,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
         "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
+        "Heading":
+            MessageLookupByLibrary.simpleMessage("SEND AND\nRECEIVE BITCOIN"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -101,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("privacy shield"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -114,6 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zen-like mobile wallet"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
+        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -163,6 +168,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Get started by creating your first Envoy Wallet."),
         "accounts_empty_text_learn_more":
             MessageLookupByLibrary.simpleMessage("Learn more"),
+        "accounts_screen_account_default_name":
+            MessageLookupByLibrary.simpleMessage("Mobile Wallet"),
         "accounts_screen_bottom_menu_accounts":
             MessageLookupByLibrary.simpleMessage("Accounts"),
         "accounts_screen_bottom_menu_activity":
@@ -175,6 +182,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connect"),
         "accounts_screen_learn_more_button":
             MessageLookupByLibrary.simpleMessage("Learn More"),
+        "accounts_screen_mobile_wallet_device_type":
+            MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_passport":
             MessageLookupByLibrary.simpleMessage("Passport"),
         "accounts_screen_sats_amount":
@@ -225,8 +234,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_CTA2":
             MessageLookupByLibrary.simpleMessage("Later"),
         "azteco_redeem_modal__voucher_code":
-            MessageLookupByLibrary.simpleMessage(
-                "VOUCHER CODE\n5464 9508 3092 1015"),
+            MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
+        "azteco_redeem_modal__voucher_code_data":
+            MessageLookupByLibrary.simpleMessage("5464 9508 3092 1015"),
         "azteco_redeem_modal_amount": MessageLookupByLibrary.simpleMessage(
             "Amount\n0.05900500 BTC\n\$979,72"),
         "azteco_redeem_modal_fail_CTA1":
@@ -306,6 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_title": MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "backups_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Envoy Seed"),
+        "bc1cq313af51bh5k0lsmna21x": MessageLookupByLibrary.simpleMessage(""),
         "bc1cq313af51bh5k0lsmna21xpw":
             MessageLookupByLibrary.simpleMessage("bc1cq313af51bh5k0lsmna21xpw"),
         "change_output_from_multiple_tags_modal_cta":
@@ -1852,6 +1863,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_import_existing_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
+        "manual_setup_import_existing_backup_CTA1":
+            MessageLookupByLibrary.simpleMessage("Choose Destination"),
+        "manual_setup_import_existing_backup_heading":
+            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
+        "manual_setup_import_existing_backup_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_import_seed_12_words_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_import_seed_12_words_CTA_inactive":

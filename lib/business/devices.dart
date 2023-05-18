@@ -3,13 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'dart:convert';
 import 'package:envoy/util/color_serializer.dart';
-import 'account_manager.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/business/account_manager.dart';
+
 part 'devices.g.dart';
 
 enum DeviceType { passportGen1, passportGen12, passportGen2 }
@@ -118,7 +119,7 @@ class Devices extends ChangeNotifier {
 
   getDeviceName(String serialNumber) {
     if (serialNumber == "envoy") {
-      return "Envoy";
+      return S().accounts_screen_mobile_wallet_device_type;
     }
 
     return devices.firstWhere((d) => d.serial == serialNumber).name;

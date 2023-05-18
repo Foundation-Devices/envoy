@@ -23,6 +23,7 @@ import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:schedulers/schedulers.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -117,7 +118,7 @@ class AccountManager extends ChangeNotifier {
     // TODO: look & feel of hot wallet accounts
     Account account = Account(
         wallet,
-        "Hot Wallet",
+        S().accounts_screen_account_default_name,
         "envoy", // Device code for wallets derived on phone
         DateTime.now(),
         0,
