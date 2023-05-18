@@ -13,18 +13,21 @@ version=$1
 cd release
 
 for filename in *.apk; do
-    zip "envoy-apk-$version.zip" "$filename"
+    mv "$filename" "envoy-$version.apk"
+    #zip "envoy-apk-$version.zip" "$filename"
 done
 
 for filename in *.aab; do
-    zip "envoy-aab-$version.zip" "$filename"
+    mv "$filename" "envoy-$version.aab"
+    #zip "envoy-aab-$version.zip" "$filename"
 done
 
 for filename in *.ipa; do
-    zip "envoy-ipa-$version.zip" "$filename"
+    mv "$filename" "envoy-$version.ipa"
+    #zip "envoy-ipa-$version.zip" "$filename"
 done
 
-for filename in *.zip; do
+for filename in *.apk *.aab *.ipa; do
     sha256sum "$filename" >> envoy-manifest.txt
 done
 
