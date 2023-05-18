@@ -72,6 +72,8 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -426,6 +428,16 @@ class S {
     );
   }
 
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -764,6 +776,8 @@ class S {
 
   // skipped getter for the 'FW Update' key
 
+  // skipped getter for the 'FW_Version_No.' key
+
   // skipped getter for the 'Face ID' key
 
   /// `Family`
@@ -823,6 +837,16 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SEND AND\nRECEIVE BITCOIN`
+  String get Heading {
+    return Intl.message(
+      'SEND AND\nRECEIVE BITCOIN',
+      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1262,6 +1286,16 @@ class S {
     );
   }
 
+  /// `privacy shield`
+  String get ScreenTitle {
+    return Intl.message(
+      'privacy shield',
+      name: 'ScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1417,6 +1451,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -1764,6 +1808,16 @@ class S {
     );
   }
 
+  /// `Mobile Wallet`
+  String get accounts_screen_account_default_name {
+    return Intl.message(
+      'Mobile Wallet',
+      name: 'accounts_screen_account_default_name',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accounts`
   String get accounts_screen_bottom_menu_accounts {
     return Intl.message(
@@ -1819,6 +1873,16 @@ class S {
     return Intl.message(
       'Learn More',
       name: 'accounts_screen_learn_more_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy`
+  String get accounts_screen_mobile_wallet_device_type {
+    return Intl.message(
+      'Envoy',
+      name: 'accounts_screen_mobile_wallet_device_type',
       desc: '',
       args: [],
     );
@@ -2098,11 +2162,21 @@ class S {
     );
   }
 
-  /// `VOUCHER CODE\n5464 9508 3092 1015`
+  /// `VOUCHER CODE`
   String get azteco_redeem_modal__voucher_code {
     return Intl.message(
-      'VOUCHER CODE\n5464 9508 3092 1015',
+      'VOUCHER CODE',
       name: 'azteco_redeem_modal__voucher_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `5464 9508 3092 1015`
+  String get azteco_redeem_modal__voucher_code_data {
+    return Intl.message(
+      '5464 9508 3092 1015',
+      name: 'azteco_redeem_modal__voucher_code_data',
       desc: '',
       args: [],
     );
@@ -2463,6 +2537,16 @@ class S {
     return Intl.message(
       'View Envoy Seed',
       name: 'backups_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get bc1cq313af51bh5k0lsmna21x {
+    return Intl.message(
+      '',
+      name: 'bc1cq313af51bh5k0lsmna21x',
       desc: '',
       args: [],
     );
@@ -9699,6 +9783,36 @@ class S {
     return Intl.message(
       'Choose Destination',
       name: 'manual_setup_import_existing_backup_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Destination`
+  String get manual_setup_import_existing_backup_CTA1 {
+    return Intl.message(
+      'Choose Destination',
+      name: 'manual_setup_import_existing_backup_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Envoy Backup File`
+  String get manual_setup_import_existing_backup_heading {
+    return Intl.message(
+      'Save Envoy Backup File',
+      name: 'manual_setup_import_existing_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_import_existing_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_import_existing_backup_subheading',
       desc: '',
       args: [],
     );
