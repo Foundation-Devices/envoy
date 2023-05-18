@@ -112,6 +112,8 @@ class _HomePageState extends ConsumerState<HomePage>
       if (onboarded != true) {
         Navigator.pushNamed(context, "/splash");
       }
+      //Sets default home card
+      _navigateToCard(1);
     });
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
@@ -279,7 +281,10 @@ class _HomePageState extends ConsumerState<HomePage>
               _leftAction?.call();
               return false;
             } else {
-              if (_tabController.index != 1) {
+              if (_leftAction != null && _leftAction != _toggleSettings) {
+                _leftAction?.call();
+                return false;
+              } else if (_tabController.index != 1) {
                 _tabController.animateTo(1);
                 return false;
               }
