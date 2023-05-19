@@ -11,7 +11,7 @@ set -e
 export PATH=$PATH:$ANDROID_SDK_ROOT/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/
 
 # Use specific Rust version
-rustup install 1.65.0
-rustup +1.65.0 target add aarch64-linux-android
-cargo +1.65.0 build --target=aarch64-linux-android
-cargo +1.65.0 build --target=aarch64-linux-android --release
+rustup install 1.69.0
+rustup +1.69.0 target add aarch64-linux-android
+cargo +1.69.0 build --target=aarch64-linux-android
+cargo +1.69.0 build --target=aarch64-linux-android --release
