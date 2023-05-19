@@ -13,7 +13,7 @@ To build Envoy you will need:
 - [Flutter](https://docs.flutter.dev/get-started/install)
 - [Rust](https://www.rust-lang.org/tools/install)
 
-After you've set up the two dependencies building is easy. For an Android build download NDK `22.1.7171670` and run:
+After you've set up the two dependencies building is easy. For an Android build download NDK `24.0.8215888` and run:
 ````
 ANDROID_SDK_ROOT=~/Android/Sdk ./build_ffi_android.sh
 flutter build apk

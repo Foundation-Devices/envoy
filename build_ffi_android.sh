@@ -8,7 +8,8 @@
 set -e
 
 # Required for Cargo to build libtor-sys
-export PATH=$PATH:$ANDROID_SDK_ROOT/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/
+export PATH=$PATH:$ANDROID_SDK_ROOT/ndk/24.0.8215888/toolchains/llvm/prebuilt/linux-x86_64/bin/
+export AR=llvm-ar
 
 # Use specific Rust version
 rustup install 1.69.0
