@@ -104,10 +104,6 @@ class UrEncoder {
 
     _self = dartFunction(
         urType.toNativeUtf8(), messagePointer, message.length, maxFragmentLen);
-
-    malloc.free(messagePointer);
-    // TODO: free raw C string pointers on the Rust side?
-    // TODO: check how to do destructors in Dart
   }
 
   String nextPart() {
