@@ -8,11 +8,7 @@ import 'package:ffi/ffi.dart';
 import 'dart:io' show Platform;
 import 'dart:typed_data';
 
-class StringArray extends Struct {
-  @Uint32()
-  external int len;
-  external Pointer<Pointer<Uint8>> strings;
-}
+import 'generated_bindings.dart';
 
 class CharArray extends Struct {
   @Uint32()
@@ -30,11 +26,6 @@ typedef UrEncoderNextPartDart = Pointer<Uint8> Function(Pointer<Uint8>);
 
 typedef UrDecoderRust = Pointer<Uint8> Function();
 typedef UrDecoderDart = Pointer<Uint8> Function();
-
-typedef UrDecoderReceiveRust = Pointer<CharArray> Function(
-    Pointer<Uint8>, Pointer<Utf8>);
-typedef UrDecoderReceiveDart = Pointer<CharArray> Function(
-    Pointer<Uint8>, Pointer<Utf8>);
 
 typedef DecodeSinglePartRust = Pointer<CharArray> Function(Pointer<Utf8>);
 typedef DecodeSinglePartDart = Pointer<CharArray> Function(Pointer<Utf8>);
@@ -124,6 +115,8 @@ class UrDecoder {
   Pointer<Uint8> _self = Pointer<Uint8>.fromAddress(0);
   static late DynamicLibrary _lib;
 
+  double progress = 0.0;
+
   UrDecoder(DynamicLibrary lib) {
     _lib = lib;
     final rustFunction =
@@ -134,15 +127,13 @@ class UrDecoder {
   }
 
   Uint8List receive(String value) {
-    final rustFunction =
-        _lib.lookup<NativeFunction<UrDecoderReceiveRust>>('ur_decoder_receive');
-    final dartFunction = rustFunction.asFunction<UrDecoderReceiveDart>();
+    final output = NativeLibrary(_lib).ur_decoder_receive(
+        Pointer<Int>.fromAddress(_self.address),
+        value.toNativeUtf8() as Pointer<Char>);
+    final len = output.ref.message.ref.len;
+    final str = output.ref.message.ref.string as Pointer<Uint8>;
 
-    final ptr = dartFunction(_self, value.toNativeUtf8());
-
-    var len = ptr.ref.len;
-    var str = ptr.ref.string;
-
+    progress = output.ref.progress;
     return str.asTypedList(len);
   }
 }

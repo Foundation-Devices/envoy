@@ -77,8 +77,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
   bool _showIndeterminateSpinner = false;
 
-  int _totalUrFraments = 0;
-  int _currentUrFragment = 0;
+  double _progress = 0.0;
 
   Completer<void> _permissionsCompleter = Completer();
   late Future<void> _permissionsGranted;
@@ -197,12 +196,9 @@ class _ScannerPageState extends State<ScannerPage> {
                     : TweenAnimationBuilder(
                         duration: const Duration(milliseconds: 500),
                         tween: Tween<double>(
-                            begin: 0.00,
-                            end: _totalUrFraments == 0
-                                ? 0.0
-                                : min(_currentUrFragment.toDouble(),
-                                        _totalUrFraments.toDouble() - 1) /
-                                    _totalUrFraments.toDouble()),
+                          begin: 0.00,
+                          end: _progress,
+                        ),
                         builder: (BuildContext context, double? value,
                             Widget? child) {
                           return CircularProgressIndicator(
@@ -265,7 +261,6 @@ class _ScannerPageState extends State<ScannerPage> {
     }
 
     String scannedData = code.toLowerCase();
-    _checkIfMultipartUr(scannedData);
 
     if (widget._acceptableTypes.contains(ScannerType.nodeUrl)) {
       widget.callback!(scannedData);
@@ -274,6 +269,9 @@ class _ScannerPageState extends State<ScannerPage> {
     }
 
     _urDecoder.receive(scannedData);
+    setState(() {
+      _progress = _urDecoder.urDecoder.progress;
+    });
 
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
@@ -296,16 +294,6 @@ class _ScannerPageState extends State<ScannerPage> {
           ));
         }
       }
-    }
-  }
-
-  _checkIfMultipartUr(String data) {
-    if (data.startsWith("ur") && "/".allMatches(data).length > 1) {
-      _totalUrFraments =
-          int.parse(captureBetween(data, "/", "/").split("-")[1]);
-      setState(() {
-        _currentUrFragment++;
-      });
     }
   }
 
