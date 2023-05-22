@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:wallet/utils.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
