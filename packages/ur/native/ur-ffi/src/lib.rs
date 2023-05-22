@@ -10,9 +10,9 @@ use ur::UR;
 use ur::{Decoder, Encoder};
 
 #[repr(C)]
-pub struct StringArray {
-    len: u32,
-    strings: *const *const c_char,
+pub struct DecoderOutput {
+    progress: f64,
+    message: *const CharArray,
 }
 
 #[repr(C)]
@@ -64,7 +64,7 @@ pub extern "C" fn ur_decoder() -> *mut Decoder {
 pub unsafe extern "C" fn ur_decoder_receive(
     decoder: *mut Decoder,
     value: *const c_char,
-) -> *const CharArray {
+) -> *const DecoderOutput {
     let decoder = {
         assert!(!decoder.is_null());
         &mut *decoder
@@ -85,7 +85,13 @@ pub unsafe extern "C" fn ur_decoder_receive(
         message = Vec::from(decoder.message().unwrap().unwrap());
     }
 
-    u8_to_char_array(message)
+    let ret = DecoderOutput {
+        progress: decoder.estimated_percent_complete(),
+        message: u8_to_char_array(message),
+    };
+
+    let ret_box = Box::new(ret);
+    Box::into_raw(ret_box)
 }
 
 unsafe fn u8_to_char_array(message: Vec<u8>) -> *mut CharArray {

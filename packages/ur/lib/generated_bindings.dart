@@ -65,7 +65,7 @@ class NativeLibrary {
   late final _ur_decoder =
       _ur_decoderPtr.asFunction<ffi.Pointer<ffi.Int> Function()>();
 
-  ffi.Pointer<CharArray> ur_decoder_receive(
+  ffi.Pointer<DecoderOutput> ur_decoder_receive(
     ffi.Pointer<ffi.Int> decoder,
     ffi.Pointer<ffi.Char> value,
   ) {
@@ -77,10 +77,10 @@ class NativeLibrary {
 
   late final _ur_decoder_receivePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<CharArray> Function(ffi.Pointer<ffi.Int>,
+          ffi.Pointer<DecoderOutput> Function(ffi.Pointer<ffi.Int>,
               ffi.Pointer<ffi.Char>)>>('ur_decoder_receive');
   late final _ur_decoder_receive = _ur_decoder_receivePtr.asFunction<
-      ffi.Pointer<CharArray> Function(
+      ffi.Pointer<DecoderOutput> Function(
           ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Char>)>();
 }
 
@@ -89,6 +89,13 @@ class CharArray extends ffi.Struct {
   external int len;
 
   external ffi.Pointer<ffi.Char> string;
+}
+
+class DecoderOutput extends ffi.Struct {
+  @ffi.Double()
+  external double progress;
+
+  external ffi.Pointer<CharArray> message;
 }
 
 typedef uintptr_t = ffi.UnsignedLong;
