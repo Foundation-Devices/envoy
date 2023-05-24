@@ -4,8 +4,8 @@
 
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
-import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/amount.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
@@ -137,8 +137,8 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: AmountDisplay.sats(
-          _amount,
+        child: AmountDisplay(
+          amountSats: _amount,
         ),
       ),
       _feeToggle,
