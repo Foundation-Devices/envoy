@@ -297,14 +297,33 @@ class TransactionListTile extends StatelessWidget {
   }
 }
 
-class AccountOptions extends ConsumerWidget {
+class AccountOptions extends ConsumerStatefulWidget {
   final Account account;
   final CardNavigator? navigator;
 
-  AccountOptions(this.account, {this.navigator});
+  AccountOptions(this.account, {this.navigator}) : super(key: UniqueKey());
 
   @override
-  Widget build(context, ref) {
+  ConsumerState<AccountOptions> createState() => _AccountOptionsState();
+}
+
+class _AccountOptionsState extends ConsumerState<AccountOptions> {
+  late TextEntry textEntry;
+  FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    textEntry = TextEntry(
+      focusNode: focusNode,
+      maxLength: 20,
+      placeholder: widget.account.name,
+    );
+  }
+
+  @override
+  Widget build(context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -318,9 +337,9 @@ class AccountOptions extends ConsumerWidget {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            navigator!.push(DescriptorCard(
-              account,
-              navigationCallback: navigator,
+            widget.navigator!.push(DescriptorCard(
+              widget.account,
+              navigationCallback: widget.navigator,
             ));
           },
         ),
@@ -333,18 +352,12 @@ class AccountOptions extends ConsumerWidget {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            navigator!.hideOptions();
-            FocusNode focusNode = FocusNode();
+            widget.navigator!.hideOptions();
             bool isKeyboardShown = false;
             showEnvoyDialog(
               context: context,
               dialog: Builder(
                 builder: (context) {
-                  var textEntry = TextEntry(
-                    focusNode: focusNode,
-                    maxLength: 20,
-                    placeholder: account.name,
-                  );
                   if (!isKeyboardShown) {
                     Future.delayed(Duration(milliseconds: 200)).then((value) {
                       FocusScope.of(context).requestFocus(focusNode);
@@ -358,8 +371,8 @@ class AccountOptions extends ConsumerWidget {
                       EnvoyButton(
                         S().component_save.toUpperCase(),
                         onTap: () {
-                          AccountManager()
-                              .renameAccount(account, textEntry.enteredText);
+                          AccountManager().renameAccount(
+                              widget.account, textEntry.enteredText);
                           Navigator.pop(context);
                         },
                       ),
@@ -377,8 +390,8 @@ class AccountOptions extends ConsumerWidget {
           child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            navigator!.hideOptions();
-            if (!account.wallet.hot) {
+            widget.navigator!.hideOptions();
+            if (!widget.account.wallet.hot) {
               showEnvoyDialog(
                   context: context,
                   dialog: EnvoyDialog(
@@ -389,15 +402,15 @@ class AccountOptions extends ConsumerWidget {
                         S().component_delete.toUpperCase(),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
-                          AccountManager().deleteAccount(account);
-                          navigator!.pop();
+                          AccountManager().deleteAccount(widget.account);
+                          widget.navigator!.pop();
                           Navigator.pop(context);
                         },
                       ),
                     ],
                   ));
             } else {
-              navigator!.pop();
+              widget.navigator!.pop();
               ref.read(homePageBackgroundProvider.notifier).state =
                   HomePageBackgroundState.backups;
             }
