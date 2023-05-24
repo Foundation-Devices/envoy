@@ -241,8 +241,8 @@ class _HomePageState extends ConsumerState<HomePage>
     //double _totalOffset = _topOffset + _bottomOffset;
 
     double _appBarHeight = AppBar().preferredSize.height;
-    double _topAppBarrOffset = _appBarHeight + 10;
-    double _shieldTop = _topOffset + _topAppBarrOffset;
+    double _topAppBarOffset = _appBarHeight + 10;
+    double _shieldTop = _topOffset + _topAppBarOffset;
     double _shieldTopOptionsShown =
         _shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
@@ -250,7 +250,7 @@ class _HomePageState extends ConsumerState<HomePage>
     double _shieldHeight = _screenHeight -
         _bottomTabBarHeight -
         _bottomOffset -
-        _topAppBarrOffset -
+        _shieldTop -
         _bottomTabBarShieldOffset;
 
     double _shieldHeightModalShown = _screenHeight * 0.85 - _bottomOffset;
