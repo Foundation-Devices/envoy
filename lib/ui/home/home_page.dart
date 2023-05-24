@@ -78,6 +78,9 @@ class _HomePageState extends ConsumerState<HomePage>
   bool _optionsShown = false;
   double _optionsHeight = 0;
 
+  final _bottomTabBarKey = GlobalKey();
+  double _bottomTabBarHeight = 0.0;
+
   int _tlCardIndex = 0;
   String _appBarTitle = S().envoy_home_devices.toUpperCase();
 
@@ -123,6 +126,10 @@ class _HomePageState extends ConsumerState<HomePage>
           _notifyAboutTor();
         }
       }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _bottomTabBarHeight = _bottomTabBarKey.currentContext?.size?.height ?? 0;
     });
   }
 
@@ -234,12 +241,18 @@ class _HomePageState extends ConsumerState<HomePage>
     //double _totalOffset = _topOffset + _bottomOffset;
 
     double _appBarHeight = AppBar().preferredSize.height;
-
-    double _shieldTop = _topOffset + _appBarHeight + 10;
+    double _topAppBarrOffset = _appBarHeight + 10;
+    double _shieldTop = _topOffset + _topAppBarrOffset;
     double _shieldTopOptionsShown =
         _shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double _shieldHeight = _screenHeight * 0.76 - _bottomOffset;
+    double _bottomTabBarShieldOffset = 40;
+    double _shieldHeight = _screenHeight -
+        _bottomTabBarHeight -
+        _bottomOffset -
+        _topAppBarrOffset -
+        _bottomTabBarShieldOffset;
+
     double _shieldHeightModalShown = _screenHeight * 0.85 - _bottomOffset;
     double _shieldHeightOptionsShown = _screenHeight * 0.76 - _bottomOffset;
 
@@ -391,6 +404,7 @@ class _HomePageState extends ConsumerState<HomePage>
                           child: IgnorePointer(
                             ignoring: _backgroundShown || _modalShown,
                             child: TabBar(
+                              key: _bottomTabBarKey,
                               indicatorColor: Colors.white10,
                               labelStyle: Theme.of(context).textTheme.bodyLarge,
                               unselectedLabelColor: Colors.black54,
