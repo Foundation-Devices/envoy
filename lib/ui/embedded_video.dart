@@ -50,7 +50,9 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
 
   @override
   void dispose() {
-    _videoPlayerController?.dispose();
+    _videoPlayerController?.stop().then((_) {
+      _videoPlayerController?.dispose();
+    });
     _updatePositionTimer?.cancel();
     super.dispose();
   }
