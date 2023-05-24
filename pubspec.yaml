@@ -91,6 +91,7 @@ dependencies:
   schedulers: ^1.0.1
   sembast: ^3.4.3+1
   path_provider: ^2.0.14
+  stack_trace: ^1.11.0
 
 dev_dependencies:
   test: any
