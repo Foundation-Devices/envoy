@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -239,7 +240,9 @@ class TransactionListTile extends StatelessWidget {
             : Icon(Icons.call_received),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: Settings().selectedFiat == null
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.end,
           children: [
             // Styled as ListTile.title and ListTile.subtitle respectively
             Consumer(
@@ -262,34 +265,42 @@ class TransactionListTile extends StatelessWidget {
               },
               child: Text(
                 getFormattedAmount(transaction.amount),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Settings().selectedFiat == null
+                    ? Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontSize: 20.0)
+                    : Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            Consumer(
-              builder: (context, ref, child) {
-                bool hide = ref.watch(balanceHideStateStatusProvider(account));
-                if (hide) {
-                  return Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: SizedBox(
-                        width: 64,
-                        height: 15,
-                        child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                                color: Color(0xffEEEEEE),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))))),
-                  );
-                } else {
-                  return child ?? Container();
-                }
-              },
-              child: Text(ExchangeRate().getFormattedAmount(transaction.amount),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Theme.of(context).textTheme.bodySmall!.color)),
-            ),
+            if (Settings().selectedFiat != null)
+              Consumer(
+                builder: (context, ref, child) {
+                  bool hide =
+                      ref.watch(balanceHideStateStatusProvider(account));
+                  if (hide) {
+                    return Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: SizedBox(
+                          width: 64,
+                          height: 15,
+                          child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Color(0xffEEEEEE),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))))),
+                    );
+                  } else {
+                    return child ?? Container();
+                  }
+                },
+                child: Text(
+                    ExchangeRate().getFormattedAmount(transaction.amount),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall!.color)),
+              ),
           ],
         ),
       ),
