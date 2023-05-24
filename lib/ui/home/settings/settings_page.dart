@@ -6,6 +6,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
@@ -163,6 +164,37 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 );
               },
+            ),
+          ),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
+          SliverToBoxAdapter(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EnvoyLogsScreen(),
+                    ));
+              },
+              child: Container(
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SettingText("View Envoy Logs", onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EnvoyLogsScreen(),
+                              ));
+                        }),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
           SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
