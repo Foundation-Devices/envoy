@@ -5,16 +5,19 @@
 import 'dart:async';
 
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/amount.dart';
 
-import 'envoy_colors.dart';
+enum AmountDisplayUnit { btc, sat, fiat }
 
-class AmountEntry extends StatefulWidget {
+class AmountEntry extends ConsumerStatefulWidget {
   final Wallet? wallet;
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
@@ -24,15 +27,21 @@ class AmountEntry extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<AmountEntry> createState() => AmountEntryState();
+  ConsumerState<AmountEntry> createState() => AmountEntryState();
 }
 
-class AmountEntryState extends State<AmountEntry> {
+class AmountEntryState extends ConsumerState<AmountEntry> {
   String _enteredAmount = "";
+  int _amountSats = 0;
 
-  get amountSats => Settings().displayUnit == DisplayUnit.btc
-      ? convertBtcStringToSats(_enteredAmount)
-      : convertSatsStringToSats(_enteredAmount);
+  int getAmountSats() {
+    final unit = ref.read(sendScreenUnitProvider);
+    return unit == AmountDisplayUnit.btc
+        ? convertBtcStringToSats(_enteredAmount)
+        : (unit == AmountDisplayUnit.sat
+            ? convertSatsStringToSats(_enteredAmount)
+            : ExchangeRate().fiatToSats((_enteredAmount.replaceAll(",", ""))));
+  }
 
   @override
   void initState() {
@@ -47,7 +56,10 @@ class AmountEntryState extends State<AmountEntry> {
 
   @override
   Widget build(BuildContext context) {
-    Numpad numpad = Numpad();
+    ref.watch(settingsProvider);
+    final unit = ref.watch(sendScreenUnitProvider);
+
+    Numpad numpad = Numpad(unit);
     numpad.events.stream.listen((event) {
       switch (event) {
         case NumpadEvents.backspace:
@@ -57,12 +69,16 @@ class AmountEntryState extends State<AmountEntry> {
                 _enteredAmount =
                     _enteredAmount.substring(0, _enteredAmount.length - 1);
               }
+
+              if (_enteredAmount.isEmpty) {
+                _enteredAmount = "0";
+              }
             });
           }
           break;
         case NumpadEvents.dot:
           {
-            if (Settings().displayUnit == DisplayUnit.sat) {
+            if (unit == AmountDisplayUnit.sat) {
               break;
             }
 
@@ -86,8 +102,9 @@ class AmountEntryState extends State<AmountEntry> {
               } else {
                 _enteredAmount = _enteredAmount + event;
               }
-              //limit entered amount
-              if (amountSats >= 2.1e15) {
+
+              // Limit entered amount
+              if (_amountSats >= 2.1e15) {
                 _enteredAmount =
                     _enteredAmount.substring(0, _enteredAmount.length - 1);
               }
@@ -95,73 +112,132 @@ class AmountEntryState extends State<AmountEntry> {
           }
       }
 
+      _amountSats = getAmountSats();
+
       if (widget.onAmountChanged != null) {
-        widget.onAmountChanged!(amountSats);
+        widget.onAmountChanged!(_amountSats);
       }
     });
 
     return Column(
       children: [
         FittedBox(
-            fit: BoxFit.fitWidth,
-            child: AmountDisplay.entered(
-              _enteredAmount,
-            )),
+          fit: BoxFit.fitWidth,
+          child: AmountDisplay(
+            displayedAmount: _enteredAmount,
+            amountSats: _amountSats,
+            onUnitToggled: (enteredAmount) {
+              _enteredAmount = enteredAmount;
+            },
+          ),
+        ),
         SizedBox(height: 35),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: numpad,
-        )
+        ),
       ],
     );
   }
 }
 
-class AmountDisplay extends StatelessWidget {
+//ignore: must_be_immutable
+class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
-  late final String displayAmountText;
+  String displayedAmount;
 
-  AmountDisplay.sats(int amount)
-      : amountSats = amount,
-        displayAmountText = Settings().displayUnit == DisplayUnit.btc
-            ? convertSatsToBtcString(amount)
-            : getFormattedAmount(amount);
+  final Function(String)? onUnitToggled;
 
-  AmountDisplay.entered(String amountText)
-      : amountSats = Settings().displayUnit == DisplayUnit.btc
-            ? convertBtcStringToSats(amountText)
-            : convertSatsStringToSats(amountText) {
-    displayAmountText = Settings().displayUnit == DisplayUnit.btc
-        ? amountText
-        : getFormattedAmount(amountSats!);
+  AmountDisplay(
+      {this.displayedAmount = "", this.amountSats, this.onUnitToggled});
+
+  @override
+  ConsumerState<AmountDisplay> createState() => _AmountDisplayState();
+}
+
+class _AmountDisplayState extends ConsumerState<AmountDisplay> {
+  void nextUnit() {
+    var unit = ref.read(sendScreenUnitProvider);
+
+    int currentIndex = unit.index;
+    int length = AmountDisplayUnit.values.length;
+
+    // Fiat is always at the end of enum
+    if (Settings().selectedFiat == null) {
+      length--;
+    }
+
+    if (currentIndex < length - 1)
+      ref.read(sendScreenUnitProvider.notifier).state =
+          AmountDisplayUnit.values[currentIndex + 1];
+    if (currentIndex >= length - 1)
+      ref.read(sendScreenUnitProvider.notifier).state =
+          AmountDisplayUnit.values[0];
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              displayAmountText.isEmpty ? "0" : displayAmountText,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 6.0),
-              child: Text(
-                  Settings().displayUnit == DisplayUnit.btc ? "BTC" : "SATS"),
-            )
-          ],
-        ),
-        Text(
-          ExchangeRate().getFormattedAmount(amountSats ?? 0),
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(color: EnvoyColors.darkTeal),
-        ),
-      ],
+  Widget build(context) {
+    ref.listen(sendScreenUnitProvider, (_, next) {
+      switch (next) {
+        case AmountDisplayUnit.btc:
+          widget.displayedAmount = convertSatsToBtcString(widget.amountSats!);
+          break;
+        case AmountDisplayUnit.sat:
+          widget.displayedAmount = widget.amountSats.toString();
+          break;
+        case AmountDisplayUnit.fiat:
+          widget.displayedAmount = ExchangeRate().getSymbol() +
+              convertFiatToFiatString(double.parse(ExchangeRate()
+                  .getFormattedAmount(widget.amountSats!, includeSymbol: false)
+                  .replaceAll(",", "")));
+          break;
+      }
+
+      if (widget.onUnitToggled != null) {
+        widget.onUnitToggled!(widget.displayedAmount);
+      }
+    });
+
+    var unit = ref.watch(sendScreenUnitProvider);
+
+    return TextButton(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
+                  style: Theme.of(context).textTheme.headlineMedium),
+              Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: Text(
+                  unit == AmountDisplayUnit.btc
+                      ? "BTC"
+                      : (unit == AmountDisplayUnit.sat
+                          ? "SAT"
+                          : ExchangeRate().getCode()),
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              )
+            ],
+          ),
+          Text(
+            unit != AmountDisplayUnit.fiat
+                ? ExchangeRate().getFormattedAmount(widget.amountSats ?? 0)
+                : (Settings().displayUnit == DisplayUnit.btc
+                    ? convertSatsToBtcString(widget.amountSats ?? 0) + " BTC"
+                    : widget.amountSats.toString() + " SATS"),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(color: EnvoyColors.darkTeal),
+          ),
+        ],
+      ),
+      onPressed: () {
+        nextUnit();
+      },
     );
   }
 }
@@ -174,6 +250,11 @@ class Numpad extends StatefulWidget {
   // Sink is closed on widget disposal
   //ignore: close_sinks
   final StreamController events = StreamController();
+  late final AmountDisplayUnit amountDisplayUnit;
+
+  Numpad(AmountDisplayUnit amountDisplayUnit) {
+    this.amountDisplayUnit = amountDisplayUnit;
+  }
 
   @override
   State<Numpad> createState() => _NumpadState();
@@ -205,7 +286,7 @@ class _NumpadState extends State<Numpad> {
             },
           );
         })),
-        Settings().displayUnit == DisplayUnit.btc
+        widget.amountDisplayUnit != AmountDisplayUnit.sat
             ? NumpadButton(
                 ".",
                 onTap: () {
@@ -257,10 +338,6 @@ class NumpadButton extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: EnvoyColors.grey22,
-            // gradient: LinearGradient(
-            //     begin: Alignment.bottomCenter,
-            //     end: Alignment.topCenter,
-            //     colors: [EnvoyColors.grey22, EnvoyColors.grey22])
           ),
           child: Center(
               child: !backspace
@@ -287,44 +364,4 @@ class NumpadButton extends StatelessWidget {
       ),
     );
   }
-}
-
-String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
-  final amountBtc = amountSats / 100000000;
-
-  NumberFormat formatter = NumberFormat();
-  formatter.minimumFractionDigits = trailingZeroes ? 8 : 0;
-  formatter.maximumFractionDigits = 8;
-
-  return formatter.format(amountBtc);
-}
-
-int convertSatsStringToSats(String amountSats) {
-  if (amountSats.isEmpty) {
-    return 0;
-  }
-  try {
-    return int.parse(amountSats);
-  } catch (e) {
-    return 0;
-  }
-}
-
-int convertBtcStringToSats(String amountBtc) {
-  if (amountBtc.isEmpty) {
-    return 0;
-  }
-  return (double.parse(amountBtc) * 100000000).toInt();
-}
-
-String getFormattedAmount(int amountSats, {bool includeUnit = false}) {
-  // TODO: this should be locale dependent?
-  NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
-
-  String text = Settings().displayUnit == DisplayUnit.btc
-      ? convertSatsToBtcString(amountSats, trailingZeroes: true) +
-          (includeUnit ? " BTC" : "")
-      : satsFormatter.format(amountSats) + (includeUnit ? " SATS" : "");
-
-  return text;
 }

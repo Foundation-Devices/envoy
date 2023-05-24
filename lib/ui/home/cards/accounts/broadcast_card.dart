@@ -10,7 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/amount.dart';
+import 'package:envoy/util/amount.dart';
 
 //ignore: must_be_immutable
 class BroadcastCard extends StatelessWidget with NavigationCard {

@@ -118,13 +118,42 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  String getFormattedAmount(int amountSats) {
+  // SATS to FIAT
+  String getFormattedAmount(int amountSats, {bool includeSymbol = true}) {
     if (Settings().selectedFiat == null) {
       return "";
     }
 
-    NumberFormat currencyFormatter =
-        NumberFormat.currency(name: _currency!.symbol);
+    NumberFormat currencyFormatter = NumberFormat.currency(
+        name: _currency!.symbol, symbol: includeSymbol ? null : "");
     return currencyFormatter.format(_rate * amountSats / 100000000);
+  }
+
+  String getSymbol() {
+    if (Settings().selectedFiat == null) {
+      return "";
+    }
+
+    return _currency!.symbol;
+  }
+
+  int fiatToSats(String amountFiat) {
+    amountFiat = amountFiat.replaceAll(RegExp('[^0-9.]'), '');
+
+    if (Settings().selectedFiat == null) {
+      return 0;
+    }
+    if (amountFiat.isEmpty) {
+      return 0;
+    }
+
+    return double.parse(amountFiat) * 100000000 ~/ _rate;
+  }
+
+  String getCode() {
+    if (_currency?.code != null) {
+      return _currency!.code;
+    }
+    return "";
   }
 }

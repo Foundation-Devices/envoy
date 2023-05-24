@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/ui/amount.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -30,6 +29,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/util/amount.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget with NavigationCard {
