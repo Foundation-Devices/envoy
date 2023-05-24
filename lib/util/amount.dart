@@ -47,6 +47,11 @@ int convertBtcStringToSats(String amountBtc) {
 
   String dotRemoved = sanitized.replaceAll(".", "");
 
+  if (missingZeros < 0) {
+    dotRemoved = dotRemoved.substring(0, dotRemoved.length + missingZeros + 1);
+    missingZeros = 0;
+  }
+
   String satsString =
       dotRemoved.padRight(missingZeros + dotRemoved.length, "0");
   return convertSatsStringToSats(satsString);

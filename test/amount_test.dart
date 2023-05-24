@@ -6,11 +6,15 @@ import 'package:envoy/util/amount.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test("Test converting small amount BTC string to Sats", () async {
+  test("Test converting large amount BTC string to Sats", () async {
     expect(convertBtcStringToSats("9"), 900000000);
   });
 
-  test("Test converting large amount BTC string to Sats", () async {
+  test("Test converting small amount BTC string to Sats", () async {
     expect(convertBtcStringToSats("0.00000009"), 9);
+  });
+
+  test("Test converting BTC string with too many digits to Sats", () async {
+    expect(convertBtcStringToSats("0.00000003999999999"), 3);
   });
 }
