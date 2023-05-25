@@ -8,10 +8,11 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 
+//ignore: must_be_immutable
 class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
-  bool testnet;
+  final bool testnet;
 
   final Function(String)? onUnitToggled;
 
