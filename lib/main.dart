@@ -117,15 +117,11 @@ class EnvoyApp extends StatelessWidget {
             variantColor: envoyVariantColor,
             depth: 0, // Flat for now
           ),
-          initialRoute: "/",
+          initialRoute: LocalStorage().prefs.getBool("onboarded") == true
+              ? "/"
+              : "/splash",
           routes: {
-            '/': (context) {
-              bool? onboarded = LocalStorage().prefs.getBool("onboarded");
-              if (onboarded != true) {
-                return WelcomeScreen();
-              }
-              return HomePage();
-            },
+            '/': (context) => HomePage(),
             '/splash': (context) => WelcomeScreen(),
           }),
     );
