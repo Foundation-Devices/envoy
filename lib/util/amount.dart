@@ -48,14 +48,23 @@ int convertBtcStringToSats(String amountBtc) {
   return convertSatsStringToSats(satsString);
 }
 
-String getFormattedAmount(int amountSats, {bool includeUnit = false}) {
-// TODO: this should be locale dependent?
+String getFormattedAmount(int amountSats,
+    {bool includeUnit = false, bool testnet = false}) {
+  // TODO: this should be locale dependent?
   NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
-
   String text = Settings().displayUnit == DisplayUnit.btc
       ? convertSatsToBtcString(amountSats, trailingZeroes: true) +
-          (includeUnit ? " BTC" : "")
-      : satsFormatter.format(amountSats) + (includeUnit ? " SATS" : "");
+          (includeUnit ? " " + getBtcUnitString() : "")
+      : satsFormatter.format(amountSats) +
+          (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");
 
   return text;
+}
+
+String getSatsUnitString({testnet = false}) {
+  return testnet ? "TSATS".toLowerCase() : "SATS".toLowerCase();
+}
+
+String getBtcUnitString({testnet = false}) {
+  return testnet ? "TBTC" : "BTC";
 }

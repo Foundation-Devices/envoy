@@ -139,6 +139,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
         padding: const EdgeInsets.symmetric(horizontal: 40),
         child: AmountDisplay(
           amountSats: _amount,
+          testnet: widget.account.wallet.network == Network.Testnet,
         ),
       ),
       _feeToggle,
