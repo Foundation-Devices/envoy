@@ -244,7 +244,10 @@ class _AccountListTileState extends State<AccountListTile> {
                                         : Text(
                                             getFormattedAmount(
                                                 widget.account.wallet.balance,
-                                                includeUnit: true),
+                                                includeUnit: true,
+                                                testnet: widget.account.wallet
+                                                        .network ==
+                                                    Network.Testnet),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineSmall!

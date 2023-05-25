@@ -126,6 +126,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           child: AmountDisplay(
             displayedAmount: _enteredAmount,
             amountSats: _amountSats,
+            testnet: widget.wallet?.network == Network.Testnet,
             onUnitToggled: (enteredAmount) {
               _enteredAmount = enteredAmount;
             },
@@ -145,11 +146,15 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
+  bool testnet;
 
   final Function(String)? onUnitToggled;
 
   AmountDisplay(
-      {this.displayedAmount = "", this.amountSats, this.onUnitToggled});
+      {this.displayedAmount = "",
+      this.amountSats,
+      this.onUnitToggled,
+      this.testnet = false});
 
   @override
   ConsumerState<AmountDisplay> createState() => _AmountDisplayState();
@@ -213,9 +218,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                 padding: const EdgeInsets.only(left: 6.0),
                 child: Text(
                   unit == AmountDisplayUnit.btc
-                      ? "BTC"
+                      ? getBtcUnitString(testnet: widget.testnet)
                       : (unit == AmountDisplayUnit.sat
-                          ? "SAT"
+                          ? getSatsUnitString(testnet: widget.testnet)
                           : ExchangeRate().getCode()),
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
@@ -226,8 +231,12 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
             unit != AmountDisplayUnit.fiat
                 ? ExchangeRate().getFormattedAmount(widget.amountSats ?? 0)
                 : (Settings().displayUnit == DisplayUnit.btc
-                    ? convertSatsToBtcString(widget.amountSats ?? 0) + " BTC"
-                    : widget.amountSats.toString() + " SATS"),
+                    ? convertSatsToBtcString(widget.amountSats ?? 0) +
+                        " " +
+                        getBtcUnitString(testnet: widget.testnet)
+                    : widget.amountSats.toString() +
+                        " " +
+                        getSatsUnitString(testnet: widget.testnet)),
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
