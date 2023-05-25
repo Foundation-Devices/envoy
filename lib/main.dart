@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
@@ -12,14 +15,12 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:envoy/business/local_storage.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:tor/tor.dart';
-import 'package:envoy/business/notifications.dart';
+
 import 'business/fees.dart';
 import 'business/scv_server.dart';
 import 'business/video_manager.dart';
@@ -118,7 +119,13 @@ class EnvoyApp extends StatelessWidget {
           ),
           initialRoute: "/",
           routes: {
-            '/': (context) => HomePage(),
+            '/': (context) {
+              bool? onboarded = LocalStorage().prefs.getBool("onboarded");
+              if (onboarded != true) {
+                return WelcomeScreen();
+              }
+              return HomePage();
+            },
             '/splash': (context) => WelcomeScreen(),
           }),
     );

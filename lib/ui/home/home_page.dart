@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -111,10 +110,6 @@ class _HomePageState extends ConsumerState<HomePage>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      bool? onboarded = LocalStorage().prefs.getBool("onboarded");
-      if (onboarded != true) {
-        Navigator.pushNamed(context, "/splash");
-      }
       //Sets default home card
       _navigateToCard(1);
     });
