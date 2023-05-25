@@ -174,9 +174,8 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   void _toggleOptions() {
-    setState(() {
-      _optionsShown = !_optionsShown;
-    });
+    ref.read(HomePageOptionsVisibilityProvider.notifier).state =
+        !ref.read(HomePageOptionsVisibilityProvider);
   }
 
   void _getOptionsHeight(_) {
@@ -191,6 +190,12 @@ class _HomePageState extends ConsumerState<HomePage>
     ref.listen<HomePageTabState>(homePageTabProvider,
         (HomePageTabState? _, HomePageTabState newState) {
       _navigateToCard(newState.index);
+    });
+
+    ref.listen(HomePageOptionsVisibilityProvider, (_, bool next) {
+      setState(() {
+        _optionsShown = next;
+      });
     });
 
     ref.listen<HomePageBackgroundState>(homePageBackgroundProvider,

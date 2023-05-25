@@ -22,3 +22,5 @@ final homePageTabProvider =
 final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
   (ref) => HomePageBackgroundState.hidden,
 );
+
+final HomePageOptionsVisibilityProvider = StateProvider<bool>((ref) => false);

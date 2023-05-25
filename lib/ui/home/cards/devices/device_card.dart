@@ -12,7 +12,9 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:envoy/ui/state/home_page_state.dart';
 
 //ignore: must_be_immutable
 class DeviceCard extends StatefulWidget with NavigationCard {
@@ -77,14 +79,14 @@ class _DeviceCardState extends State<DeviceCard> {
   }
 }
 
-class DeviceOptions extends StatelessWidget {
+class DeviceOptions extends ConsumerWidget {
   final Device device;
   final CardNavigator? navigator;
 
   DeviceOptions(this.device, {this.navigator});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -98,7 +100,7 @@ class DeviceOptions extends StatelessWidget {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            navigator!.hideOptions();
+            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
             FocusNode focusNode = FocusNode();
             showEnvoyDialog(
@@ -138,7 +140,7 @@ class DeviceOptions extends StatelessWidget {
           child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            navigator!.hideOptions();
+            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(
