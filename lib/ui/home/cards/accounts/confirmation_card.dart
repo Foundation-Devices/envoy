@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
@@ -140,6 +141,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
         child: AmountDisplay(
           amountSats: _amount,
           testnet: widget.account.wallet.network == Network.Testnet,
+          key: UniqueKey(),
         ),
       ),
       _feeToggle,
