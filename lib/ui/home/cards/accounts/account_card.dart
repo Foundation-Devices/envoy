@@ -363,7 +363,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            widget.navigator!.hideOptions();
+            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
             showEnvoyDialog(
               context: context,
@@ -401,7 +401,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            widget.navigator!.hideOptions();
+            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
             if (!widget.account.wallet.hot) {
               showEnvoyDialog(
                   context: context,

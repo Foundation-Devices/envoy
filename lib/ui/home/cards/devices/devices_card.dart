@@ -6,10 +6,12 @@ import 'package:animations/animations.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/templates/empty_card.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
@@ -179,13 +181,13 @@ class _DevicesListState extends State<DevicesList> {
   }
 }
 
-class DevicesOptions extends StatelessWidget {
+class DevicesOptions extends ConsumerWidget {
   final CardNavigator? navigator;
 
   DevicesOptions({this.navigator});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -199,7 +201,7 @@ class DevicesOptions extends StatelessWidget {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            navigator!.hideOptions();
+            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return SingleImportPpIntroPage();
             }));
@@ -212,7 +214,7 @@ class DevicesOptions extends StatelessWidget {
           child: Text(S().envoy_devices_options_new_passport.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            navigator!.hideOptions();
+            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return TouPage();
             }));
