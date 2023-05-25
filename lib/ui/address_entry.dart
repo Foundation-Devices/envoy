@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:envoy/business/account.dart';
 
 class AddressEntry extends StatelessWidget {
   final _controller = TextEditingController();
@@ -45,6 +45,10 @@ class AddressEntry extends StatelessWidget {
           child: TextFormField(
               enabled: canEdit,
               controller: _controller,
+              style: TextStyle(
+                  fontSize: 14,
+                  overflow: TextOverflow.fade,
+                  fontWeight: FontWeight.w500),
               validator: (value) {
                 if (value!.isEmpty || !account.wallet.validateAddress(value)) {
                   onAddressChanged!(false);
@@ -60,14 +64,20 @@ class AddressEntry extends StatelessWidget {
                 enabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
-                prefixIcon: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 7.0, bottom: 6.0, right: 7.0),
-                  child: Text("To:"),
+                prefixIcon: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    child: Text("To:")),
+                isDense: true,
+                prefixIconConstraints: BoxConstraints(
+                  minWidth: 18,
+                  minHeight: 12,
                 ),
-
-                prefixIconConstraints:
-                    BoxConstraints(minWidth: 0, minHeight: 0),
+                suffixIconConstraints: BoxConstraints(
+                  minWidth: 24,
+                  minHeight: 24,
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0),
                 suffixIcon: !canEdit
                     ? null
                     : Row(
@@ -76,7 +86,8 @@ class AddressEntry extends StatelessWidget {
                         children: [
                           InkWell(
                             child: Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 4),
                               child: Icon(
                                 EnvoyIcons.copy_paste,
                                 color: EnvoyColors.darkTeal,
@@ -93,7 +104,8 @@ class AddressEntry extends StatelessWidget {
                           ),
                           InkWell(
                             child: Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 4),
                               child: Icon(
                                 Icons.qr_code,
                                 color: EnvoyColors.darkTeal,
