@@ -31,6 +31,7 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/ui/shield.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget with NavigationCard {
@@ -122,25 +123,30 @@ class _AccountCardState extends ConsumerState<AccountCard> {
               },
               label: "Send",
             ),
-            IconButton(
-              icon: Icon(
-                EnvoyIcons.qr_scan,
-                size: 30,
-                color: EnvoyColors.darkTeal,
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage([ScannerType.address, ScannerType.azteco],
-                      account: widget.account,
-                      addressCallback: (address, amount) {
-                    widget.navigator!.push(SendCard(widget.account,
-                        address: address,
-                        navigationCallback: widget.navigator));
-                  });
-                }));
-              },
-            ),
+            QrShield(
+                child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        EnvoyIcons.qr_scan,
+                        size: 30,
+                        color: EnvoyColors.darkTeal,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ScannerPage(
+                              [ScannerType.address, ScannerType.azteco],
+                              account: widget.account,
+                              addressCallback: (address, amount) {
+                            widget.navigator!.push(SendCard(widget.account,
+                                address: address,
+                                navigationCallback: widget.navigator));
+                          });
+                        }));
+                      },
+                    ))),
             EnvoyTextButton(
                 label: "Receive",
                 onTap: () {
