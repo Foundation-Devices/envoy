@@ -49,7 +49,7 @@ class _TxReviewState extends State<TxReview> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
+    bool isTestnet = widget.account.wallet.network == Network.Testnet;
     return PageTransitionSwitcher(
       reverse: !_showBroadcastProgress,
       transitionBuilder: (child, animation, secondaryAnimation) {
@@ -289,7 +289,7 @@ class _TxReviewState extends State<TxReview> {
                                                                 .end,
                                                         children: [
                                                           Text(
-                                                            "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? "BTC" : "SATS"}",
+                                                            "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? getBtcUnitString(testnet: isTestnet) : getSatsUnitString(testnet: isTestnet)}",
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,

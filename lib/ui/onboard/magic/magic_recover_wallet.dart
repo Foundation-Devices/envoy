@@ -8,17 +8,17 @@ import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/onboard/manual/dialogs.dart';
-import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 
 class MagicRecoverWallet extends StatefulWidget {
   const MagicRecoverWallet({Key? key}) : super(key: key);
@@ -259,48 +259,58 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
               label: S().magic_setup_recovery_fail_Android_CTA2,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
+                _setIndeterminateState();
                 Navigator.of(context).push(MaterialPageRoute(builder: (_c) {
                   return ScannerPage(
                     [ScannerType.seed],
                     callback: (seed) async {
-                      setState(() {
-                        _magicRecoverWalletState =
-                            MagicRecoveryWalletState.recovering;
-                      });
-                      String? passphrase = null;
-                      List<String> seedList = seed.split(" ");
-                      if (seedList.length == 13 || seedList.length == 25) {
-                        seedList.removeLast();
-                        await showEnvoyDialog(
-                                dialog: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.85,
-                                    height: 330,
-                                    child: SeedPassphraseEntry(
-                                        onPassphraseEntered: (value) {
-                                      passphrase = value;
-                                      Navigator.pop(context);
-                                    })),
-                                context: context)
-                            .then((value) {
-                          setState(() {
-                            passphrase = value;
-                          });
+                      try {
+                        setState(() {
+                          _magicRecoverWalletState =
+                              MagicRecoveryWalletState.recovering;
                         });
-                      }
-
-                      EnvoySeed().create(seedList, passphrase: passphrase);
-                      EnvoySeed().restoreData(seed: seed).then((success) {
+                        String? passphrase = null;
+                        List<String> seedList = seed.split(" ");
+                        if (seedList.length == 13 || seedList.length == 25) {
+                          seedList.removeLast();
+                          String _passphrase = await showEnvoyDialog(
+                              dialog: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.85,
+                                  height: 330,
+                                  child: SeedPassphraseEntry(
+                                      onPassphraseEntered: (value) {
+                                    passphrase = value;
+                                    Navigator.pop(context);
+                                  })),
+                              context: context);
+                          setState(() {
+                            passphrase = _passphrase;
+                          });
+                        }
+                        await EnvoySeed()
+                            .create(seedList, passphrase: passphrase);
+                        bool success =
+                            await EnvoySeed().restoreData(seed: seed);
                         setState(() {
                           if (success) {
+                            _setHappyState();
                             _magicRecoverWalletState =
                                 MagicRecoveryWalletState.success;
                           } else {
+                            _setUnhappyState();
                             _magicRecoverWalletState =
                                 MagicRecoveryWalletState.failure;
                           }
                         });
-                      });
+                      } catch (e) {
+                        setState(() {
+                          _setUnhappyState();
+                          _magicRecoverWalletState =
+                              MagicRecoveryWalletState.failure;
+                        });
+                        print(e);
+                      }
                     },
                   );
                 }));

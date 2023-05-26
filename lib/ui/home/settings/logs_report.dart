@@ -37,8 +37,6 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
       backgroundColor: EnvoyColors.white95,
       body: FutureBuilder<List<Map>>(
         builder: (context, snapshot) {
-          print("DUDE ${snapshot.data}");
-          print("DUDE ${snapshot.hasData}");
           if (snapshot.hasData) {
             List<Map>? logs = snapshot.data;
             if (logs?.length == 0) {

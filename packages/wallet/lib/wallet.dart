@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -618,16 +619,22 @@ class Wallet {
     return compute(_broadcastTx, {"tx": tx, "port": torPort});
   }
 
-  bool validateAddress(String address) {
-    final rustFunction = _lib.lookup<NativeFunction<WalletValidateAddressRust>>(
-        'wallet_validate_address');
-    final dartFunction = rustFunction.asFunction<WalletValidateAddressDart>();
+  Future<bool> validateAddress(String address) {
+    int walletPointer = _self.address;
 
-    return dartFunction(
-                Pointer.fromAddress(_self.address), address.toNativeUtf8()) ==
-            1
-        ? true
-        : false;
+    return Isolate.run(() async {
+      var lib = load(_libName);
+
+      final rustFunction =
+          lib.lookup<NativeFunction<WalletValidateAddressRust>>(
+              'wallet_validate_address');
+
+      final dartFunction = rustFunction.asFunction<WalletValidateAddressDart>();
+
+      return dartFunction(
+              Pointer.fromAddress(walletPointer), address.toNativeUtf8()) ==
+          1;
+    });
   }
 
   static String signOffline(String psbt, String externalDescriptor,

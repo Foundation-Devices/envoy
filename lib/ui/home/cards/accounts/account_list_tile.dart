@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/util/amount.dart';
@@ -17,7 +18,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:wallet/wallet.dart';
 
-class AccountListTile extends StatefulWidget {
+class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
   final Account account;
 
@@ -28,10 +29,10 @@ class AccountListTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AccountListTile> createState() => _AccountListTileState();
+  ConsumerState<AccountListTile> createState() => _AccountListTileState();
 }
 
-class _AccountListTileState extends State<AccountListTile> {
+class _AccountListTileState extends ConsumerState<AccountListTile> {
   final double containerHeight = 110;
 
   _redraw() {
@@ -59,6 +60,7 @@ class _AccountListTileState extends State<AccountListTile> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(accountManagerProvider);
     return CardSwipeWrapper(
       height: containerHeight,
       account: widget.account,
