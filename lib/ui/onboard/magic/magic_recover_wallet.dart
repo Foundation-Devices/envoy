@@ -9,6 +9,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
@@ -147,7 +148,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                     Container(
                       height: 180,
                       child: Transform.scale(
-                        scale: 1.3,
+                        scale: 1.6,
                         child: RiveAnimation.asset(
                           "assets/envoy_loader.riv",
                           fit: BoxFit.contain,
@@ -258,13 +259,19 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             OnboardingButton(
               label: S().magic_setup_recovery_fail_Android_CTA2,
               type: EnvoyButtonTypes.tertiary,
-              onTap: () {
-                _setIndeterminateState();
-                Navigator.of(context).push(MaterialPageRoute(builder: (_c) {
+              onTap: () async {
+                _setUnhappyState();
+                setState(() {
+                  _magicRecoverWalletState =
+                      MagicRecoveryWalletState.seedNotFound;
+                });
+                await Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_c) {
                   return ScannerPage(
                     [ScannerType.seed],
                     callback: (seed) async {
                       try {
+                        _setIndeterminateState();
                         setState(() {
                           _magicRecoverWalletState =
                               MagicRecoveryWalletState.recovering;
@@ -294,9 +301,17 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                             await EnvoySeed().restoreData(seed: seed);
                         setState(() {
                           if (success) {
-                            _setHappyState();
-                            _magicRecoverWalletState =
-                                MagicRecoveryWalletState.success;
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ManualSetupImportBackup()))
+                                .then((value) {
+                              //Try automatic recovery if the user press back button
+                              if (mounted) {
+                                _tryAutomaticRecovery();
+                              }
+                            });
                           } else {
                             _setUnhappyState();
                             _magicRecoverWalletState =
