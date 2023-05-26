@@ -63,7 +63,7 @@ String getFormattedAmount(int amountSats,
   NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
   String text = Settings().displayUnit == DisplayUnit.btc
       ? convertSatsToBtcString(amountSats, trailingZeroes: true) +
-          (includeUnit ? " " + getBtcUnitString() : "")
+          (includeUnit ? " " + getBtcUnitString(testnet: testnet) : "")
       : satsFormatter.format(amountSats) +
           (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");
 
