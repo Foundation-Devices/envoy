@@ -12,7 +12,7 @@ class ShieldPath extends NeumorphicPathProvider {
     double degToRad(double deg) => deg * (pi / 180.0);
 
     var path = Path();
-    double arcSize = 64;
+    double arcSize = size.width / 5;
     double padding = 0;
 
     double shieldCrestAngle = 160;
