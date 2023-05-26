@@ -9,28 +9,41 @@ import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-class AddressEntry extends StatelessWidget {
-  final _controller = TextEditingController();
-  final Function(bool)? onAddressChanged;
+class AddressEntry extends StatefulWidget {
+  final Function(bool, String)? onAddressChanged;
   final Function(int)? onAmountChanged;
   final bool canEdit;
   final Account account;
+  final String? initalAddress;
+
+  AddressEntry(
+      {this.initalAddress,
+      this.onAddressChanged,
+      this.onAmountChanged,
+      this.canEdit = true,
+      required this.account});
+
+  @override
+  State<AddressEntry> createState() => _AddressEntryState();
+}
+
+class _AddressEntryState extends State<AddressEntry> {
+  final _controller = TextEditingController();
 
   String get text => _controller.text;
+  bool addressValid = false;
 
   set text(String newAddress) {
     _controller.text = newAddress;
   }
 
-  AddressEntry(
-      {String? initalAddress,
-      this.onAddressChanged,
-      this.onAmountChanged,
-      this.canEdit = true,
-      required this.account}) {
-    if (initalAddress != null) {
-      _controller.text = initalAddress;
+  @override
+  void initState() {
+    if (widget.initalAddress != null) {
+      _controller.text = widget.initalAddress!;
     }
+
+    super.initState();
   }
 
   @override
@@ -43,18 +56,19 @@ class AddressEntry extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextFormField(
-              enabled: canEdit,
+              enabled: widget.canEdit,
               controller: _controller,
               style: TextStyle(
                   fontSize: 14,
                   overflow: TextOverflow.fade,
                   fontWeight: FontWeight.w500),
+              onChanged: (value) async {
+                final check =
+                    await widget.account.wallet.validateAddress(value);
+                setState(() => addressValid = check);
+              },
               validator: (value) {
-                if (value!.isEmpty || !account.wallet.validateAddress(value)) {
-                  onAddressChanged!(false);
-                } else {
-                  onAddressChanged!(true);
-                }
+                widget.onAddressChanged!(addressValid, value!);
                 return null;
               },
               decoration: InputDecoration(
@@ -78,7 +92,7 @@ class AddressEntry extends StatelessWidget {
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0),
-                suffixIcon: !canEdit
+                suffixIcon: !widget.canEdit
                     ? null
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -123,10 +137,10 @@ class AddressEntry extends StatelessWidget {
                                   .push(MaterialPageRoute(builder: (context) {
                                 return ScannerPage.address((address, amount) {
                                   _controller.text = address;
-                                  if (onAmountChanged != null) {
-                                    onAmountChanged!(amount);
+                                  if (widget.onAmountChanged != null) {
+                                    widget.onAmountChanged!(amount);
                                   }
-                                }, account);
+                                }, widget.account);
                               }));
                             },
                           )

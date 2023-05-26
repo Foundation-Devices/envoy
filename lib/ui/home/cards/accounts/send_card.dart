@@ -37,6 +37,7 @@ class SendCard extends ConsumerStatefulWidget with NavigationCard {
 
 class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
+  String _addressText = "";
   bool _addressValid = false;
   bool _amountSufficient = true;
 
@@ -63,13 +64,14 @@ class _SendCardState extends ConsumerState<SendCard>
             );
           });
         },
-        onAddressChanged: (valid) {
+        onAddressChanged: (valid, text) {
           Future.delayed(Duration.zero, () async {
             setState(() {
               _addressValid = valid;
             });
             if (valid) {
-              ref.read(spendAddressProvider.notifier).state = _address!.text;
+              _addressText = text;
+              ref.read(spendAddressProvider.notifier).state = _addressText;
             }
           });
         });
@@ -127,7 +129,7 @@ class _SendCardState extends ConsumerState<SendCard>
                   if (_amount != widget.account.wallet.balance) {
                     try {
                       await widget.account.wallet.createPsbt(
-                          _address!.text,
+                          _addressText,
                           _amount,
                           Fees().fastRate(widget.account.wallet.network));
                     } on InsufficientFunds {
@@ -144,7 +146,7 @@ class _SendCardState extends ConsumerState<SendCard>
                   widget.navigator!.push(ConfirmationCard(
                     widget.account,
                     _amount,
-                    _address!.text,
+                    _addressText,
                     pushCallback: widget.navigator,
                   ));
                 }

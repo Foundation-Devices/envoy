@@ -209,7 +209,7 @@ class _ScannerPageState extends State<ScannerPage> {
     );
   }
 
-  _onDetect(String code) {
+  _onDetect(String code) async {
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
@@ -247,7 +247,7 @@ class _ScannerPageState extends State<ScannerPage> {
       // Remove bitcoin: prefix in case BIP-21 parsing failed
       address = address.replaceFirst("bitcoin:", "");
 
-      if (!widget.account!.wallet.validateAddress(address)) {
+      if (!await widget.account!.wallet.validateAddress(address)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Not a valid address"),
         ));
