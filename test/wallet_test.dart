@@ -76,9 +76,13 @@ void main() async {
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)")
       ..init(dir.path);
 
-    expect(wallet.validateAddress("tb1qghhpvphu6rd6ygwuurw3p9cg7se84taj2vssdu"),
+    expect(
+        await wallet
+            .validateAddress("tb1qghhpvphu6rd6ygwuurw3p9cg7se84taj2vssdu"),
         true);
-    expect(wallet.validateAddress("tb1q79crajpg7y838vmqngerx6eqv5tuytzlk7cx3n"),
+    expect(
+        await wallet
+            .validateAddress("tb1q79crajpg7y838vmqngerx6eqv5tuytzlk7cx3n"),
         true);
 
     wallet = Wallet(
@@ -88,8 +92,10 @@ void main() async {
         "wpkh([5d14cd2a/84h/1h/0h]xpub6DQrFKWSTE7e13Juxx8La4iAmAvdUjVGhaqNLSNqgVGkCWmtjt76YFmWsT4XYFaZAYCLWebNXHPCNkbC6Z4y3n3rPHra7CF35bLN8M4FzbQ/1/*)")
       ..init(dir.path);
 
-    expect(wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5"), true);
-    expect(wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc4"), false);
+    expect(await wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5"),
+        true);
+    expect(await wallet.validateAddress("3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc4"),
+        false);
   });
 
   test('Sign PSBT', () {
