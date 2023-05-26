@@ -2,17 +2,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
-import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:local_auth/local_auth.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -197,6 +199,41 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ),
+          SliverPadding(
+              padding: EdgeInsets.all(kDebugMode ? marginBetweenItems : 0)),
+          SliverToBoxAdapter(
+            child: kDebugMode
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EnvoyLogsScreen(),
+                          ));
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SettingText("Dev options", onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return _DevOptions();
+                                  },
+                                );
+                              }),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : null,
+          ),
           SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
           SliverToBoxAdapter(
             child: GestureDetector(
@@ -297,5 +334,52 @@ class _SettingsPageState extends State<SettingsPage> {
           _useLocalAuth = value;
         });
     });
+  }
+}
+
+class _DevOptions extends StatelessWidget {
+  const _DevOptions({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool loading = false;
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text("Developer options"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StatefulBuilder(
+            builder: (context, setState) {
+              if (loading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return TextButton(
+                  onPressed: () async {
+                    try {
+                      setState(() {
+                        loading = true;
+                      });
+                      await EnvoySeed().delete();
+                      setState(() {
+                        loading = false;
+                      });
+                      Navigator.pop(context);
+                    } catch (e) {
+                      setState(() {
+                        loading = false;
+                      });
+                      Navigator.pop(context);
+                      print(e);
+                    }
+                  },
+                  child: Text("Wipe Envoy Wallet"));
+            },
+          )
+        ],
+      ),
+    );
   }
 }
