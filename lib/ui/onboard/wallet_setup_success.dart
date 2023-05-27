@@ -28,12 +28,15 @@ class _WalletSetupSuccessState extends State<WalletSetupSuccess> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  width: 240,
-                  height: 240,
-                  child: RiveAnimation.asset(
-                    "assets/envoy_loader.riv",
-                    fit: BoxFit.contain,
-                    animations: ["happy"],
+                  height: 180,
+                  padding: EdgeInsets.only(top: 12),
+                  child: Transform.scale(
+                    scale: 1.5,
+                    child: RiveAnimation.asset(
+                      "assets/envoy_loader.riv",
+                      fit: BoxFit.contain,
+                      animations: ["happy"],
+                    ),
                   ),
                 ),
                 Padding(
