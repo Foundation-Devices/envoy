@@ -49,9 +49,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     super.initState();
 
     if (widget.initalSatAmount > 0) {
+      _amountSats = widget.initalSatAmount;
       _enteredAmount = Settings().displayUnit == DisplayUnit.btc
-          ? convertSatsToBtcString(widget.initalSatAmount)
-          : widget.initalSatAmount.toString();
+          ? convertSatsToBtcString(_amountSats)
+          : _amountSats.toString();
     }
   }
 
