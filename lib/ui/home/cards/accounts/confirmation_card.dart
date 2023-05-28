@@ -52,7 +52,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
   bool _boostEnabled = false;
   int _amount = 0;
 
-  var address;
+  late AddressEntry address;
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
 
     try {
       await widget.account.wallet
-          .createPsbt(address.text, widget.amount, feeRate)
+          .createPsbt(widget.initialAddress, widget.amount, feeRate)
           .then((psbt) {
         _returnPsbt = psbt;
       });
@@ -98,7 +98,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
       var fee = e.needed - e.available;
       try {
         await widget.account.wallet
-            .createPsbt(address.text, e.available - fee, feeRate)
+            .createPsbt(widget.initialAddress, e.available - fee, feeRate)
             .then((psbt) {
           _returnPsbt = psbt;
         });
