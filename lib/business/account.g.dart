@@ -6,21 +6,25 @@ part of 'account.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Account _$AccountFromJson(Map<String, dynamic> json) => Account(
-      Wallet.fromJson(json['wallet'] as Map<String, dynamic>),
-      json['name'] as String? ?? 'Account',
-      json['deviceSerial'] as String,
-      DateTime.parse(json['dateAdded'] as String),
-      json['number'] as int,
-      json['id'] as String? ?? Account.generateNewId(),
-    )..initialSyncCompleted = json['initialSyncCompleted'] as bool? ?? true;
+_$_Account _$$_AccountFromJson(Map<String, dynamic> json) => _$_Account(
+      wallet: Wallet.fromJson(json['wallet'] as Map<String, dynamic>),
+      name: json['name'] as String? ?? 'Account',
+      deviceSerial: json['deviceSerial'] as String,
+      dateAdded: DateTime.parse(json['dateAdded'] as String),
+      number: json['number'] as int,
+      id: json['id'] as String? ?? Account.generateNewId(),
+      dateSynced: json['dateSynced'] == null
+          ? null
+          : DateTime.parse(json['dateSynced'] as String),
+    );
 
-Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
+Map<String, dynamic> _$$_AccountToJson(_$_Account instance) =>
+    <String, dynamic>{
       'wallet': instance.wallet,
-      'deviceSerial': instance.deviceSerial,
       'name': instance.name,
+      'deviceSerial': instance.deviceSerial,
       'dateAdded': instance.dateAdded.toIso8601String(),
       'number': instance.number,
       'id': instance.id,
-      'initialSyncCompleted': instance.initialSyncCompleted,
+      'dateSynced': instance.dateSynced?.toIso8601String(),
     };

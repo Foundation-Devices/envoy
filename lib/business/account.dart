@@ -2,30 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'account.freezed.dart';
 part 'account.g.dart';
 
-@JsonSerializable()
-class Account {
-  final Wallet wallet;
-  final String deviceSerial;
-  @JsonKey(defaultValue: "Account")
-  String name;
-  final DateTime dateAdded;
-  final int number;
-  @JsonKey(defaultValue: generateNewId)
-  final String? id;
+@freezed
+class Account with _$Account {
+  const Account._();
 
-  // Flipped the first time we sync
-  @JsonKey(
-      defaultValue:
-          true) // Ensure we don't show ghosting UI for accounts synced before introduction of this field
-  bool initialSyncCompleted = false;
+  static generateNewId() {
+    return Uuid().v4();
+  }
 
   // Multipath specifier as per https://github.com/bitcoin/bitcoin/pull/22838
   // Not yet supported in BDK but showing it as such
@@ -46,16 +38,20 @@ class Account {
     return EnvoyColors.listAccountTileColors[colorIndex];
   }
 
-  Account(this.wallet, this.name, this.deviceSerial, this.dateAdded,
-      this.number, this.id);
+  const factory Account(
+      {required Wallet wallet,
+      // ignore: invalid_annotation_target
+      @JsonKey(defaultValue: "Account") required String name,
+      required String deviceSerial,
+      required DateTime dateAdded,
+      required int number,
+      // ignore: invalid_annotation_target
+      @JsonKey(defaultValue: Account.generateNewId) required String? id,
+      // Flipped the first time we sync
+      // ignore: invalid_annotation_target
+      @JsonKey(defaultValue: null) required DateTime? dateSynced}) = _Account;
 
   // Serialisation
-  factory Account.fromJson(Map<String, dynamic> json) =>
+  factory Account.fromJson(Map<String, Object?> json) =>
       _$AccountFromJson(json);
-
-  static generateNewId() {
-    return Uuid().v4();
-  }
-
-  Map<String, dynamic> toJson() => _$AccountToJson(this);
 }

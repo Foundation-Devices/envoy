@@ -76,7 +76,6 @@ class _AccountCardState extends ConsumerState<AccountCard> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
     List<Transaction> transactions =
         ref.watch(transactionsProvider(widget.account.id));
 
@@ -90,7 +89,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
       Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: !widget.account.initialSyncCompleted
+          child: widget.account.dateSynced == null
               ? ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: 4,

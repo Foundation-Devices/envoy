@@ -437,25 +437,6 @@ class Wallet {
       balance = walletState["balance"];
       transactions = walletState["transactions"];
 
-      // Sort transactions by date
-      transactions.sort((t1, t2) {
-        // Mempool transactions go on top
-        if (t1.date.isBefore(DateTime(2008)) &&
-            t2.date.isBefore(DateTime(2008))) {
-          return 0;
-        }
-
-        if (t2.date.isBefore(DateTime(2008))) {
-          return 1;
-        }
-
-        if (t1.date.isBefore(DateTime(2008))) {
-          return -1;
-        }
-
-        return t2.date.compareTo(t1.date);
-      });
-
       // Don't update fees if they error out
       if (walletState["feeRateFast"] >= 0) {
         feeRateFast = walletState["feeRateFast"];

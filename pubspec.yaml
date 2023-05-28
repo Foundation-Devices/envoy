@@ -68,7 +68,7 @@ dependencies:
   carousel_slider: ^4.0.0
   url_launcher: ^6.0.18
   email_validator: ^2.0.1
-  json_annotation: ^4.4.0
+  json_annotation: ^4.8.1
   animations: ^2.0.2
   share_plus: ^4.5.0
   timeago: ^3.2.2
@@ -83,7 +83,7 @@ dependencies:
   pub_semver: ^2.1.1
   flutter_riverpod: ^2.1.1
   cupertino_icons: ^1.0.5
-  rive: 0.10.2
+  rive: 0.11.1
   local_auth: ^2.1.6
   file_saver: ^0.1.1
   file_picker: ^5.2.5
@@ -92,6 +92,7 @@ dependencies:
   sembast: ^3.4.3+1
   path_provider: ^2.0.14
   stack_trace: ^1.11.0
+  freezed_annotation: ^2.2.0
 
 dev_dependencies:
   test: any
@@ -106,6 +107,7 @@ dev_dependencies:
   mockito: ^5.1.0
   custom_lint:
   riverpod_lint:
+  freezed: ^2.3.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
