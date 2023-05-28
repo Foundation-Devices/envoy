@@ -24,8 +24,24 @@ final transactionsProvider =
   if (aztecoTransactions != null) {
     transactions.addAll(aztecoTransactions);
   }
-  transactions.sort(
-    (a, b) => b.date.compareTo(a.date),
-  );
+
+  // Sort transactions by date
+  transactions.sort((t1, t2) {
+    // Mempool transactions go on top
+    if (t1.date.isBefore(DateTime(2008)) && t2.date.isBefore(DateTime(2008))) {
+      return 0;
+    }
+
+    if (t2.date.isBefore(DateTime(2008))) {
+      return 1;
+    }
+
+    if (t1.date.isBefore(DateTime(2008))) {
+      return -1;
+    }
+
+    return t2.date.compareTo(t1.date);
+  });
+
   return transactions;
 });

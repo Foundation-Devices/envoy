@@ -279,12 +279,9 @@ class _ScannerPageState extends State<ScannerPage> {
         widget.callback!((_urDecoder.decoded as CryptoPsbt).decoded);
         Navigator.of(context).pop();
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
-        if (_validatePairData(_urDecoder.decoded)) {
-          if (_urDecoder.decoded is Binary) {
-            _binaryValidated(_urDecoder.decoded as Binary);
-          } else {
-            _cryptoRequestValidated(_urDecoder.decoded as CryptoRequest);
-          }
+        if (_validatePairData(_urDecoder.decoded) &&
+            _urDecoder.decoded is Binary) {
+          _binaryValidated(_urDecoder.decoded as Binary);
         } else {
           // Tell the user to use testnet
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -350,21 +347,8 @@ class _ScannerPageState extends State<ScannerPage> {
     return false;
   }
 
-  void _cryptoRequestValidated(CryptoRequest request) {
-    AccountManager().addEnvoyAccount(request).then((account) {
-      if (account == null) {
-        Navigator.of(context).popUntil(ModalRoute.withName("/"));
-      } else {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          return SingleWalletPairSuccessPage(account.wallet);
-        }));
-      }
-    });
-  }
-
   void _binaryValidated(Binary binary) {
-    AccountManager().addEnvoyBetaAccount(binary).catchError((_) {
+    AccountManager().addEnvoyAccountFromJson(binary).catchError((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Account already connected"),
       ));

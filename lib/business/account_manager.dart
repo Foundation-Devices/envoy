@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:io';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -15,7 +14,6 @@ import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/account.dart';
-import 'package:bip32/bip32.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/fees.dart';
@@ -24,6 +22,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:schedulers/schedulers.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:collection/collection.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -68,130 +67,71 @@ class AccountManager extends ChangeNotifier {
 
       if (!ConnectivityManager().torEnabled ||
           ConnectivityManager().torCircuitEstablished) {
-        for (Account account in accounts) {
-          _syncScheduler.run(() => _syncAccount(account));
-        }
+        accounts.forEachIndexed((index, account) {
+          _syncScheduler.run(() async {
+            accounts[index] = await _syncAccount(account);
+            notifyListeners();
+            storeAccounts();
+          });
+        });
       }
     }
   }
 
-  void _syncAccount(Account account) {
-    account.wallet
-        .sync(Settings().electrumAddress(account.wallet.network), Tor().port)
-        .then((changed) {
-      if (changed != null) {
-        // Let ConnectivityManager know that we've synced
-        if (account.wallet.network == Network.Mainnet) {
-          ConnectivityManager().electrumSuccess();
-        }
+  Future<Account> _syncAccount(Account account) async {
+    bool? changed = null;
 
-        // This does away with amounts "ghosting" in UI
-        if (account.initialSyncCompleted == false) {
-          account.initialSyncCompleted = true;
-          notifyListeners();
-        }
-
-        aztecoSync(account);
-
-        // Update the Fees singleton
-        Fees().fees[account.wallet.network]!.electrumFastRate =
-            account.wallet.feeRateFast;
-        Fees().fees[account.wallet.network]!.electrumSlowRate =
-            account.wallet.feeRateSlow;
-
-        // Notify UI if txs or balance changed
-        if (changed) {
-          notifyListeners();
-        }
-
-        storeAccounts();
-      }
-    }, onError: (_) {
+    try {
+      changed = await account.wallet
+          .sync(Settings().electrumAddress(account.wallet.network), Tor().port);
+    } on Exception catch (_) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {
         ConnectivityManager().electrumFailure();
       }
-    });
+    }
+
+    if (changed != null) {
+      // Let ConnectivityManager know that we've synced
+      if (account.wallet.network == Network.Mainnet) {
+        ConnectivityManager().electrumSuccess();
+      }
+
+      // Update the Fees singleton
+      Fees().fees[account.wallet.network]!.electrumFastRate =
+          account.wallet.feeRateFast;
+      Fees().fees[account.wallet.network]!.electrumSlowRate =
+          account.wallet.feeRateSlow;
+
+      // This does away with amounts "ghosting" in UI
+      account = account.copyWith(dateSynced: DateTime.now());
+
+      if (changed) {
+        aztecoSync(account);
+      }
+    }
+    ;
+
+    return account;
   }
 
   Future<Account?> addHotWalletAccount(Wallet wallet) async {
     // TODO: look & feel of hot wallet accounts
     Account account = Account(
-        wallet,
-        S().accounts_screen_account_default_name,
-        "envoy", // Device code for wallets derived on phone
-        DateTime.now(),
-        0,
-        Account.generateNewId());
+        wallet: wallet,
+        name: S().accounts_screen_account_default_name,
+        deviceSerial: "envoy",
+        // Device code for wallets derived on phone
+        dateAdded: DateTime.now(),
+        number: 0,
+        id: Account.generateNewId(),
+        dateSynced: null);
 
     addAccount(account);
     return account;
   }
 
-  Future<Account?> addEnvoyAccount(CryptoRequest request) async {
-    var hdkey = (request).objects[0] as CryptoHdKey;
-
-    // Check if account already present
-    for (var account in accounts) {
-      if (account.wallet.name == hdkey.parentFingerprint.toString()) {
-        return null;
-      }
-    }
-
-    var bip = BIP32.fromPublicKey(
-        Uint8List.fromList(hdkey.keyData!),
-        Uint8List.fromList(hdkey.chainCode!),
-        NetworkType(
-            wif: 0x80,
-            bip32: new Bip32Type(public: 0x043587CF, private: 0x04358394)));
-    var base58 = bip.toBase58();
-
-    var externalDescriptor = "wpkh([" +
-        hdkey.parentFingerprint!.toRadixString(16) +
-        hdkey.path +
-        "]" +
-        base58 +
-        "/0/*)";
-
-    var wallet = await _initWallet(hdkey.parentFingerprint.toString(),
-        externalDescriptor, externalDescriptor);
-
-    // Add a device
-    //var model = (request).objects[1] as PassportModel;
-    var fw = (request).objects[2] as PassportFirmwareVersion;
-    var serial = (request).objects[3] as PassportSerial;
-
-    // Pick colours
-    int colorIndex =
-        Devices().devices.length % (EnvoyColors.listTileColorPairs.length);
-
-    // TODO: stop the gen1.2 hardcoding, agree with Ken on model numbers
-    Device device = Device(
-        "Passport",
-        DeviceType.passportGen12,
-        serial.serial,
-        DateTime.now(),
-        fw.version,
-        EnvoyColors.listTileColorPairs[colorIndex].darker);
-
-    // TODO: we should decouple device pairing
-    Devices().add(device);
-
-    // Create an account & store
-    colorIndex = accounts.length % (EnvoyColors.listTileColorPairs.length);
-    Account account = Account(
-        wallet,
-        "Account " + (accounts.length + 1).toString(),
-        device.serial,
-        DateTime.now(),
-        0,
-        Account.generateNewId());
-
-    addAccount(account);
-    return account;
-  }
-
-  Future<Account?> addEnvoyBetaAccount(Binary binary) async {
+  Future<Account?> addEnvoyAccountFromJson(Binary binary) async {
     var jsonIndex = binary.decoded.indexOf("{");
     var decoded = binary.decoded.substring(jsonIndex);
     var json = jsonDecode(decoded);
@@ -240,12 +180,13 @@ class AccountManager extends ChangeNotifier {
     // Create an account & store
     colorIndex = accountNumber % (EnvoyColors.listAccountTileColors.length);
     Account account = Account(
-        wallet,
-        json["acct_name"] + " (#" + accountNumber.toString() + ")",
-        device.serial,
-        DateTime.now(),
-        accountNumber,
-        Account.generateNewId());
+        wallet: wallet,
+        name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+        deviceSerial: device.serial,
+        dateAdded: DateTime.now(),
+        number: accountNumber,
+        id: Account.generateNewId(),
+        dateSynced: null);
 
     addAccount(account);
     return account;
@@ -321,7 +262,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   renameAccount(Account account, String newName) {
-    account.name = newName;
+    account = account.copyWith(name: newName);
     storeAccounts();
     notifyListeners();
   }

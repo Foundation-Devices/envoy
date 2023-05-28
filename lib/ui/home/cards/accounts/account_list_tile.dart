@@ -236,8 +236,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 children: [
                                   FittedBox(
                                     fit: BoxFit.fitWidth,
-                                    child: !widget
-                                                .account.initialSyncCompleted ||
+                                    child: widget.account.dateSynced == null ||
                                             hide
                                         ? LoaderGhost(
                                             width: 200,
@@ -257,7 +256,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                     color: EnvoyColors.grey),
                                           ),
                                   ),
-                                  !widget.account.initialSyncCompleted || hide
+                                  widget.account.dateSynced == null || hide
                                       ? LoaderGhost(
                                           width: 50,
                                           height: 15,

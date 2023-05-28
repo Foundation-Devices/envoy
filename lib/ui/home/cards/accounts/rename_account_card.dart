@@ -57,8 +57,8 @@ class _RenameAccountCardState extends State<RenameAccountCard> {
         padding: const EdgeInsets.all(50.0),
         child: EnvoyTextButton(
             onTap: () {
-              widget.account.name = textEntry.enteredText;
-              AccountManager().storeAccounts();
+              AccountManager()
+                  .renameAccount(widget.account, textEntry.enteredText);
               widget.navigator!.pop();
             },
             label: _actionButtonText),
