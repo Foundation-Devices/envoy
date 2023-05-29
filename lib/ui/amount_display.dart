@@ -28,20 +28,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       : super(key: key);
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-    switch (unit) {
-      case AmountDisplayUnit.btc:
-        displayedAmount = convertSatsToBtcString(amountSats!);
-        break;
-      case AmountDisplayUnit.sat:
-        displayedAmount = amountSats.toString();
-        break;
-      case AmountDisplayUnit.fiat:
-        displayedAmount = ExchangeRate().getSymbol() +
-            convertFiatToFiatString(double.parse(ExchangeRate()
-                .getFormattedAmount(amountSats!, includeSymbol: false)
-                .replaceAll(",", "")));
-        break;
-    }
+    displayedAmount = getDisplayAmount(amountSats!, unit);
   }
 
   @override
@@ -113,12 +100,12 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
             unit != AmountDisplayUnit.fiat
                 ? ExchangeRate().getFormattedAmount(widget.amountSats ?? 0)
                 : (Settings().displayUnit == DisplayUnit.btc
-                    ? convertSatsToBtcString(widget.amountSats ?? 0) +
-                        " " +
-                        getBtcUnitString(testnet: widget.testnet)
-                    : widget.amountSats.toString() +
-                        " " +
-                        getSatsUnitString(testnet: widget.testnet)),
+                    ? getDisplayAmount(
+                        widget.amountSats ?? 0, AmountDisplayUnit.btc,
+                        includeUnit: true, testnet: widget.testnet)
+                    : getDisplayAmount(
+                        widget.amountSats ?? 0, AmountDisplayUnit.sat,
+                        includeUnit: true, testnet: widget.testnet)),
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!

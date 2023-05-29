@@ -41,7 +41,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         ? convertBtcStringToSats(_enteredAmount)
         : (unit == AmountDisplayUnit.sat
             ? convertSatsStringToSats(_enteredAmount)
-            : ExchangeRate().fiatToSats((_enteredAmount.replaceAll(",", ""))));
+            : ExchangeRate().fiatToSats((_enteredAmount)));
   }
 
   @override
@@ -50,9 +50,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
-      _enteredAmount = Settings().displayUnit == DisplayUnit.btc
-          ? convertSatsToBtcString(_amountSats)
-          : _amountSats.toString();
+      _enteredAmount =
+          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
     }
   }
 
@@ -83,21 +82,19 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             if (unit == AmountDisplayUnit.sat) {
               break;
             }
-
-            if (_enteredAmount.isEmpty) {
-              setState(() {
-                _enteredAmount = "0.";
-              });
-            }
-            if (!_enteredAmount.contains(".")) {
-              setState(() {
-                _enteredAmount = _enteredAmount + ".";
-              });
-            }
           }
           break;
         default:
           {
+            // No more than two decimal digits for fiat
+            if (unit == AmountDisplayUnit.fiat &&
+                _enteredAmount.contains(decimalPoint) &&
+                ((_enteredAmount.length -
+                        _enteredAmount.indexOf(decimalPoint)) >
+                    2)) {
+              break;
+            }
+
             setState(() {
               if (_enteredAmount == "0") {
                 _enteredAmount = event;
@@ -115,6 +112,30 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       }
 
       _amountSats = getAmountSats();
+
+      // Make sure we don't do any formatting in certain situations
+      bool addZero = (event == "0") &&
+          (unit != AmountDisplayUnit.sat) &&
+          (_enteredAmount.contains(decimalPoint));
+
+      bool addDot = (event == NumpadEvents.dot) &&
+          (unit != AmountDisplayUnit.sat) &&
+          (!_enteredAmount.contains(decimalPoint));
+
+      bool removeZero = (event == NumpadEvents.backspace) &&
+          (unit != AmountDisplayUnit.sat) &&
+          (_enteredAmount.contains(decimalPoint));
+
+      if (addZero || addDot || removeZero) {
+        setState(() {
+          _enteredAmount = _enteredAmount + (addDot ? decimalPoint : "");
+        });
+      } else {
+        // Format it nicely
+        setState(() {
+          _enteredAmount = getDisplayAmount(_amountSats, unit);
+        });
+      }
 
       if (widget.onAmountChanged != null) {
         widget.onAmountChanged!(_amountSats);
@@ -190,7 +211,7 @@ class _NumpadState extends State<Numpad> {
         })),
         widget.amountDisplayUnit != AmountDisplayUnit.sat
             ? NumpadButton(
-                ".",
+                decimalPoint,
                 onTap: () {
                   Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.dot);

@@ -4,6 +4,45 @@
 
 import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/business/exchange_rate.dart';
+
+// To be replaced with whatever is in locale
+NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
+String decimalPoint = ".";
+String thousandsSeparator = ",";
+
+String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
+    {bool includeUnit = false, bool testnet = false}) {
+  String? unitString;
+
+  switch (unit) {
+    case AmountDisplayUnit.btc:
+      unitString = getBtcUnitString(testnet: testnet);
+      break;
+    case AmountDisplayUnit.sat:
+      unitString = getBtcUnitString(testnet: testnet);
+      break;
+    case AmountDisplayUnit.fiat:
+      unitString = null;
+      break;
+  }
+  ;
+
+  switch (unit) {
+    case AmountDisplayUnit.btc:
+      return convertSatsToBtcString(amountSats) +
+          (includeUnit ? " " + unitString! : "");
+    case AmountDisplayUnit.sat:
+      return satsFormatter.format(amountSats) +
+          (includeUnit ? " " + unitString! : "");
+    case AmountDisplayUnit.fiat:
+      return ExchangeRate().getSymbol() +
+          convertFiatToFiatString(double.parse(ExchangeRate()
+              .getFormattedAmount(amountSats, includeSymbol: false)
+              .replaceAll(thousandsSeparator, "")));
+  }
+}
 
 String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
   final amountBtc = amountSats / 100000000;
@@ -29,7 +68,9 @@ int convertSatsStringToSats(String amountSats) {
   }
 
   try {
-    return int.parse(amountSats.replaceAll(".", ""));
+    return int.parse(amountSats
+        .replaceAll(decimalPoint, "")
+        .replaceAll(thousandsSeparator, ""));
   } catch (e) {
     return 0;
   }
@@ -41,14 +82,14 @@ int convertBtcStringToSats(String amountBtc) {
   }
 
   // There are 8 digits after the decimal point
-  String sanitized = amountBtc.replaceAll(",", "");
-  int dotIndex = sanitized.indexOf(".");
-  int missingZeros = dotIndex < 0 ? 8 : 8 - (sanitized.length - dotIndex);
+  String sanitized = amountBtc.replaceAll(thousandsSeparator, "");
+  int dotIndex = sanitized.indexOf(decimalPoint);
+  int missingZeros = dotIndex < 0 ? 8 : 8 - (sanitized.length - dotIndex - 1);
 
-  String dotRemoved = sanitized.replaceAll(".", "");
+  String dotRemoved = sanitized.replaceAll(decimalPoint, "");
 
   if (missingZeros < 0) {
-    dotRemoved = dotRemoved.substring(0, dotRemoved.length + missingZeros + 1);
+    dotRemoved = dotRemoved.substring(0, dotRemoved.length + missingZeros);
     missingZeros = 0;
   }
 
@@ -60,7 +101,6 @@ int convertBtcStringToSats(String amountBtc) {
 String getFormattedAmount(int amountSats,
     {bool includeUnit = false, bool testnet = false}) {
   // TODO: this should be locale dependent?
-  NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
   String text = Settings().displayUnit == DisplayUnit.btc
       ? convertSatsToBtcString(amountSats, trailingZeroes: true) +
           (includeUnit ? " " + getBtcUnitString(testnet: testnet) : "")
