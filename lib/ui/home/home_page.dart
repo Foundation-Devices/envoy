@@ -122,10 +122,6 @@ class _HomePageState extends ConsumerState<HomePage>
         }
       }
     });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _bottomTabBarHeight = _bottomTabBarKey.currentContext?.size?.height ?? 0;
-    });
   }
 
   _notifyAboutTor() {
@@ -180,6 +176,18 @@ class _HomePageState extends ConsumerState<HomePage>
     _optionsHeight = _optionsKey.currentContext?.size!.height ?? 0;
   }
 
+  void _getTabBarHeight(_) {
+    var context = _bottomTabBarKey.currentContext;
+    if (context == null) return;
+
+    final oldTabBarHeight = _bottomTabBarHeight;
+    _bottomTabBarHeight = _bottomTabBarKey.currentContext?.size?.height ?? 0;
+
+    if (oldTabBarHeight != _bottomTabBarHeight) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<HomePageTabState>(homePageTabProvider,
@@ -229,8 +237,9 @@ class _HomePageState extends ConsumerState<HomePage>
         ;
       });
     });
-    // After we render everything find out the options widgets height
+    // After we render everything find out the widgets' height
     SchedulerBinding.instance.addPostFrameCallback(_getOptionsHeight);
+    SchedulerBinding.instance.addPostFrameCallback(_getTabBarHeight);
 
     double _screenHeight = MediaQuery.of(context).size.height;
     // ignore: unused_local_variable
@@ -246,7 +255,7 @@ class _HomePageState extends ConsumerState<HomePage>
     double _shieldTopOptionsShown =
         _shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double _bottomTabBarShieldOffset = 40;
+    double _bottomTabBarShieldOffset = 30;
     double _shieldHeight = _screenHeight -
         _bottomTabBarHeight -
         _bottomOffset -
