@@ -216,6 +216,7 @@ class _ScannerPageState extends State<ScannerPage> {
         Navigator.of(context).pop();
         showEnvoyDialog(
             context: context, dialog: AztecoDialog(voucher, widget.account!));
+        return;
       }
     }
 

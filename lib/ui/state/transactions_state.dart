@@ -17,10 +17,11 @@ final aztecoTransactionsProvider =
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   List<Transaction>? aztecoTransactions =
-      ref.watch(aztecoTransactionsProvider(accountId)).value;
+      ref.refresh(aztecoTransactionsProvider(accountId)).value;
 
   List<Transaction> transactions =
       ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+
   if (aztecoTransactions != null) {
     transactions.addAll(aztecoTransactions);
   }
