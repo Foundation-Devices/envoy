@@ -106,9 +106,7 @@ class AccountManager extends ChangeNotifier {
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
 
-      if (changed) {
-        aztecoSync(account);
-      }
+      aztecoSync(account);
     }
     ;
 

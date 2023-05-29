@@ -269,7 +269,9 @@ class TransactionListTile extends StatelessWidget {
                 }
               },
               child: Text(
-                getFormattedAmount(transaction.amount),
+                transaction.type == TransactionType.azteco
+                    ? ""
+                    : getFormattedAmount(transaction.amount),
                 style: Settings().selectedFiat == null
                     ? Theme.of(context)
                         .textTheme
@@ -302,7 +304,9 @@ class TransactionListTile extends StatelessWidget {
                   }
                 },
                 child: Text(
-                    ExchangeRate().getFormattedAmount(transaction.amount),
+                    transaction.type == TransactionType.azteco
+                        ? ""
+                        : ExchangeRate().getFormattedAmount(transaction.amount),
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).textTheme.bodySmall!.color)),
               ),
