@@ -63,10 +63,7 @@ class _AddressEntryState extends State<AddressEntry> {
                   overflow: TextOverflow.fade,
                   fontWeight: FontWeight.w500),
               onChanged: (value) async {
-                final check =
-                    await widget.account.wallet.validateAddress(value);
-                setState(() => addressValid = check);
-                widget.onAddressChanged!(addressValid, value);
+                await validate(value);
               },
               decoration: InputDecoration(
                 // Disable the borders
@@ -110,6 +107,7 @@ class _AddressEntryState extends State<AddressEntry> {
                               String? text = cdata?.text ?? null;
                               if (text != null) {
                                 _controller.text = text;
+                                validate(text);
                               }
                             },
                           ),
@@ -152,5 +150,11 @@ class _AddressEntryState extends State<AddressEntry> {
         ),
       ),
     );
+  }
+
+  Future<void> validate(String value) async {
+    final check = await widget.account.wallet.validateAddress(value);
+    setState(() => addressValid = check);
+    widget.onAddressChanged!(addressValid, value);
   }
 }
