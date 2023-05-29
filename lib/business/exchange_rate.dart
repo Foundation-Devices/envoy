@@ -138,11 +138,13 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   int fiatToSats(String amountFiat) {
-    amountFiat = amountFiat.replaceAll(RegExp('[^0-9.]'), '');
+    amountFiat =
+        amountFiat.replaceAll(RegExp('[^0-9.]'), '').replaceAll(",", "");
 
     if (Settings().selectedFiat == null) {
       return 0;
     }
+
     if (amountFiat.isEmpty) {
       return 0;
     }

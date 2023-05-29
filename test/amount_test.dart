@@ -10,6 +10,21 @@ void main() {
     expect(convertBtcStringToSats("9"), 900000000);
   });
 
+  test("Test converting large amount BTC string with dot to Sats", () async {
+    expect(convertBtcStringToSats("9."), 900000000);
+  });
+
+  test(
+      "Test converting large amount BTC string with dot and trailing zero to Sats",
+      () async {
+    expect(convertBtcStringToSats("9.0"), 900000000);
+  });
+
+  test("Test converting large formatted amount BTC string with dot to Sats",
+      () async {
+    expect(convertBtcStringToSats("9,999."), 999900000000);
+  });
+
   test("Test converting small amount BTC string to Sats", () async {
     expect(convertBtcStringToSats("0.00000009"), 9);
   });
