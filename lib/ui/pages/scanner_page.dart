@@ -41,17 +41,17 @@ class ScannerPage extends StatefulWidget {
   final Account? account;
   final Challenge? challengeToValidate;
   final Function(String)? callback;
-  final Function(String, int)? addressCallback;
+  final Function(String, int)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
       {this.account,
       this.challengeToValidate,
       this.callback,
-      this.addressCallback});
+      this.onAddressValidated});
 
   ScannerPage.address(Function(String, int) callback, Account account)
       : this([ScannerType.address],
-            addressCallback: callback, account: account);
+            onAddressValidated: callback, account: account);
 
   ScannerPage.tx(Function(String) callback)
       : this([ScannerType.tx], callback: callback);
@@ -253,7 +253,7 @@ class _ScannerPageState extends State<ScannerPage> {
           content: Text("Not a valid address"),
         ));
       } else {
-        widget.addressCallback!(address, amount);
+        widget.onAddressValidated!(address, amount);
         Navigator.of(context).pop();
       }
       return;

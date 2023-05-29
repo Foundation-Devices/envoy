@@ -66,10 +66,7 @@ class _AddressEntryState extends State<AddressEntry> {
                 final check =
                     await widget.account.wallet.validateAddress(value);
                 setState(() => addressValid = check);
-              },
-              validator: (value) {
-                widget.onAddressChanged!(addressValid, value!);
-                return null;
+                widget.onAddressChanged!(addressValid, value);
               },
               decoration: InputDecoration(
                 // Disable the borders
@@ -137,6 +134,11 @@ class _AddressEntryState extends State<AddressEntry> {
                                   .push(MaterialPageRoute(builder: (context) {
                                 return ScannerPage.address((address, amount) {
                                   _controller.text = address;
+
+                                  if (widget.onAddressChanged != null) {
+                                    widget.onAddressChanged!(true, address);
+                                  }
+
                                   if (widget.onAmountChanged != null) {
                                     widget.onAmountChanged!(amount);
                                   }

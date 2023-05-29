@@ -22,8 +22,10 @@ final spendAmountProvider = StateProvider((ref) => 0);
 class SendCard extends ConsumerStatefulWidget with NavigationCard {
   final Account account;
   final String? address;
+  final int? amountSats;
 
-  SendCard(this.account, {this.address, CardNavigator? navigationCallback})
+  SendCard(this.account,
+      {this.address, CardNavigator? navigationCallback, this.amountSats})
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
@@ -54,15 +56,7 @@ class _SendCardState extends ConsumerState<SendCard>
         account: widget.account,
         initalAddress: widget.address,
         onAmountChanged: (amount) {
-          setState(() {
-            _amount = amount;
-            _amountEntry = AmountEntry(
-              onAmountChanged: _updateAmount,
-              initalSatAmount: _amount,
-              key: UniqueKey(),
-              wallet: widget.account.wallet,
-            );
-          });
+          setAmount(amount);
         },
         onAddressChanged: (valid, text) {
           Future.delayed(Duration.zero, () async {
@@ -79,12 +73,29 @@ class _SendCardState extends ConsumerState<SendCard>
     // Addresses from the scanner are already validated
     if (widget.address != null) {
       _addressValid = true;
+      _addressText = widget.address!;
     }
 
     _amountEntry = AmountEntry(
       onAmountChanged: _updateAmount,
       wallet: widget.account.wallet,
     );
+
+    if (widget.amountSats != null) {
+      setAmount(widget.amountSats!);
+    }
+  }
+
+  void setAmount(int amount) {
+    setState(() {
+      _amount = amount;
+      _amountEntry = AmountEntry(
+        onAmountChanged: _updateAmount,
+        initalSatAmount: _amount,
+        key: UniqueKey(),
+        wallet: widget.account.wallet,
+      );
+    });
   }
 
   _updateAmount(amount) {
