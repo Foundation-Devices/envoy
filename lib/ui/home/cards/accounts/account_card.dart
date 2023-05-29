@@ -138,9 +138,10 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                           return ScannerPage(
                               [ScannerType.address, ScannerType.azteco],
                               account: widget.account,
-                              addressCallback: (address, amount) {
+                              onAddressValidated: (address, amount) {
                             widget.navigator!.push(SendCard(widget.account,
                                 address: address,
+                                amountSats: amount,
                                 navigationCallback: widget.navigator));
                           });
                         }));
