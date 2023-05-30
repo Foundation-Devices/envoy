@@ -3,23 +3,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
-
-import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:rive/rive.dart' as Rive;
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
@@ -296,6 +295,7 @@ class _EraseWalletsConfirmationState
 }
 
 void displaySeedBeforeNuke(BuildContext context) {
+  Navigator.of(context).pop();
   Navigator.of(context).push(MaterialPageRoute(builder: (context) {
     return SeedIntroScreen(
       mode: SeedIntroScreenType.verify,
@@ -397,18 +397,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       if (Platform.isAndroid) {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));
         await Future.delayed(Duration(milliseconds: 300));
-        await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => AndroidBackupWarning(
-                  onContinue: () async {
-                    // Show home page and navigate to accounts
-                    ref.read(homePageBackgroundProvider.notifier).state =
-                        HomePageBackgroundState.hidden;
-                    ref.read(homePageTabProvider.notifier).state =
-                        HomePageTabState.accounts;
-                    await Future.delayed(Duration(milliseconds: 100));
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
-                  },
-                )));
+        await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => AndroidBackupWarning()));
       } else {
         Navigator.of(context).popUntil(ModalRoute.withName("/"));
         //wait for pop animation to finish
@@ -424,12 +414,9 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 }
 
 class AndroidBackupWarning extends StatelessWidget {
-  final bool skipSuccessScreen;
-  final GestureTapCallback? onContinue;
-
-  const AndroidBackupWarning(
-      {Key? key, this.skipSuccessScreen = false, this.onContinue = null})
-      : super(key: key);
+  const AndroidBackupWarning({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -489,14 +476,22 @@ class AndroidBackupWarning extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     children: [
-                      OnboardingButton(
-                        type: EnvoyButtonTypes.tertiary,
-                        label: S().delete_wallet_for_good_instant_android_cta2,
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return WalletSetupSuccess();
-                          }));
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return OnboardingButton(
+                            type: EnvoyButtonTypes.tertiary,
+                            label:
+                                S().delete_wallet_for_good_instant_android_cta2,
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                              ref
+                                  .read(homePageBackgroundProvider.notifier)
+                                  .state = HomePageBackgroundState.hidden;
+                              ref.read(homePageTabProvider.notifier).state =
+                                  HomePageTabState.accounts;
+                              await Future.delayed(Duration(milliseconds: 100));
+                            },
+                          );
                         },
                       ),
                       OnboardingButton(
