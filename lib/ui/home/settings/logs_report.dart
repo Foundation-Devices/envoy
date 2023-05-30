@@ -4,8 +4,8 @@
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/ui/widgets/toast/toast_route.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -24,6 +24,9 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
         elevation: 0,
         backgroundColor: Colors.black,
         title: Text("Logs"),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+        ),
         actions: [
           IconButton(
               onPressed: () async {
