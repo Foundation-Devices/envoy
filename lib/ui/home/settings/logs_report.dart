@@ -3,8 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/ui/widgets/toast/toast_route.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class EnvoyLogsScreen extends StatefulWidget {
   const EnvoyLogsScreen({Key? key}) : super(key: key);
@@ -25,10 +28,26 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
           IconButton(
               onPressed: () async {
                 try {
-                  EnvoyReport().share();
+                  String logs = await EnvoyReport().getLogAsString();
+                  await Clipboard.setData(ClipboardData(text: logs));
+                  EnvoyToast(
+                    backgroundColor: Colors.lightBlue,
+                    replaceExisting: true,
+                    duration: Duration(milliseconds: 2000),
+                    message: "Logs copied to clipboard",
+                    icon: Icon(
+                      Icons.copy,
+                      color: EnvoyColors.teal,
+                    ),
+                  ).show(context);
                 } catch (e) {
                   print(e);
                 }
+              },
+              icon: Icon(Icons.copy)),
+          IconButton(
+              onPressed: () async {
+                EnvoyReport().share();
               },
               icon: Icon(Icons.ios_share))
         ],

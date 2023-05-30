@@ -106,9 +106,7 @@ class EnvoyReport {
     return null;
   }
 
-  void share() async {
-    final Directory tempDir = await getTemporaryDirectory();
-    final File file = File(join(tempDir.path, "logs.txt"));
+  Future<String> getLogAsString() async {
     final allLogs = await this.getAllLogs();
     String logs = "";
     allLogs.forEach((element) {
@@ -128,11 +126,17 @@ class EnvoyReport {
       } catch (e) {
         print(e);
       }
-      print("log ${log}");
       if (log.isNotEmpty)
         logs =
             "$logs\n" + List.generate(20, (index) => "-").join("") + "\n${log}";
     });
+    return logs;
+  }
+
+  void share() async {
+    final Directory tempDir = await getTemporaryDirectory();
+    final File file = File(join(tempDir.path, "logs.txt"));
+    String logs = await getLogAsString();
     await file.writeAsString(logs);
     // ignore: deprecated_member_use
     await Share.shareFiles([file.path],
