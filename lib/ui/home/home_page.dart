@@ -255,7 +255,7 @@ class _HomePageState extends ConsumerState<HomePage>
     double _shieldTopOptionsShown =
         _shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double _bottomTabBarShieldOffset = 30;
+    double _bottomTabBarShieldOffset = 15;
     double _shieldHeight = _screenHeight -
         _bottomTabBarHeight -
         _bottomOffset -
