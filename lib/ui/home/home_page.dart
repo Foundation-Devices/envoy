@@ -275,10 +275,21 @@ class _HomePageState extends ConsumerState<HomePage>
           Future.delayed(Duration.zero, () async {
             setState(() {
               _leftAction = notification.leftFunction;
-
               if (notification.optionsWidget != null) {
-                _options = Container(
-                    key: _optionsKey, child: notification.optionsWidget!);
+                //hide options menu if user press back button (android)
+                _options = WillPopScope(
+                  onWillPop: () async {
+                    if (ref.read(HomePageOptionsVisibilityProvider)) {
+                      ref
+                          .read(HomePageOptionsVisibilityProvider.notifier)
+                          .state = false;
+                      return false;
+                    }
+                    return true;
+                  },
+                  child: Container(
+                      key: _optionsKey, child: notification.optionsWidget!),
+                );
                 _rightAction = _toggleOptions;
               } else {
                 _rightAction = notification.rightFunction;
