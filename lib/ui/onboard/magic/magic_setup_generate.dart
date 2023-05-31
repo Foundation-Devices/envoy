@@ -11,6 +11,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
@@ -194,7 +195,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 }
 
-class MagicRecoveryInfo extends StatelessWidget {
+class MagicRecoveryInfo extends ConsumerWidget {
   final bool skipSuccessScreen;
   final GestureTapCallback? onContinue;
 
@@ -203,79 +204,95 @@ class MagicRecoveryInfo extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool isAndroid = Platform.isAndroid;
     bool _iphoneSE = MediaQuery.of(context).size.height < 700;
-    return OnboardPageBackground(
-      child: Material(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 180,
-                  width: 180,
+    return WillPopScope(
+      onWillPop: () async {
+        if (onContinue != null) {
+          onContinue!.call();
+          return false;
+        }
+        if (skipSuccessScreen) {
+          Navigator.pop(context);
+        } else {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return WalletSetupSuccess();
+          }));
+        }
+        return false;
+      },
+      child: OnboardPageBackground(
+        child: Material(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Image.asset(
+                    "assets/exclamation_icon.png",
+                    height: 180,
+                    width: 180,
+                  ),
+                  height: _iphoneSE ? 220 : 250,
                 ),
-                height: _iphoneSE ? 220 : 250,
-              ),
-              isAndroid
-                  ? Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            S().android_backup_info_heading,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          Padding(padding: EdgeInsets.all(12)),
-                          LinkText(
-                            text: S().android_backup_info_subheading,
-                            onTap: () {
-                              openAndroidSettings();
-                            },
-                            linkStyle: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    fontSize: 14, color: EnvoyColors.blue),
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    )
-                  : _iosBackupInfo(context),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: OnboardingButton(
-                  label: S().component_continue,
-                  onTap: () {
-                    if (onContinue != null) {
-                      onContinue!.call();
-                      return;
-                    }
-                    if (skipSuccessScreen) {
-                      Navigator.pop(context);
-                    } else {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return WalletSetupSuccess();
-                      }));
-                    }
-                  },
+                isAndroid
+                    ? Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              S().android_backup_info_heading,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Padding(padding: EdgeInsets.all(12)),
+                            LinkText(
+                              text: S().android_backup_info_subheading,
+                              onTap: () {
+                                openAndroidSettings();
+                              },
+                              linkStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontSize: 14, color: EnvoyColors.blue),
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      )
+                    : _iosBackupInfo(context),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: OnboardingButton(
+                    label: S().component_continue,
+                    onTap: () {
+                      if (onContinue != null) {
+                        onContinue!.call();
+                        return;
+                      }
+                      if (skipSuccessScreen) {
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return WalletSetupSuccess();
+                        }));
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-          color: Colors.transparent),
+              ],
+            ),
+            color: Colors.transparent),
+      ),
     );
   }
 
