@@ -24,4 +24,4 @@ bitcoin_hashes = "0.10.0"
 features = ["rand"]
 
 [build-dependencies]
-cbindgen = "0.24.3"
+cbindgen = "= 0.24.3"

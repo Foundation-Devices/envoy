@@ -16,4 +16,4 @@ crate-type = ["cdylib", "staticlib"]
 libtor-sys = { version = "=47.13.0", features = ["vendored-openssl"] }
 
 [build-dependencies]
-cbindgen = "0.24.3"
+cbindgen = "= 0.24.3"

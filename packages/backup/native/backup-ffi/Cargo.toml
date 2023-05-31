@@ -26,4 +26,4 @@ lazy_static = "1.4"
 allo-isolate = "0.1.12"
 
 [build-dependencies]
-cbindgen = "0.24.3"
+cbindgen = "= 0.24.3"

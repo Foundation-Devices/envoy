@@ -20,4 +20,4 @@ version = "0.2.3"
 features = ["js"]
 
 [build-dependencies]
-cbindgen = "0.24.3"
+cbindgen = "= 0.24.3"
