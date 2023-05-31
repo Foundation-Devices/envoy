@@ -21,7 +21,7 @@ String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
       unitString = getBtcUnitString(testnet: testnet);
       break;
     case AmountDisplayUnit.sat:
-      unitString = getBtcUnitString(testnet: testnet);
+      unitString = getSatsUnitString(testnet: testnet);
       break;
     case AmountDisplayUnit.fiat:
       unitString = null;
