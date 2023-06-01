@@ -222,11 +222,6 @@ class TransactionListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO : Add transaction type
-    // TransactionType transactionType = this.transaction.type;
-    // if(transaction == TransactionType.azteco){
-    //   //do azteco voucher transaction
-    // }
     return GestureDetector(
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: transaction.txId));
@@ -238,9 +233,11 @@ class TransactionListTile extends StatelessWidget {
         title: transaction.amount < 0
             ? Text(S().envoy_account_sent)
             : Text(S().envoy_account_received),
-        subtitle: transaction.isConfirmed
-            ? Text(timeago.format(transaction.date))
-            : Text(S().envoy_account_awaiting_confirmation),
+        subtitle: transaction.type == TransactionType.azteco
+            ? Text(S().azteco_account_tx_history_pending_voucher)
+            : transaction.isConfirmed
+                ? Text(timeago.format(transaction.date))
+                : Text(S().envoy_account_awaiting_confirmation),
         leading: transaction.amount < 0
             ? Icon(Icons.call_made)
             : Icon(Icons.call_received),

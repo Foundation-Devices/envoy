@@ -34,9 +34,8 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
         ?.copyWith(fontWeight: FontWeight.w900, fontSize: 12);
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Align(
             alignment: Alignment.centerRight,
@@ -69,14 +68,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
                 Padding(
                   padding: const EdgeInsets.only(top: 5 * 4),
                   child: Text(
-                    S().azteco_redeem_modal_subheading,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5 * 4),
-                  child: Text(
-                    "VOUCHER CODE", //TODO: change this when UI is updated
+                    S().azteco_redeem_modal__voucher_code,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -98,31 +90,32 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
-            child: Column(
-              //Temporarily Disable Tor
-              children: [
-                EnvoyButton(
-                  S().azteco_redeem_modal_CTA2,
-                  type: EnvoyButtonTypes.secondary,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4 * 4),
-                  child: EnvoyButton(
-                    S().azteco_redeem_modal_CTA1,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  EnvoyButton(
+                    S().azteco_redeem_modal_cta2,
+                    type: EnvoyButtonTypes.tertiary,
                     onTap: () {
-                      widget.controller.nextPage(
-                          duration: Duration(microseconds: 100),
-                          curve: Curves.linear); // go to loading
-                      // We are continually retrying anyway
+                      Navigator.of(context).pop();
                     },
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4 * 4),
+                    child: EnvoyButton(
+                      S().azteco_redeem_modal_cta1,
+                      onTap: () {
+                        widget.controller.nextPage(
+                            duration: Duration(microseconds: 100),
+                            curve: Curves.linear);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

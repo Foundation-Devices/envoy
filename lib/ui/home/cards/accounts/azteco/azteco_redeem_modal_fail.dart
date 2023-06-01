@@ -49,11 +49,7 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset("assets/exclamation_triangle.png",
-                    scale: 1.0,
-                    width: 56, // set the width of the image
-                    height: 56, // set the height of the image
-                    fit: BoxFit.contain), // set the fit property to contain),
-
+                    scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
                 Padding(
                   padding: const EdgeInsets.only(top: 5 * 4),
                   child: Text(
@@ -67,7 +63,6 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
                   child: Text(
                     S().azteco_redeem_modal_fail_subheading,
                     textAlign: TextAlign.center,
-                    //style: textStyle_size12,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(4)),
@@ -78,21 +73,13 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
             child: Column(
-              //Temporarily Disable Tor
               children: [
-                EnvoyButton(
-                  S().azteco_redeem_modal_fail_CTA2,
-                  type: EnvoyButtonTypes.secondary,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 4 * 4),
                   child: EnvoyButton(
-                    S().azteco_redeem_modal_fail_CTA1,
+                    S().azteco_redeem_modal_fail_cta,
                     onTap: () {
-                      widget.controller.jumpToPage(1); // return to "loading"
+                      Navigator.of(context).pop();
                     },
                   ),
                 ),
