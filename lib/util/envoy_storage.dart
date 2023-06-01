@@ -9,6 +9,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:sembast/src/type.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
 final aztecoTxStreamProvider =
@@ -49,7 +50,11 @@ class EnvoyStorage {
   Future<List<wallet.Transaction>> getAztecoTxs(String accountId) async {
     var finder = Finder(filter: Filter.equals('account', accountId));
     var records = await aztecoPendingTxStore.find(db, finder: finder);
+    return transformAztecoTxRecords(records);
+  }
 
+  List<wallet.Transaction> transformAztecoTxRecords(
+      List<RecordSnapshot<Key?, Value?>> records) {
     return records
         .map((e) => wallet.Transaction(
             e.key as String,
@@ -71,17 +76,7 @@ class EnvoyStorage {
         .query(finder: finder)
         .onSnapshots(db)
         .map((records) {
-      return records
-          .map((e) => wallet.Transaction(
-              e.key as String,
-              "",
-              DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-              0,
-              0,
-              0,
-              0,
-              type: wallet.TransactionType.azteco))
-          .toList();
+      return transformAztecoTxRecords(records);
     });
   }
 
