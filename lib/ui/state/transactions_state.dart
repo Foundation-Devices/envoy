@@ -10,6 +10,8 @@ import 'package:wallet/wallet.dart';
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   List<Transaction> aztecoTransactions = [];
+  //Creates new list for all type of transactions
+  List<Transaction> transactions = [];
   // Listen to azteco transactions from database
   AsyncValue<List<Transaction>> asyncTx =
       ref.watch(aztecoTxStreamProvider(accountId));
@@ -17,9 +19,10 @@ final transactionsProvider =
     aztecoTransactions.addAll((asyncTx.value as List<Transaction>));
   }
 
-  List<Transaction> transactions =
+  List<Transaction> walletTransactions =
       ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
+  transactions.addAll(walletTransactions);
   transactions.addAll(aztecoTransactions);
 
   // Sort transactions by date
