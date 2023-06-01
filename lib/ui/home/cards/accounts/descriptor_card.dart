@@ -36,21 +36,13 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minHeight: 250,
-                  minWidth: 200,
-                  maxHeight: 400,
-                  maxWidth: 350,
-                ),
-                child: QrTab(
-                  title: account.name,
-                  subtitle: S().envoy_descriptor_explainer,
-                  account: account,
-                  qr: QrImage(
-                    data: descriptor,
-                    backgroundColor: Colors.white,
-                  ),
+              child: QrTab(
+                title: account.name,
+                subtitle: S().envoy_descriptor_explainer,
+                account: account,
+                qr: QrImage(
+                  data: descriptor,
+                  backgroundColor: Colors.white,
                 ),
               ),
             ),

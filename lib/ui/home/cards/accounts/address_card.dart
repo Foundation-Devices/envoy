@@ -39,22 +39,14 @@ class AddressCard extends StatelessWidget with NavigationCard {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.all(25.0),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minHeight: 250,
-                          minWidth: 200,
-                          maxHeight: 350,
-                          maxWidth: 350,
-                        ),
-                        child: QrTab(
-                            title: account.name,
-                            subtitle: S().envoy_address_explainer,
-                            account: account,
-                            qr: QrImage(
-                              data: snapshot.data!,
-                              backgroundColor: Colors.white,
-                            )),
-                      ),
+                      child: QrTab(
+                          title: account.name,
+                          subtitle: S().envoy_address_explainer,
+                          account: account,
+                          qr: QrImage(
+                            data: snapshot.data!,
+                            backgroundColor: Colors.white,
+                          )),
                     ),
                   ),
                   Padding(
