@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:math';
+
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/settings.dart';
@@ -32,6 +34,8 @@ import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/shield.dart';
+
+import '../../../../util/envoy_storage.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget with NavigationCard {
@@ -133,18 +137,20 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                         color: EnvoyColors.darkTeal,
                       ),
                       onPressed: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return ScannerPage(
-                              [ScannerType.address, ScannerType.azteco],
-                              account: widget.account,
-                              onAddressValidated: (address, amount) {
-                            widget.navigator!.push(SendCard(widget.account,
-                                address: address,
-                                amountSats: amount,
-                                navigationCallback: widget.navigator));
-                          });
-                        }));
+                        EnvoyStorage()
+                            .addAztecoTx(Random().nextInt(9999).toString(), widget.account.id!, DateTime.now());
+                        // Navigator.of(context)
+                        //     .push(MaterialPageRoute(builder: (context) {
+                        //   return ScannerPage(
+                        //       [ScannerType.address, ScannerType.azteco],
+                        //       account: widget.account,
+                        //       onAddressValidated: (address, amount) {
+                        //     widget.navigator!.push(SendCard(widget.account,
+                        //         address: address,
+                        //         amountSats: amount,
+                        //         navigationCallback: widget.navigator));
+                        //   });
+                        // }));
                       },
                     ))),
             EnvoyTextButton(
