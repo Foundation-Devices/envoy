@@ -3,17 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
-final envoyStorageProvider = ChangeNotifierProvider((ref) => EnvoyStorage());
+final aztecoTxStreamProvider =
+    StreamProvider.family<List<wallet.Transaction>, String?>(
+        (ref, account) => EnvoyStorage().getAztecoTxsSteam(account));
 
-class EnvoyStorage extends ChangeNotifier {
+class EnvoyStorage {
   String dbName = 'envoy.db';
   late Database db;
 
@@ -41,7 +43,6 @@ class EnvoyStorage extends ChangeNotifier {
     await aztecoPendingTxStore.record(address).put(db,
         {'account': accountId, 'timestamp': timestamp.millisecondsSinceEpoch});
 
-    notifyListeners();
     return true;
   }
 
@@ -62,11 +63,32 @@ class EnvoyStorage extends ChangeNotifier {
         .toList();
   }
 
+  //returns a stream of azteco transactions that stored in the database
+  Stream<List<wallet.Transaction>> getAztecoTxsSteam(String? accountId) {
+    var finder = Finder(filter: Filter.equals('account', accountId));
+    return EnvoyStorage()
+        .aztecoPendingTxStore
+        .query(finder: finder)
+        .onSnapshots(db)
+        .map((records) {
+      return records
+          .map((e) => wallet.Transaction(
+              e.key as String,
+              "",
+              DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              0,
+              0,
+              0,
+              0,
+              type: wallet.TransactionType.azteco))
+          .toList();
+    });
+  }
+
   Future<bool> deleteAztecoTx(String address) async {
     if (await aztecoPendingTxStore.record(address).exists(db)) {
       await aztecoPendingTxStore.record(address).delete(db);
 
-      notifyListeners();
       return true;
     }
     return false;
