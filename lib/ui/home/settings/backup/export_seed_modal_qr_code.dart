@@ -59,7 +59,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+            padding: EdgeInsets.symmetric(horizontal: 68),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,7 +81,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                       }
                     }),
                 Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
+                  padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
                     S().export_seed_modal_QR_code_subheading,
                     textAlign: TextAlign.center,
@@ -90,19 +90,18 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                 ),
                 if (hasPassphrase)
                   Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
+                    padding: const EdgeInsets.only(top: 10.0),
                     child: Text(
                       S().export_seed_modal_QR_code_subheading_passphrase,
                       textAlign: TextAlign.center,
                       style: textStyle?.copyWith(color: EnvoyColors.grey),
                     ),
                   ),
-                Padding(padding: EdgeInsets.all(4)),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 18),
             child: Column(
               children: [
                 EnvoyButton(

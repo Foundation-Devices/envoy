@@ -54,9 +54,11 @@ class QrTab extends StatelessWidget {
                   ),
                 ),
                 Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(2.0),
                       child: ListTile(
                         leading: Container(
                           width: 50,
@@ -98,17 +100,28 @@ class QrTab extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: qr,
+                    SizedBox(height: 5),
+                    Flexible(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: qr,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
-                )
+                ),
               ])),
         ));
   }
