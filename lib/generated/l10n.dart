@@ -72,8 +72,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -302,6 +300,8 @@ class S {
 
   // skipped getter for the 'AUTO COMPLETE' key
 
+  // skipped getter for the 'AZTECO VOUCHERS' key
+
   // skipped getter for the 'Account name' key
 
   /// `FAQs`
@@ -423,16 +423,6 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
       desc: '',
       args: [],
     );
@@ -776,8 +766,6 @@ class S {
 
   // skipped getter for the 'FW Update' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   // skipped getter for the 'Face ID' key
 
   /// `Family`
@@ -837,16 +825,6 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SEND AND\nRECEIVE BITCOIN`
-  String get Heading {
-    return Intl.message(
-      'SEND AND\nRECEIVE BITCOIN',
-      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1088,10 +1066,10 @@ class S {
 
   // skipped getter for the 'Passport name' key
 
-  /// `This is explainer text to educate and inform the user about granting this permission.`
+  /// `Better \nPerformance`
   String get PermissionDetails {
     return Intl.message(
-      'This is explainer text to educate and inform the user about granting this permission.',
+      'Better \nPerformance',
       name: 'PermissionDetails',
       desc: '',
       args: [],
@@ -1134,10 +1112,10 @@ class S {
 
   // skipped getter for the 'Powered by Flutter' key
 
-  /// `0.0001721`
+  /// `Primary`
   String get Primary {
     return Intl.message(
-      '0.0001721',
+      'Primary',
       name: 'Primary',
       desc: '',
       args: [],
@@ -1172,10 +1150,10 @@ class S {
 
   // skipped getter for the 'RGB (0, 189, 205)' key
 
-  /// `Receive`
+  /// `Send`
   String get Receive {
     return Intl.message(
-      'Receive',
+      'Send',
       name: 'Receive',
       desc: '',
       args: [],
@@ -1286,16 +1264,6 @@ class S {
     );
   }
 
-  /// `privacy shield`
-  String get ScreenTitle {
-    return Intl.message(
-      'privacy shield',
-      name: 'ScreenTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1314,10 +1282,10 @@ class S {
 
   // skipped getter for the 'Select fee' key
 
-  /// `Send`
+  /// `Receive`
   String get Send {
     return Intl.message(
-      'Send',
+      'Receive',
       name: 'Send',
       desc: '',
       args: [],
@@ -1451,16 +1419,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -1758,10 +1716,10 @@ class S {
     );
   }
 
-  /// `Your transaction history is currently empty.`
+  /// `There are no transactions in this account.\nReceive your first transaction below.`
   String get account_empty_tx_history_text_explainer {
     return Intl.message(
-      'Your transaction history is currently empty.',
+      'There are no transactions in this account.\nReceive your first transaction below.',
       name: 'account_empty_tx_history_text_explainer',
       desc: '',
       args: [],
@@ -1788,20 +1746,20 @@ class S {
     );
   }
 
-  /// `Get started by creating your first Envoy Wallet.`
+  /// `Create a mobile wallet with Magic Backups.`
   String get accounts_empty_text_explainer {
     return Intl.message(
-      'Get started by creating your first Envoy Wallet.',
+      'Create a mobile wallet with Magic Backups.',
       name: 'accounts_empty_text_explainer',
       desc: '',
       args: [],
     );
   }
 
-  /// `Learn more`
+  /// `Get Started`
   String get accounts_empty_text_learn_more {
     return Intl.message(
-      'Learn more',
+      'Get Started',
       name: 'accounts_empty_text_learn_more',
       desc: '',
       args: [],
@@ -2122,20 +2080,20 @@ class S {
     );
   }
 
-  /// `Pending Voucher`
+  /// `Pending Azteco voucher`
   String get azteco_account_tx_history_pending_voucher {
     return Intl.message(
-      'Pending Voucher',
+      'Pending Azteco voucher',
       name: 'azteco_account_tx_history_pending_voucher',
       desc: '',
       args: [],
     );
   }
 
-  /// `Receive`
+  /// `Received`
   String get azteco_account_tx_history_receive {
     return Intl.message(
-      'Receive',
+      'Received',
       name: 'azteco_account_tx_history_receive',
       desc: '',
       args: [],
@@ -2192,6 +2150,26 @@ class S {
     );
   }
 
+  /// `Redeem`
+  String get azteco_redeem_modal_cta1 {
+    return Intl.message(
+      'Redeem',
+      name: 'azteco_redeem_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get azteco_redeem_modal_cta2 {
+    return Intl.message(
+      'Back',
+      name: 'azteco_redeem_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Try again`
   String get azteco_redeem_modal_fail_CTA1 {
     return Intl.message(
@@ -2212,30 +2190,40 @@ class S {
     );
   }
 
-  /// `Something went wrong...`
+  /// `Continue`
+  String get azteco_redeem_modal_fail_cta {
+    return Intl.message(
+      'Continue',
+      name: 'azteco_redeem_modal_fail_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Redeem`
   String get azteco_redeem_modal_fail_heading {
     return Intl.message(
-      'Something went wrong...',
+      'Unable to Redeem',
       name: 'azteco_redeem_modal_fail_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Please double check that your voucher is still valid.`
+  /// `Please confirm that your voucher is still valid.\n\nContact support@azte.co with any voucher related questions.`
   String get azteco_redeem_modal_fail_subheading {
     return Intl.message(
-      'Please double check that your voucher is still valid.',
+      'Please confirm that your voucher is still valid.\n\nContact support@azte.co with any voucher related questions.',
       name: 'azteco_redeem_modal_fail_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Redeem your Azteco Voucher?`
+  /// `Redeem your Voucher?`
   String get azteco_redeem_modal_heading {
     return Intl.message(
-      'Redeem your Azteco Voucher?',
+      'Redeem your Voucher?',
       name: 'azteco_redeem_modal_heading',
       desc: '',
       args: [],
@@ -2262,20 +2250,30 @@ class S {
     );
   }
 
-  /// `You redeemed your bitcoin!`
+  /// `Continue`
+  String get azteco_redeem_modal_success_cta {
+    return Intl.message(
+      'Continue',
+      name: 'azteco_redeem_modal_success_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voucher Redeemed`
   String get azteco_redeem_modal_success_heading {
     return Intl.message(
-      'You redeemed your bitcoin!',
+      'Voucher Redeemed',
       name: 'azteco_redeem_modal_success_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `You’ll see an incoming transaction in your account shortly.`
+  /// `An incoming transaction will appear in your account shortly.`
   String get azteco_redeem_modal_success_subheading {
     return Intl.message(
-      'You’ll see an incoming transaction in your account shortly.',
+      'An incoming transaction will appear in your account shortly.',
       name: 'azteco_redeem_modal_success_subheading',
       desc: '',
       args: [],
@@ -3428,11 +3426,21 @@ class S {
     );
   }
 
-  /// `ENVOY WALLET\n\nPASSPORT ACCOUNT`
+  /// `CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT`
   String get devices_empty_add_menu {
     return Intl.message(
-      'ENVOY WALLET\n\nPASSPORT ACCOUNT',
+      'CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT',
       name: 'devices_empty_add_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get devices_empty_learn_more {
+    return Intl.message(
+      'Learn More',
+      name: 'devices_empty_learn_more',
       desc: '',
       args: [],
     );
@@ -3463,6 +3471,16 @@ class S {
     return Intl.message(
       'LEARN',
       name: 'devices_empty_modal_video_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secure your Bitcoin with Passport.`
+  String get devices_empty_text_explainer {
+    return Intl.message(
+      'Secure your Bitcoin with Passport.',
+      name: 'devices_empty_text_explainer',
       desc: '',
       args: [],
     );
@@ -8052,10 +8070,10 @@ class S {
     );
   }
 
-  /// `Tap your Account card to receive your first bitcoin.`
+  /// `Tap the above card to receive your first Bitcoin.`
   String get hot_wallet_accounts_creation_done_text_explainer {
     return Intl.message(
-      'Tap your Account card to receive your first bitcoin.',
+      'Tap the above card to receive your first Bitcoin.',
       name: 'hot_wallet_accounts_creation_done_text_explainer',
       desc: '',
       args: [],
@@ -9783,36 +9801,6 @@ class S {
     return Intl.message(
       'Choose Destination',
       name: 'manual_setup_import_existing_backup_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose Destination`
-  String get manual_setup_import_existing_backup_CTA1 {
-    return Intl.message(
-      'Choose Destination',
-      name: 'manual_setup_import_existing_backup_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save Envoy Backup File`
-  String get manual_setup_import_existing_backup_heading {
-    return Intl.message(
-      'Save Envoy Backup File',
-      name: 'manual_setup_import_existing_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_import_existing_backup_subheading {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_import_existing_backup_subheading',
       desc: '',
       args: [],
     );
@@ -12708,6 +12696,56 @@ class S {
     );
   }
 
+  /// `Receive to Taproot`
+  String get settings_advanced_taproot {
+    return Intl.message(
+      'Receive to Taproot',
+      name: 'settings_advanced_taproot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activate`
+  String get settings_advanced_taproot_modal_cta1 {
+    return Intl.message(
+      'Activate',
+      name: 'settings_advanced_taproot_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get settings_advanced_taproot_modal_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'settings_advanced_taproot_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get settings_advanced_taproot_modal_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'settings_advanced_taproot_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution.`
+  String get settings_advanced_taproot_modal_subheading {
+    return Intl.message(
+      'Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution.',
+      name: 'settings_advanced_taproot_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Enable Testnet`
   String get settings_advanced_testnet {
     return Intl.message(
@@ -13899,6 +13937,46 @@ class S {
     return Intl.message(
       'If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words.',
       name: 'wallet_security_modal_4_4_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Tip`
+  String get wallet_security_modal__heading {
+    return Intl.message(
+      'Security Tip',
+      name: 'wallet_security_modal__heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get wallet_security_modal_cta1 {
+    return Intl.message(
+      'Learn More',
+      name: 'wallet_security_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get wallet_security_modal_cta2 {
+    return Intl.message(
+      'Back',
+      name: 'wallet_security_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is storing more than the recommended amount of Bitcoin for a mobile, internet connected wallet.\n\nFor ultra-secure, offline storage, Foundation suggests Passport hardware wallet.`
+  String get wallet_security_modal_subheading {
+    return Intl.message(
+      'Envoy is storing more than the recommended amount of Bitcoin for a mobile, internet connected wallet.\n\nFor ultra-secure, offline storage, Foundation suggests Passport hardware wallet.',
+      name: 'wallet_security_modal_subheading',
       desc: '',
       args: [],
     );
