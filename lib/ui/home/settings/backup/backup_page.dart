@@ -210,7 +210,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 ),
                 Divider(),
                 SettingText(
-                  S().manual_toggle_off_download_backup_file,
+                  S().manual_toggle_off_download_wallet_data,
                   onTap: () {
                     showEnvoyDialog(
                         context: context, dialog: ExportBackupModal());
@@ -218,7 +218,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 ),
                 Divider(),
                 SettingText(
-                  S().manual_toggle_off_view_seed_words,
+                  S().manual_toggle_off_view_wallet_seed,
                   onTap: () {
                     showEnvoyDialog(
                         context: context, dialog: ExportSeedModal());

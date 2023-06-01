@@ -36,7 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -70,8 +69,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
         "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
-        "Heading":
-            MessageLookupByLibrary.simpleMessage("SEND AND\nRECEIVE BITCOIN"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -88,14 +85,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "Multisig": MessageLookupByLibrary.simpleMessage("Multisig"),
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
         "Passport": MessageLookupByLibrary.simpleMessage("Passport"),
-        "PermissionDetails": MessageLookupByLibrary.simpleMessage(
-            "This is explainer text to educate and inform the user about granting this permission."),
+        "PermissionDetails":
+            MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "PermissionName": MessageLookupByLibrary.simpleMessage("Coinjoin"),
         "Personal": MessageLookupByLibrary.simpleMessage("Personal"),
         "Postmix": MessageLookupByLibrary.simpleMessage("Postmix"),
-        "Primary": MessageLookupByLibrary.simpleMessage("0.0001721"),
+        "Primary": MessageLookupByLibrary.simpleMessage("Primary"),
         "RECOVERY": MessageLookupByLibrary.simpleMessage("RECOVERY\n"),
-        "Receive": MessageLookupByLibrary.simpleMessage("Receive"),
+        "Receive": MessageLookupByLibrary.simpleMessage("Send"),
         "Rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "SATS": MessageLookupByLibrary.simpleMessage("SATS"),
         "SEND": MessageLookupByLibrary.simpleMessage("SEND"),
@@ -104,9 +101,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("privacy shield"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
-        "Send": MessageLookupByLibrary.simpleMessage("Send"),
+        "Send": MessageLookupByLibrary.simpleMessage("Receive"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
         "Skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "Specs": MessageLookupByLibrary.simpleMessage("Specs"),
@@ -118,7 +114,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zen-like mobile wallet"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -159,15 +154,15 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Use the filter to choose how to display your transactions."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
-                "Your transaction history is currently empty."),
+                "There are no transactions in this account.\nReceive your first transaction below."),
         "accounts_empty_modal_video_cta1":
             MessageLookupByLibrary.simpleMessage("Create Account"),
         "accounts_empty_modal_video_cta2":
             MessageLookupByLibrary.simpleMessage("Watch Later"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
-            "Get started by creating your first Envoy Wallet."),
+            "Create a mobile wallet with Magic Backups."),
         "accounts_empty_text_learn_more":
-            MessageLookupByLibrary.simpleMessage("Learn more"),
+            MessageLookupByLibrary.simpleMessage("Get Started"),
         "accounts_screen_account_default_name":
             MessageLookupByLibrary.simpleMessage("Mobile Wallet"),
         "accounts_screen_bottom_menu_accounts":
@@ -226,9 +221,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "The perfect mobile companion for your Passport hardware wallet."),
         "archive": MessageLookupByLibrary.simpleMessage("archive"),
         "azteco_account_tx_history_pending_voucher":
-            MessageLookupByLibrary.simpleMessage("Pending Voucher"),
+            MessageLookupByLibrary.simpleMessage("Pending Azteco voucher"),
         "azteco_account_tx_history_receive":
-            MessageLookupByLibrary.simpleMessage("Receive"),
+            MessageLookupByLibrary.simpleMessage("Received"),
         "azteco_redeem_modal_CTA1":
             MessageLookupByLibrary.simpleMessage("Redeem"),
         "azteco_redeem_modal_CTA2":
@@ -239,26 +234,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("5464 9508 3092 1015"),
         "azteco_redeem_modal_amount": MessageLookupByLibrary.simpleMessage(
             "Amount\n0.05900500 BTC\n\$979,72"),
+        "azteco_redeem_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Redeem"),
+        "azteco_redeem_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Back"),
         "azteco_redeem_modal_fail_CTA1":
             MessageLookupByLibrary.simpleMessage("Try again"),
         "azteco_redeem_modal_fail_CTA2":
             MessageLookupByLibrary.simpleMessage("Try later"),
+        "azteco_redeem_modal_fail_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
         "azteco_redeem_modal_fail_heading":
-            MessageLookupByLibrary.simpleMessage("Something went wrong..."),
-        "azteco_redeem_modal_fail_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Please double check that your voucher is still valid."),
+            MessageLookupByLibrary.simpleMessage("Unable to Redeem"),
+        "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
+            "Please confirm that your voucher is still valid.\n\nContact support@azte.co with any voucher related questions."),
         "azteco_redeem_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Redeem your Azteco Voucher?"),
+            MessageLookupByLibrary.simpleMessage("Redeem your Voucher?"),
         "azteco_redeem_modal_subheading":
             MessageLookupByLibrary.simpleMessage("Verify your Voucher Code."),
         "azteco_redeem_modal_success_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
+        "azteco_redeem_modal_success_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
         "azteco_redeem_modal_success_heading":
-            MessageLookupByLibrary.simpleMessage("You redeemed your bitcoin!"),
+            MessageLookupByLibrary.simpleMessage("Voucher Redeemed"),
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You’ll see an incoming transaction in your account shortly."),
+                "An incoming transaction will appear in your account shortly."),
         "backups_auto_backups_heading":
             MessageLookupByLibrary.simpleMessage("Magic Backups"),
         "backups_automatic_backups_subheading":
@@ -491,13 +493,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "devices_add_menu": MessageLookupByLibrary.simpleMessage(
             "CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT"),
         "devices_empty_add_menu": MessageLookupByLibrary.simpleMessage(
-            "ENVOY WALLET\n\nPASSPORT ACCOUNT"),
+            "CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT"),
+        "devices_empty_learn_more":
+            MessageLookupByLibrary.simpleMessage("Learn More"),
         "devices_empty_modal_video_cta1":
             MessageLookupByLibrary.simpleMessage("Buy Passport"),
         "devices_empty_modal_video_cta2":
             MessageLookupByLibrary.simpleMessage("Watch Later"),
         "devices_empty_modal_video_header":
             MessageLookupByLibrary.simpleMessage("LEARN"),
+        "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
+            "Secure your Bitcoin with Passport."),
         "devices_learn_more":
             MessageLookupByLibrary.simpleMessage("Learn More"),
         "devices_screen_CTA1": MessageLookupByLibrary.simpleMessage("Connect"),
@@ -1471,7 +1477,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Manage your bitcoin using Passport."),
         "hot_wallet_accounts_creation_done_text_explainer":
             MessageLookupByLibrary.simpleMessage(
-                "Tap your Account card to receive your first bitcoin."),
+                "Tap the above card to receive your first Bitcoin."),
         "hotwallet": MessageLookupByLibrary.simpleMessage("hotwallet"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("Try Again"),
@@ -1863,13 +1869,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_import_existing_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_CTA1":
-            MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
-        "manual_setup_import_existing_backup_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_import_seed_12_words_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_import_seed_12_words_CTA_inactive":
@@ -2500,6 +2499,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_qr_code_subheading": MessageLookupByLibrary.simpleMessage(
             "You can now scan the QR code displayed on your Passport with your phone camera."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+        "settings_advanced_taproot":
+            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
+        "settings_advanced_taproot_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Activate"),
+        "settings_advanced_taproot_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "settings_advanced_taproot_modal_heading":
+            MessageLookupByLibrary.simpleMessage("WARNING"),
+        "settings_advanced_taproot_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution."),
         "settings_advanced_testnet":
             MessageLookupByLibrary.simpleMessage("Enable Testnet"),
         "settings_amount":
@@ -2763,6 +2773,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words."),
+        "wallet_security_modal__heading":
+            MessageLookupByLibrary.simpleMessage("Security Tip"),
+        "wallet_security_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Learn More"),
+        "wallet_security_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Back"),
+        "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(
+            "Envoy is storing more than the recommended amount of Bitcoin for a mobile, internet connected wallet.\n\nFor ultra-secure, offline storage, Foundation suggests Passport hardware wallet."),
         "wallet_setup_success_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "wallet_setup_success_heading":
