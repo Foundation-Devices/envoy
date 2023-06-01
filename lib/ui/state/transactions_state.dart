@@ -9,6 +9,8 @@ import 'package:wallet/wallet.dart';
 
 final aztecoTransactionsProvider =
     FutureProvider.family<List<Transaction>, String?>((ref, accountId) async {
+  ref.watch(envoyStorageProvider);
+
   // Read from storage and return list of Azteco transactions for a particular account
   var txs = await EnvoyStorage().getAztecoTxs(accountId!);
   return txs;

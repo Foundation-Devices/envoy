@@ -3,13 +3,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
-class EnvoyStorage {
+final envoyStorageProvider = ChangeNotifierProvider((ref) => EnvoyStorage());
+
+class EnvoyStorage extends ChangeNotifier {
   String dbName = 'envoy.db';
   late Database db;
 
@@ -36,6 +40,8 @@ class EnvoyStorage {
       String address, String accountId, DateTime timestamp) async {
     await aztecoPendingTxStore.record(address).put(db,
         {'account': accountId, 'timestamp': timestamp.millisecondsSinceEpoch});
+
+    notifyListeners();
     return true;
   }
 
@@ -59,6 +65,8 @@ class EnvoyStorage {
   Future<bool> deleteAztecoTx(String address) async {
     if (await aztecoPendingTxStore.record(address).exists(db)) {
       await aztecoPendingTxStore.record(address).delete(db);
+
+      notifyListeners();
       return true;
     }
     return false;
