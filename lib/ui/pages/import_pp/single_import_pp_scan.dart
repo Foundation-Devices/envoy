@@ -12,7 +12,7 @@ class SingleImportPpScanPage extends OnboardingPage {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("single_import_pp_scan"),
-      clipArt: Image.asset("assets/import_pp_scan.png"),
+      clipArt: Image.asset("assets/pair_new_device_scan.png"),
       text: [
         OnboardingText(
           header: S().single_envoy_import_pp_scan_heading,
