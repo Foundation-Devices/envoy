@@ -58,7 +58,7 @@ class OnboardingPage extends StatelessWidget {
     this.right,
   }) : super(key: key);
 
-  Widget _determineQr() {
+  Widget? _determineQr() {
     if (qrCode != null) {
       return FutureBuilder<String>(
           future: qrCode,
@@ -66,38 +66,14 @@ class OnboardingPage extends StatelessWidget {
             return Container(
               height: 350,
               width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  !snapshot.hasData ? CircularProgressIndicator() : SizedBox(),
-                  snapshot.hasData
-                      ? Expanded(
-                          child: Center(
-                            child: QrImage(
-                              data: snapshot.data!,
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                        )
-                      : SizedBox(),
-                  snapshot.hasData
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric()
-                              .add(EdgeInsets.only(bottom: 48, top: 22)),
-                          child: Text(
-                            snapshot.data!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    fontWeight: FontWeight.w600, fontSize: 12),
-                          ),
-                        )
-                      : SizedBox()
-                ],
-              ),
+              child: snapshot.hasData
+                  ? Center(
+                      child: QrImage(
+                        data: snapshot.data!,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    )
+                  : CircularProgressIndicator(),
             );
           });
     }
@@ -109,37 +85,35 @@ class OnboardingPage extends StatelessWidget {
     }
 
     if (qrCodeUrCryptoRequest != null) {
-      return Expanded(
-        child: Center(
-          child: FutureBuilder<CryptoRequest>(
-              future: qrCodeUrCryptoRequest,
-              builder: (BuildContext context,
-                  AsyncSnapshot<CryptoRequest> snapshot) {
-                if (snapshot.hasData) {
-                  return AnimatedQrImage.fromUrCryptoRequest(snapshot.data!
-                    ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
-                } else {
-                  return Column(
-                    children: [
-                      CircularProgressIndicator(
-                        color: EnvoyColors.darkTeal,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(ConnectivityManager().torEnabled &&
-                                !ConnectivityManager().torCircuitEstablished
-                            ? S().envoy_video_player_connecting_tor
-                            : S().envoy_video_player_loading_tor),
-                      )
-                    ],
-                  );
-                }
-              }),
-        ),
+      return Center(
+        child: FutureBuilder<CryptoRequest>(
+            future: qrCodeUrCryptoRequest,
+            builder:
+                (BuildContext context, AsyncSnapshot<CryptoRequest> snapshot) {
+              if (snapshot.hasData) {
+                return AnimatedQrImage.fromUrCryptoRequest(snapshot.data!
+                  ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
+              } else {
+                return Column(
+                  children: [
+                    CircularProgressIndicator(
+                      color: EnvoyColors.darkTeal,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(ConnectivityManager().torEnabled &&
+                              !ConnectivityManager().torCircuitEstablished
+                          ? S().envoy_video_player_connecting_tor
+                          : S().envoy_video_player_loading_tor),
+                    )
+                  ],
+                );
+              }
+            }),
       );
     }
 
-    return SizedBox.shrink();
+    return null;
   }
 
   @override
@@ -148,52 +122,54 @@ class OnboardingPage extends StatelessWidget {
         onWillPop: () async => false,
         child: OnboardPageBackground(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Flexible(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                        child: Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            clipArt != null ? clipArt! : SizedBox.shrink(),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  leftFunction != null
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                leftFunction!(context);
-                                              },
-                                              child: Icon(
-                                                  Icons.arrow_back_ios_rounded,
-                                                  size: 20)),
-                                        )
-                                      : SizedBox.shrink(),
-                                  rightFunction != null
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                rightFunction!(context);
-                                              },
-                                              child: this.right == null
-                                                  ? Icon(Icons.close_rounded)
-                                                  : this.right),
-                                        )
-                                      : SizedBox.shrink()
-                                ])
-                          ],
-                        ),
+                child: Column(children: <Widget>[
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          leftFunction != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        leftFunction!(context);
+                                      },
+                                      child: Icon(Icons.arrow_back_ios_rounded,
+                                          size: 20)),
+                                )
+                              : SizedBox.shrink(),
+                          rightFunction != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        rightFunction!(context);
+                                      },
+                                      child: this.right == null
+                                          ? Icon(Icons.close_rounded)
+                                          : this.right),
+                                )
+                              : SizedBox.shrink()
+                        ]),
+                  ),
+                  if (clipArt != null || _determineQr() != null)
+                    Flexible(
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: clipArt != null ? clipArt! : _determineQr(),
                       ),
-                      _determineQr(),
-                      ...?text,
-                    ]),
+                    ),
+                  Flexible(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [...?text]),
+                  ),
+                ]),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -203,7 +179,7 @@ class OnboardingPage extends StatelessWidget {
                   children: [
                     navigationDots != 0
                         ? Padding(
-                            padding: const EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(2.0),
                             child: DotsIndicator(
                               decorator: DotsDecorator(
                                   size: Size.square(5.0),

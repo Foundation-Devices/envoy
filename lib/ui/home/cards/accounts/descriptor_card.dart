@@ -29,55 +29,68 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
   Widget build(BuildContext context) {
     String descriptor = account.descriptor;
 
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: QrTab(
-          title: account.name,
-          subtitle: S().envoy_descriptor_explainer,
-          account: account,
-          qr: QrImage(
-            data: descriptor,
-            backgroundColor: Colors.white,
-          ),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: descriptor));
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(S().envoy_descriptor_copied_clipboard),
-                  ));
-                },
-                icon: Icon(
-                  Icons.copy,
-                  size: 20,
-                  color: EnvoyColors.darkTeal,
-                )),
-            EnvoyTextButton(
-              onTap: () {
-                navigator!.pop();
-              },
-              label: S().component_ok,
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minHeight: 250,
+                  minWidth: 200,
+                  maxHeight: 400,
+                  maxWidth: 350,
+                ),
+                child: QrTab(
+                  title: account.name,
+                  subtitle: S().envoy_descriptor_explainer,
+                  account: account,
+                  qr: QrImage(
+                    data: descriptor,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
             ),
-            IconButton(
-                onPressed: () {
-                  Share.share(descriptor);
-                },
-                icon: Icon(
-                  Icons.share,
-                  size: 20,
-                  color: EnvoyColors.darkTeal,
-                )),
-          ],
-        ),
-      ),
-    ]);
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: descriptor));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(S().envoy_descriptor_copied_clipboard),
+                      ));
+                    },
+                    icon: Icon(
+                      Icons.copy,
+                      size: 20,
+                      color: EnvoyColors.darkTeal,
+                    )),
+                EnvoyTextButton(
+                  onTap: () {
+                    navigator!.pop();
+                  },
+                  label: S().component_ok,
+                ),
+                IconButton(
+                    onPressed: () {
+                      Share.share(descriptor);
+                    },
+                    icon: Icon(
+                      Icons.share,
+                      size: 20,
+                      color: EnvoyColors.darkTeal,
+                    )),
+              ],
+            ),
+          ),
+        ]);
   }
 }
