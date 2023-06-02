@@ -6,13 +6,13 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
-import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -295,11 +295,11 @@ class SeedIntroScreen extends StatelessWidget {
                                                   : passPhrase)
                                           .then((success) {
                                         if (success) {
-                                          Navigator.push(context,
+                                          Navigator.push(
+                                              context,
                                               MaterialPageRoute(
-                                                  builder: (context) {
-                                            return WalletSetupSuccess();
-                                          }));
+                                                  builder: (context) =>
+                                                      ManualSetupImportBackup()));
                                         } else {
                                           showInvalidSeedDialog(
                                             context: context,
