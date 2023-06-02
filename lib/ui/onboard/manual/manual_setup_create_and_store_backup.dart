@@ -137,6 +137,8 @@ class BackupWarningModal extends ConsumerWidget {
                     showEnvoyDialog(
                         context: context, dialog: EraseWalletsConfirmation());
                   } else {
+                    //make sure system filepicker shown before navigating to success screen
+                    await Future.delayed(Duration(milliseconds: 200));
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return WalletSetupSuccess();

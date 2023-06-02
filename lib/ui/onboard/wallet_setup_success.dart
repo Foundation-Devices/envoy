@@ -39,9 +39,9 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                 children: [
                   Container(
                     height: 180,
-                    padding: EdgeInsets.only(top: 12),
+                    margin: EdgeInsets.only(top: 24),
                     child: Transform.scale(
-                      scale: 1.5,
+                      scale: 1.68,
                       child: RiveAnimation.asset(
                         "assets/envoy_loader.riv",
                         fit: BoxFit.contain,

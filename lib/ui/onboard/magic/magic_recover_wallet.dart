@@ -125,6 +125,36 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(CupertinoIcons.back)),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return IconButton(
+                              onPressed: () async {
+                                ref.read(homePageTabProvider.notifier).state =
+                                    HomePageTabState.accounts;
+                                ref
+                                    .read(homePageBackgroundProvider.notifier)
+                                    .state = HomePageBackgroundState.hidden;
+                                await Future.delayed(
+                                    Duration(milliseconds: 200));
+                                Navigator.of(context)
+                                    .popUntil(ModalRoute.withName("/"));
+                              },
+                              icon: Icon(Icons.close));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
                   padding: EdgeInsets.only(top: 8),
                   height: 44,
                   child: _magicRecoverWalletState ==
@@ -334,15 +364,15 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
             Consumer(
               builder: (context, ref, child) {
                 return OnboardingButton(
-                  label: S().magic_setup_recovery_fail_backup_cta3,
+                  label: S().magic_setup_recovery_fail_backup_cta1,
                   type: EnvoyButtonTypes.primary,
                   onTap: () async {
-                    ref.read(homePageTabProvider.notifier).state =
-                        HomePageTabState.accounts;
-                    ref.read(homePageBackgroundProvider.notifier).state =
-                        HomePageBackgroundState.hidden;
-                    await Future.delayed(Duration(milliseconds: 200));
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                    _setIndeterminateState();
+                    setState(() {
+                      _magicRecoverWalletState =
+                          MagicRecoveryWalletState.recovering;
+                    });
+                    _tryAutomaticRecovery();
                   },
                 );
               },
