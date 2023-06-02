@@ -7,24 +7,23 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 
-final aztecoTransactionsProvider =
-    FutureProvider.family<List<Transaction>, String?>((ref, accountId) async {
-  // Read from storage and return list of Azteco transactions for a particular account
-  var txs = await EnvoyStorage().getAztecoTxs(accountId!);
-  return txs;
-});
-
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
-  List<Transaction>? aztecoTransactions =
-      ref.refresh(aztecoTransactionsProvider(accountId)).value;
+  List<Transaction> aztecoTransactions = [];
+  //Creates new list for all type of transactions
+  List<Transaction> transactions = [];
+  // Listen to azteco transactions from database
+  AsyncValue<List<Transaction>> asyncTx =
+      ref.watch(aztecoTxStreamProvider(accountId));
+  if (asyncTx.hasValue) {
+    aztecoTransactions.addAll((asyncTx.value as List<Transaction>));
+  }
 
-  List<Transaction> transactions =
+  List<Transaction> walletTransactions =
       ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
-  if (aztecoTransactions != null) {
-    transactions.addAll(aztecoTransactions);
-  }
+  transactions.addAll(walletTransactions);
+  transactions.addAll(aztecoTransactions);
 
   // Sort transactions by date
   transactions.sort((t1, t2) {

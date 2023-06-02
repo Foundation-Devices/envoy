@@ -40,12 +40,12 @@ Future<void> main() async {
 
 Future<void> initSingletons() async {
   await LocalStorage.init();
+  await EnvoyStorage();
   EnvoyReport().init();
   Settings.restore();
   Tor.init();
   UpdatesManager.init();
   ScvServer.init();
-  EnvoyStorage();
 
   if (Settings().usingTor) {
     Tor().start();

@@ -21,11 +21,6 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
         .bodyMedium
         ?.copyWith(fontWeight: FontWeight.w500, fontSize: 20);
 
-    // var textStyle_size12 = Theme.of(context)
-    //     .textTheme
-    //     .bodyMedium
-    //     ?.copyWith(fontWeight: FontWeight.w500, fontSize: 12);
-
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
@@ -51,11 +46,7 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset("assets/trophy_icon.png",
-                    scale: 1.0,
-                    width: 56, // set the width of the image
-                    height: 56, // set the height of the image
-                    fit: BoxFit.contain), // set the fit property to contain),
-
+                    scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
                 Padding(
                   padding: const EdgeInsets.only(top: 5 * 4),
                   child: Text(
@@ -69,7 +60,6 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
                   child: Text(
                     S().azteco_redeem_modal_success_subheading,
                     textAlign: TextAlign.center,
-                    //style: textStyle_size12,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(4)),
@@ -80,14 +70,12 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 7 * 4, vertical: 6 * 4),
             child: Column(
-              //Temporarily Disable Tor
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 2 * 4),
                   child: EnvoyButton(
-                    S().azteco_redeem_modal_success_CTA,
+                    S().azteco_redeem_modal_success_cta,
                     onTap: () {
-                      // We are continually retrying anyway
                       Navigator.of(context).pop();
                     },
                   ),
