@@ -23,7 +23,7 @@ class DeviceCard extends StatefulWidget with NavigationCard {
   DeviceCard(this.device, {CardNavigator? navigationCallback})
       : super(key: UniqueKey()) {
     modal = false;
-    title = S().envoy_home_devices.toUpperCase();
+    title = S().manage_device_details_heading.toUpperCase();
     navigator = navigationCallback;
     optionsWidget = DeviceOptions(
       device,

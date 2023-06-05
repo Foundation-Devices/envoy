@@ -1826,6 +1826,16 @@ class S {
     );
   }
 
+  /// `Accounts`
+  String get accounts_screen_heading {
+    return Intl.message(
+      'Accounts',
+      name: 'accounts_screen_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Learn More`
   String get accounts_screen_learn_more_button {
     return Intl.message(
@@ -3486,6 +3496,16 @@ class S {
     );
   }
 
+  /// `Devices`
+  String get devices_heading {
+    return Intl.message(
+      'Devices',
+      name: 'devices_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Learn More`
   String get devices_learn_more {
     return Intl.message(
@@ -4770,10 +4790,10 @@ class S {
     );
   }
 
-  /// `Download from github`
+  /// `Download from Github`
   String get envoy_fw_microsd_fails_cta2 {
     return Intl.message(
-      'Download from github',
+      'Download from Github',
       name: 'envoy_fw_microsd_fails_cta2',
       desc: '',
       args: [],
@@ -4790,10 +4810,10 @@ class S {
     );
   }
 
-  /// `Sorry, we can’t get the frimware update right now.`
+  /// `Sorry, we can’t get the firmware update right now.`
   String get envoy_fw_microsd_fails_heading {
     return Intl.message(
-      'Sorry, we can’t get the frimware update right now.',
+      'Sorry, we can’t get the firmware update right now.',
       name: 'envoy_fw_microsd_fails_heading',
       desc: '',
       args: [],
@@ -4865,6 +4885,26 @@ class S {
     return Intl.message(
       'Remove the microSD card and insert it into Passport',
       name: 'envoy_fw_passport_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove the microSD card and insert it into Passport`
+  String get envoy_fw_passport_onboarded_heading {
+    return Intl.message(
+      'Remove the microSD card and insert it into Passport',
+      name: 'envoy_fw_passport_onboarded_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge before carrying out this operation.`
+  String get envoy_fw_passport_onboarded_subheading {
+    return Intl.message(
+      'Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge before carrying out this operation.',
+      name: 'envoy_fw_passport_onboarded_subheading',
       desc: '',
       args: [],
     );
@@ -9129,6 +9169,16 @@ class S {
     return Intl.message(
       'Rename Account',
       name: 'manage_account_rename_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device DETAILS`
+  String get manage_device_details_heading {
+    return Intl.message(
+      'Device DETAILS',
+      name: 'manage_device_details_heading',
       desc: '',
       args: [],
     );
