@@ -258,8 +258,12 @@ class EnvoySeed {
     await backupData(cloud: false);
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
-    await FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
-        encryptedBackupFileExtension, MimeType.TEXT);
+    try {
+      FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
+          encryptedBackupFileExtension, MimeType.TEXT);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<String?> get() async {
