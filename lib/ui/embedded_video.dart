@@ -9,7 +9,10 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class EmbeddedVideo extends StatefulWidget {
   final String path;
-  const EmbeddedVideo({Key? key, required this.path}) : super(key: key);
+  final double aspectRatio;
+
+  const EmbeddedVideo({Key? key, required this.path, this.aspectRatio = 4 / 3})
+      : super(key: key);
 
   @override
   State<EmbeddedVideo> createState() => EmbeddedVideoState();
@@ -70,7 +73,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
             borderRadius: BorderRadius.all(Radius.circular(8)),
             child: VlcPlayer(
               controller: _videoPlayerController!,
-              aspectRatio: 4 / 3,
+              aspectRatio: widget.aspectRatio,
               placeholder: Center(child: CircularProgressIndicator()),
             ),
           ),

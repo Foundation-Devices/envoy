@@ -95,30 +95,58 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                     return GhostListTile();
                   },
                 )
-              : ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: transactions.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return TransactionListTile(
-                        transaction: transactions[index],
-                        account: widget.account);
-                  },
-                ),
+              : transactions.isNotEmpty
+                  ? ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: transactions.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TransactionListTile(
+                            transaction: transactions[index],
+                            account: widget.account);
+                      },
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GhostListTile(animate: false),
+                        Expanded(
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 4 * 5),
+                              child: Text(
+                                S().account_empty_tx_history_text_explainer,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: EnvoyColors.grey,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
         ),
       ),
       Padding(
         padding: const EdgeInsets.only(
             left: 50.0, right: 50.0, bottom: 50.0, top: 20.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            EnvoyTextButton(
-              onTap: () {
-                widget.navigator!.push(SendCard(widget.account,
-                    navigationCallback: widget.navigator));
-              },
-              label: "Send",
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: EnvoyTextButton(
+                    label: S().receive_tx_list_receive,
+                    onTap: () {
+                      widget.navigator!.push(AddressCard(
+                        widget.account,
+                        navigationCallback: widget.navigator,
+                      ));
+                    }),
+              ),
             ),
             QrShield(
                 child: Padding(
@@ -145,14 +173,18 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                         }));
                       },
                     ))),
-            EnvoyTextButton(
-                label: "Receive",
-                onTap: () {
-                  widget.navigator!.push(AddressCard(
-                    widget.account,
-                    navigationCallback: widget.navigator,
-                  ));
-                })
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: EnvoyTextButton(
+                  onTap: () {
+                    widget.navigator!.push(SendCard(widget.account,
+                        navigationCallback: widget.navigator));
+                  },
+                  label: S().receive_tx_list_send,
+                ),
+              ),
+            ),
           ],
         ),
       )
@@ -161,7 +193,10 @@ class _AccountCardState extends ConsumerState<AccountCard> {
 }
 
 class GhostListTile extends StatelessWidget {
+  final bool animate;
+
   const GhostListTile({
+    this.animate = true,
     Key? key,
   }) : super(key: key);
 
@@ -173,6 +208,7 @@ class GhostListTile extends StatelessWidget {
         child: LoaderGhost(
           width: 10,
           height: 15,
+          animate: animate,
         ),
       ),
       subtitle: Padding(
@@ -180,12 +216,14 @@ class GhostListTile extends StatelessWidget {
         child: LoaderGhost(
           width: 30,
           height: 15,
+          animate: animate,
         ),
       ),
       leading: LoaderGhost(
         width: 50,
         height: 50,
         diagonal: true,
+        animate: animate,
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -194,12 +232,14 @@ class GhostListTile extends StatelessWidget {
           LoaderGhost(
             width: 50,
             height: 15,
+            animate: animate,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 3.0),
             child: LoaderGhost(
               width: 40,
               height: 15,
+              animate: animate,
             ),
           )
         ],

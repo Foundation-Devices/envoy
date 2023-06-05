@@ -15,11 +15,13 @@ import 'package:envoy/ui/pages/fw/fw_intro.dart';
 class DeviceListTile extends StatefulWidget {
   final void Function() onTap;
   final Device device;
+  final bool ghostDevice;
 
   DeviceListTile(
     this.device, {
     Key? key,
     required this.onTap,
+    this.ghostDevice = false,
   }) : super(key: key);
 
   @override
@@ -161,7 +163,8 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                             .copyWith(color: Colors.white),
                                       ),
                                       widget.device.type ==
-                                              DeviceType.passportGen1
+                                                  DeviceType.passportGen1 ||
+                                              widget.ghostDevice
                                           ? Text(
                                               " FW " +
                                                   widget.device.firmwareVersion,
