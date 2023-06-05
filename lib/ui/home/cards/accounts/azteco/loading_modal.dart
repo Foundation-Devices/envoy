@@ -46,14 +46,17 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        height: 60,
-        width: 60,
-        child: CircularProgressIndicator(
-          color: EnvoyColors.teal,
-          backgroundColor: EnvoyColors.greyLoadingSpinner,
-          strokeWidth: 4.71,
+    return Container(
+      height: MediaQuery.of(context).size.width * 0.75,
+      child: Center(
+        child: SizedBox(
+          height: 60,
+          width: 60,
+          child: CircularProgressIndicator(
+            color: EnvoyColors.teal,
+            backgroundColor: EnvoyColors.greyLoadingSpinner,
+            strokeWidth: 4.71,
+          ),
         ),
       ),
     );

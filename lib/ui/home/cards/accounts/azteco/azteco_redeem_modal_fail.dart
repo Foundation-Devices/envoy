@@ -25,7 +25,6 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
         ?.copyWith(fontWeight: FontWeight.w500, fontSize: 20);
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -69,7 +68,6 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
               ],
             ),
           ),
-          Spacer(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
             child: Column(

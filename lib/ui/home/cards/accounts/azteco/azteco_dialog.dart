@@ -7,6 +7,7 @@ import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/loading_modal.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'azteco_redeem_modal_fail.dart';
 import 'azteco_redeem_modal_success.dart';
 
@@ -21,13 +22,12 @@ class AztecoDialog extends StatelessWidget {
     final PageController controller = PageController();
     return Container(
       width: MediaQuery.of(context).size.width * 0.75,
-      height: MediaQuery.of(context).size.height * 0.55,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius:
             BorderRadius.circular(20.0), // change the value as per your need
       ),
-      child: PageView(
+      child: ExpandablePageView(
         controller: controller,
         physics: NeverScrollableScrollPhysics(),
         children: [
