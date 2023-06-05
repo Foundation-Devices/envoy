@@ -1705,8 +1705,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nMagic Backups automatically back up your wallet and settings with iCloud Keychain, 100% end-to-end encrypted. \n\n[[Learn more]]."),
         "manage_account_address_address": MessageLookupByLibrary.simpleMessage(
             "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),
-        "manage_account_address_heading":
+        "manage_account_address_card_heading":
             MessageLookupByLibrary.simpleMessage("Primary (#0)"),
+        "manage_account_address_card_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "For privacy, we create a new address each time you visit this screen."),
+        "manage_account_address_heading":
+            MessageLookupByLibrary.simpleMessage("Account details"),
         "manage_account_address_subheading": MessageLookupByLibrary.simpleMessage(
             "For privacy, we create a new address each time you visit this screen."),
         "manage_account_menu_menu": MessageLookupByLibrary.simpleMessage(
@@ -2041,7 +2046,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_backup_now":
             MessageLookupByLibrary.simpleMessage("Back Up Now"),
         "manual_toggle_on_seed_backedup_iOS_backups":
-            MessageLookupByLibrary.simpleMessage("ENVOY"),
+            MessageLookupByLibrary.simpleMessage("SETTINGS"),
         "manual_toggle_on_seed_backedup_iOS_download_wallet_data":
             MessageLookupByLibrary.simpleMessage("Download Envoy Backup File"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
@@ -2348,6 +2353,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_QR_code_subheading": MessageLookupByLibrary.simpleMessage(
             "For privacy, we create a new address each time you visit this screen."),
+        "receive_qr_code_card_heading":
+            MessageLookupByLibrary.simpleMessage("Primary (#0)"),
+        "receive_qr_code_card_subheading": MessageLookupByLibrary.simpleMessage(
+            "For privacy, we create a new address each time you visit this screen."),
+        "receive_qr_code_heading":
+            MessageLookupByLibrary.simpleMessage("RECEIVE"),
+        "receive_tx_list_receive":
+            MessageLookupByLibrary.simpleMessage("Receive"),
+        "receive_tx_list_send": MessageLookupByLibrary.simpleMessage("Send"),
         "recovery_manual_setup_fail_cta1":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "recovery_manual_setup_fail_cta2":
@@ -2477,6 +2491,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
             MessageLookupByLibrary.simpleMessage("Enter Valid Address"),
+        "send_keyboard_heading": MessageLookupByLibrary.simpleMessage("SEND"),
         "send_keyboard_network_fees_boost_amount":
             MessageLookupByLibrary.simpleMessage("1,500 Sats ~ \$5.43"),
         "send_keyboard_network_fees_boost_button":
@@ -2496,6 +2511,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Scan the QR with your Passport"),
         "send_qr_code_card_subheading": MessageLookupByLibrary.simpleMessage(
             "It contains the transaction for your Passport to sign."),
+        "send_qr_code_heading": MessageLookupByLibrary.simpleMessage("SEND"),
         "send_qr_code_subheading": MessageLookupByLibrary.simpleMessage(
             "You can now scan the QR code displayed on your Passport with your phone camera."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),

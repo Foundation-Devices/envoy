@@ -20,7 +20,7 @@ class BroadcastCard extends StatelessWidget with NavigationCard {
       : super(key: UniqueKey()) {
     optionsWidget = null;
     modal = true;
-    title = S().envoy_home_accounts.toUpperCase();
+    title = S().send_qr_code_heading.toUpperCase();
     navigator = navigationCallback;
   }
 

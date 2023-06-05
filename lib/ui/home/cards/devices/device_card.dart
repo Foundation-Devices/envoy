@@ -100,7 +100,7 @@ class DeviceOptions extends ConsumerWidget {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
+            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
             FocusNode focusNode = FocusNode();
             showEnvoyDialog(
@@ -140,7 +140,7 @@ class DeviceOptions extends ConsumerWidget {
           child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
+            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(

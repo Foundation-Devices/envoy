@@ -201,7 +201,7 @@ class DevicesOptions extends ConsumerWidget {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
+            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return SingleImportPpIntroPage();
             }));
@@ -214,7 +214,7 @@ class DevicesOptions extends ConsumerWidget {
           child: Text(S().envoy_devices_options_new_passport.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
+            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return TouPage();
             }));
