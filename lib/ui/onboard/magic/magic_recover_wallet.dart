@@ -216,7 +216,8 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         MagicRecoveryWalletState.serverNotReachable) {
       return _serverNotReachable(context);
     }
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound) {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound ||
+        _magicRecoverWalletState == MagicRecoveryWalletState.failure) {
       return _seedNotFound(context);
     }
     return SizedBox();
@@ -280,7 +281,8 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
         ),
       );
     }
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound) {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound ||
+        _magicRecoverWalletState == MagicRecoveryWalletState.failure) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
