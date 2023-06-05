@@ -165,8 +165,8 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   void _toggleOptions() {
-    ref.read(HomePageOptionsVisibilityProvider.notifier).state =
-        !ref.read(HomePageOptionsVisibilityProvider);
+    ref.read(homePageOptionsVisibilityProvider.notifier).state =
+        !ref.read(homePageOptionsVisibilityProvider);
   }
 
   void _getOptionsHeight(_) {
@@ -195,7 +195,7 @@ class _HomePageState extends ConsumerState<HomePage>
       _navigateToCard(newState.index);
     });
 
-    ref.listen(HomePageOptionsVisibilityProvider, (_, bool next) {
+    ref.listen(homePageOptionsVisibilityProvider, (_, bool next) {
       setState(() {
         _optionsShown = next;
       });
@@ -279,9 +279,9 @@ class _HomePageState extends ConsumerState<HomePage>
                 //hide options menu if user press back button (android)
                 _options = WillPopScope(
                   onWillPop: () async {
-                    if (ref.read(HomePageOptionsVisibilityProvider)) {
+                    if (ref.read(homePageOptionsVisibilityProvider)) {
                       ref
-                          .read(HomePageOptionsVisibilityProvider.notifier)
+                          .read(homePageOptionsVisibilityProvider.notifier)
                           .state = false;
                       return false;
                     }

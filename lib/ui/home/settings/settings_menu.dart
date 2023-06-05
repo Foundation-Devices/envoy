@@ -53,7 +53,8 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
       case HomePageBackgroundState.menu:
         setState(() {
           _currentPage = SettingsMenuWidget();
-          HomePageNotification(leftFunction: null, title: "Envoy".toUpperCase())
+          HomePageNotification(
+              leftFunction: null, title: S().menu_heading.toUpperCase())
             ..dispatch(context);
         });
         break;
@@ -106,7 +107,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                 children: [
                   SizedBox(height: 34),
                   MenuOption(
-                    label: S().envoy_settings_menu_settings,
+                    label: S().menu_settings.toUpperCase(),
                     onTap: () {
                       background.state = HomePageBackgroundState.settings;
                     },
@@ -114,21 +115,21 @@ class SettingsMenuWidget extends ConsumerWidget {
                   if (EnvoySeed().walletDerived()) SizedBox(height: 50),
                   if (EnvoySeed().walletDerived())
                     MenuOption(
-                      label: S().menu_backups,
+                      label: S().menu_backups.toUpperCase(),
                       onTap: () {
                         background.state = HomePageBackgroundState.backups;
                       },
                     ),
                   SizedBox(height: 50),
                   MenuOption(
-                    label: S().envoy_settings_menu_support,
+                    label: S().menu_support.toUpperCase(),
                     onTap: () {
                       background.state = HomePageBackgroundState.support;
                     },
                   ),
                   SizedBox(height: 50),
                   MenuOption(
-                    label: S().envoy_settings_menu_about,
+                    label: S().menu_about.toUpperCase(),
                     onTap: () {
                       background.state = HomePageBackgroundState.about;
                     },

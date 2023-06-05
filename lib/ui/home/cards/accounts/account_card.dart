@@ -44,7 +44,7 @@ class AccountCard extends ConsumerStatefulWidget with NavigationCard {
       navigator: navigationCallback,
     );
     modal = false;
-    title = S().envoy_home_accounts.toUpperCase();
+    title = S().manage_account_address_heading.toUpperCase();
     navigator = navigationCallback;
   }
 
@@ -62,15 +62,11 @@ class _AccountCardState extends ConsumerState<AccountCard> {
     super.initState();
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
-
-    // Redraw when we there are changes in accounts
-    // AccountManager().addListener(_redraw);
   }
 
   @override
   void dispose() {
     super.dispose();
-    // AccountManager().removeListener(_redraw);
     ExchangeRate().removeListener(_redraw);
   }
 
@@ -84,6 +80,8 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         padding: const EdgeInsets.all(20.0),
         child: AccountListTile(widget.account, onTap: () {
           widget.navigator!.pop();
+          ref.read(homePageAccountsProvider.notifier).state =
+              HomePageAccountsState.list;
         }),
       ),
       Expanded(
@@ -370,7 +368,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
+            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
             showEnvoyDialog(
               context: context,
@@ -408,7 +406,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
-            ref.read(HomePageOptionsVisibilityProvider.notifier).state = false;
+            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             if (!widget.account.wallet.hot) {
               showEnvoyDialog(
                   context: context,

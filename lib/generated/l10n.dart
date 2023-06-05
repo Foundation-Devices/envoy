@@ -9045,9 +9045,29 @@ class S {
   }
 
   /// `Primary (#0)`
-  String get manage_account_address_heading {
+  String get manage_account_address_card_heading {
     return Intl.message(
       'Primary (#0)',
+      name: 'manage_account_address_card_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For privacy, we create a new address each time you visit this screen.`
+  String get manage_account_address_card_subheading {
+    return Intl.message(
+      'For privacy, we create a new address each time you visit this screen.',
+      name: 'manage_account_address_card_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account details`
+  String get manage_account_address_heading {
+    return Intl.message(
+      'Account details',
       name: 'manage_account_address_heading',
       desc: '',
       args: [],
@@ -10590,10 +10610,10 @@ class S {
     );
   }
 
-  /// `ENVOY`
+  /// `SETTINGS`
   String get manual_toggle_on_seed_backedup_iOS_backups {
     return Intl.message(
-      'ENVOY',
+      'SETTINGS',
       name: 'manual_toggle_on_seed_backedup_iOS_backups',
       desc: '',
       args: [],
@@ -12044,6 +12064,56 @@ class S {
     );
   }
 
+  /// `Primary (#0)`
+  String get receive_qr_code_card_heading {
+    return Intl.message(
+      'Primary (#0)',
+      name: 'receive_qr_code_card_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For privacy, we create a new address each time you visit this screen.`
+  String get receive_qr_code_card_subheading {
+    return Intl.message(
+      'For privacy, we create a new address each time you visit this screen.',
+      name: 'receive_qr_code_card_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RECEIVE`
+  String get receive_qr_code_heading {
+    return Intl.message(
+      'RECEIVE',
+      name: 'receive_qr_code_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive`
+  String get receive_tx_list_receive {
+    return Intl.message(
+      'Receive',
+      name: 'receive_tx_list_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send`
+  String get receive_tx_list_send {
+    return Intl.message(
+      'Send',
+      name: 'receive_tx_list_send',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Retry`
   String get recovery_manual_setup_fail_cta1 {
     return Intl.message(
@@ -12576,6 +12646,16 @@ class S {
     );
   }
 
+  /// `SEND`
+  String get send_keyboard_heading {
+    return Intl.message(
+      'SEND',
+      name: 'send_keyboard_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `1,500 Sats ~ $5.43`
   String get send_keyboard_network_fees_boost_amount {
     return Intl.message(
@@ -12671,6 +12751,16 @@ class S {
     return Intl.message(
       'It contains the transaction for your Passport to sign.',
       name: 'send_qr_code_card_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SEND`
+  String get send_qr_code_heading {
+    return Intl.message(
+      'SEND',
+      name: 'send_qr_code_heading',
       desc: '',
       args: [],
     );

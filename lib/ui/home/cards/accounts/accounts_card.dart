@@ -25,6 +25,8 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/envoy_seed.dart';
 
+import '../../../state/home_page_state.dart';
+
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
   AccountsCard({
@@ -197,6 +199,9 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                                   onTap: () {
                                     widget.navigator!.push(AccountCard(e,
                                         navigationCallback: widget.navigator));
+                                    ref
+                                        .read(homePageAccountsProvider.notifier)
+                                        .state = HomePageAccountsState.details;
                                   },
                                 ),
                               )))
