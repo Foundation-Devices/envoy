@@ -35,7 +35,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
 
     return Container(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Align(
             alignment: Alignment.centerRight,
@@ -90,7 +90,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
               ],
             ),
           ),
-          Expanded(
+          Flexible(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
               child: Column(
