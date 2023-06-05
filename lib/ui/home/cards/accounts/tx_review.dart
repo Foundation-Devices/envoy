@@ -6,6 +6,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -13,6 +14,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,6 +46,7 @@ class TxReview extends StatefulWidget with NavigationCard {
 
 class _TxReviewState extends State<TxReview> {
   bool _showBroadcastProgress = false;
+
   //TODO: disable note
   // String _txNote = "";
 
@@ -275,9 +278,11 @@ class _TxReviewState extends State<TxReview> {
                                                         (context, ref, child) {
                                                       int amount = ref.watch(
                                                           spendAmountProvider);
-                                                      String amountFormatted =
-                                                          getFormattedAmount(
-                                                              amount);
+
+                                                      AmountDisplayUnit unit =
+                                                          ref.watch(
+                                                              sendScreenUnitProvider);
+
                                                       return Row(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
@@ -289,7 +294,21 @@ class _TxReviewState extends State<TxReview> {
                                                                 .end,
                                                         children: [
                                                           Text(
-                                                            "${amountFormatted} ${Settings().displayUnit == DisplayUnit.btc ? getBtcUnitString(testnet: isTestnet) : getSatsUnitString(testnet: isTestnet)}",
+                                                            getDisplayAmount(
+                                                                amount,
+                                                                unit ==
+                                                                        AmountDisplayUnit
+                                                                            .fiat
+                                                                    ? AmountDisplayUnit
+                                                                            .values[
+                                                                        Settings()
+                                                                            .displayUnit
+                                                                            .index]
+                                                                    : unit,
+                                                                testnet:
+                                                                    isTestnet,
+                                                                includeUnit:
+                                                                    true),
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
