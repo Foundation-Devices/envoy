@@ -9,12 +9,14 @@ class LoaderGhost extends StatefulWidget {
   final double width;
   final double height;
   final bool diagonal;
+  final bool animate;
 
   const LoaderGhost(
       {Key? key,
       required this.width,
       required this.height,
-      this.diagonal = false})
+      this.diagonal = false,
+      this.animate = true})
       : super(key: key);
 
   @override
@@ -34,7 +36,8 @@ class _LoaderGhostState extends State<LoaderGhost>
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
 
-    _animation = _animationController.drive(Tween(begin: 0.3, end: 0.1));
+    _animation = _animationController
+        .drive(Tween(begin: 0.3, end: widget.animate ? 0.1 : 0.3));
 
     _animationTickListener = () {
       setState(() {});

@@ -24,8 +24,7 @@ import 'package:animations/animations.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/envoy_seed.dart';
-
-import '../../../state/home_page_state.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -194,15 +193,30 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                           .map((e) => DragAndDropItem(
                                   child: Padding(
                                 padding: const EdgeInsets.only(bottom: 4 * 5),
-                                child: AccountListTile(
-                                  e,
-                                  onTap: () {
-                                    widget.navigator!.push(AccountCard(e,
-                                        navigationCallback: widget.navigator));
+                                child: Column(
+                                  children: [
+                                    AccountListTile(
+                                      e,
+                                      onTap: () {
+                                        widget.navigator!.push(AccountCard(e,
+                                            navigationCallback:
+                                                widget.navigator));
+                                      },
+                                    ),
                                     ref
-                                        .read(homePageAccountsProvider.notifier)
-                                        .state = HomePageAccountsState.details;
-                                  },
+                                            .watch(transactionsProvider(e.id))
+                                            .isEmpty
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20.0),
+                                            child: Text(S()
+                                                .hot_wallet_accounts_creation_done_text_explainer),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20.0),
+                                          )
+                                  ],
                                 ),
                               )))
                           .toList())
