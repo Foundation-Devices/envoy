@@ -260,7 +260,7 @@ class EnvoySeed {
 
     try {
       FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
-              encryptedBackupFileExtension, MimeType.TEXT);
+          encryptedBackupFileExtension, MimeType.TEXT);
     } catch (e) {
       print(e);
     }
