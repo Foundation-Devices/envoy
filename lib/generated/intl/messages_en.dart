@@ -175,6 +175,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Privacy"),
         "accounts_screen_connect_button":
             MessageLookupByLibrary.simpleMessage("Connect"),
+        "accounts_screen_heading":
+            MessageLookupByLibrary.simpleMessage("Accounts"),
         "accounts_screen_learn_more_button":
             MessageLookupByLibrary.simpleMessage("Learn More"),
         "accounts_screen_mobile_wallet_device_type":
@@ -504,6 +506,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("LEARN"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Secure your Bitcoin with Passport."),
+        "devices_heading": MessageLookupByLibrary.simpleMessage("Devices"),
         "devices_learn_more":
             MessageLookupByLibrary.simpleMessage("Learn More"),
         "devices_screen_CTA1": MessageLookupByLibrary.simpleMessage("Connect"),
@@ -771,11 +774,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_microsd_fails_cta1":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "envoy_fw_microsd_fails_cta2":
-            MessageLookupByLibrary.simpleMessage("Download from github"),
+            MessageLookupByLibrary.simpleMessage("Download from Github"),
         "envoy_fw_microsd_fails_cta3":
             MessageLookupByLibrary.simpleMessage("delete wallet"),
         "envoy_fw_microsd_fails_heading": MessageLookupByLibrary.simpleMessage(
-            "Sorry, we can’t get the frimware update right now."),
+            "Sorry, we can’t get the firmware update right now."),
         "envoy_fw_microsd_heading": MessageLookupByLibrary.simpleMessage(
             "Insert the microSD card into your Phone"),
         "envoy_fw_microsd_heading_cta":
@@ -790,6 +793,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_fw_passport_heading": MessageLookupByLibrary.simpleMessage(
             "Remove the microSD card and insert it into Passport"),
+        "envoy_fw_passport_onboarded_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Remove the microSD card and insert it into Passport"),
+        "envoy_fw_passport_onboarded_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Insert the microSD card into Passport and navigate to Settings -> Firmware -> Update Firmware.\n\nEnsure Passport has adequate battery charge before carrying out this operation."),
         "envoy_fw_passport_os_clock":
             MessageLookupByLibrary.simpleMessage("9:41"),
         "envoy_fw_passport_right_action":
@@ -1725,6 +1734,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Save"),
         "manage_account_rename_heading":
             MessageLookupByLibrary.simpleMessage("Rename Account"),
+        "manage_device_details_heading":
+            MessageLookupByLibrary.simpleMessage("Device DETAILS"),
         "manage_device_disconnect_modal":
             MessageLookupByLibrary.simpleMessage("Delete"),
         "manage_device_disconnect_modal_cta":
