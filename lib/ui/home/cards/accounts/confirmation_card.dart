@@ -88,20 +88,14 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
     Psbt _returnPsbt = _emptyPtsb;
 
     try {
-      await widget.account.wallet
-          .createPsbt(widget.initialAddress, widget.amount, feeRate)
-          .then((psbt) {
-        _returnPsbt = psbt;
-      });
+      _returnPsbt = await widget.account.wallet
+          .createPsbt(widget.initialAddress, widget.amount, feeRate);
     } on InsufficientFunds catch (e) {
       // Get another one with correct amount
       var fee = e.needed - e.available;
       try {
-        await widget.account.wallet
-            .createPsbt(widget.initialAddress, e.available - fee, feeRate)
-            .then((psbt) {
-          _returnPsbt = psbt;
-        });
+        _returnPsbt = await widget.account.wallet
+            .createPsbt(widget.initialAddress, e.available - fee, feeRate);
       } on InsufficientFunds catch (e) {
         print("Something is seriously wrong! Available: " +
             e.available.toString() +
