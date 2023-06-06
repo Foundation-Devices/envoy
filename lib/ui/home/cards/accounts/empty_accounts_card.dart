@@ -1,0 +1,82 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:wallet/wallet.dart';
+import 'package:envoy/business/account.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+
+class EmptyAccountsCard extends StatelessWidget {
+  EmptyAccountsCard() : super(key: UniqueKey()) {}
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle _explainerTextStyle = TextStyle(
+        fontFamily: 'Montserrat',
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        color: EnvoyColors.grey);
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: ColorFiltered(
+            colorFilter: ColorFilter.mode(
+              Color.fromRGBO(255, 255, 255, 0.7),
+              BlendMode.hardLight,
+            ),
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.saturation,
+              ),
+              child: AccountListTile(
+                  Account(
+                      wallet: GhostWallet(),
+                      name: S().accounts_screen_account_default_name,
+                      deviceSerial: 'envoy',
+                      dateAdded: DateTime.now(),
+                      number: 5,
+                      id: '',
+                      dateSynced: DateTime.now()),
+                  onTap: () {}),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 10,
+              children: [
+                Text(
+                  S().accounts_empty_text_explainer,
+                  style: _explainerTextStyle,
+                ),
+                GestureDetector(
+                  child: Text(
+                    S().accounts_empty_text_learn_more,
+                    style: _explainerTextStyle.copyWith(
+                      color: EnvoyColors.teal,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return OnboardEnvoyWelcomeScreen();
+                    }));
+                  },
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
