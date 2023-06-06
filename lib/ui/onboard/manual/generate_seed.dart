@@ -6,7 +6,6 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -81,7 +80,7 @@ class _SeedScreenState extends State<SeedScreen> {
                         if (success) {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return ManualSetupImportBackup();
+                            return ManualSetupCreateAndStoreBackup();
                           }));
                         }
                       });
@@ -117,8 +116,8 @@ class _SeedScreenState extends State<SeedScreen> {
         ),
         Expanded(
           child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                 width: 240,

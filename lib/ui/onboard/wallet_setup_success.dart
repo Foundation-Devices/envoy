@@ -35,7 +35,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
             child: Container(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Container(
                     height: 180,
