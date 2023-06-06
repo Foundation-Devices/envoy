@@ -251,6 +251,11 @@ class ElectrumServerFeatures {
   }
 }
 
+// Dummy placeholder wallet for greying out
+class GhostWallet extends Wallet {
+  GhostWallet() : super("", Network.Mainnet, "", "", hot: true);
+}
+
 @JsonSerializable()
 class Wallet {
   static late String _libName = "wallet_ffi";

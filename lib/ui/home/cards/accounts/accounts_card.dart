@@ -6,17 +6,14 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/templates/empty_card.dart';
+import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -153,31 +150,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   Widget build(BuildContext context) {
     var accounts = ref.watch(accountsProvider);
     return accounts.isEmpty
-        ? EmptyCard(widget.rightFunction!,
-            buttons: [
-              EnvoyButton(
-                S().splash_screen_CTA1,
-                onTap: widget.rightFunction!,
-                type: EnvoyButtonTypes.primary,
-              ),
-              EnvoyButton(
-                S().envoy_welcome_screen_cta2,
-                type: EnvoyButtonTypes.secondary,
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ManualSetup();
-                  }));
-                },
-              ),
-            ],
-            helperText: EmptyCardHelperText(
-                text: "No accounts are set up.\n"
-                    "Create a new wallet below.",
-                onTap: () {
-                  launchUrl(
-                      Uri.parse("https://foundationdevices.com/passport"));
-                }))
+        ? Padding(
+            padding: const EdgeInsets.all(6 * 4),
+            child: EmptyAccountsCard(),
+          )
         : Padding(
             padding:
                 const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
