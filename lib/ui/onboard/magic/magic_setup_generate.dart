@@ -195,25 +195,37 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 }
 
-class MagicRecoveryInfo extends ConsumerWidget {
+class MagicRecoveryInfo extends ConsumerStatefulWidget {
   final bool skipSuccessScreen;
   final GestureTapCallback? onContinue;
 
-  const MagicRecoveryInfo(
+  MagicRecoveryInfo(
       {Key? key, this.skipSuccessScreen = false, this.onContinue = null})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MagicRecoveryInfo> createState() => _MagicRecoveryInfoState();
+}
+
+class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
+  PageController _androidBackupInfoPageController = PageController();
+
+  @override
+  Widget build(BuildContext context) {
     bool isAndroid = Platform.isAndroid;
     bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return WillPopScope(
       onWillPop: () async {
-        if (onContinue != null) {
-          onContinue!.call();
+        if (_androidBackupInfoPageController.page != 0) {
+          _androidBackupInfoPageController.previousPage(
+              duration: Duration(milliseconds: 300), curve: Curves.easeOutSine);
           return false;
         }
-        if (skipSuccessScreen) {
+        if (widget.onContinue != null) {
+          widget.onContinue!.call();
+          return false;
+        }
+        if (widget.skipSuccessScreen) {
           Navigator.pop(context);
         } else {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -236,59 +248,10 @@ class MagicRecoveryInfo extends ConsumerWidget {
                   ),
                   height: _iphoneSE ? 220 : 250,
                 ),
-                isAndroid
-                    ? Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              S().android_backup_info_heading,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Padding(padding: EdgeInsets.all(12)),
-                            LinkText(
-                              text: S().android_backup_info_subheading,
-                              onTap: () {
-                                openAndroidSettings();
-                              },
-                              linkStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                      fontSize: 14, color: EnvoyColors.blue),
-                              textStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      )
-                    : _iosBackupInfo(context),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: OnboardingButton(
-                    label: S().component_continue,
-                    onTap: () {
-                      if (onContinue != null) {
-                        onContinue!.call();
-                        return;
-                      }
-                      if (skipSuccessScreen) {
-                        Navigator.pop(context);
-                      } else {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return WalletSetupSuccess();
-                        }));
-                      }
-                    },
-                  ),
-                ),
+                Expanded(
+                    child: isAndroid
+                        ? _androidBackUPInfo(context)
+                        : _recoverStepsInfo(context))
               ],
             ),
             color: Colors.transparent),
@@ -296,106 +259,199 @@ class MagicRecoveryInfo extends ConsumerWidget {
     );
   }
 
-  _iosBackupInfo(BuildContext context) {
+  _recoverStepsInfo(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          Text(
-            Platform.isAndroid
-                ? S().recovery_scenario_android_subheading
-                : S().recovery_scenario_ios_heading,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Padding(padding: EdgeInsets.all(12)),
-          Text(
-            Platform.isAndroid
-                ? S().recovery_scenario_android_subheading
-                : S().recovery_scenario_ios_subheading,
-            textAlign: TextAlign.center,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-          ),
-          Padding(padding: EdgeInsets.all(12)),
-          ListTile(
-            minLeadingWidth: 20,
-            dense: true,
-            leading: Container(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration: BoxDecoration(
-                color: EnvoyColors.teal,
-                borderRadius: BorderRadius.circular(4),
+          Spacer(),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                Platform.isAndroid
+                    ? S().recovery_scenario_android_heading
+                    : S().recovery_scenario_ios_heading,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              child: Text(
-                "1",
+              Padding(padding: EdgeInsets.all(16)),
+              Text(
+                Platform.isAndroid
+                    ? S().recovery_scenario_android_subheading
+                    : S().recovery_scenario_ios_subheading,
+                textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Colors.white),
               ),
-            ),
-            title: Text(
-              Platform.isAndroid
-                  ? S().recovery_scenario_ios_instructions1
-                  : S().recovery_scenario_ios_instructions1,
-              textAlign: TextAlign.start,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-            ),
-          ),
-          ListTile(
-            minLeadingWidth: 20,
-            dense: true,
-            leading: Container(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration: BoxDecoration(
-                color: EnvoyColors.teal,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                "2",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.white),
-              ),
-            ),
-            title: Text(
-              Platform.isAndroid
-                  ? S().recovery_scenario_ios_instructions2
-                  : S().recovery_scenario_ios_instructions2,
-              textAlign: TextAlign.start,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-            ),
-          ),
-          ListTile(
-            minLeadingWidth: 20,
-            dense: true,
-            leading: Container(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration: BoxDecoration(
-                color: EnvoyColors.teal,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text("3",
+              Padding(padding: EdgeInsets.all(16)),
+              ListTile(
+                minLeadingWidth: 20,
+                dense: true,
+                leading: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.teal,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    "1",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
+                ),
+                title: Text(
+                  Platform.isAndroid
+                      ? S().recovery_scenario_android_instructions1
+                      : S().recovery_scenario_ios_instructions1,
+                  textAlign: TextAlign.start,
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
-                      ?.copyWith(color: Colors.white)),
-            ),
-            title: Text(
-              Platform.isAndroid
-                  ? S().recovery_scenario_android_instructions3
-                  : S().recovery_scenario_ios_instructions3,
-              textAlign: TextAlign.start,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-            ),
+                      ?.copyWith(fontSize: 14),
+                ),
+              ),
+              ListTile(
+                minLeadingWidth: 20,
+                dense: true,
+                leading: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.teal,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    "2",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.white),
+                  ),
+                ),
+                title: Text(
+                  Platform.isAndroid
+                      ? S().recovery_scenario_android_instructions2
+                      : S().recovery_scenario_ios_instructions2,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontSize: 14),
+                ),
+              ),
+              ListTile(
+                minLeadingWidth: 20,
+                dense: true,
+                leading: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.teal,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text("3",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.white)),
+                ),
+                title: Text(
+                  Platform.isAndroid
+                      ? S().recovery_scenario_android_instructions3
+                      : S().recovery_scenario_ios_instructions3,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontSize: 14),
+                ),
+              ),
+            ],
           ),
+          Spacer(),
+          OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              if (widget.onContinue != null) {
+                widget.onContinue!.call();
+                return;
+              }
+              if (widget.skipSuccessScreen) {
+                Navigator.pop(context);
+              } else {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return WalletSetupSuccess();
+                }));
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  _androidBackUPInfo(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+      child: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        clipBehavior: Clip.antiAlias,
+        controller: _androidBackupInfoPageController,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Spacer(),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    S().android_backup_info_heading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Padding(padding: EdgeInsets.all(12)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
+                    child: LinkText(
+                      text: S().android_backup_info_subheading,
+                      onTap: () {
+                        openAndroidSettings();
+                      },
+                      linkStyle: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(fontSize: 14, color: EnvoyColors.blue),
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: OnboardingButton(
+                  label: S().component_continue,
+                  onTap: () {
+                    _androidBackupInfoPageController.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInSine);
+                  },
+                ),
+              ),
+            ],
+          ),
+          _recoverStepsInfo(context),
         ],
       ),
     );
