@@ -117,6 +117,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                               child: Text(
                                 S().account_empty_tx_history_text_explainer,
                                 style: TextStyle(
+                                  height: 2.0,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                   color: EnvoyColors.grey,

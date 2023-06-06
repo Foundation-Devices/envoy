@@ -12,6 +12,7 @@ import 'package:envoy/generated/l10n.dart';
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends StatelessWidget {
   bool onboarding;
+
   FwIosInstructionsPage({this.onboarding = true});
 
   @override
@@ -26,8 +27,8 @@ class FwIosInstructionsPage extends StatelessWidget {
           text: S().envoy_fw_ios_instructions_subheading,
         )
       ],
-      navigationDots: 3,
-      navigationDotsIndex: 1,
+      navigationDots: 6,
+      navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
             label: S().envoy_fw_ios_instructions_cta,

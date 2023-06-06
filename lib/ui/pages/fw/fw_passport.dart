@@ -10,6 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 //ignore: must_be_immutable
 class FwPassportPage extends StatelessWidget {
   bool onboarding;
+
   FwPassportPage({this.onboarding = true});
 
   @override
@@ -22,11 +23,11 @@ class FwPassportPage extends StatelessWidget {
           header: S().envoy_fw_passport_heading,
           text: onboarding
               ? S().envoy_fw_passport_subheading
-              : S().envoy_fw_passport_subheading_after_onboarding,
+              : S().envoy_fw_passport_onboarded_subheading,
         )
       ],
-      navigationDots: 3,
-      navigationDotsIndex: 2,
+      navigationDots: 6,
+      navigationDotsIndex: 5,
       buttons: [
         OnboardingButton(
             label: S().envoy_fw_passport_cta,

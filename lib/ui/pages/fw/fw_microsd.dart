@@ -41,7 +41,7 @@ class FwMicrosdPage extends StatelessWidget {
           text: S().envoy_fw_microsd_subheading,
         )
       ],
-      navigationDots: 3,
+      navigationDots: 6,
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
