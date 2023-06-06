@@ -8,10 +8,13 @@ import 'package:envoy/ui/pages/fw/fw_passport.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/generated/l10n.dart';
+
+import 'fw_microsd.dart';
 
 //ignore: must_be_immutable
 class FwProgressPage extends ConsumerStatefulWidget {
-  bool onboarding;
+  final bool onboarding;
 
   FwProgressPage({this.onboarding = true});
 
@@ -21,6 +24,9 @@ class FwProgressPage extends ConsumerStatefulWidget {
 
 class _FwProgressPageState extends ConsumerState<FwProgressPage> {
   bool done = false;
+  int currentDotIndex = 3;
+  int navigationDots = 6;
+
   PageController _instructionPageController = PageController();
 
   @override
@@ -53,28 +59,38 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
           child: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: _instructionPageController,
+              onPageChanged: (index) {
+                setState(() {
+                  currentDotIndex = index == 3 ? 3 : 4;
+                  navigationDots = index == 2 ? 0 : 6;
+                });
+              },
               children: [
                 OnboardingText(
-                  header:
-                      "Envoy is now copying the firmware onto the microSD card",
-                  text:
-                      "This might take few seconds. Please do not remove the microSD card.",
+                  header: S().envoy_fw_progress_heading,
+                  text: S().envoy_fw_progress_subheading,
                 ),
                 OnboardingText(
-                  header:
-                      "Firmware was successfully copied onto the microSD card",
-                  text:
-                      "Make sure to \"safely remove\" from your file manager or notification bar before removing your microSD card from your phone.",
+                  header: S().envoy_fw_success_heading,
+                  text: S().envoy_fw_success_subheading,
                 ),
-                OnboardingText(
+                ActionText(
                   header:
                       "Envoy failed to copy the firmware onto the microSD card",
                   text: "Try again.",
-                )
+                  action: () {
+                    Navigator.of(context)
+                        .pushReplacement(MaterialPageRoute(builder: (context) {
+                      return FwMicrosdPage(onboarding: widget.onboarding);
+                    }));
+                  },
+                ),
               ]),
         ),
       ],
       clipArt: SdCardSpinner(),
+      navigationDots: navigationDots,
+      navigationDotsIndex: currentDotIndex,
       buttons: [
         IgnorePointer(
           ignoring: !done,
@@ -82,7 +98,7 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
             opacity: done ? 1.0 : 0.4,
             duration: Duration(milliseconds: 500),
             child: OnboardingButton(
-                label: "Continue",
+                label: S().envoy_fw_success_cta,
                 onTap: () {
                   Navigator.of(context)
                       .pushReplacement(MaterialPageRoute(builder: (context) {

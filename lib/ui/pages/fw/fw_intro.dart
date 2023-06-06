@@ -32,11 +32,11 @@ class FwIntroPage extends StatelessWidget {
                   "https://github.com/Foundation-Devices/passport2/releases");
             })
       ],
-      navigationDots: 3,
+      navigationDots: 6,
       navigationDotsIndex: 0,
       buttons: [
         OnboardingButton(
-            label: "Continue",
+            label: S().envoy_fw_intro_cta,
             onTap: () {
               if (UpdatesManager().getStoredFwVersion() == null) {
                 showEnvoyDialog(

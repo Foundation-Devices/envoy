@@ -11,6 +11,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 //ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {
   bool onboarding;
+
   FwAndroidInstructionsPage({this.onboarding = true});
 
   @override
@@ -25,8 +26,8 @@ class FwAndroidInstructionsPage extends StatelessWidget {
               "Grant phone access to copy files to the microSD card with the name PASSPORT-SD.",
         )
       ],
-      navigationDots: 3,
-      navigationDotsIndex: 1,
+      navigationDots: 6,
+      navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
             label: "Continue",
