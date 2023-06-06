@@ -287,7 +287,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
-                    ?.copyWith(color: Colors.white),
+                    ?.copyWith(fontSize: 13),
               ),
               Padding(padding: EdgeInsets.all(16)),
               ListTile(
