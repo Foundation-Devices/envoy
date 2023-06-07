@@ -173,9 +173,13 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (await EnvoySeed().get() != null) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => MagicRecoverWallet()));
+      try {
+        if (await EnvoySeed().get() != null) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => MagicRecoverWallet()));
+        }
+      } catch (e) {
+        //no-op
       }
     });
     super.initState();
