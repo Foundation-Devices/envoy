@@ -9,6 +9,7 @@ import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
@@ -22,6 +23,8 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -149,6 +152,15 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   @override
   Widget build(BuildContext context) {
     var accounts = ref.watch(accountsProvider);
+    var isHideAmountDismissed =
+        ref.watch(arePromptsDismissedProvider(DismissablePrompt.hideAmount));
+
+    TextStyle _explainerTextStyle = TextStyle(
+        fontFamily: 'Montserrat',
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        color: EnvoyColors.grey);
+
     return accounts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(6 * 4),
@@ -164,38 +176,76 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                 removeTopPadding: true,
                 scrollController: _scrollController,
                 children: [
-                  DragAndDropList(
-                      children: accounts
-                          .map((e) => DragAndDropItem(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(bottom: 4 * 5),
-                                child: Column(
-                                  children: [
-                                    AccountListTile(
-                                      e,
-                                      onTap: () {
-                                        widget.navigator!.push(AccountCard(e,
-                                            navigationCallback:
-                                                widget.navigator));
-                                      },
-                                    ),
-                                    ref
-                                            .watch(transactionsProvider(e.id))
-                                            .isEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20.0),
-                                            child: Text(S()
-                                                .hot_wallet_accounts_creation_done_text_explainer),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20.0),
-                                          )
-                                  ],
+                  DragAndDropList(children: [
+                    ...accounts
+                        .map((e) => DragAndDropItem(
+                                child: Padding(
+                              padding: const EdgeInsets.only(bottom: 4 * 5),
+                              child: AccountListTile(
+                                e,
+                                onTap: () {
+                                  widget.navigator!.push(AccountCard(e,
+                                      navigationCallback: widget.navigator));
+                                },
+                              ),
+                            )))
+                        .toList(),
+                    ...[
+                      DragAndDropItem(
+                        child: ref.watch(isThereAnyTransactionsProvider)
+                            ? isHideAmountDismissed.when(
+                                data: (isDismissed) {
+                                  return isDismissed
+                                      ? SizedBox.shrink()
+                                      : Center(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5.0),
+                                            child: Wrap(
+                                              alignment: WrapAlignment.center,
+                                              spacing: 5,
+                                              children: [
+                                                Text(
+                                                  S().hide_amount_first_time_text,
+                                                  style: _explainerTextStyle,
+                                                ),
+                                                GestureDetector(
+                                                  child: Text(
+                                                    S().hide_amount_first_time_text_button,
+                                                    style: _explainerTextStyle
+                                                        .copyWith(
+                                                            color: EnvoyColors
+                                                                .teal),
+                                                  ),
+                                                  onTap: () {
+                                                    EnvoyStorage()
+                                                        .addDismissedPrompt(
+                                                            DismissablePrompt
+                                                                .hideAmount);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                },
+                                error: (err, stack) => Text("ERROR"),
+                                loading: () => Text("LOADING"))
+                            : Center(
+                                child: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Text(
+                                  accounts.length == 1
+                                      ? S()
+                                          .hot_wallet_accounts_creation_done_text_explainer
+                                      : S()
+                                          .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
+                                  style: _explainerTextStyle,
                                 ),
-                              )))
-                          .toList())
+                              )),
+                      )
+                    ]
+                  ])
                 ],
                 onListReorder: (int oldListIndex, int newListIndex) {},
                 onItemReorder: (int oldItemIndex, int oldListIndex,

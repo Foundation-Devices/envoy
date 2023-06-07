@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,6 +23,7 @@ class EnvoyStorage {
 
   StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
   StoreRef aztecoPendingTxStore = StoreRef.main();
+  StoreRef dismissedPromptsStore = StoreRef.main();
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -37,6 +39,17 @@ class EnvoyStorage {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
     db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
+  }
+
+  Future addDismissedPrompt(DismissablePrompt prompt) async {
+    await dismissedPromptsStore.record(prompt).put(db, true);
+    return true;
+  }
+
+  Future<bool> isPromptDismissed(DismissablePrompt prompt) async {
+    final res = await dismissedPromptsStore.findFirst(db,
+        finder: Finder(filter: Filter.equals(prompt as String, true)));
+    return res != null;
   }
 
   Future addAztecoTx(
