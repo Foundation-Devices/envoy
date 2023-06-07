@@ -10,7 +10,7 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/shield.dart';
@@ -105,15 +105,17 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                           onPressed: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return ScannerPage(
-                                  [ScannerType.address, ScannerType.azteco],
-                                  account: account,
-                                  onAddressValidated: (address, amount) {
-                                navigator!.push(SendCard(account,
-                                    address: address,
-                                    amountSats: amount,
-                                    navigationCallback: navigator));
-                                FocusScope.of(context).unfocus();
+                              return ScannerPage.tx((psbt) {
+                                account.wallet.decodePsbt(psbt).then((decoded) {
+                                  navigator!.push(TxReview(
+                                    decoded,
+                                    account,
+                                    navigationCallback: navigator,
+                                    onFinishNavigationClick: () {
+                                      navigator?.pop(depth: 4);
+                                    },
+                                  ));
+                                });
                               });
                             }));
                           },
