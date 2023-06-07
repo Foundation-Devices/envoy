@@ -37,11 +37,11 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    height: 180,
-                    margin: EdgeInsets.only(top: 24),
-                    child: Transform.scale(
-                      scale: 1.68,
+                  Transform.scale(
+                    scale: 1.2,
+                    child: Container(
+                      constraints: BoxConstraints.tight(Size.fromHeight(280)),
+                      // margin: EdgeInsets.only(top: 24),
                       child: RiveAnimation.asset(
                         "assets/envoy_loader.riv",
                         fit: BoxFit.contain,

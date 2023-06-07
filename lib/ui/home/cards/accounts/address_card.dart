@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -34,39 +35,50 @@ class AddressCard extends StatelessWidget with NavigationCard {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: QrTab(
-                          title: account.name,
-                          subtitle: S().envoy_address_explainer,
-                          account: account,
-                          qr: QrImage(
-                            data: snapshot.data!,
-                            backgroundColor: Colors.white,
-                          )),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: GestureDetector(
-                      onTap: () {
-                        _copyAddressToClipboard(context, snapshot.data!);
-                      },
-                      child: Text(
-                        snapshot.data!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge!
-                            .copyWith(color: EnvoyColors.darkTeal),
-                      ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Container(
+                            margin: EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(6.0),
+                            child: QrTab(
+                                title: account.name,
+                                subtitle: S().envoy_address_explainer,
+                                account: account,
+                                qr: QrImage(
+                                  data: snapshot.data!,
+                                  backgroundColor: Colors.white,
+                                )),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: GestureDetector(
+                            onTap: () {
+                              _copyAddressToClipboard(context, snapshot.data!);
+                            },
+                            child: Text(
+                              snapshot.data!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(
+                                      color: EnvoyColors.darkTeal,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
                     padding:
-                        EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
+                        EdgeInsets.only(left: 50.0, right: 50.0, bottom: 40.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,10 +87,10 @@ class AddressCard extends StatelessWidget with NavigationCard {
                             onPressed: () {
                               _copyAddressToClipboard(context, snapshot.data!);
                             },
-                            icon: Icon(
-                              Icons.copy,
-                              size: 20,
-                              color: EnvoyColors.darkTeal,
+                            icon: EnvoyIcon(
+                              icon: "ic_copy.svg",
+                              size: 21,
+                              color: EnvoyColors.teal,
                             )),
                         EnvoyTextButton(
                           onTap: () {
@@ -90,10 +102,10 @@ class AddressCard extends StatelessWidget with NavigationCard {
                             onPressed: () {
                               Share.share("bitcoin:" + snapshot.data!);
                             },
-                            icon: Icon(
-                              Icons.share,
-                              size: 20,
-                              color: EnvoyColors.darkTeal,
+                            icon: EnvoyIcon(
+                              icon: "ic_envoy_share.svg",
+                              size: 21,
+                              color: EnvoyColors.teal,
                             )),
                       ],
                     ),

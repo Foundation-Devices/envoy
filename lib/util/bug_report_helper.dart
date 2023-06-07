@@ -142,4 +142,8 @@ class EnvoyReport {
     await Share.shareFiles([file.path],
         text: 'Envoy Log Report', mimeTypes: ["text/plain"]);
   }
+
+  clearAll() {
+    _logsStore.delete(_db!);
+  }
 }
