@@ -3,19 +3,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+
+import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:flutter/services.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
+import 'package:envoy/ui/home/cards/accounts/send_card.dart';
+import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/shield.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/business/account.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends StatelessWidget with NavigationCard {
@@ -39,8 +41,9 @@ class PsbtCard extends StatelessWidget with NavigationCard {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-            child: Padding(
-                padding: const EdgeInsets.all(15.0),
+            child: Container(
+                margin: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8.0),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
                     minHeight: 250,
@@ -61,6 +64,17 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                 )),
           ),
           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              S().send_qr_code_subheading,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontSize: 13),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
             padding: EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,42 +87,45 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                         content: Text(S().envoy_psbt_copied_clipboard),
                       ));
                     },
-                    icon: Icon(
-                      Icons.copy,
-                      size: 20,
-                      color: EnvoyColors.darkTeal,
+                    icon: EnvoyIcon(
+                      icon: "ic_copy.svg",
+                      size: 21,
+                      color: EnvoyColors.teal,
                     )),
-                IconButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return ScannerPage.tx((psbt) {
-                          account.wallet.decodePsbt(psbt).then((decoded) {
-                            navigator!.push(TxReview(
-                              decoded,
-                              account,
-                              navigationCallback: navigator,
-                              onFinishNavigationClick: () {
-                                navigator?.pop(depth: 4);
-                              },
-                            ));
-                          });
-                        });
-                      }));
-                    },
-                    icon: Icon(
-                      EnvoyIcons.qr_scan,
-                      size: 20,
-                      color: EnvoyColors.darkTeal,
-                    )),
+                QrShield(
+                    child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            EnvoyIcons.qr_scan,
+                            size: 30,
+                            color: EnvoyColors.darkTeal,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ScannerPage(
+                                  [ScannerType.address, ScannerType.azteco],
+                                  account: account,
+                                  onAddressValidated: (address, amount) {
+                                navigator!.push(SendCard(account,
+                                    address: address,
+                                    amountSats: amount,
+                                    navigationCallback: navigator));
+                                FocusScope.of(context).unfocus();
+                              });
+                            }));
+                          },
+                        ))),
                 IconButton(
                     onPressed: () {
                       Share.share(psbt.base64);
                     },
-                    icon: Icon(
-                      Icons.share,
-                      size: 20,
-                      color: EnvoyColors.darkTeal,
+                    icon: EnvoyIcon(
+                      icon: "ic_envoy_share.svg",
+                      size: 21,
+                      color: EnvoyColors.teal,
                     )),
               ],
             ),
