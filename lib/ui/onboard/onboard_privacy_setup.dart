@@ -467,7 +467,6 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.all(80)),
         ],
       ),
     );
