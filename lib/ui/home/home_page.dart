@@ -356,12 +356,14 @@ class _HomePageState extends ConsumerState<HomePage>
                     alignment: Alignment.center,
                     children: [
                       AnimatedSwitcher(
-                        duration: _animationsDuration,
-                        child: Text(
-                          _appBarTitle,
-                          key: ValueKey<String>(_appBarTitle),
-                        ),
-                      ),
+                          duration: _animationsDuration,
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              _appBarTitle,
+                              key: ValueKey<String>(_appBarTitle),
+                            ),
+                          )),
                       SizedBox(height: 50, child: IndicatorShield())
                     ]),
                 centerTitle: true,
