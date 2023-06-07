@@ -97,8 +97,9 @@ class _AddressEntryState extends State<AddressEntry> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 4, horizontal: 4),
                               child: Icon(
-                                EnvoyIcons.copy_paste,
-                                color: EnvoyColors.darkTeal,
+                                Icons.paste,
+                                size: 21,
+                                color: EnvoyColors.teal,
                               ),
                             ),
                             onTap: () async {
@@ -116,8 +117,9 @@ class _AddressEntryState extends State<AddressEntry> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 4, horizontal: 4),
                               child: Icon(
-                                Icons.qr_code,
-                                color: EnvoyColors.darkTeal,
+                                EnvoyIcons.qr_scan,
+                                size: 20,
+                                color: EnvoyColors.teal,
                               ),
                             ),
                             onTap: () {
