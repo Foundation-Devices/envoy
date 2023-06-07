@@ -69,18 +69,24 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
   }
 
   Future<void> _getPsbts() async {
-    _getPsbt(Fees().slowRate(widget.account.wallet.network)).then((psbt) {
-      setState(() {
-        _currentPsbt = psbt;
-        if (widget.sendMax) {
-          _amount = _currentPsbt.amount.abs();
-        }
-      });
-    });
-    _getPsbt(Fees().fastRate(widget.account.wallet.network)).then((psbt) {
-      setState(() {
-        _currentPsbtBoost = psbt;
-      });
+    final normalPsbt =
+        await _getPsbt(Fees().slowRate(widget.account.wallet.network));
+    final boostPsbt =
+        await _getPsbt(Fees().fastRate(widget.account.wallet.network));
+
+    setState(() {
+      // SFT-1949: if boost fee is smaller than normal switch 'em
+      if (boostPsbt.fee < normalPsbt.fee) {
+        _currentPsbt = boostPsbt;
+        _currentPsbtBoost = normalPsbt;
+      } else {
+        _currentPsbt = normalPsbt;
+        _currentPsbtBoost = boostPsbt;
+      }
+
+      if (widget.sendMax) {
+        _amount = _currentPsbt.amount.abs();
+      }
     });
   }
 
