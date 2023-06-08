@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:local_auth/local_auth.dart';
@@ -362,6 +363,12 @@ class _DevOptions extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Text("Clear Azteco states")),
+          TextButton(
+              onPressed: () {
+                EnvoyReport().clearAll();
+                Navigator.pop(context);
+              },
+              child: Text("Clear Envoy Logs")),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
