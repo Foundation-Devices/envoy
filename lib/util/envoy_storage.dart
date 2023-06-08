@@ -23,7 +23,7 @@ class EnvoyStorage {
 
   StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
   StoreRef aztecoPendingTxStore = StoreRef.main();
-  StoreRef dismissedPromptsStore = StoreRef.main();
+  StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>.main();
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -39,28 +39,31 @@ class EnvoyStorage {
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
   }
 
-  Future addDismissedPrompt(DismissablePrompt prompt) async {
-    await dismissedPromptsStore.record(prompt).put(db, true);
+  Future addDismissedPrompt(DismissiblePrompt prompt) async {
+    await dismissedPromptsStore.record(prompt.toString()).add(_db, true);
     return true;
   }
 
-  Future<bool> isPromptDismissed(DismissablePrompt prompt) async {
-    final res = await dismissedPromptsStore.findFirst(db,
-        finder: Finder(filter: Filter.equals(prompt as String, true)));
-    return res != null;
+  Stream<bool> isPromptDismissed(DismissiblePrompt prompt) {
+    final filter = Finder(filter: Filter.byKey(prompt.toString()));
+    //returns boolean stream that updates when provided key is updated
+    return dismissedPromptsStore
+        .query(finder: filter)
+        .onSnapshot(_db)
+        .map((event) => event?.value)
+        .map((event) => event != null);
   }
 
   Future addAztecoTx(
       String address, String accountId, DateTime timestamp) async {
-    await aztecoPendingTxStore.record(address).put(db,
+    await aztecoPendingTxStore.record(address).put(_db,
         {'account': accountId, 'timestamp': timestamp.millisecondsSinceEpoch});
-
     return true;
   }
 
   Future<List<wallet.Transaction>> getAztecoTxs(String accountId) async {
     var finder = Finder(filter: Filter.equals('account', accountId));
-    var records = await aztecoPendingTxStore.find(db, finder: finder);
+    var records = await aztecoPendingTxStore.find(_db, finder: finder);
     return transformAztecoTxRecords(records);
   }
 
@@ -85,15 +88,15 @@ class EnvoyStorage {
     return EnvoyStorage()
         .aztecoPendingTxStore
         .query(finder: finder)
-        .onSnapshots(db)
+        .onSnapshots(_db)
         .map((records) {
       return transformAztecoTxRecords(records);
     });
   }
 
   Future<bool> deleteAztecoTx(String address) async {
-    if (await aztecoPendingTxStore.record(address).exists(db)) {
-      await aztecoPendingTxStore.record(address).delete(db);
+    if (await aztecoPendingTxStore.record(address).exists(_db)) {
+      await aztecoPendingTxStore.record(address).delete(_db);
 
       return true;
     }
@@ -101,22 +104,30 @@ class EnvoyStorage {
   }
 
   Future addTxNote(String note, String txId) async {
-    txNotesStore.record(txId).put(db, note);
+    txNotesStore.record(txId).put(_db, note);
     return true;
   }
 
   Future<String?> getTxNote(String txId) async {
-    if (await txNotesStore.record(txId).exists(db))
-      return txNotesStore.record(txId).get(db);
+    if (await txNotesStore.record(txId).exists(_db))
+      return txNotesStore.record(txId).get(_db);
     else
       return null;
   }
 
   Future<bool> deleteTxNote(String note, String txId) async {
-    if (await txNotesStore.record(txId).exists(db)) {
-      await txNotesStore.record(txId).delete(db);
+    if (await txNotesStore.record(txId).exists(_db)) {
+      await txNotesStore.record(txId).delete(_db);
       return true;
     }
     return false;
+  }
+
+  void clearDismissedStatesStore() async {
+    dismissedPromptsStore.delete(_db);
+  }
+
+  void clearAztecoStore() async {
+    aztecoPendingTxStore.delete(_db);
   }
 }

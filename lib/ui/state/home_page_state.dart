@@ -21,7 +21,7 @@ enum HomePageBackgroundState {
   about
 }
 
-enum DismissablePrompt { hideAmount }
+enum DismissiblePrompt { hideAmount }
 
 final homePageTabProvider =
     StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
@@ -39,6 +39,6 @@ final homePageDevicesProvider =
     StateProvider<HomePageDevicesState>((ref) => HomePageDevicesState.list);
 
 final arePromptsDismissedProvider =
-    FutureProvider.family((ref, DismissablePrompt prompt) {
+    StreamProvider.family((ref, DismissiblePrompt prompt) {
   return EnvoyStorage().isPromptDismissed(prompt);
 });

@@ -2,29 +2,29 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:animations/animations.dart';
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
+import 'package:envoy/ui/home/cards/accounts/account_card.dart';
+import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
+import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/home/cards/accounts/account_card.dart';
-import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:animations/animations.dart';
-import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -153,7 +153,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   Widget build(BuildContext context) {
     var accounts = ref.watch(accountsProvider);
     var isHideAmountDismissed =
-        ref.watch(arePromptsDismissedProvider(DismissablePrompt.hideAmount));
+        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
 
     TextStyle _explainerTextStyle = TextStyle(
         fontFamily: 'Montserrat',
@@ -205,22 +205,30 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                                               alignment: WrapAlignment.center,
                                               spacing: 5,
                                               children: [
-                                                Text(
-                                                  S().hide_amount_first_time_text,
-                                                  style: _explainerTextStyle,
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 4),
+                                                  child: Text(
+                                                    S().hide_amount_first_time_text,
+                                                    style: _explainerTextStyle,
+                                                  ),
                                                 ),
                                                 GestureDetector(
-                                                  child: Text(
-                                                    S().hide_amount_first_time_text_button,
-                                                    style: _explainerTextStyle
-                                                        .copyWith(
-                                                            color: EnvoyColors
-                                                                .teal),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 4),
+                                                    child: Text(
+                                                      S().hide_amount_first_time_text_button,
+                                                      style: _explainerTextStyle
+                                                          .copyWith(
+                                                              color: EnvoyColors
+                                                                  .teal),
+                                                    ),
                                                   ),
                                                   onTap: () {
                                                     EnvoyStorage()
                                                         .addDismissedPrompt(
-                                                            DismissablePrompt
+                                                            DismissiblePrompt
                                                                 .hideAmount);
                                                   },
                                                 ),
@@ -229,8 +237,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                                           ),
                                         );
                                 },
-                                error: (err, stack) => Text("ERROR"),
-                                loading: () => Text("LOADING"))
+                                error: (err, stack) => Text(""),
+                                loading: () => Text("Loading..."))
                             : Center(
                                 child: Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
