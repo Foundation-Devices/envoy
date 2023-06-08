@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EnvoyIcons {
@@ -18,8 +19,9 @@ class EnvoyIcons {
 class EnvoyIcon extends StatelessWidget {
   final String icon;
   final double size;
+  final Color? color;
 
-  EnvoyIcon({required this.icon, this.size = 24});
+  EnvoyIcon({required this.icon, this.color, this.size = 24});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class EnvoyIcon extends StatelessWidget {
       "assets/icons/${this.icon}",
       width: this.size,
       height: this.size,
+      color: this.color,
     );
   }
 }

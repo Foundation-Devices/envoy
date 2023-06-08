@@ -2,21 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/business/envoy_seed.dart';
 import 'dart:io' show Platform;
-import 'package:envoy/ui/home/settings/setting_text.dart';
-import 'package:envoy/generated/l10n.dart';
+
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/state/global_state.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class BackupPage extends ConsumerStatefulWidget {
   @override
@@ -26,6 +28,7 @@ class BackupPage extends ConsumerStatefulWidget {
 class _BackupPageState extends ConsumerState<BackupPage>
     with WidgetsBindingObserver {
   late EnvoySeed seed;
+  bool _isBackupInProgress = false;
 
   @override
   void initState() {
@@ -34,11 +37,40 @@ class _BackupPageState extends ConsumerState<BackupPage>
     WidgetsBinding.instance.addObserver(this);
   }
 
+  Future createBackup(BuildContext context) async {
+    try {
+      setState(() {
+        _isBackupInProgress = true;
+      });
+      await EnvoySeed().backupData();
+      setState(() {
+        _isBackupInProgress = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isBackupInProgress = false;
+      });
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: Duration(seconds: 3),
+        message: "Unable to backup. Please try again later.",
+        icon: Icon(
+          Icons.error_outline_rounded,
+          color: EnvoyColors.darkCopper,
+        ),
+      ).show(context);
+    }
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // SFT-1737: refresh everything when app comes back into focus
     if (state == AppLifecycleState.resumed) {
-      setState(() {});
+      // re-render only if the widget is mounted
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -135,22 +167,37 @@ class _BackupPageState extends ConsumerState<BackupPage>
                               children: [
                                 SettingText(S()
                                     .manual_toggle_on_seed_backedup_android_wallet_data),
-                                SettingText(
-                                  S().manual_toggle_on_seed_backedup_iOS_backup_now,
-                                  color: EnvoyColors.teal,
-                                  onTap: () {
-                                    EnvoySeed().backupData().then((_) {
-                                      setState(() {});
-                                    });
+                                Builder(
+                                  builder: (context) {
+                                    if (_isBackupInProgress) {
+                                      return SizedBox.square(
+                                        dimension: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: EnvoyColors.teal,
+                                          backgroundColor: Color(0xffD9D9D9),
+                                        ),
+                                      );
+                                    } else {
+                                      return SettingText(
+                                        S().manual_toggle_on_seed_backedup_iOS_backup_now,
+                                        color: EnvoyColors.teal,
+                                        onTap: () {
+                                          createBackup(context);
+                                        },
+                                      );
+                                    }
                                   },
                                 ),
                               ],
                             ),
                             SettingText(
-                              lastEnvoyServerBackup == null
-                                  ? S()
-                                      .manual_toggle_on_seed_not_backedup_android_pending_backup
-                                  : "${timeago.format(lastEnvoyServerBackup)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup).substring(1).toLowerCase()} to Foundation server",
+                              _isBackupInProgress
+                                  ? "Backup in Progress"
+                                  : lastEnvoyServerBackup == null
+                                      ? S()
+                                          .manual_toggle_on_seed_not_backedup_android_pending_backup
+                                      : "${timeago.format(lastEnvoyServerBackup)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup).substring(1).toLowerCase()} to Foundation server",
                               color: EnvoyColors.grey,
                             ),
                           ],
