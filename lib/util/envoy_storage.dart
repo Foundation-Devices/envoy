@@ -27,7 +27,9 @@ class EnvoyStorage {
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
-  EnvoyStorage._() {}
+  EnvoyStorage._() {
+    init();
+  }
 
   factory EnvoyStorage() {
     return _instance;
