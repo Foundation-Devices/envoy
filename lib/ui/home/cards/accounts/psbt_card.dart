@@ -90,7 +90,7 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                     icon: EnvoyIcon(
                       icon: "ic_copy.svg",
                       size: 21,
-                      color: EnvoyColors.teal,
+                      color: EnvoyColors.darkTeal,
                     )),
                 QrShield(
                     child: Padding(
@@ -127,7 +127,7 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                     icon: EnvoyIcon(
                       icon: "ic_envoy_share.svg",
                       size: 21,
-                      color: EnvoyColors.teal,
+                      color: EnvoyColors.darkTeal,
                     )),
               ],
             ),
