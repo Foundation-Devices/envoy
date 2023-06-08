@@ -237,8 +237,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                                           ),
                                         );
                                 },
-                                error: (err, stack) => Text(""),
-                                loading: () => Text(""))
+                                error: (err, stack) => SizedBox.shrink(),
+                                loading: () => SizedBox.shrink())
                             : Center(
                                 child: Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
