@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:local_auth/local_auth.dart';
@@ -349,6 +350,18 @@ class _DevOptions extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          TextButton(
+              onPressed: () {
+                EnvoyStorage().clearDismissedStatesStore();
+                Navigator.pop(context);
+              },
+              child: Text("Clear dismiss states")),
+          TextButton(
+              onPressed: () {
+                EnvoyStorage().clearAztecoStore();
+                Navigator.pop(context);
+              },
+              child: Text("Clear Azteco states")),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
