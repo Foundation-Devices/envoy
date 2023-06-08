@@ -19,7 +19,7 @@ final aztecoTxStreamProvider =
 
 class EnvoyStorage {
   String dbName = 'envoy.db';
-  late Database db;
+  late Database _db;
 
   StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
   StoreRef aztecoPendingTxStore = StoreRef.main();
@@ -27,18 +27,16 @@ class EnvoyStorage {
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
-  EnvoyStorage._() {
-    _init();
-  }
+  EnvoyStorage._() {}
 
   factory EnvoyStorage() {
     return _instance;
   }
 
-  void _init() async {
+  Future init() async {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
-    db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
+    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
   }
 
   Future addDismissedPrompt(DismissablePrompt prompt) async {
