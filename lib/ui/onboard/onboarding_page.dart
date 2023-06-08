@@ -2,18 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:typed_data';
+
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/animated_qr_image.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:dots_indicator/dots_indicator.dart';
-import 'package:envoy/ui/animated_qr_image.dart';
-import 'dart:typed_data';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/generated/l10n.dart';
+import 'package:rive/rive.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -64,16 +66,49 @@ class OnboardingPage extends StatelessWidget {
           future: qrCode,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             return Container(
-              height: 350,
               width: double.infinity,
               child: snapshot.hasData
                   ? Center(
-                      child: QrImage(
-                        data: snapshot.data!,
-                        backgroundColor: Colors.transparent,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox.square(
+                            dimension: 284,
+                            child: QrImage(
+                              data: snapshot.data!,
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.all(4)),
+                          Text(
+                            "${snapshot.data ?? ""}",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleSmall,
+                          )
+                        ],
                       ),
                     )
-                  : CircularProgressIndicator(),
+                  : Center(
+                      child: Container(
+                        height: 260,
+                        child: RiveAnimation.asset(
+                          "assets/envoy_loader.riv",
+                          fit: BoxFit.contain,
+                          animations: ["indeterminate"],
+                          onInit: (artboard) {
+                            var _stateMachineController =
+                                StateMachineController.fromArtboard(
+                                    artboard, 'STM');
+                            artboard.addController(_stateMachineController!);
+                            _stateMachineController
+                                .findInput<bool>("indeterminate")
+                                ?.change(true);
+                          },
+                        ),
+                      ),
+                    ),
             );
           });
     }
