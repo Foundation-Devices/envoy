@@ -53,6 +53,13 @@ class AccountCard extends ConsumerStatefulWidget with NavigationCard {
 }
 
 class _AccountCardState extends ConsumerState<AccountCard> {
+  TextStyle _explainerTextStyleWallet = TextStyle(
+      height: 2.0,
+      fontFamily: 'Montserrat',
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w400,
+      color: EnvoyColors.grey);
+
   _redraw() {
     setState(() {});
   }
@@ -116,12 +123,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                               padding: EdgeInsets.only(top: 4 * 5),
                               child: Text(
                                 S().account_empty_tx_history_text_explainer,
-                                style: TextStyle(
-                                  height: 2.0,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: EnvoyColors.grey,
-                                ),
+                                style: _explainerTextStyleWallet.copyWith(),
                                 textAlign: TextAlign.center,
                               ),
                             ),

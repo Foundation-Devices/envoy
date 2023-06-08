@@ -40,6 +40,7 @@ void main() {
     });
 
     EnvoyStorage();
+    EnvoyStorage().init();
 
     await Future.delayed(Duration(seconds: 1));
 

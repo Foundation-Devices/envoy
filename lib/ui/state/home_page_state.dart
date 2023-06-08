@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum HomePageTabState { devices, accounts, learn }
@@ -20,6 +21,8 @@ enum HomePageBackgroundState {
   about
 }
 
+enum DismissiblePrompt { hideAmount }
+
 final homePageTabProvider =
     StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
 
@@ -34,3 +37,8 @@ final homePageAccountsProvider =
 
 final homePageDevicesProvider =
     StateProvider<HomePageDevicesState>((ref) => HomePageDevicesState.list);
+
+final arePromptsDismissedProvider =
+    StreamProvider.family((ref, DismissiblePrompt prompt) {
+  return EnvoyStorage().isPromptDismissed(prompt);
+});

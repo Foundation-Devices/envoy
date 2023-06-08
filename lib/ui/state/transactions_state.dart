@@ -45,3 +45,14 @@ final transactionsProvider =
 
   return transactions;
 });
+
+final isThereAnyTransactionsProvider = Provider<bool>((ref) {
+  var accounts = ref.watch(accountsProvider);
+  for (var account in accounts) {
+    if (ref.watch(transactionsProvider(account.id)).isNotEmpty) {
+      return true;
+    }
+  }
+
+  return false;
+});

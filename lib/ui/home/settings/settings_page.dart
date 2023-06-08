@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -351,12 +352,23 @@ class _DevOptions extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextButton(
-            child: Text("Clear Envoy Logs"),
-            onPressed: () {
-              EnvoyReport().clearAll();
-              Navigator.pop(context);
-            },
-          ),
+              onPressed: () {
+                EnvoyStorage().clearDismissedStatesStore();
+                Navigator.pop(context);
+              },
+              child: Text("Clear dismiss states")),
+          TextButton(
+              onPressed: () {
+                EnvoyStorage().clearAztecoStore();
+                Navigator.pop(context);
+              },
+              child: Text("Clear Azteco states")),
+          TextButton(
+              onPressed: () {
+                EnvoyReport().clearAll();
+                Navigator.pop(context);
+              },
+              child: Text("Clear Envoy Logs")),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {

@@ -72,6 +72,8 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -428,6 +430,16 @@ class S {
     );
   }
 
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -766,6 +778,8 @@ class S {
 
   // skipped getter for the 'FW Update' key
 
+  // skipped getter for the 'FW_Version_No.' key
+
   // skipped getter for the 'Face ID' key
 
   /// `Family`
@@ -825,6 +839,16 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SEND AND\nRECEIVE BITCOIN`
+  String get Heading {
+    return Intl.message(
+      'SEND AND\nRECEIVE BITCOIN',
+      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1264,6 +1288,16 @@ class S {
     );
   }
 
+  /// `BACKUPS`
+  String get ScreenTitle {
+    return Intl.message(
+      'BACKUPS',
+      name: 'ScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1419,6 +1453,16 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
+
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -8070,10 +8114,10 @@ class S {
     );
   }
 
-  /// `Swipe the card left & right to show & hide the balance.`
+  /// `Swipe to show and hide your balance.`
   String get hide_amount_first_time_text {
     return Intl.message(
-      'Swipe the card left & right to show & hide the balance.',
+      'Swipe to show and hide your balance.',
       name: 'hide_amount_first_time_text',
       desc: '',
       args: [],
@@ -8110,11 +8154,23 @@ class S {
     );
   }
 
-  /// `Tap the above card to receive your first Bitcoin.`
+  /// `Tap the above card to receive Bitcoin.`
   String get hot_wallet_accounts_creation_done_text_explainer {
     return Intl.message(
-      'Tap the above card to receive your first Bitcoin.',
+      'Tap the above card to receive Bitcoin.',
       name: 'hot_wallet_accounts_creation_done_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap any of the above cards to receive Bitcoin.`
+  String
+      get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
+    return Intl.message(
+      'Tap any of the above cards to receive Bitcoin.',
+      name:
+          'hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt',
       desc: '',
       args: [],
     );
@@ -9876,6 +9932,36 @@ class S {
     );
   }
 
+  /// `Choose Destination`
+  String get manual_setup_import_existing_backup_CTA1 {
+    return Intl.message(
+      'Choose Destination',
+      name: 'manual_setup_import_existing_backup_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Envoy Backup File`
+  String get manual_setup_import_existing_backup_heading {
+    return Intl.message(
+      'Save Envoy Backup File',
+      name: 'manual_setup_import_existing_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_import_existing_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_import_existing_backup_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Done`
   String get manual_setup_import_seed_12_words_CTA {
     return Intl.message(
@@ -10747,6 +10833,202 @@ class S {
     return Intl.message(
       'Magic Backups',
       name: 'manual_toggle_on_seed_backedup_pending_iOS_automatic_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Backup File`
+  String get manual_toggle_on_seed_backup_in_progress_android_backup_file {
+    return Intl.message(
+      'Envoy Backup File',
+      name: 'manual_toggle_on_seed_backup_in_progress_android_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup in Progress`
+  String
+      get manual_toggle_on_seed_backup_in_progress_android_backup_in_progress {
+    return Intl.message(
+      'Backup in Progress',
+      name:
+          'manual_toggle_on_seed_backup_in_progress_android_backup_in_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Envoy Backup File`
+  String
+      get manual_toggle_on_seed_backup_in_progress_android_download_backup_file {
+    return Intl.message(
+      'Download Envoy Backup File',
+      name:
+          'manual_toggle_on_seed_backup_in_progress_android_download_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Seed`
+  String get manual_toggle_on_seed_backup_in_progress_android_envoy_seed {
+    return Intl.message(
+      'Envoy Seed',
+      name: 'manual_toggle_on_seed_backup_in_progress_android_envoy_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Android Settings`
+  String
+      get manual_toggle_on_seed_backup_in_progress_android_envoy_seed_open_settings {
+    return Intl.message(
+      'Open Android Settings',
+      name:
+          'manual_toggle_on_seed_backup_in_progress_android_envoy_seed_open_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups`
+  String get manual_toggle_on_seed_backup_in_progress_android_magic_backups {
+    return Intl.message(
+      'Magic Backups',
+      name: 'manual_toggle_on_seed_backup_in_progress_android_magic_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stored in Android Auto Backup`
+  String get manual_toggle_on_seed_backup_in_progress_android_stored {
+    return Intl.message(
+      'Stored in Android Auto Backup',
+      name: 'manual_toggle_on_seed_backup_in_progress_android_stored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Envoy Seed`
+  String get manual_toggle_on_seed_backup_in_progress_android_view_envoy_seed {
+    return Intl.message(
+      'View Envoy Seed',
+      name: 'manual_toggle_on_seed_backup_in_progress_android_view_envoy_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Backup File`
+  String get manual_toggle_on_seed_backup_in_progress_ios_backup_file {
+    return Intl.message(
+      'Envoy Backup File',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup in Progress`
+  String get manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress {
+    return Intl.message(
+      'Backup in Progress',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Envoy Backup File`
+  String get manual_toggle_on_seed_backup_in_progress_ios_download_backup_file {
+    return Intl.message(
+      'Download Envoy Backup File',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_download_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Seed`
+  String get manual_toggle_on_seed_backup_in_progress_ios_envoy_seed {
+    return Intl.message(
+      'Envoy Seed',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_envoy_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups`
+  String get manual_toggle_on_seed_backup_in_progress_ios_magic_backups {
+    return Intl.message(
+      'Magic Backups',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_magic_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stored in iCloud Keychain`
+  String get manual_toggle_on_seed_backup_in_progress_ios_stored {
+    return Intl.message(
+      'Stored in iCloud Keychain',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_stored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Envoy Seed`
+  String get manual_toggle_on_seed_backup_in_progress_ios_view_envoy_seed {
+    return Intl.message(
+      'View Envoy Seed',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_view_envoy_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Envoy backup is complete.`
+  String get manual_toggle_on_seed_backup_in_progress_toast_heading {
+    return Intl.message(
+      'Your Envoy backup is complete.',
+      name: 'manual_toggle_on_seed_backup_in_progress_toast_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get manual_toggle_on_seed_backup_now_modal_cta {
+    return Intl.message(
+      'Continue',
+      name: 'manual_toggle_on_seed_backup_now_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uploading Envoy Backup`
+  String get manual_toggle_on_seed_backup_now_modal_heading {
+    return Intl.message(
+      'Uploading Envoy Backup',
+      name: 'manual_toggle_on_seed_backup_now_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This backup contains connected devices and accounts, labels and app settings. It contains no private key information.\n\nEnvoy backups are end-to-end encrypted, Foundation has no access or knowledge of their contents. \n\nEnvoy will notify you when the upload is complete.`
+  String get manual_toggle_on_seed_backup_now_modal_subheading {
+    return Intl.message(
+      'This backup contains connected devices and accounts, labels and app settings. It contains no private key information.\n\nEnvoy backups are end-to-end encrypted, Foundation has no access or knowledge of their contents. \n\nEnvoy will notify you when the upload is complete.',
+      name: 'manual_toggle_on_seed_backup_now_modal_subheading',
       desc: '',
       args: [],
     );
