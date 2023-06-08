@@ -238,7 +238,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                                         );
                                 },
                                 error: (err, stack) => Text(""),
-                                loading: () => Text("Loading..."))
+                                loading: () => Text(""))
                             : Center(
                                 child: Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
