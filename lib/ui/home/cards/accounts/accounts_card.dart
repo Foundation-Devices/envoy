@@ -20,7 +20,6 @@ import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -152,15 +151,6 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   @override
   Widget build(BuildContext context) {
     var accounts = ref.watch(accountsProvider);
-    var isHideAmountDismissed =
-        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
-
-    TextStyle _explainerTextStyle = TextStyle(
-        fontFamily: 'Montserrat',
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.w400,
-        color: EnvoyColors.grey);
-
     return accounts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(6 * 4),
@@ -191,68 +181,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                             )))
                         .toList(),
                     ...[
-                      DragAndDropItem(
-                        child: ref.watch(isThereAnyTransactionsProvider)
-                            ? isHideAmountDismissed.when(
-                                data: (isDismissed) {
-                                  return isDismissed
-                                      ? SizedBox.shrink()
-                                      : Center(
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 5.0),
-                                            child: Wrap(
-                                              alignment: WrapAlignment.center,
-                                              spacing: 5,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 4),
-                                                  child: Text(
-                                                    S().hide_amount_first_time_text,
-                                                    style: _explainerTextStyle,
-                                                  ),
-                                                ),
-                                                GestureDetector(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(vertical: 4),
-                                                    child: Text(
-                                                      S().hide_amount_first_time_text_button,
-                                                      style: _explainerTextStyle
-                                                          .copyWith(
-                                                              color: EnvoyColors
-                                                                  .teal),
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    EnvoyStorage()
-                                                        .addDismissedPrompt(
-                                                            DismissiblePrompt
-                                                                .hideAmount);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                },
-                                error: (err, stack) => SizedBox.shrink(),
-                                loading: () => SizedBox.shrink())
-                            : Center(
-                                child: Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Text(
-                                  accounts.length == 1
-                                      ? S()
-                                          .hot_wallet_accounts_creation_done_text_explainer
-                                      : S()
-                                          .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
-                                  style: _explainerTextStyle,
-                                ),
-                              )),
-                      )
-                    ]
+                      DragAndDropItem(canDrag: false, child: AccountPrompts())
+                    ],
                   ])
                 ],
                 onListReorder: (int oldListIndex, int newListIndex) {},
@@ -263,5 +193,74 @@ class _AccountsListState extends ConsumerState<AccountsList> {
               ),
             ),
           );
+  }
+}
+
+class AccountPrompts extends ConsumerWidget {
+  const AccountPrompts();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    TextStyle _explainerTextStyle = TextStyle(
+        fontFamily: 'Montserrat',
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        color: EnvoyColors.grey);
+    var isHideAmountDismissed =
+        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
+    var doesUserTriedReceiveScreen = ref.watch(arePromptsDismissedProvider(
+        DismissiblePrompt.userInteractedWithReceive));
+    var accounts = ref.watch(accountsProvider);
+    //Show if the user never tried receive screen
+    if (!doesUserTriedReceiveScreen) {
+      return Center(
+          child: Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Text(
+          accounts.length == 1
+              ? S().hot_wallet_accounts_creation_done_text_explainer
+              : S()
+                  .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
+          style: _explainerTextStyle,
+        ),
+      ));
+    } else {
+      //Show if the user never tried hide amount
+      if (!isHideAmountDismissed) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5.0),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 5,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    S().hide_amount_first_time_text,
+                    style: _explainerTextStyle,
+                  ),
+                ),
+                GestureDetector(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                    child: Text(
+                      S().hide_amount_first_time_text_button,
+                      style:
+                          _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+                    ),
+                  ),
+                  onTap: () {
+                    EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+    return SizedBox.square();
   }
 }

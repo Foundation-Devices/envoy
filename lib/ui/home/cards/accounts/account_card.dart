@@ -18,6 +18,7 @@ import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -144,6 +145,9 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 child: EnvoyTextButton(
                     label: S().receive_tx_list_receive,
                     onTap: () {
+                      //hide if prompt is not shown
+                      EnvoyStorage().addPromptState(
+                          DismissiblePrompt.userInteractedWithReceive);
                       widget.navigator!.push(AddressCard(
                         widget.account,
                         navigationCallback: widget.navigator,

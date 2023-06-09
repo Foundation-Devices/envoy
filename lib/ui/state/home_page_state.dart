@@ -21,7 +21,7 @@ enum HomePageBackgroundState {
   about
 }
 
-enum DismissiblePrompt { hideAmount }
+enum DismissiblePrompt { hideAmount, userInteractedWithReceive }
 
 final homePageTabProvider =
     StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
@@ -38,7 +38,20 @@ final homePageAccountsProvider =
 final homePageDevicesProvider =
     StateProvider<HomePageDevicesState>((ref) => HomePageDevicesState.list);
 
-final arePromptsDismissedProvider =
+//returns prompt dismiss state as stream
+final promptStreamProvider =
     StreamProvider.family((ref, DismissiblePrompt prompt) {
   return EnvoyStorage().isPromptDismissed(prompt);
+});
+//returns prompt dismiss state
+//if the prompt is not dismissed, returns false otherwise returns true
+//this is better than using stream based provider because this wont require stream builder
+final arePromptsDismissedProvider =
+    Provider.family<bool, DismissiblePrompt>((ref, DismissiblePrompt prompt) {
+  var value = ref.watch(promptStreamProvider(prompt));
+  if (value.isLoading || value.value == null) {
+    return false;
+  } else {
+    return value.value!;
+  }
 });
