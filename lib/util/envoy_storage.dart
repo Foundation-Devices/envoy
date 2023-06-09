@@ -41,7 +41,7 @@ class EnvoyStorage {
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
   }
 
-  Future addDismissedPrompt(DismissiblePrompt prompt) async {
+  Future addPromptState(DismissiblePrompt prompt) async {
     await dismissedPromptsStore.record(prompt.toString()).add(_db, true);
     return true;
   }

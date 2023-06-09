@@ -29,7 +29,6 @@ class AddressCard extends StatelessWidget with NavigationCard {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-
     return FutureBuilder<String>(
         future: account.wallet.getAddress(),
         builder: (context, snapshot) {
