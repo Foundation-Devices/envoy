@@ -13,8 +13,8 @@ import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:local_auth/local_auth.dart';
@@ -170,37 +170,6 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
-          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
-          SliverToBoxAdapter(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EnvoyLogsScreen(),
-                    ));
-              },
-              child: Container(
-                color: Colors.transparent,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SettingText("View Envoy Logs", onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EnvoyLogsScreen(),
-                              ));
-                        }),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
           SliverPadding(
               padding: EdgeInsets.all(kDebugMode ? marginBetweenItems : 0)),
           SliverToBoxAdapter(
@@ -236,91 +205,98 @@ class _SettingsPageState extends State<SettingsPage> {
                   )
                 : null,
           ),
-          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
           SliverToBoxAdapter(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _advancedVisible = !_advancedVisible;
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SettingText("Advanced", onTap: () {
-                    setState(() {
-                      _advancedVisible = !_advancedVisible;
-                    });
-                  }),
-                  AnimatedRotation(
-                    duration: _animationsDuration,
-                    turns: _advancedVisible ? 0.0 : 0.5,
-                    child: Icon(
-                      Icons.keyboard_arrow_up_sharp,
-                      color: Colors.white,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
-          SliverToBoxAdapter(
-            child: Column(
+              child: ExpansionTile(
+            tilePadding: EdgeInsets.all(0),
+            onExpansionChanged: (value) {
+              setState(() {
+                _advancedVisible = value;
+              });
+            },
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    height: _advancedVisible ? 40 : 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SettingText("Enable Testnet"),
-                          SettingToggle(
-                              s.showTestnetAccounts, s.setShowTestnetAccounts),
-                        ],
-                      ),
+                Text("Advanced",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     )),
-                Padding(padding: EdgeInsets.all(marginBetweenItems)),
-                AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    height: _advancedVisible ? 40 : 0,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: nestedMargin),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SettingText(S().settings_electrum),
-                          SettingToggle(() => _customElectrumServerVisible,
-                              _customElectrumServerToggled),
-                        ],
-                      ),
-                    )),
-                AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    height: _advancedVisible ? 120 : 0,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: nestedMargin, top: 14.0),
-                      child: SingleChildScrollView(
-                        child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
-                            height: _customElectrumServerVisible ? 130 : 0,
-                            child: AnimatedOpacity(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 0.0),
-                                child: ElectrumServerEntry(
-                                    s.customElectrumAddress,
-                                    s.setCustomElectrumAddress),
-                              ),
-                              duration: _animationsDuration,
-                              opacity: _customElectrumServerVisible ? 1.0 : 0.0,
-                            )),
-                      ),
-                    )),
+                AnimatedRotation(
+                  duration: _animationsDuration,
+                  turns: _advancedVisible ? 0.0 : 0.5,
+                  child: Icon(
+                    Icons.keyboard_arrow_up_sharp,
+                    color: Colors.white,
+                  ),
+                )
               ],
             ),
-          )
+            trailing: SizedBox(),
+            controlAffinity: ListTileControlAffinity.platform,
+            childrenPadding: EdgeInsets.only(left: 8),
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SettingText("Enable Testnet"),
+                  SettingToggle(
+                      s.showTestnetAccounts, s.setShowTestnetAccounts),
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(marginBetweenItems)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SettingText(S().settings_electrum),
+                  SettingToggle(() => _customElectrumServerVisible,
+                      _customElectrumServerToggled),
+                ],
+              ),
+              AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: nestedMargin, top: 14.0),
+                    child: SingleChildScrollView(
+                      child: AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          height: _customElectrumServerVisible ? 86 : 0,
+                          child: AnimatedOpacity(
+                            child: SingleChildScrollView(
+                                child: ElectrumServerEntry(
+                                    s.customElectrumAddress,
+                                    s.setCustomElectrumAddress)),
+                            duration: _animationsDuration,
+                            opacity: _customElectrumServerVisible ? 1.0 : 0.0,
+                          )),
+                    ),
+                  )),
+              Container(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EnvoyLogsScreen(),
+                        ));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SettingText("View Envoy Logs", onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EnvoyLogsScreen(),
+                            ));
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )),
+          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
         ],
       ),
     );
