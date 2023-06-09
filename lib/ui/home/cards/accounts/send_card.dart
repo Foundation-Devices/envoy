@@ -167,7 +167,7 @@ class _SendCardState extends ConsumerState<SendCard>
                   ? S().envoy_send_send_max
                   : _amountSufficient
                       ? _addressValid
-                          ? S().component_continue
+                          ? S().send_keyboard_address_confirm
                           : S().envoy_send_enter_valid_address
                       : S().envoy_send_insufficient_funds))
     ]);

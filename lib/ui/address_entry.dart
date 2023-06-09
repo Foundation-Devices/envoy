@@ -99,7 +99,7 @@ class _AddressEntryState extends State<AddressEntry> {
                               child: Icon(
                                 Icons.paste,
                                 size: 21,
-                                color: EnvoyColors.teal,
+                                color: EnvoyColors.darkTeal,
                               ),
                             ),
                             onTap: () async {
@@ -119,7 +119,7 @@ class _AddressEntryState extends State<AddressEntry> {
                               child: Icon(
                                 EnvoyIcons.qr_scan,
                                 size: 20,
-                                color: EnvoyColors.teal,
+                                color: EnvoyColors.darkTeal,
                               ),
                             ),
                             onTap: () {
