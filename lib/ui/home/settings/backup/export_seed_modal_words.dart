@@ -150,7 +150,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   }
 
   Widget _buildMnemonicColumn(List<String> list, List<String> seedList) {
-    final TextStyle textTheme = TextStyle(
+    final TextStyle textTheme = TextStyle(overflow: TextOverflow.fade,
         fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
       children: list.map((word) {
@@ -164,7 +164,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
           child: Row(
             children: [
               Text("${seedList.indexOf(word) + 1}. ", style: textTheme),
-              Expanded(child: Text("${word}", style: textTheme)),
+              Flexible(child: Text("${word}", style: textTheme, maxLines: 1, softWrap: false,)),
             ],
           ),
         );
