@@ -198,6 +198,7 @@ class _NumpadState extends State<Numpad> {
       shrinkWrap: true,
       // For some reason GridView has a default padding
       padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
       children: [
         ...(List.generate(9, (index) {
           String digit = (index + 1).toString();
