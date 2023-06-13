@@ -42,7 +42,7 @@ class PsbtCard extends StatelessWidget with NavigationCard {
         children: [
           Flexible(
             child: Container(
-                margin: EdgeInsets.all(10),
+                margin: EdgeInsets.all(10).add(EdgeInsets.only(top: 13)),
                 padding: const EdgeInsets.all(8.0),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
