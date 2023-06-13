@@ -170,7 +170,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                     ...accounts
                         .map((e) => DragAndDropItem(
                                 child: Padding(
-                              padding: const EdgeInsets.only(bottom: 4 * 5),
+                              padding: EdgeInsets.only(
+                                  bottom: accounts.last.id == e.id ? 8 : 20),
                               child: AccountListTile(
                                 e,
                                 onTap: () {
@@ -215,7 +216,7 @@ class AccountPrompts extends ConsumerWidget {
     if (!doesUserTriedReceiveScreen) {
       return Center(
           child: Padding(
-        padding: const EdgeInsets.only(top: 5.0),
+        padding: const EdgeInsets.only(top: 0.0),
         child: Text(
           accounts.length == 1
               ? S().hot_wallet_accounts_creation_done_text_explainer
@@ -228,35 +229,24 @@ class AccountPrompts extends ConsumerWidget {
       //Show if the user never tried hide amount
       if (!isHideAmountDismissed) {
         return Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 5.0),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 5,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    S().hide_amount_first_time_text,
-                    style: _explainerTextStyle,
-                  ),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 5,
+            children: [
+              Text(
+                S().hide_amount_first_time_text,
+                style: _explainerTextStyle,
+              ),
+              GestureDetector(
+                child: Text(
+                  S().hide_amount_first_time_text_button,
+                  style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
                 ),
-                GestureDetector(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-                    child: Text(
-                      S().hide_amount_first_time_text_button,
-                      style:
-                          _explainerTextStyle.copyWith(color: EnvoyColors.teal),
-                    ),
-                  ),
-                  onTap: () {
-                    EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
-                  },
-                ),
-              ],
-            ),
+                onTap: () {
+                  EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
+                },
+              ),
+            ],
           ),
         );
       }
