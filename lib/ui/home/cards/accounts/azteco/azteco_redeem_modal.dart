@@ -56,9 +56,12 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/azteco_logo.png", scale: 1),
                 Padding(
-                  padding: const EdgeInsets.only(top: 4 * 4),
+                  padding: const EdgeInsets.all(4 * 4),
+                  child: Image.asset("assets/azteco_logo.png", scale: 1),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4 * 4),
                   child: Text(
                     S().azteco_redeem_modal_heading,
                     textAlign: TextAlign.center,
@@ -66,7 +69,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5 * 4),
+                  padding: const EdgeInsets.only(top: 2 * 4),
                   child: Text(
                     S().azteco_redeem_modal__voucher_code,
                     textAlign: TextAlign.center,
