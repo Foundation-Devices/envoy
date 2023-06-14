@@ -29,7 +29,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.17.0
+  intl: ^0.18.0
 
   # Rust FFI libraries
   tor:
@@ -73,7 +73,10 @@ dependencies:
   share_plus: ^4.5.0
   timeago: ^3.2.2
   csv: ^5.0.1
-  webfeed: ^0.7.0
+  webfeed:
+    git:
+      url: https://github.com/icota/webfeed.git
+      ref: master
   flutter_svg: ^1.0.3
   bip32: ^2.0.0
   package_info_plus: ^1.4.2
