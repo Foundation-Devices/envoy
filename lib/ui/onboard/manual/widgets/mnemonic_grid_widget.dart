@@ -101,7 +101,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   Widget _buildMnemonicView(int page, BuildContext context) {
     // Get the bottom padding of the keyboard
-    double bottom = WidgetsBinding.instance.window.viewInsets.bottom;
+    double bottom = View.of(context).viewInsets.bottom;
     double pixRatio = MediaQuery.of(context).devicePixelRatio;
 
     return Padding(
@@ -208,7 +208,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
       });
     });
     _overlayEntry = OverlayEntry(builder: (context) {
-      double bottom = WidgetsBinding.instance.window.viewInsets.bottom;
+      double bottom = View.of(context).viewInsets.bottom;
       double pixRatio = MediaQuery.of(context).devicePixelRatio;
       return Positioned(
         bottom: bottom / pixRatio,
