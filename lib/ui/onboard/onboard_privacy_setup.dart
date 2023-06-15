@@ -108,15 +108,13 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Padding(padding: EdgeInsets.all(4)),
                       Text(
                         heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(6)),
                       Container(
-                        width: 210,
+                        width: 250,
                         child: Text(
                           subheading,
                           style: Theme.of(context).textTheme.bodySmall,
@@ -133,33 +131,31 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   child: PrivacyOptionSelect(),
                   padding: EdgeInsets.symmetric(vertical: 8)),
             ),
+            Consumer(
+              builder: (context, ref, child) {
+                bool _betterPerformance =
+                    ref.watch(privacyOnboardSelectionProvider);
+                return _betterPerformance
+                    ? LinkText(
+                        text: S().privacy_setting_perfomance_tor_off,
+                        linkStyle: _messageStyle?.copyWith(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            color: EnvoyColors.listAccountTileColors[0]))
+                    : LinkText(
+                        text: S().privacy_setting_privacy_tor_on,
+                        linkStyle: _messageStyle?.copyWith(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            color: EnvoyColors.listAccountTileColors[1]));
+              },
+            ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 28),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(padding: EdgeInsets.all(4)),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      bool _betterPerformance =
-                          ref.watch(privacyOnboardSelectionProvider);
-                      return _betterPerformance
-                          ? LinkText(
-                              text: S().privacy_setting_perfomance_tor_off,
-                              linkStyle: _messageStyle?.copyWith(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  color: EnvoyColors.listAccountTileColors[0]))
-                          : LinkText(
-                              text: S().privacy_setting_privacy_tor_on,
-                              linkStyle: _messageStyle?.copyWith(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  color: EnvoyColors.listAccountTileColors[1]));
-                    },
-                  ),
-                  Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
                     S().privacy_setting_perfomance_cta,
                     onTap: () async {
@@ -684,8 +680,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 340),
-        width: 100,
-        height: 100,
+        width: MediaQuery.of(context).size.height * 0.17,
+        height: MediaQuery.of(context).size.height * 0.17,
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: RoundedRectangleBorder(
@@ -781,17 +777,17 @@ class _PrivacyShieldAnimatedState extends State<PrivacyShieldAnimated>
 
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return SlideTransition(
       position: animation,
-      child: Container(
-        height: _iphoneSE ? 180 : 220,
-        alignment: Alignment.center,
-        child: Image.asset(
-          "assets/onboarding_shield.png",
-          fit: BoxFit.fitHeight,
-          height: _iphoneSE ? 180 : 220,
-          width: _iphoneSE ? 180 : 220,
+      child: Center(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          alignment: Alignment.center,
+          child: Image.asset(
+            "assets/onboarding_shield.png",
+            height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width * 0.4,
+          ),
         ),
       ),
     );

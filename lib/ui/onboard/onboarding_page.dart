@@ -70,18 +70,15 @@ class OnboardingPage extends StatelessWidget {
               child: snapshot.hasData
                   ? Center(
                       child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox.square(
-                            dimension: 284,
+                            dimension: 230,
                             child: QrImage(
                               data: snapshot.data!,
                               backgroundColor: Colors.transparent,
                             ),
                           ),
-                          Padding(padding: EdgeInsets.all(4)),
                           Text(
                             "${snapshot.data ?? ""}",
                             textAlign: TextAlign.center,

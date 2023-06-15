@@ -15,7 +15,6 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: EnvoyPatternScaffold(
@@ -25,12 +24,12 @@ class WelcomeScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
         ),
         header: Container(
-          height: _iphoneSE ? 180 : 220,
+          height: MediaQuery.of(context).size.height * 0.3,
           child: Image.asset(
             "assets/envoy_logo_with_title.png",
             fit: BoxFit.fitHeight,
-            height: _iphoneSE ? 180 : 220,
-            width: _iphoneSE ? 180 : 220,
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.height * 0.3,
           ),
         ),
         shield: Container(
@@ -49,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
                       S().welcome_screen_heading,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Padding(padding: EdgeInsets.all(12)),
+                    Padding(padding: EdgeInsets.all(6)),
                     Text(
                       S().welcome_screen_subheading,
                       style: Theme.of(context).textTheme.bodySmall,
@@ -58,36 +57,39 @@ class WelcomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  //TODO: localization
-                  EnvoyButton(
-                    S().welcome_screen_cta2,
-                    type: EnvoyButtonTypes.secondary,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                OnboardPrivacySetup(setUpEnvoyWallet: false),
-                          ));
-                    },
-                  ),
-                  Padding(padding: EdgeInsets.all(8)),
-                  EnvoyButton(
-                    S().welcome_screen_ctA1,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                OnboardPrivacySetup(setUpEnvoyWallet: true),
-                          ));
-                    },
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    //TODO: localization
+                    EnvoyButton(
+                      S().welcome_screen_cta2,
+                      type: EnvoyButtonTypes.secondary,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  OnboardPrivacySetup(setUpEnvoyWallet: false),
+                            ));
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(8)),
+                    EnvoyButton(
+                      S().welcome_screen_ctA1,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  OnboardPrivacySetup(setUpEnvoyWallet: true),
+                            ));
+                      },
+                    )
+                  ],
+                ),
               )
             ],
           ),
@@ -154,7 +156,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
         SizedBox.expand(
@@ -181,10 +183,9 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 ),
                 bottomNavigationBar: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height *
-                      (_iphoneSE ? 0.56 : 0.5),
+                  height: MediaQuery.of(context).size.height * 0.6,
                   child: Container(
-                    padding: EdgeInsets.only(bottom: 24),
+                    padding: EdgeInsets.only(bottom: _shieldBottom),
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
@@ -197,7 +198,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                     child: Shield(
                       child: Padding(
                           padding: const EdgeInsets.only(
-                              right: 15, left: 15, top: 15, bottom: 50),
+                              right: 15, left: 15, top: 15, bottom: 40),
                           child: SizedBox.expand(child: widget.shield)),
                     ),
                   ),

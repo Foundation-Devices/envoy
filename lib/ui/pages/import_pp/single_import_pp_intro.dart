@@ -17,7 +17,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return EnvoyPatternScaffold(
       child: Scaffold(
         appBar: AppBar(
@@ -50,21 +50,20 @@ class SingleImportPpIntroPage extends StatelessWidget {
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: Offset(0, 130),
+          offset: Offset(0, 110),
           child: Image.asset(
             "assets/pp_setup_intro.png",
-            scale: 1,
-            width: (MediaQuery.of(context).size.width * (_iphoneSE ? 0.5 : 0.7))
-                .clamp(350, 400),
+            alignment: Alignment.bottomCenter,
+            width: MediaQuery.of(context).size.width / 1.2,
+            height: MediaQuery.of(context).size.height / 1.2,
           ),
         ),
         bottomNavigationBar: SingleChildScrollView(
           child: Container(
             width: double.infinity,
-            height:
-                MediaQuery.of(context).size.height * (_iphoneSE ? 0.56 : 0.55),
+            height: MediaQuery.of(context).size.height * 0.6,
             child: Container(
-              padding: EdgeInsets.only(bottom: 24),
+              padding: EdgeInsets.only(bottom: _shieldBottom),
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color(0x0),
@@ -79,8 +78,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                         child: Container(
                       height:
                           max(MediaQuery.of(context).size.height * 0.38, 300),
-                      margin:
-                          EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+                      margin: EdgeInsets.symmetric(horizontal: 18),
                       padding: EdgeInsets.only(top: 44),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
