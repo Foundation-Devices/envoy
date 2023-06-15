@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:envoy/ui/shield_path.dart';
 
 class Shield extends StatelessWidget {
@@ -16,18 +16,8 @@ class Shield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
-      style: NeumorphicStyle(
-          boxShape: NeumorphicBoxShape.path(ShieldPath()),
-          shape: NeumorphicShape.flat,
-          border: NeumorphicBorder(
-            color: Colors.white,
-            width: 3,
-          ),
-          depth: 0,
-          lightSource: LightSource.topLeft,
-          intensity: 1,
-          shadowLightColor: Colors.transparent),
+    return ClipPath(
+      clipper: ShieldClipper(),
       child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -49,20 +39,32 @@ class QrShield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
-      style: NeumorphicStyle(
-        boxShape: NeumorphicBoxShape.path(ShieldPath()),
-        shape: NeumorphicShape.flat,
-        border: NeumorphicBorder(
-          color: Colors.white,
-          width: 1,
-        ),
-        color: EnvoyColors.white01,
-        depth: 5,
-        lightSource: LightSource.top,
-        intensity: 1,
-      ),
-      child: Container(child: child),
+    return PhysicalShape(
+      clipper: ShieldClipper(),
+      color: Colors.transparent,
+      clipBehavior: Clip.antiAlias,
+      shadowColor: EnvoyColors.grey85,
+      elevation: 4,
+      child: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [EnvoyColors.white95, EnvoyColors.white80])),
+          child: child),
     );
+  }
+}
+
+class BoxShadowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawShadow(
+        ShieldClipper.shieldPath(size), Colors.black45, 3.0, true);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }

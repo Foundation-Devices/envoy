@@ -318,7 +318,7 @@ class Tor {
     });
   }
 
-  Future<bool?> waitForTor() async {
+  waitForTor() async {
     return await Future.doWhile(
         () => Future.delayed(Duration(seconds: 1)).then((_) {
               // We are waiting and making absolutely no request unless:

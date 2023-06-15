@@ -6,7 +6,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -125,21 +125,22 @@ class NotificationTypeToggle extends StatefulWidget {
 class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
   int _selectedIndex = 0;
 
+  get _isSelected {
+    var selected = [false, false, false, false];
+    selected[_selectedIndex] = true;
+    return selected;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NeumorphicToggle(
-        height: 30,
-        selectedIndex: _selectedIndex,
-        displayForegroundOnlyIfSelected: true,
-        style: NeumorphicToggleStyle(disableDepth: true),
+    return ToggleButtons(
         children: [
-          NotificationsToggleElement("All"),
-          NotificationsToggleElement("Txs"),
-          NotificationsToggleElement("Updates"),
-          NotificationsToggleElement("Security"),
+          NotificationsToggleButton(label: "All", dark: !_isSelected[0]),
+          NotificationsToggleButton(label: "Txs", dark: !_isSelected[1]),
+          NotificationsToggleButton(label: "Updates", dark: !_isSelected[2]),
+          NotificationsToggleButton(label: "Security", dark: !_isSelected[3]),
         ],
-        thumb: Neumorphic(),
-        onChanged: (value) {
+        onPressed: (value) {
           setState(() {
             _selectedIndex = value;
           });
@@ -155,20 +156,9 @@ class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
           }
 
           widget.callback(type);
-        });
+        },
+        isSelected: _isSelected);
   }
-}
-
-class NotificationsToggleElement implements ToggleElement {
-  final String label;
-
-  NotificationsToggleElement(this.label);
-
-  @override
-  Widget? get background => NotificationsToggleButton(label: label, dark: true);
-
-  @override
-  Widget? get foreground => NotificationsToggleButton(label: label);
 }
 
 class NotificationsToggleButton extends StatelessWidget {
@@ -186,6 +176,8 @@ class NotificationsToggleButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 3.0),
       child: Container(
+        height: 4 * 6,
+        width: 4 * 16,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           border: Border.all(
@@ -195,14 +187,11 @@ class NotificationsToggleButton extends StatelessWidget {
           color: dark ? Colors.black : EnvoyColors.darkTeal,
         ),
         child: Center(
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              label,
-              style: TextStyle(
-                  color: dark ? EnvoyColors.darkTeal : Colors.black,
-                  fontSize: 11.5),
-            ),
+          child: Text(
+            label,
+            style: TextStyle(
+                color: dark ? EnvoyColors.darkTeal : Colors.black,
+                fontSize: 11.5),
           ),
         ),
       ),

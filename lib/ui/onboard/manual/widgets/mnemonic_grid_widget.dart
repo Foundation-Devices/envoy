@@ -5,7 +5,6 @@
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 enum SeedLength {
   MNEMONIC_12,
@@ -101,7 +100,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   Widget _buildMnemonicView(int page, BuildContext context) {
     // Get the bottom padding of the keyboard
-    double bottom = WidgetsBinding.instance.window.viewInsets.bottom;
+    double bottom = View.of(context).viewInsets.bottom;
     double pixRatio = MediaQuery.of(context).devicePixelRatio;
 
     return Padding(
@@ -208,7 +207,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
       });
     });
     _overlayEntry = OverlayEntry(builder: (context) {
-      double bottom = WidgetsBinding.instance.window.viewInsets.bottom;
+      double bottom = View.of(context).viewInsets.bottom;
       double pixRatio = MediaQuery.of(context).devicePixelRatio;
       return Positioned(
         bottom: bottom / pixRatio,

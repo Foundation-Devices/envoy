@@ -7,7 +7,6 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
@@ -16,7 +15,7 @@ import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -135,15 +134,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SettingText(S().settings_biometric),
-                        NeumorphicSwitch(
-                            height: 35,
+                        EnvoySwitch(
                             value: _useLocalAuth,
-                            style: NeumorphicSwitchStyle(
-                                inactiveThumbColor: EnvoyColors.whitePrint,
-                                inactiveTrackColor: EnvoyColors.grey15,
-                                activeThumbColor: EnvoyColors.whitePrint,
-                                activeTrackColor: EnvoyColors.darkTeal,
-                                disableDepth: true),
                             onChanged: (enabled) async {
                               try {
                                 bool authSuccess = await auth.authenticate(

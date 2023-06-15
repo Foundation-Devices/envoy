@@ -5,7 +5,7 @@
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:wallet/wallet.dart';

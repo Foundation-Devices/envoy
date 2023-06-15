@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
