@@ -27,7 +27,7 @@ class OnboardEnvoyWelcomeScreen extends StatefulWidget {
 class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return EnvoyPatternScaffold(
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
@@ -66,20 +66,17 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
           offset: Offset(-8, 54),
           child: Image.asset(
             "assets/envoy_on_device.png",
-            scale: 1,
-            // width: (MediaQuery.of(context).size.width * 0.7).clamp(200, 260),
-            width:
-                (MediaQuery.of(context).size.width * (_iphoneSE ? 0.45 : 0.5))
-                    .clamp(100, 260),
+            alignment: Alignment.bottomCenter,
+            width: MediaQuery.of(context).size.width / 2.4,
+            height: MediaQuery.of(context).size.height / 2.4,
           ),
         ),
         bottomNavigationBar: SingleChildScrollView(
           child: Container(
             width: double.infinity,
-            height:
-                MediaQuery.of(context).size.height * (_iphoneSE ? 0.56 : 0.5),
+            height: MediaQuery.of(context).size.height * 0.6,
             child: Container(
-              padding: EdgeInsets.only(bottom: 24),
+              padding: EdgeInsets.only(bottom: _shieldBottom),
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color(0x0),
@@ -88,21 +85,19 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
               ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
               child: Shield(
                 child: Padding(
-                    padding: const EdgeInsets.only(
-                        right: 15, left: 15, top: 15, bottom: 50),
+                    padding:
+                        const EdgeInsets.only(right: 15, left: 15, top: 10),
                     child: SizedBox.expand(
                         child: Container(
                       height:
-                          max(MediaQuery.of(context).size.height * 0.38, 300),
+                          max(MediaQuery.of(context).size.height * 0.38, 800),
                       margin:
-                          EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-                      padding: EdgeInsets.only(top: 44),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            child: Container(
+                          EdgeInsets.symmetric(vertical: 30, horizontal: 18),
+                      child: Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
                               width: 380,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -128,38 +123,37 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
                                 ],
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Padding(padding: EdgeInsets.all(4)),
-                                EnvoyButton(
-                                  S().envoy_welcome_screen_cta2,
-                                  type: EnvoyButtonTypes.secondary,
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                      return ManualSetup();
-                                    }));
-                                  },
-                                ),
-                                Padding(padding: EdgeInsets.all(8)),
-                                EnvoyButton(
-                                  S().envoy_welcome_screen_cta1,
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                      return MagicSetupTutorial();
-                                    }));
-                                  },
-                                )
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 15, left: 28, right: 28),
+                              child: Column(
+                                children: [
+                                  Padding(padding: EdgeInsets.all(4)),
+                                  EnvoyButton(
+                                    S().envoy_welcome_screen_cta2,
+                                    type: EnvoyButtonTypes.secondary,
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return ManualSetup();
+                                      }));
+                                    },
+                                  ),
+                                  Padding(padding: EdgeInsets.all(6)),
+                                  EnvoyButton(
+                                    S().envoy_welcome_screen_cta1,
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return MagicSetupTutorial();
+                                      }));
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                     ))),
               ),

@@ -144,7 +144,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 44, horizontal: 22),
+                                      vertical: 24, horizontal: 22),
                                   child: Text(
                                     stepSubHeadings[
                                         stepsHeadings.indexOf(heading)],

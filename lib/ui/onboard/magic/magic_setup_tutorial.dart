@@ -28,7 +28,6 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
 
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return OnboardPageBackground(
         child: Column(
       children: [
@@ -56,14 +55,13 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
         ),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Flexible(
-                    child: Container(
-                  padding: const EdgeInsets.all(10.0),
+                Container(
+                  padding: const EdgeInsets.only(top: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -71,33 +69,31 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                         path: "assets/videos/magic_backups.mp4",
                         key: _playerKey,
                       ),
-                      Padding(padding: EdgeInsets.all(_iphoneSE ? 8 : 16)),
-                      Text(
-                        S().magic_setup_tutorial_ios_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Padding(padding: EdgeInsets.all(_iphoneSE ? 0 : 24)),
-                      LinkText(
-                        text: Platform.isAndroid
-                            ? S().magic_setup_tutorial_android_subheading
-                            : S().magic_setup_tutorial_ios_subheading,
-                        onTap: () {
-                          _playerKey.currentState?.pause();
-                          showEnvoyDialog(
-                              context: context,
-                              dialog: WalletSecurityModal(
-                                onLastStep: () {
-                                  Navigator.pop(context);
-                                },
-                              ));
-                        },
-                      ),
                     ],
                   ),
-                )),
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 6)),
+                Text(
+                  S().magic_setup_tutorial_ios_heading,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                LinkText(
+                  text: Platform.isAndroid
+                      ? S().magic_setup_tutorial_android_subheading
+                      : S().magic_setup_tutorial_ios_subheading,
+                  onTap: () {
+                    _playerKey.currentState?.pause();
+                    showEnvoyDialog(
+                        context: context,
+                        dialog: WalletSecurityModal(
+                          onLastStep: () {
+                            Navigator.pop(context);
+                          },
+                        ));
+                  },
+                ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     OnboardingButton(
                         fontWeight: FontWeight.w600,
