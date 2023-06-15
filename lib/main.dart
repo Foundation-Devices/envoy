@@ -80,7 +80,6 @@ class EnvoyApp extends StatelessWidget {
         overlays: [SystemUiOverlay.top]);
 
     final envoyAccentColor = EnvoyColors.darkTeal;
-    final envoyVariantColor = EnvoyColors.darkCopper;
     final envoyBaseColor = Colors.transparent;
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);

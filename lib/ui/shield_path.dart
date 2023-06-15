@@ -60,10 +60,4 @@ class ShieldPath extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }
-
-  @override
-  bool get oneGradientPerPath {
-    return true;
-  }
-
 }

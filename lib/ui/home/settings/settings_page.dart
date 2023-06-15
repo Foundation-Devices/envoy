@@ -7,7 +7,6 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
