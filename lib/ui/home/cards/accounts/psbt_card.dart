@@ -15,7 +15,7 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet/wallet.dart';
 

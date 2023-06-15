@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
 
-class ShieldPath extends NeumorphicPathProvider {
+class ShieldPath extends CustomClipper<Path> {
   @override
-  Path getPath(Size size) {
+  Path getClip(Size size) {
     // Method to convert degree to radians
     double degToRad(double deg) => deg * (pi / 180.0);
 
@@ -57,7 +57,7 @@ class ShieldPath extends NeumorphicPathProvider {
   }
 
   @override
-  bool shouldReclip(NeumorphicPathProvider oldClipper) {
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }
 
@@ -65,4 +65,5 @@ class ShieldPath extends NeumorphicPathProvider {
   bool get oneGradientPerPath {
     return true;
   }
+
 }

@@ -6,7 +6,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/pp/pp_new_seed.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_backup.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_seed.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 

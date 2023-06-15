@@ -10,7 +10,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -36,19 +36,12 @@ class AuthenticateApp extends StatelessWidget {
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
-    return NeumorphicApp(
-        materialTheme: ThemeData(
+    return MaterialApp(
+        theme: ThemeData(
+          textTheme: envoyTextTheme,
           primaryColor: envoyAccentColor,
           brightness: Brightness.light,
-          textTheme: envoyTextTheme,
           scaffoldBackgroundColor: envoyBaseColor,
-        ),
-        theme: NeumorphicThemeData(
-          textTheme: envoyTextTheme,
-          baseColor: envoyBaseColor,
-          accentColor: envoyAccentColor,
-          variantColor: envoyVariantColor,
-          depth: 0, // Flat for now
         ),
         home: Builder(builder: (c) => AuthenticatePage()));
   }

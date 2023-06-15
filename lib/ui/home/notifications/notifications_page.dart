@@ -6,7 +6,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -127,19 +127,14 @@ class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
 
   @override
   Widget build(BuildContext context) {
-    return NeumorphicToggle(
-        height: 30,
-        selectedIndex: _selectedIndex,
-        displayForegroundOnlyIfSelected: true,
-        style: NeumorphicToggleStyle(disableDepth: true),
+    return ToggleButtons(
         children: [
-          NotificationsToggleElement("All"),
-          NotificationsToggleElement("Txs"),
-          NotificationsToggleElement("Updates"),
-          NotificationsToggleElement("Security"),
+          NotificationsToggleButton(label: "All"),
+          NotificationsToggleButton(label: "Txs"),
+          NotificationsToggleButton(label: "Updates"),
+          NotificationsToggleButton(label: "Security"),
         ],
-        thumb: Neumorphic(),
-        onChanged: (value) {
+        onPressed: (value) {
           setState(() {
             _selectedIndex = value;
           });
@@ -155,20 +150,9 @@ class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
           }
 
           widget.callback(type);
-        });
+        },
+      isSelected: [false, false, false, true],); // TODO: deal
   }
-}
-
-class NotificationsToggleElement implements ToggleElement {
-  final String label;
-
-  NotificationsToggleElement(this.label);
-
-  @override
-  Widget? get background => NotificationsToggleButton(label: label, dark: true);
-
-  @override
-  Widget? get foreground => NotificationsToggleButton(label: label);
 }
 
 class NotificationsToggleButton extends StatelessWidget {

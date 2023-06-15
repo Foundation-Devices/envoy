@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 
 class SettingToggle extends StatefulWidget {
   final Function(bool) setter;
@@ -35,15 +35,9 @@ class _SettingToggleState extends State<SettingToggle> {
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: !widget.enabled,
-      child: NeumorphicSwitch(
-          height: 35,
+      child: Switch(
           value: widget.getter(),
-          style: NeumorphicSwitchStyle(
-              inactiveThumbColor: EnvoyColors.whitePrint,
-              inactiveTrackColor: widget.inactiveColor,
-              activeThumbColor: EnvoyColors.whitePrint,
-              activeTrackColor: EnvoyColors.darkTeal,
-              disableDepth: true),
+
           onChanged: (enabled) {
             if (widget.delay > 0) {
               _timer?.cancel();

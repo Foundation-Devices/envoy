@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:wallet/exceptions.dart';

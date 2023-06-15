@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:envoy/ui/shield_path.dart';
 
 class Shield extends StatelessWidget {
@@ -16,18 +16,19 @@ class Shield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
-      style: NeumorphicStyle(
-          boxShape: NeumorphicBoxShape.path(ShieldPath()),
-          shape: NeumorphicShape.flat,
-          border: NeumorphicBorder(
-            color: Colors.white,
-            width: 3,
-          ),
-          depth: 0,
-          lightSource: LightSource.topLeft,
-          intensity: 1,
-          shadowLightColor: Colors.transparent),
+    return ClipPath(
+      clipper: ShieldPath(),
+      // style: NeumorphicStyle(
+      //     boxShape: NeumorphicBoxShape.path(ShieldPath()),
+      //     shape: NeumorphicShape.flat,
+      //     border: NeumorphicBorder(
+      //       color: Colors.white,
+      //       width: 3,
+      //     ),
+      //     depth: 0,
+      //     lightSource: LightSource.topLeft,
+      //     intensity: 1,
+      //     shadowLightColor: Colors.transparent),
       child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -49,19 +50,21 @@ class QrShield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
-      style: NeumorphicStyle(
-        boxShape: NeumorphicBoxShape.path(ShieldPath()),
-        shape: NeumorphicShape.flat,
-        border: NeumorphicBorder(
-          color: Colors.white,
-          width: 1,
-        ),
-        color: EnvoyColors.white01,
-        depth: 5,
-        lightSource: LightSource.top,
-        intensity: 1,
-      ),
+    return ClipPath(
+      clipper: ShieldPath(),
+    // return Neumorphic(
+    //   style: NeumorphicStyle(
+    //     boxShape: NeumorphicBoxShape.path(ShieldPath()),
+    //     shape: NeumorphicShape.flat,
+    //     border: NeumorphicBorder(
+    //       color: Colors.white,
+    //       width: 1,
+    //     ),
+    //     color: EnvoyColors.white01,
+    //     depth: 5,
+    //     lightSource: LightSource.top,
+    //     intensity: 1,
+    //   ),
       child: Container(child: child),
     );
   }

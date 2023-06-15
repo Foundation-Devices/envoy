@@ -9,7 +9,7 @@ import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/physics.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CardSwipeWrapper extends ConsumerStatefulWidget {

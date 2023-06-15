@@ -7,7 +7,7 @@ import 'package:envoy/business/video.dart';
 import 'package:envoy/business/video_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/learn/video_player.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Videos extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 
 class AddressEntry extends StatefulWidget {
   final Function(bool, String)? onAddressChanged;

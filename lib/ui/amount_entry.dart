@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/haptics.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wallet/wallet.dart';
@@ -265,18 +265,15 @@ class NumpadButton extends StatelessWidget {
           ),
           child: Center(
               child: !backspace
-                  ? NeumorphicText(
+                  ? Text(
                       text,
-                      style: NeumorphicStyle(
-                        depth: 3,
+                      style: TextStyle(
                         color: Typography.blackHelsinki.headlineMedium!
                             .color, // TODO: add black helsinki as EnvoyColor
-                      ),
-                      textStyle: NeumorphicTextStyle(
                           fontFamily: "Montserrat",
                           fontSize: 25,
                           fontWeight: FontWeight.w300),
-                    )
+                      )
                   : Padding(
                       padding: const EdgeInsets.only(right: 3, top: 2),
                       child: SvgPicture.asset(

@@ -12,12 +12,12 @@ class ShieldBorder extends ShapeBorder {
 
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-    return ShieldPath().getPath(Size(rect.width, rect.height + 30));
+    return ShieldPath().getClip(Size(rect.width, rect.height + 30));
   }
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return ShieldPath().getPath(Size(rect.width, rect.height + 30));
+    return ShieldPath().getClip(Size(rect.width, rect.height + 30));
   }
 
   @override

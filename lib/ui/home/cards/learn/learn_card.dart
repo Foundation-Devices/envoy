@@ -5,7 +5,7 @@
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/learn/videos.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/learn/faq.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';

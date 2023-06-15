@@ -16,7 +16,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tor/tor.dart';
@@ -86,7 +86,7 @@ class EnvoyApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return ProviderScope(
-      child: NeumorphicApp(
+      child: MaterialApp(
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -97,7 +97,8 @@ class EnvoyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Envoy',
           themeMode: ThemeMode.light,
-          materialTheme: ThemeData(
+          theme: ThemeData(
+            textTheme: envoyTextTheme,
             pageTransitionsTheme: PageTransitionsTheme(builders: {
               TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
               TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
@@ -107,15 +108,7 @@ class EnvoyApp extends StatelessWidget {
             }),
             primaryColor: envoyAccentColor,
             brightness: Brightness.light,
-            textTheme: envoyTextTheme,
             scaffoldBackgroundColor: envoyBaseColor,
-          ),
-          theme: NeumorphicThemeData(
-            textTheme: envoyTextTheme,
-            baseColor: envoyBaseColor,
-            accentColor: envoyAccentColor,
-            variantColor: envoyVariantColor,
-            depth: 0, // Flat for now
           ),
           initialRoute: LocalStorage().prefs.getBool("onboarded") == true
               ? "/"

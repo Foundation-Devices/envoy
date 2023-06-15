@@ -5,7 +5,7 @@
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/ui/onboard/sd_card_spinner.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/generated/l10n.dart';
