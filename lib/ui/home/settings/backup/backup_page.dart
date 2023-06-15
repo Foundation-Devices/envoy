@@ -191,7 +191,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                       S().manual_toggle_on_seed_backedup_iOS_backup_now,
                                       color: EnvoyColors.teal,
                                       onTap: () {
-                                        createBackup();
+                                        showBackupDialog(context);
                                       },
                                     );
                                   }
