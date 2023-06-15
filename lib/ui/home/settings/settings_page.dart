@@ -134,7 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SettingText(S().settings_biometric),
-                        Switch(
+                        EnvoySwitch(
                             value: _useLocalAuth,
                             onChanged: (enabled) async {
                               try {

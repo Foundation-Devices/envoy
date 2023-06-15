@@ -125,14 +125,20 @@ class NotificationTypeToggle extends StatefulWidget {
 class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
   int _selectedIndex = 0;
 
+  get _isSelected {
+    var selected = [false, false, false, false];
+    selected[_selectedIndex] = true;
+    return selected;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ToggleButtons(
         children: [
-          NotificationsToggleButton(label: "All"),
-          NotificationsToggleButton(label: "Txs"),
-          NotificationsToggleButton(label: "Updates"),
-          NotificationsToggleButton(label: "Security"),
+          NotificationsToggleButton(label: "All", dark: !_isSelected[0]),
+          NotificationsToggleButton(label: "Txs", dark: !_isSelected[1]),
+          NotificationsToggleButton(label: "Updates", dark: !_isSelected[2]),
+          NotificationsToggleButton(label: "Security", dark: !_isSelected[3]),
         ],
         onPressed: (value) {
           setState(() {
@@ -151,7 +157,7 @@ class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
 
           widget.callback(type);
         },
-      isSelected: [false, false, false, true],); // TODO: deal
+      isSelected: _isSelected);
   }
 }
 
@@ -170,6 +176,8 @@ class NotificationsToggleButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 3.0),
       child: Container(
+        height: 4 * 6,
+        width: 4 * 16,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           border: Border.all(
@@ -179,14 +187,11 @@ class NotificationsToggleButton extends StatelessWidget {
           color: dark ? Colors.black : EnvoyColors.darkTeal,
         ),
         child: Center(
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              label,
-              style: TextStyle(
-                  color: dark ? EnvoyColors.darkTeal : Colors.black,
-                  fontSize: 11.5),
-            ),
+          child: Text(
+            label,
+            style: TextStyle(
+                color: dark ? EnvoyColors.darkTeal : Colors.black,
+                fontSize: 11.5),
           ),
         ),
       ),
