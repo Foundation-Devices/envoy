@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
@@ -37,7 +38,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     WidgetsBinding.instance.addObserver(this);
   }
 
-  Future createBackup(BuildContext context) async {
+  Future createBackup() async {
     try {
       setState(() {
         _isBackupInProgress = true;
@@ -46,6 +47,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
       setState(() {
         _isBackupInProgress = false;
       });
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: Duration(seconds: 4),
+        message: S().manual_toggle_on_seed_backup_in_progress_toast_heading,
+        icon: Icon(
+          Icons.info_outline,
+          color: EnvoyColors.darkTeal,
+        ),
+      ).show(context);
     } catch (e) {
       setState(() {
         _isBackupInProgress = false;
@@ -168,7 +179,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                 SettingText(S()
                                     .manual_toggle_on_seed_backedup_android_wallet_data),
                                 Builder(
-                                  builder: (context) {
+                                  builder: (_) {
                                     if (_isBackupInProgress) {
                                       return SizedBox.square(
                                         dimension: 18,
@@ -183,7 +194,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                         S().manual_toggle_on_seed_backedup_iOS_backup_now,
                                         color: EnvoyColors.teal,
                                         onTap: () {
-                                          createBackup(context);
+                                          showBackupDialog(context);
                                         },
                                       );
                                     }
@@ -300,5 +311,75 @@ class _BackupPageState extends ConsumerState<BackupPage>
         context: context,
         dismissible: false,
         dialog: EraseWalletsAndBackupsWarning());
+  }
+
+  void showBackupDialog(BuildContext context) {
+    showEnvoyDialog(
+        context: context,
+        dismissible: false,
+        dialog: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(8)),
+                Column(
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: 64,
+                      width: 64,
+                    ),
+                    Padding(padding: EdgeInsets.all(8)),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 200),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                          S().manual_toggle_on_seed_backup_now_modal_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    Padding(padding: EdgeInsets.all(6)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().manual_toggle_on_seed_backup_now_modal_subheading,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(5)),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.all(8)),
+                OnboardingButton(
+                    type: EnvoyButtonTypes.primary,
+                    label: S().manual_toggle_on_seed_backup_now_modal_cta,
+                    onTap: () {
+                      Navigator.pop(context);
+                      createBackup();
+                    }),
+                Padding(padding: EdgeInsets.all(12)),
+              ],
+            ),
+          ),
+        ));
   }
 }
