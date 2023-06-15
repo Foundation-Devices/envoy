@@ -32,8 +32,11 @@ class TouPage extends StatelessWidget {
                   future: rootBundle.loadString('assets/passport_tou.html'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Html(
-                        data: snapshot.data,
+                      return DefaultTextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!,
+                        child: Html(
+                          data: snapshot.data,
+                        ),
                       );
                     } else {
                       return SizedBox.shrink();

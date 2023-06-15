@@ -55,12 +55,12 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           textColor = EnvoyColors.darkTeal;
           break;
       }
-      _textStyle = TextStyle(
-        color: textColor,
-        fontSize: 14.0,
-        fontWeight:
-            widget.fontWeight != null ? widget.fontWeight : FontWeight.w700,
-      );
+      _textStyle = Theme.of(context).textTheme.bodySmall!.copyWith(
+            color: textColor,
+            fontSize: 14.0,
+            fontWeight:
+                widget.fontWeight != null ? widget.fontWeight : FontWeight.w700,
+          );
     }
     return AnimatedScale(
       duration: Duration(milliseconds: 200),

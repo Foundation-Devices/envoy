@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class SettingToggle extends StatefulWidget {
   final Function(bool) setter;
@@ -15,8 +14,7 @@ class SettingToggle extends StatefulWidget {
   final bool enabled;
 
   SettingToggle(this.getter, this.setter,
-      {this.delay = 0,
-      this.enabled = true});
+      {this.delay = 0, this.enabled = true});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
@@ -66,13 +64,12 @@ class EnvoySwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return CupertinoSwitch(
-       activeColor: EnvoyColors.darkTeal,
-       thumbColor: EnvoyColors.whitePrint,
-       trackColor: EnvoyColors.grey15,
-
-       value: value,
-       onChanged: onChanged,);
-   }
-
+    return CupertinoSwitch(
+      activeColor: EnvoyColors.darkTeal,
+      thumbColor: EnvoyColors.whitePrint,
+      trackColor: EnvoyColors.grey15,
+      value: value,
+      onChanged: onChanged,
+    );
+  }
 }

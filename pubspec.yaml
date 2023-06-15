@@ -81,7 +81,7 @@ dependencies:
   package_info_plus: ^4.0.0
   permission_handler: ^9.2.0
   drag_and_drop_lists: ^0.3.2+2
-  flutter_html: ^3.0.0-alpha.5
+  flutter_html: ^3.0.0-beta.2
   pub_semver: ^2.1.1
   flutter_riverpod: ^2.1.1
   cupertino_icons: ^1.0.5

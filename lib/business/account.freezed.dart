@@ -259,15 +259,13 @@ class _$_Account extends _Account {
 abstract class _Account extends Account {
   const factory _Account(
       {required final Wallet wallet,
-      @JsonKey(defaultValue: "Account")
-          required final String name,
+      @JsonKey(defaultValue: "Account") required final String name,
       required final String deviceSerial,
       required final DateTime dateAdded,
       required final int number,
-      @JsonKey(defaultValue: Account.generateNewId)
-          required final String? id,
+      @JsonKey(defaultValue: Account.generateNewId) required final String? id,
       @JsonKey(defaultValue: null)
-          required final DateTime? dateSynced}) = _$_Account;
+      required final DateTime? dateSynced}) = _$_Account;
   const _Account._() : super._();
 
   factory _Account.fromJson(Map<String, dynamic> json) = _$_Account.fromJson;

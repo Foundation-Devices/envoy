@@ -59,7 +59,8 @@ class QrShield extends StatelessWidget {
 class BoxShadowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawShadow(ShieldClipper.shieldPath(size), Colors.black45, 3.0, true);
+    canvas.drawShadow(
+        ShieldClipper.shieldPath(size), Colors.black45, 3.0, true);
   }
 
   @override

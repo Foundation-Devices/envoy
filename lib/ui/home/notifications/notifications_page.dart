@@ -157,7 +157,7 @@ class _NotificationTypeToggleState extends State<NotificationTypeToggle> {
 
           widget.callback(type);
         },
-      isSelected: _isSelected);
+        isSelected: _isSelected);
   }
 }
 

@@ -268,12 +268,12 @@ class NumpadButton extends StatelessWidget {
                   ? Text(
                       text,
                       style: TextStyle(
-                        color: Typography.blackHelsinki.headlineMedium!
-                            .color, // TODO: add black helsinki as EnvoyColor
+                          color: Typography.blackHelsinki.headlineMedium!
+                              .color, // TODO: add black helsinki as EnvoyColor
                           fontFamily: "Montserrat",
                           fontSize: 25,
                           fontWeight: FontWeight.w300),
-                      )
+                    )
                   : Padding(
                       padding: const EdgeInsets.only(right: 3, top: 2),
                       child: SvgPicture.asset(
