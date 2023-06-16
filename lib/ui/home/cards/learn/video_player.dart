@@ -76,7 +76,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
           setState(() {
             _downloadProgress = progress.downloaded / progress.total;
           });
-          if (progress.downloaded > _playThreshold) {
+          if (progress.downloaded > _playThreshold ||
+              progress.downloaded >= progress.total) {
             if (_controller == null) {
               _controller = VlcPlayerController.file(streamFile,
                   autoInitialize: true,
