@@ -28,6 +28,11 @@ void main() {
     expect(decoded, list);
   });
 
+  test('UR decode invalid data test', () {
+    var decoder = ur.decoder();
+    expect(() => decoder.receive("refrigerator"), throwsException);
+  });
+
   test('UR encode / decode multipart test', () {
     var list = [
       42,

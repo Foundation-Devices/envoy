@@ -18,6 +18,16 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
+  ffi.Pointer<ffi.Char> ur_last_error_message() {
+    return _ur_last_error_message();
+  }
+
+  late final _ur_last_error_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'ur_last_error_message');
+  late final _ur_last_error_message =
+      _ur_last_error_messagePtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+
   ffi.Pointer<ffi.Int> ur_encoder(
     ffi.Pointer<ffi.Char> ur_type,
     ffi.Pointer<ffi.Char> message,

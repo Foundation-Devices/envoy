@@ -4,10 +4,8 @@
 
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
-
 import 'dart:io' show Platform;
 import 'dart:typed_data';
-
 import 'generated_bindings.dart';
 
 class CharArray extends Struct {
@@ -46,6 +44,8 @@ DynamicLibrary load(name) {
 class NotSupportedPlatform implements Exception {
   NotSupportedPlatform(String s);
 }
+
+class InvalidScheme implements Exception {}
 
 class Ur {
   static late String _libName = "ur_ffi";
@@ -130,10 +130,29 @@ class UrDecoder {
     final output = NativeLibrary(_lib).ur_decoder_receive(
         Pointer<Int>.fromAddress(_self.address),
         value.toNativeUtf8() as Pointer<Char>);
+
+    if (output.ref.message == nullptr) {
+      throwRustException();
+    }
+
     final len = output.ref.message.ref.len;
     final str = output.ref.message.ref.string as Pointer<Uint8>;
 
     progress = output.ref.progress;
     return str.asTypedList(len);
+  }
+
+  throwRustException() {
+    String rustError =
+        NativeLibrary(_lib).ur_last_error_message().cast<Utf8>().toDartString();
+    throw _getRustException(rustError);
+  }
+
+  Exception _getRustException(String rustError) {
+    if (rustError.contains('scheme')) {
+      return InvalidScheme();
+    } else {
+      return Exception(rustError);
+    }
   }
 }
