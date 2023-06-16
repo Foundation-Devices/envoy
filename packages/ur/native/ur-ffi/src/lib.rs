@@ -5,12 +5,13 @@
 #[macro_use]
 extern crate log;
 
+use foundation_ur::bytewords;
+use foundation_ur::bytewords::Style;
+use foundation_ur::UR;
+use foundation_ur::{Decoder, Encoder};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
-use ur::bytewords;
-use ur::bytewords::Style;
-use ur::UR;
-use ur::{Decoder, Encoder};
+use std::ptr::null;
 
 mod error;
 
@@ -27,7 +28,7 @@ pub struct CharArray {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn backup_last_error_message() -> *const c_char {
+pub unsafe extern "C" fn ur_last_error_message() -> *const c_char {
     let last_error = match error::take_last_error() {
         Some(err) => err,
         None => return CString::new("").unwrap().into_raw(),
@@ -98,14 +99,14 @@ pub unsafe extern "C" fn ur_decoder_receive(
         &mut *decoder
     };
 
-    let c_string = { CStr::from_ptr(value) };
-    let receive = decoder.receive(UR::parse(c_string.to_str().unwrap()).unwrap());
-    match receive {
-        Ok(_) => {}
-        Err(e) => {
-            println!("Error receiving: {:?}", e)
-        }
-    }
+    let err_ret = Box::into_raw(Box::new(DecoderOutput {
+        progress: 0.0,
+        message: null(),
+    }));
+
+    let value = CStr::from_ptr(value).to_str().unwrap();
+    let ur = unwrap_or_return!(UR::parse(value), err_ret);
+    unwrap_or_return!(decoder.receive(ur), err_ret);
 
     let mut message: Vec<u8> = Vec::new();
 

@@ -14,7 +14,7 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 log ="0.4.14"
-ur = { git = "https://github.com/Foundation-Devices/ur-rs", rev = "69297429b4ff6444e049883f79305df678130b30" }
+foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs", rev = "28dc6f45e89d683ad19f799c3145fe1c575a79d7" }
 
 [dependencies.getrandom]
 version = "0.2.3"
