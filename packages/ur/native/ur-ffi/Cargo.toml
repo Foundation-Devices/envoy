@@ -6,13 +6,14 @@
 name = "ur-ffi"
 version = "0.1.0"
 authors = ["Igor Cota <igor@foundationdevices.com>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 name = "ur_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
+log ="0.4.14"
 ur = { git = "https://github.com/Foundation-Devices/ur-rs", rev = "69297429b4ff6444e049883f79305df678130b30" }
 
 [dependencies.getrandom]

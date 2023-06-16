@@ -2,12 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#[macro_use]
+extern crate log;
+
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use ur::bytewords;
 use ur::bytewords::Style;
 use ur::UR;
 use ur::{Decoder, Encoder};
+
+mod error;
 
 #[repr(C)]
 pub struct DecoderOutput {
@@ -19,6 +24,29 @@ pub struct DecoderOutput {
 pub struct CharArray {
     len: u32,
     string: *const c_char,
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn backup_last_error_message() -> *const c_char {
+    let last_error = match error::take_last_error() {
+        Some(err) => err,
+        None => return CString::new("").unwrap().into_raw(),
+    };
+
+    let error_message = last_error.to_string();
+    CString::new(error_message).unwrap().into_raw()
+}
+
+macro_rules! unwrap_or_return {
+    ($a:expr,$b:expr) => {
+        match $a {
+            Ok(x) => x,
+            Err(e) => {
+                error::update_last_error(e);
+                return $b;
+            }
+        }
+    };
 }
 
 #[no_mangle]
