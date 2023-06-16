@@ -136,13 +136,15 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
         child: address,
       ),
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: AmountDisplay(
-          amountSats: _amount,
-          testnet: widget.account.wallet.network == Network.Testnet,
-          key: UniqueKey(),
-        ),
-      ),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: AmountDisplay(
+              amountSats: _amount,
+              testnet: widget.account.wallet.network == Network.Testnet,
+              key: UniqueKey(),
+            ),
+          )),
       _feeToggle,
       Padding(
           padding: const EdgeInsets.all(50.0),
