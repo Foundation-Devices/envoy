@@ -5,9 +5,7 @@
 import 'dart:typed_data';
 
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -126,19 +124,12 @@ class OnboardingPage extends StatelessWidget {
                 return AnimatedQrImage.fromUrCryptoRequest(snapshot.data!
                   ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
               } else {
-                return Column(
-                  children: [
-                    CircularProgressIndicator(
-                      color: EnvoyColors.darkTeal,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(ConnectivityManager().torEnabled &&
-                              !ConnectivityManager().torCircuitEstablished
-                          ? S().envoy_video_player_connecting_tor
-                          : S().envoy_video_player_loading_tor),
-                    )
-                  ],
+                return Container(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    color: EnvoyColors.darkTeal,
+                  ),
                 );
               }
             }),
