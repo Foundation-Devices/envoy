@@ -24,17 +24,14 @@ class WelcomeScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
         ),
         header: Container(
-          height: MediaQuery.of(context).size.height * 0.3,
+          height: MediaQuery.of(context).size.height * 0.25,
           child: Image.asset(
             "assets/envoy_logo_with_title.png",
-            fit: BoxFit.fitHeight,
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.height * 0.3,
           ),
         ),
         shield: Container(
           height: max(MediaQuery.of(context).size.height * 0.38, 300),
-          margin: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+          margin: EdgeInsets.symmetric(vertical: 4 * 5, horizontal: 18),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -63,7 +60,6 @@ class WelcomeScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    //TODO: localization
                     EnvoyButton(
                       S().welcome_screen_cta2,
                       type: EnvoyButtonTypes.secondary,
