@@ -93,67 +93,63 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
                           max(MediaQuery.of(context).size.height * 0.38, 800),
                       margin:
                           EdgeInsets.symmetric(vertical: 32, horizontal: 18),
-                      child: Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 380,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    S().envoy_welcome_screen_heading,
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  Padding(padding: EdgeInsets.all(6)),
-                                  LinkText(
-                                    text: S().envoy_welcome_screen_subheading,
-                                    textStyle:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    linkStyle: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                ],
-                              ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 380,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  S().envoy_welcome_screen_heading,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                Padding(padding: EdgeInsets.all(6)),
+                                LinkText(
+                                  text: S().envoy_welcome_screen_subheading,
+                                  textStyle:
+                                      Theme.of(context).textTheme.bodySmall,
+                                  linkStyle: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 15, left: 28, right: 28),
-                              child: Column(
-                                children: [
-                                  Padding(padding: EdgeInsets.all(4)),
-                                  EnvoyButton(
-                                    S().envoy_welcome_screen_cta2,
-                                    type: EnvoyButtonTypes.secondary,
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return ManualSetup();
-                                      }));
-                                    },
-                                  ),
-                                  Padding(padding: EdgeInsets.all(6)),
-                                  EnvoyButton(
-                                    S().envoy_welcome_screen_cta1,
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return MagicSetupTutorial();
-                                      }));
-                                    },
-                                  ),
-                                ],
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 15, left: 28, right: 28),
+                            child: Column(
+                              children: [
+                                Padding(padding: EdgeInsets.all(4)),
+                                EnvoyButton(
+                                  S().envoy_welcome_screen_cta2,
+                                  type: EnvoyButtonTypes.secondary,
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return ManualSetup();
+                                    }));
+                                  },
+                                ),
+                                Padding(padding: EdgeInsets.all(6)),
+                                EnvoyButton(
+                                  S().envoy_welcome_screen_cta1,
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return MagicSetupTutorial();
+                                    }));
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ))),
               ),
