@@ -348,7 +348,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge),
                     ),
-                    Padding(padding: EdgeInsets.all(6)),
+                    Padding(padding: EdgeInsets.all(8)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
@@ -358,7 +358,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Padding(padding: EdgeInsets.all(5)),
+                    Padding(padding: EdgeInsets.all(4)),
                   ],
                 ),
                 Padding(padding: EdgeInsets.all(8)),
