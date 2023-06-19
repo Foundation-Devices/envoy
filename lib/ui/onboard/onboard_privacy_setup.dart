@@ -680,8 +680,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 340),
-        width: MediaQuery.of(context).size.height * 0.17,
-        height: MediaQuery.of(context).size.height * 0.17,
+        constraints: BoxConstraints.tightFor(width: 100, height: 100),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: RoundedRectangleBorder(
