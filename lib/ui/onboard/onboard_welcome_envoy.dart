@@ -86,13 +86,13 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
               child: Shield(
                 child: Padding(
                     padding:
-                        const EdgeInsets.only(right: 15, left: 15, top: 10),
+                        const EdgeInsets.only(right: 15, left: 15, top: 16),
                     child: SizedBox.expand(
                         child: Container(
                       height:
                           max(MediaQuery.of(context).size.height * 0.38, 800),
                       margin:
-                          EdgeInsets.symmetric(vertical: 30, horizontal: 18),
+                          EdgeInsets.symmetric(vertical: 32, horizontal: 18),
                       child: Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
