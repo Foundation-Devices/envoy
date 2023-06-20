@@ -83,7 +83,7 @@ dependencies:
   drag_and_drop_lists: ^0.3.2+2
   flutter_html: ^3.0.0-beta.2
   pub_semver: ^2.1.1
-  flutter_riverpod: ^2.1.1
+  flutter_riverpod: ^2.3.6
   cupertino_icons: ^1.0.5
   rive: 0.11.1
   local_auth: ^2.1.6
