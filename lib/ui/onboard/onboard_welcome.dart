@@ -183,7 +183,8 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 ),
                 bottomNavigationBar: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.6,
+                  height: (MediaQuery.of(context).size.height * 0.5)
+                      .clamp(350, 580),
                   child: Container(
                     padding: EdgeInsets.only(bottom: _shieldBottom),
                     decoration: BoxDecoration(
