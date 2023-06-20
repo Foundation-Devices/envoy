@@ -508,12 +508,16 @@ class _HomePageState extends ConsumerState<HomePage>
                           : ShieldFadeInAnimationCurve(),
                       child: Hero(
                         tag: "shield",
-                        child: Shield(
-                          child: TabBarView(
-                            // Don't scroll
-                            physics: NeverScrollableScrollPhysics(),
-                            controller: _tabController,
-                            children: _tlCardList.map((e) => e.widget).toList(),
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Shield(
+                            child: TabBarView(
+                              // Don't scroll
+                              physics: NeverScrollableScrollPhysics(),
+                              controller: _tabController,
+                              children:
+                                  _tlCardList.map((e) => e.widget).toList(),
+                            ),
                           ),
                         ),
                       ),
