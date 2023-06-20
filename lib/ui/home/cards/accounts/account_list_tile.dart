@@ -61,7 +61,9 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   @override
   Widget build(BuildContext context) {
     ref.watch(accountManagerProvider);
-    var account = ref.watch(accountStateProvider(widget.account.id!));
+    var account = widget.account.wallet is GhostWallet
+        ? widget.account
+        : ref.watch(accountStateProvider(widget.account.id!));
     return CardSwipeWrapper(
       height: containerHeight,
       account: account!,
