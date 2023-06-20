@@ -69,7 +69,10 @@ class AccountManager extends ChangeNotifier {
           ConnectivityManager().torCircuitEstablished) {
         accounts.forEachIndexed((index, account) {
           _syncScheduler.run(() async {
-            accounts[index] = await _syncAccount(account);
+            final syncedAccount = await _syncAccount(account);
+            accounts[index] = accounts[index].copyWith(
+                wallet: syncedAccount.wallet,
+                dateSynced: syncedAccount.dateSynced);
             notifyListeners();
             storeAccounts();
           });
@@ -260,7 +263,10 @@ class AccountManager extends ChangeNotifier {
   }
 
   renameAccount(Account account, String newName) {
-    account = account.copyWith(name: newName);
+    final oldAccount = accounts.firstWhere((a) {
+      return a.id! == account.id!;
+    });
+    accounts[accounts.indexOf(oldAccount)] = account.copyWith(name: newName);
     storeAccounts();
     notifyListeners();
   }
