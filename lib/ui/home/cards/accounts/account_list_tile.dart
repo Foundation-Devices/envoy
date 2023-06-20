@@ -61,9 +61,10 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   @override
   Widget build(BuildContext context) {
     ref.watch(accountManagerProvider);
+    var account = ref.watch(accountStateProvider(widget.account.id!));
     return CardSwipeWrapper(
       height: containerHeight,
-      account: widget.account,
+      account: account!,
       child: Container(
         height: containerHeight,
         decoration: BoxDecoration(
@@ -74,7 +75,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                widget.account.color,
+                account.color,
                 Colors.black,
               ]),
         ),
@@ -82,9 +83,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(18)),
               border: Border.all(
-                  color: widget.account.color,
-                  width: 2,
-                  style: BorderStyle.solid)),
+                  color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(16)),
             child: GestureDetector(
@@ -112,15 +111,15 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.account.name,
+                                    account.name,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!
                                         .copyWith(color: Colors.white),
                                   ),
                                   Text(
-                                    Devices().getDeviceName(
-                                        widget.account.deviceSerial),
+                                    Devices()
+                                        .getDeviceName(account.deviceSerial),
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall!
@@ -132,17 +131,17 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                             Padding(
                               padding: const EdgeInsets.only(right: 12),
                               child: Container(
-                                  width: widget.account.wallet.network ==
-                                          Network.Testnet
-                                      ? null
-                                      : containerHeight / 2.2,
+                                  width:
+                                      account.wallet.network == Network.Testnet
+                                          ? null
+                                          : containerHeight / 2.2,
                                   height: containerHeight / 2.2,
                                   decoration: BoxDecoration(
                                       color: Colors.black.withOpacity(0.6),
                                       borderRadius: BorderRadius.circular(
                                           containerHeight / 2),
                                       border: Border.all(
-                                          color: widget.account.color,
+                                          color: account.color,
                                           width: 3,
                                           style: BorderStyle.solid)),
                                   child: Center(
@@ -152,7 +151,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          if (widget.account.wallet.network ==
+                                          if (account.wallet.network ==
                                               Network.Testnet)
                                             Padding(
                                               padding: const EdgeInsets.only(
@@ -167,7 +166,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                         color: Colors.white),
                                               ),
                                             ),
-                                          getAccountIcon(widget.account),
+                                          getAccountIcon(account),
                                         ],
                                       ),
                                     ),
@@ -181,8 +180,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                       flex: 2,
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final hide = ref.watch(
-                              balanceHideStateStatusProvider(widget.account));
+                          final hide = ref
+                              .watch(balanceHideStateStatusProvider(account));
                           if (hide) {
                             return Container(
                               decoration: BoxDecoration(
@@ -236,19 +235,18 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 children: [
                                   FittedBox(
                                     fit: BoxFit.fitWidth,
-                                    child: widget.account.dateSynced == null ||
-                                            hide
+                                    child: account.dateSynced == null || hide
                                         ? LoaderGhost(
                                             width: 200,
                                             height: 20,
                                           )
                                         : Text(
                                             getFormattedAmount(
-                                                widget.account.wallet.balance,
+                                                account.wallet.balance,
                                                 includeUnit: true,
-                                                testnet: widget.account.wallet
-                                                        .network ==
-                                                    Network.Testnet),
+                                                testnet:
+                                                    account.wallet.network ==
+                                                        Network.Testnet),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineSmall!
@@ -256,14 +254,14 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                     color: EnvoyColors.grey),
                                           ),
                                   ),
-                                  widget.account.dateSynced == null || hide
+                                  account.dateSynced == null || hide
                                       ? LoaderGhost(
                                           width: 50,
                                           height: 15,
                                         )
                                       : Text(
                                           ExchangeRate().getFormattedAmount(
-                                              widget.account.wallet.balance),
+                                              account.wallet.balance),
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleSmall!
@@ -288,7 +286,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   }
 
   Widget getAccountIcon(Account account) {
-    if (widget.account.wallet.hot) {
+    if (account.wallet.hot) {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
         height: 20,
@@ -296,7 +294,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         color: Colors.white,
       );
     }
-    if (!widget.account.wallet.hot) {
+    if (!account.wallet.hot) {
       return SvgPicture.asset(
         "assets/icons/ic_passport_account.svg",
         height: 26,
