@@ -83,7 +83,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
       header: PrivacyShieldAnimated(),
       shield: Container(
         height: math.max(MediaQuery.of(context).size.height * 0.38, 300),
-        margin: EdgeInsets.symmetric(horizontal: 18),
+        margin: EdgeInsets.symmetric(horizontal: 4 * 5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -113,6 +113,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
+                      Padding(padding: EdgeInsets.all(4 * 2)),
                       Container(
                         width: 250,
                         child: Text(
