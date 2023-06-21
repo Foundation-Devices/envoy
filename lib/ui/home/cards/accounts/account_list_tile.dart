@@ -240,7 +240,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 children: [
                                   FittedBox(
                                     fit: BoxFit.fitWidth,
-                                    child: account!.dateSynced == null || hide
+                                    child: account.dateSynced == null || hide
                                         ? LoaderGhost(
                                             width: 200,
                                             height: 20,
@@ -259,7 +259,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                     color: EnvoyColors.grey),
                                           ),
                                   ),
-                                  account!.dateSynced == null || hide
+                                  account.dateSynced == null || hide
                                       ? LoaderGhost(
                                           width: 50,
                                           height: 15,

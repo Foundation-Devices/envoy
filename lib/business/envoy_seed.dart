@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
@@ -179,10 +180,17 @@ class EnvoySeed {
 
     if (filePath == null) {
       try {
-        return Backup.restore(seed, Settings().envoyServerAddress, Tor())
-            .then((data) {
-          return _processRecoveryData(seed!, data);
-        });
+        //Log
+        EnvoyReport()
+            .writeLog("\n----------------LOG CAPTURE FOR QA----------------\n"
+                " Seed : ${seed} \n "
+                "Envoy Server :  ${Settings().envoyServerAddress} \n "
+                "TOR Started  :  ${Tor().started} \n");
+        throw SeedNotFound();
+        // return Backup.restore(seed, Settings().envoyServerAddress, Tor())
+        //     .then((data) {
+        //   return _processRecoveryData(seed!, data);
+        // });
       } catch (e) {
         throw e;
       }

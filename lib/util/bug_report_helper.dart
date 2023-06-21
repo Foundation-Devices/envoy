@@ -4,6 +4,7 @@
 
 import 'dart:io';
 
+import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +28,13 @@ class EnvoyReport {
       intMapStoreFactory.store("logs");
 
   init() async {
+    //Demangle Riverpod stack traces
+    FlutterError.demangleStackTrace = (StackTrace stack) {
+      if (stack is stack_trace.Trace) return stack.vmTrace;
+      if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
+      return stack;
+    };
+
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, "logs.db"));
@@ -43,14 +51,29 @@ class EnvoyReport {
     }
   }
 
+  writeLog(String log) {
+    Map<String, String?> report = Map();
+    report["exception"] = "Envoy Custom Log";
+    report["lib"] = "Manual";
+    report["stackTrace"] = "${log}";
+    report["time"] = DateTime.now().toIso8601String();
+    print("report ${report} ${_db}");
+    if (_db != null) {
+      print("report ${report}");
+      _logsStore.add(_db!, report);
+    }
+  }
+
   writeReport(FlutterErrorDetails? details) {
     Map<String, String?> report = Map();
     if (details != null) {
       report["exception"] = details.exceptionAsString();
       report["lib"] = details.library;
       if (details.stack != null) {
-        report["stackTrace"] =
-            getStackTraceElements(details.stack!, 50).join("\n");
+        try {
+          report["stackTrace"] =
+              getStackTraceElements(details.stack!, 50).join("\n");
+        } catch (e) {}
         report["buildId"] = getBuildId(details.stack!);
       } else {
         report["stackTrace"] =
