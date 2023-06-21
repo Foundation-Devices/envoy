@@ -61,10 +61,15 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   @override
   Widget build(BuildContext context) {
     ref.watch(accountManagerProvider);
-    var account = ref.watch(accountStateProvider(widget.account.id!));
+    Account? account = ref.watch(accountStateProvider(widget.account.id!));
+    //if account not found that means the widget.account is a GhostAccount
+    //so reset account to widget.account
+    if (account == null) {
+      account = widget.account;
+    }
     return CardSwipeWrapper(
       height: containerHeight,
-      account: account!,
+      account: account,
       child: Container(
         height: containerHeight,
         decoration: BoxDecoration(
@@ -181,7 +186,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                       child: Consumer(
                         builder: (context, ref, child) {
                           final hide = ref
-                              .watch(balanceHideStateStatusProvider(account));
+                              .watch(balanceHideStateStatusProvider(account!));
                           if (hide) {
                             return Container(
                               decoration: BoxDecoration(
@@ -235,7 +240,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 children: [
                                   FittedBox(
                                     fit: BoxFit.fitWidth,
-                                    child: account.dateSynced == null || hide
+                                    child: account!.dateSynced == null || hide
                                         ? LoaderGhost(
                                             width: 200,
                                             height: 20,
@@ -254,7 +259,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                     color: EnvoyColors.grey),
                                           ),
                                   ),
-                                  account.dateSynced == null || hide
+                                  account!.dateSynced == null || hide
                                       ? LoaderGhost(
                                           width: 50,
                                           height: 15,

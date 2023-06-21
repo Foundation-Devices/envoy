@@ -23,6 +23,9 @@ final accountsProvider = Provider((ref) {
 });
 
 final accountStateProvider = Provider.family<Account?, String?>((ref, id) {
+  if (id?.isEmpty == true) {
+    return null;
+  }
   final accountManager = ref.watch(accountManagerProvider);
   return accountManager.accounts.singleWhere((element) => element.id == id);
 });
