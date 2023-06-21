@@ -870,6 +870,79 @@ pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use bdk::bitcoin::secp256k1::rand;
+    use bip39::{Language, Mnemonic, rand_core};
+    use bip39::rand::rngs::ThreadRng;
+
+    #[test]
+    fn exploration() {
+        let seed_words = "hope tower work avoid smoke supply item matter liquid sauce degree flush";
+
+        let mut cow = seed_words.into();
+        Mnemonic::normalize_utf8_cow(&mut cow);
+
+        let language = if Language::all().len() == 1 {
+            Language::all()[0]
+        } else {
+            Mnemonic::language_of(cow.as_ref()).unwrap()
+        };
+
+
+        let nb_words = cow.split_whitespace().count();
+        const EOF: u16 = u16::max_value();
+
+        // Here we will store the eventual words.
+        let mut words = [EOF; MAX_NB_WORDS];
+
+        // And here we keep track of the bits to calculate and validate the checksum.
+        // We only use `nb_words * 11` elements in this array.
+        let mut bits = [false; MAX_NB_WORDS * 11];
+
+        for (i, word) in cow.split_whitespace().enumerate() {
+            let idx = language.find_word(word).unwrap();
+
+            words[i] = idx;
+
+            for j in 0..11 {
+                bits[i * 11 + j] = idx >> (10 - j) & 1 == 1;
+            }
+        }
+
+        // Verify the checksum.
+        // We only use `nb_words / 3 * 4` elements in this array.
+        let mut entropy = [0u8; MAX_NB_WORDS / 3 * 4];
+        let nb_bytes_entropy = nb_words / 3 * 4;
+        for i in 0..nb_bytes_entropy {
+            for j in 0..8 {
+                if bits[i * 8 + j] {
+                    entropy[i] += 1 << (7 - j);
+                }
+            }
+        }
+
+        //let mnemonic = Mnemonic::parse_in_normalized(language, cow.as_ref()).unwrap();
+
+        //let mnemonic = Mnemonic::parse(seed_words).unwrap();
+
+        let rng: &mut ThreadRng = &mut rand::thread_rng();
+
+        const MAX_NB_WORDS: usize = 24;
+        let word_number = 12;
+        let entropy_bytes = ((word_number / 3) * 4);
+        //let mut entropy = [0u8; (MAX_NB_WORDS / 3) * 4];
+
+        loop {
+            rand_core::RngCore::fill_bytes(rng, &mut entropy[15..entropy_bytes]);
+            let mnemonic = Mnemonic::from_entropy(&entropy[0..entropy_bytes]).unwrap();
+            println!("{}", mnemonic.to_string());
+            assert_ne!(mnemonic.to_string(), seed_words);
+        }
+    }
+}
+
 // #[no_mangle]
 // pub unsafe extern "C" fn wallet_get_seed_words(seed: *const u8) -> Seed {
 //     // let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 12).unwrap();
