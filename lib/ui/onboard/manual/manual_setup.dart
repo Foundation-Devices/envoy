@@ -208,21 +208,22 @@ class SeedIntroScreen extends StatelessWidget {
                               .bodySmall!
                               .copyWith(fontSize: 13),
                         ),
-                        Padding(padding: EdgeInsets.only(top: 20)),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            S().manual_setup_import_seed_passport_warning,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                    fontSize: 13,
-                                    color: EnvoyColors.darkCopper,
-                                    fontWeight: FontWeight.w700),
+                        Padding(padding: EdgeInsets.only(top: 24)),
+                        if (mode == SeedIntroScreenType.import)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Text(
+                              S().manual_setup_import_seed_passport_warning,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                      fontSize: 13,
+                                      color: EnvoyColors.darkCopper,
+                                      fontWeight: FontWeight.w700),
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
