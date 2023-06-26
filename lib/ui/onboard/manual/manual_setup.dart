@@ -16,6 +16,7 @@ import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/envoy_colors.dart';
 
 class ManualSetup extends StatefulWidget {
   const ManualSetup({Key? key}) : super(key: key);
@@ -146,16 +147,19 @@ class SeedIntroScreen extends StatelessWidget {
       color: Colors.transparent,
       child: Column(
         children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(Icons.chevron_left, color: Colors.black),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            CupertinoNavigationBarBackButton(
+              color: Colors.black,
+              onPressed: () => Navigator.pop(context),
+            ),
+            IconButton(
+              color: Colors.black,
+              icon: Icon(Icons.close),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).popUntil(ModalRoute.withName("/"));
               },
             ),
-          ),
-          Padding(padding: EdgeInsets.all(14)),
+          ]),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -171,19 +175,16 @@ class SeedIntroScreen extends StatelessWidget {
                             "assets/shield_inspect.png",
                             width: 200,
                             height: 200,
-                            fit: BoxFit.cover,
                           )
                         : Image.asset(
                             "assets/fw_intro.png",
                             width: 250,
                             height: 250,
-                            fit: BoxFit.cover,
                           ),
-                    padding: EdgeInsets.only(bottom: 12),
+                    padding: EdgeInsets.only(bottom: 6),
                   )),
-                  Flexible(
-                      child: Container(
-                    padding: const EdgeInsets.all(10.0),
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -195,7 +196,7 @@ class SeedIntroScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.all(24)),
+                        Padding(padding: EdgeInsets.only(bottom: 20)),
                         Text(
                           mode == SeedIntroScreenType.generate ||
                                   mode == SeedIntroScreenType.verify
@@ -207,13 +208,25 @@ class SeedIntroScreen extends StatelessWidget {
                               .bodySmall!
                               .copyWith(fontSize: 13),
                         ),
+                        Padding(padding: EdgeInsets.only(top: 20)),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            S().manual_setup_import_seed_passport_warning,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(
+                                    fontSize: 13,
+                                    color: EnvoyColors.darkCopper,
+                                    fontWeight: FontWeight.w700),
+                          ),
+                        ),
                       ],
                     ),
-                  )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox.shrink(),
                   ),
+                  Padding(padding: EdgeInsets.only(bottom: 20)),
                   mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? OnboardingButton(
@@ -232,8 +245,7 @@ class SeedIntroScreen extends StatelessWidget {
                               });
                             }));
                           })
-                      : Flexible(
-                          child: Column(
+                      : Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             OnboardingButton(
@@ -310,7 +322,7 @@ class SeedIntroScreen extends StatelessWidget {
                                   }));
                                 }),
                           ],
-                        ))
+                        )
                 ],
               ),
             ),

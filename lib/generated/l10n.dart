@@ -72,8 +72,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -430,16 +428,6 @@ class S {
     );
   }
 
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -778,8 +766,6 @@ class S {
 
   // skipped getter for the 'FW Update' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   // skipped getter for the 'Face ID' key
 
   /// `Family`
@@ -839,16 +825,6 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SEND AND\nRECEIVE BITCOIN`
-  String get Heading {
-    return Intl.message(
-      'SEND AND\nRECEIVE BITCOIN',
-      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1288,16 +1264,6 @@ class S {
     );
   }
 
-  /// `BACKUPS`
-  String get ScreenTitle {
-    return Intl.message(
-      'BACKUPS',
-      name: 'ScreenTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1453,16 +1419,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -4714,6 +4670,36 @@ class S {
     );
   }
 
+  /// `Try again`
+  String get envoy_fw_fail_cta {
+    return Intl.message(
+      'Try again',
+      name: 'envoy_fw_fail_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy failed to copy the firmware onto the microSD card.`
+  String get envoy_fw_fail_heading {
+    return Intl.message(
+      'Envoy failed to copy the firmware onto the microSD card.',
+      name: 'envoy_fw_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ensure the microSD card is inserted into your phone correctly and try again. Alternatively the firmware can be downloaded from our [[GitHub]].`
+  String get envoy_fw_fail_subheading {
+    return Intl.message(
+      'Ensure the microSD card is inserted into your phone correctly and try again. Alternatively the firmware can be downloaded from our [[GitHub]].',
+      name: 'envoy_fw_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Download Firmware`
   String get envoy_fw_intro_cta {
     return Intl.message(
@@ -4774,10 +4760,10 @@ class S {
     );
   }
 
-  /// `Allow iPhone to access the microSD card`
+  /// `Allow Envoy to access the microSD card`
   String get envoy_fw_ios_instructions_heading {
     return Intl.message(
-      'Allow iPhone to access the microSD card',
+      'Allow Envoy to access the microSD card',
       name: 'envoy_fw_ios_instructions_heading',
       desc: '',
       args: [],
@@ -4804,10 +4790,10 @@ class S {
     );
   }
 
-  /// `Grant iPhone access to copy files to the microSD card, tap PASSPORT-SD then Done.`
+  /// `Grant Envoy access to copy files to the microSD card, tap PASSPORT-SD then Done.`
   String get envoy_fw_ios_instructions_subheading {
     return Intl.message(
-      'Grant iPhone access to copy files to the microSD card, tap PASSPORT-SD then Done.',
+      'Grant Envoy access to copy files to the microSD card, tap PASSPORT-SD then Done.',
       name: 'envoy_fw_ios_instructions_subheading',
       desc: '',
       args: [],
@@ -6749,6 +6735,36 @@ class S {
     return Intl.message(
       'First, let’s make sure your Passport is secure',
       name: 'envoy_scv_intro_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get envoy_scv_intro_loading_cta {
+    return Intl.message(
+      'Next',
+      name: 'envoy_scv_intro_loading_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Passport, select Envoy App and scan this QR Code`
+  String get envoy_scv_intro_loading_heading {
+    return Intl.message(
+      'On Passport, select Envoy App and scan this QR Code',
+      name: 'envoy_scv_intro_loading_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This QR code provides information for validation and setup.`
+  String get envoy_scv_intro_loading_subheading {
+    return Intl.message(
+      'This QR code provides information for validation and setup.',
+      name: 'envoy_scv_intro_loading_subheading',
       desc: '',
       args: [],
     );
@@ -9932,36 +9948,6 @@ class S {
     );
   }
 
-  /// `Choose Destination`
-  String get manual_setup_import_existing_backup_CTA1 {
-    return Intl.message(
-      'Choose Destination',
-      name: 'manual_setup_import_existing_backup_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save Envoy Backup File`
-  String get manual_setup_import_existing_backup_heading {
-    return Intl.message(
-      'Save Envoy Backup File',
-      name: 'manual_setup_import_existing_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_import_existing_backup_subheading {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_import_existing_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get manual_setup_import_seed_12_words_CTA {
     return Intl.message(
@@ -10067,6 +10053,16 @@ class S {
     return Intl.message(
       'Import your Seed',
       name: 'manual_setup_import_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Never import your Passport seed into the following screens.`
+  String get manual_setup_import_seed_passport_warning {
+    return Intl.message(
+      'Never import your Passport seed into the following screens.',
+      name: 'manual_setup_import_seed_passport_warning',
       desc: '',
       args: [],
     );
@@ -11662,10 +11658,10 @@ class S {
     );
   }
 
-  /// `Validate receive address`
+  /// `Continue`
   String get pair_new_device_QR_code_cta {
     return Intl.message(
-      'Validate receive address',
+      'Continue',
       name: 'pair_new_device_QR_code_cta',
       desc: '',
       args: [],
@@ -11677,6 +11673,36 @@ class S {
     return Intl.message(
       'Scan this QR code with Passport to validate',
       name: 'pair_new_device_QR_code_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get pair_new_device_QR_code_loading_cta {
+    return Intl.message(
+      'Continue',
+      name: 'pair_new_device_QR_code_loading_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan this QR code with Passport to validate`
+  String get pair_new_device_QR_code_loading_heading {
+    return Intl.message(
+      'Scan this QR code with Passport to validate',
+      name: 'pair_new_device_QR_code_loading_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is a Bitcoin address belonging to your Passport.`
+  String get pair_new_device_QR_code_loading_subheading {
+    return Intl.message(
+      'This is a Bitcoin address belonging to your Passport.',
+      name: 'pair_new_device_QR_code_loading_subheading',
       desc: '',
       args: [],
     );
@@ -11733,6 +11759,36 @@ class S {
   }
 
   /// `Get Started`
+  String get pair_new_device_intro_connect_envoy_cta {
+    return Intl.message(
+      'Get Started',
+      name: 'pair_new_device_intro_connect_envoy_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect Passport \nwith Envoy`
+  String get pair_new_device_intro_connect_envoy_heading {
+    return Intl.message(
+      'Connect Passport \nwith Envoy',
+      name: 'pair_new_device_intro_connect_envoy_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. `
+  String get pair_new_device_intro_connect_envoy_subheading {
+    return Intl.message(
+      'This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. ',
+      name: 'pair_new_device_intro_connect_envoy_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Started`
   String get pair_new_device_intro_cta {
     return Intl.message(
       'Get Started',
@@ -11762,6 +11818,16 @@ class S {
     );
   }
 
+  /// `tb1q33xnrjena6apwnhx5t375pwnhx5t375`
+  String get pair_new_device_qr_code_address {
+    return Intl.message(
+      'tb1q33xnrjena6apwnhx5t375pwnhx5t375',
+      name: 'pair_new_device_qr_code_address',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get pair_new_device_qr_code_cta {
     return Intl.message(
@@ -11782,10 +11848,40 @@ class S {
     );
   }
 
-  /// `This is a Bitcoin address beloning to your Passport.`
+  /// `Continue`
+  String get pair_new_device_qr_code_loading_cta {
+    return Intl.message(
+      'Continue',
+      name: 'pair_new_device_qr_code_loading_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan this QR code with Passport to validate`
+  String get pair_new_device_qr_code_loading_heading {
+    return Intl.message(
+      'Scan this QR code with Passport to validate',
+      name: 'pair_new_device_qr_code_loading_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is a Bitcoin address belonging to your Passport.`
+  String get pair_new_device_qr_code_loading_subheading {
+    return Intl.message(
+      'This is a Bitcoin address belonging to your Passport.',
+      name: 'pair_new_device_qr_code_loading_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is a Bitcoin address belonging to your Passport.`
   String get pair_new_device_qr_code_subheading {
     return Intl.message(
-      'This is a Bitcoin address beloning to your Passport.',
+      'This is a Bitcoin address belonging to your Passport.',
       name: 'pair_new_device_qr_code_subheading',
       desc: '',
       args: [],
