@@ -36,7 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -70,8 +69,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
         "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
-        "Heading":
-            MessageLookupByLibrary.simpleMessage("SEND AND\nRECEIVE BITCOIN"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -104,7 +101,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
         "Send": MessageLookupByLibrary.simpleMessage("Receive"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -118,7 +114,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zen-like mobile wallet"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -753,6 +748,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Sorry, we can’t get the firmware update right now."),
         "envoy_fw_error_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy allows you to update your Passport from your phone using the included microSD adapter.\n\nAdvanced users can tap here to download and verify their own firmware on a computer."),
+        "envoy_fw_fail_cta": MessageLookupByLibrary.simpleMessage("Try again"),
+        "envoy_fw_fail_heading": MessageLookupByLibrary.simpleMessage(
+            "Envoy failed to copy the firmware onto the microSD card."),
+        "envoy_fw_fail_subheading": MessageLookupByLibrary.simpleMessage(
+            "Ensure the microSD card is inserted into your phone correctly and try again. Alternatively the firmware can be downloaded from our [[GitHub]]."),
         "envoy_fw_intro_cta":
             MessageLookupByLibrary.simpleMessage("Download Firmware"),
         "envoy_fw_intro_heading": MessageLookupByLibrary.simpleMessage(
@@ -766,14 +766,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_fw_ios_instructions_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Allow iPhone to access the microSD card"),
+                "Allow Envoy to access the microSD card"),
         "envoy_fw_ios_instructions_os_clock":
             MessageLookupByLibrary.simpleMessage("9:41"),
         "envoy_fw_ios_instructions_right_action":
             MessageLookupByLibrary.simpleMessage("Skip"),
         "envoy_fw_ios_instructions_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Grant iPhone access to copy files to the microSD card, tap PASSPORT-SD then Done."),
+                "Grant Envoy access to copy files to the microSD card, tap PASSPORT-SD then Done."),
         "envoy_fw_microsd_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_fw_microsd_fails_cta1":
@@ -1193,6 +1193,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_scv_intro_cta": MessageLookupByLibrary.simpleMessage("Next"),
         "envoy_scv_intro_heading": MessageLookupByLibrary.simpleMessage(
             "First, let’s make sure your Passport is secure"),
+        "envoy_scv_intro_loading_cta":
+            MessageLookupByLibrary.simpleMessage("Next"),
+        "envoy_scv_intro_loading_heading": MessageLookupByLibrary.simpleMessage(
+            "On Passport, select Envoy App and scan this QR Code"),
+        "envoy_scv_intro_loading_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This QR code provides information for validation and setup."),
         "envoy_scv_intro_os_clock":
             MessageLookupByLibrary.simpleMessage("4321"),
         "envoy_scv_intro_right_action":
@@ -1893,13 +1900,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_import_existing_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_CTA1":
-            MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
-        "manual_setup_import_existing_backup_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_import_seed_12_words_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_import_seed_12_words_CTA_inactive":
@@ -1923,6 +1923,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
         "manual_setup_import_seed_heading":
             MessageLookupByLibrary.simpleMessage("Import your Seed"),
+        "manual_setup_import_seed_passport_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "Never import your Passport seed into the following screens."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later."),
         "manual_setup_recovery_fail_cta1":
@@ -2265,9 +2268,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_new_device_QR_code_address": MessageLookupByLibrary.simpleMessage(
             "tb1q33xnrjena6apwnhx5t375pwnhx5t375"),
         "pair_new_device_QR_code_cta":
-            MessageLookupByLibrary.simpleMessage("Validate receive address"),
+            MessageLookupByLibrary.simpleMessage("Continue"),
         "pair_new_device_QR_code_heading": MessageLookupByLibrary.simpleMessage(
             "Scan this QR code with Passport to validate"),
+        "pair_new_device_QR_code_loading_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "pair_new_device_QR_code_loading_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Scan this QR code with Passport to validate"),
+        "pair_new_device_QR_code_loading_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is a Bitcoin address belonging to your Passport."),
         "pair_new_device_QR_code_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This is a Bitcoin address belonging to your Passport."),
@@ -2279,6 +2290,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Address validated?"),
         "pair_new_device_address_subheading": MessageLookupByLibrary.simpleMessage(
             "If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support."),
+        "pair_new_device_intro_connect_envoy_cta":
+            MessageLookupByLibrary.simpleMessage("Get Started"),
+        "pair_new_device_intro_connect_envoy_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Connect Passport \nwith Envoy"),
+        "pair_new_device_intro_connect_envoy_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. "),
         "pair_new_device_intro_cta":
             MessageLookupByLibrary.simpleMessage("Get Started"),
         "pair_new_device_intro_heading": MessageLookupByLibrary.simpleMessage(
@@ -2286,13 +2305,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_new_device_intro_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "On Passport, select Manage Account > Connect Wallet > Envoy."),
+        "pair_new_device_qr_code_address": MessageLookupByLibrary.simpleMessage(
+            "tb1q33xnrjena6apwnhx5t375pwnhx5t375"),
         "pair_new_device_qr_code_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "pair_new_device_qr_code_heading": MessageLookupByLibrary.simpleMessage(
             "Scan this QR code with Passport to validate"),
+        "pair_new_device_qr_code_loading_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "pair_new_device_qr_code_loading_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Scan this QR code with Passport to validate"),
+        "pair_new_device_qr_code_loading_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is a Bitcoin address belonging to your Passport."),
         "pair_new_device_qr_code_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This is a Bitcoin address beloning to your Passport."),
+                "This is a Bitcoin address belonging to your Passport."),
         "pair_new_device_scan_cta":
             MessageLookupByLibrary.simpleMessage("Get Started"),
         "pair_new_device_scan_heading": MessageLookupByLibrary.simpleMessage(
