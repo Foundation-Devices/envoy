@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
+        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -69,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
         "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
+        "Heading":
+            MessageLookupByLibrary.simpleMessage("SEND AND\nRECEIVE BITCOIN"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -101,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("ACCOUNTS"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
         "Send": MessageLookupByLibrary.simpleMessage("Receive"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -114,6 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zen-like mobile wallet"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
+        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1032,8 +1037,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("9:41"),
         "envoy_pp_restore_seed_right_action":
             MessageLookupByLibrary.simpleMessage("Skip"),
-        "envoy_pp_restore_seed_subheading": MessageLookupByLibrary.simpleMessage(
-            "Use this feature to restore an existing 12, 18 or 24 word seed."),
+        "envoy_pp_restore_seed_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Use this feature to restore an existing 12 or 24 word seed."),
         "envoy_pp_restore_seed_success_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_pp_restore_seed_success_heading":
@@ -1900,6 +1906,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_import_existing_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
+        "manual_setup_import_existing_backup_CTA1":
+            MessageLookupByLibrary.simpleMessage("Choose Destination"),
+        "manual_setup_import_existing_backup_heading":
+            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
+        "manual_setup_import_existing_backup_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_import_seed_12_words_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_import_seed_12_words_CTA_inactive":
@@ -2835,7 +2848,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("How Your Wallet is Secured"),
         "wallet_security_modal_1_4_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy securely and automatically backs up your wallet seed to[[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple."),
+                "Envoy securely and automatically backs up your wallet seed to [[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple."),
         "wallet_security_modal_2_4_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "wallet_security_modal_2_4_cta":
