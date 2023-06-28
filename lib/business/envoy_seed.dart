@@ -157,6 +157,7 @@ class EnvoySeed {
 
     AccountManager().deleteHotWalletAccounts();
     LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, false);
+    Settings().syncToCloud = false;
 
     removeSeedFromNonSecure();
     removeSeedFromSecure();
