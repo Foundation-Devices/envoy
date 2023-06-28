@@ -162,8 +162,10 @@ class _ScannerPageState extends State<ScannerPage> {
     });
 
     // ENV-252: hack to get camera on CalyxOS
-    controller.pauseCamera();
-    controller.resumeCamera();
+    if (Platform.isAndroid) {
+      controller.pauseCamera();
+      controller.resumeCamera();
+    }
   }
 
   Widget _buildQrView(BuildContext context) {
