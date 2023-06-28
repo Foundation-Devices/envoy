@@ -85,6 +85,7 @@ class DevicesCardState extends State<DevicesCard>
       ) {
         return FadeThroughTransition(
           animation: primaryAnimation,
+          fillColor: Colors.transparent,
           secondaryAnimation: secondaryAnimation,
           child: child,
         );

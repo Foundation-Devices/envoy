@@ -10,8 +10,8 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
-import 'package:envoy/ui/home/cards/accounts/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -99,6 +99,7 @@ class AccountsCardState extends State<AccountsCard>
         ) {
           return FadeThroughTransition(
             animation: primaryAnimation,
+            fillColor: Colors.transparent,
             secondaryAnimation: secondaryAnimation,
             child: child,
           );
