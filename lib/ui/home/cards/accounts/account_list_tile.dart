@@ -307,10 +307,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                             width: 50,
                                             height: 15,
                                           )
-                                        : Text(
-                                            ExchangeRate().getFormattedAmount(
-                                                account.wallet.balance),
-                                            style: _textStyleFiat,
+                                        : Flexible(
+                                            child: Text(
+                                              ExchangeRate().getFormattedAmount(
+                                                  account.wallet.balance),
+                                              style: _textStyleFiat,
+                                            ),
                                           )
                                   ],
                                 ),

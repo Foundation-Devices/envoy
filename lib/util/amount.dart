@@ -100,9 +100,8 @@ int convertBtcStringToSats(String amountBtc) {
 
 String getFormattedAmount(int amountSats,
     {bool includeUnit = false, bool testnet = false}) {
-  // TODO: this should be locale dependent?
   String text = Settings().displayUnit == DisplayUnit.btc
-      ? convertSatsToBtcString(amountSats, trailingZeroes: true) +
+      ? convertSatsToBtcString(amountSats, trailingZeroes: false) +
           (includeUnit ? " " + getBtcUnitString(testnet: testnet) : "")
       : satsFormatter.format(amountSats) +
           (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");
