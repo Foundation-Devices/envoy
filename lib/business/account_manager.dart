@@ -298,17 +298,26 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
-  moveAccount(int oldIndex, int newIndex) {
-    if (oldIndex == newIndex) {
-      return;
+  moveAccount(int oldIndex, int newIndex) async {
+    //Make a copy of current account set to prevent concurrent modification
+    //sync might interfere with reordering so making a copy will prevent moving the same account
+    final _accountCopy = [...accounts];
+    //moving down, the list is shifted so the index is off by one
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
     }
+    try {
+      //Check if the items are not the same to prevent unnecessary duplication
+      if (_accountCopy[newIndex].id == _accountCopy[oldIndex].id) {
+        return;
+      }
+    } catch (_) {}
+    var movedAccount = _accountCopy.removeAt(oldIndex);
+    _accountCopy.insert(newIndex, movedAccount);
 
-    var movedAccount = accounts[oldIndex];
-    accounts.remove(movedAccount);
-    accounts.insert(newIndex, movedAccount);
-    storeAccounts();
-
+    accounts = _accountCopy;
     notifyListeners();
+    storeAccounts();
   }
 
   // There is only one hot wallet for now (mainnet/testnet pair)

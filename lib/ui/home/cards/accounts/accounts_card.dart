@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
-import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -129,27 +128,23 @@ class AccountsList extends ConsumerStatefulWidget with NavigationCard {
 class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
 
-  _redraw() {
-    setState(() {});
-  }
+  bool _onReOrderStart = false;
 
   @override
   void initState() {
     super.initState();
 
     // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
   }
 
   @override
   void dispose() {
     super.dispose();
-    ExchangeRate().removeListener(_redraw);
   }
 
   @override
   Widget build(BuildContext context) {
-    var accounts = ref.watch(accountsProvider);
+    final accounts = ref.watch(accountsProvider);
     return accounts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(6 * 4),
@@ -160,37 +155,51 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                 const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
             child: FadingEdgeScrollView.fromScrollView(
               scrollController: _scrollController,
-              child: DragAndDropLists(
-                constrainDraggingAxis: false,
-                removeTopPadding: true,
-                scrollController: _scrollController,
-                children: [
-                  DragAndDropList(children: [
-                    ...accounts
-                        .map((e) => DragAndDropItem(
-                                child: Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: accounts.last.id == e.id ? 8 : 20),
-                              child: AccountListTile(
-                                e,
-                                onTap: () {
-                                  widget.navigator!.push(AccountCard(e,
-                                      navigationCallback: widget.navigator));
-                                },
-                              ),
-                            )))
-                        .toList(),
-                    ...[
-                      DragAndDropItem(canDrag: false, child: AccountPrompts())
-                    ],
-                  ])
-                ],
-                onListReorder: (int oldListIndex, int newListIndex) {},
-                onItemReorder: (int oldItemIndex, int oldListIndex,
-                    int newItemIndex, int newListIndex) {
-                  AccountManager().moveAccount(oldItemIndex, newItemIndex);
-                },
-              ),
+              child: ReorderableListView(
+                  footer: Opacity(
+                    child: AccountPrompts(),
+                    opacity: _onReOrderStart ? 0.0 : 1.0,
+                  ),
+                  shrinkWrap: true,
+                  scrollController: _scrollController,
+                  //proxyDecorator is the widget that is shown when dragging
+                  proxyDecorator: (widget, index, animation) {
+                    return FadeTransition(
+                      opacity:
+                          animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
+                      child: ScaleTransition(
+                        scale: animation
+                            .drive(Tween<double>(begin: 0.95, end: 1.02)),
+                        child: widget,
+                      ),
+                    );
+                  },
+                  onReorderEnd: (index) {
+                    setState(() {
+                      _onReOrderStart = false;
+                    });
+                  },
+                  onReorderStart: (index) {
+                    setState(() {
+                      _onReOrderStart = true;
+                    });
+                  },
+                  onReorder: (oldIndex, newIndex) async {
+                    await AccountManager().moveAccount(oldIndex, newIndex);
+                  },
+                  children: [
+                    for (final account in accounts)
+                      SizedBox(
+                          key: ValueKey(account.id),
+                          height: 124,
+                          child: AccountListTile(
+                            account,
+                            onTap: () {
+                              widget.navigator!.push(AccountCard(account,
+                                  navigationCallback: widget.navigator));
+                            },
+                          ))
+                  ]),
             ),
           );
   }
