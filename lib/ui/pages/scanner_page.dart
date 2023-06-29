@@ -34,6 +34,10 @@ enum ScannerType {
   azteco
 }
 
+final SnackBar notAValidAddressSnackbar = SnackBar(
+  content: Text("Not a valid address"),
+);
+
 class ScannerPage extends StatefulWidget {
   final UniformResourceReader _urDecoder = UniformResourceReader();
   final List<ScannerType> _acceptableTypes;
@@ -85,6 +89,8 @@ class _ScannerPageState extends State<ScannerPage> {
 
   String _lastCodeDetected = "";
 
+  Timer? _snackbarTimer;
+
   _ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
   }
@@ -118,6 +124,7 @@ class _ScannerPageState extends State<ScannerPage> {
   @override
   void dispose() {
     controller?.dispose();
+    _snackbarTimer?.cancel();
     super.dispose();
   }
 
@@ -251,9 +258,10 @@ class _ScannerPageState extends State<ScannerPage> {
       address = address.replaceFirst("bitcoin:", "");
 
       if (!await widget.account!.wallet.validateAddress(address)) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Not a valid address"),
-        ));
+        if (_snackbarTimer == null || !_snackbarTimer!.isActive) {
+          ScaffoldMessenger.of(context).showSnackBar(notAValidAddressSnackbar);
+          _snackbarTimer = Timer(Duration(seconds: 5), () {});
+        }
       } else {
         widget.onAddressValidated!(address, amount);
         Navigator.of(context).pop();
