@@ -43,7 +43,8 @@ final List<FiatCurrency> supportedFiat = [
 class ExchangeRate extends ChangeNotifier {
   LocalStorage _ls = LocalStorage();
 
-  double _rate = 0;
+  double _selectedCurrencyRate = 0;
+  double? _usdRate = 0;
   FiatCurrency? _currency;
 
   HttpTor _http = HttpTor(Tor());
@@ -80,7 +81,8 @@ class ExchangeRate extends ChangeNotifier {
     if (_ls.prefs.containsKey(LAST_EXCHANGE_RATE_PREFS)) {
       var storedExchangeRate =
           jsonDecode(_ls.prefs.getString(LAST_EXCHANGE_RATE_PREFS)!);
-      _rate = storedExchangeRate["rate"];
+      _selectedCurrencyRate = storedExchangeRate["rate"];
+      _usdRate = storedExchangeRate["usdRate"];
       setCurrency(storedExchangeRate["currency"]);
     }
   }
@@ -94,16 +96,35 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   _storeRate(double rate, String currencyCode) {
-    _rate = rate;
+    if (currencyCode == "USD") {
+      _usdRate = rate;
+    }
+
+    if (Settings().selectedFiat == currencyCode) {
+      _selectedCurrencyRate = rate;
+    }
+
     notifyListeners();
 
-    Map exchangeRateMap = {"currency": currencyCode, "rate": rate};
+    Map exchangeRateMap = {
+      "currency": currencyCode,
+      "rate": rate,
+      "usdRate": _usdRate
+    };
     String json = jsonEncode(exchangeRateMap);
     _ls.prefs.setString(LAST_EXCHANGE_RATE_PREFS, json);
   }
 
   _getRate() {
     String currencyCode = Settings().selectedFiat ?? "USD";
+    _getRateForCode("USD");
+
+    if (Settings().selectedFiat != "USD") {
+      _getRateForCode(currencyCode);
+    }
+  }
+
+  void _getRateForCode(String currencyCode) {
     _http.get(_serverAddress + '/price/' + currencyCode).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -118,6 +139,13 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
+  String getUsdValue(int amountSats) {
+    //return _usdRate;
+
+    NumberFormat currencyFormatter = NumberFormat.currency(symbol: "");
+    return currencyFormatter.format(_usdRate! * amountSats / 100000000);
+  }
+
   // SATS to FIAT
   String getFormattedAmount(int amountSats, {bool includeSymbol = true}) {
     if (Settings().selectedFiat == null) {
@@ -126,7 +154,8 @@ class ExchangeRate extends ChangeNotifier {
 
     NumberFormat currencyFormatter = NumberFormat.currency(
         name: _currency!.symbol, symbol: includeSymbol ? null : "");
-    return currencyFormatter.format(_rate * amountSats / 100000000);
+    return currencyFormatter
+        .format(_selectedCurrencyRate * amountSats / 100000000);
   }
 
   String getSymbol() {
@@ -149,7 +178,7 @@ class ExchangeRate extends ChangeNotifier {
       return 0;
     }
 
-    return double.parse(amountFiat) * 100000000 ~/ _rate;
+    return double.parse(amountFiat) * 100000000 ~/ _selectedCurrencyRate;
   }
 
   String getCode() {
