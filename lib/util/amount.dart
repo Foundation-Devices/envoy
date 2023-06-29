@@ -117,3 +117,11 @@ String getSatsUnitString({testnet = false}) {
 String getBtcUnitString({testnet = false}) {
   return testnet ? "TBTC" : "BTC";
 }
+
+String getUnitString({testnet = false}) {
+  String textUint = Settings().displayUnit == DisplayUnit.btc
+      ? getBtcUnitString(testnet: testnet)
+      : getSatsUnitString(testnet: testnet);
+
+  return textUint;
+}
