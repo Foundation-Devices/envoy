@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -18,15 +19,14 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -122,6 +122,25 @@ class _HomePageState extends ConsumerState<HomePage>
         }
       }
     });
+
+    EnvoyStorage()
+        .isPromptDismissed(DismissiblePrompt.secureWallet)
+        .listen((event) {
+      print("event1: " + event.toString());
+      // if is not dismissed listen balance
+      if (!event) {
+        AccountManager()
+            .isAccountBalanceHigherThanUsd1000Stream
+            .stream
+            .listen((event) {
+          _notifyAboutWarning();
+        });
+
+        // if (AccountManager().isAccountBalanceHigherThanUsd1000()) {
+        //   _notifyAboutWarning();
+        // }
+      }
+    });
   }
 
   _notifyAboutTor() {
@@ -139,6 +158,13 @@ class _HomePageState extends ConsumerState<HomePage>
         showEnvoyDialog(dialog: TorWarning(), context: context);
       },
     ).show(context);
+  }
+
+  _notifyAboutWarning() {
+    print("_notifyAboutWarning");
+    AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
+
+    showSecurityDialog(context);
   }
 
   void _toggleSettings() {

@@ -21,7 +21,7 @@ enum HomePageBackgroundState {
   about
 }
 
-enum DismissiblePrompt { hideAmount, userInteractedWithReceive }
+enum DismissiblePrompt { hideAmount, userInteractedWithReceive, secureWallet }
 
 final homePageTabProvider =
     StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);

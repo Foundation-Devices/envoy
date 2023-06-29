@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/business/azteco_voucher.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/xfp_endian.dart';
@@ -75,8 +76,27 @@ class AccountManager extends ChangeNotifier {
                 dateSynced: syncedAccount.dateSynced);
             notifyListeners();
             storeAccounts();
+
+            if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
+              notifyIfAccountBalanceHigherThanUsd1000();
+            }
           });
         });
+      }
+    }
+  }
+
+  StreamController<bool> isAccountBalanceHigherThanUsd1000Stream =
+      StreamController();
+
+  notifyIfAccountBalanceHigherThanUsd1000() {
+    for (var account in accounts) {
+      if (account.wallet.hot && account.wallet.network == Network.Mainnet) {
+        var amountUSD =
+            double.parse(ExchangeRate().getUsdValue(account.wallet.balance));
+        if (amountUSD >= 1000) {
+          isAccountBalanceHigherThanUsd1000Stream.add(true);
+        }
       }
     }
   }

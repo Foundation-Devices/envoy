@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -22,6 +23,10 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -261,4 +266,88 @@ class AccountPrompts extends ConsumerWidget {
     }
     return SizedBox.square();
   }
+}
+
+void showSecurityDialog(BuildContext context) {
+  EnvoyStorage().addPromptState(DismissiblePrompt.secureWallet);
+  showEnvoyDialog(
+      context: context,
+      dismissible: false,
+      dialog: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(8)),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      width: MediaQuery.of(context).size.height * 0.08,
+                    ),
+                    Padding(padding: EdgeInsets.all(8)),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 200),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(S().wallet_security_modal__heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().wallet_security_modal_subheading,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.secondary,
+                  label: S().wallet_security_modal_cta2,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  }),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.primary,
+                  label: S().wallet_security_modal_cta1,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                            child: DeviceEmptyVideo());
+                      },
+                    );
+                  }),
+              Padding(padding: EdgeInsets.all(12)),
+            ],
+          ),
+        ),
+      ));
 }
