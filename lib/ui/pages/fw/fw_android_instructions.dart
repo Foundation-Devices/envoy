@@ -7,16 +7,17 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_microsd.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'dart:io';
 
 //ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {
   bool onboarding;
+  int deviceId;
 
-  FwAndroidInstructionsPage({this.onboarding = true});
+  FwAndroidInstructionsPage({this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(BuildContext context) {
-    var fw = FwUploader(UpdatesManager().getStoredFw());
     return OnboardingPage(
       key: Key("fw_android_instructions"),
       text: [
@@ -32,7 +33,9 @@ class FwAndroidInstructionsPage extends StatelessWidget {
         OnboardingButton(
             label: "Continue",
             onTap: () {
-              fw.getDirectoryContentPermission();
+              UpdatesManager().getStoredFw(deviceId).then((File file) {
+                FwUploader(file).getDirectoryContentPermission();
+              });
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return FwMicrosdPage(onboarding: onboarding);
               }));

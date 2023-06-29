@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+import 'dart:io';
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_microsd.dart';
@@ -12,12 +12,12 @@ import 'package:envoy/generated/l10n.dart';
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends StatelessWidget {
   bool onboarding;
+  int deviceId;
 
-  FwIosInstructionsPage({this.onboarding = true});
+  FwIosInstructionsPage({this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(BuildContext context) {
-    var fw = FwUploader(UpdatesManager().getStoredFw());
     return OnboardingPage(
       key: Key("fw_ios_instructions"),
       clipArt: Image.asset("assets/fw_ios_instructions.png"),
@@ -33,7 +33,10 @@ class FwIosInstructionsPage extends StatelessWidget {
         OnboardingButton(
             label: S().envoy_fw_ios_instructions_cta,
             onTap: () {
-              fw.promptUserForFolderAccess();
+              UpdatesManager().getStoredFw(deviceId).then((File file) {
+                FwUploader(file).promptUserForFolderAccess();
+              });
+
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return FwMicrosdPage(onboarding: onboarding);
               }));

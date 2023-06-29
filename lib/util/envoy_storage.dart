@@ -13,9 +13,24 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
+class FirmwareInfo {
+  FirmwareInfo({
+    required this.deviceID,
+    required this.storedVersion,
+    required this.path,
+  });
+
+  final int deviceID;
+  final String storedVersion;
+  final String path;
+}
+
 final aztecoTxStreamProvider =
     StreamProvider.family<List<wallet.Transaction>, String?>(
         (ref, account) => EnvoyStorage().getAztecoTxsSteam(account));
+
+final firmwareStreamProvider = StreamProvider.family<FirmwareInfo?, int>(
+    (ref, deviceID) => EnvoyStorage().getfirmwareSteam(deviceID));
 
 class EnvoyStorage {
   String dbName = 'envoy.db';
@@ -24,6 +39,7 @@ class EnvoyStorage {
   StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
   StoreRef aztecoPendingTxStore = StoreRef.main();
   StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>.main();
+  StoreRef firmwareStore = StoreRef.main();
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -131,5 +147,41 @@ class EnvoyStorage {
 
   void clearAztecoStore() async {
     aztecoPendingTxStore.delete(_db);
+  }
+
+  Future addNewFirmware(int deviceId, String version, String path) async {
+    await firmwareStore
+        .record(deviceId)
+        .put(_db, {'version': version, 'path': path});
+    return true;
+  }
+
+  Future<FirmwareInfo?> getStoredFirmware(int deviceId) async {
+    var finder = Finder(filter: Filter.byKey(deviceId));
+    var firmware = await firmwareStore.find(_db, finder: finder);
+    return transformFirmware(firmware);
+  }
+
+  FirmwareInfo? transformFirmware(List<RecordSnapshot<Key?, Value?>> records) {
+    if (records.isEmpty) {
+      return null;
+    }
+
+    var record = records[0];
+    return FirmwareInfo(
+        deviceID: record.key as int,
+        storedVersion: (record.value! as Map)['version'],
+        path: (record.value! as Map)['path']);
+  }
+
+  Stream<FirmwareInfo?> getfirmwareSteam(int deviceId) {
+    var finder = Finder(filter: Filter.byKey(deviceId));
+    return EnvoyStorage()
+        .firmwareStore
+        .query(finder: finder)
+        .onSnapshots(_db)
+        .map((firmwares) {
+      return transformFirmware(firmwares);
+    });
   }
 }

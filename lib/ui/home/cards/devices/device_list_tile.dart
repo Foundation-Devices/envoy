@@ -2,17 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
-class DeviceListTile extends StatefulWidget {
+final shouldUpdateProvider =
+    FutureProvider.family<bool, Device>((ref, device) async {
+  return UpdatesManager().shouldUpdate(device.firmwareVersion, device.type);
+});
+
+class DeviceListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
   final Device device;
   final bool ghostDevice;
@@ -25,37 +30,14 @@ class DeviceListTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DeviceListTile> createState() => _DeviceListTileState();
+  ConsumerState<DeviceListTile> createState() => _DeviceListTileState();
 }
 
-class _DeviceListTileState extends State<DeviceListTile> {
-  _redraw() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
-
-    // Redraw when we change bitcoin unit
-    Settings().addListener(_redraw);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    ExchangeRate().removeListener(_redraw);
-    Settings().removeListener(_redraw);
-  }
-
+class _DeviceListTileState extends ConsumerState<DeviceListTile> {
   @override
   Widget build(BuildContext context) {
-    bool fwUpdateAvailable = UpdatesManager()
-        .shouldUpdate(widget.device.firmwareVersion, widget.device.type);
+    var fwShouldUpdate = ref.refresh(shouldUpdateProvider(widget.device));
+    var fwInfo = ref.watch(firmwareStreamProvider(widget.device.type.index));
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -162,12 +144,9 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                             .bodySmall!
                                             .copyWith(color: Colors.white),
                                       ),
-                                      widget.device.type ==
-                                                  DeviceType.passportGen1 ||
-                                              widget.ghostDevice
+                                      widget.ghostDevice
                                           ? Text(
-                                              " FW " +
-                                                  widget.device.firmwareVersion,
+                                              "FW 2.1.1",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!
@@ -181,6 +160,8 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                         builder: (context) {
                                                   return FwIntroPage(
                                                     onboarding: false,
+                                                    deviceId: widget
+                                                        .device.type.index,
                                                   );
                                                 }));
                                               },
@@ -202,7 +183,9 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                       const EdgeInsets.all(4.0),
                                                   child: Row(
                                                     children: [
-                                                      if (fwUpdateAvailable)
+                                                      if (fwShouldUpdate
+                                                              .hasValue &&
+                                                          fwShouldUpdate.value!)
                                                         Padding(
                                                           padding: EdgeInsets
                                                               .symmetric(
@@ -233,13 +216,11 @@ class _DeviceListTileState extends State<DeviceListTile> {
                                                             EdgeInsets.only(
                                                                 right: 2.0),
                                                         child: Text(
-                                                          " FW " +
-                                                              (fwUpdateAvailable
-                                                                  ? UpdatesManager()
-                                                                      .getStoredFwVersion()!
-                                                                  : widget
-                                                                      .device
-                                                                      .firmwareVersion),
+                                                          fwInfo.hasValue
+                                                              ? ("FW " +
+                                                                  fwInfo.value!
+                                                                      .storedVersion)
+                                                              : "Loading",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
