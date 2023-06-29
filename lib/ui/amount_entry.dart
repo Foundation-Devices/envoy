@@ -86,6 +86,15 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           break;
         default:
           {
+            // No more than eight decimal digits for BTC
+            if (unit == AmountDisplayUnit.btc &&
+                _enteredAmount.contains(decimalPoint) &&
+                ((_enteredAmount.length -
+                        _enteredAmount.indexOf(decimalPoint)) >
+                    8)) {
+              break;
+            }
+
             // No more than two decimal digits for fiat
             if (unit == AmountDisplayUnit.fiat &&
                 _enteredAmount.contains(decimalPoint) &&
