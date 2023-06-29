@@ -976,8 +976,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
-      resolved-ref: "84fbc1e8b893e51cd1add4870f72cd126c8f8a64"
+      ref: "10e61ea0f5625ea7e20cb0449e959c384b4d575a"
+      resolved-ref: "10e61ea0f5625ea7e20cb0449e959c384b4d575a"
       url: "https://github.com/icota/qr_code_scanner.git"
     source: git
     version: "1.0.0"
