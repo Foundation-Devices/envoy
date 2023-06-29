@@ -56,7 +56,9 @@ class _SendCardState extends ConsumerState<SendCard>
         account: widget.account,
         initalAddress: widget.address,
         onAmountChanged: (amount) {
-          setAmount(amount);
+          if (amount != 0) {
+            setAmount(amount);
+          }
         },
         onAddressChanged: (valid, text) {
           Future.delayed(Duration.zero, () async {
