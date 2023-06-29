@@ -20,6 +20,7 @@ class EnvoyButton extends StatefulWidget {
   final TextStyle? textStyle;
   final FontWeight? fontWeight;
   final bool? readOnly;
+  final bool enabled;
 
   EnvoyButton(
     this.label, {
@@ -30,6 +31,7 @@ class EnvoyButton extends StatefulWidget {
     this.borderRadius,
     this.fontWeight = null,
     this.backgroundColor,
+    this.enabled = true,
   });
 
   @override
@@ -67,7 +69,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
       scale: isPressed ? 0.97 : 1.0,
       curve: Curves.easeIn,
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: widget.enabled ? widget.onTap : null,
         onTapDown: (cn) {
           setState(() {
             isPressed = true;
