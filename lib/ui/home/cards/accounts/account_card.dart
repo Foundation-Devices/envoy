@@ -438,6 +438,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_save.toUpperCase(),
+                        type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           AccountManager().renameAccount(
                               widget.account, textEntry.enteredText);
@@ -468,6 +469,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_delete.toUpperCase(),
+                        type: EnvoyButtonTypes.primaryModal,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);
