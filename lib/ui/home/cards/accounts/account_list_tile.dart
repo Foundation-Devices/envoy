@@ -249,70 +249,73 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(
-                                                              20))))),
-                                    )
-                                  ],
+                                                              22)))))
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
                           }
-                          return Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16))),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 13.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: FittedBox(
-                                      fit: BoxFit.fitWidth,
-                                      child: account.dateSynced == null || hide
-                                          ? LoaderGhost(
-                                              width: 200,
-                                              height: 20,
-                                            )
-                                          : Text(
-                                              getFormattedAmount(
-                                                  account.wallet.balance,
-                                                  includeUnit: true,
-                                                  testnet:
-                                                      account.wallet.network ==
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(17))),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 13.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: account.dateSynced == null ||
+                                                  hide
+                                              ? LoaderGhost(
+                                                  width: 200,
+                                                  height: 20,
+                                                )
+                                              : Text(
+                                                  getFormattedAmount(
+                                                      account.wallet.balance,
+                                                      includeUnit: false,
+                                                      testnet: account
+                                                              .wallet.network ==
                                                           Network.Testnet),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineSmall!
-                                                  .copyWith(
-                                                      color: EnvoyColors.grey),
-                                            ),
+                                                  style: _textStyleAmountSatBtc,
+                                                ),
+                                        ),
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 4.0)),
+                                        Text(
+                                          getUnitString(
+                                              testnet: widget
+                                                      .account.wallet.network ==
+                                                  Network.Testnet),
+                                          style: _textStyleSatBtc,
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 13.0)),
-                                  account.dateSynced == null || hide
-                                      ? LoaderGhost(
-                                          width: 50,
-                                          height: 15,
-                                        )
-                                      : Flexible(
-                                          child: FittedBox(
+                                    account.dateSynced == null || hide
+                                        ? LoaderGhost(
+                                            width: 50,
+                                            height: 15,
+                                          )
+                                        : Flexible(
                                             child: Text(
                                               ExchangeRate().getFormattedAmount(
                                                   account.wallet.balance),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!
-                                                  .copyWith(
-                                                      color: EnvoyColors.grey),
+                                              style: _textStyleFiat,
                                             ),
-                                          ),
-                                        )
-                                ],
+                                          )
+                                  ],
+                                ),
                               ),
                             ),
                           );
