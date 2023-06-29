@@ -193,6 +193,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                     ? S()
                                         .manual_backups_export_flow_modal_4_4_CTA
                                     : S().wallet_security_modal_4_4_CTA,
+                                type: EnvoyButtonTypes.primaryModal,
                                 onTap: () {
                                   int currentPage =
                                       _pageController.page?.toInt() ?? 0;
@@ -219,6 +220,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   Padding(padding: EdgeInsets.all(8)),
                                   EnvoyButton(
                                     S().manual_backups_export_flow_modal_4_4_CTA1,
+                                    type: EnvoyButtonTypes.primaryModal,
                                     onTap: () {
                                       if (widget.onConfirmBackup != null)
                                         widget.onConfirmBackup!.call();

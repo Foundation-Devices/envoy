@@ -281,6 +281,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                 child: EnvoyButton(
                   S().manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA,
+                  type: EnvoyButtonTypes.primaryModal,
                   onTap: () async {
                     Navigator.of(context).pop();
                     showPassphraseDialog(context);

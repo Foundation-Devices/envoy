@@ -5,11 +5,7 @@
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
-enum EnvoyButtonTypes {
-  primary,
-  secondary,
-  tertiary,
-}
+enum EnvoyButtonTypes { primary, secondary, tertiary, primaryModal }
 
 class EnvoyButton extends StatefulWidget {
   final String label;
@@ -55,6 +51,9 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           break;
         case EnvoyButtonTypes.tertiary:
           textColor = EnvoyColors.darkTeal;
+          break;
+        case EnvoyButtonTypes.primaryModal:
+          textColor = Colors.white;
           break;
       }
       _textStyle = Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -128,6 +127,20 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             color: this.widget.backgroundColor,
             borderRadius: this.widget.borderRadius ??
                 BorderRadius.all(Radius.circular(13.0)));
+
+      case EnvoyButtonTypes.primaryModal:
+        {
+          if (widget.readOnly == true) {
+            return BoxDecoration(
+                color: EnvoyColors.grey85,
+                borderRadius: this.widget.borderRadius ??
+                    BorderRadius.all(Radius.circular(13.0)));
+          }
+          return BoxDecoration(
+              color: EnvoyColors.darkTeal,
+              borderRadius: this.widget.borderRadius ??
+                  BorderRadius.all(Radius.circular(13.0)));
+        }
     }
   }
 }

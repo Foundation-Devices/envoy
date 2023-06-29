@@ -450,6 +450,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                     .privacy_setting_connecting_node_success_modal_heading_cta
                                 : S().privacy_setting_connecting_node_modal_cta,
                         readOnly: nodeConnectionState.isConnecting,
+                        type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           if (!nodeConnectionState.isConnected) {
                             connect();
