@@ -78,6 +78,7 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
                     S().export_backup_send_CTA1,
+                    type: EnvoyButtonTypes.primaryModal,
                     onTap: () async {
                       Navigator.of(context).pop();
                       await EnvoySeed().saveOfflineData();

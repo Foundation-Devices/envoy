@@ -60,6 +60,40 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle _textStyleWallet =
+        Theme.of(context).textTheme.titleMedium!.copyWith(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            );
+
+    TextStyle _textStyleWalletName =
+        Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            );
+
+    TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
+          color: EnvoyColors.grey,
+          fontSize: 11,
+          fontWeight: FontWeight.w400,
+        );
+
+    TextStyle _textStyleAmountSatBtc =
+        Theme.of(context).textTheme.headlineSmall!.copyWith(
+              color: EnvoyColors.grey,
+              fontSize: 24,
+              fontWeight: FontWeight.w400,
+            );
+
+    TextStyle _textStyleSatBtc =
+        Theme.of(context).textTheme.headlineSmall!.copyWith(
+              color: EnvoyColors.grey,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            );
+
     ref.watch(accountManagerProvider);
     var account = widget.account.wallet is GhostWallet
         ? widget.account
@@ -70,7 +104,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
       child: Container(
         height: containerHeight,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(22)),
           border: Border.all(
               color: Colors.black, width: 2, style: BorderStyle.solid),
           gradient: LinearGradient(
@@ -83,11 +117,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         ),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: BorderRadius.all(Radius.circular(22)),
               border: Border.all(
                   color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderRadius: BorderRadius.all(Radius.circular(22)),
             child: GestureDetector(
               onTap: widget.onTap,
               child: Stack(children: [
@@ -114,18 +148,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 children: [
                                   Text(
                                     account.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(color: Colors.white),
+                                    style: _textStyleWallet,
                                   ),
                                   Text(
                                     Devices()
                                         .getDeviceName(account.deviceSerial),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(color: Colors.white),
+                                    style: _textStyleWalletName,
                                   ),
                                 ],
                               ),
@@ -185,11 +213,56 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                           final hide = ref
                               .watch(balanceHideStateStatusProvider(account));
                           if (hide) {
-                            return Container(
+                            return Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(22))),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 13.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 200,
+                                        height: 20,
+                                        child: Container(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xffEEEEEE),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(22)))),
+                                      ),
+                                      SizedBox(
+                                          width: 50,
+                                          height: 15,
+                                          child: Container(
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              22)))))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(16))),
+                                      BorderRadius.all(Radius.circular(17))),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 13.0),
@@ -197,80 +270,52 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(
-                                      width: 200,
-                                      height: 20,
-                                      child: Container(
-                                          width: double.infinity,
-                                          height: double.infinity,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)))),
+                                    Row(
+                                      children: [
+                                        FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: account.dateSynced == null ||
+                                                  hide
+                                              ? LoaderGhost(
+                                                  width: 200,
+                                                  height: 20,
+                                                )
+                                              : Text(
+                                                  getFormattedAmount(
+                                                      account.wallet.balance,
+                                                      includeUnit: false,
+                                                      testnet: account
+                                                              .wallet.network ==
+                                                          Network.Testnet),
+                                                  style: _textStyleAmountSatBtc,
+                                                ),
+                                        ),
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 4.0)),
+                                        Text(
+                                          getUnitString(
+                                              testnet: widget
+                                                      .account.wallet.network ==
+                                                  Network.Testnet),
+                                          style: _textStyleSatBtc,
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                        width: 50,
-                                        height: 15,
-                                        child: Container(
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xffEEEEEE),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)))))
+                                    account.dateSynced == null || hide
+                                        ? LoaderGhost(
+                                            width: 50,
+                                            height: 15,
+                                          )
+                                        : Flexible(
+                                            child: Text(
+                                              ExchangeRate().getFormattedAmount(
+                                                  account.wallet.balance),
+                                              style: _textStyleFiat,
+                                            ),
+                                          )
                                   ],
                                 ),
-                              ),
-                            );
-                          }
-                          return Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16))),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 13.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  FittedBox(
-                                    fit: BoxFit.fitWidth,
-                                    child: account.dateSynced == null || hide
-                                        ? LoaderGhost(
-                                            width: 200,
-                                            height: 20,
-                                          )
-                                        : Text(
-                                            getFormattedAmount(
-                                                account.wallet.balance,
-                                                includeUnit: true,
-                                                testnet:
-                                                    account.wallet.network ==
-                                                        Network.Testnet),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineSmall!
-                                                .copyWith(
-                                                    color: EnvoyColors.grey),
-                                          ),
-                                  ),
-                                  account.dateSynced == null || hide
-                                      ? LoaderGhost(
-                                          width: 50,
-                                          height: 15,
-                                        )
-                                      : Text(
-                                          ExchangeRate().getFormattedAmount(
-                                              account.wallet.balance),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(
-                                                  color: EnvoyColors.grey),
-                                        )
-                                ],
                               ),
                             ),
                           );

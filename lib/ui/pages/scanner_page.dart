@@ -34,6 +34,10 @@ enum ScannerType {
   azteco
 }
 
+final SnackBar notAValidAddressSnackbar = SnackBar(
+  content: Text("Not a valid address"),
+);
+
 class ScannerPage extends StatefulWidget {
   final UniformResourceReader _urDecoder = UniformResourceReader();
   final List<ScannerType> _acceptableTypes;
@@ -73,8 +77,6 @@ class _ScannerPageState extends State<ScannerPage> {
   late UniformResourceReader _urDecoder;
   bool _processing = false;
 
-  bool _showIndeterminateSpinner = false;
-
   double _progress = 0.0;
 
   Completer<void> _permissionsCompleter = Completer();
@@ -84,6 +86,8 @@ class _ScannerPageState extends State<ScannerPage> {
   final GlobalKey qrViewKey = GlobalKey(debugLabel: "qr_view");
 
   String _lastCodeDetected = "";
+
+  Timer? _snackbarTimer;
 
   _ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
@@ -118,6 +122,7 @@ class _ScannerPageState extends State<ScannerPage> {
   @override
   void dispose() {
     controller?.dispose();
+    _snackbarTimer?.cancel();
     super.dispose();
   }
 
@@ -162,8 +167,10 @@ class _ScannerPageState extends State<ScannerPage> {
     });
 
     // ENV-252: hack to get camera on CalyxOS
-    controller.pauseCamera();
-    controller.resumeCamera();
+    if (Platform.isAndroid) {
+      controller.pauseCamera();
+      controller.resumeCamera();
+    }
   }
 
   Widget _buildQrView(BuildContext context) {
@@ -186,25 +193,20 @@ class _ScannerPageState extends State<ScannerPage> {
             child: SizedBox(
                 height: 200,
                 width: 200,
-                child: _showIndeterminateSpinner
-                    ? CircularProgressIndicator(
+                child: TweenAnimationBuilder(
+                    duration: const Duration(milliseconds: 500),
+                    tween: Tween<double>(
+                      begin: 0.00,
+                      end: _progress,
+                    ),
+                    builder:
+                        (BuildContext context, double? value, Widget? child) {
+                      return CircularProgressIndicator(
+                        value: value,
                         color: EnvoyColors.white80,
                         strokeWidth: 5,
-                      )
-                    : TweenAnimationBuilder(
-                        duration: const Duration(milliseconds: 500),
-                        tween: Tween<double>(
-                          begin: 0.00,
-                          end: _progress,
-                        ),
-                        builder: (BuildContext context, double? value,
-                            Widget? child) {
-                          return CircularProgressIndicator(
-                            value: value,
-                            color: EnvoyColors.white80,
-                            strokeWidth: 5,
-                          );
-                        })))
+                      );
+                    })))
       ],
     );
   }
@@ -249,9 +251,10 @@ class _ScannerPageState extends State<ScannerPage> {
       address = address.replaceFirst("bitcoin:", "");
 
       if (!await widget.account!.wallet.validateAddress(address)) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Not a valid address"),
-        ));
+        if (_snackbarTimer == null || !_snackbarTimer!.isActive) {
+          ScaffoldMessenger.of(context).showSnackBar(notAValidAddressSnackbar);
+          _snackbarTimer = Timer(Duration(seconds: 5), () {});
+        }
       } else {
         widget.onAddressValidated!(address, amount);
         Navigator.of(context).pop();
@@ -298,17 +301,9 @@ class _ScannerPageState extends State<ScannerPage> {
       ScvChallengeResponse scvResponse =
           object.objects[0] as ScvChallengeResponse;
 
-      setState(() {
-        _showIndeterminateSpinner = true;
-      });
-
       ScvServer()
           .validate(widget.challengeToValidate!, scvResponse.responseWords)
           .then((validated) {
-        setState(() {
-          _showIndeterminateSpinner = false;
-        });
-
         if (validated) {
           bool mustUpdateFirmware = true;
 
@@ -316,8 +311,12 @@ class _ScannerPageState extends State<ScannerPage> {
             PassportModel model = object.objects[1] as PassportModel;
             PassportFirmwareVersion version =
                 object.objects[2] as PassportFirmwareVersion;
-            mustUpdateFirmware =
-                UpdatesManager().shouldUpdate(version.version, model.type);
+
+            UpdatesManager()
+                .shouldUpdate(version.version, model.type)
+                .then((bool shouldUpdate) {
+              mustUpdateFirmware = shouldUpdate;
+            });
           }
 
           Navigator.of(context)

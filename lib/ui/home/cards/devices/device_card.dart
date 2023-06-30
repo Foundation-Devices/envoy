@@ -123,6 +123,7 @@ class DeviceOptions extends ConsumerWidget {
                     actions: [
                       EnvoyButton(
                         S().component_save.toUpperCase(),
+                        type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           Devices().renameDevice(device, textEntry.enteredText);
                           Navigator.pop(context);
@@ -150,6 +151,7 @@ class DeviceOptions extends ConsumerWidget {
                     EnvoyButton(
                       S().component_delete.toUpperCase(),
                       borderRadius: BorderRadius.all(Radius.circular(8)),
+                      type: EnvoyButtonTypes.primaryModal,
                       onTap: () {
                         Devices().deleteDevice(device);
                         Navigator.pop(context);

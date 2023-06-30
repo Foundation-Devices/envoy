@@ -154,6 +154,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                       child: EnvoyButton(
                         S().launch_screen_faceID_fail_CTA,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
+                        type: EnvoyButtonTypes.primaryModal,
                         onTap: () async {
                           Navigator.pop(context);
                           initiateAuth();

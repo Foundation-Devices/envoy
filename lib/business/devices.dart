@@ -98,13 +98,14 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  markAllUpdated(String firmwareVersion) {
+  markDeviceUpdated(int deviceId, String firmwareVersion) {
     for (var device in devices) {
-      if (device.type == DeviceType.passportGen12) {
+      if (deviceId == device.type.index) {
         device.firmwareVersion = firmwareVersion;
       }
     }
 
+    storeDevices();
     notifyListeners();
   }
 

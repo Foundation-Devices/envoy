@@ -8,29 +8,23 @@ import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_passport.dart';
 import 'package:envoy/ui/pages/fw/fw_progress.dart';
-import 'package:flutter/material.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
 import 'package:envoy/business/devices.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-//ignore: must_be_immutable
-class FwMicrosdPage extends StatelessWidget {
-  bool onboarding;
+class FwMicrosdPage extends ConsumerWidget {
+  final bool onboarding;
+  final int deviceId;
 
-  FwMicrosdPage({this.onboarding = true});
+  FwMicrosdPage({this.onboarding = true, this.deviceId = 1});
 
   @override
-  Widget build(BuildContext context) {
-    var fw = FwUploader(UpdatesManager().getStoredFw(), onUploaded: () {
-      if (Platform.isIOS) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return FwPassportPage(
-            onboarding: onboarding,
-          );
-        }));
-      }
-    });
+  Widget build(context, ref) {
+    final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
 
     return OnboardingPage(
       key: Key("fw_microsd"),
@@ -45,6 +39,7 @@ class FwMicrosdPage extends StatelessWidget {
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
+            enabled: fwInfo.hasValue,
             label: S().envoy_fw_microsd_cta,
             onTap: () async {
               try {
@@ -54,22 +49,40 @@ class FwMicrosdPage extends StatelessWidget {
                     return FwProgressPage(onboarding: onboarding);
                   }));
                 }
-                fw.upload();
-                // Here we assume user has updated all his devices
+
+                UpdatesManager().getStoredFw(deviceId).then((File file) {
+                  FwUploader(file, onUploaded: () {
+                    if (Platform.isIOS) {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return FwPassportPage(
+                          onboarding: onboarding,
+                        );
+                      }));
+                    }
+                  }).upload();
+                });
+
+                // Here we assume user has updated  his devices
+
                 Devices()
-                    .markAllUpdated(UpdatesManager().getStoredFwVersion()!);
+                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
               } catch (e) {
                 print("SD: error " + e.toString());
                 if (Platform.isIOS) // TODO: this needs to be smarter
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return FwIosInstructionsPage(onboarding: onboarding);
+                    return FwIosInstructionsPage(
+                      onboarding: onboarding,
+                      deviceId: deviceId,
+                    );
                   }));
 
                 if (Platform.isAndroid)
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return FwAndroidInstructionsPage(onboarding: onboarding);
+                    return FwAndroidInstructionsPage(
+                        onboarding: onboarding, deviceId: deviceId);
                   }));
               }
             }),

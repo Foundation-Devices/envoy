@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/settings.dart';
@@ -15,6 +17,7 @@ import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -82,6 +85,9 @@ class _AccountCardState extends ConsumerState<AccountCard> {
     List<Transaction> transactions =
         ref.watch(transactionsProvider(widget.account.id));
 
+    var accountSynced =
+        ref.watch(accountStateProvider(widget.account.id))!.dateSynced;
+
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(20.0),
@@ -94,7 +100,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
       Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: widget.account.dateSynced == null
+          child: accountSynced == null
               ? ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: 4,
@@ -432,6 +438,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_save.toUpperCase(),
+                        type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           AccountManager().renameAccount(
                               widget.account, textEntry.enteredText);
@@ -462,6 +469,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_delete.toUpperCase(),
+                        type: EnvoyButtonTypes.primaryModal,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);

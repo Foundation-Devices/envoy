@@ -5,11 +5,7 @@
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
-enum EnvoyButtonTypes {
-  primary,
-  secondary,
-  tertiary,
-}
+enum EnvoyButtonTypes { primary, secondary, tertiary, primaryModal }
 
 class EnvoyButton extends StatefulWidget {
   final String label;
@@ -20,6 +16,7 @@ class EnvoyButton extends StatefulWidget {
   final TextStyle? textStyle;
   final FontWeight? fontWeight;
   final bool? readOnly;
+  final bool enabled;
 
   EnvoyButton(
     this.label, {
@@ -30,6 +27,7 @@ class EnvoyButton extends StatefulWidget {
     this.borderRadius,
     this.fontWeight = null,
     this.backgroundColor,
+    this.enabled = true,
   });
 
   @override
@@ -54,6 +52,9 @@ class _EnvoyButtonState extends State<EnvoyButton> {
         case EnvoyButtonTypes.tertiary:
           textColor = EnvoyColors.darkTeal;
           break;
+        case EnvoyButtonTypes.primaryModal:
+          textColor = Colors.white;
+          break;
       }
       _textStyle = Theme.of(context).textTheme.bodySmall!.copyWith(
             color: textColor,
@@ -67,7 +68,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
       scale: isPressed ? 0.97 : 1.0,
       curve: Curves.easeIn,
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: widget.enabled ? widget.onTap : null,
         onTapDown: (cn) {
           setState(() {
             isPressed = true;
@@ -126,6 +127,20 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             color: this.widget.backgroundColor,
             borderRadius: this.widget.borderRadius ??
                 BorderRadius.all(Radius.circular(13.0)));
+
+      case EnvoyButtonTypes.primaryModal:
+        {
+          if (widget.readOnly == true) {
+            return BoxDecoration(
+                color: EnvoyColors.grey85,
+                borderRadius: this.widget.borderRadius ??
+                    BorderRadius.all(Radius.circular(13.0)));
+          }
+          return BoxDecoration(
+              color: EnvoyColors.darkTeal,
+              borderRadius: this.widget.borderRadius ??
+                  BorderRadius.all(Radius.circular(13.0)));
+        }
     }
   }
 }

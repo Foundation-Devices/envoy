@@ -124,10 +124,14 @@ class AddressCard extends StatelessWidget with NavigationCard {
         });
   }
 
-  void _copyAddressToClipboard(BuildContext context, String address) {
-    Clipboard.setData(ClipboardData(text: address));
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(S().envoy_address_copied_clipboard),
-    ));
+  void _copyAddressToClipboard(BuildContext context, String address) async {
+    ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
+    String? text = cdata?.text ?? null;
+    if (text != address) {
+      Clipboard.setData(ClipboardData(text: address));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(S().envoy_address_copied_clipboard),
+      ));
+    }
   }
 }

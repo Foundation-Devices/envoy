@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:ui';
 import 'package:animations/animations.dart';
-import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -23,6 +23,10 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -130,27 +134,23 @@ class AccountsList extends ConsumerStatefulWidget with NavigationCard {
 class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
 
-  _redraw() {
-    setState(() {});
-  }
+  bool _onReOrderStart = false;
 
   @override
   void initState() {
     super.initState();
 
     // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
   }
 
   @override
   void dispose() {
     super.dispose();
-    ExchangeRate().removeListener(_redraw);
   }
 
   @override
   Widget build(BuildContext context) {
-    var accounts = ref.watch(accountsProvider);
+    final accounts = ref.watch(accountsProvider);
     return accounts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(6 * 4),
@@ -161,37 +161,51 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                 const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
             child: FadingEdgeScrollView.fromScrollView(
               scrollController: _scrollController,
-              child: DragAndDropLists(
-                constrainDraggingAxis: false,
-                removeTopPadding: true,
-                scrollController: _scrollController,
-                children: [
-                  DragAndDropList(children: [
-                    ...accounts
-                        .map((e) => DragAndDropItem(
-                                child: Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: accounts.last.id == e.id ? 8 : 20),
-                              child: AccountListTile(
-                                e,
-                                onTap: () {
-                                  widget.navigator!.push(AccountCard(e,
-                                      navigationCallback: widget.navigator));
-                                },
-                              ),
-                            )))
-                        .toList(),
-                    ...[
-                      DragAndDropItem(canDrag: false, child: AccountPrompts())
-                    ],
-                  ])
-                ],
-                onListReorder: (int oldListIndex, int newListIndex) {},
-                onItemReorder: (int oldItemIndex, int oldListIndex,
-                    int newItemIndex, int newListIndex) {
-                  AccountManager().moveAccount(oldItemIndex, newItemIndex);
-                },
-              ),
+              child: ReorderableListView(
+                  footer: Opacity(
+                    child: AccountPrompts(),
+                    opacity: _onReOrderStart ? 0.0 : 1.0,
+                  ),
+                  shrinkWrap: true,
+                  scrollController: _scrollController,
+                  //proxyDecorator is the widget that is shown when dragging
+                  proxyDecorator: (widget, index, animation) {
+                    return FadeTransition(
+                      opacity:
+                          animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
+                      child: ScaleTransition(
+                        scale: animation
+                            .drive(Tween<double>(begin: 0.95, end: 1.02)),
+                        child: widget,
+                      ),
+                    );
+                  },
+                  onReorderEnd: (index) {
+                    setState(() {
+                      _onReOrderStart = false;
+                    });
+                  },
+                  onReorderStart: (index) {
+                    setState(() {
+                      _onReOrderStart = true;
+                    });
+                  },
+                  onReorder: (oldIndex, newIndex) async {
+                    await AccountManager().moveAccount(oldIndex, newIndex);
+                  },
+                  children: [
+                    for (final account in accounts)
+                      SizedBox(
+                          key: ValueKey(account.id),
+                          height: 124,
+                          child: AccountListTile(
+                            account,
+                            onTap: () {
+                              widget.navigator!.push(AccountCard(account,
+                                  navigationCallback: widget.navigator));
+                            },
+                          ))
+                  ]),
             ),
           );
   }
@@ -253,4 +267,88 @@ class AccountPrompts extends ConsumerWidget {
     }
     return SizedBox.square();
   }
+}
+
+void showSecurityDialog(BuildContext context) {
+  EnvoyStorage().addPromptState(DismissiblePrompt.secureWallet);
+  showEnvoyDialog(
+      context: context,
+      dismissible: false,
+      dialog: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(8)),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      width: MediaQuery.of(context).size.height * 0.08,
+                    ),
+                    Padding(padding: EdgeInsets.all(8)),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 200),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(S().wallet_security_modal__heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().wallet_security_modal_subheading,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.secondary,
+                  label: S().wallet_security_modal_cta2,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  }),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.primary,
+                  label: S().wallet_security_modal_cta1,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                            child: DeviceEmptyVideo());
+                      },
+                    );
+                  }),
+              Padding(padding: EdgeInsets.all(12)),
+            ],
+          ),
+        ),
+      ));
 }

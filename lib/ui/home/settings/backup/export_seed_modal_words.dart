@@ -131,6 +131,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                           padding: const EdgeInsets.only(top: 10.0),
                           child: EnvoyButton(
                             S().export_seed_modal_12_words_CTA1,
+                            type: EnvoyButtonTypes.primaryModal,
                             onTap: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();

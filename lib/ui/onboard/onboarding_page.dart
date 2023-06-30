@@ -362,6 +362,7 @@ class OnboardingButton extends StatelessWidget {
   final FontWeight? fontWeight;
 
   final EnvoyButtonTypes type;
+  final bool enabled;
 
   const OnboardingButton(
       {Key? key,
@@ -369,6 +370,7 @@ class OnboardingButton extends StatelessWidget {
       this.type = EnvoyButtonTypes.primary,
       this.textStyle,
       this.fontWeight = null,
+      this.enabled = true,
       required this.onTap})
       : super(key: key);
 

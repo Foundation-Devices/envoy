@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/local_storage.dart';
@@ -14,9 +15,8 @@ import 'package:envoy/business/devices.dart';
 class UpdatesManager {
   HttpTor http = HttpTor(Tor());
   LocalStorage ls = LocalStorage();
+  EnvoyStorage es = EnvoyStorage();
 
-  static const String LATEST_FIRMWARE_VERSION_PREFS = "latest_fw_version";
-  static const String LATEST_FIRMWARE_FILE_PATH_PREFS = "latest_fw_file_path";
   static final UpdatesManager _instance = UpdatesManager._internal();
 
   factory UpdatesManager() {
@@ -33,7 +33,14 @@ class UpdatesManager {
 
     // Go fetch the latest from Server
     Server()
-        .fetchFirmwareUpdateInfo(1) // Just Gen2 for now
+        .fetchFirmwareUpdateInfo(0) // Gen1
+        .then((fw) => _processFw(fw))
+        .catchError((e) {
+      print("Couldn't fetch firmware: " + e.toString());
+    });
+
+    Server()
+        .fetchFirmwareUpdateInfo(1) // Gen2
         .then((fw) => _processFw(fw))
         .catchError((e) {
       print("Couldn't fetch firmware: " + e.toString());
@@ -41,7 +48,10 @@ class UpdatesManager {
   }
 
   _processFw(FirmwareUpdate fw) async {
-    if (fw.version != ls.prefs.getString(LATEST_FIRMWARE_VERSION_PREFS)) {
+    var StoredInfo = await es.getStoredFirmware(fw.deviceId);
+    String? storedVersion = StoredInfo?.storedVersion;
+
+    if (fw.version != storedVersion) {
       final fwBinary = await http.get(fw.url);
 
       // Check MD5
@@ -56,44 +66,48 @@ class UpdatesManager {
         throw Exception('Wrong SHA256 hash');
       }
 
-      // Save to filesystem
-      final fileName = fw.version + "-passport.bin";
+      final fileName =
+          fw.version + "-" + fw.deviceId.toString() + "-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
-
-      // Store to preferences
-      ls.prefs.setString(LATEST_FIRMWARE_FILE_PATH_PREFS, fileName);
-      ls.prefs.setString(LATEST_FIRMWARE_VERSION_PREFS, fw.version);
+      es.addNewFirmware(fw.deviceId, fw.version, fileName);
     }
   }
 
-  File getStoredFw() {
-    File file =
-        ls.openFileBytes(ls.prefs.getString(LATEST_FIRMWARE_FILE_PATH_PREFS)!);
+  Future<File> getStoredFw(int deviceId) async {
+    var StoredInfo = await es.getStoredFirmware(deviceId);
+
+    String? storedPath = StoredInfo?.path;
+
+    File file = ls.openFileBytes(storedPath!);
 
     // Migration
     if (!file.path.endsWith("-passport.bin")) {
-      final fileName = getStoredFwVersion()! + "-passport.bin";
+      final fileName = (getStoredFwVersion(deviceId) as String) +
+          "-" +
+          deviceId.toString() +
+          "-passport.bin";
       var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
-      ls.prefs.setString(LATEST_FIRMWARE_FILE_PATH_PREFS, fileName);
+      es.addNewFirmware(
+          deviceId, getStoredFwVersion(deviceId) as String, fileName);
       return newFile;
     }
 
     return file;
   }
 
-  String? getStoredFwVersion() {
-    return ls.prefs.getString(LATEST_FIRMWARE_VERSION_PREFS);
+  Future<String?> getStoredFwVersion(int deviceId) async {
+    var StoredInfo = await es.getStoredFirmware(deviceId);
+    String? storedVersion = StoredInfo?.storedVersion;
+    return storedVersion;
   }
 
-  bool shouldUpdate(String version, DeviceType type) {
-    if (getStoredFwVersion() != null && type == DeviceType.passportGen12) {
-      Version deviceFwVersion = Version.parse(version.replaceAll("v", ""));
-      Version currentFwVersion =
-          Version.parse(getStoredFwVersion()!.replaceAll("v", ""));
+  Future<bool> shouldUpdate(String version, DeviceType type) async {
+    Version deviceFwVersion = Version.parse(version.replaceAll("v", ""));
+    final fw = await getStoredFwVersion(type.index);
+    Version currentFwVersion = Version.parse(fw!.replaceAll("v", ""));
 
-      if (currentFwVersion > deviceFwVersion) {
-        return true;
-      }
+    if (currentFwVersion > deviceFwVersion) {
+      return true;
     }
 
     return false;

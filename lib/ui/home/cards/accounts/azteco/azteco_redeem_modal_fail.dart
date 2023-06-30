@@ -76,6 +76,7 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
                   padding: const EdgeInsets.only(top: 4 * 4),
                   child: EnvoyButton(
                     S().azteco_redeem_modal_fail_cta,
+                    type: EnvoyButtonTypes.primaryModal,
                     onTap: () {
                       Navigator.of(context).pop();
                     },
