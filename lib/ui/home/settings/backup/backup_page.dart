@@ -370,7 +370,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 OnboardingButton(
-                    type: EnvoyButtonTypes.primary,
+                    type: EnvoyButtonTypes.primaryModal,
                     label: S().manual_toggle_on_seed_backup_now_modal_cta,
                     onTap: () {
                       Navigator.pop(context);
