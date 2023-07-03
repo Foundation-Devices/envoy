@@ -5,25 +5,25 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:envoy/business/account.dart';
 import 'package:envoy/business/azteco_voucher.dart';
+import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/xfp_endian.dart';
-import 'package:envoy/business/settings.dart';
+import 'package:flutter/material.dart';
+import 'package:schedulers/schedulers.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/account.dart';
-import 'package:flutter/material.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/fees.dart';
-import 'package:envoy/business/notifications.dart';
-import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:schedulers/schedulers.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:collection/collection.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -68,15 +68,17 @@ class AccountManager extends ChangeNotifier {
 
       if (!ConnectivityManager().torEnabled ||
           ConnectivityManager().torCircuitEstablished) {
-        accounts.forEachIndexed((index, account) {
+        accounts.forEach((account) {
           _syncScheduler.run(() async {
             final syncedAccount = await _syncAccount(account);
-            accounts[index] = accounts[index].copyWith(
-                wallet: syncedAccount.wallet,
-                dateSynced: syncedAccount.dateSynced);
+
+            final syncAccountIndex =
+                accounts.indexWhere((a) => a.id == syncedAccount.id);
+            if (syncAccountIndex != -1) {
+              accounts[syncAccountIndex] = syncedAccount;
+            }
             notifyListeners();
             storeAccounts();
-
             if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
               notifyIfAccountBalanceHigherThanUsd1000();
             }
