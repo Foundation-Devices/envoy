@@ -195,7 +195,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                     child: Shield(
                       child: Padding(
                           padding: const EdgeInsets.only(
-                              right: 15, left: 15, top: 15, bottom: 40),
+                              right: 8, left: 8, top: 8, bottom: 40),
                           child: SizedBox.expand(child: widget.shield)),
                     ),
                   ),
