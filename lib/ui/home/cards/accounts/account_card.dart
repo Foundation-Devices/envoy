@@ -14,6 +14,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
+import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
@@ -173,10 +174,24 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                       onPressed: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return ScannerPage(
-                              [ScannerType.address, ScannerType.azteco],
-                              account: widget.account,
-                              onAddressValidated: (address, amount) {
+                          return ScannerPage([
+                            ScannerType.address,
+                            ScannerType.azteco,
+                            ScannerType.tx
+                          ], account: widget.account, onTxParsed: (psbt) {
+                            widget.account.wallet
+                                .decodePsbt(psbt)
+                                .then((decoded) {
+                              widget.navigator!.push(TxReview(
+                                decoded,
+                                widget.account,
+                                navigationCallback: widget.navigator,
+                                onFinishNavigationClick: () {
+                                  widget.navigator?.pop(depth: 1);
+                                },
+                              ));
+                            });
+                          }, onAddressValidated: (address, amount) {
                             widget.navigator!.push(SendCard(widget.account,
                                 address: address,
                                 amountSats: amount,

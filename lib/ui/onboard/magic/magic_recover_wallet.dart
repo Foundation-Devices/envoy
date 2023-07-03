@@ -301,7 +301,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                     .push(MaterialPageRoute(builder: (_c) {
                   return ScannerPage(
                     [ScannerType.seed],
-                    callback: (seed) async {
+                    onSeedParsed: (seed) async {
                       try {
                         _setIndeterminateState();
                         setState(() {
