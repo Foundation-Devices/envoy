@@ -341,7 +341,7 @@ void showSecurityDialog(BuildContext context) {
                       builder: (context) {
                         return BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: DeviceEmptyVideo());
+                            child: Material(child: DeviceEmptyVideo()));
                       },
                     );
                   }),

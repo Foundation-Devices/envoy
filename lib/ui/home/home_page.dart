@@ -133,12 +133,8 @@ class _HomePageState extends ConsumerState<HomePage>
             .isAccountBalanceHigherThanUsd1000Stream
             .stream
             .listen((event) {
-          _notifyAboutWarning();
+          _notifyAboutHighBalance();
         });
-
-        // if (AccountManager().isAccountBalanceHigherThanUsd1000()) {
-        //   _notifyAboutWarning();
-        // }
       }
     });
   }
@@ -160,8 +156,7 @@ class _HomePageState extends ConsumerState<HomePage>
     ).show(context);
   }
 
-  _notifyAboutWarning() {
-    print("_notifyAboutWarning");
+  _notifyAboutHighBalance() {
     AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
 
     showSecurityDialog(context);
