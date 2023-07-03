@@ -12,7 +12,7 @@ class PpRestoreBackupPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("pp_restore_backup_password"),
-      clipArt: Image.asset("assets/pp_encryption_words.png"),
+      clipArt: Image.asset("assets/pp_backup_code.png"),
       text: [
         OnboardingText(
             header: S().envoy_pp_restore_backup_password_heading,
