@@ -44,24 +44,28 @@ class ScannerPage extends StatefulWidget {
 
   final Account? account;
   final Challenge? challengeToValidate;
-  final Function(String)? callback;
+  final Function(String)? onTxParsed;
+  final Function(String)? onSeedParsed;
+  final Function(String)? onNodeUrlParsed;
   final Function(String, int)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
       {this.account,
       this.challengeToValidate,
-      this.callback,
+      this.onTxParsed,
+      this.onSeedParsed,
+      this.onNodeUrlParsed,
       this.onAddressValidated});
 
-  ScannerPage.address(Function(String, int) callback, Account account)
+  ScannerPage.address(Function(String, int) onAddressValidated, Account account)
       : this([ScannerType.address],
-            onAddressValidated: callback, account: account);
+            onAddressValidated: onAddressValidated, account: account);
 
-  ScannerPage.tx(Function(String) callback)
-      : this([ScannerType.tx], callback: callback);
+  ScannerPage.tx(Function(String) onTxParsed)
+      : this([ScannerType.tx], onTxParsed: onTxParsed);
 
-  ScannerPage.nodeUrl(Function(String) callback)
-      : this([ScannerType.nodeUrl], callback: callback);
+  ScannerPage.nodeUrl(Function(String) onNodeUrlParsed)
+      : this([ScannerType.nodeUrl], onNodeUrlParsed: onNodeUrlParsed);
 
   ScannerPage.validate(Account account)
       : this([ScannerType.validate], account: account);
@@ -224,7 +228,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
     // Seed recovery flow
     if (widget._acceptableTypes.contains(ScannerType.seed)) {
-      widget.callback!(code);
+      widget.onSeedParsed!(code);
       Navigator.of(context).pop();
       return;
     }
@@ -251,21 +255,22 @@ class _ScannerPageState extends State<ScannerPage> {
       address = address.replaceFirst("bitcoin:", "");
 
       if (!await widget.account!.wallet.validateAddress(address)) {
-        if (_snackbarTimer == null || !_snackbarTimer!.isActive) {
+        if ((_snackbarTimer == null || !_snackbarTimer!.isActive) &&
+            _progress == 0.0) {
           ScaffoldMessenger.of(context).showSnackBar(notAValidAddressSnackbar);
           _snackbarTimer = Timer(Duration(seconds: 5), () {});
         }
       } else {
         widget.onAddressValidated!(address, amount);
         Navigator.of(context).pop();
+        return;
       }
-      return;
     }
 
     String scannedData = code.toLowerCase();
 
     if (widget._acceptableTypes.contains(ScannerType.nodeUrl)) {
-      widget.callback!(scannedData);
+      widget.onNodeUrlParsed!(scannedData);
       Navigator.of(context).pop();
       return;
     }
@@ -280,7 +285,7 @@ class _ScannerPageState extends State<ScannerPage> {
       if (widget._acceptableTypes.contains(ScannerType.scv)) {
         _validateScvData(_urDecoder.decoded);
       } else if (widget._acceptableTypes.contains(ScannerType.tx)) {
-        widget.callback!((_urDecoder.decoded as CryptoPsbt).decoded);
+        widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
         Navigator.of(context).pop();
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded) &&
