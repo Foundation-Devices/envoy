@@ -25,9 +25,9 @@ class FirmwareInfo {
   final String path;
 }
 
-final aztecoTxStreamProvider =
+final pendingTxStreamProvider =
     StreamProvider.family<List<wallet.Transaction>, String?>(
-        (ref, account) => EnvoyStorage().getAztecoTxsSteam(account));
+        (ref, account) => EnvoyStorage().getPendingTxsSteam(account));
 
 final firmwareStreamProvider = StreamProvider.family<FirmwareInfo?, int>(
     (ref, deviceID) => EnvoyStorage().getfirmwareSteam(deviceID));
@@ -37,7 +37,7 @@ class EnvoyStorage {
   late Database _db;
 
   StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
-  StoreRef aztecoPendingTxStore = StoreRef.main();
+  StoreRef pendingTxStore = StoreRef.main();
   StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>.main();
   StoreRef firmwareStore = StoreRef.main();
 
@@ -72,49 +72,63 @@ class EnvoyStorage {
         .map((event) => event != null);
   }
 
-  Future addAztecoTx(
-      String address, String accountId, DateTime timestamp) async {
-    await aztecoPendingTxStore.record(address).put(_db,
-        {'account': accountId, 'timestamp': timestamp.millisecondsSinceEpoch});
+  Future addPendingTx(String key, String accountId, DateTime timestamp,
+      wallet.TransactionType type, int amount) async {
+    await pendingTxStore.record(key).put(_db, {
+      'account': accountId,
+      'timestamp': timestamp.millisecondsSinceEpoch,
+      'type': type.toString(),
+      'amount': amount,
+    });
     return true;
   }
 
-  Future<List<wallet.Transaction>> getAztecoTxs(String accountId) async {
-    var finder = Finder(filter: Filter.equals('account', accountId));
-    var records = await aztecoPendingTxStore.find(_db, finder: finder);
-    return transformAztecoTxRecords(records);
+  Future<List<wallet.Transaction>> getPendingTxs(
+      String accountId, wallet.TransactionType type) async {
+    var finder = Finder(
+      filter: Filter.and([
+        Filter.equals('account', accountId),
+        Filter.equals('type', type.toString())
+      ]),
+    );
+    var records = await pendingTxStore.find(_db, finder: finder);
+    return transformPendingTxRecords(records);
   }
 
-  List<wallet.Transaction> transformAztecoTxRecords(
+  List<wallet.Transaction> transformPendingTxRecords(
       List<RecordSnapshot<Key?, Value?>> records) {
     return records
-        .map((e) => wallet.Transaction(
-            e.key as String,
-            "",
-            DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-            0,
-            0,
-            0,
-            0,
-            type: wallet.TransactionType.azteco))
+        .map(
+          (e) => wallet.Transaction(
+              e.key as String,
+              e.key as String,
+              DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              0,
+              0,
+              e["amount"] as int,
+              0,
+              type: e["type"] == wallet.TransactionType.azteco.toString()
+                  ? wallet.TransactionType.azteco
+                  : wallet.TransactionType.pending),
+        )
         .toList();
   }
 
-  //returns a stream of azteco transactions that stored in the database
-  Stream<List<wallet.Transaction>> getAztecoTxsSteam(String? accountId) {
+  //returns a stream of all pending transactions that stored in the database
+  Stream<List<wallet.Transaction>> getPendingTxsSteam(String? accountId) {
     var finder = Finder(filter: Filter.equals('account', accountId));
     return EnvoyStorage()
-        .aztecoPendingTxStore
+        .pendingTxStore
         .query(finder: finder)
         .onSnapshots(_db)
         .map((records) {
-      return transformAztecoTxRecords(records);
+      return transformPendingTxRecords(records);
     });
   }
 
-  Future<bool> deleteAztecoTx(String address) async {
-    if (await aztecoPendingTxStore.record(address).exists(_db)) {
-      await aztecoPendingTxStore.record(address).delete(_db);
+  Future<bool> deletePendingTx(String key) async {
+    if (await pendingTxStore.record(key).exists(_db)) {
+      await pendingTxStore.record(key).delete(_db);
 
       return true;
     }
@@ -145,8 +159,8 @@ class EnvoyStorage {
     dismissedPromptsStore.delete(_db);
   }
 
-  void clearAztecoStore() async {
-    aztecoPendingTxStore.delete(_db);
+  void clearPendingStore() async {
+    pendingTxStore.delete(_db);
   }
 
   Future addNewFirmware(int deviceId, String version, String path) async {

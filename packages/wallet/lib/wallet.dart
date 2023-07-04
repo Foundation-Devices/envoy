@@ -17,7 +17,7 @@ part 'wallet.g.dart';
 
 enum Network { Mainnet, Testnet, Signet, Regtest }
 
-enum TransactionType { normal, azteco }
+enum TransactionType { normal, azteco, pending }
 
 @JsonSerializable()
 class Transaction {
@@ -557,14 +557,15 @@ class Wallet {
     for (var i = 0; i < txList.transactionsLen; i++) {
       var tx = txList.transactions.elementAt(i).ref;
       transactions.add(Transaction(
-          "",
-          tx.txid.cast<Utf8>().toDartString(),
-          DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
-          tx.fee,
-          tx.received,
-          tx.sent,
-          tx.confirmationHeight,
-          outputs: _extractStringList(tx.outputs, tx.outputsLen)));
+        "",
+        tx.txid.cast<Utf8>().toDartString(),
+        DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
+        tx.fee,
+        tx.received,
+        tx.sent,
+        tx.confirmationHeight,
+        outputs: _extractStringList(tx.outputs, tx.outputsLen),
+      ));
     }
 
     return transactions;

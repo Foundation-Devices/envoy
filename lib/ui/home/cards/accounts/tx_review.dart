@@ -23,6 +23,7 @@ import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 //ignore: must_be_immutable
 class TxReview extends StatefulWidget with NavigationCard {
@@ -711,6 +712,14 @@ class _TxReviewState extends State<TxReview> {
           Settings().electrumAddress(widget.account.wallet.network),
           Tor().port,
           widget.psbt.rawTx);
+
+      await EnvoyStorage().addPendingTx(
+          widget.psbt.txid,
+          widget.account.id!,
+          DateTime.now(),
+          TransactionType.pending,
+          widget.psbt.sent + widget.psbt.fee);
+
       //wait for animation
       await Future.delayed(Duration(seconds: 1));
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);

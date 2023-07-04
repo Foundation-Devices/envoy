@@ -6,6 +6,7 @@ import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wallet/wallet.dart';
 
 void main() {
   test("Test create voucher from url", () async {
@@ -46,8 +47,10 @@ void main() {
 
     await Future.delayed(Duration(seconds: 1));
 
-    await EnvoyStorage().addAztecoTx("address", "account", DateTime.now());
-    var txs = await EnvoyStorage().getAztecoTxs("account");
+    await EnvoyStorage().addPendingTx(
+        "address", "account", DateTime.now(), TransactionType.azteco, 0);
+    var txs =
+        await EnvoyStorage().getPendingTxs("account", TransactionType.azteco);
 
     expect(txs[0].memo, "address");
   });

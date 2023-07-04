@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:schedulers/schedulers.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -103,6 +104,21 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
+  pendingSync(Account account) async {
+    final pendingTxs = await EnvoyStorage()
+        .getPendingTxs(account.id!, TransactionType.pending);
+
+    if (pendingTxs.isEmpty) return;
+
+    for (var pendingTx in pendingTxs) {
+      account.wallet.transactions
+          .where((tx) => tx.txId == pendingTx.txId)
+          .forEach((txToRemove) {
+        EnvoyStorage().deletePendingTx(pendingTx.txId);
+      });
+    }
+  }
+
   Future<Account> _syncAccount(Account account) async {
     bool? changed = null;
 
@@ -132,6 +148,7 @@ class AccountManager extends ChangeNotifier {
       account = account.copyWith(dateSynced: DateTime.now());
 
       aztecoSync(account);
+      pendingSync(account);
     }
     ;
 
