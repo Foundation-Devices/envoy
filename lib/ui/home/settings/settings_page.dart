@@ -327,7 +327,7 @@ class _DevOptions extends StatelessWidget {
               child: Text("Clear Prompt states")),
           TextButton(
               onPressed: () {
-                EnvoyStorage().clearAztecoStore();
+                EnvoyStorage().clearPendingStore();
                 Navigator.pop(context);
               },
               child: Text("Clear Azteco states")),
