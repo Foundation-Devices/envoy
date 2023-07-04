@@ -4,9 +4,35 @@
 
 //import 'dart:convert';
 //import 'dart:io';
+import 'dart:io';
+import 'package:path/path.dart';
 import 'package:envoy/main.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:integration_test/integration_test.dart';
+
+Future<void> resetData() async {
+  // Preferences
+  final prefs = await SharedPreferences.getInstance();
+  final appSupportDir = await getApplicationSupportDirectory();
+
+  // Database
+  final String dbName = 'envoy.db';
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  final dbFile = File(join(appDocumentDir.path, dbName));
+
+  try {
+    // Clear shared preferences
+    await prefs.clear();
+    // Delete app data directory
+    await appSupportDir.delete(recursive: true);
+    // Delete the database file
+    await dbFile.delete();
+  } catch (e) {
+    print('Error deleting app data: $e');
+  }
+}
 
 void main() {
   testWidgets("Passport simulator integration test",
