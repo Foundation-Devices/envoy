@@ -275,7 +275,6 @@ void showSecurityDialog(BuildContext context) {
       dismissible: false,
       dialog: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.height * 0.7,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -294,36 +293,34 @@ void showSecurityDialog(BuildContext context) {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(8)),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      width: MediaQuery.of(context).size.height * 0.08,
-                    ),
-                    Padding(padding: EdgeInsets.all(8)),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 200),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(S().wallet_security_modal__heading,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                        S().wallet_security_modal_subheading,
-                        style: Theme.of(context).textTheme.bodySmall,
+              Padding(padding: EdgeInsets.all(16)),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/exclamation_icon.png",
+                    height: 60,
+                    width: 60,
+                  ),
+                  Padding(padding: EdgeInsets.all(16)),
+                  Container(
+                    constraints: BoxConstraints(maxWidth: 200),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: Text(S().wallet_security_modal__heading,
                         textAlign: TextAlign.center,
-                      ),
+                        style: Theme.of(context).textTheme.titleLarge),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: Text(
+                      S().wallet_security_modal_subheading,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               OnboardingButton(
                   type: EnvoyButtonTypes.secondary,
@@ -332,7 +329,7 @@ void showSecurityDialog(BuildContext context) {
                     Navigator.of(context).pop();
                   }),
               OnboardingButton(
-                  type: EnvoyButtonTypes.primary,
+                  type: EnvoyButtonTypes.primaryModal,
                   label: S().wallet_security_modal_cta1,
                   onTap: () {
                     Navigator.of(context).pop();

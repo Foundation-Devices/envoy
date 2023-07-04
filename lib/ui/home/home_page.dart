@@ -19,6 +19,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/tor_warning.dart';
@@ -126,7 +127,6 @@ class _HomePageState extends ConsumerState<HomePage>
     EnvoyStorage()
         .isPromptDismissed(DismissiblePrompt.secureWallet)
         .listen((event) {
-      print("event1: " + event.toString());
       // if is not dismissed listen balance
       if (!event) {
         AccountManager()
