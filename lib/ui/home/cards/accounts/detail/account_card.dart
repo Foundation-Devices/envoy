@@ -2,40 +2,41 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:async';
-
-import 'package:envoy/business/exchange_rate.dart';
+import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/fading_edge_scroll_view.dart';
+import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
+import 'package:envoy/ui/home/cards/navigation_card.dart';
+import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
 import 'package:wallet/wallet.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/ui/home/cards/text_entry.dart';
-import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/util/amount.dart';
-import 'package:envoy/ui/shield.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget with NavigationCard {
@@ -75,6 +76,8 @@ class _AccountCardState extends ConsumerState<AccountCard> {
     ExchangeRate().addListener(_redraw);
   }
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void dispose() {
     super.dispose();
@@ -86,9 +89,6 @@ class _AccountCardState extends ConsumerState<AccountCard> {
     List<Transaction> transactions =
         ref.watch(transactionsProvider(widget.account.id));
 
-    var accountSynced =
-        ref.watch(accountStateProvider(widget.account.id))!.dateSynced;
-
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(20.0),
@@ -98,10 +98,19 @@ class _AccountCardState extends ConsumerState<AccountCard> {
               HomePageAccountsState.list;
         }),
       ),
+      AnimatedSwitcher(
+        duration: Duration(milliseconds: 200),
+        child: transactions.isNotEmpty
+            ? Container(
+                padding: EdgeInsets.only(bottom: 8),
+                child: FilterOptions(),
+              )
+            : SizedBox.shrink(),
+      ),
       Expanded(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: accountSynced == null
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+          child: widget.account.dateSynced == null
               ? ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: 4,
@@ -110,15 +119,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   },
                 )
               : transactions.isNotEmpty
-                  ? ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: transactions.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return TransactionListTile(
-                            transaction: transactions[index],
-                            account: widget.account);
-                      },
-                    )
+                  ? _getMainWidget(context, transactions)
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -127,7 +128,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                         Expanded(
                           child: Center(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 4 * 5),
+                              padding: EdgeInsets.only(top: 14),
                               child: Text(
                                 S().account_empty_tx_history_text_explainer,
                                 style: _explainerTextStyleWallet.copyWith(),
@@ -142,7 +143,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
       ),
       Padding(
         padding: const EdgeInsets.only(
-            left: 50.0, right: 50.0, bottom: 50.0, top: 20.0),
+            left: 50.0, right: 50.0, bottom: 20.0, top: 12.0),
         child: Row(
           children: [
             Expanded(
@@ -174,24 +175,10 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                       onPressed: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return ScannerPage([
-                            ScannerType.address,
-                            ScannerType.azteco,
-                            ScannerType.tx
-                          ], account: widget.account, onTxParsed: (psbt) {
-                            widget.account.wallet
-                                .decodePsbt(psbt)
-                                .then((decoded) {
-                              widget.navigator!.push(TxReview(
-                                decoded,
-                                widget.account,
-                                navigationCallback: widget.navigator,
-                                onFinishNavigationClick: () {
-                                  widget.navigator?.pop(depth: 1);
-                                },
-                              ));
-                            });
-                          }, onAddressValidated: (address, amount) {
+                          return ScannerPage(
+                              [ScannerType.address, ScannerType.azteco],
+                              account: widget.account,
+                              onAddressValidated: (address, amount) {
                             widget.navigator!.push(SendCard(widget.account,
                                 address: address,
                                 amountSats: amount,
@@ -216,6 +203,45 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         ),
       )
     ]);
+  }
+
+  Widget _getMainWidget(BuildContext context, List<Transaction> transactions) {
+    AccountToggleState accountToggleState =
+        ref.watch(accountToggleStateProvider);
+    return PageTransitionSwitcher(
+      reverse: accountToggleState == AccountToggleState.Tx,
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return SharedAxisTransition(
+          animation: animation,
+          fillColor: Colors.transparent,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.vertical,
+          child: child,
+        );
+      },
+      child: accountToggleState == AccountToggleState.Tx
+          ? FadingEdgeScrollView.fromScrollView(
+              scrollController: _scrollController,
+              child: StatefulBuilder(builder: (c, s) {
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  controller: _scrollController,
+                  itemCount: transactions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      child: TransactionListTile(
+                          transaction: transactions[index],
+                          account: widget.account),
+                    );
+                  },
+                );
+              }))
+          : CoinsList(),
+    );
   }
 }
 
@@ -301,7 +327,7 @@ class TransactionListTile extends StatelessWidget {
         subtitle: transaction.type == TransactionType.azteco
             ? Text(S().azteco_account_tx_history_pending_voucher)
             : transaction.isConfirmed
-                ? Text(timeago.format(transaction.date))
+                ? Text(timeAgo.format(transaction.date))
                 : Text(S().envoy_account_awaiting_confirmation),
         leading: transaction.amount < 0
             ? Icon(Icons.call_made)
@@ -453,7 +479,6 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_save.toUpperCase(),
-                        type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           AccountManager().renameAccount(
                               widget.account, textEntry.enteredText);
@@ -484,7 +509,6 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_delete.toUpperCase(),
-                        type: EnvoyButtonTypes.primaryModal,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);
