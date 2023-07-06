@@ -2,15 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//import 'dart:convert';
-//import 'dart:io';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:envoy/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:integration_test/integration_test.dart';
 
 Future<void> resetData() async {
   // Preferences
@@ -35,27 +33,76 @@ Future<void> resetData() async {
 }
 
 void main() {
-  testWidgets("Passport simulator integration test",
-      (WidgetTester tester) async {
-    // Initialize singletons
-    await initSingletons();
-    await tester.pumpWidget(EnvoyApp());
+  group('end-to-end test', () {
+    testWidgets('Connect an existing passport flow', (tester) async {
+      await resetData();
+      await initSingletons();
+      await tester.pumpWidget(EnvoyApp());
 
-    // var process = await Process.start('just', ['/home/igor/Code/passport-air/simulator/sim', 'color']);
-    // process.stdout
-    //     .transform(utf8.decoder)
-    //     .forEach(print);
+      final originalOnError = FlutterError.onError!;
+      FlutterError.onError = (FlutterErrorDetails details) {
+        originalOnError(details);
+      };
 
-    //await Process.run('xdotool', ['mousemove', '-w', '0x8a0000e', '210', '550']);
-    //await Process.run('xdotool', ['key', '-w', '0x8a0000e', 'x']);
+      await tester.pump();
 
-    //print(result.stdout);
+      final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+      final continueButtonFinder = find.text('Continue');
+      final enableMagicButtonFinder = find.text('Enable Magic Backups');
+      final createMagicButtonFinder = find.text('Create Magic Backup');
 
-    //sleep(new Duration(seconds: 30));
+      expect(setUpButtonFinder, findsOneWidget);
+      await tester.tap(setUpButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
 
-    // TODO: enable this
-    // Every time we start the app we should land on Devices
-    //final titleFinder = find.text('DEVICES');
-    //expect(titleFinder, findsOneWidget);
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      expect(enableMagicButtonFinder, findsOneWidget);
+      await tester.tap(enableMagicButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      //video
+      expect(createMagicButtonFinder, findsOneWidget);
+      await tester.tap(createMagicButtonFinder);
+      await tester.pump(Duration(milliseconds: 1500));
+
+      await tester.pumpAndSettle();
+
+// animations
+
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+// main ˇˇ
+
+      final devicesButton = find.text('Devices');
+      final iconPlus = find.byIcon(Icons.add);
+      final connectExistingPassport = find.text("CONNECT AN EXISTING PASSPORT");
+      final getStarted = find.text("Get Started");
+
+      await tester.tap(devicesButton);
+      await tester.pumpAndSettle();
+
+      await tester.tap(iconPlus);
+      await tester.pumpAndSettle();
+
+      await tester.tap(connectExistingPassport);
+      await tester.pump(Duration(milliseconds: 500));
+
+      expect(getStarted, findsOneWidget);
+      await tester.tap(getStarted);
+      await tester.pumpAndSettle();
+
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pumpAndSettle();
+    });
   });
 }
