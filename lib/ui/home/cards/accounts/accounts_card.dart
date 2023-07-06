@@ -323,7 +323,7 @@ void showSecurityDialog(BuildContext context) {
                 ],
               ),
               OnboardingButton(
-                  type: EnvoyButtonTypes.secondary,
+                  type: EnvoyButtonTypes.tertiary,
                   label: S().wallet_security_modal_cta2,
                   onTap: () {
                     Navigator.of(context).pop();
