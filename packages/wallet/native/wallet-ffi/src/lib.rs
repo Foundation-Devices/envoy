@@ -850,13 +850,23 @@ pub unsafe extern "C" fn wallet_sign_psbt(
     }
 }
 
+fn generate_mnemonic() -> (Mnemonic, String) {
+    let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
+    let mnemonic_string = mnemonic.to_string();
+
+    (mnemonic, mnemonic_string)
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     let secp = Secp256k1::new();
 
-    let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
+    let (mut mnemonic, mut mnemonic_string) = generate_mnemonic();
 
-    let mnemonic_string = mnemonic.to_string();
+    // SFT-2340: try until we get a valid mnemonic (moon rays bug)
+    while Mnemonic::parse(mnemonic_string.clone()).is_err() {
+        (mnemonic, mnemonic_string) = generate_mnemonic();
+    }
 
     let xkey: ExtendedKey<miniscript::BareCtx> = mnemonic.into_extended_key().unwrap();
     let xprv = xkey.into_xprv(network.into()).unwrap();
