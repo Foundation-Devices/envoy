@@ -311,17 +311,22 @@ class AccountManager extends ChangeNotifier {
   }
 
   deleteAccount(Account account) {
-    account.wallet.drop();
+    final accountToDeleteIndex = accounts.indexWhere((a) => a.id == account.id);
+    if (accountToDeleteIndex != -1) {
+      var accountToDelete = accounts[accountToDeleteIndex];
+      accountToDelete.wallet.drop();
 
-    // Delete the BDK DB so it doesn't get confused on re-pair
-    final dir = Directory(walletsDirectory + account.wallet.name);
-    dir.delete(recursive: true);
+      // Delete the BDK DB so it doesn't get confused on re-pair
+      final dir = Directory(walletsDirectory + accountToDelete.wallet.name);
+      dir.delete(recursive: true);
 
-    accounts.remove(account);
-    storeAccounts();
-    notifyListeners();
+      accounts.remove(accountToDelete);
+      storeAccounts();
+      notifyListeners();
 
-    Notifications().deleteFromAccount(account);
+      Notifications().deleteFromAccount(accountToDelete);
+    }
+    ;
   }
 
   deleteDeviceAccounts(Device device) {
