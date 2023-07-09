@@ -93,6 +93,19 @@ pub struct TransactionList {
 }
 
 #[repr(C)]
+pub struct Utxo {
+    txid: *const c_char,
+    vout: u32,
+    value: u64,
+}
+
+#[repr(C)]
+pub struct UtxoList {
+    utxos_len: u32,
+    utxos: *const Utxo,
+}
+
+#[repr(C)]
 pub struct Seed {
     mnemonic: *const c_char,
     xprv: *const c_char,
@@ -483,6 +496,34 @@ pub unsafe extern "C" fn wallet_get_balance(wallet: *mut Mutex<bdk::Wallet<Tree>
     let wallet = get_wallet_mutex(wallet).lock().unwrap();
     let balance = wallet.get_balance().unwrap();
     balance.confirmed + balance.immature + balance.trusted_pending + balance.untrusted_pending
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_get_utxos(wallet: *mut Mutex<bdk::Wallet<Tree>>) -> UtxoList {
+    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+
+    let utxos = wallet.list_unspent().unwrap();
+    let utxos_len = utxos.len() as u32;
+
+    let mut utxos_vec: Vec<Utxo> = vec![];
+
+    for utxo in utxos {
+        utxos_vec.push(Utxo {
+            txid: CString::new(format!("{}", utxo.outpoint.txid))
+                .unwrap()
+                .into_raw(),
+            vout: utxo.outpoint.vout,
+            value: utxo.txout.value
+        });
+    }
+
+    let utxos_box = utxos_vec.into_boxed_slice();
+    let utxos_ptr = Box::into_raw(utxos_box);
+
+    UtxoList {
+        utxos_len,
+        utxos: utxos_ptr as _,
+    }
 }
 
 #[no_mangle]
