@@ -95,8 +95,7 @@ class AccountManager extends ChangeNotifier {
   notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
       if (account.wallet.hot && account.wallet.network == Network.Mainnet) {
-        var amountUSD =
-            double.parse(ExchangeRate().getUsdValue(account.wallet.balance));
+        var amountUSD = ExchangeRate().getUsdValue(account.wallet.balance);
         if (amountUSD >= 1000) {
           isAccountBalanceHigherThanUsd1000Stream.add(true);
         }

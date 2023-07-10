@@ -28,6 +28,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:wallet/wallet.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -133,7 +134,14 @@ class _HomePageState extends ConsumerState<HomePage>
             .isAccountBalanceHigherThanUsd1000Stream
             .stream
             .listen((event) {
-          _notifyAboutHighBalance();
+          final currentAccount =
+              ref.read(homePageAccountsProvider).currentAccount;
+
+          if (currentAccount != null &&
+              currentAccount.wallet.hot &&
+              currentAccount.wallet.network == Network.Mainnet) {
+            _notifyAboutHighBalance();
+          }
         });
       }
     });
@@ -158,7 +166,6 @@ class _HomePageState extends ConsumerState<HomePage>
 
   _notifyAboutHighBalance() {
     AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
-
     showSecurityDialog(context);
   }
 

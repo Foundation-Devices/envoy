@@ -139,11 +139,8 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  String getUsdValue(int amountSats) {
-    //return _usdRate;
-
-    NumberFormat currencyFormatter = NumberFormat.currency(symbol: "");
-    return currencyFormatter.format(_usdRate! * amountSats / 100000000);
+  double getUsdValue(int amountSats) {
+    return _usdRate! * amountSats / 100000000;
   }
 
   // SATS to FIAT
