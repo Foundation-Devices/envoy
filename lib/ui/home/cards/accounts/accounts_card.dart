@@ -200,6 +200,12 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                           child: AccountListTile(
                             account,
                             onTap: () {
+                              ref
+                                      .read(homePageAccountsProvider.notifier)
+                                      .state =
+                                  HomePageAccountsState(
+                                      HomePageAccountsNavigationState.details,
+                                      currentAccount: account);
                               widget.navigator!.push(AccountCard(account,
                                   navigationCallback: widget.navigator));
                             },

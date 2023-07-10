@@ -4,10 +4,18 @@
 
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/account.dart';
 
 enum HomePageTabState { devices, accounts, learn }
 
-enum HomePageAccountsState { list, details, receive, send }
+enum HomePageAccountsNavigationState { list, details, receive, send }
+
+class HomePageAccountsState {
+  final Account? currentAccount;
+  final HomePageAccountsNavigationState navigationState;
+
+  HomePageAccountsState(this.navigationState, {this.currentAccount});
+}
 
 enum HomePageDevicesState { list, details }
 
@@ -32,8 +40,8 @@ final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
 
 final homePageOptionsVisibilityProvider = StateProvider<bool>((ref) => false);
 
-final homePageAccountsProvider =
-    StateProvider<HomePageAccountsState>((ref) => HomePageAccountsState.list);
+final homePageAccountsProvider = StateProvider<HomePageAccountsState>(
+    (ref) => HomePageAccountsState(HomePageAccountsNavigationState.list));
 
 final homePageDevicesProvider =
     StateProvider<HomePageDevicesState>((ref) => HomePageDevicesState.list);
