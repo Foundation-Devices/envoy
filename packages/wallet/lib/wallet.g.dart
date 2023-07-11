@@ -36,6 +36,7 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
 const _$TransactionTypeEnumMap = {
   TransactionType.normal: 'normal',
   TransactionType.azteco: 'azteco',
+  TransactionType.pending: 'pending',
 };
 
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
@@ -78,3 +79,15 @@ const _$NetworkEnumMap = {
   Network.Signet: 'Signet',
   Network.Regtest: 'Regtest',
 };
+
+_$_Utxo _$$_UtxoFromJson(Map<String, dynamic> json) => _$_Utxo(
+      txid: json['txid'] as String,
+      vout: json['vout'] as int,
+      value: json['value'] as int,
+    );
+
+Map<String, dynamic> _$$_UtxoToJson(_$_Utxo instance) => <String, dynamic>{
+      'txid': instance.txid,
+      'vout': instance.vout,
+      'value': instance.value,
+    };

@@ -513,7 +513,7 @@ pub unsafe extern "C" fn wallet_get_utxos(wallet: *mut Mutex<bdk::Wallet<Tree>>)
                 .unwrap()
                 .into_raw(),
             vout: utxo.outpoint.vout,
-            value: utxo.txout.value
+            value: utxo.txout.value,
         });
     }
 
