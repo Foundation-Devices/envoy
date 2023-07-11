@@ -13,7 +13,7 @@ use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::error::Error;
 
-use bdk::bitcoin::{Address, Network};
+use bdk::bitcoin::{Address, Network, OutPoint, Txid};
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::{BatchDatabase, ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
@@ -708,6 +708,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
     send_to: *const c_char,
     amount: u64,
     fee_rate: f64,
+    utxos: UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
@@ -717,11 +718,21 @@ pub unsafe extern "C" fn wallet_create_psbt(
         txid: ptr::null(),
         raw_tx: ptr::null(),
     };
-
     let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
     let address = CStr::from_ptr(send_to).to_str().unwrap();
 
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
+
+    let mut must_spend = vec![];
+
+    for i in 0..utxos.utxos_len as isize {
+        let utxo_ptr = utxos.utxos.offset(i);
+
+        let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
+        let vout = (*utxo_ptr).vout;
+
+        must_spend.push(OutPoint::new(Txid::from_str(txid).unwrap(), vout));
+    }
 
     let mut builder = wallet.build_tx();
     builder
@@ -730,6 +741,8 @@ pub unsafe extern "C" fn wallet_create_psbt(
         .only_witness_utxo()
         .add_recipient(send_to.script_pubkey(), amount)
         .enable_rbf()
+        .add_utxos(&*must_spend)
+        .unwrap()
         .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
 
     match builder.finish() {

@@ -11,9 +11,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dart:io';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
+import 'package:collection/collection.dart';
 
 // Generated
 part 'wallet.freezed.dart';
+
 part 'wallet.g.dart';
 
 enum Network { Mainnet, Testnet, Signet, Regtest }
@@ -141,9 +143,13 @@ typedef WalletGetTransactionsDart = NativeTransactionList Function(
     Pointer<Uint8> wallet);
 
 typedef WalletCreatePsbtRust = NativePsbt Function(
-    Pointer<Uint8> wallet, Pointer<Utf8> sendTo, Uint64 amount, Double feeRate);
-typedef WalletCreatePsbtDart = NativePsbt Function(
-    Pointer<Uint8> wallet, Pointer<Utf8> sendTo, int amount, double feeRate);
+    Pointer<Uint8> wallet,
+    Pointer<Utf8> sendTo,
+    Uint64 amount,
+    Double feeRate,
+    Pointer<rust.UtxoList>);
+typedef WalletCreatePsbtDart = NativePsbt Function(Pointer<Uint8> wallet,
+    Pointer<Utf8> sendTo, int amount, double feeRate, Pointer<rust.UtxoList>);
 
 typedef WalletBroadcastTxRust = Pointer<Utf8> Function(
     Pointer<Utf8> electrumAddress, Int32 torPort, Pointer<Utf8> tx);
@@ -474,18 +480,33 @@ class Wallet {
     });
   }
 
-  Future<Psbt> createPsbt(String sendTo, int amount, double feeRate) async {
+  Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
+      {List<Utxo>? utxos}) async {
     final rustFunction =
         _lib.lookup<NativeFunction<WalletCreatePsbtRust>>('wallet_create_psbt');
     final dartFunction = rustFunction.asFunction<WalletCreatePsbtDart>();
 
+    final listPointer = calloc.allocate<rust.UtxoList>(1);
+    listPointer.ref.utxos_len = utxos?.length ?? 0;
+
+    utxos?.forEachIndexed((index, utxo) {
+      final utxoPointer = calloc.allocate<rust.Utxo>(1);
+
+      utxoPointer.ref.value = utxo.value;
+      utxoPointer.ref.vout = utxo.vout;
+      utxoPointer.ref.txid = utxo.txid.toNativeUtf8().cast();
+
+      listPointer.ref.utxos.elementAt(index).ref = utxoPointer as rust.Utxo;
+    });
+
     return Future(() {
-      NativePsbt psbt =
-          dartFunction(_self, sendTo.toNativeUtf8(), amount, feeRate);
+      NativePsbt psbt = dartFunction(
+          _self, sendTo.toNativeUtf8(), amount, feeRate, listPointer);
       if (psbt.base64 == nullptr) {
         throwRustException(_lib);
       }
 
+      calloc.free(listPointer);
       return Psbt.fromNative(psbt);
     });
   }
