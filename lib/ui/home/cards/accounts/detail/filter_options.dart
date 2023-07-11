@@ -92,7 +92,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
       key: ValueKey("tx_filter_options"),
       filterItems: [
         FilterIcon(
-          icon: Icon(Icons.arrow_circle_up),
+          iconBuilder: (color) => Icon(Icons.arrow_circle_up),
           gestureDetector: () {
             var updatedState = filterButtonState.copy();
             updatedState.filterBySpend = updatedState.filterBySpend.toggle();
@@ -101,7 +101,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
           filterButtonState: filterButtonState.filterBySpend,
         ),
         FilterIcon(
-          icon: Icon(Icons.currency_bitcoin_outlined),
+          iconBuilder: (color) => Icon(Icons.currency_bitcoin_outlined),
           gestureDetector: () {
             var updatedState = filterButtonState.copy();
             updatedState.filterByAmount = updatedState.filterByAmount.toggle();
@@ -110,7 +110,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
           filterButtonState: filterButtonState.filterByAmount,
         ),
         FilterIcon(
-          icon: Icon(Icons.calendar_today_outlined),
+          iconBuilder: (color) => Icon(Icons.calendar_today_outlined),
           gestureDetector: () {
             var updatedState = filterButtonState.copy();
             updatedState.filterByDate = updatedState.filterByDate.toggle();
@@ -140,7 +140,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
       key: ValueKey("coin_filter_options"),
       filterItems: [
         FilterIcon(
-          icon: Icon(Icons.sell_outlined),
+          iconBuilder: (color) => Icon(Icons.sell_outlined),
           gestureDetector: () {
             var updatedState = filterState.copy();
             updatedState.filterByTagName =
@@ -150,7 +150,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
           filterButtonState: filterState.filterByTagName,
         ),
         FilterIcon(
-          icon: Icon(Icons.currency_bitcoin_outlined),
+          iconBuilder: (color) => Icon(Icons.currency_bitcoin_outlined),
           gestureDetector: () {
             var updatedState = filterState.copy();
             updatedState.filterByAmount = updatedState.filterByAmount.toggle();
@@ -159,12 +159,10 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
           filterButtonState: filterState.filterByAmount,
         ),
         FilterIcon(
-          icon: Builder(
-            builder: (context) {
-              return Icon(Icons.animation);
-              return SvgPicture.asset("assets/icons/ic_utxos.svg");
-            },
-          ),
+          iconBuilder: (color) {
+            return SvgPicture.asset("assets/icons/ic_coin_stack.svg",
+                color: color);
+          },
           gestureDetector: () {
             var updatedState = filterState.copy();
             updatedState.filterByCoinAmount =
@@ -283,18 +281,22 @@ class _FiltersState extends State<Filters> with SingleTickerProviderStateMixin {
 
 class FilterIcon extends StatelessWidget {
   final FilterButtonState filterButtonState;
+  final Widget Function(Color color) iconBuilder;
   final GestureTapCallback gestureDetector;
-  final Widget icon;
 
   const FilterIcon(
       {Key? key,
-      required this.icon,
       required this.gestureDetector,
+      required this.iconBuilder,
       this.filterButtonState = FilterButtonState.none})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Color iconColor = filterButtonState == FilterButtonState.none
+        ? Color(0xff808080)
+        : EnvoyColors.blackish;
+
     return InkWell(
       customBorder: CircleBorder(),
       onTap: gestureDetector,
@@ -308,11 +310,9 @@ class FilterIcon extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconTheme(
-              child: icon,
+              child: iconBuilder(iconColor),
               data: IconThemeData(
-                color: filterButtonState == FilterButtonState.none
-                    ? Color(0xff808080)
-                    : EnvoyColors.blackish,
+                color: iconColor,
                 size: 22,
               ),
             ),
