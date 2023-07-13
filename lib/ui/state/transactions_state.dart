@@ -7,12 +7,9 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 
-final transactionsProvider =
+final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   List<Transaction> pendingTransactions = [];
-
-  //Creates new list for all type of transactions
-  List<Transaction> transactions = [];
 
   // Listen to Pending transactions from database
   AsyncValue<List<Transaction>> asyncPendingTx =
@@ -22,6 +19,16 @@ final transactionsProvider =
     pendingTransactions.addAll((asyncPendingTx.value as List<Transaction>));
   }
 
+  return pendingTransactions;
+});
+
+final transactionsProvider =
+    Provider.family<List<Transaction>, String?>((ref, String? accountId) {
+  List<Transaction> pendingTransactions =
+      ref.watch(pendingTransactionsProvider(accountId));
+
+  //Creates new list for all type of transactions
+  List<Transaction> transactions = [];
   List<Transaction> walletTransactions =
       ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
