@@ -89,8 +89,10 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   void setCurrency(String currencyCode) {
-    _currency =
-        supportedFiat.firstWhere((element) => element.code == currencyCode);
+    // If code is wrong (for whatever reason) go with default
+    _currency = supportedFiat.firstWhere(
+        (element) => element.code == currencyCode,
+        orElse: () => supportedFiat[0]);
 
     // Fetch rates for this session
     _getRate();
