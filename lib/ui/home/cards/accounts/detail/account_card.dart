@@ -16,7 +16,7 @@ import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tags_list_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
@@ -88,62 +88,80 @@ class _AccountCardState extends ConsumerState<AccountCard> {
   Widget build(BuildContext context) {
     List<Transaction> transactions =
         ref.watch(transactionsProvider(widget.account.id));
-
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: AccountListTile(widget.account, onTap: () {
-          widget.navigator!.pop();
-          ref.read(homePageAccountsProvider.notifier).state =
-              HomePageAccountsState.list;
-        }),
-      ),
-      AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
-        child: transactions.isNotEmpty
-            ? Container(
-                padding: EdgeInsets.only(bottom: 8),
-                child: FilterOptions(),
-              )
-            : SizedBox.shrink(),
-      ),
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-          child: widget.account.dateSynced == null
-              ? ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: 4,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GhostListTile();
-                  },
+    return Scaffold(
+      extendBody: true,
+      body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: AccountListTile(widget.account, onTap: () {
+            widget.navigator!.pop();
+            ref.read(homePageAccountsProvider.notifier).state =
+                HomePageAccountsState.list;
+          }),
+        ),
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 200),
+          child: transactions.isNotEmpty
+              ? Container(
+                  padding: EdgeInsets.only(bottom: 0),
+                  child: FilterOptions(),
                 )
-              : transactions.isNotEmpty
-                  ? _getMainWidget(context, transactions)
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        GhostListTile(animate: false),
-                        Expanded(
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 14),
-                              child: Text(
-                                S().account_empty_tx_history_text_explainer,
-                                style: _explainerTextStyleWallet.copyWith(),
-                                textAlign: TextAlign.center,
+              : SizedBox.shrink(),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+            child: widget.account.dateSynced == null
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: 4,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GhostListTile();
+                    },
+                  )
+                : transactions.isNotEmpty
+                    ? _getMainWidget(context, transactions)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GhostListTile(animate: false),
+                          Expanded(
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 14),
+                                child: Text(
+                                  S().account_empty_tx_history_text_explainer,
+                                  style: _explainerTextStyleWallet.copyWith(),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+          ),
         ),
-      ),
-      Padding(
+      ]),
+      bottomNavigationBar: Container(
+        height: 94,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: EnvoyColors.white100,
+              spreadRadius: 0,
+              blurRadius: 24,
+              offset: Offset(0, -8), // changes position of shadow
+            ),
+            BoxShadow(
+              color: EnvoyColors.white100,
+              spreadRadius: 12,
+              blurRadius: 24,
+            ),
+          ],
+        ),
         padding: const EdgeInsets.only(
-            left: 50.0, right: 50.0, bottom: 20.0, top: 12.0),
+            left: 50.0, right: 50.0, bottom: 24.0, top: 8.0),
         child: Row(
           children: [
             Expanded(
@@ -164,7 +182,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
             ),
             QrShield(
                 child: Padding(
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(8),
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       icon: Icon(
@@ -201,8 +219,8 @@ class _AccountCardState extends ConsumerState<AccountCard> {
             ),
           ],
         ),
-      )
-    ]);
+      ),
+    );
   }
 
   Widget _getMainWidget(BuildContext context, List<Transaction> transactions) {
@@ -225,10 +243,13 @@ class _AccountCardState extends ConsumerState<AccountCard> {
       },
       child: accountToggleState == AccountToggleState.Tx
           ? FadingEdgeScrollView.fromScrollView(
+              gradientFractionOnEnd: 0.1,
+              gradientFractionOnStart: 0.1,
               scrollController: _scrollController,
               child: StatefulBuilder(builder: (c, s) {
                 return ListView.builder(
-                  padding: EdgeInsets.zero,
+                  //Accommodate for the FAB options
+                  padding: EdgeInsets.only(bottom: 88),
                   controller: _scrollController,
                   itemCount: transactions.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -240,7 +261,9 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   },
                 );
               }))
-          : CoinsList(),
+          : CoinsList(
+              callback: () {},
+            ),
     );
   }
 }
