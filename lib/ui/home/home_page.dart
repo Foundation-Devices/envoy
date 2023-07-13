@@ -584,6 +584,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     : IconButton(
                         icon: Icon(
                           _rightActionIcon,
+                          color: Colors.white,
                         ),
                         onPressed: _rightAction,
                       ))));
