@@ -304,7 +304,7 @@ class AccountManager extends ChangeNotifier {
     final oldAccount = accounts.firstWhere((a) {
       return a.id! == account.id!;
     });
-    accounts[accounts.indexOf(oldAccount)] = account.copyWith(name: newName);
+    accounts[accounts.indexOf(oldAccount)] = oldAccount.copyWith(name: newName);
     storeAccounts();
     notifyListeners();
   }
