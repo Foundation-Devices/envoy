@@ -27,3 +27,15 @@ final accountStateProvider = Provider.family<Account?, String?>((ref, id) {
   final accountManager = ref.watch(accountManagerProvider);
   return accountManager.accounts.singleWhere((element) => element.id == id);
 });
+
+// True if all the accounts have 0 balance
+final accountsZeroBalanceProvider = Provider<bool>((ref) {
+  final accountManager = ref.watch(accountManagerProvider);
+  for (final account in accountManager.accounts) {
+    if (account.wallet.balance > 0) {
+      return false;
+    }
+  }
+
+  return true;
+});

@@ -36,7 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -70,8 +69,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
         "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
-        "Heading":
-            MessageLookupByLibrary.simpleMessage("SEND AND\nRECEIVE BITCOIN"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -104,7 +101,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("ACCOUNTS"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
         "Send": MessageLookupByLibrary.simpleMessage("Receive"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -118,7 +114,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zen-like mobile wallet"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -1906,13 +1901,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_import_existing_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_CTA1":
-            MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
-        "manual_setup_import_existing_backup_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_import_seed_12_words_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_import_seed_12_words_CTA_inactive":
@@ -2088,7 +2076,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_backup_now":
             MessageLookupByLibrary.simpleMessage("Back Up Now"),
         "manual_toggle_on_seed_backedup_iOS_backups":
-            MessageLookupByLibrary.simpleMessage("SETTINGS"),
+            MessageLookupByLibrary.simpleMessage("ENVOY"),
         "manual_toggle_on_seed_backedup_iOS_download_wallet_data":
             MessageLookupByLibrary.simpleMessage("Download Envoy Backup File"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
@@ -2600,6 +2588,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
             MessageLookupByLibrary.simpleMessage("Enter Valid Address"),
+        "send_keyboard_amount_too_low_info":
+            MessageLookupByLibrary.simpleMessage("Amount too low"),
         "send_keyboard_heading": MessageLookupByLibrary.simpleMessage("SEND"),
         "send_keyboard_network_fees_boost_amount":
             MessageLookupByLibrary.simpleMessage("1,500 Sats ~ \$5.43"),
@@ -2624,6 +2614,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_qr_code_subheading": MessageLookupByLibrary.simpleMessage(
             "You can now scan the QR code displayed on your Passport with your phone camera."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+        "settings_advanced_enabled_testnet_modal_cta":
+            MessageLookupByLibrary.simpleMessage("Next"),
+        "settings_advanced_enabled_testnet_modal_link":
+            MessageLookupByLibrary.simpleMessage(
+                "Learn how to do that [[here]]."),
+        "settings_advanced_enabled_testnet_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
         "settings_advanced_taproot":
             MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_taproot_modal_cta1":
@@ -2800,6 +2798,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "tagged_coin_details_menu":
             MessageLookupByLibrary.simpleMessage("EDIT TAG NAME\n\nDELETE TAG"),
+        "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
+            "Hold to drag and reorder your accounts."),
+        "tap_and_drag_first_time_text_button":
+            MessageLookupByLibrary.simpleMessage("Dismiss"),
         "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7":
             MessageLookupByLibrary.simpleMessage(
                 "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),

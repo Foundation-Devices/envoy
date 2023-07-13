@@ -228,11 +228,17 @@ class AccountPrompts extends ConsumerWidget {
         color: EnvoyColors.grey);
     var isHideAmountDismissed =
         ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
-    var doesUserTriedReceiveScreen = ref.watch(arePromptsDismissedProvider(
+
+    var isDragAndDropDismissed =
+        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.dragAndDrop));
+
+    var userInteractedWithReceive = ref.watch(arePromptsDismissedProvider(
         DismissiblePrompt.userInteractedWithReceive));
     var accounts = ref.watch(accountsProvider);
-    //Show if the user never tried receive screen
-    if (!doesUserTriedReceiveScreen) {
+    var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
+
+    //Show if the user never tried receive screen and has no balance
+    if (!userInteractedWithReceive && accountsHaveZeroBalance) {
       return Center(
           child: Padding(
         padding: const EdgeInsets.only(top: 0.0),
@@ -245,8 +251,7 @@ class AccountPrompts extends ConsumerWidget {
         ),
       ));
     } else {
-      //Show if the user never tried hide amount
-      if (!isHideAmountDismissed) {
+      if (!isHideAmountDismissed && !accountsHaveZeroBalance) {
         return Center(
           child: Wrap(
             alignment: WrapAlignment.center,
@@ -263,6 +268,30 @@ class AccountPrompts extends ConsumerWidget {
                 ),
                 onTap: () {
                   EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
+                },
+              ),
+            ],
+          ),
+        );
+      }
+
+      if (!isDragAndDropDismissed && accounts.length > 1) {
+        return Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 5,
+            children: [
+              Text(
+                S().tap_and_drag_first_time_text,
+                style: _explainerTextStyle,
+              ),
+              GestureDetector(
+                child: Text(
+                  S().tap_and_drag_first_time_text_button,
+                  style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+                ),
+                onTap: () {
+                  EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
                 },
               ),
             ],
