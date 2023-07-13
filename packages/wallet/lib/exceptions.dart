@@ -21,6 +21,8 @@ class InsufficientFunds implements Exception {
   InsufficientFunds(String s, this.needed, this.available);
 }
 
+class BelowDustLimit implements Exception {}
+
 class InvalidPort implements Exception {}
 
 class TimedOut implements Exception {}
@@ -47,6 +49,8 @@ Exception _getRustException(String rustError) {
     return InvalidPort();
   } else if (rustError.contains('timed out')) {
     return TimedOut();
+  } else if (rustError.contains('dust limit')) {
+    return BelowDustLimit();
   } else if (rustError.contains('InvalidNetwork')) {
     return InvalidNetwork();
   } else {

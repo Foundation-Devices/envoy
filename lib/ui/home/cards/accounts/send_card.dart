@@ -153,9 +153,13 @@ class _SendCardState extends ConsumerState<SendCard>
                         });
                       }
                       return;
+                    } on BelowDustLimit {
+                      setState(() {
+                        _amountSufficient = false;
+                      });
+                      return;
                     }
                   }
-
                   widget.navigator!.push(ConfirmationCard(
                     widget.account,
                     _amount,
@@ -166,12 +170,12 @@ class _SendCardState extends ConsumerState<SendCard>
               },
               error: !_addressValid || !_amountSufficient || (_amount == 0),
               label: _amount == 0
-                  ? S().envoy_send_send_max
+                  ? S().send_keyboard_send_max
                   : _amountSufficient
                       ? _addressValid
                           ? S().send_keyboard_address_confirm
-                          : S().envoy_send_enter_valid_address
-                      : S().envoy_send_insufficient_funds))
+                          : S().send_keyboard_amount_enter_valid_address
+                      : S().send_keyboard_amount_too_low_info))
     ]);
   }
 

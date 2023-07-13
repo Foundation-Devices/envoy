@@ -33,7 +33,7 @@ class Transaction {
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
 
-  get amount => received - sent;
+  int get amount => received - sent;
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight,
