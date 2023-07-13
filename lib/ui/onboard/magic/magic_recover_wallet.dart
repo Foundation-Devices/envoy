@@ -154,22 +154,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 8),
-                  height: 44,
-                  child: _magicRecoverWalletState ==
-                          MagicRecoveryWalletState.backupNotFound
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CupertinoNavigationBarBackButton(
-                              color: Colors.black,
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        )
-                      : SizedBox(),
-                ),
                 Expanded(
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
