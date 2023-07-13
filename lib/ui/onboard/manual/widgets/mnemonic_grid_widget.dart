@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+// SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -11,6 +11,9 @@ enum SeedLength {
   MNEMONIC_24,
 }
 
+/**
+ * A grid of text fields for entering mnemonic seed phrases.
+ */
 class MnemonicEntryGrid extends StatefulWidget {
   final SeedLength seedLength;
   final List<String>? seedInput;
@@ -63,6 +66,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _animation =
         CurveTween(curve: Curves.fastOutSlowIn).animate(_animationController!);
+
     super.initState();
   }
 
@@ -188,7 +192,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   void _showOverlay(BuildContext context, int index) async {
     if (_overlayEntry != null) {
-      _overlayEntry!.remove();
+      _overlayEntry?.remove();
       _overlayEntry = null;
     }
     OverlayState? overlayState = Overlay.of(context);
@@ -216,74 +220,80 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           color: Colors.transparent,
           child: FadeTransition(
             opacity: _animation!,
-            child: Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
-              height: _suggestionOverlayHeight,
-              child: LayoutBuilder(
-                builder: (context, viewportConstraints) {
-                  return ConstrainedBox(
-                    constraints: viewportConstraints.copyWith(
-                        minHeight: viewportConstraints.maxHeight,
-                        maxHeight: viewportConstraints.maxHeight),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Flex(
-                        direction: Axis.horizontal,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _suggestions
-                            .map((e) => InkWell(
-                                  onTap: () {
-                                    int index = _suggestions.indexOf(e);
-                                    controller.value = TextEditingValue(
-                                      text: _suggestions[index],
-                                    );
-                                    if (_currentFocusNode?.hasFocus == true) {
-                                      if (index != _focusNodes.length - 1) {
-                                        if (_focusNodes
-                                                .indexOf(_currentFocusNode!) ==
-                                            _focusNodes.length - 1) {
-                                          _currentFocusNode?.unfocus();
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 250),
+              opacity: bottom == 0 ? 0 : 1,
+              child: Container(
+                color: Colors.white,
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
+                height: _suggestionOverlayHeight,
+                child: LayoutBuilder(
+                  builder: (context, viewportConstraints) {
+                    return ConstrainedBox(
+                      constraints: viewportConstraints.copyWith(
+                          minHeight: viewportConstraints.maxHeight,
+                          maxHeight: viewportConstraints.maxHeight),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _suggestions
+                              .map((e) => InkWell(
+                                    onTap: () {
+                                      int index = _suggestions.indexOf(e);
+                                      controller.value = TextEditingValue(
+                                        text: _suggestions[index],
+                                      );
+                                      if (_currentFocusNode?.hasFocus == true) {
+                                        if (index != _focusNodes.length - 1) {
+                                          if (_focusNodes.indexOf(
+                                                  _currentFocusNode!) ==
+                                              _focusNodes.length - 1) {
+                                            _currentFocusNode?.unfocus();
+                                          } else {
+                                            _currentFocusNode?.nextFocus();
+                                          }
                                         } else {
-                                          _currentFocusNode?.nextFocus();
+                                          _currentFocusNode?.unfocus();
                                         }
-                                      } else {
-                                        _currentFocusNode?.unfocus();
                                       }
-                                    }
-                                    if (_showNextPage) {
-                                      _pageController
-                                          .nextPage(
-                                              duration:
-                                                  Duration(milliseconds: 300),
-                                              curve: Curves.easeIn)
-                                          .then((value) {
-                                        _currentFocusNode = _focusNodes[12];
-                                        _currentFocusNode?.requestFocus();
-                                      });
-                                      _showNextPage = false;
-                                    }
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    margin: EdgeInsets.symmetric(horizontal: 8),
-                                    child: Chip(
-                                      label: Text("$e"),
+                                      if (_showNextPage) {
+                                        _pageController
+                                            .nextPage(
+                                                duration:
+                                                    Duration(milliseconds: 300),
+                                                curve: Curves.easeIn)
+                                            .then((value) {
+                                          _currentFocusNode = _focusNodes[12];
+                                          _currentFocusNode?.requestFocus();
+                                        });
+                                        _showNextPage = false;
+                                      }
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 8),
+                                      child: Chip(
+                                        label: Text("$e"),
+                                      ),
                                     ),
-                                  ),
-                                ))
-                            .toList(),
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
         ),
       );
     });
+    //Update overlay entry with animation controller changes
     _animationController!.addListener(() {
       overlayState.setState(() {});
     });
@@ -297,6 +307,8 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
   void _initFocusManager() {
     FocusManager.instance.addListener(() {
       bool foundFocusElement = false;
+      //traverse through all the focus nodes and find the current focus node
+      //and show suggestions for that node
       for (int i = 0; i < _focusNodes.length; i++) {
         if (_focusNodes[i].hasFocus) {
           foundFocusElement = true;
@@ -316,6 +328,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           break;
         }
       }
+      //if no focus element is found then hide the overlay
       if (!foundFocusElement &&
           _animationController != null &&
           _animationController!.isCompleted) {
@@ -326,6 +339,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   @override
   void dispose() {
+    _overlayEntry?.remove();
     _animationController?.dispose();
     super.dispose();
   }
