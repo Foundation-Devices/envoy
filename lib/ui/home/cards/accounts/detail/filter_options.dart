@@ -296,7 +296,6 @@ class FilterIcon extends StatelessWidget {
     Color iconColor = filterButtonState == FilterButtonState.none
         ? Color(0xff808080)
         : EnvoyColors.blackish;
-
     return InkWell(
       customBorder: CircleBorder(),
       onTap: gestureDetector,
@@ -378,16 +377,83 @@ class _SlidingToggleState extends State<SlidingToggle>
 
   late AnimationController _animationController;
   late Animation<Alignment> _animation;
+  late Animation<Color?> _textColorAnimation;
+  late Animation<Color?> _listIconColorAnimation;
+  late Animation<Color?> _tagListIconColorAnimation;
+  final Color _iconDisabledColor = Color(0xFF808080);
 
   @override
   void initState() {
     super.initState();
+    value = widget.value;
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 250));
     _animation =
         AlignmentTween(begin: Alignment.centerLeft, end: Alignment.centerRight)
             .animate(CurvedAnimation(
                 parent: _animationController, curve: Curves.easeInOutCubic));
+
+    _listIconColorAnimation = TweenSequence([
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: Colors.white,
+          end: Colors.white10,
+        ),
+      ),
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: Colors.white10,
+          end: _iconDisabledColor,
+        ),
+      ),
+    ]).animate(_animationController);
+
+    _tagListIconColorAnimation = TweenSequence([
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: _iconDisabledColor,
+          end: Colors.white10,
+        ),
+      ),
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: Colors.white10,
+          end: Colors.white,
+        ),
+      ),
+    ]).animate(_animationController);
+
+    _textColorAnimation = TweenSequence([
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: Colors.white,
+          end: Colors.white10,
+        ),
+      ),
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: Colors.white10,
+          end: Colors.white,
+        ),
+      ),
+    ]).animate(_animationController);
+
+    _animationController.addListener(() {
+      setState(() {});
+    });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (value == "Tx")
+        _animationController.reverse();
+      else
+        _animationController.animateTo(1.0,
+            duration: Duration(milliseconds: 0));
+    });
   }
 
   @override
@@ -415,6 +481,7 @@ class _SlidingToggleState extends State<SlidingToggle>
                   color: Colors.white, borderRadius: BorderRadius.circular(8)),
               child: Stack(
                 children: [
+                  //Show selection background with 71% of width
                   AlignTransition(
                     alignment: _animation,
                     child: FractionallySizedBox(
@@ -427,82 +494,48 @@ class _SlidingToggleState extends State<SlidingToggle>
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildButtonItem(context, value == "Tx", "List",
-                          Icon(CupertinoIcons.list_bullet)),
-                      _buildButtonItem(context, value == "Coins", "Tags",
-                          Icon(Icons.view_agenda_outlined))
-                    ],
-                  )
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Icon(CupertinoIcons.list_bullet,
+                          color: _listIconColorAnimation.value),
+                    ),
+                  ),
+                  AlignTransition(
+                    alignment: Tween(
+                            begin: Alignment.centerRight, end: Alignment.center)
+                        .animate(CurvedAnimation(
+                            parent: _animationController,
+                            curve: Curves.easeInOutCubic)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Icon(Icons.view_agenda_outlined,
+                          color: _tagListIconColorAnimation.value),
+                    ),
+                  ),
+                  AlignTransition(
+                      alignment: Tween(
+                              begin: Alignment.center,
+                              end: Alignment.centerRight)
+                          .animate(CurvedAnimation(
+                              parent: _animationController,
+                              curve: Curves.easeInOutCubic)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          value == "Tx" ? "List" : "Tags",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: _textColorAnimation.value,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                      )),
                 ],
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildButtonItem(
-      BuildContext context, bool isSelected, String title, Widget icon) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(
-        begin: 0,
-        end: isSelected ? 1 : 0,
-      ),
-      curve: Curves.easeOutQuint,
-      duration: widget.duration,
-      builder: (context, value, child) {
-        return Container(
-          alignment: Alignment.center,
-          width: lerpDouble(30, 74, value),
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Flexible(
-                flex: 1,
-                child: IconTheme(
-                  data: IconThemeData(
-                      color: Color.lerp(
-                          Theme.of(context).textTheme.bodyMedium?.color,
-                          Colors.white,
-                          value),
-                      size: 18),
-                  child: icon,
-                ),
-              ),
-              AnimatedContainer(
-                curve: Curves.easeOutQuint,
-                duration: widget.duration,
-                padding: EdgeInsets.only(
-                  left: lerpDouble(0, 4, value) ?? 0,
-                ),
-                width: lerpDouble(0, 40, value),
-                child: ClipRect(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      title,
-                      overflow: TextOverflow.visible,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: Color.lerp(
-                              Colors.transparent,
-                              Colors.white,
-                              value,
-                            ),
-                          ),
-                    ),
-                  ),
-                ),
-              )
-            ],
           ),
         );
       },
