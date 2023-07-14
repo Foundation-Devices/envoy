@@ -84,6 +84,8 @@ pub struct Transaction {
     confirmation_time: u64,
     outputs_len: u8,
     outputs: *const *const c_char,
+    inputs_len: u8,
+    inputs: *const *const c_char,
 }
 
 #[repr(C)]
@@ -575,6 +577,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
 
         let outputs: Vec<_> = transaction
             .transaction
+            .clone()
             .unwrap()
             .output
             .into_iter()
@@ -593,6 +596,22 @@ pub unsafe extern "C" fn wallet_get_transactions(
         let outputs_ptr = outputs.as_ptr();
         std::mem::forget(outputs);
 
+        let inputs: Vec<_> = transaction
+            .transaction
+            .unwrap()
+            .input
+            .into_iter()
+            .map(|i| {
+                CString::new(format!("{}", i.previous_output.txid))
+                    .unwrap()
+                    .into_raw() as *const c_char
+            })
+            .collect();
+
+        let inputs_len = inputs.len() as u8;
+        let inputs_ptr = inputs.as_ptr();
+        std::mem::forget(inputs);
+
         let tx = Transaction {
             txid: CString::new(format!("{}", transaction.txid))
                 .unwrap()
@@ -604,6 +623,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
             confirmation_time,
             outputs_len,
             outputs: outputs_ptr,
+            inputs_len,
+            inputs: inputs_ptr,
         };
 
         transactions_vec.push(tx);
