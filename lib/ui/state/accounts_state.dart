@@ -44,7 +44,7 @@ final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
       .toList()
       .sum;
 
-  return account.wallet.balance - pendingTxSum;
+  return account.wallet.balance + pendingTxSum;
 });
 
 // True if all the accounts have 0 balance

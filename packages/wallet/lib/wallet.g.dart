@@ -18,6 +18,8 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
           TransactionType.normal,
       outputs:
           (json['outputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      inputs:
+          (json['inputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
@@ -30,12 +32,14 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'received': instance.received,
       'blockHeight': instance.blockHeight,
       'outputs': instance.outputs,
+      'inputs': instance.inputs,
       'type': _$TransactionTypeEnumMap[instance.type]!,
     };
 
 const _$TransactionTypeEnumMap = {
   TransactionType.normal: 'normal',
   TransactionType.azteco: 'azteco',
+  TransactionType.pending: 'pending',
 };
 
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(

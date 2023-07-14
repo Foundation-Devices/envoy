@@ -29,6 +29,7 @@ class Transaction {
   final int received;
   final int blockHeight;
   final List<String>? outputs;
+  final List<String>? inputs;
   final TransactionType type;
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
@@ -37,7 +38,7 @@ class Transaction {
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight,
-      {this.type = TransactionType.normal, this.outputs});
+      {this.type = TransactionType.normal, this.outputs, this.inputs});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -67,6 +68,9 @@ class NativeTransaction extends Struct {
   @Uint8()
   external int outputsLen;
   external Pointer<Pointer<Uint8>> outputs;
+  @Uint8()
+  external int inputsLen;
+  external Pointer<Pointer<Uint8>> inputs;
 }
 
 class NativeSeed extends Struct {
@@ -565,6 +569,7 @@ class Wallet {
         tx.sent,
         tx.confirmationHeight,
         outputs: _extractStringList(tx.outputs, tx.outputsLen),
+        inputs: _extractStringList(tx.inputs, tx.inputsLen),
       ));
     }
 
