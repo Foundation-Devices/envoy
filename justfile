@@ -68,3 +68,18 @@ build-ffi:
 
 copy:
     localazy download
+
+passport-deps:
+    sudo apt install autotools-dev automake libusb-1.0-0-dev libtool python3-virtualenv libsdl2-dev pkg-config curl
+    sudo modprobe v4l2loopback video_nr=5,6
+
+passport: passport-deps
+    git clone git@github.com:Foundation-Devices/passport2.git || true
+    rustup target add x86_64-unknown-none
+    make -C passport2/mpy-cross
+    just --justfile passport2/simulator/Justfile sim color
+
+beef:
+    flutter test integration_test
+
+
