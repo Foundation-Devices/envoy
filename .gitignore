@@ -63,3 +63,6 @@ release/
 
 # Localazy creds
 localazy.json
+
+# Passport simulator
+/passport2

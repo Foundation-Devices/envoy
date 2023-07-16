@@ -109,6 +109,7 @@ dev_dependencies:
   custom_lint:
   riverpod_lint:
   freezed: ^2.3.4
+  screenshot: ^2.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
