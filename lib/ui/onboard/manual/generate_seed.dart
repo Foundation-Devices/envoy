@@ -16,6 +16,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
+import 'package:envoy/ui/envoy_button.dart';
 
 class SeedScreen extends StatefulWidget {
   final bool generate;
@@ -261,6 +262,7 @@ class _SeedScreenState extends State<SeedScreen> {
                   ],
                 )),
                 OnboardingButton(
+                    type: EnvoyButtonTypes.primaryModal,
                     label: S()
                         .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA,
                     onTap: () async {
