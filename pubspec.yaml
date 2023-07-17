@@ -48,7 +48,7 @@ dependencies:
   qr_code_scanner:
     git:
       url: https://github.com/icota/qr_code_scanner.git
-      ref: 4ccf0e87784a1df33c258bbb20e3249ee04c8050
+      ref: 71db8c9dcb3ed56cc55f86caf1044ef2068603b7
 
   # flutter_vlc_player fork
   flutter_vlc_player:
