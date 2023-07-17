@@ -382,7 +382,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 return;
               }
               if (widget.skipSuccessScreen) {
-                Navigator.pop(context);
+                //clear on-boarding routes and go to home
+                Navigator.popAndPushNamed(context, "/");
               } else {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return WalletSetupSuccess();
