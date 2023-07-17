@@ -27,7 +27,8 @@ final accountsProvider = Provider<List<Account>>((ref) {
 
 final accountStateProvider = Provider.family<Account?, String?>((ref, id) {
   final accountManager = ref.watch(accountManagerProvider);
-  return accountManager.accounts.singleWhere((element) => element.id == id);
+  return accountManager.accounts
+      .singleWhereOrNull((element) => element.id == id);
 });
 
 final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
@@ -37,8 +38,8 @@ final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
     return 0;
   }
 
-  final pendingTranscations = ref.watch(pendingTransactionsProvider(id));
-  final pendingTxSum = pendingTranscations
+  final pendingTransactions = ref.watch(pendingTransactionsProvider(id));
+  final pendingTxSum = pendingTransactions
       .where((tx) => tx.type == TransactionType.pending)
       .map((tx) => tx.amount)
       .toList()

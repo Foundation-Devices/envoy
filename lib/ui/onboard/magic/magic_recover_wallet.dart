@@ -118,70 +118,78 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
       },
       child: Material(
         color: Colors.transparent,
-        child: OnboardPageBackground(
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
+        child: Builder(builder: (context) {
+          return OnboardPageBackground(
+            child: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CupertinoNavigationBarBackButton(
+                          color: Colors.black,
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(CupertinoIcons.back)),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          return IconButton(
-                              onPressed: () async {
-                                ref.read(homePageTabProvider.notifier).state =
-                                    HomePageTabState.accounts;
-                                ref
-                                    .read(homePageBackgroundProvider.notifier)
-                                    .state = HomePageBackgroundState.hidden;
-                                await Future.delayed(
-                                    Duration(milliseconds: 200));
-                                Navigator.of(context)
-                                    .popUntil(ModalRoute.withName("/"));
-                              },
-                              icon: Icon(Icons.close));
-                        },
-                      ),
-                    ],
+                        ),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            return Material(
+                              color: Colors.transparent,
+                              child: IconButton(
+                                  onPressed: () async {
+                                    ref
+                                        .read(homePageTabProvider.notifier)
+                                        .state = HomePageTabState.accounts;
+                                    ref
+                                        .read(
+                                            homePageBackgroundProvider.notifier)
+                                        .state = HomePageBackgroundState.hidden;
+                                    await Future.delayed(
+                                        Duration(milliseconds: 200));
+                                    Navigator.of(context)
+                                        .popUntil(ModalRoute.withName("/"));
+                                  },
+                                  icon: Icon(Icons.close)),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                      height: 180,
-                      child: Transform.scale(
-                        scale: 1.6,
-                        child: RiveAnimation.asset(
-                          "assets/envoy_loader.riv",
-                          fit: BoxFit.contain,
-                          onInit: _onRiveInit,
+                  Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        height: 180,
+                        child: Transform.scale(
+                          scale: 1.6,
+                          child: RiveAnimation.asset(
+                            "assets/envoy_loader.riv",
+                            fit: BoxFit.contain,
+                            onInit: _onRiveInit,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: AnimatedSwitcher(
-                          duration: Duration(milliseconds: 800),
-                          child: getMainWidget()),
-                    ),
-                  ],
-                )),
-                getBottomButtons() ?? SizedBox(),
-              ],
+                      Expanded(
+                        child: AnimatedSwitcher(
+                            duration: Duration(milliseconds: 800),
+                            child: getMainWidget()),
+                      ),
+                    ],
+                  )),
+                  getBottomButtons() ?? SizedBox(),
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
