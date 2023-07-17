@@ -56,21 +56,19 @@ final transactionsProvider =
   // Transactions whose input is other's txid go above that transaction
   transactions.sort((t1, t2) {
     if (t2.inputs == null) {
-      print("T1 is null!");
       return 1;
     }
 
     if (t1.inputs == null) {
-      print("T2 is null!");
       return -1;
     }
 
     if (t2.inputs!.contains(t1.txId)) {
-      return -1;
+      return 1;
     }
 
     if (t1.inputs!.contains(t2.txId)) {
-      return 1;
+      return -1;
     }
 
     return 0;
