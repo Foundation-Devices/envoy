@@ -488,7 +488,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Delete Wallet"),
         "delete_wallet_for_good_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "As you sure you want to DELETE your Envoy Wallet?"),
+                "Are you sure you want to DELETE your Envoy Wallet?"),
         "delete_wallet_for_good_success_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Your wallet was successfully deleted"),
@@ -1005,7 +1005,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_pp_restore_backup_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Backup File has been succesfullyrestored"),
+                "Your Backup File has been successfully restored"),
         "envoy_pp_restore_backup_success_os_clock":
             MessageLookupByLibrary.simpleMessage("9:41"),
         "envoy_pp_restore_backup_success_right_action":
@@ -2587,7 +2587,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
-            MessageLookupByLibrary.simpleMessage("Enter Valid Address"),
+            MessageLookupByLibrary.simpleMessage("Enter valid address"),
+        "send_keyboard_amount_insufficient_funds_info":
+            MessageLookupByLibrary.simpleMessage("Insufficient funds"),
         "send_keyboard_amount_too_low_info":
             MessageLookupByLibrary.simpleMessage("Amount too low"),
         "send_keyboard_heading": MessageLookupByLibrary.simpleMessage("SEND"),
@@ -2604,7 +2606,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_keyboard_network_fees_standard_time":
             MessageLookupByLibrary.simpleMessage("60 min"),
         "send_keyboard_send_max":
-            MessageLookupByLibrary.simpleMessage("Send Max"),
+            MessageLookupByLibrary.simpleMessage("Send max"),
         "send_keyboard_to": MessageLookupByLibrary.simpleMessage("To:"),
         "send_qr_code_card_heading": MessageLookupByLibrary.simpleMessage(
             "Scan the QR with your Passport"),

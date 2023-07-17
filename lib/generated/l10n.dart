@@ -3406,10 +3406,10 @@ class S {
     );
   }
 
-  /// `As you sure you want to DELETE your Envoy Wallet?`
+  /// `Are you sure you want to DELETE your Envoy Wallet?`
   String get delete_wallet_for_good_modal_subheading {
     return Intl.message(
-      'As you sure you want to DELETE your Envoy Wallet?',
+      'Are you sure you want to DELETE your Envoy Wallet?',
       name: 'delete_wallet_for_good_modal_subheading',
       desc: '',
       args: [],
@@ -5890,10 +5890,10 @@ class S {
     );
   }
 
-  /// `Your Backup File has been succesfullyrestored`
+  /// `Your Backup File has been successfully restored`
   String get envoy_pp_restore_backup_success_heading {
     return Intl.message(
-      'Your Backup File has been succesfullyrestored',
+      'Your Backup File has been successfully restored',
       name: 'envoy_pp_restore_backup_success_heading',
       desc: '',
       args: [],
@@ -13064,11 +13064,21 @@ class S {
     );
   }
 
-  /// `Enter Valid Address`
+  /// `Enter valid address`
   String get send_keyboard_amount_enter_valid_address {
     return Intl.message(
-      'Enter Valid Address',
+      'Enter valid address',
       name: 'send_keyboard_amount_enter_valid_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insufficient funds`
+  String get send_keyboard_amount_insufficient_funds_info {
+    return Intl.message(
+      'Insufficient funds',
+      name: 'send_keyboard_amount_insufficient_funds_info',
       desc: '',
       args: [],
     );
@@ -13154,10 +13164,10 @@ class S {
     );
   }
 
-  /// `Send Max`
+  /// `Send max`
   String get send_keyboard_send_max {
     return Intl.message(
-      'Send Max',
+      'Send max',
       name: 'send_keyboard_send_max',
       desc: '',
       args: [],
