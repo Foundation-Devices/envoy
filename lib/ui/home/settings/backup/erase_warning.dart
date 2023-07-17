@@ -109,6 +109,7 @@ class _EraseWalletsAndBackupsWarningState
                   Navigator.pop(context);
                 }),
             OnboardingButton(
+                type: EnvoyButtonTypes.primaryModal,
                 label: S().backups_erase_wallets_and_backups_modal_1_2_ios_cta,
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
@@ -206,6 +207,7 @@ class _EraseWalletsBalanceWarningState
                   displaySeedBeforeNuke(context);
                 }),
             OnboardingButton(
+                type: EnvoyButtonTypes.primaryModal,
                 label: S().erase_wallet_with_balance_modal_CTA1,
                 onTap: () {
                   // Show home page and navigate to accounts
@@ -282,6 +284,7 @@ class _EraseWalletsConfirmationState
                       MaterialPageRoute(builder: (context) => EraseProgress()));
                 }),
             OnboardingButton(
+                type: EnvoyButtonTypes.primaryModal,
                 label: S().delete_wallet_for_good_modal_cta1,
                 onTap: () {
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));

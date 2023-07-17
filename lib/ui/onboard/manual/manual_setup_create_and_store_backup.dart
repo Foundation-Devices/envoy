@@ -129,6 +129,7 @@ class BackupWarningModal extends ConsumerWidget {
               ],
             ),
             OnboardingButton(
+                type: EnvoyButtonTypes.primaryModal,
                 label: S().manual_setup_create_and_store_backup_modal_CTA,
                 onTap: () async {
                   Navigator.pop(context);
