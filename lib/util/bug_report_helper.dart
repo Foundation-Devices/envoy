@@ -31,7 +31,7 @@ class EnvoyReport {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, "logs.db"));
     FlutterError.onError = (FlutterErrorDetails details) {
-      if(kDebugMode){
+      if (kDebugMode) {
         FlutterError.dumpErrorToConsole(details);
       }
       writeReport(details);
