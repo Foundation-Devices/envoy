@@ -12,7 +12,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SingleImportPpIntroPage extends StatelessWidget {
-  const SingleImportPpIntroPage({Key? key}) : super(key: key);
+  final bool isExistingDevice;
+
+  const SingleImportPpIntroPage({Key? key, this.isExistingDevice = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +87,10 @@ class SingleImportPpIntroPage extends StatelessWidget {
                             ),
                             Padding(padding: EdgeInsets.all(6)),
                             Text(
-                              S().pair_existing_device_intro_subheading,
+                              isExistingDevice
+                                  ? S().pair_existing_device_intro_subheading
+                                  : S()
+                                      .pair_new_device_intro_connect_envoy_subheading,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
                             ),
