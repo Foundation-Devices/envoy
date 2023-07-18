@@ -662,6 +662,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                 Consumer(
                   builder: (context, ref, child) {
                     return OnboardingButton(
+                        type: EnvoyButtonTypes.primaryModal,
                         label: S()
                             .manual_setup_recovery_import_backup_modal_fail_connectivity_cta1,
                         onTap: () {
