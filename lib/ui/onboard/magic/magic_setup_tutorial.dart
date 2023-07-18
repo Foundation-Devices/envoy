@@ -65,10 +65,12 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      EmbeddedVideo(
-                        path: "assets/videos/magic_backups.mp4",
-                        key: _playerKey,
-                      ),
+                      !Platform.isLinux
+                          ? EmbeddedVideo(
+                              path: "assets/videos/magic_backups.mp4",
+                              key: _playerKey,
+                            )
+                          : Container(),
                     ],
                   ),
                 ),

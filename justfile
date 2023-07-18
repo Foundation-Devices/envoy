@@ -70,8 +70,8 @@ copy:
     localazy download
 
 passport-deps:
-    sudo apt install autotools-dev automake libusb-1.0-0-dev libtool python3-virtualenv libsdl2-dev pkg-config curl
-    sudo modprobe v4l2loopback video_nr=5,6
+    sudo apt install autotools-dev automake libusb-1.0-0-dev libtool python3-virtualenv libsdl2-dev pkg-config curl vlc v4l2loopback-dkms
+    sudo modprobe v4l2loopback video_nr=5,6,7
 
 passport: passport-deps
     git clone git@github.com:Foundation-Devices/passport2.git || true
@@ -80,6 +80,6 @@ passport: passport-deps
     just --justfile passport2/simulator/Justfile sim color
 
 beef:
-    flutter test integration_test
+    FLUTTER_TEST=true flutter test integration_test
 
 

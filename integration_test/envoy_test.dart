@@ -5,7 +5,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/main.dart';
-import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,7 +12,238 @@ import 'package:screenshot/screenshot.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> resetData() async {
+void main() {
+  // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('BEEFbench', () {
+    testWidgets('Onboarding flow', (tester) async {
+      Directory fdDir = Directory('/proc/$pid/fd');
+
+      // ignore: unused_local_variable
+      final oledPipe = await Pipe.create();
+      // ignore: unused_local_variable
+      final ledPipe = await Pipe.create();
+      final numpadPipe = await Pipe.create();
+      // ignore: unused_local_variable
+      final camCmdPipe = await Pipe.create();
+      // ignore: unused_local_variable
+      final camImgPipe = await Pipe.create();
+
+      List<FileSystemEntity> fds = fdDir.listSync().toList();
+      List<File> pipes = fds.whereType<File>().toList();
+
+      File rOled = pipes[pipes.length - 10];
+      File wOled = pipes[pipes.length - 9];
+
+      File rLedPipe = pipes[pipes.length - 8];
+      File wLedPipe = pipes[pipes.length - 7];
+
+      File rNumpadPipe = pipes[pipes.length - 6];
+      File wNumpadPipe = pipes[pipes.length - 5];
+
+      File rCamCmdPipe = pipes[pipes.length - 4];
+      File wCamCmdPipe = pipes[pipes.length - 3];
+
+      File rCamImgPipe = pipes[pipes.length - 2];
+      File wCamImgPipe = pipes[pipes.length - 1];
+
+      await resetEnvoyData();
+      Passport.reset();
+      await Passport.cleanUp();
+
+      ScreenshotController envoyScreenshotController = ScreenshotController();
+
+      final passport = Passport(
+          envoyScreenshotController,
+          tester,
+          numpadPipe,
+          rOled,
+          wOled,
+          rLedPipe,
+          wLedPipe,
+          rNumpadPipe,
+          wNumpadPipe,
+          rCamCmdPipe,
+          wCamCmdPipe,
+          rCamImgPipe,
+          wCamImgPipe);
+
+      await initSingletons();
+      await tester.pumpWidget(
+          Screenshot(controller: envoyScreenshotController, child: EnvoyApp()));
+
+      await tester.pump();
+
+      //final learnMore = find.text('Learn More');
+      //final buyPassport = find.text('Buy Passport');
+      //final emptyDevices = find.byType(GhostDevice);
+      //final connectExistingPassport = find.text("CONNECT AN EXISTING PASSPORT");
+      //final getStarted = find.text("Get Started");
+
+      final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+      expect(setUpButtonFinder, findsOneWidget);
+      await tester.tap(setUpButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      final continueButtonFinder = find.text('Continue');
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      final enableMagicButtonFinder = find.text('Enable Magic Backups');
+      expect(enableMagicButtonFinder, findsOneWidget);
+      await tester.tap(enableMagicButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      // video
+      final createMagicButtonFinder = find.text('Create Magic Backup');
+      expect(createMagicButtonFinder, findsOneWidget);
+      await tester.tap(createMagicButtonFinder);
+      await tester.pump(Duration(milliseconds: 1500));
+
+      await tester.pumpAndSettle();
+
+      // animations
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      expect(continueButtonFinder, findsOneWidget);
+      await tester.tap(continueButtonFinder);
+      await tester.pump(Duration(milliseconds: 500));
+
+      final devicesButton = find.text('Devices');
+      await tester.tap(devicesButton);
+      await tester.pumpAndSettle();
+
+      final iconPlus = find.byIcon(Icons.add);
+      await tester.tap(iconPlus);
+      await tester.pumpAndSettle();
+
+      final connectNewPassport = find.text("SET UP A NEW PASSPORT");
+      await tester.tap(connectNewPassport);
+      await tester.pumpAndSettle();
+
+      final acceptButton = find.text("I Accept");
+      await tester.tap(acceptButton);
+      await tester.pumpAndSettle();
+
+      final next = find.text("Next");
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+
+      await passport.pressButton(PassportButtons.right);
+      await pause(1000);
+
+      await passport.pressButton(PassportButtons.right);
+      await pause(1000);
+      await passport.pressButton(PassportButtons.right);
+      await pause(1000);
+      await passport.pressButton(PassportButtons.right);
+
+      await pause(2000);
+
+      await passport.containsText(["Scanning"]);
+      await passport.sendFramesUntil(70, ["On Envoy, select Next", "100%"]);
+
+      await pause(1000);
+      await passport.pressButton(PassportButtons.right);
+
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+
+      final continueButton = find.text("Continue");
+      await tester.tap(continueButton);
+
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+
+      await passport.pressButton(PassportButtons.right);
+      await pause(1000);
+
+      final passportInsecureContactUsFinder = find.text('Contact Us');
+      expect(passportInsecureContactUsFinder, findsOneWidget);
+      await Passport.cleanUp();
+    });
+
+//     testWidgets('Connect an existing passport flow', (tester) async {
+//       await resetEnvoyData();
+//       await initSingletons();
+//       await tester.pumpWidget(EnvoyApp());
+//
+//       final originalOnError = FlutterError.onError!;
+//       FlutterError.onError = (FlutterErrorDetails details) {
+//         originalOnError(details);
+//       };
+//
+//       await tester.pump();
+//
+//       final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+//       final continueButtonFinder = find.text('Continue');
+//       final enableMagicButtonFinder = find.text('Enable Magic Backups');
+//       final createMagicButtonFinder = find.text('Create Magic Backup');
+//
+//       expect(setUpButtonFinder, findsOneWidget);
+//       await tester.tap(setUpButtonFinder);
+//       await tester.pump(Duration(milliseconds: 500));
+//
+//       expect(continueButtonFinder, findsOneWidget);
+//       await tester.tap(continueButtonFinder);
+//       await tester.pump(Duration(milliseconds: 500));
+//
+//       expect(enableMagicButtonFinder, findsOneWidget);
+//       await tester.tap(enableMagicButtonFinder);
+//       await tester.pump(Duration(milliseconds: 500));
+//
+//       //video
+//       expect(createMagicButtonFinder, findsOneWidget);
+//       await tester.tap(createMagicButtonFinder);
+//       await tester.pump(Duration(milliseconds: 1500));
+//
+//       await tester.pumpAndSettle();
+//
+// // animations
+//
+//       expect(continueButtonFinder, findsOneWidget);
+//       await tester.tap(continueButtonFinder);
+//       await tester.pump(Duration(milliseconds: 500));
+//
+//       expect(continueButtonFinder, findsOneWidget);
+//       await tester.tap(continueButtonFinder);
+//       await tester.pump(Duration(milliseconds: 500));
+//
+// // main ˇˇ
+//
+//       final devicesButton = find.text('Devices');
+//       final iconPlus = find.byIcon(Icons.add);
+//       final connectExistingPassport = find.text("CONNECT AN EXISTING PASSPORT");
+//       final getStarted = find.text("Get Started");
+//
+//       await tester.tap(devicesButton);
+//       await tester.pumpAndSettle();
+//
+//       await tester.tap(iconPlus);
+//       await tester.pumpAndSettle();
+//
+//       await tester.tap(connectExistingPassport);
+//       await tester.pump(Duration(milliseconds: 500));
+//
+//       expect(getStarted, findsOneWidget);
+//       await tester.tap(getStarted);
+//       await tester.pumpAndSettle();
+//
+//       expect(continueButtonFinder, findsOneWidget);
+//       await tester.tap(continueButtonFinder);
+//       // await tester.pumpAndSettle();
+//     });
+  });
+}
+
+Future<void> pause(int duration) async {
+  await Future.delayed(Duration(milliseconds: duration), () {});
+}
+
+Future<void> resetEnvoyData() async {
   // Preferences
   final prefs = await SharedPreferences.getInstance();
   final appSupportDir = await getApplicationSupportDirectory();
@@ -37,8 +267,9 @@ Future<void> resetData() async {
 
 class Passport {
   final currentPath = Directory.current.path;
-  final oledV4lDevice = '/dev/video5';
-  final oledV4lDeviceDuplicate = '/dev/video6';
+  final qrScannerDevice = '/dev/video5';
+  final oledV4lDevice = '/dev/video6';
+  final oledV4lDeviceDuplicate = '/dev/video7';
 
   final ScreenshotController screenshotController;
   final WidgetTester tester;
@@ -134,15 +365,24 @@ class Passport {
     }
   }
 
+  static cleanUp() async {
+    cleanUpFfmpeg();
+    cleanUpSim();
+  }
+
   static cleanUpFfmpeg() async {
     await Process.run('pkill', ['-9', 'ffmpeg']);
   }
 
+  static cleanUpSim() async {
+    await Process.run('pkill', ['-9', 'passport-mpy']);
+  }
+
   void displayOled(String oledV4lDeviceDuplicate) {
-    Process.start('ffplay', [oledV4lDeviceDuplicate]).then((ffplay) {
-      print("ffplay started!");
-      // ffplay.stderr.listen((event) {
-      //   print("ffplay: " + utf8.decode(event));
+    Process.start('vlc', ['v4l2://$oledV4lDeviceDuplicate']).then((vlc) {
+      // print("vlc started!");
+      // vlc.stderr.listen((event) {
+      //   print("vlc: " + utf8.decode(event));
       // });
     });
   }
@@ -166,8 +406,11 @@ class Passport {
       '-f',
       'video4linux2',
       oledV4lDeviceDuplicate,
+      '-f',
+      'video4linux2',
+      qrScannerDevice,
     ]).then((ffmpeg) {
-      print("ffmpeg started!");
+      print("v4l devices created!");
       // ffmpeg.stdout.listen((event) {
       //   print(event);
       // });
@@ -177,66 +420,58 @@ class Passport {
     });
   }
 
-  Future<void> sendFrames(int number) async {
+  Future<void> sendFramesUntil(int number, List<String> text) async {
     for (var i = 0; i < number; i++) {
-      await sendScreenToPassport(screenshotController, camImgHandleNum);
+      await sendFrameToPassport(screenshotController, rCamImgPipe.path);
       await pause(100);
       await tester.pumpAndSettle();
+      if (await containsText(text)) {
+        break;
+      }
     }
   }
 
-  Future<void> sendScreenToPassport(
-      ScreenshotController screenshotController, String CamPipeNumber) async {
+  Future<void> sendFrameToPassport(
+      ScreenshotController screenshotController, String camPipePath) async {
     final currentPath = Directory.current.path;
     final screenshotFileName = "screenshot";
     await screenshotController.captureAndSave(currentPath,
         fileName: screenshotFileName);
 
     final imagePath = '$currentPath/$screenshotFileName';
-    final rawImage = '$currentPath/rawImage.raw';
-    var scriptPath = '$currentPath/integration_test/png_to_raw.sh';
-    await Process.run('bash', [scriptPath, imagePath, rawImage]);
 
-    Process.run('ffmpeg', [
-      '-vcodec',
-      'rawvideo',
-      '-f',
-      'rawvideo',
-      '-pix_fmt',
-      'rgb565',
-      '-s',
-      '396x330',
-      '-i',
-      rawImage,
-      '-vcodec',
-      'rawvideo',
-      '-f',
-      'rawvideo',
-      '-pix_fmt',
-      'rgb565',
-      '-s',
-      '396x330',
-      '/proc/$pid/fd/$CamPipeNumber',
-      '-y'
-    ]);
+    var scriptPath = '$currentPath/integration_test/png_to_raw.sh';
+
+    // ignore: unused_local_variable
+    final script = await Process.run(
+        'bash', [scriptPath, imagePath, camPipePath],
+        stdoutEncoding: systemEncoding, stderrEncoding: systemEncoding);
+    //print("STDOUT: " + script.stdout);
+    //print("STDERR: " + script.stderr);
   }
 
-  Future<bool> containsText(String text) async {
+  Future<bool> containsText(List<String> texts) async {
     var scriptPath = '$currentPath/integration_test/ocr_passport.sh';
 
     // Run the script using Bash
-    ProcessResult process =
-        await Process.run('bash', [scriptPath, oledV4lDevice]);
-    await process.stdout.forEach((data) {
-      if (data.contains(text)) {
+    ProcessResult process = await Process.run(
+        'bash', [scriptPath, oledV4lDevice],
+        stdoutEncoding: systemEncoding);
+
+    if (process.stdout == null) {
+      return false;
+    }
+
+    print("CAPTURE: " + process.stdout);
+
+    for (final text in texts) {
+      if (process.stdout.contains(text)) {
         print('This screen contains: $text');
         return true;
-      } else {
-        print('This string does not contain: $text');
-        return false;
       }
-    });
+    }
 
+    print('This screen does not contain: $texts');
     return false;
   }
 
@@ -245,214 +480,6 @@ class Passport {
     await pause(200);
     numpadPipe.write.add('$button:u\n'.codeUnits);
   }
-}
-
-void main() {
-  // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  group('end-to-end test', () {
-    testWidgets('Connect a new passport flow', (tester) async {
-      Directory fdDir = Directory('/proc/$pid/fd');
-
-      final oledPipe = await Pipe.create();
-      final ledPipe = await Pipe.create();
-      final numpadPipe = await Pipe.create();
-      final camCmdPipe = await Pipe.create();
-      final camImgPipe = await Pipe.create();
-
-      List<FileSystemEntity> fds = fdDir.listSync().toList();
-      List<File> pipes = fds.whereType<File>().toList();
-
-      File rOled = pipes[pipes.length - 10];
-      File wOled = pipes[pipes.length - 9];
-
-      File rLedPipe = pipes[pipes.length - 8];
-      File wLedPipe = pipes[pipes.length - 7];
-
-      File rNumpadPipe = pipes[pipes.length - 6];
-      File wNumpadPipe = pipes[pipes.length - 5];
-
-      File rCamCmdPipe = pipes[pipes.length - 4];
-      File wCamCmdPipe = pipes[pipes.length - 3];
-
-      File rCamImgPipe = pipes[pipes.length - 2];
-      File wCamImgPipe = pipes[pipes.length - 1];
-
-      Passport.reset();
-      await Passport.cleanUpFfmpeg();
-
-      ScreenshotController envoyScreenshotController = ScreenshotController();
-
-      final passport = Passport(
-          envoyScreenshotController,
-          tester,
-          numpadPipe,
-          rOled,
-          wOled,
-          rLedPipe,
-          wLedPipe,
-          rNumpadPipe,
-          wNumpadPipe,
-          rCamCmdPipe,
-          wCamCmdPipe,
-          rCamImgPipe,
-          wCamImgPipe);
-
-      await initSingletons();
-      await tester.pumpWidget(
-          Screenshot(controller: envoyScreenshotController, child: EnvoyApp()));
-
-      await tester.pumpAndSettle();
-
-      final devicesButton = find.text('Devices');
-      final learnMore = find.text('Learn More');
-      final buyPassport = find.text('Buy Passport');
-      final emptyDevices = find.byType(GhostDevice);
-      final iconPlus = find.byIcon(Icons.add);
-      final connectExistingPassport = find.text("CONNECT AN EXISTING PASSPORT");
-      final connectNewPassport = find.text("SET UP A NEW PASSPORT");
-      final acceptButton = find.text("I Accept");
-      final Next = find.text("Next");
-      final getStarted = find.text("Get Started");
-      final continueButton = find.text("Continue");
-
-      final currentPath = Directory.current.path;
-
-      /////////////////////////////////////////// PATH TO QR CODE FOR CONNECT NEW PASSPORT
-
-      await tester.tap(devicesButton);
-      await tester.pumpAndSettle();
-
-      await tester.tap(iconPlus);
-      await tester.pumpAndSettle();
-
-      await tester.tap(connectNewPassport);
-      await tester.pumpAndSettle();
-
-      await tester.tap(acceptButton);
-      await tester.pumpAndSettle();
-      await tester.tap(Next);
-
-      await tester.pumpAndSettle();
-
-      ///////////////////////////////////////////////////////////////////////
-
-      // final oled_w = oledPipe.write;
-      // final oled_r = oledPipe.read;
-      //
-      // final led_w = ledPipe.write;
-      // final led_r = ledPipe.read;
-      //
-      // final numpad_w = numpadPipe.write;
-      // final numpad_r = numpadPipe.read;
-      //
-      // final cam_cmd_w = camCmdPipe.write;
-      // final cam_cmd_r = camCmdPipe.read;
-      //
-      // final cam_img_w = camImgPipe.write;
-      // final cam_img_r = camImgPipe.read;
-
-      // // IMPORTANT: in debug read int values of these handles !!!!!!!!!!!
-      // final oledHandle = ResourceHandle.fromWritePipe(oled_w);
-      // final numpadHandle = ResourceHandle.fromReadPipe(numpad_r);
-      // final ledHandle = ResourceHandle.fromWritePipe(led_w);
-      // final camCmdHandle = ResourceHandle.fromWritePipe(cam_cmd_w);
-      // final camImgHandle = ResourceHandle.fromReadPipe(cam_img_r);
-
-      await pause(2000);
-      await passport.containsText("Welcome to Passport");
-
-      await passport.pressButton(PassportButtons.right);
-      await pause(1000);
-      await passport.pressButton(PassportButtons.right);
-      await pause(1000);
-      await passport.pressButton(PassportButtons.right);
-      await pause(1000);
-      await passport.pressButton(PassportButtons.right);
-
-      //expect(await passport.containsText("Scanning"), true);
-      // here is scanning
-
-      await passport.sendFrames(70);
-
-      await Future.delayed(const Duration(minutes: 500), () {});
-    });
-
-    testWidgets('Connect an existing passport flow', (tester) async {
-      await resetData();
-      await initSingletons();
-      await tester.pumpWidget(EnvoyApp());
-
-      final originalOnError = FlutterError.onError!;
-      FlutterError.onError = (FlutterErrorDetails details) {
-        originalOnError(details);
-      };
-
-      await tester.pump();
-
-      final setUpButtonFinder = find.text('Set Up Envoy Wallet');
-      final continueButtonFinder = find.text('Continue');
-      final enableMagicButtonFinder = find.text('Enable Magic Backups');
-      final createMagicButtonFinder = find.text('Create Magic Backup');
-
-      expect(setUpButtonFinder, findsOneWidget);
-      await tester.tap(setUpButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
-
-      expect(continueButtonFinder, findsOneWidget);
-      await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
-
-      expect(enableMagicButtonFinder, findsOneWidget);
-      await tester.tap(enableMagicButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
-
-      //video
-      expect(createMagicButtonFinder, findsOneWidget);
-      await tester.tap(createMagicButtonFinder);
-      await tester.pump(Duration(milliseconds: 1500));
-
-      await tester.pumpAndSettle();
-
-// animations
-
-      expect(continueButtonFinder, findsOneWidget);
-      await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
-
-      expect(continueButtonFinder, findsOneWidget);
-      await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
-
-// main ˇˇ
-
-      final devicesButton = find.text('Devices');
-      final iconPlus = find.byIcon(Icons.add);
-      final connectExistingPassport = find.text("CONNECT AN EXISTING PASSPORT");
-      final getStarted = find.text("Get Started");
-
-      await tester.tap(devicesButton);
-      await tester.pumpAndSettle();
-
-      await tester.tap(iconPlus);
-      await tester.pumpAndSettle();
-
-      await tester.tap(connectExistingPassport);
-      await tester.pump(Duration(milliseconds: 500));
-
-      expect(getStarted, findsOneWidget);
-      await tester.tap(getStarted);
-      await tester.pumpAndSettle();
-
-      expect(continueButtonFinder, findsOneWidget);
-      await tester.tap(continueButtonFinder);
-      await tester.pumpAndSettle();
-    });
-  });
-}
-
-Future<void> pause(int duration) async {
-  await Future.delayed(Duration(milliseconds: duration), () {});
 }
 
 class PassportButtons {

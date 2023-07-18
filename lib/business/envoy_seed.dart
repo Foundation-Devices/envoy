@@ -96,7 +96,9 @@ class EnvoySeed {
   Future<void> store(String seed) async {
     if (Settings().syncToCloud) {
       await _saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
-      _platform.invokeMethod('data_changed');
+      if (!Platform.isLinux) {
+        _platform.invokeMethod('data_changed');
+      }
     }
 
     await LocalStorage().saveSecure(SEED_KEY, seed);
