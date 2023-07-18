@@ -6,6 +6,5 @@ analyzer:
   exclude:
     - 'lib/generated'
     - 'lib/business/*.freezed.*'
-    - 'integration_test/*'
   plugins:
     - custom_lint
