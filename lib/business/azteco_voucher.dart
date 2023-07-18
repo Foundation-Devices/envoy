@@ -5,6 +5,7 @@
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
+import 'package:wallet/wallet.dart';
 
 import 'account.dart';
 
@@ -65,7 +66,8 @@ class AztecoVoucher {
 }
 
 aztecoSync(Account account) async {
-  final aztecoTxs = await EnvoyStorage().getAztecoTxs(account.id!);
+  final aztecoTxs =
+      await EnvoyStorage().getPendingTxs(account.id!, TransactionType.azteco);
 
   if (aztecoTxs.isEmpty) return;
 
@@ -73,7 +75,7 @@ aztecoSync(Account account) async {
     account.wallet.transactions
         .where((tx) => tx.outputs!.contains(aztecoTx.memo))
         .forEach((txToRemove) {
-      EnvoyStorage().deleteAztecoTx(aztecoTx.memo);
+      EnvoyStorage().deletePendingTx(aztecoTx.memo);
     });
   }
 }

@@ -72,8 +72,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -430,16 +428,6 @@ class S {
     );
   }
 
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -778,8 +766,6 @@ class S {
 
   // skipped getter for the 'FW Update' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   // skipped getter for the 'Face ID' key
 
   /// `Family`
@@ -839,16 +825,6 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SEND AND\nRECEIVE BITCOIN`
-  String get Heading {
-    return Intl.message(
-      'SEND AND\nRECEIVE BITCOIN',
-      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1288,16 +1264,6 @@ class S {
     );
   }
 
-  /// `ACCOUNTS`
-  String get ScreenTitle {
-    return Intl.message(
-      'ACCOUNTS',
-      name: 'ScreenTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1453,16 +1419,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -3450,10 +3406,10 @@ class S {
     );
   }
 
-  /// `As you sure you want to DELETE your Envoy Wallet?`
+  /// `Are you sure you want to DELETE your Envoy Wallet?`
   String get delete_wallet_for_good_modal_subheading {
     return Intl.message(
-      'As you sure you want to DELETE your Envoy Wallet?',
+      'Are you sure you want to DELETE your Envoy Wallet?',
       name: 'delete_wallet_for_good_modal_subheading',
       desc: '',
       args: [],
@@ -5934,10 +5890,10 @@ class S {
     );
   }
 
-  /// `Your Backup File has been succesfullyrestored`
+  /// `Your Backup File has been successfully restored`
   String get envoy_pp_restore_backup_success_heading {
     return Intl.message(
-      'Your Backup File has been succesfullyrestored',
+      'Your Backup File has been successfully restored',
       name: 'envoy_pp_restore_backup_success_heading',
       desc: '',
       args: [],
@@ -9992,36 +9948,6 @@ class S {
     );
   }
 
-  /// `Choose Destination`
-  String get manual_setup_import_existing_backup_CTA1 {
-    return Intl.message(
-      'Choose Destination',
-      name: 'manual_setup_import_existing_backup_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save Envoy Backup File`
-  String get manual_setup_import_existing_backup_heading {
-    return Intl.message(
-      'Save Envoy Backup File',
-      name: 'manual_setup_import_existing_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_import_existing_backup_subheading {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_import_existing_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get manual_setup_import_seed_12_words_CTA {
     return Intl.message(
@@ -10816,10 +10742,10 @@ class S {
     );
   }
 
-  /// `SETTINGS`
+  /// `ENVOY`
   String get manual_toggle_on_seed_backedup_iOS_backups {
     return Intl.message(
-      'SETTINGS',
+      'ENVOY',
       name: 'manual_toggle_on_seed_backedup_iOS_backups',
       desc: '',
       args: [],
@@ -13138,11 +13064,31 @@ class S {
     );
   }
 
-  /// `Enter Valid Address`
+  /// `Enter valid address`
   String get send_keyboard_amount_enter_valid_address {
     return Intl.message(
-      'Enter Valid Address',
+      'Enter valid address',
       name: 'send_keyboard_amount_enter_valid_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insufficient funds`
+  String get send_keyboard_amount_insufficient_funds_info {
+    return Intl.message(
+      'Insufficient funds',
+      name: 'send_keyboard_amount_insufficient_funds_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount too low`
+  String get send_keyboard_amount_too_low_info {
+    return Intl.message(
+      'Amount too low',
+      name: 'send_keyboard_amount_too_low_info',
       desc: '',
       args: [],
     );
@@ -13218,10 +13164,10 @@ class S {
     );
   }
 
-  /// `Send Max`
+  /// `Send max`
   String get send_keyboard_send_max {
     return Intl.message(
-      'Send Max',
+      'Send max',
       name: 'send_keyboard_send_max',
       desc: '',
       args: [],
@@ -13283,6 +13229,36 @@ class S {
     return Intl.message(
       'Advanced',
       name: 'settings_advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get settings_advanced_enabled_testnet_modal_cta {
+    return Intl.message(
+      'Next',
+      name: 'settings_advanced_enabled_testnet_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn how to do that [[here]].`
+  String get settings_advanced_enabled_testnet_modal_link {
+    return Intl.message(
+      'Learn how to do that [[here]].',
+      name: 'settings_advanced_enabled_testnet_modal_link',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.`
+  String get settings_advanced_enabled_testnet_modal_subheading {
+    return Intl.message(
+      'Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
+      name: 'settings_advanced_enabled_testnet_modal_subheading',
       desc: '',
       args: [],
     );
@@ -14087,6 +14063,26 @@ class S {
     return Intl.message(
       'EDIT TAG NAME\n\nDELETE TAG',
       name: 'tagged_coin_details_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hold to drag and reorder your accounts.`
+  String get tap_and_drag_first_time_text {
+    return Intl.message(
+      'Hold to drag and reorder your accounts.',
+      name: 'tap_and_drag_first_time_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get tap_and_drag_first_time_text_button {
+    return Intl.message(
+      'Dismiss',
+      name: 'tap_and_drag_first_time_text_button',
       desc: '',
       args: [],
     );

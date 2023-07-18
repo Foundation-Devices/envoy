@@ -84,6 +84,8 @@ pub struct Transaction {
     confirmation_time: u64,
     outputs_len: u8,
     outputs: *const *const c_char,
+    inputs_len: u8,
+    inputs: *const *const c_char,
 }
 
 #[repr(C)]
@@ -575,6 +577,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
 
         let outputs: Vec<_> = transaction
             .transaction
+            .clone()
             .unwrap()
             .output
             .into_iter()
@@ -593,6 +596,22 @@ pub unsafe extern "C" fn wallet_get_transactions(
         let outputs_ptr = outputs.as_ptr();
         std::mem::forget(outputs);
 
+        let inputs: Vec<_> = transaction
+            .transaction
+            .unwrap()
+            .input
+            .into_iter()
+            .map(|i| {
+                CString::new(format!("{}", i.previous_output.txid))
+                    .unwrap()
+                    .into_raw() as *const c_char
+            })
+            .collect();
+
+        let inputs_len = inputs.len() as u8;
+        let inputs_ptr = inputs.as_ptr();
+        std::mem::forget(inputs);
+
         let tx = Transaction {
             txid: CString::new(format!("{}", transaction.txid))
                 .unwrap()
@@ -604,6 +623,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
             confirmation_time,
             outputs_len,
             outputs: outputs_ptr,
+            inputs_len,
+            inputs: inputs_ptr,
         };
 
         transactions_vec.push(tx);
@@ -850,13 +871,23 @@ pub unsafe extern "C" fn wallet_sign_psbt(
     }
 }
 
+fn generate_mnemonic() -> (Mnemonic, String) {
+    let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
+    let mnemonic_string = mnemonic.to_string();
+
+    (mnemonic, mnemonic_string)
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     let secp = Secp256k1::new();
 
-    let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
+    let (mut mnemonic, mut mnemonic_string) = generate_mnemonic();
 
-    let mnemonic_string = mnemonic.to_string();
+    // SFT-2340: try until we get a valid mnemonic (moon rays bug)
+    while Mnemonic::parse(mnemonic_string.clone()).is_err() {
+        (mnemonic, mnemonic_string) = generate_mnemonic();
+    }
 
     let xkey: ExtendedKey<miniscript::BareCtx> = mnemonic.into_extended_key().unwrap();
     let xprv = xkey.into_xprv(network.into()).unwrap();

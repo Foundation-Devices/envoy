@@ -38,6 +38,7 @@ final List<FiatCurrency> supportedFiat = [
   FiatCurrency('AUD', '\$'),
   FiatCurrency('CAD', '\$'),
   FiatCurrency('CHF', 'fr.'),
+  FiatCurrency('MYR', 'RM'),
 ];
 
 class ExchangeRate extends ChangeNotifier {
@@ -88,8 +89,10 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   void setCurrency(String currencyCode) {
-    _currency =
-        supportedFiat.firstWhere((element) => element.code == currencyCode);
+    // If code is wrong (for whatever reason) go with default
+    _currency = supportedFiat.firstWhere(
+        (element) => element.code == currencyCode,
+        orElse: () => supportedFiat[0]);
 
     // Fetch rates for this session
     _getRate();
@@ -139,11 +142,8 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  String getUsdValue(int amountSats) {
-    //return _usdRate;
-
-    NumberFormat currencyFormatter = NumberFormat.currency(symbol: "");
-    return currencyFormatter.format(_usdRate! * amountSats / 100000000);
+  double getUsdValue(int amountSats) {
+    return _usdRate! * amountSats / 100000000;
   }
 
   // SATS to FIAT

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
+import 'package:wallet/wallet.dart';
 
 class AztecoLoadingModal extends StatefulWidget {
   final AztecoVoucher voucher;
@@ -36,8 +37,8 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
     bool success = await widget.voucher.redeem(address);
 
     if (success) {
-      await EnvoyStorage()
-          .addAztecoTx(address, widget.account.id!, DateTime.now());
+      await EnvoyStorage().addPendingTx(address, widget.account.id!,
+          DateTime.now(), TransactionType.azteco, 0);
       widget.controller.jumpToPage(3); // success
     } else {
       widget.controller.jumpToPage(2); // fail

@@ -39,12 +39,6 @@ class DevicesCard extends StatefulWidget with TopLevelNavigationCard {
 // Unfortunately it seems to only work with TabView
 class DevicesCardState extends State<DevicesCard>
     with AutomaticKeepAliveClientMixin, TopLevelNavigationCardState {
-  void _showAddDevicePage() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return SingleImportPpIntroPage();
-    }));
-  }
-
   _redraw() {
     setState(() {});
   }
@@ -71,8 +65,7 @@ class DevicesCardState extends State<DevicesCard>
     final navigator = CardNavigator(push, pop, hideOptions);
 
     if (cardStack.isEmpty) {
-      navigator
-          .push(DevicesList(navigator, addDevicesFunction: _showAddDevicePage));
+      navigator.push(DevicesList(navigator));
     }
 
     return IndexedTransitionSwitcher(
@@ -99,11 +92,7 @@ class DevicesCardState extends State<DevicesCard>
 
 //ignore: must_be_immutable
 class DevicesList extends StatefulWidget with NavigationCard {
-  final Function() addDevicesFunction;
-
-  DevicesList(CardNavigator? navigationCallback,
-      {required this.addDevicesFunction})
-      : super(key: UniqueKey()) {
+  DevicesList(CardNavigator? navigationCallback) : super(key: UniqueKey()) {
     modal = false;
     title = S().devices_heading.toUpperCase();
     navigator = navigationCallback;

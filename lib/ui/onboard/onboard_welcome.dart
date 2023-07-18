@@ -95,6 +95,23 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
+Widget EnvoyScaffoldShieldScrollView(BuildContext context, Widget child) {
+  double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+  return SingleChildScrollView(
+      child: Container(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Container(
+              padding: EdgeInsets.only(bottom: _shieldBottom),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                Color(0x0),
+                Color(0xff686868),
+                Color(0xffFFFFFF),
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+              child: Shield(child: child))));
+}
+
 class EnvoyPatternScaffold extends StatefulWidget {
   final Widget? child;
   final Widget? shield;
@@ -195,7 +212,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                     child: Shield(
                       child: Padding(
                           padding: const EdgeInsets.only(
-                              right: 15, left: 15, top: 15, bottom: 40),
+                              right: 8, left: 8, top: 8, bottom: 40),
                           child: SizedBox.expand(child: widget.shield)),
                     ),
                   ),

@@ -22,7 +22,7 @@ final transactionsProvider = Provider.family<List<Transaction>, String?>((ref, S
   List<Transaction> walletTransactions = ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
   transactions.addAll(walletTransactions);
-  transactions.addAll(aztecoTransactions);
+  transactions.addAll(pendingTransactions);
 
   // Sort transactions by date
   transactions.sort((t1, t2) {

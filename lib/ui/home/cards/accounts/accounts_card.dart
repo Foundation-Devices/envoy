@@ -201,6 +201,12 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                           child: AccountListTile(
                             account,
                             onTap: () {
+                              ref
+                                      .read(homePageAccountsProvider.notifier)
+                                      .state =
+                                  HomePageAccountsState(
+                                      HomePageAccountsNavigationState.details,
+                                      currentAccount: account);
                               widget.navigator!.push(AccountCard(account,
                                   navigationCallback: widget.navigator));
                             },
@@ -223,11 +229,17 @@ class AccountPrompts extends ConsumerWidget {
         color: EnvoyColors.grey);
     var isHideAmountDismissed =
         ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
-    var doesUserTriedReceiveScreen = ref.watch(arePromptsDismissedProvider(
+
+    var isDragAndDropDismissed =
+        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.dragAndDrop));
+
+    var userInteractedWithReceive = ref.watch(arePromptsDismissedProvider(
         DismissiblePrompt.userInteractedWithReceive));
     var accounts = ref.watch(accountsProvider);
-    //Show if the user never tried receive screen
-    if (!doesUserTriedReceiveScreen) {
+    var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
+
+    //Show if the user never tried receive screen and has no balance
+    if (!userInteractedWithReceive && accountsHaveZeroBalance) {
       return Center(
           child: Padding(
         padding: const EdgeInsets.only(top: 0.0),
@@ -240,8 +252,7 @@ class AccountPrompts extends ConsumerWidget {
         ),
       ));
     } else {
-      //Show if the user never tried hide amount
-      if (!isHideAmountDismissed) {
+      if (!isHideAmountDismissed && !accountsHaveZeroBalance) {
         return Center(
           child: Wrap(
             alignment: WrapAlignment.center,
@@ -264,6 +275,30 @@ class AccountPrompts extends ConsumerWidget {
           ),
         );
       }
+
+      if (!isDragAndDropDismissed && accounts.length > 1) {
+        return Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 5,
+            children: [
+              Text(
+                S().tap_and_drag_first_time_text,
+                style: _explainerTextStyle,
+              ),
+              GestureDetector(
+                child: Text(
+                  S().tap_and_drag_first_time_text_button,
+                  style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+                ),
+                onTap: () {
+                  EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+                },
+              ),
+            ],
+          ),
+        );
+      }
     }
     return SizedBox.square();
   }
@@ -276,7 +311,6 @@ void showSecurityDialog(BuildContext context) {
       dismissible: false,
       dialog: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.height * 0.7,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -295,45 +329,43 @@ void showSecurityDialog(BuildContext context) {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(8)),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      width: MediaQuery.of(context).size.height * 0.08,
-                    ),
-                    Padding(padding: EdgeInsets.all(8)),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 200),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(S().wallet_security_modal__heading,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                        S().wallet_security_modal_subheading,
-                        style: Theme.of(context).textTheme.bodySmall,
+              Padding(padding: EdgeInsets.all(16)),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/exclamation_icon.png",
+                    height: 60,
+                    width: 60,
+                  ),
+                  Padding(padding: EdgeInsets.all(16)),
+                  Container(
+                    constraints: BoxConstraints(maxWidth: 200),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: Text(S().wallet_security_modal__heading,
                         textAlign: TextAlign.center,
-                      ),
+                        style: Theme.of(context).textTheme.titleLarge),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: Text(
+                      S().wallet_security_modal_subheading,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               OnboardingButton(
-                  type: EnvoyButtonTypes.secondary,
+                  type: EnvoyButtonTypes.tertiary,
                   label: S().wallet_security_modal_cta2,
                   onTap: () {
                     Navigator.of(context).pop();
                   }),
               OnboardingButton(
-                  type: EnvoyButtonTypes.primary,
+                  type: EnvoyButtonTypes.primaryModal,
                   label: S().wallet_security_modal_cta1,
                   onTap: () {
                     Navigator.of(context).pop();
@@ -342,7 +374,7 @@ void showSecurityDialog(BuildContext context) {
                       builder: (context) {
                         return BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: DeviceEmptyVideo());
+                            child: Material(child: DeviceEmptyVideo()));
                       },
                     );
                   }),

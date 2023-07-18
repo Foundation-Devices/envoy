@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:schedulers/schedulers.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -94,12 +95,26 @@ class AccountManager extends ChangeNotifier {
   notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
       if (account.wallet.hot && account.wallet.network == Network.Mainnet) {
-        var amountUSD =
-            double.parse(ExchangeRate().getUsdValue(account.wallet.balance));
+        var amountUSD = ExchangeRate().getUsdValue(account.wallet.balance);
         if (amountUSD >= 1000) {
           isAccountBalanceHigherThanUsd1000Stream.add(true);
         }
       }
+    }
+  }
+
+  pendingSync(Account account) async {
+    final pendingTxs = await EnvoyStorage()
+        .getPendingTxs(account.id!, TransactionType.pending);
+
+    if (pendingTxs.isEmpty) return;
+
+    for (var pendingTx in pendingTxs) {
+      account.wallet.transactions
+          .where((tx) => tx.txId == pendingTx.txId)
+          .forEach((txToRemove) {
+        EnvoyStorage().deletePendingTx(pendingTx.txId);
+      });
     }
   }
 
@@ -132,6 +147,7 @@ class AccountManager extends ChangeNotifier {
       account = account.copyWith(dateSynced: DateTime.now());
 
       aztecoSync(account);
+      pendingSync(account);
     }
     ;
 
@@ -288,23 +304,28 @@ class AccountManager extends ChangeNotifier {
     final oldAccount = accounts.firstWhere((a) {
       return a.id! == account.id!;
     });
-    accounts[accounts.indexOf(oldAccount)] = account.copyWith(name: newName);
+    accounts[accounts.indexOf(oldAccount)] = oldAccount.copyWith(name: newName);
     storeAccounts();
     notifyListeners();
   }
 
   deleteAccount(Account account) {
-    account.wallet.drop();
+    final accountToDeleteIndex = accounts.indexWhere((a) => a.id == account.id);
+    if (accountToDeleteIndex != -1) {
+      var accountToDelete = accounts[accountToDeleteIndex];
+      accountToDelete.wallet.drop();
 
-    // Delete the BDK DB so it doesn't get confused on re-pair
-    final dir = Directory(walletsDirectory + account.wallet.name);
-    dir.delete(recursive: true);
+      // Delete the BDK DB so it doesn't get confused on re-pair
+      final dir = Directory(walletsDirectory + accountToDelete.wallet.name);
+      dir.delete(recursive: true);
 
-    accounts.remove(account);
-    storeAccounts();
-    notifyListeners();
+      accounts.remove(accountToDelete);
+      storeAccounts();
+      notifyListeners();
 
-    Notifications().deleteFromAccount(account);
+      Notifications().deleteFromAccount(accountToDelete);
+    }
+    ;
   }
 
   deleteDeviceAccounts(Device device) {

@@ -88,7 +88,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
               child: Consumer(
                 builder: (context, ref, child) {
                   NodeConnectionState nodeConnectionState =
@@ -152,7 +152,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
               },
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 4),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,

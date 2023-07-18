@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.0+2
+version: 1.3.0+1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -48,7 +48,7 @@ dependencies:
   qr_code_scanner:
     git:
       url: https://github.com/icota/qr_code_scanner.git
-      ref: 10e61ea0f5625ea7e20cb0449e959c384b4d575a
+      ref: 71db8c9dcb3ed56cc55f86caf1044ef2068603b7
 
   # flutter_vlc_player fork
   flutter_vlc_player:
@@ -109,6 +109,7 @@ dev_dependencies:
   custom_lint:
   riverpod_lint:
   freezed: ^2.3.4
+  screenshot: ^2.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

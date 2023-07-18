@@ -19,6 +19,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/tor_warning.dart';
@@ -27,6 +28,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:wallet/wallet.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -126,19 +128,21 @@ class _HomePageState extends ConsumerState<HomePage>
     EnvoyStorage()
         .isPromptDismissed(DismissiblePrompt.secureWallet)
         .listen((event) {
-      print("event1: " + event.toString());
       // if is not dismissed listen balance
       if (!event) {
         AccountManager()
             .isAccountBalanceHigherThanUsd1000Stream
             .stream
             .listen((event) {
-          _notifyAboutWarning();
-        });
+          final currentAccount =
+              ref.read(homePageAccountsProvider).currentAccount;
 
-        // if (AccountManager().isAccountBalanceHigherThanUsd1000()) {
-        //   _notifyAboutWarning();
-        // }
+          if (currentAccount != null &&
+              currentAccount.wallet.hot &&
+              currentAccount.wallet.network == Network.Mainnet) {
+            _notifyAboutHighBalance();
+          }
+        });
       }
     });
   }
@@ -160,10 +164,8 @@ class _HomePageState extends ConsumerState<HomePage>
     ).show(context);
   }
 
-  _notifyAboutWarning() {
-    print("_notifyAboutWarning");
+  _notifyAboutHighBalance() {
     AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
-
     showSecurityDialog(context);
   }
 
@@ -582,6 +584,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     : IconButton(
                         icon: Icon(
                           _rightActionIcon,
+                          color: Colors.white,
                         ),
                         onPressed: _rightAction,
                       ))));

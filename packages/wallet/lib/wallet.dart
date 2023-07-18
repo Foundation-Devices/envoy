@@ -17,7 +17,7 @@ part 'wallet.g.dart';
 
 enum Network { Mainnet, Testnet, Signet, Regtest }
 
-enum TransactionType { normal, azteco }
+enum TransactionType { normal, azteco, pending }
 
 @JsonSerializable()
 class Transaction {
@@ -29,15 +29,16 @@ class Transaction {
   final int received;
   final int blockHeight;
   final List<String>? outputs;
+  final List<String>? inputs;
   final TransactionType type;
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
 
-  get amount => received - sent;
+  int get amount => received - sent;
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight,
-      {this.type = TransactionType.normal, this.outputs});
+      {this.type = TransactionType.normal, this.outputs, this.inputs});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -67,6 +68,9 @@ class NativeTransaction extends Struct {
   @Uint8()
   external int outputsLen;
   external Pointer<Pointer<Uint8>> outputs;
+  @Uint8()
+  external int inputsLen;
+  external Pointer<Pointer<Uint8>> inputs;
 }
 
 class NativeSeed extends Struct {
@@ -557,14 +561,16 @@ class Wallet {
     for (var i = 0; i < txList.transactionsLen; i++) {
       var tx = txList.transactions.elementAt(i).ref;
       transactions.add(Transaction(
-          "",
-          tx.txid.cast<Utf8>().toDartString(),
-          DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
-          tx.fee,
-          tx.received,
-          tx.sent,
-          tx.confirmationHeight,
-          outputs: _extractStringList(tx.outputs, tx.outputsLen)));
+        "",
+        tx.txid.cast<Utf8>().toDartString(),
+        DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
+        tx.fee,
+        tx.received,
+        tx.sent,
+        tx.confirmationHeight,
+        outputs: _extractStringList(tx.outputs, tx.outputsLen),
+        inputs: _extractStringList(tx.inputs, tx.inputsLen),
+      ));
     }
 
     return transactions;
