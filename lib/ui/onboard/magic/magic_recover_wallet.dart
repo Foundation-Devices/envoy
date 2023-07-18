@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
@@ -107,15 +108,24 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
   }
 
+  Future<bool> _handleBackPress() async {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering) {
+      return false;
+    }
+    //remove seed that recovered from qr
+    if (EnvoySeed().walletDerived()) {
+      try {
+        EnvoySeed().delete();
+      } catch (exception) {}
+      return true;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering) {
-          return false;
-        }
-        return true;
-      },
+      onWillPop: _handleBackPress,
       child: Material(
         color: Colors.transparent,
         child: Builder(builder: (context) {
@@ -133,7 +143,11 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                         CupertinoNavigationBarBackButton(
                           color: Colors.black,
                           onPressed: () {
-                            Navigator.pop(context);
+                            _handleBackPress().then((value) {
+                              if (value) {
+                                Navigator.pop(context);
+                              }
+                            });
                           },
                         ),
                         Consumer(
@@ -323,6 +337,8 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                             .create(seedList, passphrase: passphrase);
                         bool success =
                             await EnvoySeed().restoreData(seed: seed);
+                        //Enable magic backup by default for seed recovery
+                        Settings().syncToCloud = true;
                         setState(() {
                           if (success) {
                             Navigator.push(
@@ -338,17 +354,36 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                             });
                           } else {
                             _setUnhappyState();
-                            _magicRecoverWalletState =
-                                MagicRecoveryWalletState.failure;
+                            setState(() {
+                              _magicRecoverWalletState =
+                                  MagicRecoveryWalletState.failure;
+                            });
                           }
                         });
-                      } catch (e) {
+                      } on BackupNotFound {
+                        _setUnhappyState();
                         setState(() {
-                          _setUnhappyState();
                           _magicRecoverWalletState =
-                              MagicRecoveryWalletState.failure;
+                              MagicRecoveryWalletState.backupNotFound;
                         });
-                        print(e);
+                      } on SeedNotFound {
+                        _setUnhappyState();
+                        setState(() {
+                          _magicRecoverWalletState =
+                              MagicRecoveryWalletState.seedNotFound;
+                        });
+                      } on ServerUnreachable {
+                        _setUnhappyState();
+                        setState(() {
+                          _magicRecoverWalletState =
+                              MagicRecoveryWalletState.serverNotReachable;
+                        });
+                      } catch (e) {
+                        _setUnhappyState();
+                        setState(() {
+                          _magicRecoverWalletState =
+                              MagicRecoveryWalletState.unableToDecryptBackup;
+                        });
                       }
                     },
                   );
