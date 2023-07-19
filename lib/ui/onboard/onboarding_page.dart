@@ -125,10 +125,12 @@ class OnboardingPage extends StatelessWidget {
                   ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
               } else {
                 return Container(
-                  height: 50,
-                  width: 50,
+                  height: 150,
+                  width: 150,
                   child: CircularProgressIndicator(
-                    color: EnvoyColors.darkTeal,
+                    color: EnvoyColors.teal,
+                    backgroundColor: EnvoyColors.greyLoadingSpinner,
+                    strokeWidth: 8,
                   ),
                 );
               }
