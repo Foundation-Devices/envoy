@@ -35,46 +35,8 @@ final transactionsProvider =
   transactions.addAll(walletTransactions);
   transactions.addAll(pendingTransactions);
 
-  // Sort transactions by date
-  transactions.sort((t1, t2) {
-    // Mempool transactions go on top
-    if (t1.date.isBefore(DateTime(2008)) && t2.date.isBefore(DateTime(2008))) {
-      return 0;
-    }
-
-    if (t2.date.isBefore(DateTime(2008))) {
-      return 1;
-    }
-
-    if (t1.date.isBefore(DateTime(2008))) {
-      return -1;
-    }
-
-    return t2.date.compareTo(t1.date);
-  });
-
-  // Transactions whose input is other's txid go above that transaction
-  transactions.sort((t1, t2) {
-    if (t2.inputs == null) {
-      return 1;
-    }
-
-    if (t1.inputs == null) {
-      return -1;
-    }
-
-    if (t2.inputs!.contains(t1.txId)) {
-      return 1;
-    }
-
-    if (t1.inputs!.contains(t2.txId)) {
-      return -1;
-    }
-
-    return 0;
-  });
-
-  return transactions;
+  transactions.hierarchicalSort();
+  return List.from(transactions.reversed);
 });
 
 final isThereAnyTransactionsProvider = Provider<bool>((ref) {

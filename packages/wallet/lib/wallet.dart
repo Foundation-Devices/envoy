@@ -19,8 +19,37 @@ enum Network { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending }
 
+extension SwappableList<E> on List<E> {
+  void swap(int indexA, int indexB) {
+    final temp = this[indexA];
+    this[indexA] = this[indexB];
+    this[indexB] = temp;
+  }
+}
+
+extension HierarchicalSort on List<Transaction> {
+  void hierarchicalSort() {
+    for (var end = this.length - 1; end > 0; end--) {
+      var swapped = false;
+      for (var current = 0; current < end; current++) {
+        if (this[current].compareTo(this[current + 1]) > 0) {
+          this.swap(current, current + 1);
+          swapped = true;
+        }
+
+        if (this[current].compareTo(this[current + 1]) < 0) {
+          this.swap(current + 1, current);
+          swapped = true;
+        }
+      }
+
+      if (!swapped) return;
+    }
+  }
+}
+
 @JsonSerializable()
-class Transaction {
+class Transaction extends Comparable {
   final String memo;
   final String txId;
   final DateTime date;
@@ -45,6 +74,43 @@ class Transaction {
       _$TransactionFromJson(json);
 
   Map<String, dynamic> toJson() => _$TransactionToJson(this);
+
+  @override
+  int compareTo(other) {
+    // Mempool transactions go on top
+    if ((date.isBefore(DateTime(2008)) &&
+            other.date.isBefore(DateTime(2008))) ||
+        (blockHeight == other.blockHeight)) {
+      if (other.inputs == null) {
+        return 1;
+      }
+
+      if (inputs == null) {
+        return -1;
+      }
+
+      // Transactions whose input is other's txid go above that transaction
+      if (other.inputs!.contains(txId)) {
+        return 1;
+      }
+
+      if (inputs!.contains(other.txId)) {
+        return -1;
+      }
+
+      return 0;
+    }
+
+    if (other.date.isBefore(DateTime(2008))) {
+      return 1;
+    }
+
+    if (date.isBefore(DateTime(2008))) {
+      return -1;
+    }
+
+    return other.date.compareTo(date);
+  }
 }
 
 class NativeTransactionList extends Struct {
