@@ -291,7 +291,7 @@ class GradientPainter extends CustomPainter {
           Color(0xffF0BBA4).withOpacity(0.002),
         ],
       ).createShader(Rect.fromCircle(
-          center: new Offset(size.width / 2, size.height / 1.5),
+          center: new Offset(size.width / 2, size.height / 1.8),
           radius: min(size.width, size.width * gradientRadius)));
 
     final rxect = new Rect.fromPoints(
