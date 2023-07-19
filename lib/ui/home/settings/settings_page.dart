@@ -17,6 +17,10 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -231,9 +235,12 @@ class _SettingsPageState extends State<SettingsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SettingText("Enable Testnet"),
-                  SettingToggle(
-                      s.showTestnetAccounts, s.setShowTestnetAccounts),
+                  SettingText(S().settings_advanced_testnet),
+                  SettingToggle(s.showTestnetAccounts, s.setShowTestnetAccounts,
+                      onEnabled: () {
+                    showEnvoyDialog(
+                        context: context, dialog: TestnetInfoModal());
+                  }),
                 ],
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
@@ -366,6 +373,88 @@ class _DevOptions extends StatelessWidget {
                   child: Text("Wipe Envoy Wallet"));
             },
           )
+        ],
+      ),
+    );
+  }
+}
+
+class TestnetInfoModal extends StatelessWidget {
+  const TestnetInfoModal({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        );
+
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 48),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 60,
+                  width: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: Text(
+                    S().settings_advanced_enabled_testnet_modal_subheading,
+                    textAlign: TextAlign.center,
+                    style: textStyle,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: LinkText(
+                        text: S().settings_advanced_enabled_testnet_modal_link,
+                        textStyle: textStyle,
+                        onTap: () {
+                          launchUrlString(
+                              "https://www.youtube.com/watch?v=nRGFAHlYIeU");
+                        })),
+                Padding(padding: EdgeInsets.all(4)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: EnvoyButton(
+                    S().settings_advanced_enabled_testnet_modal_cta,
+                    type: EnvoyButtonTypes.primaryModal,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
