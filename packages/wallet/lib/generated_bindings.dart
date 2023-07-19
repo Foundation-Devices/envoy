@@ -128,6 +128,20 @@ class NativeLibrary {
   late final _wallet_get_balance =
       _wallet_get_balancePtr.asFunction<int Function(int)>();
 
+  UtxoList wallet_get_utxos(
+    int arg0,
+  ) {
+    return _wallet_get_utxos(
+      arg0,
+    );
+  }
+
+  late final _wallet_get_utxosPtr =
+      _lookup<ffi.NativeFunction<UtxoList Function(ffi.Int)>>(
+          'wallet_get_utxos');
+  late final _wallet_get_utxos =
+      _wallet_get_utxosPtr.asFunction<UtxoList Function(int)>();
+
   double wallet_get_fee_rate(
     ffi.Pointer<ffi.Char> electrum_address,
     int tor_port,
@@ -369,6 +383,23 @@ class Wallet extends ffi.Struct {
   external ffi.Pointer<ffi.Char> internal_prv_descriptor;
 
   external ffi.Pointer<ffi.Int> bkd_wallet_ptr;
+}
+
+class Utxo extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> txid;
+
+  @ffi.Int()
+  external int vout;
+
+  @ffi.Int()
+  external int value;
+}
+
+class UtxoList extends ffi.Struct {
+  @ffi.Int()
+  external int utxos_len;
+
+  external ffi.Pointer<Utxo> utxos;
 }
 
 class ServerFeatures extends ffi.Struct {

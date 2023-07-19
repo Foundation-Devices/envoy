@@ -7,12 +7,15 @@ import 'dart:ffi';
 import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dart:io';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wallet/exceptions.dart';
-import 'package:wallet/generated_bindings.dart';
+import 'package:wallet/generated_bindings.dart' as rust;
+import 'package:collection/collection.dart';
 
 // Generated
+part 'wallet.freezed.dart';
+
 part 'wallet.g.dart';
 
 enum Network { Mainnet, Testnet, Signet, Regtest }
@@ -144,9 +147,13 @@ typedef WalletGetTransactionsDart = NativeTransactionList Function(
     Pointer<Uint8> wallet);
 
 typedef WalletCreatePsbtRust = NativePsbt Function(
-    Pointer<Uint8> wallet, Pointer<Utf8> sendTo, Uint64 amount, Double feeRate);
-typedef WalletCreatePsbtDart = NativePsbt Function(
-    Pointer<Uint8> wallet, Pointer<Utf8> sendTo, int amount, double feeRate);
+    Pointer<Uint8> wallet,
+    Pointer<Utf8> sendTo,
+    Uint64 amount,
+    Double feeRate,
+    Pointer<rust.UtxoList>);
+typedef WalletCreatePsbtDart = NativePsbt Function(Pointer<Uint8> wallet,
+    Pointer<Utf8> sendTo, int amount, double feeRate, Pointer<rust.UtxoList>);
 
 typedef WalletBroadcastTxRust = Pointer<Utf8> Function(
     Pointer<Utf8> electrumAddress, Int32 torPort, Pointer<Utf8> tx);
@@ -231,6 +238,17 @@ class Psbt {
   }
 }
 
+@freezed
+class Utxo with _$Utxo {
+  const factory Utxo({
+    required String txid,
+    required int vout,
+    required int value,
+  }) = _Utxo;
+
+  factory Utxo.fromJson(Map<String, Object?> json) => _$UtxoFromJson(json);
+}
+
 class ElectrumServerFeatures {
   final String serverVersion;
   final String protocolMin;
@@ -289,6 +307,7 @@ class Wallet {
   final bool hasPassphrase;
 
   List<Transaction> transactions = [];
+  List<Utxo> utxos = [];
   int balance = 0;
 
   // BTC per kb
@@ -331,12 +350,14 @@ class Wallet {
     var feeRateSlow = _getFeeRate(electrumAddress, torPort, 24);
 
     var transactions = _getTransactions(walletPtr);
+    var utxos = _getUtxos(walletPtr);
 
     return {
       "balance": balance,
       "feeRateFast": feeRateFast,
       "feeRateSlow": feeRateSlow,
-      "transactions": transactions
+      "transactions": transactions,
+      "utxos": utxos
     };
   }
 
@@ -353,7 +374,7 @@ class Wallet {
   }
 
   static String _getChangeAddress(int walletAddress) {
-    var lib = NativeLibrary(load(_libName));
+    var lib = rust.NativeLibrary(load(_libName));
     return lib
         .wallet_get_change_address(walletAddress)
         .cast<Utf8>()
@@ -445,6 +466,7 @@ class Wallet {
 
       balance = walletState["balance"];
       transactions = walletState["transactions"];
+      utxos = walletState["utxos"];
 
       // Don't update fees if they error out
       if (walletState["feeRateFast"] >= 0) {
@@ -462,18 +484,33 @@ class Wallet {
     });
   }
 
-  Future<Psbt> createPsbt(String sendTo, int amount, double feeRate) async {
+  Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
+      {List<Utxo>? utxos}) async {
     final rustFunction =
         _lib.lookup<NativeFunction<WalletCreatePsbtRust>>('wallet_create_psbt');
     final dartFunction = rustFunction.asFunction<WalletCreatePsbtDart>();
 
+    final listPointer = calloc.allocate<rust.UtxoList>(1);
+    listPointer.ref.utxos_len = utxos?.length ?? 0;
+
+    utxos?.forEachIndexed((index, utxo) {
+      final utxoPointer = calloc.allocate<rust.Utxo>(1);
+
+      utxoPointer.ref.value = utxo.value;
+      utxoPointer.ref.vout = utxo.vout;
+      utxoPointer.ref.txid = utxo.txid.toNativeUtf8().cast();
+
+      listPointer.ref.utxos.elementAt(index).ref = utxoPointer as rust.Utxo;
+    });
+
     return Future(() {
-      NativePsbt psbt =
-          dartFunction(_self, sendTo.toNativeUtf8(), amount, feeRate);
+      NativePsbt psbt = dartFunction(
+          _self, sendTo.toNativeUtf8(), amount, feeRate, listPointer);
       if (psbt.base64 == nullptr) {
         throwRustException(_lib);
       }
 
+      calloc.free(listPointer);
       return Psbt.fromNative(psbt);
     });
   }
@@ -545,6 +582,23 @@ class Wallet {
     }
 
     return ElectrumServerFeatures.fromNative(features);
+  }
+
+  static List<Utxo> _getUtxos(int walletAddress) {
+    final lib = rust.NativeLibrary(load(_libName));
+
+    rust.UtxoList utxoList = lib.wallet_get_utxos(walletAddress);
+
+    List<Utxo> utxos = [];
+    for (var i = 0; i < utxoList.utxos_len; i++) {
+      final nativeUtxo = utxoList.utxos.elementAt(i).ref;
+      utxos.add(Utxo(
+          txid: nativeUtxo.txid.cast<Utf8>().toDartString(),
+          vout: nativeUtxo.vout,
+          value: nativeUtxo.value));
+    }
+
+    return utxos;
   }
 
   static List<Transaction> _getTransactions(int walletAddress) {
@@ -631,7 +685,7 @@ class Wallet {
 
   static String signOffline(String psbt, String externalDescriptor,
       String internalDescriptor, bool testnet) {
-    var lib = NativeLibrary(load(_libName));
+    var lib = rust.NativeLibrary(load(_libName));
 
     return lib
         .wallet_sign_offline(
@@ -662,7 +716,7 @@ class Wallet {
       String seed, String path, String directory, Network network,
       {String? passphrase, bool privateKey = false, bool initWallet = true}) {
     final lib = load(_libName);
-    final native = NativeLibrary(lib);
+    final native = rust.NativeLibrary(lib);
     var wallet = native.wallet_derive(
         seed.toNativeUtf8().cast(),
         passphrase != null ? passphrase.toNativeUtf8().cast() : nullptr,
