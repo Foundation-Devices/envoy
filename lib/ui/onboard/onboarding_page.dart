@@ -239,7 +239,7 @@ class OnboardingText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
       child: Column(
         children: [
           header != null
