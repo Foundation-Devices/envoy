@@ -37,7 +37,7 @@ enum DismissiblePrompt {
 }
 
 final homePageTabProvider =
-    StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
+    StateProvider<HomePageTabState>((ref) => HomePageTabState.accounts);
 
 final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
   (ref) => HomePageBackgroundState.hidden,

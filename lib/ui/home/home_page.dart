@@ -127,13 +127,17 @@ class _HomePageState extends ConsumerState<HomePage>
 
     EnvoyStorage()
         .isPromptDismissed(DismissiblePrompt.secureWallet)
-        .listen((event) {
+        .listen((dismissed) {
       // if is not dismissed listen balance
-      if (!event) {
+      if (!dismissed) {
         AccountManager()
             .isAccountBalanceHigherThanUsd1000Stream
             .stream
             .listen((event) {
+          if (ref.read(homePageTabProvider) != HomePageTabState.accounts) {
+            return;
+          }
+
           final currentAccount =
               ref.read(homePageAccountsProvider).currentAccount;
 
