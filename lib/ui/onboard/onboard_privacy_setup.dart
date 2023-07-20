@@ -132,24 +132,27 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   child: PrivacyOptionSelect(),
                   padding: EdgeInsets.symmetric(vertical: 8)),
             ),
-            Consumer(
-              builder: (context, ref, child) {
-                bool _betterPerformance =
-                    ref.watch(privacyOnboardSelectionProvider);
-                return _betterPerformance
-                    ? LinkText(
-                        text: S().privacy_setting_perfomance_tor_off,
-                        linkStyle: _messageStyle?.copyWith(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w900,
-                            color: EnvoyColors.listAccountTileColors[0]))
-                    : LinkText(
-                        text: S().privacy_setting_privacy_tor_on,
-                        linkStyle: _messageStyle?.copyWith(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w900,
-                            color: EnvoyColors.listAccountTileColors[1]));
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 32),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  bool _betterPerformance =
+                      ref.watch(privacyOnboardSelectionProvider);
+                  return _betterPerformance
+                      ? LinkText(
+                          text: S().privacy_setting_perfomance_tor_off,
+                          linkStyle: _messageStyle?.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              color: EnvoyColors.listAccountTileColors[0]))
+                      : LinkText(
+                          text: S().privacy_setting_privacy_tor_on,
+                          linkStyle: _messageStyle?.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              color: EnvoyColors.listAccountTileColors[1]));
+                },
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 4),
