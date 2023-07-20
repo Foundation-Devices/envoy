@@ -389,14 +389,14 @@ class TestnetInfoModal extends StatelessWidget {
         );
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
+      width: MediaQuery.of(context).size.width * 0.75,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.all(12),
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
@@ -406,7 +406,7 @@ class TestnetInfoModal extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+            padding: EdgeInsets.symmetric(horizontal: 36),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -439,7 +439,7 @@ class TestnetInfoModal extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+            padding: EdgeInsets.symmetric(horizontal: 36, vertical: 28),
             child: Column(
               children: [
                 Padding(
