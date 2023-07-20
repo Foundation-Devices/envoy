@@ -7,13 +7,13 @@ import 'dart:math';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/envoy_scaffold.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);
@@ -21,6 +21,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
+      gradientHeight: 1.8,
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
         margin: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
