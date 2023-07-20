@@ -9,12 +9,13 @@ import 'package:envoy/ui/pages/pp/pp_restore_backup.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_seed.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/envoy_scaffold.dart';
 
 class PpSetupIntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
+      gradientHeight: 1.8,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,

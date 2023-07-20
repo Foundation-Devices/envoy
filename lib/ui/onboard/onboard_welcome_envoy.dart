@@ -10,10 +10,10 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/envoy_scaffold.dart';
 
 class OnboardEnvoyWelcomeScreen extends StatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
@@ -27,6 +27,7 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
+      gradientHeight: 1.8,
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
         margin: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
