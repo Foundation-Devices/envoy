@@ -9,14 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/generated/l10n.dart';
-
-import 'fw_microsd.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 //ignore: must_be_immutable
 class FwProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
+  final int deviceId;
 
-  FwProgressPage({this.onboarding = true});
+  FwProgressPage(this.deviceId, {this.onboarding = true});
 
   @override
   ConsumerState<FwProgressPage> createState() => _FwProgressPageState();
@@ -31,6 +33,7 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
 
   @override
   Widget build(BuildContext context) {
+    final fwInfo = ref.watch(firmwareStreamProvider(widget.deviceId));
     ref.listen<bool?>(
       sdFwUploadProgressProvider,
       (previous, next) {
@@ -44,6 +47,10 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
           }
           setState(() {
             done = next;
+            if (done) {
+              Devices().markDeviceUpdated(
+                  widget.deviceId, fwInfo.value!.storedVersion);
+            }
           });
         }
       },
@@ -74,16 +81,21 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
                   header: S().envoy_fw_success_heading,
                   text: S().envoy_fw_success_subheading,
                 ),
-                ActionText(
-                  header:
-                      "Envoy failed to copy the firmware onto the microSD card",
-                  text: "Try again.",
-                  action: () {
-                    Navigator.of(context)
-                        .pushReplacement(MaterialPageRoute(builder: (context) {
-                      return FwMicrosdPage(onboarding: widget.onboarding);
-                    }));
-                  },
+                Column(
+                  children: [
+                    OnboardingText(
+                      header: S().envoy_fw_fail_heading,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: LinkText(
+                          text: S().envoy_fw_fail_subheading,
+                          onTap: () {
+                            launchUrlString(
+                                "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
+                          }),
+                    ),
+                  ],
                 ),
               ]),
         ),
