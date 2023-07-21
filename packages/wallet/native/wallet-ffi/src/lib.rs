@@ -901,6 +901,14 @@ pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     }
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn wallet_validate_seed(seed_words: *const c_char) -> bool {
+    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+
+    // We only deal with Wnglish seeds for now
+    Mnemonic::parse_in(Language::English, seed_words).is_ok()
+}
+
 // #[no_mangle]
 // pub unsafe extern "C" fn wallet_get_seed_words(seed: *const u8) -> Seed {
 //     // let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 12).unwrap();

@@ -120,6 +120,25 @@ void main() async {
     expect(words.length, 12);
   });
 
+  test('Validate seed', () {
+    expect(
+        Wallet.validateSeed(
+            "copper december enlist body dove discover cross help evidence fall rich clean"),
+        true);
+
+    // 24 words is a-ok
+    expect(
+        Wallet.validateSeed(
+            "elite awkward put dust evidence follow sting decade barrel distance august verify intact hope away drastic vendor question clarify online absent world news crucial"),
+        true);
+
+    // We don't support any other language than English for now
+    expect(
+        Wallet.validateSeed(
+            "のこる　しもん　よそう　ひつよう　てまえ　げきか　くさき　ぬらす　おきる　けたば　きこく　いがい"),
+        false);
+  });
+
   test('Get derived private wallet address', () async {
     final seed =
         "copper december enlist body dove discover cross help evidence fall rich clean";
