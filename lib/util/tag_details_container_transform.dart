@@ -75,6 +75,12 @@ typedef ClosedCallback<S> = void Function(S data);
 ///
 ///  * [Transitions with animated containers](https://material.io/design/motion/choreography.html#transformation)
 ///    in the Material spec.
+///
+///
+///
+const scrimBlackColor = Colors.black38;
+
+
 @optionalTypeArgs
 class TagDetailsContainerTransform<T extends Object?> extends StatefulWidget {
   /// Creates an [TagDetailsContainerTransform].
@@ -573,18 +579,18 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
   static final TweenSequence<Color?> _scrimFadeInTween = TweenSequence<Color?>(
     <TweenSequenceItem<Color?>>[
       TweenSequenceItem<Color?>(
-        tween: ColorTween(begin: Colors.transparent, end: Colors.black12),
+        tween: ColorTween(begin: Colors.transparent, end: scrimBlackColor),
         weight: 1 / 5,
       ),
       TweenSequenceItem<Color>(
-        tween: ConstantTween<Color>(Colors.black12),
+        tween: ConstantTween<Color>(scrimBlackColor),
         weight: 4 / 5,
       ),
     ],
   );
   static final Tween<Color?> _scrimFadeOutTween = ColorTween(
     begin: Colors.transparent,
-    end: Colors.black12,
+    end: scrimBlackColor,
   );
 
   // Key used for the widget returned by [OpenContainer.openBuilder] to keep
@@ -750,11 +756,20 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                   color: Colors.transparent,
                   elevation: 0,
                   shape: openShape,
-                  child: Builder(
-                    key: _openBuilderKey,
-                    builder: (BuildContext context) {
-                      return openBuilder(context, closeContainer);
-                    },
+                  child: TweenAnimationBuilder<Color?>(
+                    //Slowly fade in scrim color
+                    duration: Duration(seconds: 3),
+                    builder: (context, value, child) {
+                      return Container(
+                        color: value,
+                        child: Builder(
+                          key: _openBuilderKey,
+                          builder: (BuildContext context) {
+                            return openBuilder(context, closeContainer);
+                          },
+                        ),
+                      );
+                    }, tween: ColorTween(begin: Colors.transparent, end: scrimBlackColor),
                   ),
                 ),
               ),
@@ -798,7 +813,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
           assert(colorTween != null);
           assert(closedOpacityTween != null);
           assert(openOpacityTween != null);
-          assert(scrimTween != null);
+          // assert(scrimTween != null);
 
           final Rect rect = _rectTween.evaluate(curvedAnimation)!;
           return SizedBox.expand(
@@ -810,7 +825,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                       Tween(begin: 0.0, end: 10.0).evaluate(curvedAnimation),
                   tileMode: TileMode.repeated),
               child: Container(
-                color: scrimTween?.animate(curvedAnimation).value,
+                // color: scrimTween?.animate(curvedAnimation).value,
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Transform.translate(
