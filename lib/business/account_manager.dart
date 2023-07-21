@@ -170,6 +170,20 @@ class AccountManager extends ChangeNotifier {
     return account;
   }
 
+  bool checkIfWalletFromSeedExists(String seed, {String? passphrase}) {
+    var mainnet = Wallet.deriveWallet(seed, EnvoySeed.HOT_WALLET_MAINNET_PATH,
+        AccountManager.walletsDirectory, Network.Mainnet,
+        privateKey: true, passphrase: passphrase, initWallet: false);
+
+    for (final account in accounts) {
+      if (account.wallet.externalDescriptor == mainnet.externalDescriptor) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   Future<Account?> addEnvoyAccountFromJson(Binary binary) async {
     var jsonIndex = binary.decoded.indexOf("{");
     var decoded = binary.decoded.substring(jsonIndex);

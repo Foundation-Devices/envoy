@@ -38,8 +38,8 @@ class EnvoySeed {
       "." +
       encryptedBackupFileExtension;
 
-  final HOT_WALLET_MAINNET_PATH = "m/84'/0'/0'";
-  final HOT_WALLET_TESTNET_PATH = "m/84'/1'/0'";
+  static String HOT_WALLET_MAINNET_PATH = "m/84'/0'/0'";
+  static String HOT_WALLET_TESTNET_PATH = "m/84'/1'/0'";
 
   List<String> keysToBackUp = [
     Settings.SETTINGS_PREFS,
@@ -63,6 +63,11 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
+    if (AccountManager()
+        .checkIfWalletFromSeedExists(seed, passphrase: passphrase)) {
+      return true;
+    }
+
     await store(seed);
 
     try {
