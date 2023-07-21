@@ -25,7 +25,7 @@ class PpRestoreBackupSuccessPage extends StatelessWidget {
             label: S().envoy_pp_restore_backup_success_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleImportPpIntroPage();
+                return SingleImportPpIntroPage(isExistingDevice: false);
               }));
             }),
       ],

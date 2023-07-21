@@ -71,6 +71,12 @@ class _AccountCardState extends ConsumerState<AccountCard> {
   @override
   void initState() {
     super.initState();
+
+    widget.onPop = () {
+      ref.read(homePageAccountsProvider.notifier).state =
+          HomePageAccountsState(HomePageAccountsNavigationState.list);
+    };
+
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
   }
@@ -94,8 +100,6 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         padding: const EdgeInsets.all(20.0),
         child: AccountListTile(widget.account, onTap: () {
           widget.navigator!.pop();
-          ref.read(homePageAccountsProvider.notifier).state =
-              HomePageAccountsState.list;
         }),
       ),
       Expanded(

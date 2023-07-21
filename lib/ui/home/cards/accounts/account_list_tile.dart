@@ -98,6 +98,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     var account = widget.account.wallet is GhostWallet
         ? widget.account
         : ref.watch(accountStateProvider(widget.account.id!));
+
+    int balance = widget.account.wallet is GhostWallet
+        ? 0
+        : ref.watch(accountBalanceProvider(account!.id));
+
     return CardSwipeWrapper(
       height: containerHeight,
       account: account!,
@@ -281,8 +286,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                   height: 20,
                                                 )
                                               : Text(
-                                                  getFormattedAmount(
-                                                      account.wallet.balance,
+                                                  getFormattedAmount(balance,
                                                       includeUnit: false,
                                                       testnet: account
                                                               .wallet.network ==
@@ -309,8 +313,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           )
                                         : Flexible(
                                             child: Text(
-                                              ExchangeRate().getFormattedAmount(
-                                                  account.wallet.balance),
+                                              ExchangeRate()
+                                                  .getFormattedAmount(balance),
                                               style: _textStyleFiat,
                                             ),
                                           )

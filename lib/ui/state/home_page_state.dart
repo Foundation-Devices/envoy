@@ -4,10 +4,18 @@
 
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/account.dart';
 
 enum HomePageTabState { devices, accounts, learn }
 
-enum HomePageAccountsState { list, details, receive, send }
+enum HomePageAccountsNavigationState { list, details, receive, send }
+
+class HomePageAccountsState {
+  final Account? currentAccount;
+  final HomePageAccountsNavigationState navigationState;
+
+  HomePageAccountsState(this.navigationState, {this.currentAccount});
+}
 
 enum HomePageDevicesState { list, details }
 
@@ -21,10 +29,15 @@ enum HomePageBackgroundState {
   about
 }
 
-enum DismissiblePrompt { hideAmount, userInteractedWithReceive, secureWallet }
+enum DismissiblePrompt {
+  hideAmount,
+  userInteractedWithReceive,
+  secureWallet,
+  dragAndDrop
+}
 
 final homePageTabProvider =
-    StateProvider<HomePageTabState>((ref) => HomePageTabState.devices);
+    StateProvider<HomePageTabState>((ref) => HomePageTabState.accounts);
 
 final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
   (ref) => HomePageBackgroundState.hidden,
@@ -32,8 +45,8 @@ final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
 
 final homePageOptionsVisibilityProvider = StateProvider<bool>((ref) => false);
 
-final homePageAccountsProvider =
-    StateProvider<HomePageAccountsState>((ref) => HomePageAccountsState.list);
+final homePageAccountsProvider = StateProvider<HomePageAccountsState>(
+    (ref) => HomePageAccountsState(HomePageAccountsNavigationState.list));
 
 final homePageDevicesProvider =
     StateProvider<HomePageDevicesState>((ref) => HomePageDevicesState.list);
@@ -43,6 +56,7 @@ final promptStreamProvider =
     StreamProvider.family((ref, DismissiblePrompt prompt) {
   return EnvoyStorage().isPromptDismissed(prompt);
 });
+
 //returns prompt dismiss state
 //if the prompt is not dismissed, returns false otherwise returns true
 //this is better than using stream based provider because this wont require stream builder

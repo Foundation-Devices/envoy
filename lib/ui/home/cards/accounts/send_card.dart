@@ -41,7 +41,8 @@ class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
   String _addressText = "";
   bool _addressValid = false;
-  bool _amountSufficient = true;
+  bool _canProceed = true;
+  bool _amountTooLow = false;
 
   int _amount = 0;
 
@@ -103,7 +104,8 @@ class _SendCardState extends ConsumerState<SendCard>
   _updateAmount(amount) {
     setState(() {
       _amount = amount;
-      _amountSufficient = !(amount > widget.account.wallet.balance);
+      _canProceed = !(amount > widget.account.wallet.balance);
+      _amountTooLow = false;
     });
   }
 
@@ -137,7 +139,7 @@ class _SendCardState extends ConsumerState<SendCard>
                   return;
                 }
 
-                if (_addressValid && _amountSufficient && (_amount > 0)) {
+                if (_addressValid && _canProceed && (_amount > 0)) {
                   // Only check amount if we are not sending max
                   if (_amount != widget.account.wallet.balance) {
                     try {
@@ -149,13 +151,18 @@ class _SendCardState extends ConsumerState<SendCard>
                       // If amount is equal to balance user wants to send max
                       if (_amount != widget.account.wallet.balance) {
                         setState(() {
-                          _amountSufficient = false;
+                          _canProceed = false;
                         });
                       }
                       return;
+                    } on BelowDustLimit {
+                      setState(() {
+                        _canProceed = false;
+                        _amountTooLow = true;
+                      });
+                      return;
                     }
                   }
-
                   widget.navigator!.push(ConfirmationCard(
                     widget.account,
                     _amount,
@@ -164,14 +171,16 @@ class _SendCardState extends ConsumerState<SendCard>
                   ));
                 }
               },
-              error: !_addressValid || !_amountSufficient || (_amount == 0),
+              error: !_addressValid || !_canProceed || (_amount == 0),
               label: _amount == 0
-                  ? S().envoy_send_send_max
-                  : _amountSufficient
+                  ? S().send_keyboard_send_max
+                  : _canProceed
                       ? _addressValid
                           ? S().send_keyboard_address_confirm
-                          : S().envoy_send_enter_valid_address
-                      : S().envoy_send_insufficient_funds))
+                          : S().send_keyboard_amount_enter_valid_address
+                      : _amountTooLow
+                          ? S().send_keyboard_amount_too_low_info
+                          : S().send_keyboard_amount_insufficient_funds_info))
     ]);
   }
 

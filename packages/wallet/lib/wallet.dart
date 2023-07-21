@@ -22,8 +22,37 @@ enum Network { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending }
 
+extension SwappableList<E> on List<E> {
+  void swap(int indexA, int indexB) {
+    final temp = this[indexA];
+    this[indexA] = this[indexB];
+    this[indexB] = temp;
+  }
+}
+
+extension HierarchicalSort on List<Transaction> {
+  void hierarchicalSort() {
+    for (var end = this.length - 1; end > 0; end--) {
+      var swapped = false;
+      for (var current = 0; current < end; current++) {
+        if (this[current].compareTo(this[current + 1]) > 0) {
+          this.swap(current, current + 1);
+          swapped = true;
+        }
+
+        if (this[current].compareTo(this[current + 1]) < 0) {
+          this.swap(current + 1, current);
+          swapped = true;
+        }
+      }
+
+      if (!swapped) return;
+    }
+  }
+}
+
 @JsonSerializable()
-class Transaction {
+class Transaction extends Comparable {
   final String memo;
   final String txId;
   final DateTime date;
@@ -32,21 +61,59 @@ class Transaction {
   final int received;
   final int blockHeight;
   final List<String>? outputs;
+  final List<String>? inputs;
   final TransactionType type;
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
 
-  get amount => received - sent;
+  int get amount => received - sent;
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight,
-      {this.type = TransactionType.normal, this.outputs});
+      {this.type = TransactionType.normal, this.outputs, this.inputs});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
       _$TransactionFromJson(json);
 
   Map<String, dynamic> toJson() => _$TransactionToJson(this);
+
+  @override
+  int compareTo(other) {
+    // Mempool transactions go on top
+    if ((date.isBefore(DateTime(2008)) &&
+            other.date.isBefore(DateTime(2008))) ||
+        (blockHeight == other.blockHeight)) {
+      if (other.inputs == null) {
+        return 1;
+      }
+
+      if (inputs == null) {
+        return -1;
+      }
+
+      // Transactions whose input is other's txid go above that transaction
+      if (other.inputs!.contains(txId)) {
+        return 1;
+      }
+
+      if (inputs!.contains(other.txId)) {
+        return -1;
+      }
+
+      return 0;
+    }
+
+    if (other.date.isBefore(DateTime(2008))) {
+      return 1;
+    }
+
+    if (date.isBefore(DateTime(2008))) {
+      return -1;
+    }
+
+    return other.date.compareTo(date);
+  }
 }
 
 class NativeTransactionList extends Struct {
@@ -70,6 +137,9 @@ class NativeTransaction extends Struct {
   @Uint8()
   external int outputsLen;
   external Pointer<Pointer<Uint8>> outputs;
+  @Uint8()
+  external int inputsLen;
+  external Pointer<Pointer<Uint8>> inputs;
 }
 
 class NativeSeed extends Struct {
@@ -619,6 +689,7 @@ class Wallet {
         tx.sent,
         tx.confirmationHeight,
         outputs: _extractStringList(tx.outputs, tx.outputsLen),
+        inputs: _extractStringList(tx.inputs, tx.inputsLen),
       ));
     }
 

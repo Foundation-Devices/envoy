@@ -3450,10 +3450,10 @@ class S {
     );
   }
 
-  /// `As you sure you want to DELETE your Envoy Wallet?`
+  /// `Are you sure you want to DELETE your Envoy Wallet?`
   String get delete_wallet_for_good_modal_subheading {
     return Intl.message(
-      'As you sure you want to DELETE your Envoy Wallet?',
+      'Are you sure you want to DELETE your Envoy Wallet?',
       name: 'delete_wallet_for_good_modal_subheading',
       desc: '',
       args: [],
@@ -5934,10 +5934,10 @@ class S {
     );
   }
 
-  /// `Your Backup File has been succesfullyrestored`
+  /// `Your Backup File has been successfully restored`
   String get envoy_pp_restore_backup_success_heading {
     return Intl.message(
-      'Your Backup File has been succesfullyrestored',
+      'Your Backup File has been successfully restored',
       name: 'envoy_pp_restore_backup_success_heading',
       desc: '',
       args: [],
@@ -10816,10 +10816,10 @@ class S {
     );
   }
 
-  /// `SETTINGS`
+  /// `ENVOY`
   String get manual_toggle_on_seed_backedup_iOS_backups {
     return Intl.message(
-      'SETTINGS',
+      'ENVOY',
       name: 'manual_toggle_on_seed_backedup_iOS_backups',
       desc: '',
       args: [],
@@ -13138,11 +13138,31 @@ class S {
     );
   }
 
-  /// `Enter Valid Address`
+  /// `Enter valid address`
   String get send_keyboard_amount_enter_valid_address {
     return Intl.message(
-      'Enter Valid Address',
+      'Enter valid address',
       name: 'send_keyboard_amount_enter_valid_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insufficient funds`
+  String get send_keyboard_amount_insufficient_funds_info {
+    return Intl.message(
+      'Insufficient funds',
+      name: 'send_keyboard_amount_insufficient_funds_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount too low`
+  String get send_keyboard_amount_too_low_info {
+    return Intl.message(
+      'Amount too low',
+      name: 'send_keyboard_amount_too_low_info',
       desc: '',
       args: [],
     );
@@ -13218,10 +13238,10 @@ class S {
     );
   }
 
-  /// `Send Max`
+  /// `Send max`
   String get send_keyboard_send_max {
     return Intl.message(
-      'Send Max',
+      'Send max',
       name: 'send_keyboard_send_max',
       desc: '',
       args: [],
@@ -13283,6 +13303,36 @@ class S {
     return Intl.message(
       'Advanced',
       name: 'settings_advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get settings_advanced_enabled_testnet_modal_cta {
+    return Intl.message(
+      'Continue',
+      name: 'settings_advanced_enabled_testnet_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn how to do that [[here]].`
+  String get settings_advanced_enabled_testnet_modal_link {
+    return Intl.message(
+      'Learn how to do that [[here]].',
+      name: 'settings_advanced_enabled_testnet_modal_link',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.`
+  String get settings_advanced_enabled_testnet_modal_subheading {
+    return Intl.message(
+      'Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
+      name: 'settings_advanced_enabled_testnet_modal_subheading',
       desc: '',
       args: [],
     );
@@ -14087,6 +14137,26 @@ class S {
     return Intl.message(
       'EDIT TAG NAME\n\nDELETE TAG',
       name: 'tagged_coin_details_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hold to drag and reorder your accounts.`
+  String get tap_and_drag_first_time_text {
+    return Intl.message(
+      'Hold to drag and reorder your accounts.',
+      name: 'tap_and_drag_first_time_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get tap_and_drag_first_time_text_button {
+    return Intl.message(
+      'Dismiss',
+      name: 'tap_and_drag_first_time_text_button',
       desc: '',
       args: [],
     );

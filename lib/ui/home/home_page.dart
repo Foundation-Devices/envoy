@@ -28,6 +28,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:wallet/wallet.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -126,14 +127,25 @@ class _HomePageState extends ConsumerState<HomePage>
 
     EnvoyStorage()
         .isPromptDismissed(DismissiblePrompt.secureWallet)
-        .listen((event) {
+        .listen((dismissed) {
       // if is not dismissed listen balance
-      if (!event) {
+      if (!dismissed) {
         AccountManager()
             .isAccountBalanceHigherThanUsd1000Stream
             .stream
             .listen((event) {
-          _notifyAboutHighBalance();
+          if (ref.read(homePageTabProvider) != HomePageTabState.accounts) {
+            return;
+          }
+
+          final currentAccount =
+              ref.read(homePageAccountsProvider).currentAccount;
+
+          if (currentAccount != null &&
+              currentAccount.wallet.hot &&
+              currentAccount.wallet.network == Network.Mainnet) {
+            _notifyAboutHighBalance();
+          }
         });
       }
     });
@@ -158,7 +170,6 @@ class _HomePageState extends ConsumerState<HomePage>
 
   _notifyAboutHighBalance() {
     AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
-
     showSecurityDialog(context);
   }
 
@@ -577,6 +588,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     : IconButton(
                         icon: Icon(
                           _rightActionIcon,
+                          color: Colors.white,
                         ),
                         onPressed: _rightAction,
                       ))));

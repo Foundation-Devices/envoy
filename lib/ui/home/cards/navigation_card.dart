@@ -16,6 +16,7 @@ mixin NavigationCard on Widget {
   bool modal = false;
   Widget? optionsWidget;
   String? title;
+  Function()? onPop;
   Function()? rightFunction;
   CardNavigator? navigator;
 }

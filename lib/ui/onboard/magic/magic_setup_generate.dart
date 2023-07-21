@@ -4,17 +4,18 @@
 
 import 'dart:io';
 
+import 'package:animations/animations.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
-import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/settings.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
   const MagicSetupGenerate({Key? key}) : super(key: key);
@@ -95,9 +96,16 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
     await Future.delayed(Duration(seconds: 2));
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return MagicRecoveryInfo(skipSuccessScreen: walletGenerated);
-    }));
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) =>
+            MagicRecoveryInfo(skipSuccessScreen: walletGenerated),
+        transitionDuration: Duration(milliseconds: 300),
+        transitionsBuilder: (_, a, __, c) =>
+            FadeTransition(opacity: a, child: c),
+      ),
+    );
   }
 
   @override
@@ -208,7 +216,7 @@ class MagicRecoveryInfo extends ConsumerStatefulWidget {
 }
 
 class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
-  PageController _androidBackupInfoPageController = PageController();
+  int _androidBackupInfoPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -216,9 +224,10 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return WillPopScope(
       onWillPop: () async {
-        if (_androidBackupInfoPageController.page != 0) {
-          _androidBackupInfoPageController.previousPage(
-              duration: Duration(milliseconds: 300), curve: Curves.easeOutSine);
+        if (_androidBackupInfoPage != 0) {
+          setState(() {
+            _androidBackupInfoPage = 0;
+          });
           return false;
         }
         if (widget.onContinue != null) {
@@ -382,7 +391,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 return;
               }
               if (widget.skipSuccessScreen) {
-                Navigator.pop(context);
+                //clear on-boarding routes and go to home
+                Navigator.popAndPushNamed(context, "/");
               } else {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return WalletSetupSuccess();
@@ -397,63 +407,74 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
 
   _androidBackUPInfo(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      child: PageView(
-        physics: NeverScrollableScrollPhysics(),
-        clipBehavior: Clip.antiAlias,
-        controller: _androidBackupInfoPageController,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Spacer(),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    S().android_backup_info_heading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  Padding(padding: EdgeInsets.all(12)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22),
-                    child: LinkText(
-                      text: S().android_backup_info_subheading,
-                      onTap: () {
-                        openAndroidSettings();
-                      },
-                      linkStyle: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontSize: 14, color: EnvoyColors.blue),
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontSize: 14),
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        child: PageTransitionSwitcher(
+          reverse: _androidBackupInfoPage == 1,
+          duration: Duration(milliseconds: 600),
+          transitionBuilder: (
+            Widget child,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) {
+            return SharedAxisTransition(
+              animation: animation,
+              fillColor: Colors.transparent,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.vertical,
+              child: child,
+            );
+          },
+          child: _androidBackupInfoPage == 0
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Spacer(),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          S().android_backup_info_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Padding(padding: EdgeInsets.all(12)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 22),
+                          child: LinkText(
+                            text: S().android_backup_info_subheading,
+                            onTap: () {
+                              openAndroidSettings();
+                            },
+                            linkStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    fontSize: 14, color: EnvoyColors.blue),
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontSize: 14),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: OnboardingButton(
-                  label: S().component_continue,
-                  onTap: () {
-                    _androidBackupInfoPageController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInSine);
-                  },
-                ),
-              ),
-            ],
-          ),
-          _recoverStepsInfo(context),
-        ],
-      ),
-    );
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: OnboardingButton(
+                        label: S().component_continue,
+                        onTap: () {
+                          setState(() {
+                            _androidBackupInfoPage = 1;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                )
+              : _recoverStepsInfo(context),
+        ));
   }
 }

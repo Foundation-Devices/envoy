@@ -493,7 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Delete Wallet"),
         "delete_wallet_for_good_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "As you sure you want to DELETE your Envoy Wallet?"),
+                "Are you sure you want to DELETE your Envoy Wallet?"),
         "delete_wallet_for_good_success_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Your wallet was successfully deleted"),
@@ -1010,7 +1010,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_pp_restore_backup_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Backup File has been succesfullyrestored"),
+                "Your Backup File has been successfully restored"),
         "envoy_pp_restore_backup_success_os_clock":
             MessageLookupByLibrary.simpleMessage("9:41"),
         "envoy_pp_restore_backup_success_right_action":
@@ -2088,7 +2088,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_backup_now":
             MessageLookupByLibrary.simpleMessage("Back Up Now"),
         "manual_toggle_on_seed_backedup_iOS_backups":
-            MessageLookupByLibrary.simpleMessage("SETTINGS"),
+            MessageLookupByLibrary.simpleMessage("ENVOY"),
         "manual_toggle_on_seed_backedup_iOS_download_wallet_data":
             MessageLookupByLibrary.simpleMessage("Download Envoy Backup File"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
@@ -2599,7 +2599,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
-            MessageLookupByLibrary.simpleMessage("Enter Valid Address"),
+            MessageLookupByLibrary.simpleMessage("Enter valid address"),
+        "send_keyboard_amount_insufficient_funds_info":
+            MessageLookupByLibrary.simpleMessage("Insufficient funds"),
+        "send_keyboard_amount_too_low_info":
+            MessageLookupByLibrary.simpleMessage("Amount too low"),
         "send_keyboard_heading": MessageLookupByLibrary.simpleMessage("SEND"),
         "send_keyboard_network_fees_boost_amount":
             MessageLookupByLibrary.simpleMessage("1,500 Sats ~ \$5.43"),
@@ -2614,7 +2618,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_keyboard_network_fees_standard_time":
             MessageLookupByLibrary.simpleMessage("60 min"),
         "send_keyboard_send_max":
-            MessageLookupByLibrary.simpleMessage("Send Max"),
+            MessageLookupByLibrary.simpleMessage("Send max"),
         "send_keyboard_to": MessageLookupByLibrary.simpleMessage("To:"),
         "send_qr_code_card_heading": MessageLookupByLibrary.simpleMessage(
             "Scan the QR with your Passport"),
@@ -2624,6 +2628,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_qr_code_subheading": MessageLookupByLibrary.simpleMessage(
             "You can now scan the QR code displayed on your Passport with your phone camera."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+        "settings_advanced_enabled_testnet_modal_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "settings_advanced_enabled_testnet_modal_link":
+            MessageLookupByLibrary.simpleMessage(
+                "Learn how to do that [[here]]."),
+        "settings_advanced_enabled_testnet_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
         "settings_advanced_taproot":
             MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_taproot_modal_cta1":
@@ -2800,6 +2812,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "tagged_coin_details_menu":
             MessageLookupByLibrary.simpleMessage("EDIT TAG NAME\n\nDELETE TAG"),
+        "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
+            "Hold to drag and reorder your accounts."),
+        "tap_and_drag_first_time_text_button":
+            MessageLookupByLibrary.simpleMessage("Dismiss"),
         "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7":
             MessageLookupByLibrary.simpleMessage(
                 "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),

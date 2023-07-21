@@ -15,6 +15,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 
@@ -299,7 +300,10 @@ class SeedIntroScreen extends StatelessWidget {
                                         );
                                         return;
                                       }
-                                      print("isValid ${isValid} ${seedWords}");
+                                      if (kDebugMode) {
+                                        print(
+                                            "isValid ${isValid} ${seedWords}");
+                                      }
                                       //TODO: Passphrase
                                       EnvoySeed()
                                           .create(seedWords,
