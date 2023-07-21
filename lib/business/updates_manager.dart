@@ -67,7 +67,7 @@ class UpdatesManager {
       }
 
       final fileName =
-          fw.version + "-" + fw.deviceId.toString() + "-passport.bin";
+          fw.version + (fw.deviceId == 0 ? "-founders" : "") + "-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
       es.addNewFirmware(fw.deviceId, fw.version, fileName);
     }
