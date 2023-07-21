@@ -287,6 +287,20 @@ class NativeLibrary {
   late final _wallet_generate_seed =
       _wallet_generate_seedPtr.asFunction<Seed Function(int)>();
 
+  bool wallet_validate_seed(
+    ffi.Pointer<ffi.Char> seed_words,
+  ) {
+    return _wallet_validate_seed(
+      seed_words,
+    );
+  }
+
+  late final _wallet_validate_seedPtr =
+      _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<ffi.Char>)>>(
+          'wallet_validate_seed');
+  late final _wallet_validate_seed = _wallet_validate_seedPtr
+      .asFunction<bool Function(ffi.Pointer<ffi.Char>)>();
+
   ffi.Pointer<ffi.Char> wallet_get_xpub_desc_key(
     ffi.Pointer<ffi.Char> xprv,
     ffi.Pointer<ffi.Char> path,
@@ -406,6 +420,11 @@ class Transaction extends ffi.Struct {
   external int outputs_len;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> outputs;
+
+  @ffi.Int()
+  external int inputs_len;
+
+  external ffi.Pointer<ffi.Pointer<ffi.Char>> inputs;
 }
 
 class TransactionList extends ffi.Struct {

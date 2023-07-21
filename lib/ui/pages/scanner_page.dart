@@ -21,6 +21,7 @@ import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/business/account.dart';
+import 'package:wallet/wallet.dart';
 
 enum ScannerType {
   generic,
@@ -34,8 +35,12 @@ enum ScannerType {
   azteco
 }
 
-final SnackBar notAValidAddressSnackbar = SnackBar(
+final SnackBar invalidAddressSnackbar = SnackBar(
   content: Text("Not a valid address"),
+);
+
+final SnackBar invalidSeedSnackbar = SnackBar(
+  content: Text("Not a valid seed"),
 );
 
 class ScannerPage extends StatefulWidget {
@@ -45,7 +50,7 @@ class ScannerPage extends StatefulWidget {
   final Account? account;
   final Challenge? challengeToValidate;
   final Function(String)? onTxParsed;
-  final Function(String)? onSeedParsed;
+  final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
   final Function(String, int)? onAddressValidated;
 
@@ -53,7 +58,7 @@ class ScannerPage extends StatefulWidget {
       {this.account,
       this.challengeToValidate,
       this.onTxParsed,
-      this.onSeedParsed,
+      this.onSeedValidated,
       this.onNodeUrlParsed,
       this.onAddressValidated});
 
@@ -228,8 +233,14 @@ class _ScannerPageState extends State<ScannerPage> {
 
     // Seed recovery flow
     if (widget._acceptableTypes.contains(ScannerType.seed)) {
-      widget.onSeedParsed!(code);
-      Navigator.of(context).pop();
+      final seedLength = code.split(" ").length;
+      // TODO: account for passphrases (when we reenable that feature)
+      if ((seedLength == 12 || seedLength == 24) && Wallet.validateSeed(code)) {
+        widget.onSeedValidated!(code);
+        Navigator.of(context).pop();
+        return;
+      }
+      showSnackbar(invalidSeedSnackbar);
       return;
     }
 
@@ -255,11 +266,7 @@ class _ScannerPageState extends State<ScannerPage> {
       address = address.replaceFirst("bitcoin:", "");
 
       if (!await widget.account!.wallet.validateAddress(address)) {
-        if ((_snackbarTimer == null || !_snackbarTimer!.isActive) &&
-            _progress == 0.0) {
-          ScaffoldMessenger.of(context).showSnackBar(notAValidAddressSnackbar);
-          _snackbarTimer = Timer(Duration(seconds: 5), () {});
-        }
+        showSnackbar(invalidAddressSnackbar);
       } else {
         widget.onAddressValidated!(address, amount);
         Navigator.of(context).pop();
@@ -298,6 +305,14 @@ class _ScannerPageState extends State<ScannerPage> {
           ));
         }
       }
+    }
+  }
+
+  void showSnackbar(SnackBar snackBar) {
+    if ((_snackbarTimer == null || !_snackbarTimer!.isActive) &&
+        _progress == 0.0) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      _snackbarTimer = Timer(Duration(seconds: 5), () {});
     }
   }
 
