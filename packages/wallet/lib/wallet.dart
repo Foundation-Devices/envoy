@@ -22,14 +22,6 @@ enum Network { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending }
 
-extension SwappableList<E> on List<E> {
-  void swap(int indexA, int indexB) {
-    final temp = this[indexA];
-    this[indexA] = this[indexB];
-    this[indexB] = temp;
-  }
-}
-
 extension HierarchicalSort on List<Transaction> {
   void hierarchicalSort() {
     for (var end = this.length - 1; end > 0; end--) {
@@ -556,11 +548,11 @@ class Wallet {
         _lib.lookup<NativeFunction<WalletCreatePsbtRust>>('wallet_create_psbt');
     final dartFunction = rustFunction.asFunction<WalletCreatePsbtDart>();
 
-    final listPointer = calloc.allocate<rust.UtxoList>(1);
+    final listPointer = calloc<rust.UtxoList>(1);
     listPointer.ref.utxos_len = utxos?.length ?? 0;
 
     utxos?.forEachIndexed((index, utxo) {
-      final utxoPointer = calloc.allocate<rust.Utxo>(1);
+      final utxoPointer = calloc<rust.Utxo>(1);
 
       utxoPointer.ref.value = utxo.value;
       utxoPointer.ref.vout = utxo.vout;
@@ -657,7 +649,7 @@ class Wallet {
 
     List<Utxo> utxos = [];
     for (var i = 0; i < utxoList.utxos_len; i++) {
-      final nativeUtxo = utxoList.utxos.elementAt(i).ref;
+      rust.Utxo nativeUtxo = utxoList.utxos.elementAt(i).ref;
       utxos.add(Utxo(
           txid: nativeUtxo.txid.cast<Utf8>().toDartString(),
           vout: nativeUtxo.vout,

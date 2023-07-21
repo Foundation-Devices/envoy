@@ -18,7 +18,6 @@ fn main() {
 
     let config = Config {
         language: Language::C,
-        no_includes: true,
         ..Default::default()
     };
 

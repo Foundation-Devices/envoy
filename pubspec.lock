@@ -976,8 +976,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "10e61ea0f5625ea7e20cb0449e959c384b4d575a"
-      resolved-ref: "10e61ea0f5625ea7e20cb0449e959c384b4d575a"
+      ref: "71db8c9dcb3ed56cc55f86caf1044ef2068603b7"
+      resolved-ref: "71db8c9dcb3ed56cc55f86caf1044ef2068603b7"
       url: "https://github.com/icota/qr_code_scanner.git"
     source: git
     version: "1.0.0"
@@ -1045,6 +1045,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  screenshot:
+    dependency: "direct dev"
+    description:
+      name: screenshot
+      sha256: "455284ff1f5b911d94a43c25e1385485cf6b4f288293eba68f15dad711c7b81c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   sembast:
     dependency: "direct main"
     description:
@@ -1498,4 +1506,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.0.0-0 <4.0.0"
-  flutter: ">=3.3.0"
+  flutter: ">=3.10.0"
