@@ -6,10 +6,10 @@ import 'dart:math';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/envoy_scaffold.dart';
 
 class SingleImportPpIntroPage extends StatelessWidget {
   final bool isExistingDevice;
@@ -20,6 +20,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
+      gradientHeight: 1.8,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,

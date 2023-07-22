@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,8 @@ void showRestoreFailedDialog(BuildContext context) {
                 ],
               ),
               OnboardingButton(
-                  label: "Continue",
+                  type: EnvoyButtonTypes.primaryModal,
+                  label: S().manual_setup_import_backup_fails_modal_continue,
                   onTap: () {
                     Navigator.pop(context);
                   }),

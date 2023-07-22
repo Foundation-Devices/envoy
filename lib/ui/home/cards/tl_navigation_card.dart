@@ -23,6 +23,10 @@ mixin TopLevelNavigationCardState<T extends TopLevelNavigationCard>
   }
 
   void pop({int depth = 1}) {
+    if (cardStack.isNotEmpty) {
+      cardStack.last.onPop?.call();
+    }
+
     setState(() {
       if (depth == -1) {
         cardStack.clear();
