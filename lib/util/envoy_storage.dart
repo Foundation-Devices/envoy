@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -40,6 +41,9 @@ class EnvoyStorage {
   StoreRef pendingTxStore = StoreRef.main();
   StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>.main();
   StoreRef firmwareStore = StoreRef.main();
+
+  StoreRef<String, bool> utxoBlockState = StoreRef("utxo_block_state");
+  StoreRef<String, CoinTag> tagStore = StoreRef('tags');
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -198,4 +202,6 @@ class EnvoyStorage {
       return transformFirmware(firmwares);
     });
   }
+
+  Database get db => _db;
 }
