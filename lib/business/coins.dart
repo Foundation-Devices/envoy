@@ -1,26 +1,25 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+// SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-part 'coins.g.dart';
+import 'package:wallet/wallet.dart';
 
-@JsonSerializable()
+//Wrapper class for Wallet.Utxo
 class Coin {
-  final String hash;
-  final int index;
-  final bool locked;
-  final double amount;
+  final Utxo utxo;
+  bool locked = false;
 
-  Coin({
-    required this.hash,
-    required this.index,
-    required this.locked,
-    required this.amount,
-  });
+  Coin(this.utxo, {this.locked = false});
 
-  String getUniqueId() {
-    return "${this.hash}:${this.index}";
-  }
+  String get id => utxo.id;
 
-  factory Coin.fromJson(Map<String, dynamic> json) => _$CoinFromJson(json);
+  int get amount => utxo.value;
+}
 
-  Map<String, dynamic> toJson() => _$CoinToJson(this);
+/**Extension that adds id getter to Wallet.Utxo
+ * Utxo is a freezed class, so we can't add the getter
+ * directly to the class
+ */
+extension utxoExtension on Utxo {
+  get id => '$txid:$vout';
 }

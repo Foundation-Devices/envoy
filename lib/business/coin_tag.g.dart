@@ -7,15 +7,15 @@ part of 'coin_tag.dart';
 // **************************************************************************
 
 CoinTag _$CoinTagFromJson(Map<String, dynamic> json) => CoinTag(
-      id: json['id'] as String,
+      id: json['id'] as String? ?? CoinTag.generateNewId(),
       name: json['name'] as String,
-      coins: (json['coins'] as List<dynamic>)
-          .map((e) => Coin.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+      account: json['account'] as String,
+    )..coins_id =
+        (json['coins_id'] as List<dynamic>).map((e) => e as String).toSet();
 
 Map<String, dynamic> _$CoinTagToJson(CoinTag instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'coins': instance.coins,
+      'account': instance.account,
+      'coins_id': instance.coins_id.toList(),
     };
