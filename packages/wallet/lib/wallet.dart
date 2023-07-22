@@ -365,6 +365,7 @@ class Wallet {
   final bool hasPassphrase;
 
   List<Transaction> transactions = [];
+  @JsonKey(defaultValue: [])
   List<Utxo> utxos = [];
   int balance = 0;
 
