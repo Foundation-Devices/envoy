@@ -12,8 +12,31 @@ final coinTagsStreamProvider = StreamProvider.family<List<CoinTag>, String>(
     (ref, accountId) =>
         CoinRepository().getCoinTagStream(accountId: accountId));
 
+class CoinStateNotifier extends StateNotifier<Set<String>> {
+  CoinStateNotifier(super.state);
+
+  add(String coinId) {
+    //Creates new state from existing state,
+    //this is required for state notifier to notify the state change
+    final newState = {...state}..add(coinId);
+    state = newState;
+  }
+
+  remove(String coinId) {
+    if (state.contains(coinId)) {
+      final newState = {...state}..remove(coinId);
+      state = newState;
+    }
+  }
+}
+
 final coinSelectionStateProvider =
-    StateProvider.autoDispose<Set<String>>((ref) => Set<String>());
+    StateNotifierProvider<CoinStateNotifier, Set>(
+  (ref) => CoinStateNotifier(Set()),
+);
+
+final isCoinSelectedProvider = Provider.family<bool, String>(
+    (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));
 
 /**
  * Provider for [Coin] list for specific account
