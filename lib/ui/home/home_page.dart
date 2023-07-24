@@ -79,8 +79,7 @@ class _HomePageState extends ConsumerState<HomePage>
   bool _optionsShown = false;
   double _optionsHeight = 0;
 
-  final _bottomTabBarKey = GlobalKey();
-  double _bottomTabBarHeight = 0.0;
+  double _bottomTabBarHeight = 70.0;
 
   int _tlCardIndex = 0;
   String _appBarTitle = S().envoy_home_devices.toUpperCase();
@@ -208,18 +207,6 @@ class _HomePageState extends ConsumerState<HomePage>
     _optionsHeight = _optionsKey.currentContext?.size!.height ?? 0;
   }
 
-  void _getTabBarHeight(_) {
-    var context = _bottomTabBarKey.currentContext;
-    if (context == null) return;
-
-    final oldTabBarHeight = _bottomTabBarHeight;
-    _bottomTabBarHeight = _bottomTabBarKey.currentContext?.size?.height ?? 0;
-
-    if (oldTabBarHeight != _bottomTabBarHeight) {
-      setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     ref.listen<HomePageTabState>(homePageTabProvider,
@@ -271,7 +258,7 @@ class _HomePageState extends ConsumerState<HomePage>
     });
     // After we render everything find out the widgets' height
     SchedulerBinding.instance.addPostFrameCallback(_getOptionsHeight);
-    SchedulerBinding.instance.addPostFrameCallback(_getTabBarHeight);
+    //SchedulerBinding.instance.addPostFrameCallback(_getTabBarHeight);
 
     double _screenHeight = MediaQuery.of(context).size.height;
     // ignore: unused_local_variable
@@ -457,26 +444,29 @@ class _HomePageState extends ConsumerState<HomePage>
                           alignment: Alignment.bottomCenter,
                           child: IgnorePointer(
                             ignoring: _backgroundShown || _modalShown,
-                            child: TabBar(
-                              key: _bottomTabBarKey,
-                              indicatorColor: Colors.white10,
-                              labelStyle: Theme.of(context).textTheme.bodyLarge,
-                              unselectedLabelColor: Colors.black54,
-                              labelColor: EnvoyColors.darkTeal,
-                              controller: _tabController,
-                              onTap: (selectedIndex) {
-                                ref.read(homePageTabProvider.notifier).state =
-                                    HomePageTabState.values[selectedIndex];
-                                setState(() {
-                                  _navigateToCard(selectedIndex);
-                                });
-                              },
-                              tabs: _tlCardList
-                                  .map((e) => Tab(
-                                        icon: e.icon,
-                                        text: e.label,
-                                      ))
-                                  .toList(),
+                            child: Container(
+                              height: _bottomTabBarHeight,
+                              child: TabBar(
+                                indicatorColor: Colors.white10,
+                                labelStyle:
+                                    Theme.of(context).textTheme.bodyLarge,
+                                unselectedLabelColor: Colors.black54,
+                                labelColor: EnvoyColors.darkTeal,
+                                controller: _tabController,
+                                onTap: (selectedIndex) {
+                                  ref.read(homePageTabProvider.notifier).state =
+                                      HomePageTabState.values[selectedIndex];
+                                  setState(() {
+                                    _navigateToCard(selectedIndex);
+                                  });
+                                },
+                                tabs: _tlCardList
+                                    .map((e) => Tab(
+                                          icon: e.icon,
+                                          text: e.label,
+                                        ))
+                                    .toList(),
+                              ),
                             ),
                           ),
                         )),
