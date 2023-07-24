@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
@@ -41,7 +42,7 @@ class EnvoySeed {
   static String HOT_WALLET_MAINNET_PATH = "m/84'/0'/0'";
   static String HOT_WALLET_TESTNET_PATH = "m/84'/1'/0'";
 
-  List<String> keysToBackUp = [
+  List<String> preferencesKeysToBackUp = [
     Settings.SETTINGS_PREFS,
     AccountManager.ACCOUNTS_PREFS,
     Devices.DEVICES_PREFS,
@@ -121,11 +122,14 @@ class EnvoySeed {
     }
 
     Map<String, String> backupData = {};
-    for (var key in keysToBackUp) {
+    for (var key in preferencesKeysToBackUp) {
       if (LocalStorage().prefs.containsKey(key)) {
         backupData[key] = LocalStorage().prefs.getString(key)!;
       }
     }
+
+    // Add sembast DB
+    backupData[EnvoyStorage().dbName] = await EnvoyStorage().export();
 
     // Strip keys from hot wallets
     if (backupData.containsKey(AccountManager.ACCOUNTS_PREFS)) {
@@ -239,6 +243,11 @@ class EnvoySeed {
       data.forEach((key, value) {
         LocalStorage().prefs.setString(key, value);
       });
+
+      // Restore the database
+      if (data.containsKey(EnvoyStorage().dbName)) {
+        EnvoyStorage().restore(data[EnvoyStorage().dbName]!);
+      }
 
       _restoreSingletons();
     }
