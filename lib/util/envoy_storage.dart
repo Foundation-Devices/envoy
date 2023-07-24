@@ -36,10 +36,10 @@ class EnvoyStorage {
   String dbName = 'envoy.db';
   late Database _db;
 
-  StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
-  StoreRef pendingTxStore = StoreRef.main();
-  StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>.main();
-  StoreRef firmwareStore = StoreRef.main();
+  StoreRef<String, String> txNotesStore = StoreRef<String, String>("tx_notes");
+  StoreRef<String, Map> pendingTxStore = StoreRef<String, Map>("pending_tx");
+  StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>("dismissed_prompts");
+  StoreRef<int, Map> firmwareStore = StoreRef<int, Map>("firmware");
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -54,7 +54,19 @@ class EnvoyStorage {
   Future init() async {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
-    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
+    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName), version: 2, onVersionChanged: (db, oldVersion, newVersion) async {
+      if (oldVersion == 1) {
+        // Migrate dismissed prompts to its own store
+        for (DismissiblePrompt prompt in DismissiblePrompt.values) {
+          String key = prompt.toString();
+          final record = await StoreRef.main().record(key).get(db);
+          if (record != null) {
+            await dismissedPromptsStore.record(key).add(db, true);
+            await StoreRef.main().record(key).delete(db);
+          }
+        }
+      }
+    });
   }
 
   Future addPromptState(DismissiblePrompt prompt) async {
