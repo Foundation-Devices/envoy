@@ -14,7 +14,8 @@ import 'package:envoy/util/envoy_storage.dart';
 
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
-  return UpdatesManager().shouldUpdate(device.firmwareVersion, device.type);
+  final version = Devices().getDeviceFirmwareVersion(device.serial);
+  return UpdatesManager().shouldUpdate(version, device.type);
 });
 
 class DeviceListTile extends ConsumerStatefulWidget {
@@ -185,6 +186,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                     children: [
                                                       if (fwShouldUpdate
                                                               .hasValue &&
+                                                          fwShouldUpdate
+                                                                  .value !=
+                                                              null &&
                                                           fwShouldUpdate.value!)
                                                         Padding(
                                                           padding: EdgeInsets

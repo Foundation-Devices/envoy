@@ -125,4 +125,8 @@ class Devices extends ChangeNotifier {
 
     return devices.firstWhere((d) => d.serial == serialNumber).name;
   }
+
+  getDeviceFirmwareVersion(String serialNumber) {
+    return devices.firstWhere((d) => d.serial == serialNumber).firmwareVersion;
+  }
 }
