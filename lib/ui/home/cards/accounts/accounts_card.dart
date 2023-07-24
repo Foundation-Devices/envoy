@@ -243,16 +243,25 @@ class AccountPrompts extends ConsumerWidget {
     //Show if the user never tried receive screen and has no balance
     if (!userInteractedWithReceive && accountsHaveZeroBalance) {
       return Center(
-          child: Padding(
-        padding: const EdgeInsets.only(top: 0.0),
-        child: Text(
+          child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
+        Text(
           accounts.length == 1
               ? S().hot_wallet_accounts_creation_done_text_explainer
               : S()
                   .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
           style: _explainerTextStyle,
         ),
-      ));
+        GestureDetector(
+          child: Text(
+            S().hot_wallet_accounts_creation_done_button,
+            style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+          ),
+          onTap: () {
+            EnvoyStorage()
+                .addPromptState(DismissiblePrompt.userInteractedWithReceive);
+          },
+        ),
+      ]));
     } else {
       if (!isHideAmountDismissed && !accountsHaveZeroBalance) {
         return Center(
