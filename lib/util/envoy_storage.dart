@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
+import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
 class FirmwareInfo {
@@ -38,7 +40,8 @@ class EnvoyStorage {
 
   StoreRef<String, String> txNotesStore = StoreRef<String, String>("tx_notes");
   StoreRef<String, Map> pendingTxStore = StoreRef<String, Map>("pending_tx");
-  StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>("dismissed_prompts");
+  StoreRef<String, bool> dismissedPromptsStore =
+      StoreRef<String, bool>("dismissed_prompts");
   StoreRef<int, Map> firmwareStore = StoreRef<int, Map>("firmware");
 
   static final EnvoyStorage _instance = EnvoyStorage._();
@@ -54,7 +57,8 @@ class EnvoyStorage {
   Future init() async {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
-    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName), version: 2, onVersionChanged: (db, oldVersion, newVersion) async {
+    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName),
+        version: 2, onVersionChanged: (db, oldVersion, newVersion) async {
       if (oldVersion == 1) {
         // Migrate dismissed prompts to its own store
         for (DismissiblePrompt prompt in DismissiblePrompt.values) {
@@ -209,5 +213,21 @@ class EnvoyStorage {
         .map((firmwares) {
       return transformFirmware(firmwares);
     });
+  }
+
+  Future<String> export() async {
+    return jsonEncode(await exportDatabase(_db));
+  }
+
+  restore(String json) async {
+    var map = jsonDecode(json) as Map;
+    if (map.isEmpty) {
+      return;
+    }
+
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    await _db.close();
+    _db = await importDatabase(
+        map, databaseFactoryIo, join(appDocumentDir.path, dbName));
   }
 }
