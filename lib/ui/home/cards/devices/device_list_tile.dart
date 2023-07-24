@@ -216,7 +216,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                             EdgeInsets.only(
                                                                 right: 2.0),
                                                         child: Text(
-                                                          fwInfo.hasValue
+                                                          fwInfo.hasValue &&
+                                                                  fwInfo.value !=
+                                                                      null
                                                               ? ("FW " +
                                                                   fwInfo.value!
                                                                       .storedVersion)
