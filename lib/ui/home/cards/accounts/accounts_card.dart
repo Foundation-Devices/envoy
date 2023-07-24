@@ -190,6 +190,9 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                     });
                   },
                   onReorder: (oldIndex, newIndex) async {
+                    // SFT-2488: dismiss the drag and drop prompt after dragging
+                    EnvoyStorage()
+                        .addPromptState(DismissiblePrompt.dragAndDrop);
                     await AccountManager().moveAccount(oldIndex, newIndex);
                   },
                   children: [
