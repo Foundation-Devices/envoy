@@ -74,17 +74,17 @@ class UpdatesManager {
   }
 
   Future<File> getStoredFw(int deviceId) async {
-    var StoredInfo = await es.getStoredFirmware(deviceId);
+    var storedInfo = await es.getStoredFirmware(deviceId);
 
-    String? storedPath = StoredInfo?.path;
-
+    String? storedPath = storedInfo?.path;
     File file = ls.openFileBytes(storedPath!);
 
     // Migration
-    if (!file.path.endsWith("-passport.bin")) {
+    if (!file.path.endsWith("-passport.bin") ||
+        file.path.endsWith("0-passport.bin") ||
+        file.path.endsWith("1-passport.bin")) {
       final fileName = (getStoredFwVersion(deviceId) as String) +
-          "-" +
-          deviceId.toString() +
+          (deviceId == 0 ? "-founders" : "") +
           "-passport.bin";
       var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
       es.addNewFirmware(
