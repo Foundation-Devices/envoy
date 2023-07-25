@@ -12,9 +12,9 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
-import 'package:envoy/business/devices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/devices.dart';
 
 class FwMicrosdPage extends ConsumerWidget {
   final bool onboarding;
@@ -46,27 +46,25 @@ class FwMicrosdPage extends ConsumerWidget {
                 if (Platform.isAndroid) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return FwProgressPage(onboarding: onboarding);
+                    return FwProgressPage(deviceId, onboarding: onboarding);
                   }));
                 }
 
-                UpdatesManager().getStoredFw(deviceId).then((File file) {
-                  FwUploader(file, onUploaded: () {
-                    if (Platform.isIOS) {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return FwPassportPage(
-                          onboarding: onboarding,
-                        );
-                      }));
-                    }
-                  }).upload();
-                });
+                File firwmareFile =
+                    await UpdatesManager().getStoredFw(deviceId);
+                FwUploader(firwmareFile, onUploaded: () {
+                  if (Platform.isIOS) {
+                    Devices().markDeviceUpdated(
+                        deviceId, fwInfo.value!.storedVersion);
 
-                // Here we assume user has updated  his devices
-
-                Devices()
-                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return FwPassportPage(
+                        onboarding: onboarding,
+                      );
+                    }));
+                  }
+                }).upload();
               } catch (e) {
                 print("SD: error " + e.toString());
                 if (Platform.isIOS) // TODO: this needs to be smarter

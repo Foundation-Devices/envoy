@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -12,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
+import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
 class FirmwareInfo {
@@ -37,10 +39,11 @@ class EnvoyStorage {
   String dbName = 'envoy.db';
   late Database _db;
 
-  StoreRef<String, String> txNotesStore = StoreRef<String, String>.main();
-  StoreRef pendingTxStore = StoreRef.main();
-  StoreRef<String, bool> dismissedPromptsStore = StoreRef<String, bool>.main();
-  StoreRef firmwareStore = StoreRef.main();
+  StoreRef<String, String> txNotesStore = StoreRef<String, String>("tx_notes");
+  StoreRef<String, Map> pendingTxStore = StoreRef<String, Map>("pending_tx");
+  StoreRef<String, bool> dismissedPromptsStore =
+      StoreRef<String, bool>("dismissed_prompts");
+  StoreRef<int, Map> firmwareStore = StoreRef<int, Map>("firmware");
 
   StoreRef<String, bool> utxoBlockState = StoreRef("utxo_block_state");
   StoreRef<String, CoinTag> tagStore = StoreRef('tags');
@@ -58,7 +61,20 @@ class EnvoyStorage {
   Future init() async {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
-    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName));
+    _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName),
+        version: 2, onVersionChanged: (db, oldVersion, newVersion) async {
+      if (oldVersion == 1) {
+        // Migrate dismissed prompts to its own store
+        for (DismissiblePrompt prompt in DismissiblePrompt.values) {
+          String key = prompt.toString();
+          final record = await StoreRef.main().record(key).get(db);
+          if (record != null) {
+            await dismissedPromptsStore.record(key).add(db, true);
+            await StoreRef.main().record(key).delete(db);
+          }
+        }
+      }
+    });
   }
 
   Future addPromptState(DismissiblePrompt prompt) async {
@@ -203,5 +219,20 @@ class EnvoyStorage {
     });
   }
 
+  Future<String> export() async {
+    return jsonEncode(await exportDatabase(_db));
+  }
+
+  restore(String json) async {
+    var map = jsonDecode(json) as Map;
+    if (map.isEmpty) {
+      return;
+    }
+
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    await _db.close();
+    _db = await importDatabase(
+        map, databaseFactoryIo, join(appDocumentDir.path, dbName));
+  }
   Database get db => _db;
 }

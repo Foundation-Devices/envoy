@@ -191,7 +191,11 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                     });
                   },
                   onReorder: (oldIndex, newIndex) async {
-                    await AccountManager().moveAccount(oldIndex, newIndex);
+                    // SFT-2488: dismiss the drag and drop prompt after dragging
+                    EnvoyStorage()
+                        .addPromptState(DismissiblePrompt.dragAndDrop);
+                    await AccountManager()
+                        .moveAccount(oldIndex, newIndex, accounts);
                   },
                   children: [
                     for (final account in accounts)
@@ -241,16 +245,25 @@ class AccountPrompts extends ConsumerWidget {
     //Show if the user never tried receive screen and has no balance
     if (!userInteractedWithReceive && accountsHaveZeroBalance) {
       return Center(
-          child: Padding(
-        padding: const EdgeInsets.only(top: 0.0),
-        child: Text(
+          child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
+        Text(
           accounts.length == 1
               ? S().hot_wallet_accounts_creation_done_text_explainer
               : S()
                   .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
           style: _explainerTextStyle,
         ),
-      ));
+        GestureDetector(
+          child: Text(
+            S().hot_wallet_accounts_creation_done_button,
+            style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+          ),
+          onTap: () {
+            EnvoyStorage()
+                .addPromptState(DismissiblePrompt.userInteractedWithReceive);
+          },
+        ),
+      ]));
     } else {
       if (!isHideAmountDismissed && !accountsHaveZeroBalance) {
         return Center(

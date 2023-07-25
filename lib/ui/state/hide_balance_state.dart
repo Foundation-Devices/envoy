@@ -8,6 +8,8 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class HideStateNotifier extends ChangeNotifier {
   Set<String> amountHiddenAccounts = {};
@@ -27,6 +29,9 @@ class HideStateNotifier extends ChangeNotifier {
   setHideState(bool hide, Account account) {
     if (hide && account.id != null) {
       amountHiddenAccounts.add(account.id!);
+
+      // Hiding for the first time dismisses the "hide amount" prompt
+      EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
     } else {
       if (amountHiddenAccounts.contains(account.id)) {
         amountHiddenAccounts.remove(account.id);

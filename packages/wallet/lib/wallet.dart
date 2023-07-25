@@ -771,6 +771,11 @@ class Wallet {
     return words;
   }
 
+  static bool validateSeed(String seed) {
+    final native = NativeLibrary(load(_libName));
+    return native.wallet_validate_seed(seed.toNativeUtf8().cast());
+  }
+
   static Wallet deriveWallet(
       String seed, String path, String directory, Network network,
       {String? passphrase, bool privateKey = false, bool initWallet = true}) {

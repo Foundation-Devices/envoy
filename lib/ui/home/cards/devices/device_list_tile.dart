@@ -14,7 +14,8 @@ import 'package:envoy/util/envoy_storage.dart';
 
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
-  return UpdatesManager().shouldUpdate(device.firmwareVersion, device.type);
+  final version = Devices().getDeviceFirmwareVersion(device.serial);
+  return UpdatesManager().shouldUpdate(version, device.type);
 });
 
 class DeviceListTile extends ConsumerStatefulWidget {
@@ -109,26 +110,20 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        widget.device.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge!
-                                            .copyWith(
-                                              color: Colors.white,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 5,
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: Text(
+                                      widget.device.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                            color: Colors.white,
+                                          ),
+                                    ),
                                   ),
                                   Row(
                                     mainAxisAlignment:
@@ -185,6 +180,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                     children: [
                                                       if (fwShouldUpdate
                                                               .hasValue &&
+                                                          fwShouldUpdate
+                                                                  .value !=
+                                                              null &&
                                                           fwShouldUpdate.value!)
                                                         Padding(
                                                           padding: EdgeInsets
@@ -216,7 +214,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                             EdgeInsets.only(
                                                                 right: 2.0),
                                                         child: Text(
-                                                          fwInfo.hasValue
+                                                          fwInfo.hasValue &&
+                                                                  fwInfo.value !=
+                                                                      null
                                                               ? ("FW " +
                                                                   fwInfo.value!
                                                                       .storedVersion)

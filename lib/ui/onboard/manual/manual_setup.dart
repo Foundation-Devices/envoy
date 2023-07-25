@@ -286,7 +286,7 @@ class SeedIntroScreen extends StatelessWidget {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return ScannerPage([ScannerType.seed],
-                                        onSeedParsed: (result) {
+                                        onSeedValidated: (result) {
                                       List<String> seedWords =
                                           result.split(" ");
                                       String passPhrase = "";
