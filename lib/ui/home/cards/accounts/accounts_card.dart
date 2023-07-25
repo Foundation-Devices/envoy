@@ -193,7 +193,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                     // SFT-2488: dismiss the drag and drop prompt after dragging
                     EnvoyStorage()
                         .addPromptState(DismissiblePrompt.dragAndDrop);
-                    await AccountManager().moveAccount(oldIndex, newIndex);
+                    await AccountManager()
+                        .moveAccount(oldIndex, newIndex, accounts);
                   },
                   children: [
                     for (final account in accounts)

@@ -19,12 +19,12 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:schedulers/schedulers.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/util/envoy_storage.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -34,13 +34,14 @@ class AccountManager extends ChangeNotifier {
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
+  // prevents concurrent modification of accounts list, when moving accounts
+  bool _accountSchedulerMutex = false;
 
   // SFT-1544: never sync more than 4 account at once
   final _syncScheduler = ParallelScheduler(4);
 
   static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
-
   static String walletsDirectory =
       LocalStorage().appDocumentsDir.path + "/wallets/";
 
@@ -72,7 +73,10 @@ class AccountManager extends ChangeNotifier {
         accounts.forEach((account) {
           _syncScheduler.run(() async {
             final syncedAccount = await _syncAccount(account);
-
+            // prevent concurrent modification of accounts list
+            if (_accountSchedulerMutex) {
+              return;
+            }
             final syncAccountIndex =
                 accounts.indexWhere((a) => a.id == syncedAccount.id);
             if (syncAccountIndex != -1) {
@@ -299,9 +303,9 @@ class AccountManager extends ChangeNotifier {
     return wallet;
   }
 
-  storeAccounts() {
+  Future storeAccounts() async {
     String json = jsonEncode(accounts);
-    _ls.prefs.setString(ACCOUNTS_PREFS, json);
+    await _ls.prefs.setString(ACCOUNTS_PREFS, json);
   }
 
   void addAccount(Account account) {
@@ -355,26 +359,44 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
-  moveAccount(int oldIndex, int newIndex) async {
+  moveAccount(
+      int oldIndex, int newIndex, List<Account> accountFromListView) async {
+    _accountSchedulerMutex = true;
     //Make a copy of current account set to prevent concurrent modification
     //sync might interfere with reordering so making a copy will prevent moving the same account
-    final _accountCopy = [...accounts];
-    //moving down, the list is shifted so the index is off by one
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
     try {
-      //Check if the items are not the same to prevent unnecessary duplication
-      if (_accountCopy[newIndex].id == _accountCopy[oldIndex].id) {
-        return;
-      }
-    } catch (_) {}
-    var movedAccount = _accountCopy.removeAt(oldIndex);
-    _accountCopy.insert(newIndex, movedAccount);
+      final visibleAccountsIds = accountFromListView.map((e) => e.id);
+      final _accountCopy = [
+        ...accounts.where((element) => visibleAccountsIds.contains(element.id))
+      ];
 
-    accounts = _accountCopy;
-    notifyListeners();
-    storeAccounts();
+      //accounts that are not visible in the list (testnet). the move should not affect them,
+      //so they are added to the end of the list
+      final _accountsThatNotVisible = [
+        ...accounts.where((element) => !visibleAccountsIds.contains(element.id))
+      ];
+      //moving down, the list is shifted so the index is off by one
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      try {
+        //Check if the items are not the same to prevent unnecessary duplication
+        if (_accountCopy[newIndex].id == _accountCopy[oldIndex].id) {
+          return;
+        }
+      } catch (_) {}
+      var movedAccount = _accountCopy.removeAt(oldIndex);
+      _accountCopy.insert(newIndex, movedAccount);
+
+      // updated accounts with new order, testnet accounts are added to the end of the list if they are not visible
+      accounts = [..._accountCopy, ..._accountsThatNotVisible];
+      notifyListeners();
+      await storeAccounts();
+    } catch (e) {
+      print(e);
+    } finally {
+      _accountSchedulerMutex = false;
+    }
   }
 
   // There is only one hot wallet for now (mainnet/testnet pair)
