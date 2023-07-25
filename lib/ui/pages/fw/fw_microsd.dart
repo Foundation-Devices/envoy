@@ -14,6 +14,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/devices.dart';
 
 class FwMicrosdPage extends ConsumerWidget {
   final bool onboarding;
@@ -53,6 +54,9 @@ class FwMicrosdPage extends ConsumerWidget {
                     await UpdatesManager().getStoredFw(deviceId);
                 FwUploader(firwmareFile, onUploaded: () {
                   if (Platform.isIOS) {
+                    Devices().markDeviceUpdated(
+                        deviceId, fwInfo.value!.storedVersion);
+
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return FwPassportPage(
