@@ -190,7 +190,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                     });
                   },
                   onReorder: (oldIndex, newIndex) async {
-                    await AccountManager().moveAccount(oldIndex, newIndex);
+                    await AccountManager()
+                        .moveAccount(oldIndex, newIndex, accounts);
                   },
                   children: [
                     for (final account in accounts)
