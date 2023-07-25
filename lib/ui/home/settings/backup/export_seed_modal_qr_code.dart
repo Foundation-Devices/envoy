@@ -118,7 +118,6 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                             seed: seed,
                             hasPassphrase: hasPassphrase,
                           ));
-                      disableSecureScreen();
                     });
                   },
                 ),
