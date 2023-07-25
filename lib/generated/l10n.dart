@@ -4834,10 +4834,10 @@ class S {
     );
   }
 
-  /// `Grant Envoy access to copy files to the microSD card, tap PASSPORT-SD then Done.`
+  /// `Grant Envoy access to copy files to the microSD card. Tap Browse, then PASSPORT-SD, then Open.`
   String get envoy_fw_ios_instructions_subheading {
     return Intl.message(
-      'Grant Envoy access to copy files to the microSD card, tap PASSPORT-SD then Done.',
+      'Grant Envoy access to copy files to the microSD card. Tap Browse, then PASSPORT-SD, then Open.',
       name: 'envoy_fw_ios_instructions_subheading',
       desc: '',
       args: [],
@@ -8189,6 +8189,26 @@ class S {
     return Intl.message(
       'Dismiss',
       name: 'hide_amount_first_time_text_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get hide_hot_wallet_accounts_creation_done_text_explainer {
+    return Intl.message(
+      'Dismiss',
+      name: 'hide_hot_wallet_accounts_creation_done_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get hot_wallet_accounts_creation_done_button {
+    return Intl.message(
+      'Dismiss',
+      name: 'hot_wallet_accounts_creation_done_button',
       desc: '',
       args: [],
     );

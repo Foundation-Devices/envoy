@@ -778,7 +778,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "envoy_fw_ios_instructions_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Grant Envoy access to copy files to the microSD card, tap PASSPORT-SD then Done."),
+                "Grant Envoy access to copy files to the microSD card. Tap Browse, then PASSPORT-SD, then Open."),
         "envoy_fw_microsd_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_fw_microsd_fails_cta1":
@@ -1496,6 +1496,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_amount_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Swipe to show and hide your balance."),
         "hide_amount_first_time_text_button":
+            MessageLookupByLibrary.simpleMessage("Dismiss"),
+        "hide_hot_wallet_accounts_creation_done_text_explainer":
+            MessageLookupByLibrary.simpleMessage("Dismiss"),
+        "hot_wallet_accounts_creation_done_button":
             MessageLookupByLibrary.simpleMessage("Dismiss"),
         "hot_wallet_accounts_creation_done_devices_empty_learn_more":
             MessageLookupByLibrary.simpleMessage("Learn More"),
