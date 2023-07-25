@@ -110,26 +110,20 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        widget.device.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge!
-                                            .copyWith(
-                                              color: Colors.white,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 5,
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: Text(
+                                      widget.device.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                            color: Colors.white,
+                                          ),
+                                    ),
                                   ),
                                   Row(
                                     mainAxisAlignment:
