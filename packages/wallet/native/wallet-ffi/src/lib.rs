@@ -729,7 +729,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
     send_to: *const c_char,
     amount: u64,
     fee_rate: f64,
-    utxos: UtxoList,
+    utxos: *const UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
@@ -746,8 +746,8 @@ pub unsafe extern "C" fn wallet_create_psbt(
 
     let mut must_spend = vec![];
 
-    for i in 0..utxos.utxos_len as isize {
-        let utxo_ptr = utxos.utxos.offset(i);
+    for i in 0..(*utxos).utxos_len as isize {
+        let utxo_ptr = (*utxos).utxos.offset(i);
 
         let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
         let vout = (*utxo_ptr).vout;
