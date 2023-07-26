@@ -385,7 +385,6 @@ class TestnetInfoModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.bold,
           fontSize: 13,
         );
 
