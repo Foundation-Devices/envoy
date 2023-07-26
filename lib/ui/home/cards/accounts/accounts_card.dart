@@ -241,15 +241,15 @@ class AccountPrompts extends ConsumerWidget {
     var accounts = ref.watch(accountsProvider);
     var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
 
-    //Show if the user never tried receive screen and has no balance
-    if (!userInteractedWithReceive && accountsHaveZeroBalance) {
+    //Show if the user never visited receive screen, has no balance
+    // and there is only one account visible
+    if (!userInteractedWithReceive &&
+        accountsHaveZeroBalance &&
+        accounts.length == 1) {
       return Center(
           child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
         Text(
-          accounts.length == 1
-              ? S().hot_wallet_accounts_creation_done_text_explainer
-              : S()
-                  .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
+          S().hot_wallet_accounts_creation_done_text_explainer,
           style: _explainerTextStyle,
         ),
         GestureDetector(
