@@ -161,6 +161,16 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             amountSats: _amountSats,
             testnet: widget.wallet?.network == Network.Testnet,
             onUnitToggled: (enteredAmount) {
+              // SFT-2508: special rule for circling through is to pad fiat with last 0
+              final unit = ref.watch(sendScreenUnitProvider);
+              if (unit == AmountDisplayUnit.fiat &&
+                  enteredAmount.contains(decimalPoint) &&
+                  ((enteredAmount.length -
+                          enteredAmount.indexOf(decimalPoint)) ==
+                      2)) {
+                enteredAmount = enteredAmount + "0";
+              }
+
               _enteredAmount = enteredAmount;
             },
           ),
