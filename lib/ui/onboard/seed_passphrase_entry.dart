@@ -184,6 +184,7 @@ void showInvalidSeedDialog({required BuildContext context}) {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               child: OnboardingButton(
+                  type: EnvoyButtonTypes.primaryModal,
                   label: S().manual_setup_import_seed_12_words_fail_modal_CTA,
                   onTap: () async {
                     Navigator.pop(context);
