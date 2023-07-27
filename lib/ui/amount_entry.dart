@@ -156,6 +156,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         FittedBox(
           fit: BoxFit.fitWidth,
           child: AmountDisplay(
+            inputMode: true,
             displayedAmount: _enteredAmount,
             amountSats: _amountSats,
             testnet: widget.wallet?.network == Network.Testnet,
