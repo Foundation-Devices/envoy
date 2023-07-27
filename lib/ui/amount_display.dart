@@ -16,6 +16,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
   final bool testnet;
+  String ghostDecimal;
 
   final Function(String)? onUnitToggled;
 
@@ -24,6 +25,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.amountSats,
       this.onUnitToggled,
       this.testnet = false,
+      this.ghostDecimal = "",
       Key? key})
       : super(key: key);
 
@@ -83,6 +85,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
                   style: Theme.of(context).textTheme.headlineMedium),
+              if (unit == AmountDisplayUnit.fiat &&
+                  widget.displayedAmount.contains(decimalPoint))
+                Text(widget.ghostDecimal,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: EnvoyColors.grey85)),
               Padding(
                 padding: const EdgeInsets.only(left: 6.0),
                 child: Text(
