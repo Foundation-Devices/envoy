@@ -13,10 +13,10 @@ import 'package:envoy/ui/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class AmountDisplay extends ConsumerStatefulWidget {
+  final bool inputMode;
   final int? amountSats;
   String displayedAmount;
   final bool testnet;
-  String ghostDecimal;
 
   final Function(String)? onUnitToggled;
 
@@ -25,7 +25,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.amountSats,
       this.onUnitToggled,
       this.testnet = false,
-      this.ghostDecimal = "",
+      this.inputMode = false,
       Key? key})
       : super(key: key);
 
@@ -76,6 +76,17 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     var unit = ref.watch(sendScreenUnitProvider);
 
+    bool renderGhostZeros = unit == AmountDisplayUnit.fiat &&
+        widget.displayedAmount.contains(decimalPoint);
+
+    String ghostDigits = renderGhostZeros
+        ? "0" *
+            (2 - // TODO: use actual fractions of that fiat (some have as much as 10k -> 4 zeroes)
+                (widget.displayedAmount.length -
+                    widget.displayedAmount.indexOf(decimalPoint) -
+                    1))
+        : "";
+
     return TextButton(
       child: Column(
         children: [
@@ -85,13 +96,14 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
                   style: Theme.of(context).textTheme.headlineMedium),
-              if (unit == AmountDisplayUnit.fiat &&
-                  widget.displayedAmount.contains(decimalPoint))
-                Text(widget.ghostDecimal,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium
-                        ?.copyWith(color: EnvoyColors.grey85)),
+              if (renderGhostZeros)
+                Text(ghostDigits,
+                    style: widget.inputMode
+                        ? Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(color: EnvoyColors.grey85)
+                        : Theme.of(context).textTheme.headlineMedium),
               Padding(
                 padding: const EdgeInsets.only(left: 6.0),
                 child: Text(
