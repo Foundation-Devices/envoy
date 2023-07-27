@@ -34,6 +34,7 @@ class AmountEntry extends ConsumerStatefulWidget {
 class AmountEntryState extends ConsumerState<AmountEntry> {
   String _enteredAmount = "";
   int _amountSats = 0;
+  int _ghostDecimalPlaces = 0;
 
   int getAmountSats() {
     final unit = ref.read(sendScreenUnitProvider);
@@ -69,6 +70,25 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               if (_enteredAmount.length > 0) {
                 _enteredAmount =
                     _enteredAmount.substring(0, _enteredAmount.length - 1);
+
+                if (unit == AmountDisplayUnit.fiat &&
+                    !_enteredAmount.contains(decimalPoint)) {
+                  _ghostDecimalPlaces = 0;
+                }
+                if (unit == AmountDisplayUnit.fiat &&
+                    _enteredAmount.contains(decimalPoint) &&
+                    ((_enteredAmount.length -
+                            _enteredAmount.indexOf(decimalPoint)) ==
+                        1)) {
+                  _ghostDecimalPlaces = 2;
+                }
+                if (unit == AmountDisplayUnit.fiat &&
+                    _enteredAmount.contains(decimalPoint) &&
+                    ((_enteredAmount.length -
+                            _enteredAmount.indexOf(decimalPoint)) ==
+                        2)) {
+                  _ghostDecimalPlaces = 1;
+                }
               }
 
               if (_enteredAmount.isEmpty) {
@@ -79,6 +99,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           break;
         case NumpadEvents.dot:
           {
+            setState(() {
+              if (unit == AmountDisplayUnit.fiat) {
+                if (_enteredAmount.contains(decimalPoint))
+                  _ghostDecimalPlaces = 0;
+                else
+                  _ghostDecimalPlaces = 2;
+              }
+            });
             if (unit == AmountDisplayUnit.sat) {
               break;
             }
@@ -115,6 +143,22 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               if (_amountSats >= 2.1e15) {
                 _enteredAmount =
                     _enteredAmount.substring(0, _enteredAmount.length - 1);
+              }
+
+              if (unit == AmountDisplayUnit.fiat &&
+                  _enteredAmount.contains(decimalPoint) &&
+                  ((_enteredAmount.length -
+                          _enteredAmount.indexOf(decimalPoint)) ==
+                      3)) {
+                _ghostDecimalPlaces = 0;
+              }
+
+              if (unit == AmountDisplayUnit.fiat &&
+                  _enteredAmount.contains(decimalPoint) &&
+                  ((_enteredAmount.length -
+                          _enteredAmount.indexOf(decimalPoint)) ==
+                      2)) {
+                _ghostDecimalPlaces = 1;
               }
             });
           }
@@ -157,6 +201,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           fit: BoxFit.fitWidth,
           child: AmountDisplay(
             displayedAmount: _enteredAmount,
+            ghostDecimal: "0" * _ghostDecimalPlaces,
             amountSats: _amountSats,
             testnet: widget.wallet?.network == Network.Testnet,
             onUnitToggled: (enteredAmount) {
