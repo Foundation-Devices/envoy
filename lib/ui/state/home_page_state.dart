@@ -33,7 +33,10 @@ enum DismissiblePrompt {
   hideAmount,
   userInteractedWithReceive,
   secureWallet,
-  dragAndDrop
+  dragAndDrop,
+  createCoinTagWarning,
+  coinUnlockWarning,
+  coinLockWarning,
 }
 
 final homePageTabProvider =
