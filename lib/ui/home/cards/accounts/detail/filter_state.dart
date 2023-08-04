@@ -45,12 +45,12 @@ class TxFilterState {
 }
 
 class CoinFilterState {
-  FilterButtonState filterByCoinAmount = FilterButtonState.none;
+  FilterButtonState filterByNumberOfCoins = FilterButtonState.none;
   FilterButtonState filterByAmount = FilterButtonState.none;
   FilterButtonState filterByTagName = FilterButtonState.none;
 
   CoinFilterState(
-      {this.filterByCoinAmount = FilterButtonState.none,
+      {this.filterByNumberOfCoins = FilterButtonState.none,
       this.filterByAmount = FilterButtonState.none,
       this.filterByTagName = FilterButtonState.none});
 
@@ -59,7 +59,7 @@ class CoinFilterState {
   static CoinFilterState copyWith(CoinFilterState filterState) {
     return CoinFilterState(
       filterByAmount: filterState.filterByAmount,
-      filterByCoinAmount: filterState.filterByCoinAmount,
+      filterByNumberOfCoins: filterState.filterByNumberOfCoins,
       filterByTagName: filterState.filterByTagName,
     );
   }
