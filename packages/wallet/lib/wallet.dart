@@ -745,7 +745,7 @@ class Wallet {
 
   static String signOffline(String psbt, String externalDescriptor,
       String internalDescriptor, bool testnet) {
-    var lib = rust.NativeLibrary(load(_libName));
+    var lib = NativeLibrary(load(_libName));
 
     return lib
         .wallet_sign_offline(
