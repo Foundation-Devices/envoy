@@ -43,8 +43,13 @@ class CoinTag {
 
   int get numOfCoins => coins.length;
 
-  int get totalAmount => coins.fold(
-      0, (previousValue, element) => previousValue + element.utxo.value);
+  int get totalAmount =>
+      coins.fold(0, (prevVal, element) => prevVal + element.utxo.value);
+
+  bool get isAllCoinsLocked => this.numOfCoins == this.numOfLockedCoins;
+
+  List<Coin> get selectableCoins =>
+      coins.where((element) => !element.locked).toList();
 
   int getSelectedAmount(Set<String> selectedCoins) {
     return coins.where((element) => selectedCoins.contains(element.id)).fold(
@@ -78,5 +83,11 @@ class CoinTag {
 
   static generateNewId() {
     return Uuid().v4();
+  }
+
+  void updateLockState(bool bool) {
+    coins.forEach((element) {
+      element.setLock(bool);
+    });
   }
 }

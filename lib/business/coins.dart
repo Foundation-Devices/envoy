@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:wallet/wallet.dart';
 
 //Wrapper class for Wallet.Utxo
@@ -14,11 +15,17 @@ class Coin {
   String get id => utxo.id;
 
   int get amount => utxo.value;
+
+  void setLock(bool bool) {
+    CoinRepository().addUtxoBlockState(id, bool);
+    this.locked = bool;
+  }
 }
 
-/**Extension that adds id getter to Wallet.Utxo
- * Utxo is a freezed class, so we can't add the getter
- * directly to the class
+/**
+ * Extension that adds id getter to Wallet.Utxo
+ * Utxo is a freezed class, so we can't add the getter directly to
+ * the class
  */
 extension utxoExtension on Utxo {
   get id => '$txid:$vout';
