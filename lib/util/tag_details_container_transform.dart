@@ -80,7 +80,6 @@ typedef ClosedCallback<S> = void Function(S data);
 ///
 const scrimBlackColor = Colors.black38;
 
-
 @optionalTypeArgs
 class TagDetailsContainerTransform<T extends Object?> extends StatefulWidget {
   /// Creates an [TagDetailsContainerTransform].
@@ -428,10 +427,11 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
     required this.transitionType,
     required this.useRootNavigator,
     required RouteSettings? routeSettings,
-  })  : _elevationTween = Tween<double>(
-          begin: closedElevation,
-          end: openElevation,
-        ),
+  })  :
+        // _elevationTween = Tween<double>(
+        //   begin: closedElevation,
+        //   end: openElevation,
+        // ),
         _shapeTween = ShapeBorderTween(
           begin: closedShape,
           end: openShape,
@@ -570,28 +570,28 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
 
   final bool useRootNavigator;
 
-  final Tween<double> _elevationTween;
+  // final Tween<double> _elevationTween;
   final ShapeBorderTween _shapeTween;
   final _FlippableTweenSequence<double> _closedOpacityTween;
   final _FlippableTweenSequence<double> _openOpacityTween;
   final _FlippableTweenSequence<Color?> _colorTween;
 
-  static final TweenSequence<Color?> _scrimFadeInTween = TweenSequence<Color?>(
-    <TweenSequenceItem<Color?>>[
-      TweenSequenceItem<Color?>(
-        tween: ColorTween(begin: Colors.transparent, end: scrimBlackColor),
-        weight: 1 / 5,
-      ),
-      TweenSequenceItem<Color>(
-        tween: ConstantTween<Color>(scrimBlackColor),
-        weight: 4 / 5,
-      ),
-    ],
-  );
-  static final Tween<Color?> _scrimFadeOutTween = ColorTween(
-    begin: Colors.transparent,
-    end: scrimBlackColor,
-  );
+  // static final TweenSequence<Color?> _scrimFadeInTween = TweenSequence<Color?>(
+  //   <TweenSequenceItem<Color?>>[
+  //     TweenSequenceItem<Color?>(
+  //       tween: ColorTween(begin: Colors.transparent, end: scrimBlackColor),
+  //       weight: 1 / 5,
+  //     ),
+  //     TweenSequenceItem<Color>(
+  //       tween: ConstantTween<Color>(scrimBlackColor),
+  //       weight: 4 / 5,
+  //     ),
+  //   ],
+  // );
+  // static final Tween<Color?> _scrimFadeOutTween = ColorTween(
+  //   begin: Colors.transparent,
+  //   end: scrimBlackColor,
+  // );
 
   // Key used for the widget returned by [OpenContainer.openBuilder] to keep
   // its state when the shape of the widget tree is changed at the end of the
@@ -769,7 +769,9 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                           },
                         ),
                       );
-                    }, tween: ColorTween(begin: Colors.transparent, end: scrimBlackColor),
+                    },
+                    tween: ColorTween(
+                        begin: Colors.transparent, end: scrimBlackColor),
                   ),
                 ),
               ),
@@ -784,27 +786,27 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
           );
           TweenSequence<Color?>? colorTween;
           TweenSequence<double>? closedOpacityTween, openOpacityTween;
-          Animatable<Color?>? scrimTween;
+          // Animatable<Color?>? scrimTween;
           switch (animation.status) {
             case AnimationStatus.dismissed:
             case AnimationStatus.forward:
               closedOpacityTween = _closedOpacityTween;
               openOpacityTween = _openOpacityTween;
               colorTween = _colorTween;
-              scrimTween = _scrimFadeInTween;
+              // scrimTween = _scrimFadeInTween;
               break;
             case AnimationStatus.reverse:
               if (_transitionWasInterrupted) {
                 closedOpacityTween = _closedOpacityTween;
                 openOpacityTween = _openOpacityTween;
                 colorTween = _colorTween;
-                scrimTween = _scrimFadeInTween;
+                // scrimTween = _scrimFadeInTween;
                 break;
               }
               closedOpacityTween = _closedOpacityTween.flipped;
               openOpacityTween = _openOpacityTween.flipped;
               colorTween = _colorTween.flipped;
-              scrimTween = _scrimFadeOutTween;
+              // scrimTween = _scrimFadeOutTween;
               break;
             case AnimationStatus.completed:
               assert(false); // Unreachable.
@@ -854,7 +856,8 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                                 child: Transform.translate(
                                   offset: Tween<Offset>(
                                     begin: Offset.zero,
-                                    end: Offset(rect.left, rect.top + 90),
+                                    //TOP visibility offset
+                                    end: Offset(rect.left, rect.top + 110),
                                   ).evaluate(curvedAnimation),
                                   child: SizedBox(
                                     width: _rectTween.begin!.width,
