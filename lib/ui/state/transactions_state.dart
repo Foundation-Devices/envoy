@@ -8,18 +8,31 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 
-final transactionsProvider = Provider.family<List<Transaction>, String?>((ref, String? accountId) {
-  final txFilterState = ref.watch(txFilterStateProvider);
-  List<Transaction> aztecoTransactions = [];
-  //Creates new list for all type of transactions
-  List<Transaction> transactions = [];
-  // Listen to azteco transactions from database
-  AsyncValue<List<Transaction>> asyncTx = ref.watch(aztecoTxStreamProvider(accountId));
-  if (asyncTx.hasValue) {
-    aztecoTransactions.addAll((asyncTx.value as List<Transaction>));
+final pendingTransactionsProvider =
+    Provider.family<List<Transaction>, String?>((ref, String? accountId) {
+  List<Transaction> pendingTransactions = [];
+
+  // Listen to Pending transactions from database
+  AsyncValue<List<Transaction>> asyncPendingTx =
+      ref.watch(pendingTxStreamProvider(accountId));
+
+  if (asyncPendingTx.hasValue) {
+    pendingTransactions.addAll((asyncPendingTx.value as List<Transaction>));
   }
 
-  List<Transaction> walletTransactions = ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+  return pendingTransactions;
+});
+
+final transactionsProvider =
+    Provider.family<List<Transaction>, String?>((ref, String? accountId) {
+  final txFilterState = ref.watch(txFilterStateProvider);
+  List<Transaction> pendingTransactions =
+      ref.watch(pendingTransactionsProvider(accountId));
+  //Creates new list for all type of transactions
+  List<Transaction> transactions = [];
+
+  List<Transaction> walletTransactions =
+      ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
   transactions.addAll(walletTransactions);
   transactions.addAll(pendingTransactions);
