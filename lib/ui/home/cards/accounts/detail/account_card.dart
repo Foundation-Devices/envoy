@@ -16,7 +16,7 @@ import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tags_list_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
@@ -248,8 +248,9 @@ class _AccountCardState extends ConsumerState<AccountCard> {
               scrollController: _scrollController,
               child: StatefulBuilder(builder: (c, s) {
                 return ListView.builder(
-                  //Accommodate for the FAB options
-                  padding: EdgeInsets.only(bottom: 88),
+                  //Space for the white gradient shadow at the bottom
+                  padding: EdgeInsets.only(bottom: 120),
+                  physics: BouncingScrollPhysics(),
                   controller: _scrollController,
                   itemCount: transactions.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -261,9 +262,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   },
                 );
               }))
-          : CoinsList(
-              callback: () {},
-            ),
+          : CoinsList(account: widget.account),
     );
   }
 }

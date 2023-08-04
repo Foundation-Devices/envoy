@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -142,7 +141,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
         FilterIcon(
           iconBuilder: (color) => Icon(Icons.sell_outlined),
           gestureDetector: () {
-            var updatedState = filterState.copy();
+            var updatedState = CoinFilterState();
             updatedState.filterByTagName =
                 updatedState.filterByTagName.toggle();
             ref.read(coinFilterStateProvider.notifier).state = updatedState;
@@ -152,7 +151,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
         FilterIcon(
           iconBuilder: (color) => Icon(Icons.currency_bitcoin_outlined),
           gestureDetector: () {
-            var updatedState = filterState.copy();
+            var updatedState = CoinFilterState();
             updatedState.filterByAmount = updatedState.filterByAmount.toggle();
             ref.read(coinFilterStateProvider.notifier).state = updatedState;
           },
@@ -164,12 +163,12 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                 color: color);
           },
           gestureDetector: () {
-            var updatedState = filterState.copy();
-            updatedState.filterByCoinAmount =
-                updatedState.filterByCoinAmount.toggle();
+            var updatedState = CoinFilterState();
+            updatedState.filterByNumberOfCoins =
+                updatedState.filterByNumberOfCoins.toggle();
             ref.read(coinFilterStateProvider.notifier).state = updatedState;
           },
-          filterButtonState: filterState.filterByCoinAmount,
+          filterButtonState: filterState.filterByNumberOfCoins,
         )
       ],
     );
