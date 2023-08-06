@@ -13,7 +13,14 @@ name = "tor_ffi"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-libtor-sys = { version = "=47.13.0", features = ["vendored-openssl"] }
+#libtor-sys = { version = "=47.13.0", features = ["vendored-openssl"] }
+lazy_static = "1.4"
+tokio = { version = "1", features = ["full"] }
+arti-client = "0.10.0"
+arti = { version = "1.1.6", features = ["experimental-api"] }
+tor-rtcompat = "0.9.2"
+#futures = "0.3.28"
+
 
 [build-dependencies]
 cbindgen = "= 0.24.3"

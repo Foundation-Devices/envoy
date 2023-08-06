@@ -6,19 +6,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
-import 'package:ffi/ffi.dart';
-
 import 'dart:math';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:crypto/crypto.dart';
 import 'package:convert/convert.dart';
+import 'generated_bindings.dart';
 
-typedef TorStartRust = Bool Function(Pointer<Utf8>);
-typedef TorStartDart = bool Function(Pointer<Utf8>);
-
-typedef TorHelloRust = Void Function();
-typedef TorHelloDart = void Function();
 
 DynamicLibrary load(name) {
   if (Platform.isAndroid) {
@@ -48,6 +42,8 @@ class Tor {
   static late String _libName = "tor_ffi";
   static late DynamicLibrary _lib;
 
+  Pointer<Int> clientPtr = nullptr;
+
   bool enabled = true;
   bool started = false;
   bool circuitEstablished = false;
@@ -60,7 +56,7 @@ class Tor {
   final StreamController events = StreamController.broadcast();
 
   int port = -1;
-  int _controlPort = -1;
+  //int _controlPort = -1;
 
   String _password = "secret";
 
@@ -109,9 +105,6 @@ class Tor {
   start() async {
     events.add(port);
     if (_connectionChecker != null) _connectionChecker!.cancel();
-    final rustFunction = _lib.lookup<NativeFunction<TorStartRust>>('tor_start');
-    final dartFunction = rustFunction.asFunction<TorStartDart>();
-
     final Directory appDocDir = await getApplicationDocumentsDirectory();
 
     int newPort = await _getRandomUnusedPort();
@@ -145,19 +138,26 @@ class Tor {
             'ClientRejectInternalAddresses 1';
 
         file.writeAsStringSync(torrc);
-        if (dartFunction(file.path.toNativeUtf8())) {
+        clientPtr = NativeLibrary(_lib).tor_start(newPort);
+        if (clientPtr != nullptr) {
+          bootstrap();
           started = true;
+          circuitEstablished = true;
 
           port = newPort;
-          _controlPort = newControlPort;
+          //_controlPort = newControlPort;
           _password = newPassword;
 
           _connectionChecker = Timer.periodic(Duration(seconds: 5), (timer) {
-            _checkIsCircuitEstablished();
+            //_checkIsCircuitEstablished();
           });
         }
       });
     });
+  }
+
+  bootstrap() async {
+    NativeLibrary(_lib).tor_bootstrap(clientPtr);
   }
 
   static String generatePasswordHash(String password) {
@@ -194,81 +194,81 @@ class Tor {
     started = false;
 
     port = -1;
-    _shutdown();
+    //_shutdown();
   }
 
-  Future _shutdown() async {
-    if (!_shutdownInProgress) {
-      _shutdownInProgress = true;
-      print("Tor: shutting down! Control port is " + _controlPort.toString());
-      events.add(port);
-
-      if (_connectionChecker != null) _connectionChecker!.cancel();
-
-      // This will broadcast we are not using Tor anymore
-      if (_controlPort > 0) {
-        Socket? socket = await _connectToControl(_controlPort);
-
-        if (socket == null) {
-          _shutdownInProgress = false;
-          return;
-        } else {
-          _controlPort = -1;
-        }
-
-        // Wait for auth
-        await Future.delayed(Duration(seconds: 1));
-
-        // Shut down
-        socket.add(utf8.encode('SIGNAL SHUTDOWN\r\n'));
-        socket.close();
-
-        circuitEstablished = false;
-
-        // Give Tor a second to shut down
-        await Future.delayed(Duration(seconds: 1));
-        _shutdownInProgress = false;
-        return;
-      }
-      _shutdownInProgress = false;
-    }
-  }
+  // Future _shutdown() async {
+  //   if (!_shutdownInProgress) {
+  //     _shutdownInProgress = true;
+  //     print("Tor: shutting down! Control port is " + _controlPort.toString());
+  //     events.add(port);
+  //
+  //     if (_connectionChecker != null) _connectionChecker!.cancel();
+  //
+  //     // This will broadcast we are not using Tor anymore
+  //     if (_controlPort > 0) {
+  //       Socket? socket = await _connectToControl(_controlPort);
+  //
+  //       if (socket == null) {
+  //         _shutdownInProgress = false;
+  //         return;
+  //       } else {
+  //         _controlPort = -1;
+  //       }
+  //
+  //       // Wait for auth
+  //       await Future.delayed(Duration(seconds: 1));
+  //
+  //       // Shut down
+  //       socket.add(utf8.encode('SIGNAL SHUTDOWN\r\n'));
+  //       socket.close();
+  //
+  //       circuitEstablished = false;
+  //
+  //       // Give Tor a second to shut down
+  //       await Future.delayed(Duration(seconds: 1));
+  //       _shutdownInProgress = false;
+  //       return;
+  //     }
+  //     _shutdownInProgress = false;
+  //   }
+  // }
 
   restart() {
     if (enabled && started && circuitEstablished) {
-      _shutdown().then((_) {
-        events.add(port);
-        start();
-      });
+      // _shutdown().then((_) {
+      //   events.add(port);
+      //   start();
+      // });
     }
   }
 
-  _checkIsCircuitEstablished() async {
-    if (_controlPort > 0 && enabled && started) {
-      print("Tor: connecting to control port " + _controlPort.toString());
-      Socket? socket = await _connectToControl(_controlPort);
-
-      if (socket == null) {
-        return;
-      }
-
-      socket.listen((List<int> event) {
-        String response = utf8.decode(event);
-        if (response.contains("250-status/circuit-established=1")) {
-          circuitEstablished = true;
-          events.add(port);
-          _connectionChecker!.cancel();
-        }
-      });
-
-      socket.add(utf8.encode('getinfo status/circuit-established\r\n'));
-
-      // Wait
-      await Future.delayed(Duration(seconds: 2));
-
-      socket.close();
-    }
-  }
+  // _checkIsCircuitEstablished() async {
+  //   if (_controlPort > 0 && enabled && started) {
+  //     print("Tor: connecting to control port " + _controlPort.toString());
+  //     Socket? socket = await _connectToControl(_controlPort);
+  //
+  //     if (socket == null) {
+  //       return;
+  //     }
+  //
+  //     socket.listen((List<int> event) {
+  //       String response = utf8.decode(event);
+  //       if (response.contains("250-status/circuit-established=1")) {
+  //         circuitEstablished = true;
+  //         events.add(port);
+  //         _connectionChecker!.cancel();
+  //       }
+  //     });
+  //
+  //     socket.add(utf8.encode('getinfo status/circuit-established\r\n'));
+  //
+  //     // Wait
+  //     await Future.delayed(Duration(seconds: 2));
+  //
+  //     socket.close();
+  //   }
+  // }
 
   Future<Socket?> _connectToControl(int port) async {
     // https://iphelix.medium.com/hacking-the-tor-control-protocol-fb844db6a606
@@ -295,9 +295,7 @@ class Tor {
   }
 
   hello() {
-    final rustFunction = _lib.lookup<NativeFunction<TorHelloRust>>('tor_hello');
-    final dartFunction = rustFunction.asFunction<TorHelloDart>();
-    dartFunction();
+    NativeLibrary(_lib).tor_hello();
   }
 
   Stream<TorStatus> getTorStatus() {
