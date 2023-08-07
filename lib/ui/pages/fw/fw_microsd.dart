@@ -43,16 +43,9 @@ class FwMicrosdPage extends ConsumerWidget {
             label: S().envoy_fw_microsd_cta,
             onTap: () async {
               try {
-                if (Platform.isAndroid) {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return FwProgressPage(deviceId, onboarding: onboarding);
-                  }));
-                }
-
-                File firwmareFile =
+                File firmwareFile =
                     await UpdatesManager().getStoredFw(deviceId);
-                FwUploader(firwmareFile, onUploaded: () {
+                FwUploader(firmwareFile, onUploaded: () {
                   if (Platform.isIOS) {
                     Devices().markDeviceUpdated(
                         deviceId, fwInfo.value!.storedVersion);
@@ -65,6 +58,14 @@ class FwMicrosdPage extends ConsumerWidget {
                     }));
                   }
                 }).upload();
+
+                if (Platform.isAndroid) {
+                  await Future.delayed(Duration(milliseconds: 500));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return FwProgressPage(deviceId, onboarding: onboarding);
+                  }));
+                }
               } catch (e) {
                 print("SD: error " + e.toString());
                 if (Platform.isIOS) // TODO: this needs to be smarter
