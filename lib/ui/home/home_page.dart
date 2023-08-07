@@ -337,7 +337,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 _leftAction?.call();
                 return false;
               } else if (_tabController.index != 1) {
-                _tabController.animateTo(1);
+                _navigateToCard(1);
                 return false;
               }
               return true;
