@@ -62,8 +62,9 @@ class Bip21 {
       if (amountString!.indexOf(",") != -1)
         throw ("Invalid amount: commas are invalid");
       double? amount = double.tryParse(amountString);
-      if (amount == null || amount.isNaN)
-        throw ("Invalid amount: not a number");
+      if (amount == null || amount.isNaN) {
+        amount = 0;
+      }
       if (!amount.isFinite) throw ("Invalid amount: not finite");
       if (amount < 0) throw ("Invalid amount: not positive");
       options["amount"] = amount;
