@@ -77,6 +77,17 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             });
           }
           break;
+        case NumpadEvents.clearAll:
+          {
+            setState(() {
+              _enteredAmount = "0";
+              _amountSats = 0;
+            });
+            if (widget.onAmountChanged != null) {
+              widget.onAmountChanged!(0);
+            }
+          }
+          break;
         case NumpadEvents.dot:
           {
             if (unit == AmountDisplayUnit.sat) {
@@ -185,7 +196,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 }
 
-enum NumpadEvents { dot, ok, backspace }
+enum NumpadEvents { dot, ok, backspace, clearAll }
 
 class Numpad extends StatefulWidget {
   // Dart linter is reporting a false positive here
@@ -252,6 +263,10 @@ class _NumpadState extends State<Numpad> {
             Haptics.lightImpact();
             widget.events.sink.add(NumpadEvents.backspace);
           },
+          onLongPressDown: () {
+            Haptics.lightImpact();
+            widget.events.sink.add(NumpadEvents.clearAll);
+          },
           backspace: true,
         )
       ],
@@ -262,17 +277,29 @@ class _NumpadState extends State<Numpad> {
 class NumpadButton extends StatelessWidget {
   final String text;
   final void Function() onTap;
+  final void Function()? onLongPressDown;
   final bool backspace;
 
-  const NumpadButton(this.text,
-      {Key? key, required this.onTap, this.backspace = false})
-      : super(key: key);
+  const NumpadButton(
+    this.text, {
+    Key? key,
+    required this.onTap,
+    this.onLongPressDown,
+    this.backspace = false,
+  }) : super(key: key);
+
+  void _handleLongPress() {
+    // Check if onLongPressDown is provided and call it if it is
+    if (onLongPressDown != null) {
+      onLongPressDown!();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-
+      onLongPress: _handleLongPress,
       // Don't ignore invisible children
       behavior: HitTestBehavior.translucent,
 
@@ -284,23 +311,25 @@ class NumpadButton extends StatelessWidget {
             color: EnvoyColors.grey22,
           ),
           child: Center(
-              child: !backspace
-                  ? Text(
-                      text,
-                      style: TextStyle(
-                          color: Typography.blackHelsinki.headlineMedium!
-                              .color, // TODO: add black helsinki as EnvoyColor
-                          fontFamily: "Montserrat",
-                          fontSize: 25,
-                          fontWeight: FontWeight.w300),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(right: 3, top: 2),
-                      child: SvgPicture.asset(
-                        "assets/backspace.svg",
-                        color: Typography.blackHelsinki.headlineMedium!.color,
-                      ),
-                    )),
+            child: !backspace
+                ? Text(
+                    text,
+                    style: TextStyle(
+                      color: Typography.blackHelsinki.headlineMedium!.color,
+                      // TODO: add black helsinki as EnvoyColor
+                      fontFamily: "Montserrat",
+                      fontSize: 25,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(right: 3, top: 2),
+                    child: SvgPicture.asset(
+                      "assets/backspace.svg",
+                      color: Typography.blackHelsinki.headlineMedium!.color,
+                    ),
+                  ),
+          ),
         ),
       ),
     );
