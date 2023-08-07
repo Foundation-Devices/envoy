@@ -67,7 +67,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                     children: [
                       !Platform.isLinux
                           ? EmbeddedVideo(
-                              path: "assets/videos/magic_backups.mp4",
+                              path: "assets/videos/magic_backups.m4v",
                               key: _playerKey,
                             )
                           : Container(),
