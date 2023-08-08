@@ -1,5 +1,9 @@
 docker_image := 'envoy'
 docker_image_linux := 'envoy_linux'
+docker_image_beefbench := 'beef'
+
+docker_x := '-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -v $XAUTHORITY:/home/root/.Xauthority'
+docker_v4l2 := '--privileged -v /dev/video5:/dev/video5 -v /dev/video6:/dev/video6 -v /dev/video7:/dev/video7'
 
 docker-build:
     docker build -t {{docker_image}} .
@@ -21,7 +25,7 @@ docker-build-android-sign: docker-build
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
         && cp /root/build/app/outputs/bundle/release/app-release.aab /release"
 
-docker-build-linux:
+docker-build-linux: docker-build
     docker build -t {{docker_image_linux}} . -f linux.Dockerfile
 
 docker-test: docker-build-linux
@@ -70,16 +74,25 @@ copy:
     localazy download
 
 passport-deps:
-    sudo apt install autotools-dev automake libusb-1.0-0-dev libtool python3-virtualenv libsdl2-dev pkg-config curl vlc v4l2loopback-dkms
+    sudo apt install -y autotools-dev automake libusb-1.0-0-dev libtool python3-virtualenv libsdl2-dev pkg-config curl vlc v4l2loopback-dkms
     sudo modprobe v4l2loopback video_nr=5,6,7
 
 passport: passport-deps
     git clone git@github.com:Foundation-Devices/passport2.git || true
     rustup target add x86_64-unknown-none
     make -C passport2/mpy-cross
-    just --justfile passport2/simulator/Justfile sim color
+    cd passport2/simulator &&  make color && virtualenv -p python3 ENV && pip3 install -r requirements.txt
 
-beef:
-    FLUTTER_TEST=true flutter test integration_test
 
+beef: passport
+    flutter test integration_test -d linux
+
+docker-beef: docker-build-linux
+    sudo rmmod v4l2loopback
+    sudo modprobe v4l2loopback video_nr=5,6,7
+    docker build -t {{docker_image_beefbench}} . -f beef.Dockerfile
+    xhost +local:root
+    mkdir -p release
+    docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_x}} {{docker_v4l2}} {{docker_image_beefbench}}
+    xhost -local:root
 

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: BEEFbench
+on: [ workflow_dispatch ]
+
+jobs:
+  beef-bench:
+    runs-on: self-hosted
+    steps:
+      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v2
+      - run: just docker-beef
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: envoy-screenshot
+          path: release/screenshot.png
