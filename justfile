@@ -88,8 +88,6 @@ beef: passport
     flutter test integration_test -d linux
 
 docker-beef: docker-build-linux
-    sudo rmmod v4l2loopback
-    sudo modprobe v4l2loopback video_nr=5,6,7
     docker build -t {{docker_image_beefbench}} . -f beef.Dockerfile
     xhost +local:root
     mkdir -p release
