@@ -127,6 +127,7 @@ flutter:
     - assets/icons/
     - assets/
     - assets/videos/
+    - assets/components/icons/
 
   fonts:
     - family: EnvoyIcons
