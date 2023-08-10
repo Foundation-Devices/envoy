@@ -16,7 +16,8 @@ Future enableSecureScreen() async {
 
 Future disableSecureScreen() async {
   if (!Settings().allowScreenshots() && !Platform.isLinux)
-    await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
+    await Future.delayed(Duration(milliseconds: 300));
+  await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
 }
 
 //Opens android backup settings

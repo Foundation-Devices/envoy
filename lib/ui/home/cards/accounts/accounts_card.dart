@@ -27,6 +27,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
+import 'package:envoy/business/account.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -126,97 +127,128 @@ class AccountsList extends ConsumerStatefulWidget with NavigationCard {
     rightFunction = addAccountFunction;
   }
 
+  final GlobalKey _listKey = GlobalKey();
+
   @override
   ConsumerState<AccountsList> createState() => _AccountsListState();
 }
 
 class _AccountsListState extends ConsumerState<AccountsList> {
+  late FadingEdgeScrollView _scrollView;
   final ScrollController _scrollController = ScrollController();
-
+  double _accountHeight = 124;
   bool _onReOrderStart = false;
+  double _listWidgetHeight = 0;
 
   @override
-  void initState() {
-    super.initState();
-
-    // Redraw when we fetch exchange rate
+  void didChangeDependencies() {
+    super
+        .didChangeDependencies(); //  _screenListHeight will only be accurate once the layout is complete,
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void _afterLayout(_) {
+    setState(() {
+      _listWidgetHeight = _getListHeight();
+    });
+  }
+
+  double _getListHeight() {
+    final RenderBox listRenderBox =
+        widget._listKey.currentContext!.findRenderObject() as RenderBox;
+    return listRenderBox.size.height;
   }
 
   @override
   Widget build(BuildContext context) {
-    final accounts = ref.watch(accountsProvider);
-    return accounts.isEmpty
+    final _accounts = ref.watch(accountsProvider);
+    final _listContentHeight = _accounts.length * _accountHeight;
+
+    final _isFadingEnabled = _listContentHeight > _listWidgetHeight;
+
+    ref.listen(accountsProvider, (List<Account>? previous, List<Account> next) {
+      if (previous!.length < next.length) {
+        _scrollController.animateTo(
+          _listContentHeight, //when new acc, go to bottom to see the acc
+          duration: const Duration(milliseconds: 1),
+          curve: Curves.ease,
+        );
+      }
+
+      if (previous.length > next.length) {
+        _scrollController.animateTo(
+          0, //when delete acc go to top
+          duration: const Duration(seconds: 1),
+          curve: Curves.ease,
+        );
+      }
+    });
+
+    _scrollView = FadingEdgeScrollView.fromScrollView(
+      scrollController: _scrollController,
+      gradientFractionOnStart: _isFadingEnabled ? 0.1 : 0.0,
+      gradientFractionOnEnd: _isFadingEnabled ? 0.1 : 0.0,
+      child: ReorderableListView(
+          key: widget._listKey,
+          footer: Opacity(
+            child: AccountPrompts(),
+            opacity: _onReOrderStart ? 0.0 : 1.0,
+          ),
+          shrinkWrap: true,
+          scrollController: _scrollController,
+          //proxyDecorator is the widget that is shown when dragging
+          proxyDecorator: (widget, index, animation) {
+            return FadeTransition(
+              opacity: animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
+              child: ScaleTransition(
+                scale: animation.drive(Tween<double>(begin: 0.95, end: 1.02)),
+                child: widget,
+              ),
+            );
+          },
+          onReorderEnd: (index) {
+            setState(() {
+              _onReOrderStart = false;
+            });
+          },
+          onReorderStart: (index) {
+            setState(() {
+              _onReOrderStart = true;
+            });
+          },
+          onReorder: (oldIndex, newIndex) async {
+            // SFT-2488: dismiss the drag and drop prompt after dragging
+            EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+            await AccountManager().moveAccount(oldIndex, newIndex, _accounts);
+          },
+          children: [
+            for (final account in _accounts)
+              SizedBox(
+                  key: ValueKey(account.id),
+                  height: _accountHeight,
+                  child: AccountListTile(
+                    account,
+                    onTap: () {
+                      ref.read(homePageAccountsProvider.notifier).state =
+                          HomePageAccountsState(
+                              HomePageAccountsNavigationState.details,
+                              currentAccount: account);
+                      widget.navigator!.push(AccountCard(account,
+                          navigationCallback: widget.navigator));
+                    },
+                  ))
+          ]),
+    );
+
+    return _accounts.isEmpty
         ? Padding(
-            padding: const EdgeInsets.all(6 * 4),
+            padding: const EdgeInsets.all(24),
             child: EmptyAccountsCard(),
           )
         : Padding(
             padding:
                 const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
-            child: FadingEdgeScrollView.fromScrollView(
-              scrollController: _scrollController,
-              child: ReorderableListView(
-                  footer: Opacity(
-                    child: AccountPrompts(),
-                    opacity: _onReOrderStart ? 0.0 : 1.0,
-                  ),
-                  shrinkWrap: true,
-                  scrollController: _scrollController,
-                  //proxyDecorator is the widget that is shown when dragging
-                  proxyDecorator: (widget, index, animation) {
-                    return FadeTransition(
-                      opacity:
-                          animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
-                      child: ScaleTransition(
-                        scale: animation
-                            .drive(Tween<double>(begin: 0.95, end: 1.02)),
-                        child: widget,
-                      ),
-                    );
-                  },
-                  onReorderEnd: (index) {
-                    setState(() {
-                      _onReOrderStart = false;
-                    });
-                  },
-                  onReorderStart: (index) {
-                    setState(() {
-                      _onReOrderStart = true;
-                    });
-                  },
-                  onReorder: (oldIndex, newIndex) async {
-                    // SFT-2488: dismiss the drag and drop prompt after dragging
-                    EnvoyStorage()
-                        .addPromptState(DismissiblePrompt.dragAndDrop);
-                    await AccountManager()
-                        .moveAccount(oldIndex, newIndex, accounts);
-                  },
-                  children: [
-                    for (final account in accounts)
-                      SizedBox(
-                          key: ValueKey(account.id),
-                          height: 124,
-                          child: AccountListTile(
-                            account,
-                            onTap: () {
-                              ref
-                                      .read(homePageAccountsProvider.notifier)
-                                      .state =
-                                  HomePageAccountsState(
-                                      HomePageAccountsNavigationState.details,
-                                      currentAccount: account);
-                              widget.navigator!.push(AccountCard(account,
-                                  navigationCallback: widget.navigator));
-                            },
-                          ))
-                  ]),
-            ),
-          );
+            child: _scrollView);
   }
 }
 
@@ -241,15 +273,15 @@ class AccountPrompts extends ConsumerWidget {
     var accounts = ref.watch(accountsProvider);
     var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
 
-    //Show if the user never tried receive screen and has no balance
-    if (!userInteractedWithReceive && accountsHaveZeroBalance) {
+    //Show if the user never visited receive screen, has no balance
+    // and there is only one account visible
+    if (!userInteractedWithReceive &&
+        accountsHaveZeroBalance &&
+        accounts.length == 1) {
       return Center(
           child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
         Text(
-          accounts.length == 1
-              ? S().hot_wallet_accounts_creation_done_text_explainer
-              : S()
-                  .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
+          S().hot_wallet_accounts_creation_done_text_explainer,
           style: _explainerTextStyle,
         ),
         GestureDetector(

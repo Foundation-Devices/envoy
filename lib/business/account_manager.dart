@@ -24,6 +24,7 @@ import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:schedulers/schedulers.dart';
 import 'package:tor/tor.dart';
+import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
 class AccountAlreadyPaired implements Exception {}
@@ -34,6 +35,7 @@ class AccountManager extends ChangeNotifier {
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
+
   // prevents concurrent modification of accounts list, when moving accounts
   bool _accountSchedulerMutex = false;
 
@@ -73,17 +75,23 @@ class AccountManager extends ChangeNotifier {
         accounts.forEach((account) {
           _syncScheduler.run(() async {
             final syncedAccount = await _syncAccount(account);
+
             // prevent concurrent modification of accounts list
             if (_accountSchedulerMutex) {
               return;
             }
+
             final syncAccountIndex =
                 accounts.indexWhere((a) => a.id == syncedAccount.id);
             if (syncAccountIndex != -1) {
-              accounts[syncAccountIndex] = syncedAccount;
+              accounts[syncAccountIndex] = accounts[syncAccountIndex].copyWith(
+                  wallet: syncedAccount.wallet,
+                  dateSynced: syncedAccount.dateSynced);
             }
+
             notifyListeners();
             storeAccounts();
+
             if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
               notifyIfAccountBalanceHigherThanUsd1000();
             }
@@ -175,14 +183,17 @@ class AccountManager extends ChangeNotifier {
   }
 
   bool checkIfWalletFromSeedExists(String seed, {String? passphrase}) {
-    var mainnet = Wallet.deriveWallet(seed, EnvoySeed.HOT_WALLET_MAINNET_PATH,
-        AccountManager.walletsDirectory, Network.Mainnet,
-        privateKey: true, passphrase: passphrase, initWallet: false);
-
-    for (final account in accounts) {
-      if (account.wallet.externalDescriptor == mainnet.externalDescriptor) {
-        return true;
+    try {
+      var mainnet = Wallet.deriveWallet(seed, EnvoySeed.HOT_WALLET_MAINNET_PATH,
+          AccountManager.walletsDirectory, Network.Mainnet,
+          privateKey: true, passphrase: passphrase, initWallet: false);
+      for (final account in accounts) {
+        if (account.wallet.externalDescriptor == mainnet.externalDescriptor) {
+          return true;
+        }
       }
+    } on InvalidMnemonic {
+      return false;
     }
 
     return false;
@@ -323,6 +334,7 @@ class AccountManager extends ChangeNotifier {
       return a.id! == account.id!;
     });
     accounts[accounts.indexOf(oldAccount)] = oldAccount.copyWith(name: newName);
+
     storeAccounts();
     notifyListeners();
   }

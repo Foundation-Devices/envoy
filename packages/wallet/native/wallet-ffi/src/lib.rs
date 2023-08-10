@@ -33,13 +33,14 @@ use crate::miniscript::Segwitv0;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
-use bdk::keys::bip39::{Language, Mnemonic, MnemonicWithPassphrase};
+use bdk::keys::bip39::MnemonicWithPassphrase;
 use bdk::keys::DescriptorKey::Secret;
 use bdk::keys::{
     DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
 };
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
+use bip39::{Language, Mnemonic};
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
 

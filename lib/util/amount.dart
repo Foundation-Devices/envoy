@@ -99,9 +99,9 @@ int convertBtcStringToSats(String amountBtc) {
 }
 
 String getFormattedAmount(int amountSats,
-    {bool includeUnit = false, bool testnet = false}) {
+    {bool includeUnit = false, bool testnet = false, trailingZeroes = false}) {
   String text = Settings().displayUnit == DisplayUnit.btc
-      ? convertSatsToBtcString(amountSats, trailingZeroes: false) +
+      ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes) +
           (includeUnit ? " " + getBtcUnitString(testnet: testnet) : "")
       : satsFormatter.format(amountSats) +
           (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");

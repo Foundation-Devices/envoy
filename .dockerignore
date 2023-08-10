@@ -1,9 +1,12 @@
 target
 Dockerfile
-justfile
 build
 release
 .dockerignore
 .git
 .gitignore
 .dart_tool
+
+# Passport simulator
+spi_flash.bin
+passport2/simulator/ENV

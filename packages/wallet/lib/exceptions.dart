@@ -29,6 +29,8 @@ class TimedOut implements Exception {}
 
 class InvalidNetwork implements Exception {}
 
+class InvalidMnemonic implements Exception {}
+
 // Work around for https://github.com/flutter/flutter/issues/90990
 Exception getIsolateException(String isolateError) {
   if (isolateError.contains("InvalidPort")) {
@@ -53,6 +55,8 @@ Exception _getRustException(String rustError) {
     return BelowDustLimit();
   } else if (rustError.contains('InvalidNetwork')) {
     return InvalidNetwork();
+  } else if (rustError.contains('invalid checksum')) {
+    return InvalidMnemonic();
   } else {
     return Exception(rustError);
   }

@@ -37,27 +37,6 @@ class SeedNotFound implements Exception {}
 class UnableToDecryptBackup implements Exception {}
 
 class Backup {
-  static _goAhead(Tor tor) async {
-    if (tor.enabled) {
-      // Go right ahead if Tor is disabled
-      await Future.doWhile(() => Future.delayed(Duration(seconds: 1)).then((_) {
-            // We are waiting and making absolutely no request unless:
-            // Tor is disabled
-            if (!tor.enabled) {
-              return false;
-            }
-
-            // ...or Tor circuit is established
-            if (tor.circuitEstablished) {
-              return false;
-            }
-
-            // This way we avoid making clearnet req's while Tor is initialising
-            return true;
-          }));
-    }
-  }
-
   static Future<bool> perform(Map<String, String> backupData, String seedWords,
       String serverUrl, Tor tor,
       {required String path, bool cloud = true}) async {
@@ -79,7 +58,7 @@ class Backup {
     if (!cloud) {
       return true;
     } else {
-      await _goAhead(tor);
+      await tor.isReady();
 
       int torPort = tor.port;
       return Isolate.run(() async {
@@ -143,7 +122,7 @@ class Backup {
 
   static Future<Map<String, String>?> restore(
       String seedWords, String serverUrl, Tor tor) async {
-    await _goAhead(tor);
+    await tor.isReady();
 
     int torPort = tor.port;
     return Isolate.run(() async {
@@ -161,7 +140,7 @@ class Backup {
 
   static Future<bool> delete(
       String seedWords, String serverUrl, Tor tor) async {
-    await _goAhead(tor);
+    await tor.isReady();
 
     int torPort = tor.port;
     return Isolate.run(() async {
