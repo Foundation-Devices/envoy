@@ -48,7 +48,7 @@ class Backup {
             }
 
             // ...or Tor circuit is established
-            if (tor.circuitEstablished) {
+            if (tor.bootstrapped) {
               return false;
             }
 
