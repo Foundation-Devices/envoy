@@ -8,8 +8,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 enum EnvoyIconSize { normal, small }
 
+enum EnvoyIcons {
+  chevron_down,
+  biometrics,
+  node,
+  performance,
+  privacy,
+  check,
+}
+
 class EnvoyIcon extends StatelessWidget {
-  final String icon;
+  final EnvoyIcons icon;
   final EnvoyIconSize size; // Use the enum type here
   final Color? color;
 
@@ -29,7 +38,7 @@ class EnvoyIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      "assets/components/icons/${this.icon}.svg",
+      "assets/components/icons/${this.icon.name}.svg",
       width: getSize(),
       height: getSize(),
       color: this.color,
