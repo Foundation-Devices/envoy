@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
 import 'generated_bindings.dart';
 
@@ -92,7 +93,13 @@ class Tor {
     events.add(port);
 
     int newPort = await _getRandomUnusedPort();
-    clientPtr = NativeLibrary(_lib).tor_start(newPort);
+    int ptr = await Isolate.run(() async {
+      var lib = load(_libName);
+      return NativeLibrary(lib).tor_start(newPort).address;
+    });
+
+    clientPtr = Pointer.fromAddress(ptr);
+
     if (clientPtr != nullptr) {
       started = true;
       bootstrap();
