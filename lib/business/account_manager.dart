@@ -35,6 +35,7 @@ class AccountManager extends ChangeNotifier {
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
+
   // prevents concurrent modification of accounts list, when moving accounts
   bool _accountSchedulerMutex = false;
 
@@ -74,6 +75,7 @@ class AccountManager extends ChangeNotifier {
         accounts.forEach((account) {
           _syncScheduler.run(() async {
             final syncedAccount = await _syncAccount(account);
+
             // prevent concurrent modification of accounts list
             if (_accountSchedulerMutex) {
               return;
@@ -81,7 +83,9 @@ class AccountManager extends ChangeNotifier {
             final syncAccountIndex =
                 accounts.indexWhere((a) => a.id == syncedAccount.id);
             if (syncAccountIndex != -1) {
-              accounts[syncAccountIndex] = syncedAccount;
+              accounts[syncAccountIndex] = accounts[syncAccountIndex].copyWith(
+                  wallet: syncedAccount.wallet,
+                  dateSynced: syncedAccount.dateSynced);
             }
             notifyListeners();
             storeAccounts();
@@ -327,6 +331,7 @@ class AccountManager extends ChangeNotifier {
       return a.id! == account.id!;
     });
     accounts[accounts.indexOf(oldAccount)] = oldAccount.copyWith(name: newName);
+
     storeAccounts();
     notifyListeners();
   }
