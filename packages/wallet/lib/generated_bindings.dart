@@ -123,10 +123,24 @@ class NativeLibrary {
   }
 
   late final _wallet_get_balancePtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Int)>>(
+      _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Int)>>(
           'wallet_get_balance');
   late final _wallet_get_balance =
       _wallet_get_balancePtr.asFunction<int Function(int)>();
+
+  UtxoList wallet_get_utxos(
+    int arg0,
+  ) {
+    return _wallet_get_utxos(
+      arg0,
+    );
+  }
+
+  late final _wallet_get_utxosPtr =
+      _lookup<ffi.NativeFunction<UtxoList Function(ffi.Int)>>(
+          'wallet_get_utxos');
+  late final _wallet_get_utxos =
+      _wallet_get_utxosPtr.asFunction<UtxoList Function(int)>();
 
   double wallet_get_fee_rate(
     ffi.Pointer<ffi.Char> electrum_address,
@@ -142,8 +156,8 @@ class NativeLibrary {
 
   late final _wallet_get_fee_ratePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Double Function(
-              ffi.Pointer<ffi.Char>, ffi.Int, ffi.Int)>>('wallet_get_fee_rate');
+          ffi.Double Function(ffi.Pointer<ffi.Char>, ffi.Int32,
+              ffi.Uint16)>>('wallet_get_fee_rate');
   late final _wallet_get_fee_rate = _wallet_get_fee_ratePtr
       .asFunction<double Function(ffi.Pointer<ffi.Char>, int, int)>();
 
@@ -160,7 +174,7 @@ class NativeLibrary {
   late final _wallet_get_server_featuresPtr = _lookup<
       ffi.NativeFunction<
           ServerFeatures Function(
-              ffi.Pointer<ffi.Char>, ffi.Int)>>('wallet_get_server_features');
+              ffi.Pointer<ffi.Char>, ffi.Int32)>>('wallet_get_server_features');
   late final _wallet_get_server_features = _wallet_get_server_featuresPtr
       .asFunction<ServerFeatures Function(ffi.Pointer<ffi.Char>, int)>();
 
@@ -218,7 +232,7 @@ class NativeLibrary {
 
   late final _wallet_broadcast_txPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>, ffi.Int,
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>, ffi.Int32,
               ffi.Pointer<ffi.Char>)>>('wallet_broadcast_tx');
   late final _wallet_broadcast_tx = _wallet_broadcast_txPtr.asFunction<
       ffi.Pointer<ffi.Char> Function(
@@ -321,7 +335,7 @@ class NativeLibrary {
               ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   ffi.Pointer<ffi.Char> wallet_generate_xkey_with_entropy(
-    ffi.Pointer<ffi.Int> entropy,
+    ffi.Pointer<ffi.Uint8> entropy,
   ) {
     return _wallet_generate_xkey_with_entropy(
       entropy,
@@ -331,14 +345,14 @@ class NativeLibrary {
   late final _wallet_generate_xkey_with_entropyPtr = _lookup<
       ffi.NativeFunction<
           ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<ffi.Int>)>>('wallet_generate_xkey_with_entropy');
+              ffi.Pointer<ffi.Uint8>)>>('wallet_generate_xkey_with_entropy');
   late final _wallet_generate_xkey_with_entropy =
       _wallet_generate_xkey_with_entropyPtr
-          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Int>)>();
+          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Uint8>)>();
 
   Seed wallet_get_seed_from_entropy(
     int network,
-    ffi.Pointer<ffi.Int> entropy,
+    ffi.Pointer<ffi.Uint8> entropy,
   ) {
     return _wallet_get_seed_from_entropy(
       network,
@@ -347,10 +361,10 @@ class NativeLibrary {
   }
 
   late final _wallet_get_seed_from_entropyPtr = _lookup<
-          ffi.NativeFunction<Seed Function(ffi.Int32, ffi.Pointer<ffi.Int>)>>(
+          ffi.NativeFunction<Seed Function(ffi.Int32, ffi.Pointer<ffi.Uint8>)>>(
       'wallet_get_seed_from_entropy');
   late final _wallet_get_seed_from_entropy = _wallet_get_seed_from_entropyPtr
-      .asFunction<Seed Function(int, ffi.Pointer<ffi.Int>)>();
+      .asFunction<Seed Function(int, ffi.Pointer<ffi.Uint8>)>();
 
   void wallet_hello() {
     return _wallet_hello();
@@ -382,7 +396,26 @@ class Wallet extends ffi.Struct {
 
   external ffi.Pointer<ffi.Char> internal_prv_descriptor;
 
-  external ffi.Pointer<ffi.Int> bkd_wallet_ptr;
+  external ffi.Pointer<uintptr_t> bkd_wallet_ptr;
+}
+
+typedef uintptr_t = ffi.UnsignedLong;
+
+class Utxo extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> txid;
+
+  @ffi.Uint32()
+  external int vout;
+
+  @ffi.Uint64()
+  external int value;
+}
+
+class UtxoList extends ffi.Struct {
+  @ffi.Uint32()
+  external int utxos_len;
+
+  external ffi.Pointer<Utxo> utxos;
 }
 
 class ServerFeatures extends ffi.Struct {
@@ -392,56 +425,56 @@ class ServerFeatures extends ffi.Struct {
 
   external ffi.Pointer<ffi.Char> protocol_max;
 
-  @ffi.Int()
+  @ffi.Int64()
   external int pruning;
 
-  external ffi.Pointer<ffi.Int> genesis_hash;
+  external ffi.Pointer<ffi.Uint8> genesis_hash;
 }
 
 class Transaction extends ffi.Struct {
   external ffi.Pointer<ffi.Char> txid;
 
-  @ffi.Int()
+  @ffi.Uint64()
   external int received;
 
-  @ffi.Int()
+  @ffi.Uint64()
   external int sent;
 
-  @ffi.Int()
+  @ffi.Uint64()
   external int fee;
 
-  @ffi.Int()
+  @ffi.Uint32()
   external int confirmation_height;
 
-  @ffi.Int()
+  @ffi.Uint64()
   external int confirmation_time;
 
-  @ffi.Int()
+  @ffi.Uint8()
   external int outputs_len;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> outputs;
 
-  @ffi.Int()
+  @ffi.Uint8()
   external int inputs_len;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> inputs;
 }
 
 class TransactionList extends ffi.Struct {
-  @ffi.Int()
+  @ffi.Uint32()
   external int transactions_len;
 
   external ffi.Pointer<Transaction> transactions;
 }
 
 class Psbt extends ffi.Struct {
-  @ffi.Int()
+  @ffi.Uint64()
   external int sent;
 
-  @ffi.Int()
+  @ffi.Uint64()
   external int received;
 
-  @ffi.Int()
+  @ffi.Uint64()
   external int fee;
 
   external ffi.Pointer<ffi.Char> base64;
@@ -458,3 +491,203 @@ class Seed extends ffi.Struct {
 
   external ffi.Pointer<ffi.Char> fingerprint;
 }
+
+const int INT8_MIN = -128;
+
+const int INT16_MIN = -32768;
+
+const int INT32_MIN = -2147483648;
+
+const int INT64_MIN = -9223372036854775808;
+
+const int INT8_MAX = 127;
+
+const int INT16_MAX = 32767;
+
+const int INT32_MAX = 2147483647;
+
+const int INT64_MAX = 9223372036854775807;
+
+const int UINT8_MAX = 255;
+
+const int UINT16_MAX = 65535;
+
+const int UINT32_MAX = 4294967295;
+
+const int UINT64_MAX = -1;
+
+const int INT_LEAST8_MIN = -128;
+
+const int INT_LEAST16_MIN = -32768;
+
+const int INT_LEAST32_MIN = -2147483648;
+
+const int INT_LEAST64_MIN = -9223372036854775808;
+
+const int INT_LEAST8_MAX = 127;
+
+const int INT_LEAST16_MAX = 32767;
+
+const int INT_LEAST32_MAX = 2147483647;
+
+const int INT_LEAST64_MAX = 9223372036854775807;
+
+const int UINT_LEAST8_MAX = 255;
+
+const int UINT_LEAST16_MAX = 65535;
+
+const int UINT_LEAST32_MAX = 4294967295;
+
+const int UINT_LEAST64_MAX = -1;
+
+const int INT_FAST8_MIN = -128;
+
+const int INT_FAST16_MIN = -9223372036854775808;
+
+const int INT_FAST32_MIN = -9223372036854775808;
+
+const int INT_FAST64_MIN = -9223372036854775808;
+
+const int INT_FAST8_MAX = 127;
+
+const int INT_FAST16_MAX = 9223372036854775807;
+
+const int INT_FAST32_MAX = 9223372036854775807;
+
+const int INT_FAST64_MAX = 9223372036854775807;
+
+const int UINT_FAST8_MAX = 255;
+
+const int UINT_FAST16_MAX = -1;
+
+const int UINT_FAST32_MAX = -1;
+
+const int UINT_FAST64_MAX = -1;
+
+const int INTPTR_MIN = -9223372036854775808;
+
+const int INTPTR_MAX = 9223372036854775807;
+
+const int UINTPTR_MAX = -1;
+
+const int INTMAX_MIN = -9223372036854775808;
+
+const int INTMAX_MAX = 9223372036854775807;
+
+const int UINTMAX_MAX = -1;
+
+const int PTRDIFF_MIN = -9223372036854775808;
+
+const int PTRDIFF_MAX = 9223372036854775807;
+
+const int SIG_ATOMIC_MIN = -2147483648;
+
+const int SIG_ATOMIC_MAX = 2147483647;
+
+const int SIZE_MAX = -1;
+
+const int WCHAR_MIN = -2147483648;
+
+const int WCHAR_MAX = 2147483647;
+
+const int WINT_MIN = 0;
+
+const int WINT_MAX = 4294967295;
+
+const int INT8_WIDTH = 8;
+
+const int UINT8_WIDTH = 8;
+
+const int INT16_WIDTH = 16;
+
+const int UINT16_WIDTH = 16;
+
+const int INT32_WIDTH = 32;
+
+const int UINT32_WIDTH = 32;
+
+const int INT64_WIDTH = 64;
+
+const int UINT64_WIDTH = 64;
+
+const int INT_LEAST8_WIDTH = 8;
+
+const int UINT_LEAST8_WIDTH = 8;
+
+const int INT_LEAST16_WIDTH = 16;
+
+const int UINT_LEAST16_WIDTH = 16;
+
+const int INT_LEAST32_WIDTH = 32;
+
+const int UINT_LEAST32_WIDTH = 32;
+
+const int INT_LEAST64_WIDTH = 64;
+
+const int UINT_LEAST64_WIDTH = 64;
+
+const int INT_FAST8_WIDTH = 8;
+
+const int UINT_FAST8_WIDTH = 8;
+
+const int INT_FAST16_WIDTH = 64;
+
+const int UINT_FAST16_WIDTH = 64;
+
+const int INT_FAST32_WIDTH = 64;
+
+const int UINT_FAST32_WIDTH = 64;
+
+const int INT_FAST64_WIDTH = 64;
+
+const int UINT_FAST64_WIDTH = 64;
+
+const int INTPTR_WIDTH = 64;
+
+const int UINTPTR_WIDTH = 64;
+
+const int INTMAX_WIDTH = 64;
+
+const int UINTMAX_WIDTH = 64;
+
+const int PTRDIFF_WIDTH = 64;
+
+const int SIG_ATOMIC_WIDTH = 32;
+
+const int SIZE_WIDTH = 64;
+
+const int WCHAR_WIDTH = 32;
+
+const int WINT_WIDTH = 32;
+
+const int NULL = 0;
+
+const int WNOHANG = 1;
+
+const int WUNTRACED = 2;
+
+const int WSTOPPED = 2;
+
+const int WEXITED = 4;
+
+const int WCONTINUED = 8;
+
+const int WNOWAIT = 16777216;
+
+const int RAND_MAX = 2147483647;
+
+const int EXIT_FAILURE = 1;
+
+const int EXIT_SUCCESS = 0;
+
+const int LITTLE_ENDIAN = 1234;
+
+const int BIG_ENDIAN = 4321;
+
+const int PDP_ENDIAN = 3412;
+
+const int BYTE_ORDER = 1234;
+
+const int FD_SETSIZE = 1024;
+
+const int NFDBITS = 64;

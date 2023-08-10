@@ -13,7 +13,7 @@ use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::error::Error;
 
-use bdk::bitcoin::{Address, Network};
+use bdk::bitcoin::{Address, Network, OutPoint, Txid};
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::{BatchDatabase, ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
@@ -93,6 +93,19 @@ pub struct Transaction {
 pub struct TransactionList {
     transactions_len: u32,
     transactions: *const Transaction,
+}
+
+#[repr(C)]
+pub struct Utxo {
+    txid: *const c_char,
+    vout: u32,
+    value: u64,
+}
+
+#[repr(C)]
+pub struct UtxoList {
+    utxos_len: u32,
+    utxos: *const Utxo,
 }
 
 #[repr(C)]
@@ -489,6 +502,34 @@ pub unsafe extern "C" fn wallet_get_balance(wallet: *mut Mutex<bdk::Wallet<Tree>
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn wallet_get_utxos(wallet: *mut Mutex<bdk::Wallet<Tree>>) -> UtxoList {
+    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+
+    let utxos = wallet.list_unspent().unwrap();
+    let utxos_len = utxos.len() as u32;
+
+    let mut utxos_vec: Vec<Utxo> = vec![];
+
+    for utxo in utxos {
+        utxos_vec.push(Utxo {
+            txid: CString::new(format!("{}", utxo.outpoint.txid))
+                .unwrap()
+                .into_raw(),
+            vout: utxo.outpoint.vout,
+            value: utxo.txout.value,
+        });
+    }
+
+    let utxos_box = utxos_vec.into_boxed_slice();
+    let utxos_ptr = Box::into_raw(utxos_box);
+
+    UtxoList {
+        utxos_len,
+        utxos: utxos_ptr as _,
+    }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn wallet_get_fee_rate(
     electrum_address: *const c_char,
     tor_port: i32,
@@ -689,6 +730,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
     send_to: *const c_char,
     amount: u64,
     fee_rate: f64,
+    utxos: *const UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
@@ -698,11 +740,21 @@ pub unsafe extern "C" fn wallet_create_psbt(
         txid: ptr::null(),
         raw_tx: ptr::null(),
     };
-
     let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
     let address = CStr::from_ptr(send_to).to_str().unwrap();
 
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
+
+    let mut must_spend = vec![];
+
+    for i in 0..(*utxos).utxos_len as isize {
+        let utxo_ptr = (*utxos).utxos.offset(i);
+
+        let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
+        let vout = (*utxo_ptr).vout;
+
+        must_spend.push(OutPoint::new(Txid::from_str(txid).unwrap(), vout));
+    }
 
     let mut builder = wallet.build_tx();
     builder
@@ -711,6 +763,8 @@ pub unsafe extern "C" fn wallet_create_psbt(
         .only_witness_utxo()
         .add_recipient(send_to.script_pubkey(), amount)
         .enable_rbf()
+        .add_utxos(&*must_spend)
+        .unwrap()
         .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
 
     match builder.finish() {

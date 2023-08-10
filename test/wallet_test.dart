@@ -108,8 +108,8 @@ void main() async {
         "wpkh([5d14cd2a/84h/1h/0h]tpubDCWhawC5a8Rgx6y7rk5qHtueax2MVWfdfobzEcmcSvQUDYq94dnqyx6KAFbxCocxQnnLuFcRYFWmvXS9DtWRYqJeU33pcvsam9AaozJXS1P/1/*)",
         true);
 
-    expect(
-        tx, "f1984502c0902b103c53115d733d550c401907ac98db38ff317b6e26ae303605");
+    expect(tx,
+        "010000000102b56f3725dee13bd639bb76bcfa48bf82093de146d6144af11b53833571dcc10000000000fdffffff021027000000000000160014ff9da567e62f30ea8654fa1d5fbd47bef8e3be13e640010000000000160014befe48687e7b714563a19df96cbc629ced41c24c00000000");
   });
 
   test('Generate seed', () {

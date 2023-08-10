@@ -57,6 +57,9 @@ Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       ..transactions = (json['transactions'] as List<dynamic>)
           .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
           .toList()
+      ..utxos = (json['utxos'] as List<dynamic>)
+          .map((e) => Utxo.fromJson(e as Map<String, dynamic>))
+          .toList()
       ..balance = json['balance'] as int
       ..feeRateFast = (json['feeRateFast'] as num).toDouble()
       ..feeRateSlow = (json['feeRateSlow'] as num).toDouble();
@@ -71,6 +74,7 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
       'hot': instance.hot,
       'hasPassphrase': instance.hasPassphrase,
       'transactions': instance.transactions,
+      'utxos': instance.utxos,
       'balance': instance.balance,
       'feeRateFast': instance.feeRateFast,
       'feeRateSlow': instance.feeRateSlow,
@@ -82,3 +86,15 @@ const _$NetworkEnumMap = {
   Network.Signet: 'Signet',
   Network.Regtest: 'Regtest',
 };
+
+_$_Utxo _$$_UtxoFromJson(Map<String, dynamic> json) => _$_Utxo(
+      txid: json['txid'] as String,
+      vout: json['vout'] as int,
+      value: json['value'] as int,
+    );
+
+Map<String, dynamic> _$$_UtxoToJson(_$_Utxo instance) => <String, dynamic>{
+      'txid': instance.txid,
+      'vout': instance.vout,
+      'value': instance.value,
+    };
