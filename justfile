@@ -36,8 +36,7 @@ docker-test-integration: docker-build-linux
 
 docker-run: docker-build-linux
     xhost +local:root
-    docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
-     -v $HOME/.Xauthority:/home/root/.Xauthority -t {{docker_image_linux}} flutter run -d linux
+    docker run {{docker_x}} -t {{docker_image_linux}} flutter run -d linux
     xhost -local:root
 
 docker-console: docker-build-linux
@@ -89,8 +88,5 @@ beef: passport
 
 docker-beef: docker-build-linux
     docker build -t {{docker_image_beefbench}} . -f beef.Dockerfile
-    xhost +local:root
     mkdir -p release
-    docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_x}} {{docker_v4l2}} {{docker_image_beefbench}}
-    xhost -local:root
-
+    docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_v4l2}} {{docker_image_beefbench}}
