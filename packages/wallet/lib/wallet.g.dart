@@ -57,9 +57,10 @@ Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       ..transactions = (json['transactions'] as List<dynamic>)
           .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
           .toList()
-      ..utxos = (json['utxos'] as List<dynamic>)
-          .map((e) => Utxo.fromJson(e as Map<String, dynamic>))
-          .toList()
+      ..utxos = (json['utxos'] as List<dynamic>?)
+              ?.map((e) => Utxo.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          []
       ..balance = json['balance'] as int
       ..feeRateFast = (json['feeRateFast'] as num).toDouble()
       ..feeRateSlow = (json['feeRateSlow'] as num).toDouble();

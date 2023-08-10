@@ -367,6 +367,8 @@ class Wallet {
   final bool hasPassphrase;
 
   List<Transaction> transactions = [];
+
+  @JsonKey(defaultValue: []) // Migration from before UTXOs
   List<Utxo> utxos = [];
   int balance = 0;
 

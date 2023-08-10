@@ -154,6 +154,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   }
 
   double _getListHeight() {
+    if (widget._listKey.currentContext == null) {
+      return 0.0;
+    }
+
     final RenderBox listRenderBox =
         widget._listKey.currentContext!.findRenderObject() as RenderBox;
     return listRenderBox.size.height;
