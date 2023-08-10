@@ -27,7 +27,7 @@ class NotSupportedPlatform implements Exception {
 
 enum TorStatus {
   started,
-  running,
+  bootstrapped,
   stopped,
   error,
 }
@@ -100,7 +100,6 @@ class Tor {
     }
   }
 
-
   bootstrap() async {
     await NativeLibrary(_lib).tor_bootstrap(clientPtr);
     bootstrapped = true;
@@ -133,16 +132,15 @@ class Tor {
         return TorStatus.stopped;
       }
       if (this.bootstrapped) {
-        return TorStatus.running;
+        return TorStatus.bootstrapped;
       }
       return TorStatus.stopped;
     });
   }
 
-  waitForTor() async {
+  isReady() async {
     return await Future.doWhile(
-            () =>
-            Future.delayed(Duration(seconds: 1)).then((_) {
+        () => Future.delayed(Duration(seconds: 1)).then((_) {
               // We are waiting and making absolutely no request unless:
               // Tor is disabled
               if (!this.enabled) {

@@ -48,7 +48,7 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
       if (torRequired) {
         tor.enable();
         if (!tor.bootstrapped) {
-          await tor.waitForTor();
+          await tor.isReady();
         }
       } else {
         //disable tor this wont stop the tor process

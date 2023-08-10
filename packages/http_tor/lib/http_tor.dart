@@ -207,30 +207,9 @@ class HttpTor {
   //   print("$downloaded / $total");
   // }
 
-  _goAhead() async {
-    if (tor.enabled) {
-      // Go right ahead if Tor is disabled
-      await Future.doWhile(() => Future.delayed(Duration(seconds: 1)).then((_) {
-            // We are waiting and making absolutely no request unless:
-            // Tor is disabled
-            if (!tor.enabled) {
-              return false;
-            }
-
-            // ...or Tor circuit is established
-            if (tor.bootstrapped) {
-              return false;
-            }
-
-            // This way we avoid making clearnet req's while Tor is initialising
-            return true;
-          }));
-    }
-  }
-
   Future<Response> get(String uri,
       {String? body, Map<String, String>? headers}) async {
-    await _goAhead();
+    await tor.isReady();
     return compute(_makeRequest,
             Request(Verb.Get, uri, tor.port, body: body, headers: headers))
         .then((response) => response, onError: (e) {
@@ -240,7 +219,7 @@ class HttpTor {
 
   Future<Response> post(String uri,
       {String? body, Map<String, String>? headers}) async {
-    await _goAhead();
+    await tor.isReady();
     return compute(_makeRequest,
             Request(Verb.Post, uri, tor.port, body: body, headers: headers))
         .then((response) => response, onError: (e) {
@@ -267,7 +246,7 @@ class HttpTor {
       file.deleteSync();
     }
 
-    await _goAhead();
+    await tor.isReady();
 
     var streamController = StreamController<Progress>.broadcast();
     SendPort mainToIsolateStream = await _initGetFileIsolate(streamController);

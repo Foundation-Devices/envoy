@@ -80,6 +80,7 @@ class AccountManager extends ChangeNotifier {
             if (_accountSchedulerMutex) {
               return;
             }
+
             final syncAccountIndex =
                 accounts.indexWhere((a) => a.id == syncedAccount.id);
             if (syncAccountIndex != -1) {
@@ -87,8 +88,10 @@ class AccountManager extends ChangeNotifier {
                   wallet: syncedAccount.wallet,
                   dateSynced: syncedAccount.dateSynced);
             }
+
             notifyListeners();
             storeAccounts();
+
             if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
               notifyIfAccountBalanceHigherThanUsd1000();
             }
