@@ -24,7 +24,7 @@ class ConnectivityManager {
     return Tor().enabled;
   }
 
-  bool get torCircuitEstablished => Tor().circuitEstablished;
+  bool get torCircuitEstablished => Tor().bootstrapped;
   bool get usingDefaultServer => Settings().usingDefaultElectrumServer;
 
   bool electrumConnected = true;
