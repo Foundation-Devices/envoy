@@ -16,9 +16,9 @@ crate-type = ["cdylib", "staticlib"]
 #libtor-sys = { version = "=47.13.0", features = ["vendored-openssl"] }
 lazy_static = "1.4"
 tokio = { version = "1", features = ["full"] }
-arti-client = { version = "0.10.0", features = ["static-sqlite"] }
-arti = { version = "1.1.6", features = ["experimental-api", "static-sqlite"] }
-tor-rtcompat = "0.9.2"
+arti-client = { version = "0.10.0", features = ["static"] }
+arti = { version = "1.1.6", features = ["experimental-api", "static"] }
+tor-rtcompat = { version = "0.9.2", features = ["static"] }
 #futures = "0.3.28"
 
 
