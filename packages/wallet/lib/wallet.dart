@@ -14,6 +14,8 @@ import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:collection/collection.dart';
 import 'package:wallet/generated_bindings.dart';
 
+import 'generated_bindings.dart';
+
 // Generated
 part 'wallet.freezed.dart';
 
@@ -366,7 +368,7 @@ class Wallet {
   final bool hasPassphrase;
 
   List<Transaction> transactions = [];
-  @JsonKey(defaultValue: [])
+  @JsonKey(defaultValue: []) // Migration from before UTXOs
   List<Utxo> utxos = [];
   int balance = 0;
 

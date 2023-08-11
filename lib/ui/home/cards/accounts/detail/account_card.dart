@@ -343,14 +343,22 @@ class TransactionListTile extends StatelessWidget {
         ));
       },
       child: ListTile(
-        title: transaction.amount < 0
-            ? Text(S().envoy_account_sent)
-            : Text(S().envoy_account_received),
-        subtitle: transaction.type == TransactionType.azteco
-            ? Text(S().azteco_account_tx_history_pending_voucher)
-            : transaction.isConfirmed
-                ? Text(timeAgo.format(transaction.date))
-                : Text(S().envoy_account_awaiting_confirmation),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: transaction.amount < 0
+              ? Text(S().envoy_account_sent)
+              : Text(S().envoy_account_received),
+        ),
+        subtitle: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: transaction.type == TransactionType.azteco
+              ? Text(S().azteco_account_tx_history_pending_voucher)
+              : transaction.isConfirmed
+                  ? Text(timeago.format(transaction.date))
+                  : Text(S().envoy_account_awaiting_confirmation),
+        ),
         leading: transaction.amount < 0
             ? Icon(Icons.call_made)
             : Icon(Icons.call_received),
@@ -366,15 +374,17 @@ class TransactionListTile extends StatelessWidget {
                 bool hide = ref.watch(balanceHideStateStatusProvider(account));
                 if (hide) {
                   return SizedBox(
-                      width: 100,
-                      height: 15,
-                      child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                              color: Color(0xffEEEEEE),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)))));
+                    width: 100,
+                    height: 15,
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Color(0xffEEEEEE),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  );
                 } else {
                   return child ?? Container();
                 }
@@ -382,7 +392,8 @@ class TransactionListTile extends StatelessWidget {
               child: Text(
                 transaction.type == TransactionType.azteco
                     ? ""
-                    : getFormattedAmount(transaction.amount),
+                    : getFormattedAmount(transaction.amount,
+                        trailingZeroes: true),
                 style: Settings().selectedFiat == null
                     ? Theme.of(context)
                         .textTheme
@@ -400,15 +411,17 @@ class TransactionListTile extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: SizedBox(
-                          width: 64,
-                          height: 15,
-                          child: Container(
-                              width: double.infinity,
-                              height: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: Color(0xffEEEEEE),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))))),
+                        width: 64,
+                        height: 15,
+                        child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Color(0xffEEEEEE),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                      ),
                     );
                   } else {
                     return child ?? Container();

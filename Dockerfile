@@ -11,12 +11,8 @@ WORKDIR /root
 ENV TZ=America/New_York
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Update all packages on the build host
-RUN apt-get update \
-    && apt-get upgrade -y
-    
-# Install only necessary packages for building and clear cache
-RUN apt-get install -y --no-install-recommends \
+# Update all packages on the build host and install only necessary packages for building and clear cache
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     postgresql \
     curl \
     build-essential \
@@ -39,6 +35,7 @@ RUN apt-get install -y --no-install-recommends \
     libgtk-3-0 \
     libgtk-3-dev \
     v4l2loopback-dkms \
+    v4l2loopback-utils \
     libzbar-dev \
     libzbar0 \
     libzbargtk-dev \
@@ -51,8 +48,15 @@ RUN apt-get install -y --no-install-recommends \
     x11-utils \
     libstdc++-12-dev \
     llvm-14 \
+    libsdl2-dev \
     libclang1-14 \
     libtool \
+    sudo \
+    libusb-1.0-0-dev \
+    python3-virtualenv \
+    xorg \
+    xdg-user-dirs \
+    xterm tesseract-ocr \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK

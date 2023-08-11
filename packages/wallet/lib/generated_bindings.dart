@@ -454,7 +454,7 @@ class Transaction extends ffi.Struct {
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> outputs;
 
-  @ffi.Int()
+  @ffi.Uint8()
   external int inputs_len;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> inputs;

@@ -50,8 +50,8 @@ final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
 
 // True if all the accounts have 0 balance
 final accountsZeroBalanceProvider = Provider<bool>((ref) {
-  final accountManager = ref.watch(accountManagerProvider);
-  for (final account in accountManager.accounts) {
+  final accounts = ref.watch(accountsProvider);
+  for (final account in accounts) {
     if (account.wallet.balance > 0) {
       return false;
     }

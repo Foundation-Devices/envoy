@@ -33,13 +33,14 @@ use crate::miniscript::Segwitv0;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
-use bdk::keys::bip39::{Language, Mnemonic, MnemonicWithPassphrase};
+use bdk::keys::bip39::MnemonicWithPassphrase;
 use bdk::keys::DescriptorKey::Secret;
 use bdk::keys::{
     DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
 };
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::wallet::tx_builder::TxOrdering;
+use bip39::{Language, Mnemonic};
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
 
@@ -729,7 +730,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
     send_to: *const c_char,
     amount: u64,
     fee_rate: f64,
-    utxos: UtxoList,
+    utxos: *const UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
@@ -746,8 +747,8 @@ pub unsafe extern "C" fn wallet_create_psbt(
 
     let mut must_spend = vec![];
 
-    for i in 0..utxos.utxos_len as isize {
-        let utxo_ptr = utxos.utxos.offset(i);
+    for i in 0..(*utxos).utxos_len as isize {
+        let utxo_ptr = (*utxos).utxos.offset(i);
 
         let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
         let vout = (*utxo_ptr).vout;

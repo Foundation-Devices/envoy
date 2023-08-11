@@ -9,8 +9,8 @@ set -e
 
 # macOS
 if [[ $OSTYPE == 'darwin'* ]]; then
-  rustup target add aarch64-apple-darwin
-  cargo build --target=aarch64-apple-darwin
+  rustup +1.69.0 target add aarch64-apple-darwin
+  cargo +1.69.0 build --target=aarch64-apple-darwin
 
   ./build_ffi_ios.sh
 

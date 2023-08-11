@@ -20,14 +20,14 @@ void main() {
       Directory fdDir = Directory('/proc/$pid/fd');
 
       // ignore: unused_local_variable
-      final oledPipe = await Pipe.create();
+      final oledPipe = Pipe.createSync();
       // ignore: unused_local_variable
-      final ledPipe = await Pipe.create();
-      final numpadPipe = await Pipe.create();
+      final ledPipe = Pipe.createSync();
+      final numpadPipe = Pipe.createSync();
       // ignore: unused_local_variable
-      final camCmdPipe = await Pipe.create();
+      final camCmdPipe = Pipe.createSync();
       // ignore: unused_local_variable
-      final camImgPipe = await Pipe.create();
+      final camImgPipe = Pipe.createSync();
 
       List<FileSystemEntity> fds = fdDir.listSync().toList();
       List<File> pipes = fds.whereType<File>().toList();
@@ -48,7 +48,7 @@ void main() {
       File wCamImgPipe = pipes[pipes.length - 1];
 
       await resetEnvoyData();
-      Passport.reset();
+      await Passport.reset();
       await Passport.cleanUp();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -154,6 +154,8 @@ void main() {
 
       final continueButton = find.text("Continue");
       await tester.tap(continueButton);
+
+      await pause(1000);
 
       await tester.pumpAndSettle();
       await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -326,23 +328,27 @@ class Passport {
         '$passportPath/ports/unix/passport-mpy -X heapsize=30m -i $passportPath/simulator/sim_boot.py $oledHandleNum $numpadHandleNum $ledHandleNum $camCmdHandleNum $camImgHandleNum color');
 
     Process.start(
-            '$passportPath/ports/unix/passport-mpy',
-            [
-              '-X',
-              'heapsize=30m',
-              '-i',
-              '$passportPath/simulator/sim_boot.py',
-              oledHandleNum,
-              numpadHandleNum,
-              ledHandleNum,
-              camCmdHandleNum,
-              camImgHandleNum,
-              "color"
-            ],
-            environment: env)
-        .then((simulator) async {
+      '$passportPath/ports/unix/passport-mpy',
+      [
+        '-X',
+        'heapsize=30m',
+        '-i',
+        '$passportPath/simulator/sim_boot.py',
+        oledHandleNum,
+        numpadHandleNum,
+        ledHandleNum,
+        camCmdHandleNum,
+        camImgHandleNum,
+        "color"
+      ],
+      environment: env,
+      workingDirectory: passportPath,
+    ).then((simulator) async {
       simulator.stdout.listen((event) {
         print("simulator: " + utf8.decode(event));
+      });
+      simulator.stderr.listen((event) {
+        print("simulator ERR:" + utf8.decode(event));
       });
       await Future.delayed(const Duration(seconds: 2), () {});
 
@@ -353,13 +359,14 @@ class Passport {
 
   static reset() {
     final currentPath = Directory.current.path;
+    final passportPath = "$currentPath/passport2";
 
     // final directoryToDelete = '$currentPath/passport2/simulator/work';
     // Directory(directoryToDelete).deleteSync();
 
     final fileToDelete = 'spi_flash.bin';
     try {
-      File(currentPath + "/" + fileToDelete).deleteSync();
+      File(passportPath + "/" + fileToDelete).deleteSync();
     } on Exception catch (e) {
       print("Couldn't reset Passport: $e");
     }
@@ -379,10 +386,11 @@ class Passport {
   }
 
   void displayOled(String oledV4lDeviceDuplicate) {
-    Process.start('vlc', ['v4l2://$oledV4lDeviceDuplicate']).then((vlc) {
-      // print("vlc started!");
-      // vlc.stderr.listen((event) {
-      //   print("vlc: " + utf8.decode(event));
+    Process.start('ffplay', ['$oledV4lDeviceDuplicate'],
+        environment: {"DISPLAY": ":0"}).then((ffplay) {
+      print("ffplay started!");
+      // ffplay.stderr.listen((event) {
+      //   print("ffplay: " + utf8.decode(event));
       // });
     });
   }
@@ -411,12 +419,12 @@ class Passport {
       qrScannerDevice,
     ]).then((ffmpeg) {
       print("v4l devices created!");
-      // ffmpeg.stdout.listen((event) {
-      //   print(event);
-      // });
-      // ffmpeg.stderr.listen((event) {
-      //   print("ffmpeg :" + utf8.decode(event));
-      // });
+      ffmpeg.stdout.listen((event) {
+        print(event);
+      });
+      ffmpeg.stderr.listen((event) {
+        print("ffmpeg :" + utf8.decode(event));
+      });
     });
   }
 
@@ -434,7 +442,7 @@ class Passport {
   Future<void> sendFrameToPassport(
       ScreenshotController screenshotController, String camPipePath) async {
     final currentPath = Directory.current.path;
-    final screenshotFileName = "screenshot";
+    final screenshotFileName = "screenshot.png";
     await screenshotController.captureAndSave(currentPath,
         fileName: screenshotFileName);
 
