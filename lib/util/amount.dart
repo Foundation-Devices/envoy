@@ -109,6 +109,13 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
+String getFormattedSatsAmount(int amountSats,
+    {bool includeUnit = false, bool testnet = false}) {
+  String text = satsFormatter.format(amountSats) +
+      (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");
+  return text;
+}
+
 String getSatsUnitString({testnet = false}) {
   return testnet ? "TSATS".toLowerCase() : "SATS".toLowerCase();
 }

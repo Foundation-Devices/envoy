@@ -12,8 +12,7 @@ import 'dart:io';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:collection/collection.dart';
-
-import 'generated_bindings.dart';
+import 'package:wallet/generated_bindings.dart';
 
 // Generated
 part 'wallet.freezed.dart';
@@ -367,7 +366,6 @@ class Wallet {
   final bool hasPassphrase;
 
   List<Transaction> transactions = [];
-
   @JsonKey(defaultValue: []) // Migration from before UTXOs
   List<Utxo> utxos = [];
   int balance = 0;
@@ -747,7 +745,7 @@ class Wallet {
 
   static String signOffline(String psbt, String externalDescriptor,
       String internalDescriptor, bool testnet) {
-    var lib = rust.NativeLibrary(load(_libName));
+    var lib = NativeLibrary(load(_libName));
 
     return lib
         .wallet_sign_offline(

@@ -44,6 +44,9 @@ class EnvoyStorage {
       StoreRef<String, bool>("dismissed_prompts");
   StoreRef<int, Map> firmwareStore = StoreRef<int, Map>("firmware");
 
+  StoreRef<String, bool> utxoBlockState = StoreRef("utxo_block_state");
+  StoreRef<String, Map<String, Object?>> tagStore = StoreRef('tags');
+
   static final EnvoyStorage _instance = EnvoyStorage._();
 
   EnvoyStorage._() {
@@ -78,6 +81,11 @@ class EnvoyStorage {
     return true;
   }
 
+  Future removePromptState(DismissiblePrompt prompt) async {
+    await dismissedPromptsStore.record(prompt.toString()).delete(db);
+    return true;
+  }
+
   Stream<bool> isPromptDismissed(DismissiblePrompt prompt) {
     final filter = Finder(filter: Filter.byKey(prompt.toString()));
     //returns boolean stream that updates when provided key is updated
@@ -86,6 +94,14 @@ class EnvoyStorage {
         .onSnapshot(_db)
         .map((event) => event?.value)
         .map((event) => event != null);
+  }
+
+  Future<bool> checkPromptDismissed(DismissiblePrompt prompt) {
+    final filter = Finder(filter: Filter.byKey(prompt.toString()));
+    //returns boolean stream that updates when provided key is updated
+    return dismissedPromptsStore
+        .find(db, finder: filter)
+        .then((event) => event.length != 0);
   }
 
   Future addPendingTx(String key, String accountId, DateTime timestamp,
@@ -230,4 +246,6 @@ class EnvoyStorage {
     _db = await importDatabase(
         map, databaseFactoryIo, join(appDocumentDir.path, dbName));
   }
+
+  Database get db => _db;
 }
