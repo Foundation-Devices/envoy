@@ -14,8 +14,6 @@ import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:collection/collection.dart';
 import 'package:wallet/generated_bindings.dart';
 
-import 'generated_bindings.dart';
-
 // Generated
 part 'wallet.freezed.dart';
 
