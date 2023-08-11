@@ -72,8 +72,6 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -430,16 +428,6 @@ class S {
     );
   }
 
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `CHECKBOX`
   String get CHECKBOX {
     return Intl.message(
@@ -778,8 +766,6 @@ class S {
 
   // skipped getter for the 'FW Update' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   // skipped getter for the 'Face ID' key
 
   /// `Family`
@@ -839,16 +825,6 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SEND AND\nRECEIVE BITCOIN`
-  String get Heading {
-    return Intl.message(
-      'SEND AND\nRECEIVE BITCOIN',
-      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1288,16 +1264,6 @@ class S {
     );
   }
 
-  /// `ACCOUNTS`
-  String get ScreenTitle {
-    return Intl.message(
-      'ACCOUNTS',
-      name: 'ScreenTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `$3.66`
   String get Secondary {
     return Intl.message(
@@ -1453,16 +1419,6 @@ class S {
   // skipped getter for the 'TX Overview' key
 
   // skipped getter for the 'TX Screen' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Tag Name' key
 
@@ -2615,6 +2571,56 @@ class S {
   }
 
   // skipped getter for the 'bc1cq313af51bh5k0lsmna21xpwnhx5...' key
+
+  /// `Accounts`
+  String get bottomNav_accounts {
+    return Intl.message(
+      'Accounts',
+      name: 'bottomNav_accounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get bottomNav_activity {
+    return Intl.message(
+      'Activity',
+      name: 'bottomNav_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Devices`
+  String get bottomNav_devices {
+    return Intl.message(
+      'Devices',
+      name: 'bottomNav_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn`
+  String get bottomNav_learn {
+    return Intl.message(
+      'Learn',
+      name: 'bottomNav_learn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy`
+  String get bottomNav_privacy {
+    return Intl.message(
+      'Privacy',
+      name: 'bottomNav_privacy',
+      desc: '',
+      args: [],
+    );
+  }
 
   // skipped getter for the 'casa only / not displayed on Envoy' key
 
@@ -10012,36 +10018,6 @@ class S {
     );
   }
 
-  /// `Choose Destination`
-  String get manual_setup_import_existing_backup_CTA1 {
-    return Intl.message(
-      'Choose Destination',
-      name: 'manual_setup_import_existing_backup_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save Envoy Backup File`
-  String get manual_setup_import_existing_backup_heading {
-    return Intl.message(
-      'Save Envoy Backup File',
-      name: 'manual_setup_import_existing_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_import_existing_backup_subheading {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_import_existing_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get manual_setup_import_seed_12_words_CTA {
     return Intl.message(
@@ -12172,6 +12148,146 @@ class S {
     );
   }
 
+  /// `Learn more`
+  String get privacy_applicationLock_learnMore {
+    return Intl.message(
+      'Learn more',
+      name: 'privacy_applicationLock_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Application lock`
+  String get privacy_applicationLock_title {
+    return Intl.message(
+      'Application lock',
+      name: 'privacy_applicationLock_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlock with biometrics or PIN`
+  String get privacy_applicationLock_unlock {
+    return Intl.message(
+      'Unlock with biometrics or PIN',
+      name: 'privacy_applicationLock_unlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Configure a personal Bitcoin node here.`
+  String get privacy_node_configure {
+    return Intl.message(
+      'Configure a personal Bitcoin node here.',
+      name: 'privacy_node_configure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn more`
+  String get privacy_node_learnMore {
+    return Intl.message(
+      'Learn more',
+      name: 'privacy_node_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your node address`
+  String get privacy_node_nodeAddress {
+    return Intl.message(
+      'Enter your node address',
+      name: 'privacy_node_nodeAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Foundation (Default)`
+  String get privacy_node_nodeType_foundation {
+    return Intl.message(
+      'Foundation (Default)',
+      name: 'privacy_node_nodeType_foundation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Node`
+  String get privacy_node_nodeType_personal {
+    return Intl.message(
+      'Personal Node',
+      name: 'privacy_node_nodeType_personal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Node`
+  String get privacy_node_title {
+    return Intl.message(
+      'Node',
+      name: 'privacy_node_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Better \nPerformance`
+  String get privacy_privacyMode_betterPerformance {
+    return Intl.message(
+      'Better \nPerformance',
+      name: 'privacy_privacyMode_betterPerformance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Improved\nPrivacy`
+  String get privacy_privacyMode_improvedPrivacy {
+    return Intl.message(
+      'Improved\nPrivacy',
+      name: 'privacy_privacyMode_improvedPrivacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn more`
+  String get privacy_privacyMode_learnMore {
+    return Intl.message(
+      'Learn more',
+      name: 'privacy_privacyMode_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy mode`
+  String get privacy_privacyMode_title {
+    return Intl.message(
+      'Privacy mode',
+      name: 'privacy_privacyMode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
+  String get privacy_privacyMode_torSuggestion {
+    return Intl.message(
+      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
+      name: 'privacy_privacyMode_torSuggestion',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Connect`
   String get privacy_setting_add_node_modal_cta {
     return Intl.message(
@@ -13123,6 +13239,16 @@ class S {
     return Intl.message(
       'rtainment',
       name: 'rtainment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PRIVACY`
+  String get screenTitle_privacy {
+    return Intl.message(
+      'PRIVACY',
+      name: 'screenTitle_privacy',
       desc: '',
       args: [],
     );

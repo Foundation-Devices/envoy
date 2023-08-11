@@ -36,7 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
         "Business": MessageLookupByLibrary.simpleMessage("Business"),
-        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CHECKBOX": MessageLookupByLibrary.simpleMessage("CHECKBOX"),
         "COMPLETE": MessageLookupByLibrary.simpleMessage("COMPLETE"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
@@ -70,8 +69,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Fuel": MessageLookupByLibrary.simpleMessage("Fuel"),
         "Groceries": MessageLookupByLibrary.simpleMessage("Groceries"),
-        "Heading":
-            MessageLookupByLibrary.simpleMessage("SEND AND\nRECEIVE BITCOIN"),
         "Hotwallet": MessageLookupByLibrary.simpleMessage("Hotwallet"),
         "IMAGES": MessageLookupByLibrary.simpleMessage("IMAGES"),
         "Icons": MessageLookupByLibrary.simpleMessage("Icons\n"),
@@ -104,7 +101,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "Savings": MessageLookupByLibrary.simpleMessage("Savings"),
         "ScreenHeading":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("ACCOUNTS"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$3.66"),
         "Send": MessageLookupByLibrary.simpleMessage("Receive"),
         "Show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -118,7 +114,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zen-like mobile wallet"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TELEGRAM": MessageLookupByLibrary.simpleMessage("TELEGRAM"),
-        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "Test": MessageLookupByLibrary.simpleMessage("Test"),
         "Testnet": MessageLookupByLibrary.simpleMessage("Testnet"),
         "Text": MessageLookupByLibrary.simpleMessage("Privacy Shield"),
@@ -328,6 +323,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "bc1cq313af51bh5k0lsmna21x": MessageLookupByLibrary.simpleMessage(""),
         "bc1cq313af51bh5k0lsmna21xpw":
             MessageLookupByLibrary.simpleMessage("bc1cq313af51bh5k0lsmna21xpw"),
+        "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
+        "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Activity"),
+        "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
+        "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Learn"),
+        "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
         "change_output_from_multiple_tags_modal_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "change_output_from_multiple_tags_modal_heading":
@@ -1910,13 +1910,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_import_existing_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_CTA1":
-            MessageLookupByLibrary.simpleMessage("Choose Destination"),
-        "manual_setup_import_existing_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
-        "manual_setup_import_existing_backup_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_import_seed_12_words_CTA":
             MessageLookupByLibrary.simpleMessage("Done"),
         "manual_setup_import_seed_12_words_CTA_inactive":
@@ -2377,6 +2370,33 @@ class MessageLookup extends MessageLookupByLibrary {
         "play_store_short_description": MessageLookupByLibrary.simpleMessage(
             "The perfect mobile companion for your Passport hardware wallet."),
         "postmix": MessageLookupByLibrary.simpleMessage("postmix"),
+        "privacy_applicationLock_learnMore":
+            MessageLookupByLibrary.simpleMessage("Learn more"),
+        "privacy_applicationLock_title":
+            MessageLookupByLibrary.simpleMessage("Application lock"),
+        "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
+            "Unlock with biometrics or PIN"),
+        "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
+            "Configure a personal Bitcoin node here."),
+        "privacy_node_learnMore":
+            MessageLookupByLibrary.simpleMessage("Learn more"),
+        "privacy_node_nodeAddress":
+            MessageLookupByLibrary.simpleMessage("Enter your node address"),
+        "privacy_node_nodeType_foundation":
+            MessageLookupByLibrary.simpleMessage("Foundation (Default)"),
+        "privacy_node_nodeType_personal":
+            MessageLookupByLibrary.simpleMessage("Personal Node"),
+        "privacy_node_title": MessageLookupByLibrary.simpleMessage("Node"),
+        "privacy_privacyMode_betterPerformance":
+            MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
+        "privacy_privacyMode_improvedPrivacy":
+            MessageLookupByLibrary.simpleMessage("Improved\nPrivacy"),
+        "privacy_privacyMode_learnMore":
+            MessageLookupByLibrary.simpleMessage("Learn more"),
+        "privacy_privacyMode_title":
+            MessageLookupByLibrary.simpleMessage("Privacy mode"),
+        "privacy_privacyMode_torSuggestion": MessageLookupByLibrary.simpleMessage(
+            "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "privacy_setting_add_node_modal_cta":
             MessageLookupByLibrary.simpleMessage("Connect"),
         "privacy_setting_add_node_modal_heading":
@@ -2596,6 +2616,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_ios_subheading": MessageLookupByLibrary.simpleMessage(
             "To recover your Envoy wallet, follow these simple instructions."),
         "rtainment": MessageLookupByLibrary.simpleMessage("rtainment"),
+        "screenTitle_privacy": MessageLookupByLibrary.simpleMessage("PRIVACY"),
         "secure_wallet_learn_more":
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "secure_wallet_text_explainer": MessageLookupByLibrary.simpleMessage(
