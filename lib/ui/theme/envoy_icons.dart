@@ -21,7 +21,8 @@ enum EnvoyIcons {
   history,
   shield,
   learn,
-  devices
+  devices,
+  filter,
 }
 
 class EnvoyIcon extends StatelessWidget {
