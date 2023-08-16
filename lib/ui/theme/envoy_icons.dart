@@ -15,6 +15,8 @@ enum EnvoyIcons {
   performance,
   privacy,
   check,
+  list,
+  card_view
 }
 
 class EnvoyIcon extends StatelessWidget {
