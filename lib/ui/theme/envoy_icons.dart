@@ -18,6 +18,10 @@ enum EnvoyIcons {
   bitcoin_b,
   list,
   card_view,
+  history,
+  shield,
+  learn,
+  devices
 }
 
 class EnvoyIcon extends StatelessWidget {
