@@ -74,6 +74,11 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             isPressed = true;
           });
         },
+        onTapUp: (cn) {
+          setState(() {
+            isPressed = false;
+          });
+        },
         onTapCancel: () {
           setState(() {
             isPressed = false;

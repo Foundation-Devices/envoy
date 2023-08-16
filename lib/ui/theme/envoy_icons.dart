@@ -15,8 +15,9 @@ enum EnvoyIcons {
   performance,
   privacy,
   check,
+  bitcoin_b,
   list,
-  card_view
+  card_view,
 }
 
 class EnvoyIcon extends StatelessWidget {
