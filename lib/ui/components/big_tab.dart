@@ -1,0 +1,86 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+
+class BigTab extends StatefulWidget {
+  final String labelOption1;
+  final String labelOption2;
+  final EnvoyIcons iconOption1;
+  final EnvoyIcons iconOption2;
+  final bool isActive;
+  final ValueChanged<bool?>? onSelect;
+
+  BigTab({
+    required this.labelOption1,
+    required this.labelOption2,
+    required this.iconOption1,
+    required this.iconOption2,
+    this.isActive = true,
+    this.onSelect,
+  });
+
+  @override
+  _BigTabState createState() => _BigTabState();
+}
+
+class _BigTabState extends State<BigTab> {
+  @override
+  Widget build(BuildContext context) {
+    Color iconColor =
+        widget.isActive ? EnvoyColors.accentPrimary : EnvoyColors.textPrimary;
+    Color textColor =
+        widget.isActive ? EnvoyColors.accentPrimary : EnvoyColors.textPrimary;
+    Color backgroundColor =
+        widget.isActive ? EnvoyColors.surface2 : Colors.transparent;
+    Color borderColor =
+        widget.isActive ? EnvoyColors.accentPrimary : Colors.transparent;
+
+    return GestureDetector(
+      onTap: () {
+        widget.onSelect?.call(!widget.isActive);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: Border.all(
+            width: 2,
+            color: borderColor,
+          ),
+          borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(EnvoySpacing.medium1),
+          child: Row(
+            children: [
+              EnvoyIcon(
+                widget.isActive ? widget.iconOption1 : widget.iconOption2,
+                color: iconColor,
+              ),
+              SizedBox(
+                width: EnvoySpacing.small,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.isActive ? widget.labelOption1 : widget.labelOption2,
+                    style: EnvoyTypography.caption1Bold.copyWith(
+                      color: textColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
