@@ -6,7 +6,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/account.dart';
 
-enum HomePageTabState { devices, accounts, learn }
+enum HomePageTabState { devices, privacy, accounts, activity, learn }
 
 enum HomePageAccountsNavigationState { list, details, receive, send }
 
