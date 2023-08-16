@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+//use std::ffi::CString;
+//use android_log_sys::__android_log_write;
 use arti::socks;
+use arti_client::config::TorClientConfigBuilder;
 use arti_client::TorClient;
 use lazy_static::lazy_static;
 use std::io;
@@ -17,21 +20,31 @@ lazy_static! {
 #[no_mangle]
 pub unsafe extern "C" fn tor_start(socks_port: u16) -> *mut TorClient<TokioNativeTlsRuntime> {
     let runtime = TokioNativeTlsRuntime::create().unwrap();
-    //let config = TorClientConfig::default();
 
-    println!("BOOTSTRAPPING CLIENT!");
+    let state_dir = tempfile::tempdir().unwrap();
+    let cache_dir = tempfile::tempdir().unwrap();
+    let cfg = TorClientConfigBuilder::from_directories(state_dir, cache_dir)
+        .build()
+        .unwrap();
+
+    // __android_log_write(
+    //     6,
+    //     CString::new("envoy").unwrap().into_raw(),
+    //     CString::new("BOOTSTRAP").unwrap().into_raw(),
+    // );
+
     let client = runtime.block_on(async {
-        TorClient::with_runtime(runtime.clone())
+        let res = TorClient::with_runtime(runtime.clone())
+            .config(cfg)
             .create_bootstrapped()
-            .await
-            .unwrap()
+            .await;
+
+        res.unwrap()
     });
-    println!("BOOTSTRAPPED!");
 
     let client_clone = client.clone();
 
     println!("Starting proxy!");
-
     let rt = RUNTIME.as_ref().unwrap();
     let handle = rt.spawn(socks::run_socks_proxy(
         runtime.clone(),
@@ -43,8 +56,6 @@ pub unsafe extern "C" fn tor_start(socks_port: u16) -> *mut TorClient<TokioNativ
     Box::leak(handle_box);
 
     let client_box = Box::new(client);
-    println!("SOCKS PORT: {}", socks_port);
-
     Box::into_raw(client_box)
 }
 
@@ -56,7 +67,6 @@ pub unsafe extern "C" fn tor_bootstrap(client: *mut TorClient<TokioNativeTlsRunt
     };
 
     client.runtime().block_on(client.bootstrap()).unwrap();
-    println!("BOOTSTRAPPED!");
     true
 }
 

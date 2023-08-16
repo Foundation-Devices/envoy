@@ -4284,6 +4284,7 @@ dependencies = [
  "arti-client",
  "cbindgen",
  "lazy_static",
+ "tempfile",
  "tokio",
  "tor-rtcompat",
 ]
