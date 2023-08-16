@@ -11,19 +11,27 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class EnvoyBottomNavigation extends StatefulWidget {
-  final Function? onChanged;
+  final Function(int)? onIndexChanged;
+  final int initalIndex;
 
-  const EnvoyBottomNavigation({super.key, this.onChanged});
+  const EnvoyBottomNavigation(
+      {super.key, this.onIndexChanged, this.initalIndex = 2});
 
   @override
   _EnvoyBottomNavigationState createState() => _EnvoyBottomNavigationState();
 }
 
 class _EnvoyBottomNavigationState extends State<EnvoyBottomNavigation> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;
   var labelStyle = EnvoyTypography.caption2Semibold;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initalIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +50,8 @@ class _EnvoyBottomNavigationState extends State<EnvoyBottomNavigation> {
           setState(
             () {
               _selectedIndex = index;
-              if (widget.onChanged != null) {
-                widget.onChanged!();
+              if (widget.onIndexChanged != null) {
+                widget.onIndexChanged!(_selectedIndex);
               }
             },
           );

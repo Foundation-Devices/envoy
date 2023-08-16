@@ -6,7 +6,9 @@ import 'dart:async';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/components/bottom_navigation.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
 import 'package:envoy/ui/home/notifications/notifications_page.dart';
 import 'package:envoy/ui/home/cards/learn/learn_card.dart';
 import 'package:envoy/ui/home/settings/settings_menu.dart';
@@ -18,8 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:envoy/ui/envoy_icons.dart';
-
 //import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/tor_warning.dart';
@@ -29,6 +29,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -53,11 +54,10 @@ class HomePageNotification extends Notification {
 }
 
 class HomePageCard {
-  final Icon icon;
-  final String label;
   final TopLevelNavigationCard widget;
+  final String label;
 
-  HomePageCard(this.icon, this.label, this.widget);
+  HomePageCard(this.label, this.widget);
 }
 
 class HomePage extends ConsumerStatefulWidget {
@@ -91,14 +91,12 @@ class _HomePageState extends ConsumerState<HomePage>
 
   final _animationsDuration = Duration(milliseconds: 350);
 
-  // TODO: Get the names from localisation
   final _tlCardList = [
-    HomePageCard(
-        const Icon(EnvoyIcons.devices), S().envoy_home_devices, DevicesCard()),
-    HomePageCard(const Icon(EnvoyIcons.accounts), S().envoy_home_accounts,
-        AccountsCard()),
-    HomePageCard(
-        const Icon(EnvoyIcons.lightbulb), S().envoy_home_learn, LearnCard()),
+    HomePageCard(S().bottomNav_devices, DevicesCard()),
+    HomePageCard(S().bottomNav_privacy, PrivacyCard()),
+    HomePageCard(S().bottomNav_accounts, AccountsCard()),
+    HomePageCard(S().bottomNav_activity, ActivityCard()),
+    HomePageCard(S().bottomNav_learn, LearnCard()),
   ];
 
   void initState() {
@@ -111,8 +109,8 @@ class _HomePageState extends ConsumerState<HomePage>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //Sets default home card
-      _navigateToCard(1);
+      // Sets default home card
+      _navigateToCard(2);
     });
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
@@ -336,8 +334,8 @@ class _HomePageState extends ConsumerState<HomePage>
               if (_leftAction != null && _leftAction != _toggleSettings) {
                 _leftAction?.call();
                 return false;
-              } else if (_tabController.index != 1) {
-                _navigateToCard(1);
+              } else if (_tabController.index != 2) {
+                _navigateToCard(2);
                 return false;
               }
               return true;
@@ -446,26 +444,33 @@ class _HomePageState extends ConsumerState<HomePage>
                             ignoring: _backgroundShown || _modalShown,
                             child: Container(
                               height: _bottomTabBarHeight,
-                              child: TabBar(
-                                indicatorColor: Colors.white10,
-                                labelStyle:
-                                    Theme.of(context).textTheme.bodyLarge,
-                                unselectedLabelColor: Colors.black54,
-                                labelColor: EnvoyColors.darkTeal,
-                                controller: _tabController,
-                                onTap: (selectedIndex) {
+                              child: EnvoyBottomNavigation(
+                                onIndexChanged: (selectedIndex) {
                                   ref.read(homePageTabProvider.notifier).state =
                                       HomePageTabState.values[selectedIndex];
                                   setState(() {
                                     _navigateToCard(selectedIndex);
                                   });
                                 },
-                                tabs: _tlCardList
-                                    .map((e) => Tab(
-                                          icon: e.icon,
-                                          text: e.label,
-                                        ))
-                                    .toList(),
+                                // indicatorColor: Colors.white10,
+                                // labelStyle:
+                                //     Theme.of(context).textTheme.bodyLarge,
+                                // unselectedLabelColor: Colors.black54,
+                                // labelColor: EnvoyColors.darkTeal,
+                                // controller: _tabController,
+                                // onTap: (selectedIndex) {
+                                //   ref.read(homePageTabProvider.notifier).state =
+                                //       HomePageTabState.values[selectedIndex];
+                                //   setState(() {
+                                //     _navigateToCard(selectedIndex);
+                                //   });
+                                // },
+                                // tabs: _tlCardList
+                                //     .map((e) => Tab(
+                                //           icon: e.icon,
+                                //           text: e.label,
+                                //         ))
+                                //     .toList(),
                               ),
                             ),
                           ),
