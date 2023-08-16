@@ -18,7 +18,6 @@ enum EnvoyIcons {
   bitcoin_b,
   list,
   card_view,
-
 }
 
 class EnvoyIcon extends StatelessWidget {
