@@ -32,7 +32,7 @@ class EnvoyColors {
   static const Color border2 = gray200;
 
   static const Color accentPrimary = teal500;
-  static const Color accentSecond = copper500;
+  static const Color accentSecondary = copper500;
   static const Color accentTertiary = pine500;
   static const Color success = apple500;
   static const Color warning = sunglow500;
