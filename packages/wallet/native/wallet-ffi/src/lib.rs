@@ -13,13 +13,13 @@ use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::error::Error;
 
-use bdk::bitcoin::{Address, Network, OutPoint, Txid};
+use bdk::bitcoin::{Address, Network, OutPoint, Script, Txid, TxOut};
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::{BatchDatabase, ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::FeeRate;
+use bdk::{FeeRate, KeychainKind, LocalUtxo, WeightedUtxo};
 use bdk::{electrum_client, miniscript, SignOptions, SyncOptions};
 use std::str::FromStr;
 
@@ -43,6 +43,8 @@ use bdk::wallet::tx_builder::TxOrdering;
 use bip39::{Language, Mnemonic};
 use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
+use bdk::wallet::coin_selection::{BranchAndBoundCoinSelection, CoinSelectionAlgorithm};
+use bdk::types::Utxo as bdk_utxo;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -723,6 +725,62 @@ fn psbt_extract_details<T: BatchDatabase>(
         raw_tx: CString::new(raw_tx).unwrap().into_raw(),
     };
 }
+
+// TODO: run on a subset
+pub unsafe extern "C" fn wallet_coin_select(
+    wallet: *mut Mutex<bdk::Wallet<Tree>>,
+    send_to: *const c_char,
+    amount: u64,
+    fee_rate: f64,
+    utxos: *const UtxoList,
+) -> bool {
+    let error_return = false;
+
+    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
+    let fee_rate = FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32);
+
+
+    const P2WPKH_SATISFACTION_SIZE: usize = 1 + 1 + 72 + 1 + 33 + 4;
+
+    let mut optional_utxos = vec![];
+
+    for i in 0..(*utxos).utxos_len as isize {
+        let utxo_ptr = (*utxos).utxos.offset(i);
+
+        let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
+        let vout = (*utxo_ptr).vout;
+        let value = (*utxo_ptr).value;
+
+
+        let utxo = WeightedUtxo {
+            satisfaction_weight: P2WPKH_SATISFACTION_SIZE,
+            utxo: bdk_utxo::Local(LocalUtxo {
+                outpoint: OutPoint::new(Txid::from_str(txid).unwrap(), vout),
+                txout: TxOut {
+                    value,
+                    script_pubkey: Script::new(),
+                },
+                keychain: KeychainKind::External,
+                is_spent: false,
+            }),
+        };
+
+        optional_utxos.push(utxo);
+    }
+
+    //let wallet = wallet;
+    let db = *wallet.database();
+
+
+    let cs = BranchAndBoundCoinSelection::default();
+    let res = cs.coin_select(&db, vec![], optional_utxos, fee_rate, amount, &Script::default());
+
+
+    true
+}
+
+
+// TODO: return max fee and upper bound fee rate
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_create_psbt(
