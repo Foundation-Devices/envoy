@@ -13,6 +13,8 @@ class EnvoyColors {
   static const Color gray50 = Color(0xfff8f8f8);
   static const Color gray100 = Color(0xffebebeb);
   static const Color gray200 = Color(0xffe1e0e1);
+  static const Color gray500 = Color(0xffa4a2a3);
+  static const Color dimmer = Color(0x80000000);
 
   static const Color teal500 = Color(0xff009db9);
   static const Color copper500 = Color(0xffbf755f);

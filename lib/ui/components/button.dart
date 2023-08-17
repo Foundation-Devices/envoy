@@ -25,24 +25,26 @@ enum ButtonState {
   disabled,
 }
 
-class CustomButton extends StatefulWidget {
+class EnvoyButton extends StatefulWidget {
   final String label;
   late final ButtonType type;
   final ButtonState state;
   final icon;
+  final Function? onTap;
 
-  CustomButton({
+  EnvoyButton({
     required this.label,
     required this.type,
     required this.state,
     this.icon,
+    this.onTap,
   });
 
   @override
-  _CustomButtonState createState() => _CustomButtonState();
+  _EnvoyButtonState createState() => _EnvoyButtonState();
 }
 
-class _CustomButtonState extends State<CustomButton> {
+class _EnvoyButtonState extends State<EnvoyButton> {
   bool isPressed = false;
   final _animationsDuration = Duration(milliseconds: 200);
 
@@ -61,6 +63,9 @@ class _CustomButtonState extends State<CustomButton> {
           setState(() {
             isPressed = false;
             Haptics.lightImpact();
+            if (widget.onTap != null) {
+              widget.onTap!();
+            }
           });
         },
         onTapCancel: () {
