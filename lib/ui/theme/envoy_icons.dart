@@ -22,6 +22,8 @@ enum EnvoyIcons {
   shield,
   learn,
   devices,
+  scan,
+  clipboard,
   filter,
 }
 
