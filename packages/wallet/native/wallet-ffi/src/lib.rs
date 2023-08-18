@@ -87,6 +87,7 @@ pub struct Transaction {
     outputs: *const *const c_char,
     inputs_len: u8,
     inputs: *const *const c_char,
+    address: *const c_char,
 }
 
 #[repr(C)]
@@ -615,14 +616,32 @@ pub unsafe extern "C" fn wallet_get_transactions(
             }
         }
 
+        let outputs_iter = transaction.transaction.clone().unwrap().output.into_iter();
+
         //let txout = Address::from_script(&transaction.transaction.unwrap().output[1].script_pubkey, wallet.network()).unwrap().to_string();
 
-        let outputs: Vec<_> = transaction
-            .transaction
-            .clone()
-            .unwrap()
-            .output
-            .into_iter()
+        //let address = !wallet.is_mine(&o.script_pubkey).unwrap_or(false);
+
+        let address = {
+            let mut ret = "".to_string();
+
+            for output in outputs_iter.clone() {
+                let is_mine = wallet.is_mine(&output.script_pubkey).unwrap_or(false);
+                if (is_mine.clone() && transaction.received.clone() > 0)
+                    || (!is_mine && transaction.sent.clone() > 0)
+                {
+                    ret = Address::from_script(&output.script_pubkey, wallet.network())
+                        .unwrap()
+                        .to_string();
+
+                    break;
+                }
+            }
+
+            ret
+        };
+
+        let outputs: Vec<_> = outputs_iter
             .map(|o| {
                 CString::new(
                     Address::from_script(&o.script_pubkey, wallet.network())
@@ -667,6 +686,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
             outputs: outputs_ptr,
             inputs_len,
             inputs: inputs_ptr,
+            address: CString::new(address).unwrap().into_raw(),
         };
 
         transactions_vec.push(tx);

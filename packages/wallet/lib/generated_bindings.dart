@@ -458,6 +458,8 @@ class Transaction extends ffi.Struct {
   external int inputs_len;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> inputs;
+
+  external ffi.Pointer<ffi.Char> address;
 }
 
 class TransactionList extends ffi.Struct {
