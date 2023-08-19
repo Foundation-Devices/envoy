@@ -124,6 +124,21 @@ String getBtcUnitString({testnet = false}) {
   return testnet ? "TBTC" : "BTC";
 }
 
+String truncateWithEllipsis(String text, int maxLength) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  final ellipsis = '...';
+  final ellipsisLength = ellipsis.length;
+
+  final halfMaxLength = (maxLength - ellipsisLength) ~/ 2;
+  final firstHalf = text.substring(0, halfMaxLength);
+  final secondHalf = text.substring(text.length - halfMaxLength);
+
+  return '$firstHalf$ellipsis$secondHalf';
+}
+
 String getUnitString({testnet = false}) {
   String textUint = Settings().displayUnit == DisplayUnit.btc
       ? getBtcUnitString(testnet: testnet)
