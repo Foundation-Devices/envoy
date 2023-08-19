@@ -101,10 +101,14 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                           color: _getMainColor(),
                         ),
                       ),
-                    Text(
-                      widget.label,
-                      style: EnvoyTypography.subtitle3Semibold.copyWith(
-                        color: _getMainColor(),
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                      child: Text(
+                        widget.label,
+                        style: EnvoyTypography.subtitle3Semibold.copyWith(
+                          color: _getMainColor(),
+                        ),
                       ),
                     ),
                   ],

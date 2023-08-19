@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:ui';
+
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -17,13 +19,15 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
     enableDrag: enableDrag,
     isDismissible: enableDrag,
     barrierColor: EnvoyColors.dimmer,
+    backgroundColor: Colors.transparent,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(EnvoySpacing.medium2),
       ),
     ),
-    builder: (BuildContext context) {
-      return Container(
+    builder: (context) => BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+      child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(EnvoySpacing.medium2),
@@ -85,8 +89,8 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
             ],
           ),
         ),
-      );
-    },
+      ),
+    ),
   );
 }
 
