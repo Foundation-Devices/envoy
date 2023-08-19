@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CoinLockWarning extends ConsumerWidget {
+class CoinLockWarning extends StatefulWidget {
   final String warningMessage;
   final String buttonTitle;
   final DismissiblePrompt promptType;
@@ -22,8 +22,14 @@ class CoinLockWarning extends ConsumerWidget {
       required this.promptType});
 
   @override
-  Widget build(BuildContext context, ref) {
-    bool dismissed = ref.watch(arePromptsDismissedProvider(promptType));
+  State<CoinLockWarning> createState() => _CoinLockWarningState();
+}
+
+class _CoinLockWarningState extends State<CoinLockWarning> {
+  bool dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
         width: 300,
         height: 420,
@@ -62,7 +68,7 @@ class CoinLockWarning extends ConsumerWidget {
                 //TODO: updated copy & localization
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(warningMessage,
+                  child: Text(widget.warningMessage,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -72,44 +78,25 @@ class CoinLockWarning extends ConsumerWidget {
                 Padding(padding: EdgeInsets.all(12)),
                 GestureDetector(
                   onTap: () {
-                    if (!dismissed) {
-                      EnvoyStorage().addPromptState(promptType);
-                    } else {
-                      EnvoyStorage().removePromptState(promptType);
-                    }
+                    setState(() {
+                      dismissed = !dismissed;
+                    });
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        child: AnimatedContainer(
-                          height: 16,
-                          width: 16,
-                          duration: Duration(milliseconds: 200),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                  color: dismissed
-                                      ? Colors.black
-                                      : Color(0xff808080),
-                                  width: 1)),
-                          child: AnimatedContainer(
-                            height: 12,
-                            width: 12,
-                            margin: EdgeInsets.all(2),
-                            duration: Duration(milliseconds: 200),
-                            curve: Curves.easeInSine,
-                            decoration: BoxDecoration(
-                              color: dismissed
-                                  ? EnvoyColors.teal
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
+                        child: EnvoyCheckbox(
+                          value: dismissed,
+                          onChanged: (value) {
+                            if (value != null)
+                              setState(() {
+                                dismissed = value;
+                              });
+                          },
                         ),
                       ),
-                      Padding(padding: EdgeInsets.all(4)),
                       Text(
                         "Do not remind me",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -122,11 +109,16 @@ class CoinLockWarning extends ConsumerWidget {
                 ),
                 Padding(padding: EdgeInsets.all(12)),
                 EnvoyButton(
-                  buttonTitle,
+                  widget.buttonTitle,
                   onTap: () {
-                    onContinue();
+                    if (dismissed) {
+                      EnvoyStorage().addPromptState(widget.promptType);
+                    } else {
+                      EnvoyStorage().removePromptState(widget.promptType);
+                    }
+                    widget.onContinue();
                   },
-                  type: EnvoyButtonTypes.primary,
+                  type: EnvoyButtonTypes.primaryModal,
                 ),
               ],
             ),
@@ -135,18 +127,35 @@ class CoinLockWarning extends ConsumerWidget {
   }
 }
 
-class CreateCoinTagWarning extends ConsumerWidget {
+class CreateCoinTagWarning extends ConsumerStatefulWidget {
   final GestureTapCallback onContinue;
 
   const CreateCoinTagWarning({super.key, required this.onContinue});
 
   @override
-  Widget build(BuildContext context, ref) {
-    bool dismissed = ref.watch(
-        arePromptsDismissedProvider(DismissiblePrompt.createCoinTagWarning));
+  ConsumerState<CreateCoinTagWarning> createState() =>
+      _CreateCoinTagWarningState();
+}
+
+class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
+  bool dismissed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        dismissed = ref.read(arePromptsDismissedProvider(
+            DismissiblePrompt.createCoinTagWarning));
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
         width: (MediaQuery.of(context).size.width * 0.8).clamp(254, 540),
-        height: (MediaQuery.of(context).size.height * 0.5).clamp(430, 540),
+        height: (MediaQuery.of(context).size.height * 0.54).clamp(430, 540),
         padding: EdgeInsets.all(24),
         child: Stack(
           fit: StackFit.passthrough,
@@ -190,46 +199,25 @@ class CreateCoinTagWarning extends ConsumerWidget {
                 Padding(padding: EdgeInsets.all(12)),
                 GestureDetector(
                   onTap: () {
-                    if (!dismissed) {
-                      EnvoyStorage().addPromptState(
-                          DismissiblePrompt.createCoinTagWarning);
-                    } else {
-                      EnvoyStorage().removePromptState(
-                          DismissiblePrompt.createCoinTagWarning);
-                    }
+                    setState(() {
+                      dismissed = !dismissed;
+                    });
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        child: AnimatedContainer(
-                          height: 16,
-                          width: 16,
-                          duration: Duration(milliseconds: 200),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                  color: dismissed
-                                      ? Colors.black
-                                      : Color(0xff808080),
-                                  width: 1)),
-                          child: AnimatedContainer(
-                            height: 12,
-                            width: 12,
-                            margin: EdgeInsets.all(2),
-                            duration: Duration(milliseconds: 200),
-                            curve: Curves.easeInSine,
-                            decoration: BoxDecoration(
-                              color: dismissed
-                                  ? EnvoyColors.teal
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
+                        child: EnvoyCheckbox(
+                          value: dismissed,
+                          onChanged: (value) {
+                            if (value != null)
+                              setState(() {
+                                dismissed = value;
+                              });
+                          },
                         ),
                       ),
-                      Padding(padding: EdgeInsets.all(4)),
                       Text(
                         "Do not remind me",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -249,9 +237,20 @@ class CreateCoinTagWarning extends ConsumerWidget {
                   type: EnvoyButtonTypes.tertiary,
                 ),
                 Padding(padding: EdgeInsets.all(8)),
-                EnvoyButton("Continue", onTap: () {
-                  onContinue();
-                }),
+                EnvoyButton(
+                  "Continue",
+                  onTap: () {
+                    if (!dismissed) {
+                      EnvoyStorage().addPromptState(
+                          DismissiblePrompt.createCoinTagWarning);
+                    } else {
+                      EnvoyStorage().removePromptState(
+                          DismissiblePrompt.createCoinTagWarning);
+                    }
+                    widget.onContinue();
+                  },
+                  type: EnvoyButtonTypes.primaryModal,
+                ),
               ],
             ),
           ],
