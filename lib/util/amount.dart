@@ -124,7 +124,7 @@ String getBtcUnitString({testnet = false}) {
   return testnet ? "TBTC" : "BTC";
 }
 
-String truncateWithEllipsis(String text, int maxLength) {
+String truncateWithEllipsisInCenter(String text, int maxLength) {
   if (text.length <= maxLength) {
     return text;
   }
