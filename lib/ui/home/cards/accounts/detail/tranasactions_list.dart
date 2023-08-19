@@ -170,7 +170,8 @@ class TransactionListTile extends StatelessWidget {
             // Styled as ListTile.title and ListTile.subtitle respectively
             Consumer(
               builder: (context, ref, child) {
-                bool hide = ref.watch(balanceHideStateStatusProvider(account.id));
+                bool hide =
+                    ref.watch(balanceHideStateStatusProvider(account.id));
                 if (hide) {
                   return SizedBox(
                       width: 100,

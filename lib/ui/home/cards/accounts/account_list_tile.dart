@@ -215,8 +215,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                       flex: 2,
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final hide = ref
-                              .watch(balanceHideStateStatusProvider(account.id));
+                          final hide = ref.watch(
+                              balanceHideStateStatusProvider(account.id));
                           if (hide) {
                             return Padding(
                               padding: const EdgeInsets.all(6.0),
