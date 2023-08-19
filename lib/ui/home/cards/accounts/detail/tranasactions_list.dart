@@ -6,10 +6,8 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
-import 'package:envoy/ui/widgets/material_transparent_router.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -144,8 +142,6 @@ class TransactionListTile extends StatelessWidget {
     // }
     return GestureDetector(
       onTap: () {
-
-        return;
         Clipboard.setData(ClipboardData(text: transaction.txId));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(S().envoy_account_transaction_copied_clipboard),

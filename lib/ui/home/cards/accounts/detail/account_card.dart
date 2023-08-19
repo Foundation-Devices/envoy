@@ -19,6 +19,7 @@ import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
@@ -32,6 +33,7 @@ import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/blur_container_transform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -335,83 +337,52 @@ class TransactionListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: transaction.txId));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(S().envoy_account_transaction_copied_clipboard),
-        ));
-      },
-      child: ListTile(
-        title: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: transaction.amount < 0
-              ? Text(S().envoy_account_sent)
-              : Text(S().envoy_account_received),
-        ),
-        subtitle: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: transaction.type == TransactionType.azteco
-              ? Text(S().azteco_account_tx_history_pending_voucher)
-              : transaction.isConfirmed
-                  ? Text(timeago.format(transaction.date))
-                  : Text(S().envoy_account_awaiting_confirmation),
-        ),
-        leading: transaction.amount < 0
-            ? Icon(Icons.call_made)
-            : Icon(Icons.call_received),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: Settings().selectedFiat == null
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.end,
-          children: [
-            // Styled as ListTile.title and ListTile.subtitle respectively
-            Consumer(
-              builder: (context, ref, child) {
-                bool hide = ref.watch(balanceHideStateStatusProvider(account));
-                if (hide) {
-                  return SizedBox(
-                    width: 100,
-                    height: 15,
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Color(0xffEEEEEE),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  );
-                } else {
-                  return child ?? Container();
-                }
-              },
-              child: Text(
-                transaction.type == TransactionType.azteco
-                    ? ""
-                    : getFormattedAmount(transaction.amount,
-                        trailingZeroes: true),
-                style: Settings().selectedFiat == null
-                    ? Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontSize: 20.0)
-                    : Theme.of(context).textTheme.titleMedium,
-              ),
+    return BlurContainerTransform(
+      closedBuilder: (context, action) {
+        return GestureDetector(
+          onTap: () {
+            action();
+          },
+          onLongPress: () {
+            Clipboard.setData(ClipboardData(text: transaction.txId));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(S().envoy_account_transaction_copied_clipboard),
+            ));
+          },
+          child: ListTile(
+            title: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: transaction.amount < 0
+                  ? Text(S().envoy_account_sent)
+                  : Text(S().envoy_account_received),
             ),
-            if (Settings().selectedFiat != null)
-              Consumer(
-                builder: (context, ref, child) {
-                  bool hide =
-                      ref.watch(balanceHideStateStatusProvider(account));
-                  if (hide) {
-                    return Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: SizedBox(
-                        width: 64,
+            subtitle: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: transaction.type == TransactionType.azteco
+                  ? Text(S().azteco_account_tx_history_pending_voucher)
+                  : transaction.isConfirmed
+                      ? Text(timeago.format(transaction.date))
+                      : Text(S().envoy_account_awaiting_confirmation),
+            ),
+            leading: transaction.amount < 0
+                ? Icon(Icons.call_made)
+                : Icon(Icons.call_received),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: Settings().selectedFiat == null
+                  ? CrossAxisAlignment.center
+                  : CrossAxisAlignment.end,
+              children: [
+                // Styled as ListTile.title and ListTile.subtitle respectively
+                Consumer(
+                  builder: (context, ref, child) {
+                    bool hide =
+                        ref.watch(balanceHideStateStatusProvider(account.id));
+                    if (hide) {
+                      return SizedBox(
+                        width: 100,
                         height: 15,
                         child: Container(
                           width: double.infinity,
@@ -421,22 +392,70 @@ class TransactionListTile extends StatelessWidget {
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
                         ),
-                      ),
-                    );
-                  } else {
-                    return child ?? Container();
-                  }
-                },
-                child: Text(
+                      );
+                    } else {
+                      return child ?? Container();
+                    }
+                  },
+                  child: Text(
                     transaction.type == TransactionType.azteco
                         ? ""
-                        : ExchangeRate().getFormattedAmount(transaction.amount),
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall!.color)),
-              ),
-          ],
-        ),
-      ),
+                        : getFormattedAmount(transaction.amount,
+                            trailingZeroes: true),
+                    style: Settings().selectedFiat == null
+                        ? Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontSize: 20.0)
+                        : Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                if (Settings().selectedFiat != null)
+                  Consumer(
+                    builder: (context, ref, child) {
+                      bool hide =
+                          ref.watch(balanceHideStateStatusProvider(account.id));
+                      if (hide) {
+                        return Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: SizedBox(
+                            width: 64,
+                            height: 15,
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Color(0xffEEEEEE),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return child ?? Container();
+                      }
+                    },
+                    child: Text(
+                        transaction.type == TransactionType.azteco
+                            ? ""
+                            : ExchangeRate()
+                                .getFormattedAmount(transaction.amount),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color:
+                                Theme.of(context).textTheme.bodySmall!.color)),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+      openBuilder: (context, action) {
+        return TransactionsDetailsWidget(
+          account: account,
+          tx: transaction,
+        );
+      },
     );
   }
 }
