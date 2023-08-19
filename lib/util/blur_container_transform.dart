@@ -11,16 +11,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-/// Signature for `action` callback function provided to [TagDetailsContainerTransform.openBuilder].
+/// Signature for `action` callback function provided to [BlurContainerTransform.openBuilder].
 ///
-/// Parameter `returnValue` is the value which will be provided to [TagDetailsContainerTransform.onClosed]
+/// Parameter `returnValue` is the value which will be provided to [BlurContainerTransform.onClosed]
 /// when `action` is called.
 typedef CloseContainerActionCallback<S> = void Function({S? returnValue});
 
 /// Signature for a function that creates a [Widget] in open state within an
-/// [TagDetailsContainerTransform].
+/// [BlurContainerTransform].
 ///
-/// The `action` callback provided to [TagDetailsContainerTransform.openBuilder] can be used
+/// The `action` callback provided to [BlurContainerTransform.openBuilder] can be used
 /// to close the container.
 typedef OpenContainerBuilder<S> = Widget Function(
   BuildContext context,
@@ -28,16 +28,16 @@ typedef OpenContainerBuilder<S> = Widget Function(
 );
 
 /// Signature for a function that creates a [Widget] in closed state within an
-/// [TagDetailsContainerTransform].
+/// [BlurContainerTransform].
 ///
-/// The `action` callback provided to [TagDetailsContainerTransform.closedBuilder] can be used
+/// The `action` callback provided to [BlurContainerTransform.closedBuilder] can be used
 /// to open the container.
 typedef CloseContainerBuilder = Widget Function(
   BuildContext context,
   VoidCallback action,
 );
 
-/// The [TagDetailsContainerTransform] widget's fade transition type.
+/// The [BlurContainerTransform] widget's fade transition type.
 ///
 /// This determines the type of fade transition that the incoming and outgoing
 /// contents will use.
@@ -50,7 +50,7 @@ enum ContainerTransitionType {
   fadeThrough,
 }
 
-/// Callback function which is called when the [TagDetailsContainerTransform]
+/// Callback function which is called when the [BlurContainerTransform]
 /// is closed.
 typedef ClosedCallback<S> = void Function(S data);
 
@@ -85,12 +85,12 @@ typedef ClosedCallback<S> = void Function(S data);
 const scrimBlackColor = Colors.black38;
 
 @optionalTypeArgs
-class TagDetailsContainerTransform<T extends Object?> extends StatefulWidget {
-  /// Creates an [TagDetailsContainerTransform].
+class BlurContainerTransform<T extends Object?> extends StatefulWidget {
+  /// Creates an [BlurContainerTransform].
   ///
   /// All arguments except for [key] must not be null. The arguments
   /// [openBuilder] and [closedBuilder] are required.
-  const TagDetailsContainerTransform({
+  const BlurContainerTransform({
     Key? key,
     this.closedColor = Colors.white,
     this.openColor = Colors.white,
@@ -207,7 +207,7 @@ class TagDetailsContainerTransform<T extends Object?> extends StatefulWidget {
   /// The return value from the popped screen is passed to this function as an
   /// argument.
   ///
-  /// If no value is returned via [Navigator.pop] or [TagDetailsContainerTransform.openBuilder.action],
+  /// If no value is returned via [Navigator.pop] or [BlurContainerTransform.openBuilder.action],
   /// `null` will be returned by default.
   final ClosedCallback<T?>? onClosed;
 
@@ -272,12 +272,12 @@ class TagDetailsContainerTransform<T extends Object?> extends StatefulWidget {
   final Clip clipBehavior;
 
   @override
-  State<TagDetailsContainerTransform<T?>> createState() =>
-      _TagDetailsContainerTransformState<T>();
+  State<BlurContainerTransform<T?>> createState() =>
+      _BlurContainerTransformState<T>();
 }
 
-class _TagDetailsContainerTransformState<T>
-    extends State<TagDetailsContainerTransform<T?>> {
+class _BlurContainerTransformState<T>
+    extends State<BlurContainerTransform<T?>> {
   // Key used in [_OpenContainerRoute] to hide the widget returned by
   // [OpenContainer.openBuilder] in the source route while the container is
   // opening/open. A copy of that widget is included in the
