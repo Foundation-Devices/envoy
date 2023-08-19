@@ -9,16 +9,17 @@ import 'package:wallet/wallet.dart';
 class Coin {
   final Utxo utxo;
   bool locked = false;
+  String account;
 
-  Coin(this.utxo, {this.locked = false});
+  Coin(this.utxo, {this.locked = false, required this.account});
 
   String get id => utxo.id;
 
   int get amount => utxo.value;
 
-  void setLock(bool bool) {
-    CoinRepository().addUtxoBlockState(id, bool);
+  void setLock(bool bool) async {
     this.locked = bool;
+    CoinRepository().addUtxoBlockState(id, bool);
   }
 }
 
