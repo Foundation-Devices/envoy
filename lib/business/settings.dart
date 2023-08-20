@@ -136,6 +136,7 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String nguServerAddress = "https://ngu.foundationdevices.com";
 
   @JsonKey(defaultValue: false)

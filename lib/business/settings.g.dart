@@ -14,7 +14,6 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..usingDefaultElectrumServer =
       json['usingDefaultElectrumServer'] as bool? ?? true
   ..usingTor = json['usingTor'] as bool
-  ..nguServerAddress = json['nguServerAddress'] as String
   ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false
   ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false
   ..showTestnetAccountsSetting =
@@ -27,7 +26,6 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'selectedElectrumAddress': instance.selectedElectrumAddress,
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,
       'usingTor': instance.usingTor,
-      'nguServerAddress': instance.nguServerAddress,
       'syncToCloudSetting': instance.syncToCloudSetting,
       'allowScreenshotsSetting': instance.allowScreenshotsSetting,
       'showTestnetAccountsSetting': instance.showTestnetAccountsSetting,
