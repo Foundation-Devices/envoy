@@ -25,6 +25,9 @@ enum EnvoyIcons {
   scan,
   clipboard,
   filter,
+  info,
+  alert,
+  bell
 }
 
 class EnvoyIcon extends StatelessWidget {

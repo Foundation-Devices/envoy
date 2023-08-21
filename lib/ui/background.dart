@@ -94,3 +94,29 @@ class LinesPainter extends CustomPainter {
     return false;
   }
 }
+
+//wrap any widget with this to get a envoy striped background
+class StripesBackground extends StatelessWidget {
+  final Widget child;
+
+  const StripesBackground({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SizedBox(
+          height: constraints.minHeight,
+          width: constraints.maxWidth,
+          child: CustomPaint(
+            isComplex: true,
+            willChange: false,
+            child: child,
+            painter: LinesPainter(
+                color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
+          ),
+        );
+      },
+    );
+  }
+}

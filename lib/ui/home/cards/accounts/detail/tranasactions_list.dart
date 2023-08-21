@@ -141,7 +141,7 @@ class TransactionListTile extends StatelessWidget {
     //   //do azteco voucher transaction
     // }
     return GestureDetector(
-      onLongPress: () {
+      onTap: () {
         Clipboard.setData(ClipboardData(text: transaction.txId));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(S().envoy_account_transaction_copied_clipboard),
@@ -166,7 +166,8 @@ class TransactionListTile extends StatelessWidget {
             // Styled as ListTile.title and ListTile.subtitle respectively
             Consumer(
               builder: (context, ref, child) {
-                bool hide = ref.watch(balanceHideStateStatusProvider(account));
+                bool hide =
+                    ref.watch(balanceHideStateStatusProvider(account.id));
                 if (hide) {
                   return SizedBox(
                       width: 100,
@@ -198,7 +199,7 @@ class TransactionListTile extends StatelessWidget {
               Consumer(
                 builder: (context, ref, child) {
                   bool hide =
-                      ref.watch(balanceHideStateStatusProvider(account));
+                      ref.watch(balanceHideStateStatusProvider(account.id));
                   if (hide) {
                     return Padding(
                       padding: const EdgeInsets.all(2.0),

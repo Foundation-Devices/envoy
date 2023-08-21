@@ -84,10 +84,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
   _tagWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final tags = ref
-            .watch(coinsTagProvider(widget.accountId))
-            .where((element) => !element.untagged)
-            .toList()
+        final tags = ref.watch(coinsTagProvider(widget.accountId)).toList()
           ..sort((a, b) => b.coins.length.compareTo(a.coins.length))
           ..take(5);
 
@@ -185,20 +182,40 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 type: _tagController.text.isNotEmpty
                     ? EnvoyButtonTypes.primary
                     : EnvoyButtonTypes.tertiary, onTap: () async {
+              //get coins from current tag
               final coins = widget.tag.coins;
               final selections = ref.read(coinSelectionStateProvider);
+              //pick all the coins that are selected in current tag
               final selectedCoins = coins
                   .where((element) => selections.contains(element.id))
                   .toList();
 
+              //user selected from suggestions
               final existingTag = ref
                   .read(coinsTagProvider(widget.accountId))
                   .firstWhereOrNull((element) =>
                       element.name.toLowerCase() ==
                       _tagController.text.toLowerCase());
+
               if (existingTag != null) {
-                existingTag.addCoins(selectedCoins);
-                await CoinRepository().updateCoinTag(existingTag);
+                //user is trying to remove coin from a tag
+                //the user selected "Untagged" tag which is the default tag,
+                //so we need to remove the coins from current tag
+                if (existingTag.untagged) {
+                  final tags = ref.read(coinsTagProvider(widget.accountId));
+                  for (var tag in tags) {
+                    if (!tag.untagged &&
+                        tag.coins_id.contains(selectedCoins.first.id)) {
+                      selectedCoins.forEach((selectedCoin) {
+                        tag.removeCoin(selectedCoin);
+                      });
+                      await CoinRepository().updateCoinTag(tag);
+                    }
+                  }
+                } else {
+                  existingTag.addCoins(selectedCoins);
+                  await CoinRepository().updateCoinTag(existingTag);
+                }
               } else {
                 CoinTag tag = CoinTag(
                   id: CoinTag.generateNewId(),

@@ -88,8 +88,10 @@ final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
 
   List<Utxo> utxos = account.wallet.utxos;
   //Map utxos to coins with locked status
-  List<Coin> coins =
-      utxos.map((e) => Coin(e, locked: utxoBlockState[e.id] ?? false)).toList();
+  List<Coin> coins = utxos
+      .map((e) =>
+          Coin(e, locked: utxoBlockState[e.id] ?? false, account: accountId))
+      .toList();
   return coins;
 });
 
@@ -152,3 +154,49 @@ final coinsTagProvider =
 
   return tags;
 });
+
+//Provider for [CoinTag] list for specific account and txId
+final tagsFilteredByTxIdProvider =
+    Provider.family<List<CoinTag>, FilterTagPayload>((ref, filters) {
+  final accountId = filters.accountId;
+  final txId = filters.txId;
+  if (txId == null || accountId == null) {
+    return [];
+  }
+
+  final List<CoinTag> tags = ref.watch(coinsTagProvider(accountId));
+  final List<CoinTag> associatedTags = [];
+  tags.forEach((element) {
+    if (element.coins.any((coin) => coin.utxo.txid == txId)) {
+      associatedTags.add(element);
+    }
+  });
+
+  return associatedTags;
+});
+
+final coinTagLockStateProvider = Provider.family<bool, CoinTag>((ref, tag) {
+  ref.watch(coinsTagProvider(tag.account));
+  return tag.isAllCoinsLocked;
+});
+
+//[tagsFilteredByTxIdProvider] require two parameters,
+//accountId and txId, this class is used to pass those parameters
+//Why not use Map<String, String> ? because provider needs an equatable object
+//to cache the result, Map<String, String> is not equatable
+class FilterTagPayload {
+  final String? accountId;
+  final String? txId;
+  FilterTagPayload(this.accountId, this.txId);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FilterTagPayload &&
+          runtimeType == other.runtimeType &&
+          accountId == other.accountId &&
+          txId == other.txId;
+
+  @override
+  int get hashCode => accountId.hashCode ^ txId.hashCode;
+}

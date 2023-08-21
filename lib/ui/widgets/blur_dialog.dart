@@ -52,8 +52,8 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
               focused: false,
               container: true,
               explicitChildNodes: true,
-              child: Align(
-                alignment: alignment,
+              child: AlignTransition(
+                alignment: _animation!,
                 child: Material(
                   color: Colors.transparent,
                   child: SafeArea(
@@ -117,13 +117,13 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     _filterBlurAnimation = createBlurFilterAnimation();
     _filterColorAnimation = createColorFilterAnimation();
 
-    _animation = AlignmentTween(
-            begin: const Alignment(-1.0, -2.0), end: Alignment(-1.0, -1.0))
-        .animate(
+    _animation =
+        AlignmentTween(begin: const Alignment(0.0, 1.0), end: alignment)
+            .animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Curves.easeIn,
-        reverseCurve: Curves.easeOut,
+        curve: Curves.ease,
+        reverseCurve: Curves.easeOutExpo,
       ),
     );
 

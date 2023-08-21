@@ -4,13 +4,13 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
+import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_details_screen.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
-import 'package:envoy/util/tag_details_container_transform.dart';
+import 'package:envoy/util/blur_container_transform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,7 +42,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
               controller: _scrollController,
               itemCount: tags.length,
               itemBuilder: (BuildContext context, int index) {
-                return TagDetailsContainerTransform(
+                return BlurContainerTransform(
                   closedBuilder: (context, action) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -50,7 +50,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
                     );
                   },
                   openBuilder: (context, action) {
-                    return CoinDetailsScreen(
+                    return CoinTagDetailsScreen(
                         showCoins: true, coinTag: tags[index]);
                   },
                 );
@@ -77,8 +77,9 @@ class CoinItemWidget extends StatelessWidget {
               fontWeight: FontWeight.w600,
             );
 
-    Color cardBackground =
-        tag.untagged ? Color(0xff808080) : EnvoyColors.listAccountTileColors[0];
+    Color cardBackground = tag.untagged
+        ? Color(0xff808080)
+        : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
     return Container(
       height: 108,
       decoration: BoxDecoration(
@@ -128,69 +129,13 @@ class CoinItemWidget extends StatelessWidget {
                   ),
                   Consumer(
                     builder: (context, ref, child) {
-                      //TODO: hide tag balance using [ balanceHideStateStatusProvider]
-                      // final hide = ref.watch(balanceHideStateStatusProvider(account));
-                      // final hide = false;
-                      // if (hide) {
-                      //   return Container();
-                      // }
-                      if (tag.coins.isEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 4),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16))),
-                            child: Center(
-                              child: Text("No coins"),
-                            ),
-                          ),
-                        );
-                      }
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 4, horizontal: 4),
                         child: Container(
                           height: 40,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          child: CoinBalanceWidget(
-                            amount: tag.totalAmount,
-                            locked: false,
-                            showLock: false,
-                            switchWidget: Consumer(
-                              builder: (context, ref, child) {
-                                final selections =
-                                    ref.watch(coinSelectionStateProvider);
-                                int selectedItems =
-                                    tag.getNumSelectedCoins(selections);
-
-                                CoinTagSwitchState coinTagSwitchState =
-                                    selectedItems == 0
-                                        ? CoinTagSwitchState.off
-                                        : CoinTagSwitchState.partial;
-                                if (selectedItems == tag.numOfCoins) {
-                                  coinTagSwitchState = CoinTagSwitchState.on;
-                                }
-                                if (tag.coins.isEmpty) {
-                                  return SizedBox();
-                                }
-
-                                return IgnorePointer(
-                                  ignoring: true,
-                                  child: CoinTagSwitch(
-                                    value: coinTagSwitchState,
-                                    onChanged: (value) {},
-                                  ),
-                                );
-                              },
-                            ),
-                            onLockTap: () {},
+                          child: CoinTagBalanceWidget(
+                            coinTag: tag,
                           ),
                         ),
                       );
