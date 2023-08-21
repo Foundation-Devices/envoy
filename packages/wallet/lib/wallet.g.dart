@@ -14,6 +14,7 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       json['received'] as int,
       json['sent'] as int,
       json['blockHeight'] as int,
+      json['address'] as String?,
       type: $enumDecodeNullable(_$TransactionTypeEnumMap, json['type']) ??
           TransactionType.normal,
       outputs:
@@ -34,6 +35,7 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'outputs': instance.outputs,
       'inputs': instance.inputs,
       'type': _$TransactionTypeEnumMap[instance.type]!,
+      'address': instance.address,
     };
 
 const _$TransactionTypeEnumMap = {
