@@ -2,11 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:envoy/util/amount.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -128,6 +133,49 @@ class ListHeader extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class ActivityListTile extends StatelessWidget {
+  const ActivityListTile(
+    this.notification, {
+    Key? key,
+  }) : super(key: key);
+
+  final EnvoyNotification notification;
+
+  @override
+  Widget build(BuildContext context) {
+    String textLeft1 = "";
+    String? textLeft2;
+    String? textRight1;
+    String? textRight2;
+    EnvoyIcons? leftIcon;
+    EnvoyIcons? rightIcon;
+    Color? iconColor;
+
+    if (notification.type == EnvoyNotificationType.transaction) {
+      leftIcon = notification.amount! >= 0
+          ? EnvoyIcons.arrow_down_left
+          : EnvoyIcons.arrow_up_right;
+      textLeft1 = notification.amount! >= 0 ? "Received" : "Sent";
+      textLeft2 = timeago.format(notification.date);
+      textRight1 = getFormattedAmount(notification.amount!, includeUnit: true);
+      textRight2 = Settings().selectedFiat == null
+          ? null
+          : ExchangeRate().getFormattedAmount(notification.amount!);
+      iconColor = EnvoyColors.textTertiary;
+    }
+
+    return EnvoyListTile(
+      textLeft1: textLeft1,
+      textLeft2: textLeft2,
+      textRight1: textRight1,
+      textRight2: textRight2,
+      rightIcon: rightIcon,
+      leftIcon: leftIcon,
+      iconColor: iconColor,
     );
   }
 }
