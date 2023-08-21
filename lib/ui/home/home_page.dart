@@ -104,7 +104,7 @@ class _HomePageState extends ConsumerState<HomePage>
 
     _tabController = TabController(
       length: _tlCardList.length,
-      initialIndex: 1,
+      initialIndex: 2,
       vsync: this,
     );
 

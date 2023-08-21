@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account.dart';
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -46,7 +49,8 @@ class CoinTag {
   int get totalAmount =>
       coins.fold(0, (prevVal, element) => prevVal + element.utxo.value);
 
-  bool get isAllCoinsLocked => this.numOfCoins == this.numOfLockedCoins;
+  bool get isAllCoinsLocked =>
+      this.numOfCoins == 0 ? false : this.numOfCoins == this.numOfLockedCoins;
 
   List<Coin> get selectableCoins =>
       coins.where((element) => !element.locked).toList();
@@ -79,6 +83,12 @@ class CoinTag {
 
   toJsonCoin() {
     return this.coins.map((e) => e.id);
+  }
+
+  Account? getAccount() {
+    return AccountManager()
+        .accounts
+        .firstWhereOrNull((account) => this.account == account.id);
   }
 
   static generateNewId() {

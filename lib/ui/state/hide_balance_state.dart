@@ -51,9 +51,9 @@ final balanceHideNotifierProvider =
     ChangeNotifierProvider((ref) => HideStateNotifier());
 
 //Provider for accessing hide state with account parameter
-final balanceHideStateStatusProvider = Provider.family<bool, Account>(
-  (ref, account) {
+final balanceHideStateStatusProvider = Provider.family<bool, String?>(
+  (ref, accountId) {
     var hideStates = ref.watch(balanceHideNotifierProvider);
-    return hideStates.amountHiddenAccounts.contains(account.id);
+    return hideStates.amountHiddenAccounts.contains(accountId);
   },
 );

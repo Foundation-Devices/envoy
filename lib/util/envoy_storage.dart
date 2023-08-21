@@ -172,6 +172,18 @@ class EnvoyStorage {
     return true;
   }
 
+  //returns a stream of all pending transactions that stored in the database
+  Stream<String> getTxNotesStream(String txId) {
+    var finder = Finder(filter: Filter.byKey(txId));
+    return EnvoyStorage()
+        .txNotesStore
+        .query(finder: finder)
+        .onSnapshots(_db)
+        .map((records) {
+      return records.first.value;
+    });
+  }
+
   Future<String?> getTxNote(String txId) async {
     if (await txNotesStore.record(txId).exists(_db))
       return txNotesStore.record(txId).get(_db);
