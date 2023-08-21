@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
