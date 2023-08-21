@@ -27,7 +27,9 @@ enum EnvoyIcons {
   filter,
   info,
   alert,
-  bell
+  bell,
+  arrow_down_left,
+  arrow_up_right,
 }
 
 class EnvoyIcon extends StatelessWidget {
