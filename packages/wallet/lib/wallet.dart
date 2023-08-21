@@ -56,13 +56,14 @@ class Transaction extends Comparable {
   final List<String>? outputs;
   final List<String>? inputs;
   final TransactionType type;
+  final String? address;
 
   get isConfirmed => date.compareTo(DateTime(2008)) > 0;
 
   int get amount => received - sent;
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
-      this.sent, this.blockHeight,
+      this.sent, this.blockHeight, this.address,
       {this.type = TransactionType.normal, this.outputs, this.inputs});
 
   // Serialisation
@@ -133,6 +134,7 @@ class NativeTransaction extends Struct {
   @Uint8()
   external int inputsLen;
   external Pointer<Pointer<Uint8>> inputs;
+  external Pointer<Uint8> address;
 }
 
 class NativeSeed extends Struct {
@@ -682,6 +684,7 @@ class Wallet {
         tx.received,
         tx.sent,
         tx.confirmationHeight,
+        tx.address.cast<Utf8>().toDartString(),
         outputs: _extractStringList(tx.outputs, tx.outputsLen),
         inputs: _extractStringList(tx.inputs, tx.inputsLen),
       ));

@@ -139,6 +139,7 @@ class EnvoyStorage {
               0,
               e["amount"] as int,
               0,
+              "",
               type: e["type"] == wallet.TransactionType.azteco.toString()
                   ? wallet.TransactionType.azteco
                   : wallet.TransactionType.pending),
