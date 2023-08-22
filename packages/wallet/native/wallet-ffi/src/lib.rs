@@ -745,6 +745,71 @@ fn psbt_extract_details<T: BatchDatabase>(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn wallet_get_max_feerate(
+    wallet: *mut Mutex<bdk::Wallet<Tree>>,
+    send_to: *const c_char,
+    amount: u64,
+    fee_rate: f64,
+    utxos: *const UtxoList,
+) -> Psbt {
+    let error_return = Psbt {
+        sent: 0,
+        received: 0,
+        fee: 0,
+        base64: ptr::null(),
+        txid: ptr::null(),
+        raw_tx: ptr::null(),
+    };
+    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
+    let address = CStr::from_ptr(send_to).to_str().unwrap();
+
+    let send_to = unwrap_or_return!(Address::from_str(address), error_return);
+
+    let mut must_spend = vec![];
+
+    for i in 0..(*utxos).utxos_len as isize {
+        let utxo_ptr = (*utxos).utxos.offset(i);
+
+        let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
+        let vout = (*utxo_ptr).vout;
+
+        must_spend.push(OutPoint::new(Txid::from_str(txid).unwrap(), vout));
+    }
+
+    let mut builder = wallet.build_tx();
+    builder
+        .change_address_index(AddressIndex::Current)
+        .ordering(TxOrdering::Shuffle)
+        .only_witness_utxo()
+        .add_recipient(send_to.script_pubkey(), amount)
+        .enable_rbf()
+        .add_utxos(&*must_spend)
+        .unwrap()
+        .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
+
+    match builder.finish() {
+        Ok((mut psbt, _)) => {
+            let sign_options = SignOptions {
+                trust_witness_utxo: true,
+                ..Default::default()
+            };
+
+            // Always try signing
+            let _finalized = match wallet.sign(&mut psbt, sign_options) {
+                Ok(f) => f,
+                Err(_) => false,
+            };
+
+            psbt_extract_details(&wallet, &psbt)
+        }
+        Err(e) => {
+            update_last_error(e);
+            return error_return;
+        }
+    }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn wallet_create_psbt(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     send_to: *const c_char,
