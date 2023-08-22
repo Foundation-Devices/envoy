@@ -2,19 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
+import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'dart:io';
-import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
   const MagicSetupTutorial({Key? key}) : super(key: key);
@@ -29,115 +30,119 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
-        child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CupertinoNavigationBarBackButton(
-              color: Colors.black,
-              onPressed: () => Navigator.pop(context),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: TextButton(
-                child: Text(S().magic_setup_tutorial_ios_skip,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.black)),
-                onPressed: () {
-                  OnboardingPage.goHome(context);
-                },
-              ),
+        child: MediaQuery.removePadding(
+      removeTop: true,
+      context: context,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.black,
+            onPressed: () => Navigator.pop(context),
+          ),
+          actions: [
+            TextButton(
+              child: Text(S().magic_setup_tutorial_ios_skip,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.black)),
+              onPressed: () {
+                OnboardingPage.goHome(context);
+              },
             ),
           ],
         ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      !Platform.isLinux
-                          ? EmbeddedVideo(
-                              path: "assets/videos/magic_backups.m4v",
-                              key: _playerKey,
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
-                Padding(padding: EdgeInsets.only(bottom: 6)),
-                Text(
-                  S().magic_setup_tutorial_ios_heading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                LinkText(
-                  text: Platform.isAndroid
-                      ? S().magic_setup_tutorial_android_subheading
-                      : S().magic_setup_tutorial_ios_subheading,
-                  onTap: () {
-                    _playerKey.currentState?.pause();
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: WalletSecurityModal(
-                          onLastStep: () {
-                            Navigator.pop(context);
-                          },
-                        ));
-                  },
-                ),
-                Column(
+        body: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    OnboardingButton(
-                        fontWeight: FontWeight.w600,
-                        type: EnvoyButtonTypes.secondary,
-                        label: S().magic_setup_tutorial_ios_CTA2,
-                        textStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                                color: EnvoyColors.darkTeal,
-                                fontWeight: FontWeight.w600),
-                        onTap: () {
-                          _playerKey.currentState?.pause();
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return MagicRecoverWallet();
-                          }));
-                        }),
-                    OnboardingButton(
-                        fontWeight: FontWeight.w600,
-                        textStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                                color: EnvoyColors.white100,
-                                fontWeight: FontWeight.w600),
-                        label: S().magic_setup_tutorial_ios_CTA1,
-                        onTap: () {
-                          _playerKey.currentState?.pause();
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return MagicSetupGenerate();
-                          }));
-                          // showCreateWarning(context);
-                        }),
+                    Container(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          !Platform.isLinux
+                              ? EmbeddedVideo(
+                                  path: "assets/videos/magic_backups.m4v",
+                                  key: _playerKey,
+                                )
+                              : Container(),
+                        ],
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(bottom: 6)),
+                    Text(
+                      S().magic_setup_tutorial_ios_heading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    LinkText(
+                      text: Platform.isAndroid
+                          ? S().magic_setup_tutorial_android_subheading
+                          : S().magic_setup_tutorial_ios_subheading,
+                      onTap: () {
+                        _playerKey.currentState?.pause();
+                        showEnvoyDialog(
+                            context: context,
+                            dialog: WalletSecurityModal(
+                              onLastStep: () {
+                                Navigator.pop(context);
+                              },
+                            ));
+                      },
+                    ),
+                    Column(
+                      children: [
+                        OnboardingButton(
+                            fontWeight: FontWeight.w600,
+                            type: EnvoyButtonTypes.secondary,
+                            label: S().magic_setup_tutorial_ios_CTA2,
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color: EnvoyColors.darkTeal,
+                                    fontWeight: FontWeight.w600),
+                            onTap: () {
+                              _playerKey.currentState?.pause();
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return MagicRecoverWallet();
+                              }));
+                            }),
+                        OnboardingButton(
+                            fontWeight: FontWeight.w600,
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color: EnvoyColors.white100,
+                                    fontWeight: FontWeight.w600),
+                            label: S().magic_setup_tutorial_ios_CTA1,
+                            onTap: () {
+                              _playerKey.currentState?.pause();
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return MagicSetupGenerate();
+                              }));
+                              // showCreateWarning(context);
+                            }),
+                      ],
+                    )
                   ],
-                )
-              ],
-            ),
-          ),
+                ),
+              ),
+            )
+          ],
         ),
-      ],
+      ),
     ));
   }
 
