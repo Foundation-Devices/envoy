@@ -13,10 +13,11 @@ class CardNavigator {
 }
 
 mixin NavigationCard on Widget {
-  bool modal = false;
-  Widget? optionsWidget;
-  String? title;
-  Function()? onPop;
-  Function()? rightFunction;
-  CardNavigator? navigator;
+  abstract bool modal;
+  abstract Widget? optionsWidget;
+  abstract String? title;
+  abstract Function()? onPop;
+  abstract Function()? rightFunction;
+  abstract IconData? rightFunctionIcon;
+  abstract CardNavigator? navigator;
 }

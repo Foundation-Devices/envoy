@@ -20,24 +20,37 @@ import 'package:envoy/business/fees.dart';
 
 //ignore: must_be_immutable
 class ConfirmationCard extends StatefulWidget with NavigationCard {
-  @override
-  bool get modal => true;
-
   final Account account;
   final bool sendMax;
   final int amount;
 
   final String initialAddress;
 
-  ConfirmationCard(this.account, this.amount, this.initialAddress,
-      {CardNavigator? pushCallback})
+  ConfirmationCard(
+      this.account, this.amount, this.initialAddress, this.navigator)
       : this.sendMax = amount == account.wallet.balance,
-        super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().send_qr_code_heading.toUpperCase();
-    navigator = pushCallback;
-  }
+        super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = true;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   State<ConfirmationCard> createState() => _ConfirmationCardState();
@@ -163,13 +176,13 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                       widget.navigator!.push(PsbtCard(
                         _boostEnabled ? _currentPsbtBoost : _currentPsbt,
                         widget.account,
-                        navigationCallback: widget.navigator,
+                        widget.navigator,
                       ));
                     } else {
                       widget.navigator!.push(TxReview(
                         _boostEnabled ? _currentPsbtBoost : _currentPsbt,
                         widget.account,
-                        navigationCallback: widget.navigator,
+                        navigator: widget.navigator,
                         onFinishNavigationClick: () {
                           widget.navigator?.pop(depth: 3);
                         },

@@ -65,7 +65,11 @@ class DevicesCardState extends State<DevicesCard>
     final navigator = CardNavigator(push, pop, hideOptions);
 
     if (cardStack.isEmpty) {
-      navigator.push(DevicesList(navigator));
+      navigator.push(DevicesList(
+          navigator,
+          DevicesOptions(
+            navigator: navigator,
+          )));
     }
 
     return IndexedTransitionSwitcher(
@@ -92,14 +96,28 @@ class DevicesCardState extends State<DevicesCard>
 
 //ignore: must_be_immutable
 class DevicesList extends StatefulWidget with NavigationCard {
-  DevicesList(CardNavigator? navigationCallback) : super(key: UniqueKey()) {
-    modal = false;
-    title = S().devices_heading.toUpperCase();
-    navigator = navigationCallback;
-    optionsWidget = DevicesOptions(
-      navigator: navigator,
-    );
-  }
+  DevicesList(this.navigator, this.optionsWidget) : super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = Icons.add;
+
+  @override
+  bool modal = false;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().devices_heading.toUpperCase();
 
   @override
   State<DevicesList> createState() => _DevicesListState();
@@ -147,8 +165,13 @@ class _DevicesListState extends State<DevicesList> {
                   child: DeviceListTile(
                     device,
                     onTap: () {
-                      widget.navigator!.push(DeviceCard(device,
-                          navigationCallback: widget.navigator));
+                      widget.navigator!.push(DeviceCard(
+                          device,
+                          widget.navigator,
+                          DeviceOptions(
+                            device,
+                            navigator: widget.navigator,
+                          )));
                     },
                   ),
                 );

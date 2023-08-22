@@ -24,13 +24,28 @@ class PsbtCard extends StatelessWidget with NavigationCard {
   final Psbt psbt;
   final Account account;
 
-  PsbtCard(this.psbt, this.account, {CardNavigator? navigationCallback})
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().send_qr_code_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+  PsbtCard(this.psbt, this.account, this.navigator) : super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = true;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +125,7 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                                   navigator!.push(TxReview(
                                     decoded,
                                     account,
-                                    navigationCallback: navigator,
+                                    navigator: navigator,
                                     onFinishNavigationClick: () {
                                       navigator?.pop(depth: 4);
                                     },
