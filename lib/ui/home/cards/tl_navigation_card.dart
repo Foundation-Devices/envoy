@@ -49,8 +49,7 @@ mixin TopLevelNavigationCardState<T extends TopLevelNavigationCard>
             modal: currentCard.modal,
             optionsWidget: currentCard.optionsWidget,
             title: currentCard.title,
-            rightFunctionIcon:
-                cardStack.length > 1 ? Icons.more_horiz : Icons.add,
+            rightFunctionIcon: currentCard.rightFunctionIcon,
             rightFunction: currentCard.rightFunction,
             leftFunction: cardStack.length > 1
                 ? () {

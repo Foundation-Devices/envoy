@@ -34,11 +34,28 @@ class LearnCardState extends State<LearnCard> with TopLevelNavigationCardState {
 
 //ignore: must_be_immutable
 class DefaultLearnCard extends StatelessWidget with NavigationCard {
-  DefaultLearnCard() {
-    optionsWidget = null;
-    modal = false;
-    title = "Learn".toUpperCase();
-  }
+  DefaultLearnCard() {}
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = false;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().envoy_home_learn.toUpperCase();
 
   @override
   Widget build(BuildContext context) {

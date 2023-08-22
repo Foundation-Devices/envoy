@@ -9,7 +9,6 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
-import 'package:envoy/ui/home/notifications/notifications_page.dart';
 import 'package:envoy/ui/home/cards/learn/learn_card.dart';
 import 'package:envoy/ui/home/settings/settings_menu.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
@@ -20,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/shield.dart';
-//import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -70,7 +68,7 @@ class _HomePageState extends ConsumerState<HomePage>
   late final TabController _tabController;
 
   Widget _background = Container();
-  bool _notificationsShown = false;
+
   bool _backgroundShown = false;
   bool _modalShown = false;
 
@@ -87,7 +85,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Function()? _leftAction;
   Function()? _rightAction;
 
-  IconData? _rightActionIcon = Icons.add;
+  IconData? _rightActionIcon;
 
   final _animationsDuration = Duration(milliseconds: 350);
 
@@ -181,18 +179,6 @@ class _HomePageState extends ConsumerState<HomePage>
     }
   }
 
-  void _toggleNotifications() async {
-    final background = ref.read(homePageBackgroundProvider.notifier);
-    _backgroundShown = !_backgroundShown;
-    _notificationsShown = _backgroundShown;
-
-    if (_backgroundShown) {
-      background.state = HomePageBackgroundState.notifications;
-    } else {
-      background.state = HomePageBackgroundState.hidden;
-    }
-  }
-
   void _toggleOptions() {
     ref.read(homePageOptionsVisibilityProvider.notifier).state =
         !ref.read(homePageOptionsVisibilityProvider);
@@ -225,7 +211,6 @@ class _HomePageState extends ConsumerState<HomePage>
         switch (newState) {
           case HomePageBackgroundState.hidden:
             _backgroundShown = false;
-            _notificationsShown = false;
             _appBarTitle = _tlCardList[_tlCardIndex].label.toUpperCase();
             //reset right action
             _background = Container();
@@ -237,16 +222,8 @@ class _HomePageState extends ConsumerState<HomePage>
           case HomePageBackgroundState.support:
           case HomePageBackgroundState.about:
             _backgroundShown = true;
-            _notificationsShown = false;
             _background = SettingsMenu();
             _appBarTitle = "Envoy".toUpperCase();
-            break;
-          case HomePageBackgroundState.notifications:
-            _backgroundShown = true;
-            _notificationsShown = true;
-            _appBarTitle = "Activity".toUpperCase();
-            _background = NotificationsPage();
-            _leftAction = _toggleNotifications;
             break;
           default:
             break;
@@ -307,16 +284,23 @@ class _HomePageState extends ConsumerState<HomePage>
                   child: Container(
                       key: _optionsKey, child: notification.optionsWidget!),
                 );
+
                 _rightAction = _toggleOptions;
+                if (_rightAction != null) {
+                  _rightActionIcon = notification.rightFunctionIcon;
+                }
               } else {
                 _rightAction = notification.rightFunction;
+
+                if (_rightAction != null) {
+                  _rightActionIcon = notification.rightFunctionIcon;
+                }
+
                 if (_optionsShown) {
                   _toggleOptions();
                 }
               }
-              if (notification.rightFunctionIcon != null) {
-                _rightActionIcon = notification.rightFunctionIcon;
-              }
+              _rightActionIcon = notification.rightFunctionIcon;
               _modalShown = notification.modal;
               if (notification.title != null) {
                 _appBarTitle = notification.title!;
@@ -356,8 +340,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         icon: AnimatedRotation(
                           duration: _animationsDuration,
                           turns: _backgroundShown
-                              ? _leftAction == _toggleSettings ||
-                                      _notificationsShown
+                              ? _leftAction == _toggleSettings
                                   ? 0.25 //Icons.arrow_upward
                                   : 0.0 //Icons.arrow_back
                               : _leftAction == _toggleSettings
@@ -385,22 +368,9 @@ class _HomePageState extends ConsumerState<HomePage>
                     ]),
                 centerTitle: true,
                 actions: [
-                  // Notifications
-                  AnimatedSwitcher(
-                      duration: _animationsDuration,
-                      child: _tlCardIndex != 2
-                          ? buildNotificationAction()
-                          : IgnorePointer(
-                              child: IconButton(
-                              icon: Icon(null),
-                              onPressed: () {},
-                            ))),
                   // Right action
                   AnimatedSwitcher(
-                      duration: _animationsDuration,
-                      child: _tlCardIndex != 2
-                          ? buildRightAction()
-                          : buildNotificationAction())
+                      duration: _animationsDuration, child: buildRightAction())
                 ],
               ),
               body: // Something behind
@@ -587,21 +557,6 @@ class _HomePageState extends ConsumerState<HomePage>
                         ),
                         onPressed: _rightAction,
                       ))));
-  }
-
-  AbsorbPointer buildNotificationAction() {
-    return AbsorbPointer(
-        absorbing: (_backgroundShown || _optionsShown) || _modalShown,
-        child: AnimatedOpacity(
-            opacity:
-                (_backgroundShown || _optionsShown) || _modalShown ? 0.0 : 1.0,
-            duration: _animationsDuration,
-            child: IconButton(
-              icon: Icon(
-                Icons.notifications,
-              ),
-              onPressed: _toggleNotifications,
-            )));
   }
 }
 

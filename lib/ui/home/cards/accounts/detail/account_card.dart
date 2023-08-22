@@ -44,16 +44,29 @@ import 'package:wallet/wallet.dart';
 class AccountCard extends ConsumerStatefulWidget with NavigationCard {
   final Account account;
 
-  AccountCard(this.account, {CardNavigator? navigationCallback})
-      : super(key: UniqueKey()) {
-    optionsWidget = AccountOptions(
-      account,
-      navigator: navigationCallback,
-    );
-    modal = false;
-    title = S().manage_account_address_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+  AccountCard(this.account, this.navigator, this.optionsWidget)
+      : super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = Icons.more_horiz;
+
+  @override
+  bool modal = false;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().manage_account_address_heading.toUpperCase();
 
   @override
   ConsumerState<AccountCard> createState() => _AccountCardState();
@@ -177,7 +190,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                           DismissiblePrompt.userInteractedWithReceive);
                       widget.navigator!.push(AddressCard(
                         widget.account,
-                        navigationCallback: widget.navigator,
+                        widget.navigator,
                       ));
                     }),
               ),
@@ -202,7 +215,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                             widget.navigator!.push(SendCard(widget.account,
                                 address: address,
                                 amountSats: amount,
-                                navigationCallback: widget.navigator));
+                                navigator: widget.navigator));
                           });
                         }));
                       },
@@ -212,8 +225,8 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 alignment: Alignment.centerRight,
                 child: EnvoyTextButton(
                   onTap: () {
-                    widget.navigator!.push(SendCard(widget.account,
-                        navigationCallback: widget.navigator));
+                    widget.navigator!.push(
+                        SendCard(widget.account, navigator: widget.navigator));
                   },
                   label: S().receive_tx_list_send,
                 ),
@@ -502,7 +515,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           onTap: () {
             widget.navigator!.push(DescriptorCard(
               widget.account,
-              navigationCallback: widget.navigator,
+              widget.navigator,
             ));
           },
         ),

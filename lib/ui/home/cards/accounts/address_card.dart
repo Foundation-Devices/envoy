@@ -18,13 +18,28 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 class AddressCard extends StatelessWidget with NavigationCard {
   final Account account;
 
-  AddressCard(this.account, {CardNavigator? navigationCallback})
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().receive_qr_code_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+  AddressCard(this.account, this.navigator) : super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = true;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().receive_qr_code_heading.toUpperCase();
 
   @override
   Widget build(BuildContext context) {

@@ -24,14 +24,29 @@ class SendCard extends ConsumerStatefulWidget with NavigationCard {
   final String? address;
   final int? amountSats;
 
-  SendCard(this.account,
-      {this.address, CardNavigator? navigationCallback, this.amountSats})
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().send_qr_code_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+  SendCard(this.account, {this.address, this.navigator, this.amountSats})
+      : super(key: UniqueKey()) {}
+
+  @override
+  bool modal = true;
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -167,7 +182,7 @@ class _SendCardState extends ConsumerState<SendCard>
                     widget.account,
                     _amount,
                     _addressText,
-                    pushCallback: widget.navigator,
+                    widget.navigator,
                   ));
                 }
               },

@@ -17,13 +17,27 @@ import 'package:envoy/ui/home/cards/navigation_card.dart';
 class DescriptorCard extends StatelessWidget with NavigationCard {
   final Account account;
 
-  DescriptorCard(this.account, {CardNavigator? navigationCallback})
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().manage_account_address_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+  DescriptorCard(this.account, this.navigator) : super(key: UniqueKey()) {}
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = true;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().manage_account_address_heading.toUpperCase();
 
   @override
   Widget build(BuildContext context) {

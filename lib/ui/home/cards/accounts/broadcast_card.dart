@@ -16,13 +16,26 @@ import 'package:envoy/util/amount.dart';
 class BroadcastCard extends StatelessWidget with NavigationCard {
   final Psbt psbt;
 
-  BroadcastCard(this.psbt, {CardNavigator? navigationCallback})
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().send_qr_code_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+  BroadcastCard(this.psbt, this.navigator) : super(key: UniqueKey()) {}
+  @override
+  IconData? rightFunctionIcon = null;
+  @override
+  bool modal = true;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   Widget build(BuildContext context) {

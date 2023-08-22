@@ -31,11 +31,28 @@ class PrivacyCardState extends State<PrivacyCard>
 
 //ignore: must_be_immutable
 class TopLevelPrivacyCard extends StatelessWidget with NavigationCard {
-  TopLevelPrivacyCard() {
-    optionsWidget = null;
-    modal = false;
-    title = S().bottomNav_activity.toUpperCase();
-  }
+  TopLevelPrivacyCard() {}
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = false;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().bottomNav_privacy.toUpperCase();
 
   @override
   Widget build(BuildContext context) {

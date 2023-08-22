@@ -119,19 +119,33 @@ class AccountsCardState extends State<AccountsCard>
 
 //ignore: must_be_immutable
 class AccountsList extends ConsumerStatefulWidget with NavigationCard {
-  AccountsList(CardNavigator? navigationCallback, Function() addAccountFunction)
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = false;
-    title = S().envoy_home_accounts.toUpperCase();
-    navigator = navigationCallback;
-    rightFunction = addAccountFunction;
-  }
+  AccountsList(this.navigator, this.rightFunction) : super(key: UniqueKey()) {}
 
   final GlobalKey _listKey = GlobalKey();
 
   @override
   ConsumerState<AccountsList> createState() => _AccountsListState();
+
+  @override
+  IconData? rightFunctionIcon = Icons.add;
+
+  @override
+  bool modal = false;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().envoy_home_accounts.toUpperCase();
 }
 
 class _AccountsListState extends ConsumerState<AccountsList> {
@@ -238,8 +252,13 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                           HomePageAccountsState(
                               HomePageAccountsNavigationState.details,
                               currentAccount: account);
-                      widget.navigator!.push(AccountCard(account,
-                          navigationCallback: widget.navigator));
+                      widget.navigator!.push(AccountCard(
+                          account,
+                          widget.navigator,
+                          AccountOptions(
+                            account,
+                            navigator: widget.navigator,
+                          )));
                     },
                   ))
           ]),

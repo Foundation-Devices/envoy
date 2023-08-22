@@ -20,16 +20,29 @@ import 'package:envoy/ui/state/home_page_state.dart';
 class DeviceCard extends StatefulWidget with NavigationCard {
   final Device device;
 
-  DeviceCard(this.device, {CardNavigator? navigationCallback})
-      : super(key: UniqueKey()) {
-    modal = false;
-    title = S().manage_device_details_heading.toUpperCase();
-    navigator = navigationCallback;
-    optionsWidget = DeviceOptions(
-      device,
-      navigator: navigator,
-    );
-  }
+  DeviceCard(this.device, this.navigator, this.optionsWidget)
+      : super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = Icons.more_horiz;
+
+  @override
+  bool modal = false;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().manage_device_details_heading.toUpperCase();
 
   @override
   State<DeviceCard> createState() => _DeviceCardState();

@@ -30,16 +30,31 @@ class TxReview extends StatefulWidget with NavigationCard {
   final Psbt psbt;
   final Account account;
   final GestureTapCallback onFinishNavigationClick;
-  final CardNavigator? navigationCallback;
 
   TxReview(this.psbt, this.account,
-      {this.navigationCallback, required this.onFinishNavigationClick})
-      : super(key: UniqueKey()) {
-    optionsWidget = null;
-    modal = true;
-    title = S().send_qr_code_heading.toUpperCase();
-    navigator = navigationCallback;
-  }
+      {this.navigator, required this.onFinishNavigationClick})
+      : super(key: UniqueKey()) {}
+
+  @override
+  IconData? rightFunctionIcon = null;
+
+  @override
+  bool modal = true;
+
+  @override
+  CardNavigator? navigator;
+
+  @override
+  Function()? onPop;
+
+  @override
+  Widget? optionsWidget = null;
+
+  @override
+  Function()? rightFunction;
+
+  @override
+  String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   State<TxReview> createState() => _TxReviewState();
@@ -441,7 +456,7 @@ class _TxReviewState extends State<TxReview> {
                               S().stalls_before_sending_tx_cta2,
                               type: EnvoyButtonTypes.secondary,
                               onTap: () {
-                                widget.navigationCallback?.pop();
+                                widget.navigator?.pop();
                               },
                             ),
                             Padding(padding: EdgeInsets.all(6)),
