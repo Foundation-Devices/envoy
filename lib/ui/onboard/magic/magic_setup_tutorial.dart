@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -30,119 +31,100 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
-        child: MediaQuery.removePadding(
-      removeTop: true,
-      context: context,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.black,
-            onPressed: () => Navigator.pop(context),
-          ),
-          actions: [
-            TextButton(
-              child: Text(S().magic_setup_tutorial_ios_skip,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.black)),
-              onPressed: () {
-                OnboardingPage.goHome(context);
+        child: EnvoyScaffold(
+      removeAppBarPadding: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  !Platform.isLinux
+                      ? EmbeddedVideo(
+                          path: "assets/videos/magic_backups.m4v",
+                          key: _playerKey,
+                        )
+                      : Container(),
+                ],
+              ),
+            ),
+            Padding(padding: EdgeInsets.only(bottom: 6)),
+            Text(
+              S().magic_setup_tutorial_ios_heading,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            LinkText(
+              text: Platform.isAndroid
+                  ? S().magic_setup_tutorial_android_subheading
+                  : S().magic_setup_tutorial_ios_subheading,
+              onTap: () {
+                _playerKey.currentState?.pause();
+                showEnvoyDialog(
+                    context: context,
+                    dialog: WalletSecurityModal(
+                      onLastStep: () {
+                        Navigator.pop(context);
+                      },
+                    ));
               },
             ),
-          ],
-        ),
-        body: CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          !Platform.isLinux
-                              ? EmbeddedVideo(
-                                  path: "assets/videos/magic_backups.m4v",
-                                  key: _playerKey,
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: 6)),
-                    Text(
-                      S().magic_setup_tutorial_ios_heading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    LinkText(
-                      text: Platform.isAndroid
-                          ? S().magic_setup_tutorial_android_subheading
-                          : S().magic_setup_tutorial_ios_subheading,
-                      onTap: () {
-                        _playerKey.currentState?.pause();
-                        showEnvoyDialog(
-                            context: context,
-                            dialog: WalletSecurityModal(
-                              onLastStep: () {
-                                Navigator.pop(context);
-                              },
-                            ));
-                      },
-                    ),
-                    Column(
-                      children: [
-                        OnboardingButton(
-                            fontWeight: FontWeight.w600,
-                            type: EnvoyButtonTypes.secondary,
-                            label: S().magic_setup_tutorial_ios_CTA2,
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    color: EnvoyColors.darkTeal,
-                                    fontWeight: FontWeight.w600),
-                            onTap: () {
-                              _playerKey.currentState?.pause();
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return MagicRecoverWallet();
-                              }));
-                            }),
-                        OnboardingButton(
-                            fontWeight: FontWeight.w600,
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    color: EnvoyColors.white100,
-                                    fontWeight: FontWeight.w600),
-                            label: S().magic_setup_tutorial_ios_CTA1,
-                            onTap: () {
-                              _playerKey.currentState?.pause();
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return MagicSetupGenerate();
-                              }));
-                              // showCreateWarning(context);
-                            }),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+            Column(
+              children: [
+                OnboardingButton(
+                    fontWeight: FontWeight.w600,
+                    type: EnvoyButtonTypes.secondary,
+                    label: S().magic_setup_tutorial_ios_CTA2,
+                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: EnvoyColors.darkTeal,
+                        fontWeight: FontWeight.w600),
+                    onTap: () {
+                      _playerKey.currentState?.pause();
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return MagicRecoverWallet();
+                      }));
+                    }),
+                OnboardingButton(
+                    fontWeight: FontWeight.w600,
+                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: EnvoyColors.white100,
+                        fontWeight: FontWeight.w600),
+                    label: S().magic_setup_tutorial_ios_CTA1,
+                    onTap: () {
+                      _playerKey.currentState?.pause();
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return MagicSetupGenerate();
+                      }));
+                      // showCreateWarning(context);
+                    }),
+              ],
             )
           ],
         ),
       ),
+      topBarLeading: CupertinoNavigationBarBackButton(
+        color: Colors.black,
+        onPressed: () => Navigator.pop(context),
+      ),
+      topBarActions: [
+        TextButton(
+          child: Text(S().magic_setup_tutorial_ios_skip,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black)),
+          onPressed: () {
+            OnboardingPage.goHome(context);
+          },
+        ),
+      ],
     ));
   }
 
