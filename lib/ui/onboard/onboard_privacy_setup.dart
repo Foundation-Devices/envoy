@@ -26,7 +26,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
-import 'package:envoy/ui/envoy_scaffold.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
 class OnboardPrivacySetup extends ConsumerStatefulWidget {
   final bool setUpEnvoyWallet;

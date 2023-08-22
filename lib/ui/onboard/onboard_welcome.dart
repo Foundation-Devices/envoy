@@ -8,7 +8,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_privacy_setup.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/envoy_scaffold.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
