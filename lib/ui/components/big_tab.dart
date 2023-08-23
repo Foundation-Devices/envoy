@@ -9,18 +9,14 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class BigTab extends StatefulWidget {
-  final String labelOption1;
-  final String labelOption2;
-  final EnvoyIcons iconOption1;
-  final EnvoyIcons iconOption2;
+  final String label;
+  final EnvoyIcons icon;
   final bool isActive;
   final ValueChanged<bool?>? onSelect;
 
   BigTab({
-    required this.labelOption1,
-    required this.labelOption2,
-    required this.iconOption1,
-    required this.iconOption2,
+    required this.label,
+    required this.icon,
     this.isActive = true,
     this.onSelect,
   });
@@ -41,43 +37,46 @@ class _BigTabState extends State<BigTab> {
     Color borderColor =
         widget.isActive ? EnvoyColors.accentPrimary : Colors.transparent;
 
-    return GestureDetector(
-      onTap: () {
-        widget.onSelect?.call(!widget.isActive);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          border: Border.all(
-            width: 2,
-            color: borderColor,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          widget.onSelect?.call(!widget.isActive);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            border: Border.all(
+              width: 2,
+              color: borderColor,
+            ),
+            borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
           ),
-          borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(EnvoySpacing.medium1),
-          child: Row(
-            children: [
-              EnvoyIcon(
-                widget.isActive ? widget.iconOption1 : widget.iconOption2,
-                color: iconColor,
-              ),
-              SizedBox(
-                width: EnvoySpacing.small,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.isActive ? widget.labelOption1 : widget.labelOption2,
-                    style: EnvoyTypography.caption1Bold.copyWith(
-                      color: textColor,
+          child: Padding(
+            padding: EdgeInsets.all(EnvoySpacing.medium1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                EnvoyIcon(
+                  widget.icon,
+                  color: iconColor,
+                ),
+                SizedBox(
+                  width: EnvoySpacing.small,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.label,
+                      style: EnvoyTypography.caption1Bold.copyWith(
+                        color: textColor,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

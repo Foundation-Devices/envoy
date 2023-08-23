@@ -11,13 +11,13 @@ import 'package:flutter/material.dart';
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader(
       {Key? key,
-      required this.tittle,
+      required this.title,
       required this.linkText,
       this.onTap,
       required this.icon})
       : super(key: key);
 
-  final String tittle;
+  final String title;
   final linkText;
   final Function()? onTap;
   final EnvoyIcons icon;
@@ -34,7 +34,7 @@ class SettingsHeader extends StatelessWidget {
               width: EnvoySpacing.small,
             ),
             Text(
-              tittle,
+              title,
               style: EnvoyTypography.body1Medium,
             ),
           ],

@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/shield_path.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class Shield extends StatelessWidget {
   const Shield({
@@ -18,13 +18,7 @@ class Shield extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipPath(
       clipper: ShieldClipper(),
-      child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [EnvoyColors.white95, EnvoyColors.white80])),
-          child: child),
+      child: Container(color: EnvoyColors.surface1, child: child),
     );
   }
 }
@@ -43,14 +37,14 @@ class QrShield extends StatelessWidget {
       clipper: ShieldClipper(),
       color: Colors.transparent,
       clipBehavior: Clip.antiAlias,
-      shadowColor: EnvoyColors.grey85,
+      shadowColor: EnvoyColors.border1,
       elevation: 4,
       child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [EnvoyColors.white95, EnvoyColors.white80])),
+                  colors: [EnvoyColors.surface1, EnvoyColors.surface2])),
           child: child),
     );
   }

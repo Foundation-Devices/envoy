@@ -12,10 +12,10 @@ import 'package:envoy/generated/l10n.dart';
 
 class EnvoyBottomNavigation extends StatefulWidget {
   final Function(int)? onIndexChanged;
-  final int initalIndex;
+  final int initialIndex;
 
   const EnvoyBottomNavigation(
-      {super.key, this.onIndexChanged, this.initalIndex = 2});
+      {super.key, this.onIndexChanged, this.initialIndex = 2});
 
   @override
   _EnvoyBottomNavigationState createState() => _EnvoyBottomNavigationState();
@@ -30,7 +30,7 @@ class _EnvoyBottomNavigationState extends State<EnvoyBottomNavigation> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initalIndex;
+    _selectedIndex = widget.initialIndex;
   }
 
   @override

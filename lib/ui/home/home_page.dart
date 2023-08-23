@@ -398,54 +398,48 @@ class _HomePageState extends ConsumerState<HomePage>
                         )),
                   ),
                   // Tab bar
-                  Padding(
-                    padding: EdgeInsets.only(bottom: _bottomOffset),
-                    child: AnimatedOpacity(
-                        duration: Duration(
-                            milliseconds:
-                                _animationsDuration.inMilliseconds ~/ 2),
-                        opacity:
-                            _backgroundShown || (_modalShown || _optionsShown)
-                                ? 0
-                                : 1.0,
-                        child: Container(
-                          alignment: Alignment.bottomCenter,
-                          child: IgnorePointer(
-                            ignoring: _backgroundShown || _modalShown,
-                            child: Container(
-                              height: _bottomTabBarHeight,
-                              child: EnvoyBottomNavigation(
-                                onIndexChanged: (selectedIndex) {
-                                  ref.read(homePageTabProvider.notifier).state =
-                                      HomePageTabState.values[selectedIndex];
-                                  setState(() {
-                                    _navigateToCard(selectedIndex);
-                                  });
-                                },
-                                // indicatorColor: Colors.white10,
-                                // labelStyle:
-                                //     Theme.of(context).textTheme.bodyLarge,
-                                // unselectedLabelColor: Colors.black54,
-                                // labelColor: EnvoyColors.darkTeal,
-                                // controller: _tabController,
-                                // onTap: (selectedIndex) {
-                                //   ref.read(homePageTabProvider.notifier).state =
-                                //       HomePageTabState.values[selectedIndex];
-                                //   setState(() {
-                                //     _navigateToCard(selectedIndex);
-                                //   });
-                                // },
-                                // tabs: _tlCardList
-                                //     .map((e) => Tab(
-                                //           icon: e.icon,
-                                //           text: e.label,
-                                //         ))
-                                //     .toList(),
-                              ),
-                            ),
+                  AnimatedOpacity(
+                      duration: Duration(
+                          milliseconds:
+                              _animationsDuration.inMilliseconds ~/ 2),
+                      opacity:
+                          _backgroundShown || (_modalShown || _optionsShown)
+                              ? 0
+                              : 1.0,
+                      child: Container(
+                        alignment: Alignment.bottomCenter,
+                        child: IgnorePointer(
+                          ignoring: _backgroundShown || _modalShown,
+                          child: EnvoyBottomNavigation(
+                            onIndexChanged: (selectedIndex) {
+                              ref.read(homePageTabProvider.notifier).state =
+                                  HomePageTabState.values[selectedIndex];
+                              setState(() {
+                                _navigateToCard(selectedIndex);
+                              });
+                            },
+                            // indicatorColor: Colors.white10,
+                            // labelStyle:
+                            //     Theme.of(context).textTheme.bodyLarge,
+                            // unselectedLabelColor: Colors.black54,
+                            // labelColor: EnvoyColors.darkTeal,
+                            // controller: _tabController,
+                            // onTap: (selectedIndex) {
+                            //   ref.read(homePageTabProvider.notifier).state =
+                            //       HomePageTabState.values[selectedIndex];
+                            //   setState(() {
+                            //     _navigateToCard(selectedIndex);
+                            //   });
+                            // },
+                            // tabs: _tlCardList
+                            //     .map((e) => Tab(
+                            //           icon: e.icon,
+                            //           text: e.label,
+                            //         ))
+                            //     .toList(),
                           ),
-                        )),
-                  ),
+                        ),
+                      )),
                   // Glow
                   // AnimatedPositioned(
                   //   duration: _animationsDuration,

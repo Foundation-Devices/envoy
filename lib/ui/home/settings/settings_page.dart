@@ -4,10 +4,8 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
@@ -28,18 +26,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  _customElectrumServerToggled(bool enabled) {
-    setState(() {
-      _customElectrumServerVisible = enabled;
-    });
-
-    Settings().useDefaultElectrumServer(!enabled);
-  }
-
   final _animationsDuration = Duration(milliseconds: 200);
   bool _advancedVisible = false;
-  bool _customElectrumServerVisible = Settings().customElectrumEnabled();
-  bool _useLocalAuth = false;
 
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -98,20 +86,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
           ),
-          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SettingText(S().settings_tor),
-                SettingToggle(
-                  s.torEnabled,
-                  s.setTorEnabled,
-                  delay: 1,
-                ),
-              ],
-            ),
-          ),
           // SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
           // SliverToBoxAdapter(
           //     child: Row(
@@ -121,51 +95,6 @@ class _SettingsPageState extends State<SettingsPage> {
           //     SettingToggle(s.allowScreenshots, s.setAllowScreenshots),
           //   ],
           // )),
-          SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
-          SliverToBoxAdapter(
-            child: FutureBuilder<bool>(
-              future: auth.isDeviceSupported(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return SizedBox();
-                }
-                if (snapshot.hasData && snapshot.data! == false) {
-                  return SizedBox();
-                }
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SettingText(S().settings_biometric),
-                        EnvoySwitch(
-                            value: _useLocalAuth,
-                            onChanged: (enabled) async {
-                              try {
-                                bool authSuccess = await auth.authenticate(
-                                    options: AuthenticationOptions(
-                                        biometricOnly: false),
-                                    localizedReason:
-                                        "Authenticate to Enable Biometrics");
-                                if (authSuccess) {
-                                  LocalStorage()
-                                      .prefs
-                                      .setBool("useLocalAuth", enabled);
-                                  setState(() {
-                                    _useLocalAuth = enabled;
-                                  });
-                                }
-                              } catch (e) {
-                                print(e);
-                              }
-                            })
-                      ],
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
           SliverPadding(
               padding: EdgeInsets.all(kDebugMode ? marginBetweenItems : 0)),
           SliverToBoxAdapter(
@@ -244,32 +173,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SettingText(S().settings_electrum),
-                  SettingToggle(() => _customElectrumServerVisible,
-                      _customElectrumServerToggled),
-                ],
-              ),
-              AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: nestedMargin, top: 14.0),
-                    child: SingleChildScrollView(
-                      child: AnimatedContainer(
-                          duration: Duration(milliseconds: 200),
-                          height: _customElectrumServerVisible ? 86 : 0,
-                          child: AnimatedOpacity(
-                            child: SingleChildScrollView(
-                                child: ElectrumServerEntry(
-                                    s.customElectrumAddress,
-                                    s.setCustomElectrumAddress)),
-                            duration: _animationsDuration,
-                            opacity: _customElectrumServerVisible ? 1.0 : 0.0,
-                          )),
-                    ),
-                  )),
               Container(
                 child: GestureDetector(
                   onTap: () {
@@ -299,18 +202,6 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
-      if (value != null)
-        setState(() {
-          _useLocalAuth = value;
-        });
-    });
   }
 }
 
