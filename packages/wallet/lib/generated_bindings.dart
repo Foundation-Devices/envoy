@@ -192,6 +192,20 @@ class NativeLibrary {
   late final _wallet_get_transactions =
       _wallet_get_transactionsPtr.asFunction<TransactionList Function(int)>();
 
+  double wallet_get_max_feerate(
+    int arg0,
+  ) {
+    return _wallet_get_max_feerate(
+      arg0,
+    );
+  }
+
+  late final _wallet_get_max_feeratePtr =
+      _lookup<ffi.NativeFunction<ffi.Double Function(ffi.Int)>>(
+          'wallet_get_max_feerate');
+  late final _wallet_get_max_feerate =
+      _wallet_get_max_feeratePtr.asFunction<double Function(int)>();
+
   Psbt wallet_create_psbt(
     int arg0,
   ) {
