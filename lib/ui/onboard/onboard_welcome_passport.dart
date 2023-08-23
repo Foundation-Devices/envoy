@@ -13,7 +13,7 @@ import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/envoy_scaffold.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);

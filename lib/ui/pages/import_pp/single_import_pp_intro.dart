@@ -9,7 +9,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/envoy_scaffold.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
 class SingleImportPpIntroPage extends StatelessWidget {
   final bool isExistingDevice;
