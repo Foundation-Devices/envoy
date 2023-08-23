@@ -17,9 +17,10 @@ enum PopUpState {
   danger,
 }
 
-void showEnvoyPopUp(BuildContext context, String title, content,
-    primaryButtonLabel, onPrimaryButtonTap,
+void showEnvoyPopUp(
+    BuildContext context, content, primaryButtonLabel, onPrimaryButtonTap,
     {icon,
+    title,
     secondaryButtonLabel,
     onSecondaryButtonTap,
     typeOfMessage,
@@ -42,11 +43,12 @@ void showEnvoyPopUp(BuildContext context, String title, content,
           checkedValue: checkedValue));
 }
 
+//ignore: must_be_immutable
 class EnvoyPopUp extends StatefulWidget {
-  const EnvoyPopUp({
+  EnvoyPopUp({
     super.key,
     this.icon,
-    required this.title,
+    this.title,
     required this.content,
     required this.primaryButtonLabel,
     this.secondaryButtonLabel,
@@ -58,7 +60,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.checkedValue = true,
   });
 
-  final String title;
+  final String? title;
   final String content;
   final icon;
   final String primaryButtonLabel;
@@ -68,7 +70,7 @@ class EnvoyPopUp extends StatefulWidget {
   final PopUpState? typeOfMessage;
   final checkBoxText;
   final onCheckBoxChanged;
-  final bool? checkedValue;
+  bool? checkedValue;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -134,10 +136,11 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   color: _color,
                 ),
               ),
-            Text(
-              widget.title,
-              style: EnvoyTypography.subtitle1Semibold,
-            ),
+            if (widget.title != null)
+              Text(
+                widget.title!,
+                style: EnvoyTypography.subtitle1Semibold,
+              ),
             Padding(
               padding: const EdgeInsets.only(
                   top: EnvoySpacing.small, bottom: EnvoySpacing.medium3),
@@ -153,7 +156,12 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   label: widget.checkBoxText,
                   isChecked:
                       widget.checkedValue == null ? true : widget.checkedValue!,
-                  onChanged: widget.onCheckBoxChanged,
+                  onChanged: (isChecked) {
+                    setState(() {
+                      widget.checkedValue = !widget.checkedValue!;
+                      widget.onCheckBoxChanged(isChecked);
+                    });
+                  },
                 ),
               ),
             EnvoyButton(

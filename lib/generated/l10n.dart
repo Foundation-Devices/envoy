@@ -314,6 +314,16 @@ class S {
     );
   }
 
+  /// `Activity`
+  String get Activity {
+    return Intl.message(
+      'Activity',
+      name: 'Activity',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Add memo? Y/N (optional)' key
 
   // skipped getter for the 'Add note' key
@@ -614,10 +624,10 @@ class S {
     );
   }
 
-  /// `Default`
+  /// `Apply filters`
   String get Default {
     return Intl.message(
-      'Default',
+      'Apply filters',
       name: 'Default',
       desc: '',
       args: [],
@@ -664,6 +674,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'Do not remind me' key
+
   /// `Done`
   String get Done {
     return Intl.message(
@@ -673,6 +685,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Don’t show again' key
 
   // skipped getter for the 'Download from Github' key
 
@@ -720,6 +734,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'Edit Transaction' key
+
   // skipped getter for the 'Enter an amount' key
 
   // skipped getter for the 'Enter your node address here' key
@@ -764,6 +780,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'FRED - THESE ARE MY VERSION 2 UPDATE PER THIS COMMENT. https://linear.app/foundation-devices/issue/DES-1217#comment-52da9a1f' key
+
   // skipped getter for the 'FW Update' key
 
   // skipped getter for the 'Face ID' key
@@ -807,6 +825,16 @@ class S {
   // skipped getter for the 'Fiat Currency' key
 
   // skipped getter for the 'File Storage Destination Screen' key
+
+  /// `Filter`
+  String get Filter {
+    return Intl.message(
+      'Filter',
+      name: 'Filter',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Fuel`
   String get Fuel {
@@ -988,6 +1016,8 @@ class S {
 
   // skipped getter for the 'List Item Inactive' key
 
+  // skipped getter for the 'List header' key
+
   // skipped getter for the 'Low fee' key
 
   // skipped getter for the 'Lowest fee' key
@@ -1150,6 +1180,8 @@ class S {
 
   // skipped getter for the 'RGB (0, 189, 205)' key
 
+  // skipped getter for the 'Radio group' key
+
   /// `Send`
   String get Receive {
     return Intl.message(
@@ -1181,6 +1213,14 @@ class S {
   // skipped getter for the 'Required inputs' key
 
   // skipped getter for the 'Required inputs:' key
+
+  // skipped getter for the 'Requirements Check formatting + layout Address icon (think we already have one) Status icon TxID icon (think we already have one) Date icon' key
+
+  // skipped getter for the 'Requirements Remix icon' key
+
+  // skipped getter for the 'Reset filter' key
+
+  // skipped getter for the 'Reset sorting' key
 
   // skipped getter for the 'Restore Backup' key
 
@@ -1296,6 +1336,8 @@ class S {
 
   // skipped getter for the 'Send Sats' key
 
+  // skipped getter for the 'Send Transaction' key
+
   // skipped getter for the 'Serial: B63E-DB17-F9E8-724B Paired 2 minutes ago' key
 
   // skipped getter for the 'Set Pin' key
@@ -1327,6 +1369,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Sort by' key
 
   /// `Specs`
   String get Specs {
@@ -1422,12 +1466,22 @@ class S {
 
   // skipped getter for the 'Tag Name' key
 
+  /// `Tags`
+  String get Tags {
+    return Intl.message(
+      'Tags',
+      name: 'Tags',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Terms of Use' key
 
-  /// `Test`
+  /// `Received`
   String get Test {
     return Intl.message(
-      'Test',
+      'Received',
       name: 'Test',
       desc: '',
       args: [],
@@ -1589,16 +1643,6 @@ class S {
     return Intl.message(
       'Z',
       name: 'Z',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get _ {
-    return Intl.message(
-      'Skip',
-      name: '_',
       desc: '',
       args: [],
     );
@@ -1928,6 +1972,66 @@ class S {
 
   // skipped getter for the 'accounts_second_transaction_text-explainer' key
 
+  /// `Passport Tutorial - Block...`
+  String get activity_ {
+    return Intl.message(
+      'Passport Tutorial - Block...',
+      name: 'activity_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy App Updated`
+  String get activity_envoyUpdate {
+    return Intl.message(
+      'Envoy App Updated',
+      name: 'activity_envoyUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Firmware update available`
+  String get activity_firmwareUpdate {
+    return Intl.message(
+      'Firmware update available',
+      name: 'activity_firmwareUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Today`
+  String get activity_listHeader_Today {
+    return Intl.message(
+      'Today',
+      name: 'activity_listHeader_Today',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received`
+  String get activity_received {
+    return Intl.message(
+      'Received',
+      name: 'activity_received',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sent`
+  String get activity_sent {
+    return Intl.message(
+      'Sent',
+      name: 'activity_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'add passphrase' key
 
   /// `Save`
@@ -1935,6 +2039,36 @@ class S {
     return Intl.message(
       'Save',
       name: 'add_note_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get add_note_modal_filled_cta {
+    return Intl.message(
+      'Save',
+      name: 'add_note_modal_filled_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a Note`
+  String get add_note_modal_filled_heading {
+    return Intl.message(
+      'Add a Note',
+      name: 'add_note_modal_filled_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3/255`
+  String get add_note_modal_filled_max_characters {
+    return Intl.message(
+      '3/255',
+      name: 'add_note_modal_filled_max_characters',
       desc: '',
       args: [],
     );
@@ -1960,20 +2094,20 @@ class S {
     );
   }
 
-  /// `0/480`
+  /// `0/255`
   String get add_note_modal_max_characters {
     return Intl.message(
-      '0/480',
+      '0/255',
       name: 'add_note_modal_max_characters',
       desc: '',
       args: [],
     );
   }
 
-  /// `Write some details about your transaction below.`
+  /// `Record some details about this transaction.`
   String get add_note_modal_subheading {
     return Intl.message(
-      'Write some details about your transaction below.',
+      'Record some details about this transaction.',
       name: 'add_note_modal_subheading',
       desc: '',
       args: [],
@@ -2550,16 +2684,6 @@ class S {
     );
   }
 
-  /// ``
-  String get bc1cq313af51bh5k0lsmna21x {
-    return Intl.message(
-      '',
-      name: 'bc1cq313af51bh5k0lsmna21x',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `bc1cq313af51bh5k0lsmna21xpw`
   String get bc1cq313af51bh5k0lsmna21xpw {
     return Intl.message(
@@ -2634,10 +2758,30 @@ class S {
     );
   }
 
-  /// `Create a Tag`
+  /// `Continue`
+  String get change_output_from_multiple_tags_modal_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'change_output_from_multiple_tags_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get change_output_from_multiple_tags_modal_cta2 {
+    return Intl.message(
+      'Back',
+      name: 'change_output_from_multiple_tags_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a Tag`
   String get change_output_from_multiple_tags_modal_heading {
     return Intl.message(
-      'Create a Tag',
+      'Choose a Tag',
       name: 'change_output_from_multiple_tags_modal_heading',
       desc: '',
       args: [],
@@ -2649,6 +2793,16 @@ class S {
     return Intl.message(
       'Most frequently used',
       name: 'change_output_from_multiple_tags_modal_most_frequently_used_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This transaction spends coins from multiple tags. How would you like to tag your change?`
+  String get change_output_from_multiple_tags_modal_subehading {
+    return Intl.message(
+      'This transaction spends coins from multiple tags. How would you like to tag your change?',
+      name: 'change_output_from_multiple_tags_modal_subehading',
       desc: '',
       args: [],
     );
@@ -2666,6 +2820,36 @@ class S {
 
   // skipped getter for the 'check PP design system icon' key
 
+  /// `Back`
+  String get coincontrol_coin_change_spendable_state_modal_cta1 {
+    return Intl.message(
+      'Back',
+      name: 'coincontrol_coin_change_spendable_state_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get coincontrol_coin_change_spendable_state_modal_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'coincontrol_coin_change_spendable_state_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\n\nThis action will override your coin selection.`
+  String get coincontrol_coin_change_spendable_state_modal_heading {
+    return Intl.message(
+      'WARNING\n\nThis action will override your coin selection.',
+      name: 'coincontrol_coin_change_spendable_state_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Do not remind me`
   String get coincontrol_coin_change_spendable_tate_modal_checkbox {
     return Intl.message(
@@ -2676,10 +2860,10 @@ class S {
     );
   }
 
-  /// `Return to my Coins`
+  /// `Continue`
   String get coincontrol_coin_change_spendable_tate_modal_cta1 {
     return Intl.message(
-      'Return to my Coins',
+      'Continue',
       name: 'coincontrol_coin_change_spendable_tate_modal_cta1',
       desc: '',
       args: [],
@@ -2696,50 +2880,30 @@ class S {
     );
   }
 
-  /// `WARNING\n\nThis action will override your Coin Selection`
+  /// `\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone.`
   String get coincontrol_coin_change_spendable_tate_modal_subheading {
     return Intl.message(
-      'WARNING\n\nThis action will override your Coin Selection',
+      '\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone.',
       name: 'coincontrol_coin_change_spendable_tate_modal_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Required coins`
-  String get coincontrol_edit_transaction_required_inputs {
-    return Intl.message(
-      'Required coins',
-      name: 'coincontrol_edit_transaction_required_inputs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `11,500 sats`
-  String get coincontrol_edit_transaction_required_inputs_sats {
-    return Intl.message(
-      '11,500 sats',
-      name: 'coincontrol_edit_transaction_required_inputs_sats',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Selected coins`
+  /// `Selected amount`
   String get coincontrol_edit_transaction_selected_inputs {
     return Intl.message(
-      'Selected coins',
+      'Selected amount',
       name: 'coincontrol_edit_transaction_selected_inputs',
       desc: '',
       args: [],
     );
   }
 
-  /// `45,000 sats`
+  /// `0`
   String get coincontrol_edit_transaction_selected_inputs_sats {
     return Intl.message(
-      '45,000 sats',
+      '0',
       name: 'coincontrol_edit_transaction_selected_inputs_sats',
       desc: '',
       args: [],
@@ -2756,6 +2920,16 @@ class S {
     );
   }
 
+  /// `Lock`
+  String get coincontrol_lock_coin_modal_cta1 {
+    return Intl.message(
+      'Lock',
+      name: 'coincontrol_lock_coin_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Do not remind me`
   String get coincontrol_lock_coin_modal_cta2 {
     return Intl.message(
@@ -2766,10 +2940,10 @@ class S {
     );
   }
 
-  /// `WARNING\n\nYou’re about to lock coins.\nInfo text about locking label and consequences`
+  /// `WARNING\n\nUnlocking coins will make them available for use in transactions.`
   String get coincontrol_lock_coin_modal_subheading {
     return Intl.message(
-      'WARNING\n\nYou’re about to lock coins.\nInfo text about locking label and consequences',
+      'WARNING\n\nUnlocking coins will make them available for use in transactions.',
       name: 'coincontrol_lock_coin_modal_subheading',
       desc: '',
       args: [],
@@ -2836,6 +3010,16 @@ class S {
     );
   }
 
+  /// `Send Transaction`
+  String get coincontrol_tx_detail_cta1 {
+    return Intl.message(
+      'Send Transaction',
+      name: 'coincontrol_tx_detail_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Edit Transaction`
   String get coincontrol_tx_detail_cta2 {
     return Intl.message(
@@ -2846,11 +3030,29 @@ class S {
     );
   }
 
-  /// `Continue`
+  /// `Confirm Fee`
   String get coincontrol_tx_detail_custom_fee_cta {
     return Intl.message(
-      'Continue',
+      'Confirm Fee',
       name: 'coincontrol_tx_detail_custom_fee_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'coincontrol_tx_detail_custom_fee_insufficients_funds_+_25_cta' key
+
+  // skipped getter for the 'coincontrol_tx_detail_custom_fee_insufficients_funds_+_25_prompt' key
+
+  // skipped getter for the 'coincontrol_tx_detail_custom_fee_insufficients_funds_-_25_cta' key
+
+  // skipped getter for the 'coincontrol_tx_detail_custom_fee_insufficients_funds_-_25_prompt' key
+
+  /// `Confirm Fee`
+  String get coincontrol_tx_detail_custom_fee_insufficients_funds_cta {
+    return Intl.message(
+      'Confirm Fee',
+      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_cta',
       desc: '',
       args: [],
     );
@@ -2881,6 +3083,16 @@ class S {
     return Intl.message(
       '30 sats/vb',
       name: 'coincontrol_tx_detail_custom_fee_sats_3_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `sats/vB`
+  String get coincontrol_tx_detail_custom_fee_sats_vb {
+    return Intl.message(
+      'sats/vB',
+      name: 'coincontrol_tx_detail_custom_fee_sats_vb',
       desc: '',
       args: [],
     );
@@ -2936,10 +3148,10 @@ class S {
     );
   }
 
-  /// `Review address`
+  /// `Show address`
   String get coincontrol_tx_detail_destination_details {
     return Intl.message(
-      'Review address',
+      'Show address',
       name: 'coincontrol_tx_detail_destination_details',
       desc: '',
       args: [],
@@ -2996,6 +3208,16 @@ class S {
     );
   }
 
+  /// `BBQ`
+  String get coincontrol_tx_detail_expand_note_note {
+    return Intl.message(
+      'BBQ',
+      name: 'coincontrol_tx_detail_expand_note_note',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `11,000 SATS`
   String get coincontrol_tx_detail_expand_sats {
     return Intl.message(
@@ -3021,6 +3243,46 @@ class S {
     return Intl.message(
       ' 25.000 sats \$3.25',
       name: 'coincontrol_tx_detail_expand_spent_from_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee`
+  String get coincontrol_tx_detail_fee {
+    return Intl.message(
+      'Fee',
+      name: 'coincontrol_tx_detail_fee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Faster`
+  String get coincontrol_tx_detail_fee_custom {
+    return Intl.message(
+      'Faster',
+      name: 'coincontrol_tx_detail_fee_custom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Standard`
+  String get coincontrol_tx_detail_fee_faster {
+    return Intl.message(
+      'Standard',
+      name: 'coincontrol_tx_detail_fee_faster',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get coincontrol_tx_detail_fee_standard {
+    return Intl.message(
+      'Custom',
+      name: 'coincontrol_tx_detail_fee_standard',
       desc: '',
       args: [],
     );
@@ -3066,6 +3328,36 @@ class S {
     );
   }
 
+  /// `ACCOUNT DETAILS`
+  String get coincontrol_tx_history_filter_off_heading {
+    return Intl.message(
+      'ACCOUNT DETAILS',
+      name: 'coincontrol_tx_history_filter_off_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive`
+  String get coincontrol_tx_history_filter_off_receive {
+    return Intl.message(
+      'Receive',
+      name: 'coincontrol_tx_history_filter_off_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send`
+  String get coincontrol_tx_history_filter_off_send {
+    return Intl.message(
+      'Send',
+      name: 'coincontrol_tx_history_filter_off_send',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Address`
   String get coincontrol_tx_history_tx_details_address {
     return Intl.message(
@@ -3096,20 +3388,30 @@ class S {
     );
   }
 
-  /// `500 sats   $0.13`
+  /// `500 SATS   $0.13`
   String get coincontrol_tx_history_tx_details_fee_details {
     return Intl.message(
-      '500 sats   \$0.13',
+      '500 SATS   \$0.13',
       name: 'coincontrol_tx_history_tx_details_fee_details',
       desc: '',
       args: [],
     );
   }
 
-  /// `Tag`
+  /// `TRANSACTION Details`
+  String get coincontrol_tx_history_tx_details_heading {
+    return Intl.message(
+      'TRANSACTION Details',
+      name: 'coincontrol_tx_history_tx_details_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags`
   String get coincontrol_tx_history_tx_details_history {
     return Intl.message(
-      'Tag',
+      'Tags',
       name: 'coincontrol_tx_history_tx_details_history',
       desc: '',
       args: [],
@@ -3156,6 +3458,16 @@ class S {
     );
   }
 
+  /// `Unlock`
+  String get coincontrol_unlock_coin_modal_cta1 {
+    return Intl.message(
+      'Unlock',
+      name: 'coincontrol_unlock_coin_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Do not remind me`
   String get coincontrol_unlock_coin_modal_cta2 {
     return Intl.message(
@@ -3166,10 +3478,10 @@ class S {
     );
   }
 
-  /// `WARNING\n\nYou’re about to unlock coins.\nInfo text about locking label and consequences`
+  /// `WARNING\n\nUnlocking coins will make them available for use in transactions.`
   String get coincontrol_unlock_coin_modal_subheading {
     return Intl.message(
-      'WARNING\n\nYou’re about to unlock coins.\nInfo text about locking label and consequences',
+      'WARNING\n\nUnlocking coins will make them available for use in transactions.',
       name: 'coincontrol_unlock_coin_modal_subheading',
       desc: '',
       args: [],
@@ -3373,6 +3685,148 @@ class S {
     return Intl.message(
       'Skip',
       name: 'component_skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get create_first_tag_modal_1_2_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'create_first_tag_modal_1_2_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get create_first_tag_modal_1_2_cta2 {
+    return Intl.message(
+      'Back',
+      name: 'create_first_tag_modal_1_2_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a Tag`
+  String get create_first_tag_modal_1_2_heading {
+    return Intl.message(
+      'Choose a Tag',
+      name: 'create_first_tag_modal_1_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags are a useful way to organize your coins.`
+  String get create_first_tag_modal_1_2_subheading {
+    return Intl.message(
+      'Tags are a useful way to organize your coins.',
+      name: 'create_first_tag_modal_1_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get create_first_tag_modal_2_2_cta {
+    return Intl.message(
+      'Continue',
+      name: 'create_first_tag_modal_2_2_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a Tag`
+  String get create_first_tag_modal_2_2_heading {
+    return Intl.message(
+      'Choose a Tag',
+      name: 'create_first_tag_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'create_first_tag_modal_2_2_ie_text-field' key
+
+  /// `Suggestions`
+  String get create_first_tag_modal_2_2_subheading {
+    return Intl.message(
+      'Suggestions',
+      name: 'create_first_tag_modal_2_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get create_second_tag_modal_1_2_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'create_second_tag_modal_1_2_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get create_second_tag_modal_1_2_cta2 {
+    return Intl.message(
+      'Back',
+      name: 'create_second_tag_modal_1_2_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a Tag`
+  String get create_second_tag_modal_1_2_heading {
+    return Intl.message(
+      'Choose a Tag',
+      name: 'create_second_tag_modal_1_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags are a useful way to organize your coins.`
+  String get create_second_tag_modal_1_2_subheading {
+    return Intl.message(
+      'Tags are a useful way to organize your coins.',
+      name: 'create_second_tag_modal_1_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get create_second_tag_modal_2_2_cta {
+    return Intl.message(
+      'Continue',
+      name: 'create_second_tag_modal_2_2_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a Tag`
+  String get create_second_tag_modal_2_2_heading {
+    return Intl.message(
+      'Choose a Tag',
+      name: 'create_second_tag_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most used`
+  String get create_second_tag_modal_2_2_subheading {
+    return Intl.message(
+      'Most used',
+      name: 'create_second_tag_modal_2_2_subheading',
       desc: '',
       args: [],
     );
@@ -11060,10 +11514,10 @@ class S {
     );
   }
 
-  /// `Your Envoy backup is complete.`
+  /// `Learn More`
   String get manual_toggle_on_seed_backup_in_progress_toast_heading {
     return Intl.message(
-      'Your Envoy backup is complete.',
+      'Learn More',
       name: 'manual_toggle_on_seed_backup_in_progress_toast_heading',
       desc: '',
       args: [],
@@ -12148,16 +12602,6 @@ class S {
     );
   }
 
-  /// `Learn more`
-  String get privacy_applicationLock_learnMore {
-    return Intl.message(
-      'Learn more',
-      name: 'privacy_applicationLock_learnMore',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Application lock`
   String get privacy_applicationLock_title {
     return Intl.message(
@@ -12283,6 +12727,16 @@ class S {
     return Intl.message(
       'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
       name: 'privacy_privacyMode_torSuggestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.`
+  String get privacy_privacyMode_torSuggestionOn {
+    return Intl.message(
+      'Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.',
+      name: 'privacy_privacyMode_torSuggestionOn',
       desc: '',
       args: [],
     );
@@ -13239,6 +13693,16 @@ class S {
     return Intl.message(
       'rtainment',
       name: 'rtainment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get screenTitle_activity {
+    return Intl.message(
+      'Activity',
+      name: 'screenTitle_activity',
       desc: '',
       args: [],
     );
@@ -14288,6 +14752,26 @@ class S {
     );
   }
 
+  /// `EDIT TAG NAME`
+  String get tagged_coin_details_menu_cta1 {
+    return Intl.message(
+      'EDIT TAG NAME',
+      name: 'tagged_coin_details_menu_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE TAG`
+  String get tagged_coin_details_menu_cta2 {
+    return Intl.message(
+      'DELETE TAG',
+      name: 'tagged_coin_details_menu_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hold to drag and reorder your accounts.`
   String get tap_and_drag_first_time_text {
     return Intl.message(
@@ -14348,10 +14832,10 @@ class S {
     );
   }
 
-  /// `tag selected`
+  /// `Change Tag`
   String get untagged_coin_details_half_spendable_cta2 {
     return Intl.message(
-      'tag selected',
+      'Change Tag',
       name: 'untagged_coin_details_half_spendable_cta2',
       desc: '',
       args: [],
@@ -14363,6 +14847,16 @@ class S {
     return Intl.message(
       'Untagged',
       name: 'untagged_coin_details_half_spendable_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag Details`
+  String get untagged_coin_details_locked_heading {
+    return Intl.message(
+      'Tag Details',
+      name: 'untagged_coin_details_locked_heading',
       desc: '',
       args: [],
     );
@@ -14388,10 +14882,10 @@ class S {
     );
   }
 
-  /// `tag selected`
+  /// `Change Tag`
   String get untagged_coin_details_spendable_cta2 {
     return Intl.message(
-      'tag selected',
+      'Change Tag',
       name: 'untagged_coin_details_spendable_cta2',
       desc: '',
       args: [],
@@ -14403,6 +14897,16 @@ class S {
     return Intl.message(
       '\$0.02',
       name: 'untagged_coin_details_spendable_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TAG Details`
+  String get untagged_coin_details_spendable_heading {
+    return Intl.message(
+      'TAG Details',
+      name: 'untagged_coin_details_spendable_heading',
       desc: '',
       args: [],
     );
@@ -14423,6 +14927,56 @@ class S {
     return Intl.message(
       '200 SATS',
       name: 'untagged_coin_details_spendable_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 Locked`
+  String get untagged_coin_details_unlocked_coins_locked {
+    return Intl.message(
+      '1 Locked',
+      name: 'untagged_coin_details_unlocked_coins_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `4 of 4 Coins Selected`
+  String get untagged_coin_details_unlocked_coins_selected {
+    return Intl.message(
+      '4 of 4 Coins Selected',
+      name: 'untagged_coin_details_unlocked_coins_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `|`
+  String get untagged_coin_details_unlocked_divider {
+    return Intl.message(
+      '|',
+      name: 'untagged_coin_details_unlocked_divider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TAG Details`
+  String get untagged_coin_details_unlocked_heading {
+    return Intl.message(
+      'TAG Details',
+      name: 'untagged_coin_details_unlocked_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conferences`
+  String get untagged_coin_details_unlocked_tag_name {
+    return Intl.message(
+      'Conferences',
+      name: 'untagged_coin_details_unlocked_tag_name',
       desc: '',
       args: [],
     );

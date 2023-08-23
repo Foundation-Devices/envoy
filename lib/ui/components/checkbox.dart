@@ -77,9 +77,10 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
   }
 }
 
+//ignore: must_be_immutable
 class DialogCheckBox extends StatefulWidget {
   final String label;
-  final bool isChecked;
+  bool isChecked;
   final bool isRadio;
   final ValueChanged<bool?>? onChanged;
 
@@ -105,7 +106,10 @@ class _DialogCheckBoxState extends State<DialogCheckBox> {
           children: [
             GestureDetector(
               onTap: () {
-                widget.onChanged?.call(!widget.isChecked);
+                setState(() {
+                  widget.isChecked = !widget.isChecked;
+                });
+                widget.onChanged!(!widget.isChecked);
               },
               child: Container(
                 width: EnvoySpacing.medium2,
