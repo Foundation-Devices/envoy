@@ -11,7 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
-import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/envoy_icons.dart' as oldIcons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
@@ -30,6 +30,7 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -39,6 +40,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget with NavigationCard {
@@ -201,7 +203,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       icon: Icon(
-                        EnvoyIcons.qr_scan,
+                        oldIcons.EnvoyIcons.qr_scan,
                         size: 30,
                         color: EnvoyColors.darkTeal,
                       ),
@@ -356,11 +358,44 @@ class TransactionListTile extends StatelessWidget {
           onTap: () {
             action();
           },
-          onLongPress: () {
-            Clipboard.setData(ClipboardData(text: transaction.txId));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(S().envoy_account_transaction_copied_clipboard),
-            ));
+          onLongPress: () async {
+            bool dismissed = await EnvoyStorage()
+                .checkPromptDismissed(DismissiblePrompt.copyTxId);
+            if (!dismissed) {
+              showEnvoyPopUp(
+                  context,
+                  S().coincontrol_coin_change_spendable_tate_modal_subheading,
+                  S().coincontrol_coin_change_spendable_tate_modal_cta1,
+                  () {
+                    Clipboard.setData(
+                        ClipboardData(text: transaction.txId)); // here
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text(S().envoy_account_transaction_copied_clipboard),
+                    ));
+                  },
+                  icon: EnvoyIcons.info,
+                  secondaryButtonLabel:
+                      S().coincontrol_coin_change_spendable_tate_modal_cta2,
+                  onSecondaryButtonTap: () {
+                    Navigator.pop(context);
+                  },
+                  checkBoxText: "Don’t show again",
+                  checkedValue: dismissed,
+                  onCheckBoxChanged: (checkedValue) {
+                    if (!checkedValue) {
+                      EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
+                    } else if (checkedValue) {
+                      EnvoyStorage()
+                          .removePromptState(DismissiblePrompt.copyTxId);
+                    }
+                  });
+            } else {
+              Clipboard.setData(ClipboardData(text: transaction.txId)); // here
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(S().envoy_account_transaction_copied_clipboard),
+              ));
+            }
           },
           child: ListTile(
             title: FittedBox(

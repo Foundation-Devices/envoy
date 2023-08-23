@@ -37,6 +37,7 @@ enum DismissiblePrompt {
   createCoinTagWarning,
   coinUnlockWarning,
   coinLockWarning,
+  copyTxId
 }
 
 final homePageTabProvider =
