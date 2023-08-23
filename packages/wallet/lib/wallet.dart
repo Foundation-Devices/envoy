@@ -438,7 +438,7 @@ class Wallet {
   static String _getChangeAddress(int walletAddress) {
     var lib = rust.NativeLibrary(load(_libName));
     return lib
-        .wallet_get_change_address(walletAddress)
+        .wallet_get_change_address(Pointer.fromAddress(walletAddress))
         .cast<Utf8>()
         .toDartString();
   }
@@ -546,12 +546,7 @@ class Wallet {
     });
   }
 
-  Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
-      {List<Utxo>? utxos}) async {
-    final rustFunction =
-        _lib.lookup<NativeFunction<WalletCreatePsbtRust>>('wallet_create_psbt');
-    final dartFunction = rustFunction.asFunction<WalletCreatePsbtDart>();
-
+  static Pointer<rust.UtxoList> _createUtxoListPointer(List<Utxo>? utxos) {
     final listPointer = calloc<rust.UtxoList>(1);
     listPointer.ref.utxos_len = utxos?.length ?? 0;
 
@@ -564,6 +559,31 @@ class Wallet {
 
       listPointer.ref.utxos.elementAt(index).ref = utxoPointer as rust.Utxo;
     });
+    return listPointer;
+  }
+
+  Future<int> getMaxFeeRate(String sendTo, int amount,
+      {List<Utxo>? utxos}) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = rust.NativeLibrary(load(_libName));
+      Pointer<rust.UtxoList> listPointer = _createUtxoListPointer(utxos);
+      //return 5;
+      return lib
+          .wallet_get_max_feerate(Pointer.fromAddress(walletAddress),
+              sendTo.toNativeUtf8() as Pointer<Char>, amount, listPointer)
+          .toInt();
+    });
+  }
+
+  Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
+      {List<Utxo>? utxos}) async {
+    final rustFunction =
+        _lib.lookup<NativeFunction<WalletCreatePsbtRust>>('wallet_create_psbt');
+    final dartFunction = rustFunction.asFunction<WalletCreatePsbtDart>();
+
+    Pointer<rust.UtxoList> listPointer = _createUtxoListPointer(utxos);
 
     return Future(() {
       NativePsbt psbt = dartFunction(
@@ -649,7 +669,8 @@ class Wallet {
   static List<Utxo> _getUtxos(int walletAddress) {
     final lib = rust.NativeLibrary(load(_libName));
 
-    rust.UtxoList utxoList = lib.wallet_get_utxos(walletAddress);
+    rust.UtxoList utxoList =
+        lib.wallet_get_utxos(Pointer.fromAddress(walletAddress));
 
     List<Utxo> utxos = [];
     for (var i = 0; i < utxoList.utxos_len; i++) {

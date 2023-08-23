@@ -14,12 +14,10 @@ use std::convert::TryFrom;
 use std::error::Error;
 
 use bdk::bitcoin::{Address, Network, OutPoint, Txid};
-use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
-use bdk::database::{BatchDatabase, ConfigurableDatabase, MemoryDatabase};
-use bdk::electrum_client::{ConfigBuilder, ElectrumApi, Socks5Config};
+use bdk::database::{ConfigurableDatabase, MemoryDatabase};
+use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::FeeRate;
 use bdk::{electrum_client, miniscript, SignOptions, SyncOptions};
 use std::str::FromStr;
 
@@ -39,10 +37,10 @@ use bdk::keys::{
     DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
 };
 use bdk::miniscript::psbt::PsbtExt;
-use bdk::wallet::tx_builder::TxOrdering;
 use bip39::{Language, Mnemonic};
-use bitcoin_hashes::hex::ToHex;
 use std::sync::Mutex;
+
+mod util;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -221,34 +219,6 @@ pub unsafe extern "C" fn wallet_init(
     )
 }
 
-unsafe fn init(
-    network: NetworkType,
-    name: &str,
-    external_descriptor: &str,
-    internal_descriptor: &str,
-    data_dir: &str,
-) -> *mut Mutex<bdk::Wallet<Tree>> {
-    let db_conf = bdk::database::any::SledDbConfiguration {
-        path: data_dir.to_string(),
-        tree_name: name.to_string(),
-    };
-
-    let db = unwrap_or_return!(sled::Tree::from_config(&db_conf), null_mut());
-
-    let wallet = Mutex::new(unwrap_or_return!(
-        bdk::Wallet::new(
-            external_descriptor,
-            Some(internal_descriptor),
-            network.into(),
-            db
-        ),
-        null_mut()
-    ));
-
-    let wallet_box = Box::new(wallet);
-    Box::into_raw(wallet_box)
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn wallet_drop(wallet: *mut Mutex<bdk::Wallet<Tree>>) {
     drop(wallet);
@@ -372,7 +342,7 @@ pub unsafe extern "C" fn wallet_derive(
 pub unsafe extern "C" fn wallet_get_address(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> *const c_char {
-    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
 
     let address = wallet
         .get_address(AddressIndex::New)
@@ -390,7 +360,7 @@ pub unsafe extern "C" fn wallet_get_address(
 pub unsafe extern "C" fn wallet_get_change_address(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> *const c_char {
-    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
 
     let address = wallet
         .get_internal_address(AddressIndex::New)
@@ -410,11 +380,14 @@ pub unsafe extern "C" fn wallet_sync(
     electrum_address: *const c_char,
     tor_port: i32,
 ) -> bool {
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), false);
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), false);
 
     let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), false);
 
-    let blockchain = unwrap_or_return!(get_electrum_blockchain(tor_port, electrum_address), false);
+    let blockchain = unwrap_or_return!(
+        util::get_electrum_blockchain(tor_port, electrum_address),
+        false
+    );
     unwrap_or_return!(
         wallet.sync(&blockchain, SyncOptions { progress: None }),
         false
@@ -424,87 +397,16 @@ pub unsafe extern "C" fn wallet_sync(
     true
 }
 
-unsafe fn get_wallet_mutex(
-    wallet: *mut Mutex<bdk::Wallet<Tree>>,
-) -> &'static mut Mutex<bdk::Wallet<Tree>> {
-    let wallet = {
-        assert!(!wallet.is_null());
-        &mut *wallet
-    };
-    wallet
-}
-
-fn get_electrum_blockchain_config(
-    tor_port: i32,
-    electrum_address: &str,
-) -> ElectrumBlockchainConfig {
-    if tor_port > 0 {
-        ElectrumBlockchainConfig {
-            url: electrum_address.parse().unwrap(),
-            socks5: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
-            retry: 0,
-            timeout: None,
-            stop_gap: 50,
-            validate_domain: false,
-        }
-    } else {
-        ElectrumBlockchainConfig {
-            url: electrum_address.parse().unwrap(),
-            socks5: None,
-            retry: 0,
-            timeout: Some(5),
-            stop_gap: 50,
-            validate_domain: false,
-        }
-    }
-}
-
-fn get_electrum_blockchain(
-    tor_port: i32,
-    electrum_address: &str,
-) -> Result<ElectrumBlockchain, bdk::Error> {
-    let config = get_electrum_blockchain_config(tor_port, electrum_address);
-    ElectrumBlockchain::from_config(&config)
-}
-
-fn get_electrum_client(
-    tor_port: i32,
-    electrum_address: &str,
-) -> Result<Client, electrum_client::Error> {
-    let config: electrum_client::Config;
-    if tor_port > 0 {
-        let tor_config = Socks5Config {
-            addr: "127.0.0.1:".to_owned() + &tor_port.to_string(),
-            credentials: None,
-        };
-        config = ConfigBuilder::new()
-            .validate_domain(false)
-            .socks5(Some(tor_config))
-            .unwrap()
-            .build();
-    } else {
-        config = ConfigBuilder::new()
-            .validate_domain(false)
-            .socks5(None)
-            .unwrap()
-            .timeout(Some(5))
-            .unwrap()
-            .build();
-    }
-
-    Client::from_config(electrum_address, config)
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn wallet_get_balance(wallet: *mut Mutex<bdk::Wallet<Tree>>) -> u64 {
-    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
     let balance = wallet.get_balance().unwrap();
     balance.confirmed + balance.immature + balance.trusted_pending + balance.untrusted_pending
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_get_utxos(wallet: *mut Mutex<bdk::Wallet<Tree>>) -> UtxoList {
-    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
 
     let utxos = wallet.list_unspent().unwrap();
     let utxos_len = utxos.len() as u32;
@@ -537,7 +439,7 @@ pub unsafe extern "C" fn wallet_get_fee_rate(
     target: u16,
 ) -> f64 {
     let electrum_address = CStr::from_ptr(electrum_address).to_str().unwrap();
-    let client = match get_electrum_client(tor_port, electrum_address) {
+    let client = match util::get_electrum_client(tor_port, electrum_address) {
         Ok(c) => c,
         Err(e) => {
             update_last_error(e);
@@ -564,7 +466,7 @@ pub unsafe extern "C" fn wallet_get_server_features(
 
     let electrum_address = CStr::from_ptr(electrum_address).to_str().unwrap();
     let client = unwrap_or_return!(
-        get_electrum_client(tor_port, electrum_address),
+        util::get_electrum_client(tor_port, electrum_address),
         error_return
     );
 
@@ -594,7 +496,7 @@ pub unsafe extern "C" fn wallet_get_server_features(
 pub unsafe extern "C" fn wallet_get_transactions(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> TransactionList {
-    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
 
     let transactions = wallet.list_transactions(true).unwrap();
     let transactions_len = transactions.len() as u32;
@@ -701,111 +603,34 @@ pub unsafe extern "C" fn wallet_get_transactions(
     }
 }
 
-fn psbt_extract_details<T: BatchDatabase>(
-    wallet: &bdk::Wallet<T>,
-    psbt: &PartiallySignedTransaction,
-) -> Psbt {
-    let tx = psbt.clone().extract_tx();
-    let raw_tx = serialize::<bdk::bitcoin::Transaction>(&tx).to_hex();
-
-    let sent = tx
-        .output
-        .iter()
-        .filter(|o| !wallet.is_mine(&o.script_pubkey).unwrap_or(false))
-        .map(|o| o.value)
-        .sum();
-
-    let received = tx
-        .output
-        .iter()
-        .filter(|o| wallet.is_mine(&o.script_pubkey).unwrap_or(false))
-        .map(|o| o.value)
-        .sum();
-
-    let inputs_value: u64 = psbt
-        .inputs
-        .iter()
-        .map(|i| match &i.witness_utxo {
-            None => 0,
-            Some(tx) => tx.value,
-        })
-        .sum();
-
-    let encoded = base64::encode(&serialize(&psbt));
-    let psbt = CString::new(encoded).unwrap().into_raw();
-
-    return Psbt {
-        sent,
-        received,
-        fee: inputs_value - sent - received,
-        base64: psbt,
-        txid: CString::new(tx.txid().to_hex()).unwrap().into_raw(),
-        raw_tx: CString::new(raw_tx).unwrap().into_raw(),
-    };
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn wallet_get_max_feerate(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     send_to: *const c_char,
     amount: u64,
-    fee_rate: f64,
     utxos: *const UtxoList,
-) -> Psbt {
-    let error_return = Psbt {
-        sent: 0,
-        received: 0,
-        fee: 0,
-        base64: ptr::null(),
-        txid: ptr::null(),
-        raw_tx: ptr::null(),
-    };
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
+) -> f64 {
+    let error_return = 0.0;
+
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
     let address = CStr::from_ptr(send_to).to_str().unwrap();
-
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
+    let must_spend = util::extract_utxo_list(utxos);
 
-    let mut must_spend = vec![];
+    let mut res = 1;
 
-    for i in 0..(*utxos).utxos_len as isize {
-        let utxo_ptr = (*utxos).utxos.offset(i);
-
-        let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
-        let vout = (*utxo_ptr).vout;
-
-        must_spend.push(OutPoint::new(Txid::from_str(txid).unwrap(), vout));
-    }
-
-    let mut builder = wallet.build_tx();
-    builder
-        .change_address_index(AddressIndex::Current)
-        .ordering(TxOrdering::Shuffle)
-        .only_witness_utxo()
-        .add_recipient(send_to.script_pubkey(), amount)
-        .enable_rbf()
-        .add_utxos(&*must_spend)
-        .unwrap()
-        .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
-
-    match builder.finish() {
-        Ok((mut psbt, _)) => {
-            let sign_options = SignOptions {
-                trust_witness_utxo: true,
-                ..Default::default()
-            };
-
-            // Always try signing
-            let _finalized = match wallet.sign(&mut psbt, sign_options) {
-                Ok(f) => f,
-                Err(_) => false,
-            };
-
-            psbt_extract_details(&wallet, &psbt)
+    loop {
+        let tx = util::build_tx(
+            amount.clone(),
+            res as f64 / 100000.0,
+            &wallet,
+            send_to.clone(),
+            &must_spend,
+        );
+        if tx.is_err() {
+            return res.into();
         }
-        Err(e) => {
-            update_last_error(e);
-            return error_return;
-        }
+        res += 1;
     }
 }
 
@@ -825,34 +650,13 @@ pub unsafe extern "C" fn wallet_create_psbt(
         txid: ptr::null(),
         raw_tx: ptr::null(),
     };
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
     let address = CStr::from_ptr(send_to).to_str().unwrap();
-
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
+    let must_spend = util::extract_utxo_list(utxos);
 
-    let mut must_spend = vec![];
-
-    for i in 0..(*utxos).utxos_len as isize {
-        let utxo_ptr = (*utxos).utxos.offset(i);
-
-        let txid = CStr::from_ptr((*utxo_ptr).txid).to_str().unwrap();
-        let vout = (*utxo_ptr).vout;
-
-        must_spend.push(OutPoint::new(Txid::from_str(txid).unwrap(), vout));
-    }
-
-    let mut builder = wallet.build_tx();
-    builder
-        .change_address_index(AddressIndex::Current)
-        .ordering(TxOrdering::Shuffle)
-        .only_witness_utxo()
-        .add_recipient(send_to.script_pubkey(), amount)
-        .enable_rbf()
-        .add_utxos(&*must_spend)
-        .unwrap()
-        .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32)); // Multiplication here is to convert from BTC/vkb to sat/vb
-
-    match builder.finish() {
+    let tx = util::build_tx(amount, fee_rate, &wallet, send_to, &must_spend);
+    match tx {
         Ok((mut psbt, _)) => {
             let sign_options = SignOptions {
                 trust_witness_utxo: true,
@@ -865,7 +669,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
                 Err(_) => false,
             };
 
-            psbt_extract_details(&wallet, &psbt)
+            util::psbt_extract_details(&wallet, &psbt)
         }
         Err(e) => {
             update_last_error(e);
@@ -888,7 +692,7 @@ pub unsafe extern "C" fn wallet_decode_psbt(
         raw_tx: ptr::null(),
     };
 
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), error_return);
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
     let data = unwrap_or_return!(
         base64::decode(CStr::from_ptr(psbt).to_str().unwrap()),
         error_return
@@ -898,7 +702,7 @@ pub unsafe extern "C" fn wallet_decode_psbt(
         Ok(psbt) => {
             let secp = Secp256k1::verification_only();
             let finalized_psbt = PsbtExt::finalize(psbt, &secp).unwrap();
-            psbt_extract_details(&wallet, &finalized_psbt)
+            util::psbt_extract_details(&wallet, &finalized_psbt)
         }
         Err(e) => {
             update_last_error(e);
@@ -918,7 +722,7 @@ pub unsafe extern "C" fn wallet_broadcast_tx(
     let electrum_address =
         unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), error_return);
     let client = unwrap_or_return!(
-        get_electrum_client(tor_port, electrum_address),
+        util::get_electrum_client(tor_port, electrum_address),
         error_return
     );
 
@@ -936,7 +740,7 @@ pub unsafe extern "C" fn wallet_validate_address(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     address: *const c_char,
 ) -> bool {
-    let wallet = unwrap_or_return!(get_wallet_mutex(wallet).lock(), false);
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), false);
 
     match Address::from_str(CStr::from_ptr(address).to_str().unwrap()) {
         Ok(a) => wallet.network() == a.network, // Only valid if it's on same network
@@ -975,7 +779,7 @@ pub unsafe extern "C" fn wallet_sign_offline(
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
 
     match wallet.sign(&mut psbt, SignOptions::default()) {
-        Ok(_) => psbt_extract_details(&wallet, &psbt),
+        Ok(_) => util::psbt_extract_details(&wallet, &psbt),
         Err(e) => {
             update_last_error(e);
             error_return
@@ -997,13 +801,13 @@ pub unsafe extern "C" fn wallet_sign_psbt(
         raw_tx: ptr::null(),
     };
 
-    let wallet = get_wallet_mutex(wallet).lock().unwrap();
+    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
 
     let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
 
     match wallet.sign(&mut psbt, SignOptions::default()) {
-        Ok(_) => psbt_extract_details(&wallet, &psbt),
+        Ok(_) => util::psbt_extract_details(&wallet, &psbt),
         Err(e) => {
             update_last_error(e);
             error_return
@@ -1011,22 +815,15 @@ pub unsafe extern "C" fn wallet_sign_psbt(
     }
 }
 
-fn generate_mnemonic() -> (Mnemonic, String) {
-    let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
-    let mnemonic_string = mnemonic.to_string();
-
-    (mnemonic, mnemonic_string)
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn wallet_generate_seed(network: NetworkType) -> Seed {
     let secp = Secp256k1::new();
 
-    let (mut mnemonic, mut mnemonic_string) = generate_mnemonic();
+    let (mut mnemonic, mut mnemonic_string) = util::generate_mnemonic();
 
     // SFT-2340: try until we get a valid mnemonic (moon rays bug)
     while Mnemonic::parse(mnemonic_string.clone()).is_err() {
-        (mnemonic, mnemonic_string) = generate_mnemonic();
+        (mnemonic, mnemonic_string) = util::generate_mnemonic();
     }
 
     let xkey: ExtendedKey<miniscript::BareCtx> = mnemonic.into_extended_key().unwrap();
@@ -1132,4 +929,32 @@ pub unsafe extern "C" fn wallet_get_seed_from_entropy(
 #[no_mangle]
 pub unsafe extern "C" fn wallet_hello() {
     println!("Hello wallet");
+}
+
+pub unsafe fn init(
+    network: NetworkType,
+    name: &str,
+    external_descriptor: &str,
+    internal_descriptor: &str,
+    data_dir: &str,
+) -> *mut Mutex<bdk::Wallet<Tree>> {
+    let db_conf = bdk::database::any::SledDbConfiguration {
+        path: data_dir.to_string(),
+        tree_name: name.to_string(),
+    };
+
+    let db = unwrap_or_return!(sled::Tree::from_config(&db_conf), null_mut());
+
+    let wallet = Mutex::new(unwrap_or_return!(
+        bdk::Wallet::new(
+            external_descriptor,
+            Some(internal_descriptor),
+            network.into(),
+            db
+        ),
+        null_mut()
+    ));
+
+    let wallet_box = Box::new(wallet);
+    Box::into_raw(wallet_box)
 }
