@@ -620,9 +620,15 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let mut res = 1;
 
     loop {
-        let tx = util::build_tx(amount.clone(), res.into(), &wallet, send_to.clone(), &must_spend);
+        let tx = util::build_tx(
+            amount.clone(),
+            res as f64 / 100000.0,
+            &wallet,
+            send_to.clone(),
+            &must_spend,
+        );
         if tx.is_err() {
-            return res.into()
+            return res.into();
         }
         res += 1;
     }

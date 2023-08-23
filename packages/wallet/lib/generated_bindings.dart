@@ -28,17 +28,51 @@ class NativeLibrary {
   late final _wallet_last_error_message = _wallet_last_error_messagePtr
       .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
+  ffi.Pointer<ffi.Char> wallet_init(
+    ffi.Pointer<ffi.Char> name,
+    ffi.Pointer<ffi.Char> external_descriptor,
+    ffi.Pointer<ffi.Char> internal_descriptor,
+    ffi.Pointer<ffi.Char> data_dir,
+    int network,
+  ) {
+    return _wallet_init(
+      name,
+      external_descriptor,
+      internal_descriptor,
+      data_dir,
+      network,
+    );
+  }
+
+  late final _wallet_initPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Int32)>>('wallet_init');
+  late final _wallet_init = _wallet_initPtr.asFunction<
+      ffi.Pointer<ffi.Char> Function(
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          int)>();
+
   void wallet_drop(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_drop(
-      arg0,
+      wallet,
     );
   }
 
   late final _wallet_dropPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int)>>('wallet_drop');
-  late final _wallet_drop = _wallet_dropPtr.asFunction<void Function(int)>();
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Char>)>>(
+          'wallet_drop');
+  late final _wallet_drop =
+      _wallet_dropPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
 
   Wallet wallet_derive(
     ffi.Pointer<ffi.Char> seed_words,
@@ -75,72 +109,81 @@ class NativeLibrary {
           ffi.Pointer<ffi.Char>, int, bool, ffi.Pointer<ffi.Char>, bool)>();
 
   ffi.Pointer<ffi.Char> wallet_get_address(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_get_address(
-      arg0,
+      wallet,
     );
   }
 
-  late final _wallet_get_addressPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Int)>>(
-          'wallet_get_address');
-  late final _wallet_get_address =
-      _wallet_get_addressPtr.asFunction<ffi.Pointer<ffi.Char> Function(int)>();
+  late final _wallet_get_addressPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>)>>('wallet_get_address');
+  late final _wallet_get_address = _wallet_get_addressPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
 
   ffi.Pointer<ffi.Char> wallet_get_change_address(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_get_change_address(
-      arg0,
+      wallet,
     );
   }
 
-  late final _wallet_get_change_addressPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Int)>>(
-          'wallet_get_change_address');
+  late final _wallet_get_change_addressPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>)>>('wallet_get_change_address');
   late final _wallet_get_change_address = _wallet_get_change_addressPtr
-      .asFunction<ffi.Pointer<ffi.Char> Function(int)>();
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
 
   bool wallet_sync(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> electrum_address,
+    int tor_port,
   ) {
     return _wallet_sync(
-      arg0,
+      wallet,
+      electrum_address,
+      tor_port,
     );
   }
 
-  late final _wallet_syncPtr =
-      _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Int)>>('wallet_sync');
-  late final _wallet_sync = _wallet_syncPtr.asFunction<bool Function(int)>();
+  late final _wallet_syncPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Bool Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Int32)>>('wallet_sync');
+  late final _wallet_sync = _wallet_syncPtr.asFunction<
+      bool Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
   int wallet_get_balance(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_get_balance(
-      arg0,
+      wallet,
     );
   }
 
   late final _wallet_get_balancePtr =
-      _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Int)>>(
+      _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<ffi.Char>)>>(
           'wallet_get_balance');
   late final _wallet_get_balance =
-      _wallet_get_balancePtr.asFunction<int Function(int)>();
+      _wallet_get_balancePtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   UtxoList wallet_get_utxos(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_get_utxos(
-      arg0,
+      wallet,
     );
   }
 
   late final _wallet_get_utxosPtr =
-      _lookup<ffi.NativeFunction<UtxoList Function(ffi.Int)>>(
+      _lookup<ffi.NativeFunction<UtxoList Function(ffi.Pointer<ffi.Char>)>>(
           'wallet_get_utxos');
-  late final _wallet_get_utxos =
-      _wallet_get_utxosPtr.asFunction<UtxoList Function(int)>();
+  late final _wallet_get_utxos = _wallet_get_utxosPtr
+      .asFunction<UtxoList Function(ffi.Pointer<ffi.Char>)>();
 
   double wallet_get_fee_rate(
     ffi.Pointer<ffi.Char> electrum_address,
@@ -179,58 +222,85 @@ class NativeLibrary {
       .asFunction<ServerFeatures Function(ffi.Pointer<ffi.Char>, int)>();
 
   TransactionList wallet_get_transactions(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_get_transactions(
-      arg0,
+      wallet,
     );
   }
 
-  late final _wallet_get_transactionsPtr =
-      _lookup<ffi.NativeFunction<TransactionList Function(ffi.Int)>>(
-          'wallet_get_transactions');
-  late final _wallet_get_transactions =
-      _wallet_get_transactionsPtr.asFunction<TransactionList Function(int)>();
+  late final _wallet_get_transactionsPtr = _lookup<
+          ffi.NativeFunction<TransactionList Function(ffi.Pointer<ffi.Char>)>>(
+      'wallet_get_transactions');
+  late final _wallet_get_transactions = _wallet_get_transactionsPtr
+      .asFunction<TransactionList Function(ffi.Pointer<ffi.Char>)>();
 
   double wallet_get_max_feerate(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> send_to,
+    int amount,
+    ffi.Pointer<UtxoList> utxos,
   ) {
     return _wallet_get_max_feerate(
-      arg0,
+      wallet,
+      send_to,
+      amount,
+      utxos,
     );
   }
 
-  late final _wallet_get_max_feeratePtr =
-      _lookup<ffi.NativeFunction<ffi.Double Function(ffi.Int)>>(
-          'wallet_get_max_feerate');
-  late final _wallet_get_max_feerate =
-      _wallet_get_max_feeratePtr.asFunction<double Function(int)>();
+  late final _wallet_get_max_feeratePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Double Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Uint64, ffi.Pointer<UtxoList>)>>('wallet_get_max_feerate');
+  late final _wallet_get_max_feerate = _wallet_get_max_feeratePtr.asFunction<
+      double Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int,
+          ffi.Pointer<UtxoList>)>();
 
   Psbt wallet_create_psbt(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> send_to,
+    int amount,
+    double fee_rate,
+    ffi.Pointer<UtxoList> utxos,
   ) {
     return _wallet_create_psbt(
-      arg0,
+      wallet,
+      send_to,
+      amount,
+      fee_rate,
+      utxos,
     );
   }
 
-  late final _wallet_create_psbtPtr =
-      _lookup<ffi.NativeFunction<Psbt Function(ffi.Int)>>('wallet_create_psbt');
-  late final _wallet_create_psbt =
-      _wallet_create_psbtPtr.asFunction<Psbt Function(int)>();
+  late final _wallet_create_psbtPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Uint64,
+              ffi.Double,
+              ffi.Pointer<UtxoList>)>>('wallet_create_psbt');
+  late final _wallet_create_psbt = _wallet_create_psbtPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, double,
+          ffi.Pointer<UtxoList>)>();
 
   Psbt wallet_decode_psbt(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> psbt,
   ) {
     return _wallet_decode_psbt(
-      arg0,
+      wallet,
+      psbt,
     );
   }
 
-  late final _wallet_decode_psbtPtr =
-      _lookup<ffi.NativeFunction<Psbt Function(ffi.Int)>>('wallet_decode_psbt');
-  late final _wallet_decode_psbt =
-      _wallet_decode_psbtPtr.asFunction<Psbt Function(int)>();
+  late final _wallet_decode_psbtPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_decode_psbt');
+  late final _wallet_decode_psbt = _wallet_decode_psbtPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   ffi.Pointer<ffi.Char> wallet_broadcast_tx(
     ffi.Pointer<ffi.Char> electrum_address,
@@ -253,18 +323,21 @@ class NativeLibrary {
           ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
 
   bool wallet_validate_address(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> address,
   ) {
     return _wallet_validate_address(
-      arg0,
+      wallet,
+      address,
     );
   }
 
-  late final _wallet_validate_addressPtr =
-      _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Int)>>(
-          'wallet_validate_address');
-  late final _wallet_validate_address =
-      _wallet_validate_addressPtr.asFunction<bool Function(int)>();
+  late final _wallet_validate_addressPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Bool Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_validate_address');
+  late final _wallet_validate_address = _wallet_validate_addressPtr.asFunction<
+      bool Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   Psbt wallet_sign_offline(
     ffi.Pointer<ffi.Char> psbt,
@@ -289,17 +362,21 @@ class NativeLibrary {
           ffi.Pointer<ffi.Char>, int)>();
 
   Psbt wallet_sign_psbt(
-    int arg0,
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> psbt,
   ) {
     return _wallet_sign_psbt(
-      arg0,
+      wallet,
+      psbt,
     );
   }
 
-  late final _wallet_sign_psbtPtr =
-      _lookup<ffi.NativeFunction<Psbt Function(ffi.Int)>>('wallet_sign_psbt');
-  late final _wallet_sign_psbt =
-      _wallet_sign_psbtPtr.asFunction<Psbt Function(int)>();
+  late final _wallet_sign_psbtPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_sign_psbt');
+  late final _wallet_sign_psbt = _wallet_sign_psbtPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   Seed wallet_generate_seed(
     int network,
