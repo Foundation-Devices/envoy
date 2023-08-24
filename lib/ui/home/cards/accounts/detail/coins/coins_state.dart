@@ -98,9 +98,8 @@ final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
 final coinsTagProvider =
     Provider.family<List<CoinTag>, String>((ref, accountId) {
   final existingTags = ref.watch(coinTagsStreamProvider(accountId)).value ?? [];
-  final filter = ref.watch(coinFilterStateProvider);
+  final sortType = ref.watch(coinTagSortStateProvider);
   final existingCoins = ref.watch(coinsProvider(accountId));
-  final utxoFilterState = ref.watch(coinFilterStateProvider);
   //Make deep copies so it wont affect existing data sets, any array operations like
   //removeWhere or Add needs to be done in deep copies.
   List<Coin> coins = [...existingCoins];
@@ -122,34 +121,19 @@ final coinsTagProvider =
         untagged: true)
       ..addCoins(coins));
 
-  //sort tags based on Tag name
-  if (filter.filterByTagName != FilterButtonState.none) {
-    tags.sort((a, b) => filter.filterByTagName == FilterButtonState.up
-        ? a.name.compareTo(b.name)
-        : b.name.compareTo(a.name));
-  }
-
-  //sort tags based on the number of coins in each tags
-  if (utxoFilterState.filterByNumberOfCoins != FilterButtonState.none) {
-    tags.sort((a, b) {
-      if (utxoFilterState.filterByNumberOfCoins == FilterButtonState.down) {
-        return a.coins.length.compareTo(b.coins.length);
-      } else {
-        return b.coins.length.compareTo(a.coins.length);
-      }
-    });
-  }
-  //sort tags based on the total amount contained in each tags
-  if (utxoFilterState.filterByAmount != FilterButtonState.none) {
-    tags.sort(
-      (a, b) {
-        if (utxoFilterState.filterByAmount == FilterButtonState.down) {
-          return a.totalAmount.compareTo(b.totalAmount);
-        } else {
-          return b.totalAmount.compareTo(a.totalAmount);
-        }
-      },
-    );
+  switch (sortType) {
+    case CoinTagSortTypes.sortByTagNameAsc:
+      tags.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      break;
+    case CoinTagSortTypes.sortByTagNameDesc:
+      tags.sort((a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
+      break;
+    case CoinTagSortTypes.amountLowToHigh:
+      tags.sort((a, b) => a.totalAmount.compareTo(b.totalAmount));
+      break;
+    case CoinTagSortTypes.amountHighToLow:
+      tags.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
+      break;
   }
 
   return tags;

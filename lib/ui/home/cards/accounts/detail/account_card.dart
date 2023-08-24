@@ -105,6 +105,9 @@ class _AccountCardState extends ConsumerState<AccountCard> {
   Widget build(BuildContext context) {
     List<Transaction> transactions =
         ref.watch(transactionsProvider(widget.account.id));
+
+    bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
+
     return Scaffold(
       extendBody: true,
       body: Column(children: [
@@ -118,7 +121,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         ),
         AnimatedSwitcher(
           duration: Duration(milliseconds: 200),
-          child: transactions.isNotEmpty
+          child: (transactions.isNotEmpty || txFiltersEnabled)
               ? Container(
                   padding: EdgeInsets.only(bottom: 0),
                   child: FilterOptions(),
@@ -136,7 +139,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                       return GhostListTile();
                     },
                   )
-                : transactions.isNotEmpty
+                : (transactions.isNotEmpty)
                     ? _getMainWidget(context, transactions)
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
