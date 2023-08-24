@@ -26,6 +26,7 @@ final pendingTransactionsProvider =
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   final txFilterState = ref.watch(txFilterStateProvider);
+  final txSortState = ref.watch(txSortStateProvider);
   List<Transaction> pendingTransactions =
       ref.watch(pendingTransactionsProvider(accountId));
   //Creates new list for all type of transactions
@@ -37,68 +38,82 @@ final transactionsProvider =
   transactions.addAll(walletTransactions);
   transactions.addAll(pendingTransactions);
 
-  // Sort transactions by date
-  transactions.sort((t1, t2) {
-    // Mempool transactions go on top
-    if (t1.date.isBefore(DateTime(2008)) && t2.date.isBefore(DateTime(2008))) {
-      return 0;
-    }
-
-    if (t2.date.isBefore(DateTime(2008))) {
-      return 1;
-    }
-
-    if (t1.date.isBefore(DateTime(2008))) {
-      return -1;
-    }
-    //filter date by ascending
-    if (txFilterState.filterByDate == FilterButtonState.down) {
-      return t1.date.compareTo(t2.date);
-    }
-    return t2.date.compareTo(t1.date);
-  });
-
-  if (txFilterState.filterBySpend == FilterButtonState.down) {
-    transactions.sort(
-      (a, b) {
-        if (a.amount.isNegative) {
+  switch (txSortState) {
+    case TransactionSortTypes.newestFirst:
+      transactions.sort((t1, t2) {
+        // Mempool transactions go on top
+        if (t1.date.isBefore(DateTime(2008)) &&
+            t2.date.isBefore(DateTime(2008))) {
           return 0;
         }
-        return 1;
-      },
-    );
-  }
-  if (txFilterState.filterBySpend == FilterButtonState.up) {
-    transactions.sort(
-      (a, b) {
-        if (!a.amount.isNegative) {
+
+        if (t2.date.isBefore(DateTime(2008))) {
+          return 1;
+        }
+
+        if (t1.date.isBefore(DateTime(2008))) {
+          return -1;
+        }
+        return t2.date.compareTo(t1.date);
+      });
+      break;
+    case TransactionSortTypes.oldestFirst:
+      transactions.sort((t1, t2) {
+        // Mempool transactions go on top
+        if (t2.date.isBefore(DateTime(2008)) &&
+            t1.date.isBefore(DateTime(2008))) {
           return 0;
         }
-        return 1;
-      },
-    );
+
+        if (t1.date.isBefore(DateTime(2008))) {
+          return 1;
+        }
+
+        if (t1.date.isBefore(DateTime(2008))) {
+          return -1;
+        }
+        return t1.date.compareTo(t2.date);
+      });
+      break;
+    case TransactionSortTypes.amountLowToHigh:
+      transactions.sort(
+        (a, b) {
+          if (b.amount > a.amount) {
+            return 0;
+          }
+          return 1;
+        },
+      );
+      break;
+    case TransactionSortTypes.amountHighToLow:
+      transactions.sort(
+        (a, b) {
+          if (a.amount > b.amount) {
+            return 0;
+          }
+          return 1;
+        },
+      );
+      break;
+  }
+  if (txFilterState.contains(TransactionFilters.Sent) &&
+      txFilterState.contains(TransactionFilters.Received)) {
+    //do nothing
+  } else {
+    if (txFilterState.contains(TransactionFilters.Sent)) {
+      transactions =
+          transactions.where((element) => element.amount < 0).toList();
+    }
+    if (txFilterState.contains(TransactionFilters.Received)) {
+      transactions =
+          transactions.where((element) => element.amount > 0).toList();
+    }
   }
 
-  if (txFilterState.filterByAmount == FilterButtonState.down) {
-    transactions.sort(
-      (a, b) {
-        if (a.amount < b.amount) {
-          return 0;
-        }
-        return 1;
-      },
-    );
+  if (txFilterState.isEmpty) {
+    transactions = [];
   }
-  if (txFilterState.filterByAmount == FilterButtonState.up) {
-    transactions.sort(
-      (a, b) {
-        if (a.amount > b.amount) {
-          return 0;
-        }
-        return 1;
-      },
-    );
-  }
+
   return transactions;
 });
 
