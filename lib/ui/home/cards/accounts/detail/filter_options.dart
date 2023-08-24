@@ -2,9 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:animations/animations.dart';
+import 'package:envoy/ui/components/envoy_chip.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,12 +28,9 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
   Widget build(BuildContext context) {
     AccountToggleState toggleState = ref.watch(accountToggleStateProvider);
 
-    Widget txFilerOptions = _getTxFilterOptions(context);
-    Widget coinFilerOptions = _getCoinFilterOptions(context);
-
     //margin on right is diff 8 compare to left, filter icon uses icon button that has touch target padding
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 12),
+      margin: EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
           Row(
@@ -48,24 +49,59 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
               ),
               Flexible(
                   flex: 1,
-                  child: PageTransitionSwitcher(
-                    reverse: toggleState == AccountToggleState.Tx,
-                    transitionBuilder: (
-                      Widget child,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation,
-                    ) {
-                      return SharedAxisTransition(
-                        animation: animation,
-                        fillColor: Colors.transparent,
-                        secondaryAnimation: secondaryAnimation,
-                        transitionType: SharedAxisTransitionType.vertical,
-                        child: child,
-                      );
+                  child: GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          isDismissible: true,
+                          barrierColor: Colors.black.withOpacity(0.2),
+                          enableDrag: true,
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(EnvoySpacing.medium1),
+                              topRight: Radius.circular(EnvoySpacing.medium1),
+                            ),
+                          ),
+                          showDragHandle: true,
+                          builder: (context) {
+                            return toggleState == AccountToggleState.Tx
+                                ? TxFilterWidget()
+                                : CoinTagsFilterWidget();
+                          });
                     },
-                    child: toggleState == AccountToggleState.Coins
-                        ? coinFilerOptions
-                        : txFilerOptions,
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        bool txFiltersEnabled =
+                            ref.watch(isTransactionFiltersEnabled);
+                        bool coinFiltersEnabled =
+                            ref.watch(coinTagSortStateProvider) !=
+                                CoinTagSortTypes.sortByTagNameAsc;
+                        bool enabled = toggleState == AccountToggleState.Tx
+                            ? txFiltersEnabled
+                            : coinFiltersEnabled;
+
+                        return Container(
+                          width: 32,
+                          height: 32,
+                          padding: EdgeInsets.all(EnvoySpacing.small),
+                          decoration: BoxDecoration(
+                              color: enabled
+                                  ? Theme.of(context).primaryColor
+                                  : newColorScheme.EnvoyColors.solidWhite,
+                              borderRadius:
+                                  BorderRadius.circular(EnvoySpacing.medium3)),
+                          child: SvgPicture.asset(
+                            "assets/icons/ic_filter.svg",
+                            color: enabled
+                                ? newColorScheme.EnvoyColors.solidWhite
+                                : newColorScheme.EnvoyColors.textTertiary,
+                            width: 18,
+                            height: 18,
+                          ),
+                        );
+                      },
+                    ),
                   ))
             ],
           ),
@@ -73,279 +109,365 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
       ),
     );
   }
-
-  Widget _getTxFilterOptions(BuildContext context) {
-    TxFilterState filterButtonState = ref.watch(txFilterStateProvider);
-
-    return Filters(
-      onChanged: (active) {
-        setState(() {
-          showFilterOptions = active;
-          if (!showFilterOptions) {
-            //Reset all the filter states
-            ref.read(txFilterStateProvider.notifier).state = TxFilterState();
-          }
-        });
-      },
-      active: showFilterOptions,
-      key: ValueKey("tx_filter_options"),
-      filterItems: [
-        FilterIcon(
-          iconBuilder: (color) => Icon(Icons.arrow_circle_up),
-          gestureDetector: () {
-            var updatedState = filterButtonState.copy();
-            updatedState.filterBySpend = updatedState.filterBySpend.toggle();
-            ref.read(txFilterStateProvider.notifier).state = updatedState;
-          },
-          filterButtonState: filterButtonState.filterBySpend,
-        ),
-        FilterIcon(
-          iconBuilder: (color) => Icon(Icons.currency_bitcoin_outlined),
-          gestureDetector: () {
-            var updatedState = filterButtonState.copy();
-            updatedState.filterByAmount = updatedState.filterByAmount.toggle();
-            ref.read(txFilterStateProvider.notifier).state = updatedState;
-          },
-          filterButtonState: filterButtonState.filterByAmount,
-        ),
-        FilterIcon(
-          iconBuilder: (color) => Icon(Icons.calendar_today_outlined),
-          gestureDetector: () {
-            var updatedState = filterButtonState.copy();
-            updatedState.filterByDate = updatedState.filterByDate.toggle();
-            ref.read(txFilterStateProvider.notifier).state = updatedState;
-          },
-          filterButtonState: filterButtonState.filterByDate,
-        ),
-      ],
-    );
-  }
-
-  Widget _getCoinFilterOptions(BuildContext context) {
-    CoinFilterState filterState = ref.watch(coinFilterStateProvider);
-
-    return Filters(
-      active: showFilterOptions,
-      onChanged: (active) {
-        setState(() {
-          showFilterOptions = active;
-          if (!showFilterOptions) {
-            //Reset all the filter states
-            ref.read(coinFilterStateProvider.notifier).state =
-                CoinFilterState();
-          }
-        });
-      },
-      key: ValueKey("coin_filter_options"),
-      filterItems: [
-        FilterIcon(
-          iconBuilder: (color) => Icon(Icons.sell_outlined),
-          gestureDetector: () {
-            var updatedState = CoinFilterState();
-            updatedState.filterByTagName =
-                updatedState.filterByTagName.toggle();
-            ref.read(coinFilterStateProvider.notifier).state = updatedState;
-          },
-          filterButtonState: filterState.filterByTagName,
-        ),
-        FilterIcon(
-          iconBuilder: (color) => Icon(Icons.currency_bitcoin_outlined),
-          gestureDetector: () {
-            var updatedState = CoinFilterState();
-            updatedState.filterByAmount = updatedState.filterByAmount.toggle();
-            ref.read(coinFilterStateProvider.notifier).state = updatedState;
-          },
-          filterButtonState: filterState.filterByAmount,
-        ),
-        FilterIcon(
-          iconBuilder: (color) {
-            return SvgPicture.asset("assets/icons/ic_coin_stack.svg",
-                color: color);
-          },
-          gestureDetector: () {
-            var updatedState = CoinFilterState();
-            updatedState.filterByNumberOfCoins =
-                updatedState.filterByNumberOfCoins.toggle();
-            ref.read(coinFilterStateProvider.notifier).state = updatedState;
-          },
-          filterButtonState: filterState.filterByNumberOfCoins,
-        )
-      ],
-    );
-  }
 }
 
-class Filters extends StatefulWidget {
-  final List<Widget> filterItems;
-  final bool active;
-  final Function(bool active) onChanged;
-
-  const Filters(
-      {super.key,
-      this.active = false,
-      required this.onChanged,
-      required this.filterItems});
-
+///
+/// TODO: localise the strings
+class TxFilterWidget extends ConsumerStatefulWidget {
   @override
-  State<Filters> createState() => _FiltersState();
+  ConsumerState<TxFilterWidget> createState() => _TxFilterWidgetState();
 }
 
-class _FiltersState extends State<Filters> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 250),
-    vsync: this,
-  )..addListener(() {
-      setState(() {});
-    });
-
-  late final Animation<Alignment> _offsetAnimation = Tween<Alignment>(
-    end: Alignment.center,
-    begin: Alignment(1, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
-
-  late final Animation<double> _optionsOpacity = Tween<double>(
-    end: 1,
-    begin: 0.0,
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Interval(
-      0.0,
-      0.600,
-      curve: Curves.easeIn,
-    ),
-  ));
-
-  @override
-  void initState() {
-    super.initState();
-    // _controller.forward(from: 1);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (this.widget.active) {
-        _controller.animateTo(1.0);
-      } else {
-        _controller.animateTo(0.0);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
+  TransactionSortTypes? _sortState;
+  Set<TransactionFilters>? _filterState;
 
   @override
   Widget build(BuildContext context) {
+    final txFilterState = ref.watch(txFilterStateProvider);
+    final txSortState = ref.watch(txSortStateProvider);
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16);
+    final filterButtonTextStyle = Theme.of(context)
+        .textTheme
+        .bodyMedium
+        ?.copyWith(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.w600,
+            fontSize: 14);
+
+    if (_sortState == null) {
+      _sortState = txSortState;
+    }
+    if (_filterState == null) {
+      _filterState = txFilterState;
+    }
+
     return Container(
-      height: 48,
-      alignment: Alignment.center,
-      child: Stack(
+      padding: EdgeInsets.symmetric(
+        horizontal: EnvoySpacing.medium1,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          AlignTransition(
-            alignment: _offsetAnimation,
-            child: FadeTransition(
-              opacity: _optionsOpacity,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [...widget.filterItems],
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Filter",
+                style: titleStyle,
               ),
-            ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _filterState = Set()..addAll(TransactionFilters.values);
+                  });
+                },
+                child: Text(
+                  "Reset filter",
+                  style: filterButtonTextStyle,
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).primaryColor,
+                  splashFactory: NoSplash.splashFactory,
+                ),
+              )
+            ],
           ),
-          Align(
-              alignment: Alignment.centerRight,
-              heightFactor: 1,
-              child: IconButton(
-                  onPressed: () {
-                    if (widget.active) {
-                      _controller.reverse();
-                    } else {
-                      _controller.forward();
-                    }
-                    widget.onChanged(!widget.active);
-                  },
-                  icon: SvgPicture.asset(
-                    "assets/icons/ic_filter_funnel.svg",
-                    color: widget.active ? EnvoyColors.blue : Color(0xffC8C8C8),
-                  )))
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          Row(
+            children: [
+              EnvoyFilterChip(
+                icon: Icons.call_made,
+                text: "Sent",
+                selected:
+                    _filterState?.contains(TransactionFilters.Sent) ?? false,
+                onTap: () {
+                  final Set<TransactionFilters> newState = Set()
+                    ..addAll(_filterState!);
+                  if (_filterState!.contains(TransactionFilters.Sent)) {
+                    newState.remove(TransactionFilters.Sent);
+                  } else {
+                    newState.add(TransactionFilters.Sent);
+                  }
+                  setState(() {
+                    _filterState = newState;
+                  });
+                },
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              EnvoyFilterChip(
+                icon: Icons.call_received,
+                selected: _filterState?.contains(TransactionFilters.Received) ??
+                    false,
+                text: "Received",
+                onTap: () {
+                  final Set<TransactionFilters> newState = Set()
+                    ..addAll(_filterState!);
+                  if (_filterState!.contains(TransactionFilters.Received)) {
+                    newState.remove(TransactionFilters.Received);
+                  } else {
+                    newState.add(TransactionFilters.Received);
+                  }
+                  setState(() {
+                    _filterState = newState;
+                  });
+                },
+              )
+            ],
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Sort by", style: titleStyle),
+              TextButton(
+                onPressed: () {
+                  ref.read(txSortStateProvider.notifier).state =
+                      TransactionSortTypes.newestFirst;
+                },
+                child: Text(
+                  "Reset sorting",
+                  style: filterButtonTextStyle,
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).primaryColor,
+                  splashFactory: NoSplash.splashFactory,
+                ),
+              )
+            ],
+          ),
+          CheckBoxFilterItem(
+            text: "Newest First",
+            checked: _sortState == TransactionSortTypes.newestFirst,
+            onTap: () {
+              Haptics.selectionClick();
+              setState(() {
+                _sortState = TransactionSortTypes.newestFirst;
+              });
+            },
+          ),
+          CheckBoxFilterItem(
+            text: "Oldest First",
+            checked: _sortState == TransactionSortTypes.oldestFirst,
+            onTap: () {
+              setState(() {
+                _sortState = TransactionSortTypes.oldestFirst;
+              });
+            },
+          ),
+          CheckBoxFilterItem(
+            text: "Highest Value",
+            checked: _sortState == TransactionSortTypes.amountHighToLow,
+            onTap: () {
+              Haptics.selectionClick();
+              setState(() {
+                _sortState = TransactionSortTypes.amountHighToLow;
+              });
+            },
+          ),
+          CheckBoxFilterItem(
+            text: "Lowest Value",
+            checked: _sortState == TransactionSortTypes.amountLowToHigh,
+            onTap: () {
+              Haptics.selectionClick();
+              setState(() {
+                _sortState = TransactionSortTypes.amountLowToHigh;
+              });
+            },
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            "Apply filters",
+            type: EnvoyButtonTypes.primaryModal,
+            onTap: () {
+              Haptics.lightImpact();
+              Navigator.of(context).pop();
+              if (_sortState != null) {
+                ref.read(txSortStateProvider.notifier).state = _sortState!;
+              }
+              if (_filterState != null) {
+                ref.read(txFilterStateProvider.notifier).state = _filterState!;
+              }
+            },
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );
   }
 }
 
-class FilterIcon extends StatelessWidget {
-  final FilterButtonState filterButtonState;
-  final Widget Function(Color color) iconBuilder;
-  final GestureTapCallback gestureDetector;
+class CoinTagsFilterWidget extends ConsumerStatefulWidget {
+  const CoinTagsFilterWidget({super.key});
 
-  const FilterIcon(
-      {Key? key,
-      required this.gestureDetector,
-      required this.iconBuilder,
-      this.filterButtonState = FilterButtonState.none})
-      : super(key: key);
+  @override
+  ConsumerState<CoinTagsFilterWidget> createState() =>
+      _CoinTagsFilterWidgetState();
+}
+
+class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
+  CoinTagSortTypes? _sortState;
 
   @override
   Widget build(BuildContext context) {
-    Color iconColor = filterButtonState == FilterButtonState.none
-        ? Color(0xff808080)
-        : EnvoyColors.blackish;
-    return InkWell(
-      customBorder: CircleBorder(),
-      onTap: gestureDetector,
-      child: Container(
-        height: 44,
-        width: 48,
-        margin: EdgeInsets.only(right: 4, top: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconTheme(
-              child: iconBuilder(iconColor),
-              data: IconThemeData(
-                color: iconColor,
-                size: 22,
+    final coinSort = ref.watch(coinTagSortStateProvider);
+
+    if (_sortState == null) {
+      _sortState = coinSort;
+    }
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16);
+    final filterButtonTextStyle = Theme.of(context)
+        .textTheme
+        .bodyMedium
+        ?.copyWith(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.w600,
+            fontSize: 14);
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: EnvoySpacing.medium1,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Sort by",
+                style: titleStyle,
               ),
-            ),
-            Transform.translate(
-              offset: Offset(-4, 6),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Transform.translate(
-                      offset: Offset(0, -1),
-                      child: Icon(
-                        Icons.keyboard_arrow_up_outlined,
-                        size: 22,
-                        color: filterButtonState == FilterButtonState.up
-                            ? EnvoyColors.blue
-                            : EnvoyColors.grey,
-                      ),
-                    ),
-                    Transform.translate(
-                      offset: Offset(0, -12),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_outlined,
-                        size: 22,
-                        color: filterButtonState == FilterButtonState.down
-                            ? EnvoyColors.blue
-                            : EnvoyColors.grey,
-                      ),
-                    ),
-                  ],
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _sortState = CoinTagSortTypes.sortByTagNameAsc;
+                  });
+                  ref.read(coinTagSortStateProvider.notifier).state =
+                      _sortState!;
+                },
+                child: Text(
+                  "Reset filter",
+                  style: filterButtonTextStyle,
                 ),
-              ),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).primaryColor,
+                  splashFactory: NoSplash.splashFactory,
+                ),
+              )
+            ],
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          CheckBoxFilterItem(
+            text: "A to Z",
+            checked: _sortState == CoinTagSortTypes.sortByTagNameAsc,
+            onTap: () {
+              Haptics.selectionClick();
+              setState(() {
+                _sortState = CoinTagSortTypes.sortByTagNameAsc;
+              });
+            },
+          ),
+          CheckBoxFilterItem(
+            text: "Z to A",
+            checked: _sortState == CoinTagSortTypes.sortByTagNameDesc,
+            onTap: () {
+              setState(() {
+                _sortState = CoinTagSortTypes.sortByTagNameDesc;
+              });
+            },
+          ),
+          CheckBoxFilterItem(
+            text: "Highest Value",
+            checked: _sortState == CoinTagSortTypes.amountHighToLow,
+            onTap: () {
+              Haptics.selectionClick();
+              setState(() {
+                _sortState = CoinTagSortTypes.amountHighToLow;
+              });
+            },
+          ),
+          CheckBoxFilterItem(
+            text: "Lowest Value",
+            checked: _sortState == CoinTagSortTypes.amountLowToHigh,
+            onTap: () {
+              Haptics.selectionClick();
+              setState(() {
+                _sortState = CoinTagSortTypes.amountLowToHigh;
+              });
+            },
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            "Apply filters",
+            type: EnvoyButtonTypes.primaryModal,
+            onTap: () {
+              Haptics.lightImpact();
+              Navigator.of(context).pop();
+              if (_sortState != null) {
+                ref.read(coinTagSortStateProvider.notifier).state = _sortState!;
+              }
+            },
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+        ],
+      ),
+    );
+  }
+}
+
+class CheckBoxFilterItem extends StatelessWidget {
+  final bool checked;
+
+  final String text;
+  final GestureTapCallback onTap;
+
+  CheckBoxFilterItem(
+      {required this.checked, required this.text, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      splashFactory: NoSplash.splashFactory,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: EnvoySpacing.medium1,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Transform.translate(
+              offset: Offset(0, 1.6),
+              child: checked
+                  ? Icon(
+                      CupertinoIcons.checkmark_alt_circle_fill,
+                      color: Theme.of(context).primaryColor,
+                      size: 24,
+                    )
+                  : Icon(
+                      CupertinoIcons.circle,
+                      color: newColorScheme.EnvoyColors.surface2,
+                      size: 24,
+                    ),
+            ),
+            Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
             )
           ],
         ),
