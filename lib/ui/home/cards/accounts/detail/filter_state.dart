@@ -9,65 +9,39 @@ enum AccountToggleState {
   Coins,
 }
 
-enum FilterButtonState { up, down, none }
-
-extension FilterStateToggleExtension on FilterButtonState {
-  toggle() {
-    if (this == FilterButtonState.none) {
-      return FilterButtonState.up;
-    } else if (this == FilterButtonState.up) {
-      return FilterButtonState.down;
-    } else if (this == FilterButtonState.down) {
-      return FilterButtonState.none;
-    }
-  }
+enum TransactionFilters {
+  Sent,
+  Received,
 }
 
-class TxFilterState {
-  FilterButtonState filterByDate = FilterButtonState.none;
-  FilterButtonState filterByAmount = FilterButtonState.none;
-  FilterButtonState filterBySpend = FilterButtonState.none;
-
-  TxFilterState(
-      {this.filterByDate = FilterButtonState.none,
-      this.filterByAmount = FilterButtonState.none,
-      this.filterBySpend = FilterButtonState.none});
-
-  TxFilterState copy() => copyWith(this);
-
-  static TxFilterState copyWith(TxFilterState filterState) {
-    return TxFilterState(
-      filterByAmount: filterState.filterByAmount,
-      filterByDate: filterState.filterByDate,
-      filterBySpend: filterState.filterBySpend,
-    );
-  }
+enum TransactionSortTypes {
+  newestFirst,
+  oldestFirst,
+  amountLowToHigh,
+  amountHighToLow,
 }
 
-class CoinFilterState {
-  FilterButtonState filterByNumberOfCoins = FilterButtonState.none;
-  FilterButtonState filterByAmount = FilterButtonState.none;
-  FilterButtonState filterByTagName = FilterButtonState.none;
-
-  CoinFilterState(
-      {this.filterByNumberOfCoins = FilterButtonState.none,
-      this.filterByAmount = FilterButtonState.none,
-      this.filterByTagName = FilterButtonState.none});
-
-  CoinFilterState copy() => copyWith(this);
-
-  static CoinFilterState copyWith(CoinFilterState filterState) {
-    return CoinFilterState(
-      filterByAmount: filterState.filterByAmount,
-      filterByNumberOfCoins: filterState.filterByNumberOfCoins,
-      filterByTagName: filterState.filterByTagName,
-    );
-  }
+enum CoinTagSortTypes {
+  sortByTagNameAsc,
+  sortByTagNameDesc,
+  amountLowToHigh,
+  amountHighToLow,
 }
+
+final txFilterStateProvider = StateProvider<Set<TransactionFilters>>(
+    (ref) => Set()..addAll(TransactionFilters.values));
+final txSortStateProvider = StateProvider<TransactionSortTypes>(
+    (ref) => TransactionSortTypes.newestFirst);
+
+//provider to determine if the transaction filters are enabled
+final isTransactionFiltersEnabled = Provider<bool>((ref) {
+  final filters = ref.watch(txFilterStateProvider);
+  final TransactionSortTypes sort = ref.watch(txSortStateProvider);
+  return filters.length != 2 || sort != TransactionSortTypes.newestFirst;
+});
+
+final coinTagSortStateProvider =
+    StateProvider<CoinTagSortTypes>((ref) => CoinTagSortTypes.sortByTagNameAsc);
 
 final accountToggleStateProvider =
     StateProvider<AccountToggleState>((ref) => AccountToggleState.Tx);
-final coinFilterStateProvider =
-    StateProvider<CoinFilterState>((ref) => CoinFilterState());
-final txFilterStateProvider =
-    StateProvider<TxFilterState>((ref) => TxFilterState());
