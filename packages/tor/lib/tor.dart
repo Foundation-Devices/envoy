@@ -7,6 +7,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
+import 'package:ffi/ffi.dart';
 import 'generated_bindings.dart';
 
 DynamicLibrary load(name) {
@@ -20,6 +21,11 @@ DynamicLibrary load(name) {
   } else {
     throw NotSupportedPlatform('${Platform.operatingSystem} is not supported!');
   }
+}
+
+class ServerUnreachable implements Exception {
+  String? rustError;
+  ServerUnreachable({this.rustError});
 }
 
 class NotSupportedPlatform implements Exception {
@@ -94,22 +100,28 @@ class Tor {
 
     int newPort = await _getRandomUnusedPort();
     int ptr = await Isolate.run(() async {
-      var lib = load(_libName);
-      return NativeLibrary(lib).tor_start(newPort).address;
+      var lib = NativeLibrary(load(_libName));
+      final ptr = lib.tor_start(newPort);
+
+      if (ptr == nullptr) {
+        throwRustException(lib);
+      }
+
+      return ptr.address;
     });
 
     clientPtr = Pointer.fromAddress(ptr);
-
-    if (clientPtr != nullptr) {
-      started = true;
-      bootstrap();
-      port = newPort;
-    }
+    started = true;
+    bootstrap();
+    port = newPort;
   }
 
   bootstrap() async {
-    await NativeLibrary(_lib).tor_bootstrap(clientPtr);
-    bootstrapped = true;
+    var lib = NativeLibrary(_lib);
+    bootstrapped = await lib.tor_bootstrap(clientPtr);
+    if (!bootstrapped) {
+      throwRustException(lib);
+    }
   }
 
   disable() {
@@ -162,6 +174,20 @@ class Tor {
               // This way we avoid making clearnet req's while Tor is initialising
               return true;
             }));
+  }
+
+  static throwRustException(NativeLibrary lib) {
+    String rustError = lib.tor_last_error_message().cast<Utf8>().toDartString();
+
+    throw _getRustException(rustError);
+  }
+
+  static Exception _getRustException(String rustError) {
+    if (rustError.contains('unreachable') || rustError.contains('dns error')) {
+      return ServerUnreachable(rustError: rustError);
+    } else {
+      return Exception(rustError);
+    }
   }
 
   hello() {
