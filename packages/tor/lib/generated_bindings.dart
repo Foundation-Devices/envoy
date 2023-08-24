@@ -18,6 +18,16 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
+  ffi.Pointer<ffi.Char> tor_last_error_message() {
+    return _tor_last_error_message();
+  }
+
+  late final _tor_last_error_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'tor_last_error_message');
+  late final _tor_last_error_message =
+      _tor_last_error_messagePtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+
   ffi.Pointer<ffi.Int> tor_start(
     int socks_port,
   ) {
