@@ -77,7 +77,7 @@ class TopLevelPrivacyCard extends StatefulWidget with NavigationCard {
 //ignore: must_be_immutable
 class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
   bool _showPersonalNodeTextField = false;
-  bool _betterPerformance = Settings().torEnabled();
+  bool _betterPerformance = !Settings().torEnabled();
 
   bool _useLocalAuth = false;
   final ScrollController _scrollController = ScrollController();
