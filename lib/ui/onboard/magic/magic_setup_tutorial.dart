@@ -36,13 +36,11 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               padding: const EdgeInsets.only(top: 5),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   !Platform.isLinux
                       ? EmbeddedVideo(
