@@ -4,7 +4,6 @@
 
 import 'package:envoy/ui/components/envoy_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -496,25 +495,27 @@ class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
   String value = "Tx";
 
+  final Duration _duration = Duration(milliseconds: 150);
   late AnimationController _animationController;
-  late Animation<Alignment> _animation;
+  late Animation<Alignment> _slidingSegmentAnimation;
   late Animation<Color?> _textColorAnimation;
-  late Animation<Color?> _listIconColorAnimation;
-  late Animation<Color?> _tagListIconColorAnimation;
-  final Color _iconDisabledColor = Color(0xFF808080);
+  late Animation<Color?> _activityIconColorAnimation;
+  late Animation<Color?> _tagsIconColorAnimation;
+  final Color _iconDisabledColor = newColorScheme.EnvoyColors.textTertiary;
+  String _text = "Activity";
 
   @override
   void initState() {
     super.initState();
     value = widget.value;
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
-    _animation =
+        AnimationController(vsync: this, duration: _duration);
+    _slidingSegmentAnimation =
         AlignmentTween(begin: Alignment.centerLeft, end: Alignment.centerRight)
             .animate(CurvedAnimation(
                 parent: _animationController, curve: Curves.easeInOutCubic));
 
-    _listIconColorAnimation = TweenSequence([
+    _activityIconColorAnimation = TweenSequence([
       TweenSequenceItem(
         weight: 1.0,
         tween: ColorTween(
@@ -531,7 +532,7 @@ class _SlidingToggleState extends State<SlidingToggle>
       ),
     ]).animate(_animationController);
 
-    _tagListIconColorAnimation = TweenSequence([
+    _tagsIconColorAnimation = TweenSequence([
       TweenSequenceItem(
         weight: 1.0,
         tween: ColorTween(
@@ -557,6 +558,13 @@ class _SlidingToggleState extends State<SlidingToggle>
         ),
       ),
       TweenSequenceItem(
+        weight: .5,
+        tween: ColorTween(
+          begin: Colors.white10,
+          end: Colors.transparent,
+        ),
+      ),
+      TweenSequenceItem(
         weight: 1.0,
         tween: ColorTween(
           begin: Colors.white10,
@@ -566,7 +574,13 @@ class _SlidingToggleState extends State<SlidingToggle>
     ]).animate(_animationController);
 
     _animationController.addListener(() {
-      setState(() {});
+      setState(() {
+        if (_animationController.value < 0.5) {
+          _text = "Activity";
+        } else if (_animationController.value > 0.5) {
+          _text = "Tags";
+        }
+      });
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (value == "Tx")
@@ -579,13 +593,13 @@ class _SlidingToggleState extends State<SlidingToggle>
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w600, color: _textColorAnimation.value);
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
-          onTap: () {
-            setState(() {
-              value = value == "Tx" ? "Coins" : "Tx";
-            });
+          onTap: () async {
+            value = value == "Tx" ? "Coins" : "Tx";
             if (_animationController.isAnimating) {
               _animationController.stop();
             }
@@ -596,22 +610,24 @@ class _SlidingToggleState extends State<SlidingToggle>
             widget.onChange(value);
           },
           child: Container(
-            constraints: BoxConstraints.tight(Size(110, 40)),
+            constraints: BoxConstraints.tight(Size(120, 34)),
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                  color: newColorScheme.EnvoyColors.solidWhite,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
               child: Stack(
                 children: [
                   //Show selection background with 71% of width
                   AlignTransition(
-                    alignment: _animation,
+                    alignment: _slidingSegmentAnimation,
                     child: FractionallySizedBox(
-                      widthFactor: 0.71,
+                      widthFactor: 0.75,
                       child: Container(
                         margin: EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                            color: EnvoyColors.teal,
-                            borderRadius: BorderRadius.circular(8)),
+                            color: newColorScheme.EnvoyColors.accentPrimary,
+                            borderRadius:
+                                BorderRadius.circular(EnvoySpacing.medium3)),
                       ),
                     ),
                   ),
@@ -619,39 +635,42 @@ class _SlidingToggleState extends State<SlidingToggle>
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Icon(CupertinoIcons.list_bullet,
-                          color: _listIconColorAnimation.value),
+                      child: Icon(Icons.history,
+                          size: 18, color: _activityIconColorAnimation.value),
                     ),
                   ),
                   AlignTransition(
                     alignment: Tween(
-                            begin: Alignment.centerRight, end: Alignment.center)
+                            begin: Alignment(.85, 0.0),
+                            end: Alignment(-.2, 0.0))
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Icon(Icons.view_agenda_outlined,
-                          color: _tagListIconColorAnimation.value),
-                    ),
+                    child: Builder(builder: (context) {
+                      return SvgPicture.asset("assets/icons/ic_tag.svg",
+                          width: 18,
+                          height: 18,
+                          color: _tagsIconColorAnimation.value);
+                    }),
                   ),
                   AlignTransition(
                       alignment: Tween(
-                              begin: Alignment.center,
-                              end: Alignment.centerRight)
+                              begin: Alignment(-.12, 0.0),
+                              end: Alignment(.45, 0))
                           .animate(CurvedAnimation(
                               parent: _animationController,
                               curve: Curves.easeInOutCubic)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(
-                          value == "Tx" ? "List" : "Tags",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  color: _textColorAnimation.value,
-                                  fontWeight: FontWeight.bold),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: Container(
+                          child: Text(
+                            _text,
+                            key: ValueKey(_text),
+                            //prevent unnecessary overflows, container size is fixed
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.start,
+                            style: textTheme,
+                          ),
                         ),
                       )),
                 ],
