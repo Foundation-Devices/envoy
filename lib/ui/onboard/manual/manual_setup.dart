@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -18,6 +19,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/embedded_video.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 
 class ManualSetup extends StatefulWidget {
   const ManualSetup({Key? key}) : super(key: key);
@@ -27,103 +30,88 @@ class ManualSetup extends StatefulWidget {
 }
 
 class _ManualSetupState extends State<ManualSetup> {
+  GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
+        child: EnvoyScaffold(
+      removeAppBarPadding: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-      children: [
-        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CupertinoNavigationBarBackButton(
-              color: Colors.black,
-              onPressed: () => Navigator.pop(context),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: TextButton(
-                  child: Text("Skip",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black)),
-                  onPressed: () {
-                    OnboardingPage.goHome(context);
-                  },
-                ),
+            Container(
+              padding: const EdgeInsets.only(top: 5),
+              child: Column(
+                children: [
+                  !Platform.isLinux
+                      ? EmbeddedVideo(
+                          path: "assets/videos/fd_wallet_manual.m4v",
+                          key: _playerKey,
+                        )
+                      : Container(),
+                ],
               ),
             ),
-          ],
-        ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Padding(padding: EdgeInsets.only(bottom: 6)),
+            Text(
+              S().manual_setup_tutorial_heading,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Text(
+              S().manual_setup_tutorial_subheading,
+              textAlign: TextAlign.center,
+              style:
+                  Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13),
+            ),
+            Column(
               children: [
-                Flexible(
-                    child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        S().manual_setup_tutorial_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Padding(padding: EdgeInsets.all(24)),
-                      Text(
-                        S().manual_setup_tutorial_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 13),
-                      ),
-                    ],
-                  ),
-                )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    OnboardingButton(
-                        label: S().manual_setup_tutorial_CTA2,
-                        type: EnvoyButtonTypes.secondary,
+                OnboardingButton(
+                    label: S().manual_setup_tutorial_CTA2,
+                    type: EnvoyButtonTypes.secondary,
+                    fontWeight: FontWeight.w600,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return SeedIntroScreen(
+                          mode: SeedIntroScreenType.import,
+                        );
+                      }));
+                    }),
+                !EnvoySeed().walletDerived()
+                    ? OnboardingButton(
+                        label: S().manual_setup_tutorial_CTA1,
                         fontWeight: FontWeight.w600,
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return SeedIntroScreen(
-                              mode: SeedIntroScreenType.import,
-                            );
+                                mode: SeedIntroScreenType.generate);
                           }));
-                        }),
-                    !EnvoySeed().walletDerived()
-                        ? OnboardingButton(
-                            label: S().manual_setup_tutorial_CTA1,
-                            fontWeight: FontWeight.w600,
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return SeedIntroScreen(
-                                    mode: SeedIntroScreenType.generate);
-                              }));
-                            })
-                        : SizedBox.shrink(),
-                  ],
-                ))
+                        })
+                    : SizedBox.shrink(),
               ],
-            ),
-          ),
+            )
+          ],
+        ),
+      ),
+      topBarLeading: CupertinoNavigationBarBackButton(
+        color: Colors.black,
+        onPressed: () => Navigator.pop(context),
+      ),
+      topBarActions: [
+        TextButton(
+          child: Text(S().magic_setup_tutorial_ios_skip,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black)),
+          onPressed: () {
+            OnboardingPage.goHome(context);
+          },
         ),
       ],
     ));
