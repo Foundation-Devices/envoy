@@ -10,7 +10,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path/path.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -246,8 +245,6 @@ Future<void> pause(int duration) async {
 }
 
 Future<void> resetEnvoyData() async {
-  // Preferences
-  final prefs = await SharedPreferences.getInstance();
   final appSupportDir = await getApplicationSupportDirectory();
 
   // Database
@@ -256,8 +253,6 @@ Future<void> resetEnvoyData() async {
   final dbFile = File(join(appDocumentDir.path, dbName));
 
   try {
-    // Clear shared preferences
-    await prefs.clear();
     // Delete app data directory
     await appSupportDir.delete(recursive: true);
     // Delete the database file

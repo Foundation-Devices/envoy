@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
   final secureStorage = new FlutterSecureStorage();
-  late final SharedPreferences prefs;
+  final EnvoyStorage prefs = EnvoyStorage();
   late final Directory appSupportDir;
   late final Directory appDocumentsDir;
 
@@ -30,7 +30,6 @@ class LocalStorage {
   }
 
   _initAsync() async {
-    prefs = await SharedPreferences.getInstance();
     appSupportDir = await getApplicationSupportDirectory();
     appDocumentsDir = await getApplicationDocumentsDirectory();
     print("Async members initialized!");
