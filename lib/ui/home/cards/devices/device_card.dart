@@ -92,14 +92,33 @@ class _DeviceCardState extends State<DeviceCard> {
   }
 }
 
-class DeviceOptions extends ConsumerWidget {
+class DeviceOptions extends ConsumerStatefulWidget {
   final Device device;
   final CardNavigator? navigator;
 
   DeviceOptions(this.device, {this.navigator});
 
   @override
-  Widget build(context, ref) {
+  ConsumerState<DeviceOptions> createState() => _DeviceOptionsState();
+}
+
+class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
+  late TextEntry textEntry;
+  FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    textEntry = TextEntry(
+      focusNode: focusNode,
+      maxLength: 20,
+      placeholder: widget.device.name,
+    );
+  }
+
+  @override
+  Widget build(context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -109,21 +128,15 @@ class DeviceOptions extends ConsumerWidget {
         ),
         GestureDetector(
           child: Text(
-            "Edit device name".toUpperCase(),
+            S().envoy_device_edit_device_name.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
-            FocusNode focusNode = FocusNode();
             showEnvoyDialog(
                 context: context,
                 dialog: Builder(builder: (BuildContext context) {
-                  var textEntry = TextEntry(
-                    focusNode: focusNode,
-                    maxLength: 20,
-                    placeholder: device.name,
-                  );
                   if (!isKeyboardShown) {
                     Future.delayed(Duration(milliseconds: 200)).then((value) {
                       FocusScope.of(context).requestFocus(focusNode);
@@ -138,7 +151,8 @@ class DeviceOptions extends ConsumerWidget {
                         S().component_save.toUpperCase(),
                         type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
-                          Devices().renameDevice(device, textEntry.enteredText);
+                          Devices().renameDevice(
+                              widget.device, textEntry.enteredText);
                           Navigator.pop(context);
                         },
                       ),
@@ -158,7 +172,8 @@ class DeviceOptions extends ConsumerWidget {
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(
-                  title: S().envoy_device_delete_are_you_sure(device.name),
+                  title:
+                      S().envoy_device_delete_are_you_sure(widget.device.name),
                   content: Text(S().envoy_device_delete_explainer),
                   actions: [
                     EnvoyButton(
@@ -166,9 +181,9 @@ class DeviceOptions extends ConsumerWidget {
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {
-                        Devices().deleteDevice(device);
+                        Devices().deleteDevice(widget.device);
                         Navigator.pop(context);
-                        navigator!.pop();
+                        widget.navigator!.pop();
                       },
                     ),
                   ],
