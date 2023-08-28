@@ -13,6 +13,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
 
+import 'fw_intro.dart';
+
 //ignore: must_be_immutable
 class FwProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
@@ -104,23 +106,21 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
       navigationDots: navigationDots,
       navigationDotsIndex: currentDotIndex,
       buttons: [
-        IgnorePointer(
-          ignoring: !done,
-          child: AnimatedOpacity(
-            opacity: done ? 1.0 : 0.4,
-            duration: Duration(milliseconds: 500),
-            child: OnboardingButton(
-                label: S().envoy_fw_success_cta,
-                onTap: () {
-                  Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
-                    return FwPassportPage(
-                      onboarding: widget.onboarding,
-                    );
-                  }));
-                }),
-          ),
-        )
+        OnboardingButton(
+            label: done ? S().envoy_fw_success_cta : S().envoy_fw_fail_cta,
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) {
+                if (done)
+                  return FwPassportPage(
+                    onboarding: widget.onboarding,
+                  );
+                else
+                  return FwIntroPage(
+                    deviceId: widget.deviceId,
+                  );
+              }));
+            })
       ],
     );
   }
