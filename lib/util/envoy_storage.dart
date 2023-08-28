@@ -13,6 +13,7 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
 
 class FirmwareInfo {
@@ -47,6 +48,10 @@ class EnvoyStorage {
   StoreRef<String, bool> utxoBlockState = StoreRef("utxo_block_state");
   StoreRef<String, Map<String, Object?>> tagStore = StoreRef('tags');
 
+  StoreRef<String, Object?> preferencesStore =
+      StoreRef<String, Object?>("preferences");
+  final Map<String, Object?> _preferencesCache = {};
+
   static final EnvoyStorage _instance = EnvoyStorage._();
 
   EnvoyStorage._() {
@@ -61,7 +66,7 @@ class EnvoyStorage {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, dbName),
-        version: 2, onVersionChanged: (db, oldVersion, newVersion) async {
+        version: 3, onVersionChanged: (db, oldVersion, newVersion) async {
       if (oldVersion == 1) {
         // Migrate dismissed prompts to its own store
         for (DismissiblePrompt prompt in DismissiblePrompt.values) {
@@ -73,7 +78,34 @@ class EnvoyStorage {
           }
         }
       }
+
+      if (oldVersion == 2 || oldVersion == 1) {
+        final prefs = await SharedPreferences.getInstance();
+        final keys = prefs.getKeys();
+        for (String key in keys) {
+          final value = prefs.get(key);
+          await preferencesStore.record(key).put(db, value);
+          await _updatePreferencesCache(db);
+        }
+      }
     });
+
+    await _updatePreferencesCache(_db);
+
+    EnvoyStorage().preferencesStore.addOnChangesListener(_db,
+        (transaction, changes) {
+      _updatePreferencesCache(_db);
+    });
+  }
+
+  // Preferences are stored in a cache for fast retrieval
+  _updatePreferencesCache(DatabaseClient db) async {
+    final keys = await preferencesStore.findKeys(db);
+
+    for (String key in keys) {
+      final value = await preferencesStore.record(key).get(db);
+      _preferencesCache[key.toString()] = value;
+    }
   }
 
   Future addPromptState(DismissiblePrompt prompt) async {
@@ -245,6 +277,8 @@ class EnvoyStorage {
   }
 
   Future<String> export() async {
+    // TODO: select which stores to export
+    // (To not make the payload too big)
     return jsonEncode(await exportDatabase(_db));
   }
 
@@ -258,6 +292,54 @@ class EnvoyStorage {
     await _db.close();
     _db = await importDatabase(
         map, databaseFactoryIo, join(appDocumentDir.path, dbName));
+  }
+
+  // Since version 3 we migrate away from using shared_preferences
+
+  // Following methods have same signature as shared_preferences
+  // but use the preferences DB store instead
+  Future setNewPreferencesValue(String key, value) async {
+    await preferencesStore.record(key).put(db, value);
+    return true;
+  }
+
+  bool containsKey(String key) {
+    return _preferencesCache.containsKey(key);
+  }
+
+  bool? getBool(String key) {
+    return _preferencesCache[key] as bool?;
+  }
+
+  String? getString(String key) {
+    return _preferencesCache[key] as String?;
+  }
+
+  Future<bool> clear() async {
+    var cleared = await preferencesStore.delete(_db);
+    if (cleared != 0)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> remove(key) async {
+    var removed = await preferencesStore.record(key).delete(_db);
+    if (removed == key)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> setBool(String key, bool value) async {
+    await preferencesStore.record(key).put(_db, value);
+    return true;
+  }
+
+  Future<bool> setString(String key, String value) async {
+    final record = await preferencesStore.record(key);
+    await record.put(_db, value);
+    return true;
   }
 
   Database get db => _db;

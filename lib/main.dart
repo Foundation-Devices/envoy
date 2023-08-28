@@ -39,8 +39,8 @@ Future<void> main() async {
 }
 
 Future<void> initSingletons() async {
-  await LocalStorage.init();
   await EnvoyStorage().init();
+  await LocalStorage.init();
   EnvoyReport().init();
   Settings.restore();
   Tor.init();
