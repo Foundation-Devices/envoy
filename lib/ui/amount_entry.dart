@@ -3,18 +3,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
@@ -60,7 +59,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     ref.watch(settingsProvider);
     final unit = ref.watch(sendScreenUnitProvider);
 
-    Numpad numpad = Numpad(unit);
+    Numpad numpad = Numpad(unit, isAmountZero: _amountSats == 0);
     numpad.events.stream.listen((event) {
       switch (event) {
         case NumpadEvents.backspace:
@@ -93,6 +92,11 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             if (unit == AmountDisplayUnit.sat) {
               break;
             }
+          }
+          break;
+        case NumpadEvents.clipboard:
+          {
+            //TODO here
           }
           break;
         default:
@@ -196,7 +200,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 }
 
-enum NumpadEvents { dot, ok, backspace, clearAll }
+enum NumpadEvents { dot, ok, backspace, clearAll, clipboard }
 
 class Numpad extends StatefulWidget {
   // Dart linter is reporting a false positive here
@@ -205,8 +209,9 @@ class Numpad extends StatefulWidget {
   //ignore: close_sinks
   final StreamController events = StreamController();
   late final AmountDisplayUnit amountDisplayUnit;
+  final bool isAmountZero;
 
-  Numpad(AmountDisplayUnit amountDisplayUnit) {
+  Numpad(AmountDisplayUnit amountDisplayUnit, {required this.isAmountZero}) {
     this.amountDisplayUnit = amountDisplayUnit;
   }
 
@@ -234,7 +239,8 @@ class _NumpadState extends State<Numpad> {
         ...(List.generate(9, (index) {
           String digit = (index + 1).toString();
           return NumpadButton(
-            digit,
+            NumpadButtonType.text,
+            text: digit,
             onTap: () {
               Haptics.lightImpact();
               widget.events.sink.add(digit);
@@ -243,7 +249,8 @@ class _NumpadState extends State<Numpad> {
         })),
         widget.amountDisplayUnit != AmountDisplayUnit.sat
             ? NumpadButton(
-                decimalPoint,
+                NumpadButtonType.text,
+                text: decimalPoint,
                 onTap: () {
                   Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.dot);
@@ -251,41 +258,51 @@ class _NumpadState extends State<Numpad> {
               )
             : SizedBox.shrink(),
         NumpadButton(
-          "0",
+          NumpadButtonType.text,
+          text: "0",
           onTap: () {
             Haptics.lightImpact();
             widget.events.sink.add("0");
           },
         ),
-        NumpadButton(
-          "<",
-          onTap: () {
-            Haptics.lightImpact();
-            widget.events.sink.add(NumpadEvents.backspace);
-          },
-          onLongPressDown: () {
-            Haptics.lightImpact();
-            widget.events.sink.add(NumpadEvents.clearAll);
-          },
-          backspace: true,
-        )
+        widget.isAmountZero
+            ? NumpadButton(
+                NumpadButtonType.clipboard,
+                onTap: () {
+                  Haptics.lightImpact();
+                  widget.events.sink.add(NumpadEvents.clipboard);
+                },
+              )
+            : NumpadButton(
+                NumpadButtonType.backspace,
+                onTap: () {
+                  Haptics.lightImpact();
+                  widget.events.sink.add(NumpadEvents.backspace);
+                },
+                onLongPressDown: () {
+                  Haptics.lightImpact();
+                  widget.events.sink.add(NumpadEvents.clearAll);
+                },
+              ),
       ],
     );
   }
 }
 
+enum NumpadButtonType { text, backspace, clipboard }
+
 class NumpadButton extends StatelessWidget {
-  final String text;
+  final NumpadButtonType type;
+  final String? text;
   final void Function() onTap;
   final void Function()? onLongPressDown;
-  final bool backspace;
 
   const NumpadButton(
-    this.text, {
+    this.type, {
+    this.text,
     Key? key,
     required this.onTap,
     this.onLongPressDown,
-    this.backspace = false,
   }) : super(key: key);
 
   void _handleLongPress() {
@@ -310,26 +327,34 @@ class NumpadButton extends StatelessWidget {
             shape: BoxShape.circle,
             color: EnvoyColors.grey22,
           ),
-          child: Center(
-            child: !backspace
-                ? Text(
-                    text,
-                    style: TextStyle(
-                      color: Typography.blackHelsinki.headlineMedium!.color,
-                      // TODO: add black helsinki as EnvoyColor
-                      fontFamily: "Montserrat",
-                      fontSize: 25,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(right: 3, top: 2),
-                    child: SvgPicture.asset(
-                      "assets/backspace.svg",
-                      color: Typography.blackHelsinki.headlineMedium!.color,
-                    ),
+          child: Center(child: () {
+            switch (type) {
+              case NumpadButtonType.text:
+                return Text(
+                  text!,
+                  style: TextStyle(
+                    color: Typography.blackHelsinki.headlineMedium!.color,
+                    // TODO: change to EnvoyColors and font
+                    fontFamily: "Montserrat",
+                    fontSize: 25,
+                    fontWeight: FontWeight.w300,
                   ),
-          ),
+                );
+              case NumpadButtonType.backspace:
+                return Padding(
+                    padding: const EdgeInsets.only(right: 3, top: 2),
+                    child: EnvoyIcon(
+                      EnvoyIcons.delete,
+                      color: Typography.blackHelsinki.headlineMedium!
+                          .color, // TODO: change to EnvoyColors
+                    ));
+              case NumpadButtonType.clipboard:
+                return EnvoyIcon(
+                  EnvoyIcons.clipboard,
+                  color: Colors.teal,
+                );
+            }
+          }()),
         ),
       ),
     );
