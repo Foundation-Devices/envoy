@@ -1982,6 +1982,16 @@ class S {
     );
   }
 
+  /// `There is no activity to display.`
+  String get activity_emptyState_label {
+    return Intl.message(
+      'There is no activity to display.',
+      name: 'activity_emptyState_label',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy App Updated`
   String get activity_envoyUpdate {
     return Intl.message(
@@ -2890,20 +2900,20 @@ class S {
     );
   }
 
-  /// `Selected amount`
+  /// `Available balance`
   String get coincontrol_edit_transaction_selected_inputs {
     return Intl.message(
-      'Selected amount',
+      'Available balance',
       name: 'coincontrol_edit_transaction_selected_inputs',
       desc: '',
       args: [],
     );
   }
 
-  /// `0`
+  /// `1,500,000`
   String get coincontrol_edit_transaction_selected_inputs_sats {
     return Intl.message(
-      '0',
+      '1,500,000',
       name: 'coincontrol_edit_transaction_selected_inputs_sats',
       desc: '',
       args: [],
@@ -2945,6 +2955,36 @@ class S {
     return Intl.message(
       'WARNING\n\nUnlocking coins will make them available for use in transactions.',
       name: 'coincontrol_lock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign with Passport`
+  String get coincontrol_txDetail_cta1_passport {
+    return Intl.message(
+      'Sign with Passport',
+      name: 'coincontrol_txDetail_cta1_passport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be signed`
+  String get coincontrol_txDetail_heading_passport {
+    return Intl.message(
+      'Your transaction is ready \nto be signed',
+      name: 'coincontrol_txDetail_heading_passport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details are correct before signing with Passport.`
+  String get coincontrol_txDetail_subheading_passport {
+    return Intl.message(
+      'Confirm the transaction details are correct before signing with Passport.',
+      name: 'coincontrol_txDetail_subheading_passport',
       desc: '',
       args: [],
     );
@@ -3258,30 +3298,30 @@ class S {
     );
   }
 
-  /// `Faster`
+  /// `Custom`
   String get coincontrol_tx_detail_fee_custom {
     return Intl.message(
-      'Faster',
+      'Custom',
       name: 'coincontrol_tx_detail_fee_custom',
       desc: '',
       args: [],
     );
   }
 
-  /// `Standard`
+  /// `Faster`
   String get coincontrol_tx_detail_fee_faster {
     return Intl.message(
-      'Standard',
+      'Faster',
       name: 'coincontrol_tx_detail_fee_faster',
       desc: '',
       args: [],
     );
   }
 
-  /// `Custom`
+  /// `Standard`
   String get coincontrol_tx_detail_fee_standard {
     return Intl.message(
-      'Custom',
+      'Standard',
       name: 'coincontrol_tx_detail_fee_standard',
       desc: '',
       args: [],
@@ -11514,10 +11554,10 @@ class S {
     );
   }
 
-  /// `Learn More`
+  /// `Your Envoy backup is complete.`
   String get manual_toggle_on_seed_backup_in_progress_toast_heading {
     return Intl.message(
-      'Learn More',
+      'Your Envoy backup is complete.',
       name: 'manual_toggle_on_seed_backup_in_progress_toast_heading',
       desc: '',
       args: [],
@@ -12622,10 +12662,10 @@ class S {
     );
   }
 
-  /// `Configure a personal Bitcoin node here.`
+  /// `Improve your privacy by running your own node. Tap learn more above. `
   String get privacy_node_configure {
     return Intl.message(
-      'Configure a personal Bitcoin node here.',
+      'Improve your privacy by running your own node. Tap learn more above. ',
       name: 'privacy_node_configure',
       desc: '',
       args: [],
@@ -13908,6 +13948,16 @@ class S {
     );
   }
 
+  /// `Sending Max: \nFees are deducted from amount being sent.`
+  String get send_reviewScreen_sendMaxWarning {
+    return Intl.message(
+      'Sending Max: \nFees are deducted from amount being sent.',
+      name: 'send_reviewScreen_sendMaxWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Advanced`
   String get settings_advanced {
     return Intl.message(
@@ -14807,6 +14857,26 @@ class S {
     return Intl.message(
       'testnet',
       name: 'testnet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Issue establishing Tor connectivity`
+  String get tor_connectivity_toast_warning {
+    return Intl.message(
+      'Issue establishing Tor connectivity',
+      name: 'tor_connectivity_toast_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get tor_connectivity_toast_warning_learn_more {
+    return Intl.message(
+      'Learn More',
+      name: 'tor_connectivity_toast_warning_learn_more',
       desc: '',
       args: [],
     );
