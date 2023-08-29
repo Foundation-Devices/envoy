@@ -199,6 +199,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "activity_": MessageLookupByLibrary.simpleMessage(
             "Passport Tutorial - Block..."),
+        "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
+            "There is no activity to display."),
         "activity_envoyUpdate":
             MessageLookupByLibrary.simpleMessage("Envoy App Updated"),
         "activity_firmwareUpdate":
@@ -378,9 +380,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
         "coincontrol_edit_transaction_selected_inputs":
-            MessageLookupByLibrary.simpleMessage("Selected amount"),
+            MessageLookupByLibrary.simpleMessage("Available balance"),
         "coincontrol_edit_transaction_selected_inputs_sats":
-            MessageLookupByLibrary.simpleMessage("0"),
+            MessageLookupByLibrary.simpleMessage("1,500,000"),
         "coincontrol_lock_coin_modal_cta":
             MessageLookupByLibrary.simpleMessage("Lock coins"),
         "coincontrol_lock_coin_modal_cta1":
@@ -390,6 +392,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "WARNING\n\nUnlocking coins will make them available for use in transactions."),
+        "coincontrol_txDetail_cta1_passport":
+            MessageLookupByLibrary.simpleMessage("Sign with Passport"),
+        "coincontrol_txDetail_heading_passport":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction is ready \nto be signed"),
+        "coincontrol_txDetail_subheading_passport":
+            MessageLookupByLibrary.simpleMessage(
+                "Confirm the transaction details are correct before signing with Passport."),
         "coincontrol_tx_detail_":
             MessageLookupByLibrary.simpleMessage("500 SATS"),
         "coincontrol_tx_detail_amount_details":
@@ -451,11 +461,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_fee":
             MessageLookupByLibrary.simpleMessage("Fee"),
         "coincontrol_tx_detail_fee_custom":
-            MessageLookupByLibrary.simpleMessage("Faster"),
-        "coincontrol_tx_detail_fee_faster":
-            MessageLookupByLibrary.simpleMessage("Standard"),
-        "coincontrol_tx_detail_fee_standard":
             MessageLookupByLibrary.simpleMessage("Custom"),
+        "coincontrol_tx_detail_fee_faster":
+            MessageLookupByLibrary.simpleMessage("Faster"),
+        "coincontrol_tx_detail_fee_standard":
+            MessageLookupByLibrary.simpleMessage("Standard"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
         "coincontrol_tx_detail_subheading":
@@ -2220,7 +2230,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backup_in_progress_ios_view_envoy_seed":
             MessageLookupByLibrary.simpleMessage("View Envoy Seed"),
         "manual_toggle_on_seed_backup_in_progress_toast_heading":
-            MessageLookupByLibrary.simpleMessage("Learn More"),
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy backup is complete."),
         "manual_toggle_on_seed_backup_now_modal_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "manual_toggle_on_seed_backup_now_modal_heading":
@@ -2459,7 +2470,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
             "Unlock with biometrics or PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
-            "Configure a personal Bitcoin node here."),
+            "Improve your privacy by running your own node. Tap learn more above. "),
         "privacy_node_learnMore":
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "privacy_node_nodeAddress":
@@ -2738,6 +2749,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_qr_code_heading": MessageLookupByLibrary.simpleMessage("SEND"),
         "send_qr_code_subheading": MessageLookupByLibrary.simpleMessage(
             "You can now scan the QR code displayed on your Passport with your phone camera."),
+        "send_reviewScreen_sendMaxWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "Sending Max: \nFees are deducted from amount being sent."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
         "settings_advanced_enabled_testnet_modal_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
@@ -2935,6 +2949,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),
         "testnet": MessageLookupByLibrary.simpleMessage("testnet"),
+        "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
+            "Issue establishing Tor connectivity"),
+        "tor_connectivity_toast_warning_learn_more":
+            MessageLookupByLibrary.simpleMessage("Learn More"),
         "untagged_coin_details_half_spendable_coin_spendable":
             MessageLookupByLibrary.simpleMessage("1 of 5 Coins Spendable"),
         "untagged_coin_details_half_spendable_cta1":

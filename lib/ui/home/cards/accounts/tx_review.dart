@@ -26,7 +26,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/util/envoy_storage.dart';
 
 //ignore: must_be_immutable
-class TxReview extends StatefulWidget with NavigationCard {
+class TxReview extends ConsumerStatefulWidget with NavigationCard {
   final Psbt psbt;
   final Account account;
   final GestureTapCallback onFinishNavigationClick;
@@ -57,10 +57,10 @@ class TxReview extends StatefulWidget with NavigationCard {
   String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
-  State<TxReview> createState() => _TxReviewState();
+  ConsumerState<TxReview> createState() => _TxReviewState();
 }
 
-class _TxReviewState extends State<TxReview> {
+class _TxReviewState extends ConsumerState<TxReview> {
   bool _showBroadcastProgress = false;
 
   //TODO: disable note
@@ -69,6 +69,10 @@ class _TxReviewState extends State<TxReview> {
   @override
   Widget build(BuildContext context) {
     bool isTestnet = widget.account.wallet.network == Network.Testnet;
+    int amount = ref.watch(spendAmountProvider);
+    AmountDisplayUnit unit = ref.watch(sendScreenUnitProvider);
+    String address = ref.watch(spendAddressProvider);
+
     return PageTransitionSwitcher(
       reverse: !_showBroadcastProgress,
       transitionBuilder: (child, animation, secondaryAnimation) {
@@ -262,23 +266,13 @@ class _TxReviewState extends State<TxReview> {
                                                   tail: Row(
                                                     children: [
                                                       Expanded(
-                                                        child: Consumer(
-                                                          builder: (context,
-                                                              ref, child) {
-                                                            String value =
-                                                                ref.watch(
-                                                                    spendAddressProvider);
-                                                            return Text(
-                                                                "${value}",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis);
-                                                          },
-                                                        ),
-                                                      )
+                                                          child: Text(
+                                                              "${address}",
+                                                              textAlign:
+                                                                  TextAlign.end,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis))
                                                     ],
                                                   )),
                                               _buildTxListItem(
@@ -289,69 +283,50 @@ class _TxReviewState extends State<TxReview> {
                                                   ),
                                                   title: S()
                                                       .stalls_before_sending_tx_amount,
-                                                  tail: Consumer(
-                                                    builder:
-                                                        (context, ref, child) {
-                                                      int amount = ref.watch(
-                                                          spendAmountProvider);
-
-                                                      AmountDisplayUnit unit =
-                                                          ref.watch(
-                                                              sendScreenUnitProvider);
-
-                                                      return Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Text(
-                                                            getDisplayAmount(
-                                                                amount,
-                                                                unit ==
-                                                                        AmountDisplayUnit
-                                                                            .fiat
-                                                                    ? AmountDisplayUnit
-                                                                            .values[
-                                                                        Settings()
-                                                                            .displayUnit
-                                                                            .index]
-                                                                    : unit,
-                                                                testnet:
-                                                                    isTestnet,
-                                                                includeUnit:
-                                                                    true),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign:
-                                                                TextAlign.end,
-                                                          ),
-                                                          Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(2)),
-                                                          Text(
-                                                            "${ExchangeRate().getFormattedAmount(amount)}",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodySmall,
-                                                          ),
-                                                          Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(3)),
-                                                        ],
-                                                      );
-                                                    },
+                                                  tail: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        getDisplayAmount(
+                                                            amount,
+                                                            unit ==
+                                                                    AmountDisplayUnit
+                                                                        .fiat
+                                                                ? AmountDisplayUnit
+                                                                        .values[
+                                                                    Settings()
+                                                                        .displayUnit
+                                                                        .index]
+                                                                : unit,
+                                                            testnet: isTestnet,
+                                                            includeUnit: true),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                      ),
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  2)),
+                                                      Text(
+                                                        "${ExchangeRate().getFormattedAmount(amount)}",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall,
+                                                      ),
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  3)),
+                                                    ],
                                                   )),
                                               _buildTxListItem(
                                                   icon: EnvoyIcon(
@@ -443,6 +418,29 @@ class _TxReviewState extends State<TxReview> {
                         ),
                       ),
                     ),
+                    // Special warning if we are sending the whole balance
+                    if (widget.account.wallet.balance ==
+                        (amount + widget.psbt.fee))
+                      SliverToBoxAdapter(
+                        child: ListTile(
+                          subtitle: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 24, horizontal: 8),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  S().send_reviewScreen_sendMaxWarning,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )),
+                        ),
+                      ),
                     SliverFillRemaining(
                       hasScrollBody: false,
                       child: Padding(
