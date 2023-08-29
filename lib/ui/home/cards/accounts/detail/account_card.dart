@@ -289,10 +289,12 @@ class _AccountCardState extends ConsumerState<AccountCard> {
 
 class GhostListTile extends StatelessWidget {
   final bool animate;
+  final bool isLeadingRound;
 
   const GhostListTile({
     this.animate = true,
     Key? key,
+    this.isLeadingRound = false,
   }) : super(key: key);
 
   @override
@@ -314,12 +316,19 @@ class GhostListTile extends StatelessWidget {
           animate: animate,
         ),
       ),
-      leading: LoaderGhost(
-        width: 50,
-        height: 50,
-        diagonal: true,
-        animate: animate,
-      ),
+      leading: isLeadingRound
+          ? LoaderGhost(
+              width: 35,
+              height: 35,
+              diagonal: false,
+              animate: animate,
+            )
+          : LoaderGhost(
+              width: 50,
+              height: 50,
+              diagonal: true,
+              animate: animate,
+            ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,

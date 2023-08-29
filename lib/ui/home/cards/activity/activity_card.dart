@@ -13,6 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/components/list_item.dart';
 import 'package:intl/intl.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 final String defaultLocale = Platform.localeName;
 
@@ -75,39 +77,70 @@ class TopLevelActivityCard extends StatelessWidget with NavigationCard {
                 ref.watch(filteredNotificationStreamProvider);
             ref.read(notificationTypeFilterProvider.notifier).state = null;
 
-            return Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  ListView.builder(
-                      padding: EdgeInsets.only(top: 15.0),
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Column(
+            return notifications.isEmpty
+                ? Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            if (index == 0 ||
-                                showHeader(notifications[index],
-                                    notifications[index - 1]))
-                              Column(
-                                children: [
-                                  if (index != 0)
-                                    SizedBox(
-                                      height: EnvoySpacing.medium2,
-                                    ),
-                                  ListHeader(
-                                      title: getTransactionDateString(
-                                          notifications[index])),
-                                ],
-                              ),
-                            ActivityListTile(notifications[index]),
+                            SizedBox(
+                              height: EnvoySpacing.small,
+                            ),
+                            ListHeader(
+                              title: S().activity_listHeader_Today,
+                            ),
+                            GhostListTile(
+                              animate: false,
+                              isLeadingRound: true,
+                            ),
                           ],
-                        );
-                      },
-                      itemCount: notifications.length)
-                ],
-              ),
-            );
+                        ),
+                        Text(
+                          S().activity_emptyState_label,
+                          style: EnvoyTypography.body2Medium
+                              .copyWith(color: EnvoyColors.textSecondary),
+                        ),
+                        SizedBox(
+                          height: EnvoySpacing.medium2,
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        ListView.builder(
+                            padding: EdgeInsets.only(top: 15.0),
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  if (index == 0 ||
+                                      showHeader(notifications[index],
+                                          notifications[index - 1]))
+                                    Column(
+                                      children: [
+                                        if (index != 0)
+                                          SizedBox(
+                                            height: EnvoySpacing.medium2,
+                                          ),
+                                        ListHeader(
+                                            title: getTransactionDateString(
+                                                notifications[index])),
+                                      ],
+                                    ),
+                                  ActivityListTile(notifications[index]),
+                                ],
+                              );
+                            },
+                            itemCount: notifications.length)
+                      ],
+                    ),
+                  );
           },
         ),
       ),
