@@ -2949,6 +2949,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),
         "testnet": MessageLookupByLibrary.simpleMessage("testnet"),
+        "torToast_learnMore_retryTorConnection":
+            MessageLookupByLibrary.simpleMessage("Retry Tor Connection"),
+        "torToast_learnMore_temporarilyDisableTor":
+            MessageLookupByLibrary.simpleMessage("Temporarily Disable Tor"),
+        "torToast_learnMore_warningBody": MessageLookupByLibrary.simpleMessage(
+            "You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]]."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Issue establishing Tor connectivity"),
         "tor_connectivity_toast_warning_learn_more":

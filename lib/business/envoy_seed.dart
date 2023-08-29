@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:backup/backup.dart';
@@ -25,9 +26,20 @@ const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
 const int SECRET_LENGTH_BYTES = 16;
 
 class EnvoySeed {
-  // 12 words == 128 + 4 == 132 (4 bits are checksum)
-  // 128 bits == 16 bytes
-  // Checksum is first 4 bits of SHA-256 of 16 bytes
+  static final EnvoySeed _instance = EnvoySeed._internal();
+
+  factory EnvoySeed() {
+    return _instance;
+  }
+
+  static Future<EnvoySeed> init() async {
+    var singleton = EnvoySeed._instance;
+    return singleton;
+  }
+
+  EnvoySeed._internal() {
+    print("Instance of EnvoySeed created!");
+  }
 
   static const _platform = MethodChannel('envoy');
 
@@ -52,6 +64,8 @@ class EnvoySeed {
     // ScvServer.SCV_CHALLENGE_PREFS,
     // Fees.FEE_RATE_PREFS,
   ];
+
+  StreamController<bool> backupCompletedStream = StreamController.broadcast();
 
   Future generate() async {
     final generatedSeed = Wallet.generateSeed();
@@ -150,16 +164,17 @@ class EnvoySeed {
 
       backupData[AccountManager.ACCOUNTS_PREFS] = jsonEncode(json);
     }
-
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor(),
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) {
       if (cloud && success) {
+        backupCompletedStream.sink.add(true);
         LocalStorage()
             .prefs
             .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
-      }
+      } else
+        backupCompletedStream.sink.add(false);
     });
   }
 

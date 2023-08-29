@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io' show Platform;
-
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -16,7 +15,6 @@ import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -44,33 +42,15 @@ class _BackupPageState extends ConsumerState<BackupPage>
         _isBackupInProgress = true;
       });
       await EnvoySeed().backupData();
-      setState(() {
-        _isBackupInProgress = false;
-      });
-      EnvoyToast(
-        backgroundColor: Colors.lightBlue,
-        replaceExisting: true,
-        duration: Duration(seconds: 4),
-        message: S().manual_toggle_on_seed_backup_in_progress_toast_heading,
-        icon: Icon(
-          Icons.info_outline,
-          color: EnvoyColors.darkTeal,
-        ),
-      ).show(context);
+      if (this.mounted) {
+        setState(() {
+          _isBackupInProgress = false;
+        });
+      }
     } catch (e) {
       setState(() {
         _isBackupInProgress = false;
       });
-      EnvoyToast(
-        backgroundColor: Colors.lightBlue,
-        replaceExisting: true,
-        duration: Duration(seconds: 3),
-        message: "Unable to backup. Please try again later.",
-        icon: Icon(
-          Icons.error_outline_rounded,
-          color: EnvoyColors.darkCopper,
-        ),
-      ).show(context);
     }
   }
 

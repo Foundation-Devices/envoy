@@ -6,9 +6,10 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class TorWarning extends StatefulWidget {
   const TorWarning({Key? key}) : super(key: key);
@@ -55,48 +56,18 @@ class _TorWarningState extends State<TorWarning> {
                 Icon(EnvoyIcons.exclamation_warning,
                     color: EnvoyColors.darkCopper, size: 84),
                 Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: textStyle,
-                      children: [
-                        TextSpan(
-                          text:
-                              "Envoy is unable to establish a connection due to ongoing Tor network ",
-                        ),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              launchUrl(
-                                  Uri.parse("https://status.torproject.org"),
-                                  mode: LaunchMode.externalApplication);
-                            },
-                          style: linkStyle,
-                          text: "disruptions",
-                        ),
-                        TextSpan(
-                          text:
-                              ".\n\n Disabling Tor will establish a direct connection with the Envoy server, but comes with privacy ",
-                        ),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              launchUrl(
-                                  Uri.parse(
-                                      "https://docs.foundationdevices.com/envoy/tor"),
-                                  mode: LaunchMode.externalApplication);
-                            },
-                          style: linkStyle,
-                          text: "tradeoffs",
-                        ),
-                        TextSpan(
-                          text: ".",
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: LinkText(
+                      text: S().torToast_learnMore_warningBody,
+                      textStyle: textStyle,
+                      linkStyle: linkStyle,
+                      onTap: () {
+                        launchUrl(
+                            Uri.parse(
+                                "https://docs.foundationdevices.com/envoy/tor"),
+                            mode: LaunchMode.externalApplication);
+                      },
+                    )),
                 Padding(padding: EdgeInsets.all(4)),
               ],
             ),
@@ -107,7 +78,7 @@ class _TorWarningState extends State<TorWarning> {
               //Temporarily Disable Tor
               children: [
                 EnvoyButton(
-                  "Temporarily Disable Tor",
+                  S().torToast_learnMore_temporarilyDisableTor,
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     ConnectivityManager().torTemporarilyDisabled = true;
@@ -117,7 +88,7 @@ class _TorWarningState extends State<TorWarning> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
-                    "Retry Tor Connection",
+                    S().torToast_learnMore_retryTorConnection,
                     onTap: () {
                       // We are continually retrying anyway
                       Navigator.of(context).pop();

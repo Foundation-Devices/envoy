@@ -28,6 +28,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/home/cards/activity/activity_card.dart';
+import 'package:envoy/business/envoy_seed.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -144,18 +145,43 @@ class _HomePageState extends ConsumerState<HomePage>
         });
       }
     });
+
+    EnvoySeed().backupCompletedStream.stream.listen((bool success) {
+      if (success)
+        EnvoyToast(
+          backgroundColor: Colors.lightBlue,
+          replaceExisting: true,
+          duration: Duration(seconds: 4),
+          message: S().manual_toggle_on_seed_backup_in_progress_toast_heading,
+          icon: Icon(
+            Icons.info_outline,
+            color: EnvoyColors.darkTeal,
+          ),
+        ).show(context);
+      else
+        EnvoyToast(
+          backgroundColor: Colors.lightBlue,
+          replaceExisting: true,
+          duration: Duration(seconds: 3),
+          message: "Unable to backup. Please try again later.",
+          icon: Icon(
+            Icons.error_outline_rounded,
+            color: EnvoyColors.darkCopper,
+          ),
+        ).show(context);
+    });
   }
 
   _notifyAboutTor() {
     EnvoyToast(
       backgroundColor: Colors.lightBlue,
       replaceExisting: true,
-      message: "Issue establishing Tor connectivity",
+      message: S().tor_connectivity_toast_warning,
       icon: Icon(
         Icons.error_outline_rounded,
         color: EnvoyColors.darkCopper,
       ),
-      actionButtonText: "Learn More",
+      actionButtonText: S().tor_connectivity_toast_warning_learn_more,
       onActionTap: () {
         EnvoyToast.dismissPreviousToasts(context);
         showEnvoyDialog(dialog: TorWarning(), context: context);
