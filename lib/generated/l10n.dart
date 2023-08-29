@@ -14862,6 +14862,36 @@ class S {
     );
   }
 
+  /// `Retry Tor Connection`
+  String get torToast_learnMore_retryTorConnection {
+    return Intl.message(
+      'Retry Tor Connection',
+      name: 'torToast_learnMore_retryTorConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Temporarily Disable Tor`
+  String get torToast_learnMore_temporarilyDisableTor {
+    return Intl.message(
+      'Temporarily Disable Tor',
+      name: 'torToast_learnMore_temporarilyDisableTor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]].`
+  String get torToast_learnMore_warningBody {
+    return Intl.message(
+      'You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]].',
+      name: 'torToast_learnMore_warningBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Issue establishing Tor connectivity`
   String get tor_connectivity_toast_warning {
     return Intl.message(

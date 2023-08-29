@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
@@ -46,6 +47,7 @@ Future<void> initSingletons() async {
   Tor.init();
   UpdatesManager.init();
   ScvServer.init();
+  EnvoySeed.init();
 
   if (Settings().usingTor) {
     Tor().start();
