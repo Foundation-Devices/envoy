@@ -8,6 +8,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 import 'package:ffi/ffi.dart';
+import 'package:path_provider/path_provider.dart';
 import 'generated_bindings.dart';
 
 DynamicLibrary load(name) {
@@ -23,44 +24,51 @@ DynamicLibrary load(name) {
   }
 }
 
-class ServerUnreachable implements Exception {
+class CouldntBootstrapDirectory implements Exception {
   String? rustError;
-  ServerUnreachable({this.rustError});
+
+  CouldntBootstrapDirectory({this.rustError});
 }
 
 class NotSupportedPlatform implements Exception {
   NotSupportedPlatform(String s);
 }
 
-enum TorStatus {
-  started,
-  bootstrapped,
-  stopped,
-  error,
-}
-
 class Tor {
   static late String _libName = "tor_ffi";
   static late DynamicLibrary _lib;
 
-  Pointer<Int> clientPtr = nullptr;
+  Pointer<Int> _clientPtr = nullptr;
 
-  bool enabled = true;
-  bool started = false;
-  bool bootstrapped = false;
+  bool get enabled => _enabled;
+  bool _enabled = true;
+
+  bool get started => _started;
+  bool _started = false;
+
+  bool get bootstrapped => _bootstrapped;
+  bool _bootstrapped = false;
 
   // This stream broadcast just the port for now (-1 if circuit not established)
   final StreamController events = StreamController.broadcast();
 
-  int port = -1;
+  int get port {
+    if (!_enabled) {
+      return -1;
+    }
+    return _proxyPort;
+  }
+
+  int _proxyPort = -1;
   static final Tor _instance = Tor._internal();
 
   factory Tor() {
     return _instance;
   }
 
-  static Future<Tor> init() async {
+  static Future<Tor> init({enabled = true}) async {
     var singleton = Tor._instance;
+    singleton._enabled = enabled;
     return singleton;
   }
 
@@ -70,7 +78,7 @@ class Tor {
   }
 
   enable() async {
-    enabled = true;
+    _enabled = true;
     if (!started) {
       start();
     }
@@ -98,10 +106,19 @@ class Tor {
   start() async {
     events.add(port);
 
+    final Directory appSupportDir = await getApplicationSupportDirectory();
+    final stateDir =
+        await Directory(appSupportDir.path + '/tor_state').create();
+    final cacheDir =
+        await Directory(appSupportDir.path + '/tor_cache').create();
+
     int newPort = await _getRandomUnusedPort();
     int ptr = await Isolate.run(() async {
       var lib = NativeLibrary(load(_libName));
-      final ptr = lib.tor_start(newPort);
+      final ptr = lib.tor_start(
+          newPort,
+          stateDir.path.toNativeUtf8() as Pointer<Char>,
+          cacheDir.path.toNativeUtf8() as Pointer<Char>);
 
       if (ptr == nullptr) {
         throwRustException(lib);
@@ -110,51 +127,28 @@ class Tor {
       return ptr.address;
     });
 
-    clientPtr = Pointer.fromAddress(ptr);
-    started = true;
+    _clientPtr = Pointer.fromAddress(ptr);
+    _started = true;
     bootstrap();
-    port = newPort;
+    _proxyPort = newPort;
   }
 
   bootstrap() async {
     var lib = NativeLibrary(_lib);
-    bootstrapped = await lib.tor_bootstrap(clientPtr);
+    _bootstrapped = await lib.tor_bootstrap(_clientPtr);
     if (!bootstrapped) {
       throwRustException(lib);
     }
   }
 
   disable() {
-    enabled = false;
-    started = false;
-    port = -1;
+    _enabled = false;
   }
 
   restart() {
-    if (enabled && started && bootstrapped) {
-      // _shutdown().then((_) {
-      //   events.add(port);
-      //   start();
-      // });
-    }
-  }
-
-  Stream<TorStatus> getTorStatus() {
-    return events.stream.map((port) {
-      if (!this.enabled) {
-        return TorStatus.stopped;
-      }
-      if (started && !bootstrapped) {
-        return TorStatus.started;
-      }
-      if (port == -1) {
-        return TorStatus.stopped;
-      }
-      if (this.bootstrapped) {
-        return TorStatus.bootstrapped;
-      }
-      return TorStatus.stopped;
-    });
+    // TODO: arti seems to recover by itself and there is no client restart fn
+    // TODO: but follow up with them if restart is truly unnecessary
+    // if (enabled && started && circuitEstablished) {}
   }
 
   isReady() async {
@@ -183,8 +177,8 @@ class Tor {
   }
 
   static Exception _getRustException(String rustError) {
-    if (rustError.contains('unreachable') || rustError.contains('dns error')) {
-      return ServerUnreachable(rustError: rustError);
+    if (rustError.contains('Unable to bootstrap a working directory')) {
+      return CouldntBootstrapDirectory(rustError: rustError);
     } else {
       return Exception(rustError);
     }

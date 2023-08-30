@@ -44,15 +44,18 @@ Future<void> initSingletons() async {
   await LocalStorage.init();
   EnvoyReport().init();
   Settings.restore();
-  Tor.init();
+  Tor.init(enabled: Settings().torEnabled());
   UpdatesManager.init();
   ScvServer.init();
   EnvoySeed.init();
 
-  if (Settings().usingTor) {
+  Tor().enabled == Settings().torEnabled();
+
+  // Start Tor regardless of whether we are using it or not
+  try {
     Tor().start();
-  } else {
-    Tor().disable();
+  } on Exception catch (e) {
+    EnvoyReport().log("tor", e.toString());
   }
 
   Fees.restore();

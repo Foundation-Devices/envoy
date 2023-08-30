@@ -137,7 +137,7 @@ class ExchangeRate extends ChangeNotifier {
       } else {
         throw Exception("Couldn't get exchange rate");
       }
-    }, onError: (_) {
+    }).onError((e, s) {
       ConnectivityManager().nguFailure();
     });
   }

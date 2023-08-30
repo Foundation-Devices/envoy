@@ -52,7 +52,7 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
         }
       } else {
         //disable tor this wont stop the tor process
-        tor.enabled = false;
+        Tor().disable();
       }
       ElectrumServerFeatures features =
           await Wallet.getServerFeatures(address, Tor().port);

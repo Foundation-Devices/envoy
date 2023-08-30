@@ -4285,7 +4285,6 @@ dependencies = [
  "cbindgen",
  "lazy_static",
  "log",
- "tempfile",
  "tokio",
  "tor-rtcompat",
 ]

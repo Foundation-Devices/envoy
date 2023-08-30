@@ -7,7 +7,7 @@ use arti::socks;
 use arti_client::config::TorClientConfigBuilder;
 use arti_client::TorClient;
 use lazy_static::lazy_static;
-use std::ffi::{c_char, CString};
+use std::ffi::{c_char, CStr, CString};
 use std::{io, ptr};
 use tokio::runtime::{Builder, Runtime};
 use tor_rtcompat::tokio::TokioNativeTlsRuntime;
@@ -43,12 +43,17 @@ macro_rules! unwrap_or_return {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn tor_start(socks_port: u16) -> *mut TorClient<TokioNativeTlsRuntime> {
+pub unsafe extern "C" fn tor_start(
+    socks_port: u16,
+    state_dir: *const c_char,
+    cache_dir: *const c_char,
+) -> *mut TorClient<TokioNativeTlsRuntime> {
     let err_ret = ptr::null_mut();
-    let runtime = unwrap_or_return!(TokioNativeTlsRuntime::create(), err_ret);
 
-    let state_dir = unwrap_or_return!(tempfile::tempdir(), err_ret);
-    let cache_dir = unwrap_or_return!(tempfile::tempdir(), err_ret);
+    let state_dir = unwrap_or_return!(CStr::from_ptr(state_dir).to_str(), err_ret);
+    let cache_dir = unwrap_or_return!(CStr::from_ptr(cache_dir).to_str(), err_ret);
+
+    let runtime = unwrap_or_return!(TokioNativeTlsRuntime::create(), err_ret);
 
     let cfg = unwrap_or_return!(
         TorClientConfigBuilder::from_directories(state_dir, cache_dir).build(),

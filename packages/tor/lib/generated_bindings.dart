@@ -30,17 +30,23 @@ class NativeLibrary {
 
   ffi.Pointer<ffi.Int> tor_start(
     int socks_port,
+    ffi.Pointer<ffi.Char> state_dir,
+    ffi.Pointer<ffi.Char> cache_dir,
   ) {
     return _tor_start(
       socks_port,
+      state_dir,
+      cache_dir,
     );
   }
 
-  late final _tor_startPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Int> Function(ffi.Uint16)>>(
-          'tor_start');
-  late final _tor_start =
-      _tor_startPtr.asFunction<ffi.Pointer<ffi.Int> Function(int)>();
+  late final _tor_startPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Int> Function(ffi.Uint16, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('tor_start');
+  late final _tor_start = _tor_startPtr.asFunction<
+      ffi.Pointer<ffi.Int> Function(
+          int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   bool tor_bootstrap(
     ffi.Pointer<ffi.Int> client,

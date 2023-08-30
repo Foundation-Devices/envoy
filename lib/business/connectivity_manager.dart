@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
@@ -25,6 +26,7 @@ class ConnectivityManager {
   }
 
   bool get torCircuitEstablished => Tor().bootstrapped;
+
   bool get usingDefaultServer => Settings().usingDefaultElectrumServer;
 
   bool electrumConnected = true;
@@ -91,13 +93,14 @@ class ConnectivityManager {
     if (torEnabled) {
       restartTor();
       events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
+      EnvoyReport().log(
+          "tor", "Tor bootstrapped but doesn't seem to work: NGU unreachable");
     }
   }
 
   restartTor() {
     // ENV-175
     if (torEnabled) {
-      print("Restarting Tor");
       Tor().restart();
     }
   }

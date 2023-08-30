@@ -530,7 +530,9 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       if (mounted) {
         //Setting tor state
         Settings().usingTor = next;
-        Tor().enabled = next;
+        if (next) {
+          Tor().enable();
+        }
         _privacyIconController?.findInput<bool>("toggle")?.change(!next);
         _improvedPerformanceController?.findInput<bool>("enable")?.change(next);
         if (_betterPerformance != next) {

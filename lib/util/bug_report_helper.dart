@@ -66,6 +66,17 @@ class EnvoyReport {
     }
   }
 
+  log(String category, String message) {
+    Map<String, String?> report = Map();
+    report["lib"] = category;
+    report["exception"] = message;
+    report["time"] = DateTime.now().toIso8601String();
+
+    if (_db != null) {
+      _logsStore.add(_db!, report);
+    }
+  }
+
   Future<List<Map<String, Object?>>> getAllLogs() async {
     var log = await _logsStore.find(_db!);
     var logs = log.map((e) => e.value).toList().reversed.toList();
