@@ -537,12 +537,6 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
   @override
   void initState() {
     super.initState();
-
-    textEntry = TextEntry(
-      focusNode: focusNode,
-      maxLength: 20,
-      placeholder: widget.account.name,
-    );
   }
 
   @override
@@ -577,6 +571,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
+            textEntry = TextEntry(
+              focusNode: focusNode,
+              maxLength: 20,
+              placeholder: widget.account.name,
+            );
             showEnvoyDialog(
               context: context,
               dialog: Builder(

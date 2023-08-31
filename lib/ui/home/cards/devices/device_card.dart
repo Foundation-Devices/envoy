@@ -109,12 +109,6 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
   @override
   void initState() {
     super.initState();
-
-    textEntry = TextEntry(
-      focusNode: focusNode,
-      maxLength: 20,
-      placeholder: widget.device.name,
-    );
   }
 
   @override
@@ -142,6 +136,11 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                       FocusScope.of(context).requestFocus(focusNode);
                     });
                     isKeyboardShown = true;
+                    textEntry = TextEntry(
+                      focusNode: focusNode,
+                      maxLength: 20,
+                      placeholder: widget.device.name,
+                    );
                   }
                   return EnvoyDialog(
                     title: S().envoy_device_rename,
