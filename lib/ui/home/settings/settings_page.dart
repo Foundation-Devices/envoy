@@ -6,6 +6,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
@@ -14,18 +15,20 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends ConsumerStatefulWidget {
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  ConsumerState<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = Duration(milliseconds: 200);
   bool _advancedVisible = false;
 
@@ -54,6 +57,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 SettingToggle(() => s.displayFiat() != null, (enabled) {
                   setState(() {
                     s.setDisplayFiat(enabled ? "USD" : null);
+                    if (!enabled) {
+                      ref.read(sendScreenUnitProvider.notifier).state =
+                          s.displayUnitSat()
+                              ? AmountDisplayUnit.sat
+                              : AmountDisplayUnit.btc;
+                    }
                   });
                 }),
               ],

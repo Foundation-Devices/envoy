@@ -3,11 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/business/bitcoin_parser.dart';
 
 class AddressEntry extends StatefulWidget {
   final Function(bool, String)? onAddressChanged;
@@ -15,12 +18,16 @@ class AddressEntry extends StatefulWidget {
   final bool canEdit;
   final Account account;
   final String? initalAddress;
+  final TextEditingController? controller;
+  final Function(ParseResult)? onPaste;
 
   AddressEntry(
       {this.initalAddress,
       this.onAddressChanged,
       this.onAmountChanged,
       this.canEdit = true,
+      this.controller,
+      this.onPaste,
       required this.account});
 
   @override
@@ -28,19 +35,17 @@ class AddressEntry extends StatefulWidget {
 }
 
 class _AddressEntryState extends State<AddressEntry> {
-  final _controller = TextEditingController();
-
-  String get text => _controller.text;
+  String get text => widget.controller?.text ?? "";
   bool addressValid = false;
 
   set text(String newAddress) {
-    _controller.text = newAddress;
+    widget.controller?.text = newAddress;
   }
 
   @override
   void initState() {
     if (widget.initalAddress != null) {
-      _controller.text = widget.initalAddress!;
+      widget.controller?.text = widget.initalAddress!;
     }
 
     super.initState();
@@ -57,7 +62,7 @@ class _AddressEntryState extends State<AddressEntry> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextFormField(
               enabled: widget.canEdit,
-              controller: _controller,
+              controller: widget.controller,
               style: TextStyle(
                   fontSize: 14,
                   overflow: TextOverflow.fade,
@@ -103,12 +108,27 @@ class _AddressEntryState extends State<AddressEntry> {
                               ),
                             ),
                             onTap: () async {
-                              ClipboardData? cdata =
-                                  await Clipboard.getData(Clipboard.kTextPlain);
-                              String? text = cdata?.text ?? null;
-                              if (text != null) {
-                                _controller.text = text;
-                                validate(text);
+                              if (widget.onPaste != null) {
+                                ClipboardData? cdata = await Clipboard.getData(
+                                    Clipboard.kTextPlain);
+                                String? textCopied = cdata?.text ?? null;
+                                var decodedInfo = await BitcoinParser.parse(
+                                    textCopied!,
+                                    fiatExchangeRate: ExchangeRate().usdRate,
+                                    wallet: widget.account.wallet,
+                                    selectedFiat: Settings().selectedFiat);
+                                widget.onPaste!(decodedInfo);
+                                if (decodedInfo.address != null) {
+                                  validate(decodedInfo.address!);
+                                }
+                              } else {
+                                ClipboardData? cdata = await Clipboard.getData(
+                                    Clipboard.kTextPlain);
+                                String? text = cdata?.text ?? null;
+                                if (text != null) {
+                                  widget.controller?.text = text;
+                                  validate(text);
+                                }
                               }
                             },
                           ),
@@ -133,7 +153,7 @@ class _AddressEntryState extends State<AddressEntry> {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return ScannerPage.address((address, amount) {
-                                  _controller.text = address;
+                                  widget.controller?.text = address;
 
                                   if (widget.onAddressChanged != null) {
                                     widget.onAddressChanged!(true, address);
