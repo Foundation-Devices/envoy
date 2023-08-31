@@ -8,7 +8,6 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
 
 enum PopUpState {
@@ -113,7 +112,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         break;
     }
     return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
+      width: MediaQuery.of(context).size.width * 0.75,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),
@@ -121,20 +120,16 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         color: EnvoyColors.textPrimaryInverse,
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium1),
+        padding: EdgeInsets.all(EnvoySpacing.medium2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (widget.icon != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                child: EnvoyIcon(
-                  widget.icon,
-                  size: EnvoyIconSize.big,
-                  color: _color,
-                ),
+              EnvoyIcon(
+                widget.icon,
+                size: EnvoyIconSize.big,
+                color: _color,
               ),
             if (widget.title != null)
               Text(
@@ -142,49 +137,80 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 style: EnvoyTypography.subtitle1Semibold,
               ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: EnvoySpacing.small, bottom: EnvoySpacing.medium3),
+              padding: const EdgeInsets.all(EnvoySpacing.medium1),
               child: Text(
                 widget.content,
-                style: EnvoyTypography.body2Medium,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.caption1Medium.copyWith(
+                  color: EnvoyColors.textPrimary,
+                ),
               ),
             ),
             if (widget.checkBoxText != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                child: DialogCheckBox(
-                  label: widget.checkBoxText,
-                  isChecked:
-                      widget.checkedValue == null ? true : widget.checkedValue!,
-                  onChanged: (isChecked) {
-                    setState(() {
-                      widget.checkedValue = !widget.checkedValue!;
-                      widget.onCheckBoxChanged(isChecked);
-                    });
-                  },
+              DialogCheckBox(
+                label: widget.checkBoxText,
+                isChecked:
+                    widget.checkedValue == null ? true : widget.checkedValue!,
+                onChanged: (isChecked) {
+                  setState(() {
+                    widget.checkedValue = !widget.checkedValue!;
+                    widget.onCheckBoxChanged(isChecked);
+                  });
+                },
+              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: EnvoyColors.textPrimaryInverse,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small,
+                      vertical: EnvoySpacing.xs),
+                  child: TextButton(
+                    onPressed: () {
+                      widget.onPrimaryButtonTap();
+                      Navigator.pop(
+                          context); // Close the dialog when cancel is pressed
+                    },
+                    child: Text(
+                      widget.primaryButtonLabel,
+                      style: EnvoyTypography.subtitle2Medium.copyWith(
+                        color: EnvoyColors.accentPrimary,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            EnvoyButton(
-                label: widget.primaryButtonLabel,
-                type: ButtonType.primary,
-                state: ButtonState.default_state,
-                // icon: EnvoyIcons.info,
-                onTap: () {
-                  widget.onPrimaryButtonTap();
-                  Navigator.pop(context);
-                }),
+            ),
             if (widget.secondaryButtonLabel != null)
-              Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-                child: EnvoyButton(
-                    label: widget.secondaryButtonLabel,
-                    type: ButtonType.secondary,
-                    state: ButtonState.default_state,
-                    onTap: () {
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: EnvoyColors.accentPrimary,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small,
+                      vertical: EnvoySpacing.xs),
+                  child: TextButton(
+                    onPressed: () {
                       if (widget.onSecondaryButtonTap != null) {
                         widget.onSecondaryButtonTap();
                       }
-                    }),
+                    },
+                    child: Text(
+                      widget.secondaryButtonLabel,
+                      style: EnvoyTypography.subtitle2Medium.copyWith(
+                        color: EnvoyColors.textPrimaryInverse,
+                      ),
+                    ),
+                  ),
+                ),
               ),
           ],
         ),
