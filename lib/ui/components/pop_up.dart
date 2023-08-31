@@ -113,7 +113,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         break;
     }
     return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
+      width: MediaQuery.of(context).size.width * 0.75,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),
@@ -122,7 +122,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium1),
+            vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -137,16 +137,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               ),
             if (widget.title != null)
-              Text(
-                widget.title!,
-                style: EnvoyTypography.subtitle1Semibold,
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                child: Text(
+                  widget.title!,
+                  style: EnvoyTypography.subtitle1Semibold,
+                ),
               ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: EnvoySpacing.small, bottom: EnvoySpacing.medium3),
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
               child: Text(
                 widget.content,
                 style: EnvoyTypography.body2Medium,
+                textAlign: TextAlign.center,
               ),
             ),
             if (widget.checkBoxText != null)
