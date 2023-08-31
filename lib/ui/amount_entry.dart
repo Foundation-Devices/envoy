@@ -7,6 +7,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/settings.dart';
@@ -14,6 +15,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/business/bitcoin_parser.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
@@ -21,9 +23,14 @@ class AmountEntry extends ConsumerStatefulWidget {
   final Wallet? wallet;
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
+  final Function(ParseResult)? onPaste;
 
   AmountEntry(
-      {this.wallet, this.onAmountChanged, this.initalSatAmount = 0, Key? key})
+      {this.wallet,
+      this.onAmountChanged,
+      this.initalSatAmount = 0,
+      this.onPaste,
+      Key? key})
       : super(key: key);
 
   @override
@@ -57,10 +64,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    final unit = ref.watch(sendScreenUnitProvider);
+    var unit = ref.watch(sendScreenUnitProvider);
 
     Numpad numpad = Numpad(unit, isAmountZero: _amountSats == 0);
-    numpad.events.stream.listen((event) {
+    numpad.events.stream.listen((event) async {
       switch (event) {
         case NumpadEvents.backspace:
           {
@@ -96,9 +103,26 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           break;
         case NumpadEvents.clipboard:
           {
-            //TODO here
+            ClipboardData? cdata =
+                await Clipboard.getData(Clipboard.kTextPlain);
+
+            String? text = cdata?.text ?? null;
+            var decodedInfo = await BitcoinParser.parse(text!,
+                fiatExchangeRate: ExchangeRate().usdRate,
+                wallet: widget.wallet,
+                selectedFiat: Settings().selectedFiat);
+            ref.read(sendScreenUnitProvider.notifier).state =
+                decodedInfo.unit ?? unit;
+
+            setState(() {
+              unit = decodedInfo.unit ?? unit;
+            });
+
+            if (widget.onPaste != null) {
+              widget.onPaste!(decodedInfo);
+            }
+            break;
           }
-          break;
         default:
           {
             // No more than eight decimal digits for BTC

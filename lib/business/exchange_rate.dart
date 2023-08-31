@@ -46,6 +46,8 @@ class ExchangeRate extends ChangeNotifier {
 
   double _selectedCurrencyRate = 0;
   double? _usdRate = 0;
+
+  double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
   HttpTor _http = HttpTor(Tor());

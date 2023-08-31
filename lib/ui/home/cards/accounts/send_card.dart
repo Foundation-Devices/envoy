@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 
 //For review screens
 final spendAddressProvider = StateProvider((ref) => "");
@@ -21,7 +23,7 @@ final spendAmountProvider = StateProvider((ref) => 0);
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget with NavigationCard {
   final Account account;
-  final String? address;
+  String? address;
   final int? amountSats;
 
   SendCard(this.account, {this.address, this.navigator, this.amountSats})
@@ -58,35 +60,34 @@ class _SendCardState extends ConsumerState<SendCard>
   bool _addressValid = false;
   bool _canProceed = true;
   bool _amountTooLow = false;
+  TextEditingController _controller = TextEditingController();
 
   int _amount = 0;
 
-  AddressEntry? _address;
   var _amountEntry = AmountEntry();
+
+  Future<void> _onPaste(ParseResult parsed) async {
+    setState(() {
+      if (parsed.address != null) {
+        widget.address = parsed.address!;
+        _controller.text = parsed.address!;
+      }
+
+      if (parsed.amountSats != null) {
+        setAmount(parsed.amountSats!);
+
+        if (parsed.unit != null) {
+          ref.read(sendScreenUnitProvider.notifier).state = parsed.unit!;
+        }
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    _address = AddressEntry(
-        account: widget.account,
-        initalAddress: widget.address,
-        onAmountChanged: (amount) {
-          if (amount != 0) {
-            setAmount(amount);
-          }
-        },
-        onAddressChanged: (valid, text) {
-          Future.delayed(Duration.zero, () async {
-            setState(() {
-              _addressValid = valid;
-            });
-            if (valid) {
-              _addressText = text;
-              ref.read(spendAddressProvider.notifier).state = _addressText;
-            }
-          });
-        });
+    _addressText = widget.address ?? "";
 
     // Addresses from the scanner are already validated
     if (widget.address != null) {
@@ -97,6 +98,7 @@ class _SendCardState extends ConsumerState<SendCard>
     _amountEntry = AmountEntry(
       onAmountChanged: _updateAmount,
       wallet: widget.account.wallet,
+      onPaste: _onPaste,
     );
 
     if (widget.amountSats != null) {
@@ -112,6 +114,7 @@ class _SendCardState extends ConsumerState<SendCard>
         initalSatAmount: _amount,
         key: UniqueKey(),
         wallet: widget.account.wallet,
+        onPaste: _onPaste,
       );
     });
   }
@@ -131,7 +134,27 @@ class _SendCardState extends ConsumerState<SendCard>
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Padding(
         padding: const EdgeInsets.all(15.0),
-        child: _address,
+        child: new AddressEntry(
+            account: widget.account,
+            initalAddress: widget.address,
+            controller: _controller,
+            onPaste: _onPaste,
+            onAmountChanged: (amount) {
+              if (amount != 0) {
+                setAmount(amount);
+              }
+            },
+            onAddressChanged: (valid, text) {
+              Future.delayed(Duration.zero, () async {
+                setState(() {
+                  _addressValid = valid;
+                });
+                if (valid) {
+                  _addressText = text;
+                  ref.read(spendAddressProvider.notifier).state = _addressText;
+                }
+              });
+            }),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -149,6 +172,7 @@ class _SendCardState extends ConsumerState<SendCard>
                       initalSatAmount: _amount,
                       key: UniqueKey(),
                       wallet: widget.account.wallet,
+                      onPaste: _onPaste,
                     );
                   });
                   return;

@@ -26,6 +26,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^2.4.0
+  mockito: ^5.4.2
 
 ffigen:
   output: 'lib/generated_bindings.dart'
