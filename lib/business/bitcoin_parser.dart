@@ -29,12 +29,13 @@ class BitcoinParser {
         (selectedFiat == null || selectedFiat == "") ? false : true;
 
     String urnScheme = "bitcoin";
-    if (wallet != null) if (await wallet.validateAddress(data))
+    if (wallet != null && await wallet.validateAddress(data)) {
       return ParseResult(
         address: data,
         amountSats: null,
         unit: null,
       );
+    }
 
     if (data.indexOf(urnScheme) != 0 || data[urnScheme.length] != ":")
       isBip21 = false;
@@ -42,6 +43,11 @@ class BitcoinParser {
     if (isBip21) {
       var bip21 = Bip21.decode(data);
       address = bip21.address;
+
+      if (wallet != null && !await wallet.validateAddress(address)) {
+        address = null;
+      }
+
       // BIP-21 amounts are in BTC
       amountInSats = convertBtcStringToSats(bip21.amount.toString());
       unit = AmountDisplayUnit.btc;
