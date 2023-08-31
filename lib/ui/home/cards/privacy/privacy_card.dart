@@ -187,9 +187,7 @@ class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
                         },
                         icon: EnvoyIcons.node,
                       ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.medium2)),
+                      SizedBox(height: EnvoySpacing.medium2),
                       EnvoyDropdown(
                         initialIndex:
                             ConnectivityManager().usingDefaultServer ? 0 : 1,
@@ -248,9 +246,7 @@ class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
                                   ),
                                 ],
                               ),
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: EnvoySpacing.medium2)),
+                              SizedBox(height: EnvoySpacing.medium2),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
