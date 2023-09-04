@@ -550,6 +550,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               ),
               EnvoyButton(
                 "Return to my coins",
+                type: EnvoyButtonTypes.primaryModal,
                 onTap: () async {
                   Navigator.pop(context);
                 },
@@ -600,6 +601,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               ),
               EnvoyButton(
                 S().component_save.toUpperCase(),
+                type: EnvoyButtonTypes.primaryModal,
                 onTap: () async {
                   widget.coinTag.name = textEntry.enteredText;
                   int updated =
