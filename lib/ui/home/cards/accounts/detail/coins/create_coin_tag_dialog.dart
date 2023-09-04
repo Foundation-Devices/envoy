@@ -180,7 +180,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                           : EnvoyColors.grey,
                     ),
                 type: _tagController.text.isNotEmpty
-                    ? EnvoyButtonTypes.primary
+                    ? EnvoyButtonTypes.primaryModal
                     : EnvoyButtonTypes.tertiary, onTap: () async {
               //get coins from current tag
               final coins = widget.tag.coins;
