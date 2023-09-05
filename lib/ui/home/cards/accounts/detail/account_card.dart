@@ -20,7 +20,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.d
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';

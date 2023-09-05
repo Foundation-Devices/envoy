@@ -4,12 +4,12 @@
 
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/confirmation_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
-import 'package:envoy/ui/home/cards/accounts/confirmation_card.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/business/account.dart';

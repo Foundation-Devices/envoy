@@ -11,7 +11,7 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';

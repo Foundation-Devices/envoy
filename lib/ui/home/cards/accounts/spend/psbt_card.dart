@@ -10,7 +10,7 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/shield.dart';
