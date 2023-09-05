@@ -58,7 +58,8 @@ verify-sha sha:
 generate:
     rm pubspec.lock && \
     flutter packages pub get && \
-    flutter pub run build_runner build --delete-conflicting-outputs
+    flutter pub run build_runner build --delete-conflicting-outputs \
+    git restore pubspec.lock
 
 bump:
     bash bump_version.sh

@@ -3,10 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
 
 import 'package:webfeed/webfeed.dart';
@@ -14,9 +13,7 @@ import 'package:http_tor/http_tor.dart';
 
 class VideoManager {
   List<Video> videos = [];
-  LocalStorage _ls = LocalStorage();
 
-  static const String _VIDEO_PREFS = "videos";
   static final VideoManager _instance = VideoManager._internal();
 
   factory VideoManager() {
@@ -46,13 +43,12 @@ class VideoManager {
     videos.clear();
   }
 
-  _restoreVideos() {
+  _restoreVideos() async {
     _dropVideos();
-    if (_ls.prefs.containsKey(_VIDEO_PREFS)) {
-      var storedVideos = jsonDecode(_ls.prefs.getString(_VIDEO_PREFS)!);
-      for (var video in storedVideos) {
-        videos.add(Video.fromJson(video));
-      }
+
+    var storedVideos = await EnvoyStorage().getAllVideos();
+    for (var video in storedVideos!) {
+      videos.add(video!);
     }
   }
 
@@ -129,7 +125,8 @@ class VideoManager {
   }
 
   storeVideos() {
-    String json = jsonEncode(videos);
-    _ls.prefs.setString(_VIDEO_PREFS, json);
+    for (var video in videos) {
+      EnvoyStorage().addNewVideo(video);
+    }
   }
 }
