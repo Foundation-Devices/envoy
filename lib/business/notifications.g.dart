@@ -14,7 +14,7 @@ EnvoyNotification _$EnvoyNotificationFromJson(Map<String, dynamic> json) =>
       json['body'] as String,
       json['id'] as String,
       amount: json['amount'] as int?,
-      walletName: json['walletName'] as String?,
+      accountId: json['accountId'] as String?,
     );
 
 Map<String, dynamic> _$EnvoyNotificationToJson(EnvoyNotification instance) =>
@@ -25,7 +25,7 @@ Map<String, dynamic> _$EnvoyNotificationToJson(EnvoyNotification instance) =>
       'body': instance.body,
       'id': instance.id,
       'amount': instance.amount,
-      'walletName': instance.walletName,
+      'accountId': instance.accountId,
     };
 
 const _$EnvoyNotificationTypeEnumMap = {

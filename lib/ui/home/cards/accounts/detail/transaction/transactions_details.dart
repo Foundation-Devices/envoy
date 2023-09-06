@@ -196,8 +196,9 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                         animate: false,
                                       )
                                     : Text(
-                                        ExchangeRate()
-                                            .getFormattedAmount(tx.amount),
+                                        ExchangeRate().getFormattedAmount(
+                                            tx.amount,
+                                            wallet: widget.account.wallet),
                                         style: _textStyleFiat,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.end,
@@ -311,7 +312,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                   height: 14,
                                 ),
                                 trailing: Text(
-                                    "${tx.isConfirmed ? "Confirmed" : "Pending"} ",
+                                    "${tx.isConfirmed ? "Confirmed" : "Pending"}",
                                     style: trailingTextStyle),
                               ),
                               CoinTagListItem(
@@ -337,7 +338,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                             ),
                                             TextSpan(
                                                 text:
-                                                    "${Settings().selectedFiat != null ? "  " : ''}${ExchangeRate().getFormattedAmount(tx.fee)}",
+                                                    "${widget.account.wallet.network == Network.Testnet ? '' : (Settings().selectedFiat != null ? "  " : '')}${ExchangeRate().getFormattedAmount(tx.fee, wallet: widget.account.wallet)}",
                                                 style:
                                                     trailingTextStyle?.copyWith(
                                                   fontWeight: FontWeight.w300,

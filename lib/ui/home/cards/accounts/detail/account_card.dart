@@ -499,8 +499,9 @@ class TransactionListTile extends StatelessWidget {
                     child: Text(
                         transaction.type == TransactionType.azteco
                             ? ""
-                            : ExchangeRate()
-                                .getFormattedAmount(transaction.amount),
+                            : ExchangeRate().getFormattedAmount(
+                                transaction.amount,
+                                wallet: account.wallet),
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color:
                                 Theme.of(context).textTheme.bodySmall!.color)),

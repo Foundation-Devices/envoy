@@ -10,6 +10,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class AmountDisplay extends ConsumerStatefulWidget {
@@ -17,6 +18,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
   final bool testnet;
+  final Wallet? wallet;
 
   final Function(String)? onUnitToggled;
 
@@ -26,6 +28,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.onUnitToggled,
       this.testnet = false,
       this.inputMode = false,
+      required this.wallet,
       Key? key})
       : super(key: key);
 
@@ -119,7 +122,8 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
           ),
           Text(
             unit != AmountDisplayUnit.fiat
-                ? ExchangeRate().getFormattedAmount(widget.amountSats ?? 0)
+                ? ExchangeRate().getFormattedAmount(widget.amountSats ?? 0,
+                    wallet: widget.wallet)
                 : (Settings().displayUnit == DisplayUnit.btc
                     ? getDisplayAmount(
                         widget.amountSats ?? 0, AmountDisplayUnit.btc,

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -164,7 +165,8 @@ class ActivityListTile extends StatelessWidget {
       textRight1 = getFormattedAmount(notification.amount!, includeUnit: true);
       textRight2 = Settings().selectedFiat == null
           ? null
-          : ExchangeRate().getFormattedAmount(notification.amount!);
+          : ExchangeRate().getFormattedAmount(notification.amount!,
+              wallet: AccountManager().getWallet(notification.accountId!));
       iconColor = EnvoyColors.textTertiary;
     }
 

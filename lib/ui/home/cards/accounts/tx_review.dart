@@ -315,7 +315,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                                                               EdgeInsets.all(
                                                                   2)),
                                                       Text(
-                                                        "${ExchangeRate().getFormattedAmount(amount)}",
+                                                        "${ExchangeRate().getFormattedAmount(amount, wallet: widget.account.wallet)}",
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: Theme.of(context)

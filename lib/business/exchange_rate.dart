@@ -11,6 +11,7 @@ import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
+import 'package:wallet/wallet.dart';
 
 class FiatCurrency {
   final String code;
@@ -149,8 +150,9 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   // SATS to FIAT
-  String getFormattedAmount(int amountSats, {bool includeSymbol = true}) {
-    if (Settings().selectedFiat == null) {
+  String getFormattedAmount(int amountSats,
+      {bool includeSymbol = true, Wallet? wallet}) {
+    if (Settings().selectedFiat == null || wallet?.network != Network.Mainnet) {
       return "";
     }
 

@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:wallet/wallet.dart';
 
 class FeeToggle extends StatefulWidget {
   final int standardFee;
   final int boostFee;
   final int initialIndex;
+  final Wallet? wallet;
 
   final Function(int, bool)? onToggled;
 
@@ -20,7 +22,8 @@ class FeeToggle extends StatefulWidget {
       this.onToggled,
       this.initialIndex = 0,
       required this.standardFee,
-      required this.boostFee})
+      required this.boostFee,
+      this.wallet})
       : super(key: key);
 
   @override
@@ -37,8 +40,11 @@ class _FeeToggleState extends State<FeeToggle> {
     } else {
       return fee.toString() +
           " Sats" +
-          " ~ " +
-          ExchangeRate().getFormattedAmount(fee);
+          (widget.wallet!.network == Network.Testnet
+              ? ""
+              : (" ~ " +
+                  ExchangeRate()
+                      .getFormattedAmount(fee, wallet: widget.wallet)));
     }
   }
 
