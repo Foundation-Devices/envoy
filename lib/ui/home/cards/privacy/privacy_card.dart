@@ -104,6 +104,8 @@ class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
 
   @override
   Widget build(BuildContext context) {
+    var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    var bottomPadding = keyboardHeight - 10 * EnvoySpacing.medium2;
     var s = Settings();
     return Align(
       alignment: Alignment.topCenter,
@@ -113,6 +115,7 @@ class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
             gradientFractionOnEnd: 0.2,
             gradientFractionOnStart: 0.2,
             child: SingleChildScrollView(
+              reverse: true,
               controller: _scrollController,
               child: Container(
                 child: Padding(
@@ -288,7 +291,11 @@ class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
                             ],
                           );
                         },
-                      )
+                      ),
+                      if (keyboardHeight != 0.0 && bottomPadding > 0)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: bottomPadding),
+                        )
                     ],
                   ),
                 ),

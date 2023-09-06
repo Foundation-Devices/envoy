@@ -353,6 +353,7 @@ class _HomePageState extends ConsumerState<HomePage>
           },
           child: Scaffold(
               extendBodyBehindAppBar: true,
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 // Get rid of the shadow
                 elevation: 0,
