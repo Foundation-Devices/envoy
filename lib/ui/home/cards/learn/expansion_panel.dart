@@ -346,9 +346,9 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
     final List<MergeableMaterialItem> items = <MergeableMaterialItem>[];
 
     for (int index = 0; index < widget.children.length; index += 1) {
-      if (_isChildExpanded(index) && index != 0 && !_isChildExpanded(index - 1))
-        items.add(MaterialGap(
-            key: _SaltedKey<BuildContext, int>(context, index * 2 - 1)));
+      // if (_isChildExpanded(index) && index != 0 && !_isChildExpanded(index - 1))
+      //   items.add(MaterialGap(
+      //       key: _SaltedKey<BuildContext, int>(context, index * 2 - 1)));
 
       final ExpansionPanel child = widget.children[index];
       final Widget headerWidget = child.headerBuilder(
@@ -433,7 +433,8 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
 
       if (_isChildExpanded(index) && index != widget.children.length - 1)
         items.add(MaterialGap(
-            key: _SaltedKey<BuildContext, int>(context, index * 2 + 1)));
+            key: _SaltedKey<BuildContext, int>(context, index * 2 + 1),
+            size: 0));
     }
 
     return MergeableMaterial(
