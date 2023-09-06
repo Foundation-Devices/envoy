@@ -313,8 +313,10 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           )
                                         : Flexible(
                                             child: Text(
-                                              ExchangeRate()
-                                                  .getFormattedAmount(balance),
+                                              ExchangeRate().getFormattedAmount(
+                                                  balance,
+                                                  wallet:
+                                                      widget.account.wallet),
                                               style: _textStyleFiat,
                                             ),
                                           )

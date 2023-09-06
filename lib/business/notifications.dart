@@ -24,10 +24,10 @@ class EnvoyNotification {
   final String body;
   final String id;
   final int? amount;
-  final String? walletName;
+  final String? accountId;
 
   EnvoyNotification(this.title, this.date, this.type, this.body, this.id,
-      {this.amount, this.walletName});
+      {this.amount, this.accountId});
 
   // Serialisation
   factory EnvoyNotification.fromJson(Map<String, dynamic> json) =>
@@ -120,8 +120,7 @@ class Notifications {
                 tx.txId,
                 tx.txId,
                 amount: tx.amount,
-                walletName: account.wallet.name));
-
+                accountId: account.id));
             _notificationsAdded = true;
           }
         }
@@ -135,7 +134,7 @@ class Notifications {
 
   deleteFromAccount(Account account) {
     notifications
-        .removeWhere((element) => account.wallet.name == element.walletName);
+        .removeWhere((element) => account.wallet.name == element.accountId);
     _storeNotifications();
     sync();
   }

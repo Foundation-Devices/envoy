@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -47,6 +48,7 @@ class BalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hide = ref.watch(balanceHideStateStatusProvider(accountId));
+    bool hideFiat = AccountManager().isAccountTestnet(accountId);
 
     TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.grey,
@@ -130,7 +132,9 @@ class BalanceWidget extends ConsumerWidget {
                           animate: false,
                         )
                       : Text(
-                          ExchangeRate().getFormattedAmount(amount),
+                          hideFiat
+                              ? ""
+                              : ExchangeRate().getFormattedAmount(amount),
                           style: _textStyleFiat,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.end,

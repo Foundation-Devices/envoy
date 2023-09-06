@@ -129,6 +129,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
   @override
   Widget build(BuildContext context) {
     var _feeToggle = FeeToggle(
+      wallet: widget.account.wallet,
       standardFee: _currentPsbt.fee,
       boostFee: _currentPsbtBoost.fee,
       key: UniqueKey(),
@@ -153,6 +154,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
           child: FittedBox(
             fit: BoxFit.fitWidth,
             child: AmountDisplay(
+              wallet: widget.account.wallet,
               amountSats: _amount,
               testnet: widget.account.wallet.network == Network.Testnet,
               key: UniqueKey(),
