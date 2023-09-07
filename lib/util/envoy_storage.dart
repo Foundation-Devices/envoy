@@ -364,8 +364,12 @@ class EnvoyStorage {
     return cleared > 0;
   }
 
-  addNewVideo(Video video) async {
+  insertVideo(Video video) async {
     await videoStore.record(video.id).put(_db, jsonEncode(video));
+  }
+
+  updateVideo(Video video) {
+    videoStore.record(video.id).update(_db, jsonEncode(video));
   }
 
   Video? transformVideo(RecordSnapshot<String, String> records) {
@@ -376,6 +380,19 @@ class EnvoyStorage {
     var videos = await videoStore.find(_db);
 
     return videos.map((e) => transformVideo(e)).toList();
+  }
+
+  Stream<bool> isVideoWatched(String url) {
+    final filter = Finder(filter: Filter.byKey(url));
+
+    return EnvoyStorage()
+        .videoStore
+        .query(finder: filter)
+        .onSnapshots(_db)
+        .map((videos) {
+      var video = transformVideo(videos[0]);
+      return video!.watched;
+    });
   }
 
   Database get db => _db;
