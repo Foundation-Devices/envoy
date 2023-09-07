@@ -23,14 +23,24 @@ class Video {
   final Map<int, String> resolutionLinkMap;
   final String url;
   final String id;
+  bool watched;
 
   String _getYouTubeThumbnailUrl() {
     return "https://img.youtube.com/vi/" + id.substring(9) + "/1.jpg";
   }
 
-  Video(this.type, this.title, this.description, this.duration,
-      this.publicationDate, this.resolutionLinkMap, this.url, this.id,
-      {this.thumbnail, this.thumbnailUrl}) {
+  Video(
+      this.type,
+      this.title,
+      this.description,
+      this.duration,
+      this.publicationDate,
+      this.resolutionLinkMap,
+      this.url,
+      this.id,
+      this.watched,
+      {this.thumbnail,
+      this.thumbnailUrl}) {
     if (type == VideoType.youTube) {
       HttpTor(Tor()).get(_getYouTubeThumbnailUrl()).then((response) {
         thumbnail = response.bodyBytes;

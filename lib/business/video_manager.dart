@@ -52,28 +52,6 @@ class VideoManager {
     }
   }
 
-  //ignore:unused_element
-  _addVideosFromYouTube(AtomFeed feed) async {
-    for (AtomItem item in feed.items!) {
-      Map<int, String> contentMap = {};
-      for (var content in item.media!.group!.contents!) {
-        if (content.height != null) {
-          contentMap[content.height!] = content.url!;
-        }
-      }
-
-      videos.add(Video(
-          VideoType.youTube,
-          item.title!,
-          item.content?.toString(),
-          item.media!.group!.contents![0].duration!,
-          item.updated!,
-          contentMap,
-          item.links![0].href!,
-          item.id!));
-    }
-  }
-
   _addVideosFromBitcoinTv(RssFeed feed) async {
     List<Video> currentVideos = [];
 
@@ -88,16 +66,18 @@ class VideoManager {
       }
 
       currentVideos.add(Video(
-          VideoType.bitcoinTv,
-          item.title!,
-          item.content?.value,
-          item.media!.group!.contents![0].duration!,
-          item.pubDate!,
-          contentMap,
-          item.link!,
-          item.guid!,
-          thumbnail: null,
-          thumbnailUrl: thumbnailUrl));
+        VideoType.bitcoinTv,
+        item.title!,
+        item.content?.value,
+        item.media!.group!.contents![0].duration!,
+        item.pubDate!,
+        contentMap,
+        item.link!,
+        item.guid!,
+        false,
+        thumbnail: null,
+        thumbnailUrl: thumbnailUrl,
+      ));
     }
 
     updateVideos(currentVideos);
@@ -126,7 +106,7 @@ class VideoManager {
 
   storeVideos() {
     for (var video in videos) {
-      EnvoyStorage().addNewVideo(video);
+      EnvoyStorage().insertVideo(video);
     }
   }
 }
