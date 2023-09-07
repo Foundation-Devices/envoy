@@ -31,6 +31,8 @@ enum EnvoyIcons {
   arrow_down_left,
   arrow_up_right,
   delete,
+  search,
+  remove,
 }
 
 class EnvoyIcon extends StatelessWidget {
