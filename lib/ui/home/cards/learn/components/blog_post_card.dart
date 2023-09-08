@@ -212,7 +212,7 @@ class BlogWindow extends StatelessWidget with NavigationCard {
                 },
               ),
             );
-          }, // Closing brace for the builder function
+          }, future: null,
         ),
       ),
     );
