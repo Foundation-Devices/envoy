@@ -3,32 +3,35 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
-import 'package:envoy/ui/home/cards/learn/learn_card.dart';
-import 'package:envoy/ui/home/settings/settings_menu.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
-import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
-import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/home/cards/learn/learn_card.dart';
+import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
+import 'package:envoy/ui/home/settings/settings_menu.dart';
+import 'package:envoy/ui/indicator_shield.dart';
+import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/business/connectivity_manager.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/home/cards/activity/activity_card.dart';
-import 'package:envoy/business/envoy_seed.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -357,27 +360,15 @@ class _HomePageState extends ConsumerState<HomePage>
               appBar: AppBar(
                 // Get rid of the shadow
                 elevation: 0,
+
                 backgroundColor: Colors.transparent,
-                leading: AbsorbPointer(
-                    absorbing: _optionsShown,
-                    child: AnimatedOpacity(
-                      opacity: _optionsShown ? 0.0 : 1.0,
-                      duration: _animationsDuration,
-                      child: IconButton(
-                        icon: AnimatedRotation(
-                          duration: _animationsDuration,
-                          turns: _backgroundShown
-                              ? _leftAction == _toggleSettings
-                                  ? 0.25 //Icons.arrow_upward
-                                  : 0.0 //Icons.arrow_back
-                              : _leftAction == _toggleSettings
-                                  ? -0.25 //Icons.arrow_downward
-                                  : 0.0, //Icons.arrow_back,
-                          child: Icon(Icons.keyboard_arrow_left_sharp),
-                        ),
-                        onPressed: _leftAction,
-                      ),
-                    )),
+                leading: HamburgerMenu(
+                    iconState: _backgroundShown
+                        ? HamburgerState.upward
+                        : _leftAction == _toggleSettings
+                            ? HamburgerState.idle
+                            : HamburgerState.back,
+                    onPressed: _leftAction ?? () => {}),
                 title: Stack(
                     fit: StackFit.loose,
                     alignment: Alignment.center,
@@ -589,5 +580,88 @@ class ShieldFadeInAnimationCurve extends Curve {
     } else {
       return (t - 0.5) * 2 * t;
     }
+  }
+}
+
+enum HamburgerState {
+  idle,
+  upward,
+  back,
+}
+
+//animated hamburger menu
+class HamburgerMenu extends ConsumerStatefulWidget {
+  final HamburgerState iconState;
+  final GestureTapCallback onPressed;
+
+  const HamburgerMenu(
+      {super.key, required this.iconState, required this.onPressed});
+
+  @override
+  ConsumerState<HamburgerMenu> createState() => _HamburgerMenuState();
+}
+
+class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
+  Artboard? _menuArtBoard;
+  StateMachineController? _menuController;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _loadMenu());
+    super.initState();
+  }
+
+  _loadMenu() async {
+    ByteData menuRive = await rootBundle.load('assets/hamburger.riv');
+    final file = RiveFile.import(menuRive);
+    _menuController =
+        StateMachineController.fromArtboard(file.mainArtboard, 'statemachine');
+    setState(() => _menuArtBoard = file.mainArtboard);
+    _menuArtBoard?.addController(_menuController!);
+  }
+
+  @override
+  void dispose() {
+    _menuController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    /// 0 for idle
+    /// 1 for upward icon
+    /// -1 for back icon
+    switch (widget.iconState) {
+      case HamburgerState.idle:
+        _menuController?.findInput<double>("state_pos")?.change(0.0);
+        break;
+      case HamburgerState.upward:
+        _menuController?.findInput<double>("state_pos")?.change(1);
+        break;
+      case HamburgerState.back:
+        _menuController?.findInput<double>("state_pos")?.change(-1);
+        break;
+      default:
+        _menuController?.findInput<double>("state_pos")?.change(0.0);
+        break;
+    }
+    return GestureDetector(
+      onTap: widget.onPressed,
+      child: Center(
+        child: Container(
+          height: 24,
+          width: 24,
+          child: SizedBox.fromSize(
+            child: _menuArtBoard != null
+                ? Rive(
+                    artboard: _menuArtBoard!,
+                    fit: BoxFit.contain,
+                  )
+                : SizedBox.square(),
+            size: Size.square(24),
+          ),
+        ),
+      ),
+    );
   }
 }
