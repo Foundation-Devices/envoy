@@ -363,10 +363,10 @@ class _HomePageState extends ConsumerState<HomePage>
                 backgroundColor: Colors.transparent,
                 leading: HamburgerMenu(
                     iconState: _backgroundShown
-                        ? 1
+                        ? HamburgerState.upward
                         : _leftAction == _toggleSettings
-                            ? 0
-                            : -1,
+                            ? HamburgerState.idle
+                            : HamburgerState.back,
                     onPressed: _leftAction ?? () => {}),
                 title: Stack(
                     fit: StackFit.loose,
@@ -582,12 +582,15 @@ class ShieldFadeInAnimationCurve extends Curve {
   }
 }
 
+enum HamburgerState {
+  idle,
+  upward,
+  back,
+}
+
 //animated hamburger menu
 class HamburgerMenu extends ConsumerStatefulWidget {
-  // 0 for idle
-  // 1 for upward icon
-  // -1 for back icon
-  final int iconState;
+  final HamburgerState iconState;
   final GestureTapCallback onPressed;
 
   const HamburgerMenu(
@@ -628,13 +631,13 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
     /// 1 for upward icon
     /// -1 for back icon
     switch (widget.iconState) {
-      case 0:
+      case HamburgerState.idle:
         _menuController?.findInput<double>("state_pos")?.change(0.0);
         break;
-      case 1:
+      case HamburgerState.upward:
         _menuController?.findInput<double>("state_pos")?.change(1);
         break;
-      case -1:
+      case HamburgerState.back:
         _menuController?.findInput<double>("state_pos")?.change(-1);
         break;
       default:
