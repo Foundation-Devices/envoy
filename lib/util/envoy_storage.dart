@@ -4,7 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -44,6 +44,7 @@ const String firmwareStoreName = "firmware";
 const String utxoBlockStateStoreName = "utxo_block_state";
 const String tagsStoreName = "tags";
 const String preferencesStoreName = "preferences";
+const String blogPostsStoreName = "blog_posts";
 
 class EnvoyStorage {
   String dbName = 'envoy.db';
@@ -63,6 +64,9 @@ class EnvoyStorage {
 
   StoreRef<String, String> videoStore =
       StoreRef<String, String>(videosStoreName);
+
+  StoreRef<String, String> blogPostsStore =
+      StoreRef<String, String>(blogPostsStoreName);
 
   StoreRef<String, Object?> preferencesStore =
       StoreRef<String, Object?>(preferencesStoreName);
@@ -392,6 +396,37 @@ class EnvoyStorage {
         .map((videos) {
       var video = transformVideo(videos[0]);
       return video!.watched;
+    });
+  }
+
+  updateBlogPost(BlogPost blog) {
+    blogPostsStore.record(blog.id).update(_db, jsonEncode(blog));
+  }
+
+  insertBlogPost(BlogPost blog) async {
+    await blogPostsStore.record(blog.id).put(_db, jsonEncode(blog));
+  }
+
+  BlogPost? transformBlog(RecordSnapshot<String, String> records) {
+    return BlogPost.fromJson(jsonDecode(records.value));
+  }
+
+  Future<List<BlogPost?>?> getAllBlogPosts() async {
+    var blogs = await blogPostsStore.find(_db);
+
+    return blogs.map((e) => transformBlog(e)).toList();
+  }
+
+  Stream<bool> isBlogRead(String url) {
+    final filter = Finder(filter: Filter.byKey(url));
+
+    return EnvoyStorage()
+        .blogPostsStore
+        .query(finder: filter)
+        .onSnapshots(_db)
+        .map((blogs) {
+      var blog = transformBlog(blogs[0]);
+      return blog!.read;
     });
   }
 

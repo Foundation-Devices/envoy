@@ -4,7 +4,7 @@
 
 import 'dart:typed_data';
 import 'package:envoy/business/video.dart';
-import 'package:envoy/business/video_manager.dart';
+import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/learn/video_player.dart';
 import 'package:flutter/material.dart';
@@ -42,9 +42,9 @@ class _VideosState extends State<Videos> {
   Widget build(BuildContext context) {
     return ListView.builder(
         padding: EdgeInsets.zero,
-        itemCount: VideoManager().videos.length,
+        itemCount: FeedManager().videos.length,
         itemBuilder: (context, index) {
-          Video video = VideoManager().videos[index];
+          Video video = FeedManager().videos[index];
 
           // YouTube doesn't provide duration in its Atom feed
           //ignore:unused_local_variable

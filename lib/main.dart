@@ -24,7 +24,7 @@ import 'package:tor/tor.dart';
 
 import 'business/fees.dart';
 import 'business/scv_server.dart';
-import 'business/video_manager.dart';
+import 'business/feed_manager.dart';
 import 'generated/l10n.dart';
 
 Future<void> main() async {
@@ -61,7 +61,7 @@ Future<void> initSingletons() async {
   Fees.restore();
   AccountManager.init();
   Notifications.init();
-  VideoManager.init();
+  FeedManager.init();
   ConnectivityManager.init();
 }
 
