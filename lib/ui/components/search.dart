@@ -45,77 +45,63 @@ class _EnvoySearchState extends State<EnvoySearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.medium1,
-          ),
-          decoration: BoxDecoration(
-            color: EnvoyColors.surface2,
-            border: _focus.hasFocus
-                ? Border.all(color: EnvoyColors.accentPrimary)
-                : Border.all(color: Colors.transparent),
-            borderRadius: BorderRadius.all(
-              Radius.circular(EnvoySpacing.medium3),
-            ),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  onChanged: (text) {
-                    widget.filterSearchResults(text);
-                  },
-                  style: EnvoyTypography.body1Medium,
-                  textAlignVertical: TextAlignVertical.top,
-                  controller: widget.controller,
-                  focusNode: _focus,
-                  cursorColor: EnvoyColors.accentPrimary,
-                  decoration: InputDecoration(
-                      labelText: "Search...",
-                      labelStyle: EnvoyTypography.body1Medium.copyWith(
-                        color: EnvoyColors.textTertiary,
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      alignLabelWithHint: true,
-                      isDense: true,
-                      contentPadding:
-                          EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
-                      icon: EnvoyIcon(
-                        EnvoyIcons.search,
-                        size: EnvoyIconSize.small,
-                        color: EnvoyColors.textTertiary,
-                      ),
-                      suffixIcon: _focus.hasFocus
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  left: EnvoySpacing.medium1),
-                              child: GestureDetector(
-                                child: EnvoyIcon(EnvoyIcons.remove),
-                                onTap: () async {
-                                  setState(() {
-                                    widget.controller.text = "";
-                                  });
-                                },
-                              ),
-                            )
-                          : SizedBox()),
-                ),
-              ),
-            ],
-          ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      padding: const EdgeInsets.symmetric(
+        horizontal: EnvoySpacing.medium1,
+      ),
+      decoration: BoxDecoration(
+        color: EnvoyColors.surface2,
+        border: _focus.hasFocus
+            ? Border.all(color: EnvoyColors.accentPrimary)
+            : Border.all(color: Colors.transparent),
+        borderRadius: BorderRadius.all(
+          Radius.circular(EnvoySpacing.medium3),
         ),
-      ],
+      ),
+      child: TextFormField(
+        onChanged: (text) {
+          widget.filterSearchResults(text);
+        },
+        style: EnvoyTypography.body1Medium,
+        textAlignVertical: TextAlignVertical.top,
+        controller: widget.controller,
+        focusNode: _focus,
+        cursorColor: EnvoyColors.accentPrimary,
+        decoration: InputDecoration(
+            labelText: "Search...",
+            labelStyle: EnvoyTypography.body1Medium.copyWith(
+              color: EnvoyColors.textTertiary,
+            ),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            alignLabelWithHint: true,
+            isDense: true,
+            contentPadding: EdgeInsets.only(bottom: EnvoySpacing.medium1),
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            focusedErrorBorder: InputBorder.none,
+            icon: EnvoyIcon(
+              EnvoyIcons.search,
+              size: EnvoyIconSize.small,
+              color: EnvoyColors.textTertiary,
+            ),
+            suffixIcon: _focus.hasFocus
+                ? Padding(
+                    padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+                    child: GestureDetector(
+                      child: EnvoyIcon(EnvoyIcons.remove),
+                      onTap: () async {
+                        setState(() {
+                          widget.controller.text = "";
+                        });
+                      },
+                    ),
+                  )
+                : SizedBox()),
+      ),
     );
   }
 }
