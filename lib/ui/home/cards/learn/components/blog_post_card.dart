@@ -17,6 +17,9 @@ import 'package:html/parser.dart' as htmlParser;
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 
+const double blogThumbnailHeight = 172.0;
+const double containerWidth = 309.0;
+
 class BlogPostCard extends ConsumerStatefulWidget {
   final BlogPost blog;
   final Function? onTap;
@@ -68,80 +71,90 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-          child: GestureDetector(
-            onTap: () {
-              _showBlogPost(widget.blog);
-              widget.blog.read = true;
-              EnvoyStorage().updateBlogPost(widget.blog);
-            },
-            onLongPress: () {
-              widget.blog.read = false;
-              EnvoyStorage().updateBlogPost(widget.blog);
-            },
-            child: Stack(children: [
-              widget.blog.thumbnail == null
-                  ? Center(
-                      child: Container(
-                        height: 130,
-                      ),
-                    )
-                  : Image.memory(
-                      Uint8List.fromList(widget.blog.thumbnail!),
-                      //height: 172,
-                    ),
-              _isBlogRead
-                  ? Positioned.fill(
-                      child: Container(
-                        color: EnvoyColors.textPrimary.withOpacity(0.5),
-                      ),
-                    )
-                  : SizedBox(),
-            ]),
-          ),
-        ),
-        Container(
-          color: Colors.transparent,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1,
-              vertical: EnvoySpacing.small,
-            ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.blog.title,
-                    style: EnvoyTypography.body2Semibold
-                        .copyWith(color: EnvoyColors.textPrimary),
-                  ),
-                  SizedBox(height: EnvoySpacing.xs),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          DateFormat('MMMM dd, yyyy', defaultLocale)
-                              .format(widget.blog.publicationDate),
+    return Container(
+      width: containerWidth,
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius:
+                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+            child: GestureDetector(
+              onTap: () {
+                _showBlogPost(widget.blog);
+                widget.blog.read = true;
+                EnvoyStorage().updateBlogPost(widget.blog);
+              },
+              onLongPress: () {
+                widget.blog.read = false;
+                EnvoyStorage().updateBlogPost(widget.blog);
+              },
+              child: Stack(children: [
+                widget.blog.thumbnail == null
+                    ? Center(
+                        child: Container(
+                          height: blogThumbnailHeight,
                         ),
-                        _isBlogRead
-                            ? Text(
-                                "Read",
-                                style: EnvoyTypography.caption1Medium
-                                    .copyWith(color: EnvoyColors.textSecondary),
-                              )
-                            : Text("")
-                      ]),
-                ],
+                      )
+                    : Container(
+                        height: blogThumbnailHeight,
+                        width: containerWidth,
+                        child: Image.memory(
+                          Uint8List.fromList(widget.blog.thumbnail!),
+                          fit: BoxFit.fitWidth,
+                          //height: 172,
+                        ),
+                      ),
+                _isBlogRead
+                    ? Positioned.fill(
+                        child: Container(
+                          color: EnvoyColors.textPrimary.withOpacity(0.5),
+                        ),
+                      )
+                    : SizedBox(),
+              ]),
+            ),
+          ),
+          Container(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+                vertical: EnvoySpacing.small,
+              ),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.blog.title,
+                      style: EnvoyTypography.body2Semibold
+                          .copyWith(color: EnvoyColors.textPrimary),
+                    ),
+                    SizedBox(height: EnvoySpacing.xs),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            DateFormat('MMMM dd, yyyy', defaultLocale)
+                                .format(widget.blog.publicationDate),
+                          ),
+                          _isBlogRead
+                              ? Text(
+                                  "Read",
+                                  style: EnvoyTypography.caption1Medium
+                                      .copyWith(
+                                          color: EnvoyColors.textSecondary),
+                                )
+                              : Text("")
+                        ]),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -212,7 +225,8 @@ class BlogWindow extends StatelessWidget with NavigationCard {
                 },
               ),
             );
-          }, future: null,
+          },
+          future: null,
         ),
       ),
     );

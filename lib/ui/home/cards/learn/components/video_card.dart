@@ -12,6 +12,10 @@ import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/learn/video_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+const double videoImageHeight = 172.0;
+const double videoContainerWidth = 309.0;
+const double videoInfoHeight = 60.0;
+
 class VideoCard extends ConsumerStatefulWidget {
   final Video video;
 
@@ -63,89 +67,100 @@ class _VideoCardState extends ConsumerState<VideoCard> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: () {
-              _playBitcoinTvVideo(widget.video);
-              widget.video.watched = true;
-              EnvoyStorage().updateVideo(widget.video);
-            },
-            onLongPress: () {
-              widget.video.watched = false;
-              EnvoyStorage().updateVideo(widget.video);
-            },
-            child: Stack(children: [
-              widget.video.thumbnail == null
-                  ? Container(
-                      height: 130,
-                      child: Center(
-                          child: Icon(
-                        Icons.play_arrow,
-                        color: EnvoyColors.textPrimaryInverse,
-                        size: 40,
-                      )),
-                    )
-                  : Image.memory(
-                      Uint8List.fromList(widget.video.thumbnail!),
-                      height: 172,
-                    ),
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-                    child: Container(
-                      height: 50,
-                      width: 70,
-                      color: EnvoyColors.textPrimary.withOpacity(0.5),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Icon(
-                    Icons.play_arrow,
-                    color: EnvoyColors.textPrimaryInverse,
-                    size: 40,
-                  ),
-                ),
-              ),
-              _isVideoWatched
-                  ? Positioned.fill(
-                      child: Container(
-                        color: EnvoyColors.textPrimaryInverse.withOpacity(0.5),
+      child: SizedBox(
+        width: videoContainerWidth,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                _playBitcoinTvVideo(widget.video);
+                widget.video.watched = true;
+                EnvoyStorage().updateVideo(widget.video);
+              },
+              onLongPress: () {
+                widget.video.watched = false;
+                EnvoyStorage().updateVideo(widget.video);
+              },
+              child: Stack(children: [
+                widget.video.thumbnail == null
+                    ? Container(
+                        height: videoImageHeight,
+                        child: Center(
+                            child: Icon(
+                          Icons.play_arrow,
+                          color: EnvoyColors.textPrimaryInverse,
+                          size: 40,
+                        )),
+                      )
+                    : Container(
+                        height: videoImageHeight,
+                        width: videoContainerWidth,
+                        child: Image.memory(
+                          Uint8List.fromList(widget.video.thumbnail!),
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
-                    )
-                  : SizedBox(),
-            ]),
-          ),
-          Container(
-            color: EnvoyColors.surface2,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium1,
-                vertical: EnvoySpacing.small,
-              ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(EnvoySpacing.medium1)),
+                      child: Container(
+                        height: 50,
+                        width: 70,
+                        color: EnvoyColors.textPrimary.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: EnvoyColors.textPrimaryInverse,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                _isVideoWatched
+                    ? Positioned.fill(
+                        child: Container(
+                          color:
+                              EnvoyColors.textPrimaryInverse.withOpacity(0.5),
+                        ),
+                      )
+                    : SizedBox(),
+              ]),
+            ),
+            Container(
+              height: videoInfoHeight,
+              width: videoContainerWidth,
+              color: EnvoyColors.surface2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium1,
+                  vertical: EnvoySpacing.small,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.video.title,
-                      style: EnvoyTypography.body2Semibold
-                          .copyWith(color: EnvoyColors.textPrimary),
+                    FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        widget.video.title,
+                        style: EnvoyTypography.body2Semibold
+                            .copyWith(color: EnvoyColors.textPrimary),
+                      ),
                     ),
                     SizedBox(height: EnvoySpacing.xs),
                     Row(
@@ -173,8 +188,8 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

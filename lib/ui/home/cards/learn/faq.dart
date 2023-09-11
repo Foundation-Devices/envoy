@@ -17,21 +17,40 @@ import 'dart:math' as math;
 class Faq extends StatelessWidget {
   const Faq({
     Key? key,
+    this.searchText,
   }) : super(key: key);
+  final String? searchText;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: FutureBuilder<String>(
-          future: rootBundle.loadString("assets/faq.csv"),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var faq = CsvToListConverter().convert(snapshot.data);
-              faq.removeAt(0);
-              return Material(
-                color: Colors.transparent,
-                child: SingleChildScrollView(
+    return FutureBuilder<String>(
+        future: rootBundle.loadString("assets/faq.csv"),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var faq = CsvToListConverter().convert(snapshot.data);
+            faq.removeAt(0);
+            if (searchText != null || searchText != "")
+              faq = faq
+                  .where((element) => element[0]
+                      .toString()
+                      .toLowerCase()
+                      .contains(searchText!.toLowerCase()))
+                  .toList();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (faq.isNotEmpty)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                    child: Text(
+                      "FAQs",
+                      style: EnvoyTypography.body1Medium
+                          .copyWith(color: EnvoyColors.textPrimary),
+                    ),
+                  ),
+                Material(
+                  color: Colors.transparent,
                   child: envoy.ExpansionPanelList.radio(
                     elevation: 0,
                     dividerColor: Colors.transparent,
@@ -59,12 +78,12 @@ class Faq extends StatelessWidget {
                         .toList(),
                   ),
                 ),
-              );
-            } else {
-              return SizedBox.shrink();
-            }
-          }),
-    );
+              ],
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        });
   }
 }
 
