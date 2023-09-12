@@ -23,7 +23,7 @@ class Video {
   final Map<int, String> resolutionLinkMap;
   final String url;
   final String id;
-  bool watched;
+  bool? watched;
 
   String _getYouTubeThumbnailUrl() {
     return "https://img.youtube.com/vi/" + id.substring(9) + "/1.jpg";
