@@ -35,9 +35,13 @@ class LearnCardState extends ConsumerState<LearnCard>
     with TopLevelNavigationCardState {
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
+// ignore: unused_local_variable
 
-    push(DefaultLearnCard());
+    final navigator = CardNavigator(push, pop, hideOptions);
+
+    if (cardStack.isEmpty) {
+      navigator.push(DefaultLearnCard(navigator));
+    }
 
     return AnimatedSwitcher(
         duration: Duration(milliseconds: 250), child: cardStack.last);
@@ -46,7 +50,7 @@ class LearnCardState extends ConsumerState<LearnCard>
 
 //ignore: must_be_immutable
 class DefaultLearnCard extends ConsumerStatefulWidget with NavigationCard {
-  DefaultLearnCard() {}
+  DefaultLearnCard(this.navigator) {}
 
   @override
   IconData? rightFunctionIcon = null;
@@ -102,7 +106,6 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
         },
         blendMode: BlendMode.dstOut,
         child: CustomScrollView(
-          //controller: widget.scrollController,
           slivers: [
             SliverPadding(
                 padding: EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
@@ -184,7 +187,6 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                   ),
                   Container(
                       height: videoImageHeight + videoInfoHeight,
-                      //width: 300,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: videos.length,
@@ -228,7 +230,14 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                             return Padding(
                               padding:
                                   EdgeInsets.only(right: EnvoySpacing.small),
-                              child: BlogPostCard(blog: blogPost),
+                              child: BlogPostWidget(
+                                  blog: blogPost,
+                                  onTap: () {
+                                    widget.navigator!.push(BlogPostCard(
+                                      blog: blogs[index],
+                                      navigator: widget.navigator,
+                                    ));
+                                  }),
                             );
                           })),
                 ],
@@ -236,7 +245,6 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
             SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            //SliverList(delegate: SliverChildListDelegate(children)),
             if (learnFilterState.contains(LearnFilters.FAQs))
               SliverToBoxAdapter(
                 child: Faq(searchText: widget.controller.text),
@@ -270,7 +278,7 @@ class LearnIntro extends StatelessWidget {
                 SizedBox(
                   height: 50,
                 ),
-                Text("WELCOME TO THE\nLEARNING CENTER",
+                Text("WELCOME TO THE\nLEARNING CENTER", // TODO: sync from Figma
                     style: EnvoyTypography.subtitle1Medium
                         .copyWith(color: EnvoyColors.textPrimaryInverse)),
               ],
