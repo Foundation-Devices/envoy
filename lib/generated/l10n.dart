@@ -72,6 +72,10 @@ class S {
 
   // skipped getter for the '0.5k Sats' key
 
+  // skipped getter for the '03:37' key
+
+  // skipped getter for the '1' key
+
   // skipped getter for the '1 Coin' key
 
   // skipped getter for the '1 Coin Spendable' key
@@ -103,6 +107,8 @@ class S {
   // skipped getter for the '10 min' key
 
   // skipped getter for the '10,000 sats' key
+
+  // skipped getter for the '10:21' key
 
   // skipped getter for the '10’ -500 sats' key
 
@@ -213,6 +219,8 @@ class S {
   // skipped getter for the '4.a.ii.1. No change' key
 
   // skipped getter for the '4.select fee' key
+
+  // skipped getter for the '48:58' key
 
   // skipped getter for the '5' key
 
@@ -364,6 +372,18 @@ class S {
 
   // skipped getter for the 'App Version' key
 
+  /// `Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler.\n\nEnvoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet.`
+  String get Aswer {
+    return Intl.message(
+      'Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler.\n\nEnvoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet.',
+      name: 'Aswer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'August 15, 2023' key
+
   /// `BBQ`
   String get BBQ {
     return Intl.message(
@@ -406,6 +426,8 @@ class S {
 
   // skipped getter for the 'Bitcoin Hotwallet' key
 
+  // skipped getter for the 'Bitcoin and Asimov’s Foundation' key
+
   /// `Invalid Entry`
   String get BodyCopy {
     return Intl.message(
@@ -433,6 +455,16 @@ class S {
     return Intl.message(
       'Business',
       name: 'Business',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get Button {
+    return Intl.message(
+      'Done',
+      name: 'Button',
       desc: '',
       args: [],
     );
@@ -479,6 +511,16 @@ class S {
   // skipped getter for the 'Coin Control' key
 
   // skipped getter for the 'CoinAmount, SpendState' key
+
+  /// `1 Locked`
+  String get CoinInfo {
+    return Intl.message(
+      '1 Locked',
+      name: 'CoinInfo',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `List`
   String get CoinText {
@@ -724,6 +766,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'EP #10 - Make Bitcoin P2P again w/ Peach Bitcoin' key
+
   /// `Edit`
   String get Edit {
     return Intl.message(
@@ -780,9 +824,21 @@ class S {
     );
   }
 
+  /// `Is Envoy Open Source?`
+  String get FAQ {
+    return Intl.message(
+      'Is Envoy Open Source?',
+      name: 'FAQ',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'FRED - THESE ARE MY VERSION 2 UPDATE PER THIS COMMENT. https://linear.app/foundation-devices/issue/DES-1217#comment-52da9a1f' key
 
   // skipped getter for the 'FW Update' key
+
+  // skipped getter for the 'FW_Version_No.' key
 
   // skipped getter for the 'Face ID' key
 
@@ -853,6 +909,16 @@ class S {
     return Intl.message(
       'Groceries',
       name: 'Groceries',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SEND AND\nRECEIVE BITCOIN`
+  String get Heading {
+    return Intl.message(
+      'SEND AND\nRECEIVE BITCOIN',
+      name: 'Heading',
       desc: '',
       args: [],
     );
@@ -1182,6 +1248,16 @@ class S {
 
   // skipped getter for the 'Radio group' key
 
+  /// `Read`
+  String get Read {
+    return Intl.message(
+      'Read',
+      name: 'Read',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Send`
   String get Receive {
     return Intl.message(
@@ -1303,6 +1379,20 @@ class S {
       args: [],
     );
   }
+
+  /// `ACCOUNTS`
+  String get ScreenTitle {
+    return Intl.message(
+      'ACCOUNTS',
+      name: 'ScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Search input' key
+
+  // skipped getter for the 'Search...' key
 
   /// `$3.66`
   String get Secondary {
@@ -1464,7 +1554,27 @@ class S {
 
   // skipped getter for the 'TX Screen' key
 
+  /// `Learn`
+  String get TabBarItemHeading {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemHeading',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Tag Name' key
+
+  /// `Conferences`
+  String get TagName {
+    return Intl.message(
+      'Conferences',
+      name: 'TagName',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Tags`
   String get Tags {
@@ -1478,10 +1588,10 @@ class S {
 
   // skipped getter for the 'Terms of Use' key
 
-  /// `Received`
+  /// `Blog posts`
   String get Test {
     return Intl.message(
-      'Received',
+      'Blog posts',
       name: 'Test',
       desc: '',
       args: [],
@@ -1574,6 +1684,8 @@ class S {
 
   // skipped getter for the 'USER ORGANIZES COINS' key
 
+  // skipped getter for the 'Unboxing Passport Pt.1' key
+
   /// `Untagged`
   String get Untagged {
     return Intl.message(
@@ -1628,6 +1740,16 @@ class S {
 
   // skipped getter for the 'Wallet 2' key
 
+  /// `Watched`
+  String get Watched {
+    return Intl.message(
+      'Watched',
+      name: 'Watched',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'What is Envoy?' key
 
   // skipped getter for the 'Work expenses' key
@@ -1643,6 +1765,16 @@ class S {
     return Intl.message(
       'Z',
       name: 'Z',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get _ {
+    return Intl.message(
+      'Skip',
+      name: '_',
       desc: '',
       args: [],
     );
@@ -1665,6 +1797,16 @@ class S {
     return Intl.message(
       'accessibility',
       name: 'accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active filters hide all transactions of this account.\nUpdate or reset filters to view transactions.`
+  String get account_emptyTxHistoryTextExplainer_FilteredView {
+    return Intl.message(
+      'Active filters hide all transactions of this account.\nUpdate or reset filters to view transactions.',
+      name: 'account_emptyTxHistoryTextExplainer_FilteredView',
       desc: '',
       args: [],
     );
@@ -2694,6 +2836,16 @@ class S {
     );
   }
 
+  /// ``
+  String get bc1cq313af51bh5k0lsmna21x {
+    return Intl.message(
+      '',
+      name: 'bc1cq313af51bh5k0lsmna21x',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `bc1cq313af51bh5k0lsmna21xpw`
   String get bc1cq313af51bh5k0lsmna21xpw {
     return Intl.message(
@@ -2900,6 +3052,36 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get coincontrol_edit_transaction_cta {
+    return Intl.message(
+      'Continue',
+      name: 'coincontrol_edit_transaction_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required amount`
+  String get coincontrol_edit_transaction_required_inputs {
+    return Intl.message(
+      'Required amount',
+      name: 'coincontrol_edit_transaction_required_inputs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1,500,000`
+  String get coincontrol_edit_transaction_required_inputs_sats {
+    return Intl.message(
+      '1,500,000',
+      name: 'coincontrol_edit_transaction_required_inputs_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Available balance`
   String get coincontrol_edit_transaction_selected_inputs {
     return Intl.message(
@@ -3093,6 +3275,16 @@ class S {
     return Intl.message(
       'Confirm Fee',
       name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insufficient Funds`
+  String get coincontrol_tx_detail_custom_fee_insufficients_funds_prompt {
+    return Intl.message(
+      'Insufficient Funds',
+      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_prompt',
       desc: '',
       args: [],
     );
@@ -9852,6 +10044,16 @@ class S {
 
   // skipped getter for the 'manual setup fLOW - generate SEED' key
 
+  /// `Unable to backup. Please try again later.`
+  String get manualToggleOnSeed_toastHeading_failedText {
+    return Intl.message(
+      'Unable to backup. Please try again later.',
+      name: 'manualToggleOnSeed_toastHeading_failedText',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `I understand`
   String get manual_backups_export_flow_modal_4_4_CTA {
     return Intl.message(
@@ -10507,6 +10709,36 @@ class S {
     return Intl.message(
       'Choose Destination',
       name: 'manual_setup_import_existing_backup_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Destination`
+  String get manual_setup_import_existing_backup_CTA1 {
+    return Intl.message(
+      'Choose Destination',
+      name: 'manual_setup_import_existing_backup_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Envoy Backup File`
+  String get manual_setup_import_existing_backup_heading {
+    return Intl.message(
+      'Save Envoy Backup File',
+      name: 'manual_setup_import_existing_backup_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_import_existing_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_import_existing_backup_subheading',
       desc: '',
       args: [],
     );
@@ -12712,10 +12944,10 @@ class S {
     );
   }
 
-  /// `Node`
+  /// `FAQs`
   String get privacy_node_title {
     return Intl.message(
-      'Node',
+      'FAQs',
       name: 'privacy_node_title',
       desc: '',
       args: [],
@@ -13738,10 +13970,10 @@ class S {
     );
   }
 
-  /// `Activity`
+  /// `Learn`
   String get screenTitle_activity {
     return Intl.message(
-      'Activity',
+      'Learn',
       name: 'screenTitle_activity',
       desc: '',
       args: [],
