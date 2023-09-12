@@ -95,11 +95,13 @@ class Settings extends ChangeNotifier {
   setCustomElectrumAddress(String electrumAddress) {
     selectedElectrumAddress = electrumAddress;
     usingDefaultElectrumServer = false;
+    store();
   }
 
   useDefaultElectrumServer(bool enabled) {
     usingDefaultElectrumServer = enabled;
     notifyListeners();
+    store();
   }
 
   bool customElectrumEnabled() {
