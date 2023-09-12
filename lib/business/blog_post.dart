@@ -16,7 +16,7 @@ class BlogPost {
   final DateTime publicationDate;
   final String url;
   final String id;
-  bool read;
+  bool? read;
 
   BlogPost(this.title, this.description, this.publicationDate, this.url,
       this.id, this.read,

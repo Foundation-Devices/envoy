@@ -93,7 +93,7 @@ class FeedManager {
         contentMap,
         item.link!,
         item.guid!,
-        false,
+        null,
         thumbnail: null,
         thumbnailUrl: thumbnailUrl,
       ));
@@ -115,7 +115,7 @@ class FeedManager {
         item.pubDate!,
         item.link!,
         item.guid!,
-        false,
+        null,
         thumbnail: null,
         thumbnailUrl: thumbnailUrl,
       ));
@@ -129,6 +129,10 @@ class FeedManager {
         if (storedVideo.thumbnailUrl == video.thumbnailUrl &&
             storedVideo.thumbnail != null) {
           video.thumbnail = storedVideo.thumbnail;
+        }
+        if (video.url == storedVideo.url && storedVideo.watched != null) {
+          video.watched = storedVideo.watched;
+          storeVideos();
         }
       }
 
@@ -150,6 +154,10 @@ class FeedManager {
         if (storedBlogPosts.thumbnailUrl == blog.thumbnailUrl &&
             storedBlogPosts.thumbnail != null) {
           blog.thumbnail = storedBlogPosts.thumbnail;
+        }
+        if (blog.url == storedBlogPosts.url && storedBlogPosts.read != null) {
+          blog.read = storedBlogPosts.read;
+          storeVideos();
         }
       }
 

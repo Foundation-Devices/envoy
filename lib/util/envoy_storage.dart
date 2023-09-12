@@ -395,7 +395,7 @@ class EnvoyStorage {
         .onSnapshots(_db)
         .map((videos) {
       var video = transformVideo(videos[0]);
-      return video!.watched;
+      return video?.watched ?? false;
     });
   }
 
@@ -426,7 +426,7 @@ class EnvoyStorage {
         .onSnapshots(_db)
         .map((blogs) {
       var blog = transformBlog(blogs[0]);
-      return blog!.read;
+      return blog?.read ?? false;
     });
   }
 
