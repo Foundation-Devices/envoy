@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -10,31 +11,32 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/blog_post.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:html/parser.dart' as htmlParser;
+import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 const double blogThumbnailHeight = 172.0;
 const double containerWidth = 309.0;
 
-class BlogPostCard extends ConsumerStatefulWidget {
+class BlogPostWidget extends ConsumerStatefulWidget {
   final BlogPost blog;
   final Function? onTap;
+  final CardNavigator? cardNavigator;
 
-  const BlogPostCard({
-    Key? key,
-    required this.blog,
-    this.onTap,
-  }) : super(key: key);
+  const BlogPostWidget(
+      {Key? key, required this.blog, this.onTap, this.cardNavigator})
+      : super(key: key);
 
   @override
-  ConsumerState<BlogPostCard> createState() => _BlogPostState();
+  ConsumerState<BlogPostWidget> createState() => _BlogPostState();
 }
 
-class _BlogPostState extends ConsumerState<BlogPostCard> {
+class _BlogPostState extends ConsumerState<BlogPostWidget> {
   bool _isBlogRead = false;
   bool _isDisposed = false;
 
@@ -56,19 +58,6 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
     super.dispose();
   }
 
-  _showBlogPost(BlogPost blogPost) async {
-    Navigator.of(context).push(
-        PageRouteBuilder(pageBuilder: (context, animation, secondAnimation) {
-      return BlogWindow(blog: blogPost);
-    }, transitionsBuilder: (context, animation, anotherAnimation, child) {
-      animation = CurvedAnimation(curve: Curves.linear, parent: animation);
-      return FadeTransition(
-        opacity: animation,
-        child: child,
-      );
-    }));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,9 +69,9 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
                 BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
             child: GestureDetector(
               onTap: () {
-                _showBlogPost(widget.blog);
                 widget.blog.read = true;
                 EnvoyStorage().updateBlogPost(widget.blog);
+                widget.onTap!();
               },
               onLongPress: () {
                 widget.blog.read = false;
@@ -101,7 +90,6 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
                         child: Image.memory(
                           Uint8List.fromList(widget.blog.thumbnail!),
                           fit: BoxFit.fitWidth,
-                          //height: 172,
                         ),
                       ),
                 _isBlogRead
@@ -141,7 +129,7 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
                           ),
                           _isBlogRead
                               ? Text(
-                                  "Read",
+                                  "Read", // TODO: Sync from Figma
                                   style: EnvoyTypography.caption1Medium
                                       .copyWith(
                                           color: EnvoyColors.textSecondary),
@@ -160,10 +148,11 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
 }
 
 //ignore: must_be_immutable
-class BlogWindow extends StatelessWidget with NavigationCard {
-  BlogWindow({
+class BlogPostCard extends StatelessWidget with NavigationCard {
+  BlogPostCard({
     super.key,
     required this.blog,
+    this.navigator,
   });
 
   final BlogPost blog;
@@ -191,31 +180,46 @@ class BlogWindow extends StatelessWidget with NavigationCard {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(4.0),
-        scrollDirection: Axis.vertical,
-        child: FutureBuilder<String>(
-          builder: (context, snapshot) {
-            final document = htmlParser.parse(blog.description);
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(EnvoySpacing.xs),
+      scrollDirection: Axis.vertical,
+      child: FutureBuilder<String>(
+        future: Future(() async {
+          final document = htmlParser.parse(blog.description);
 
-            final imageTags = document.getElementsByTagName('img');
-            for (final imgTag in imageTags) {
-              imgTag.attributes['width'] = 'auto';
-              imgTag.attributes['height'] = 'auto';
+          final imageTags = document.getElementsByTagName('img');
+          final torClient = HttpTor(Tor());
 
-              // TODO: Fetch all the images via HttpTor
-              //final img = await HttpTor(Tor()).get(imgTag.attributes['href']!);
-              //imgTag.attributes['src'] = "data:image" + img
+          // Fetch all the images with HttpTor
+          for (final imgTag in imageTags) {
+            imgTag.attributes['width'] = 'auto';
+            imgTag.attributes['height'] = 'auto';
+
+            final srcset = imgTag.attributes['srcset'];
+            if (srcset != null && srcset.isNotEmpty) {
+              final srcsetUrls = srcset.split(',').map((e) {
+                final parts = e.trim().split(' ');
+                return parts.first;
+              }).toList();
+
+              if (srcsetUrls.isNotEmpty) {
+                final firstSrcsetUrl = srcsetUrls.first;
+                final img = await torClient.get(firstSrcsetUrl);
+                final dataUri =
+                    'data:image/png;base64,${base64Encode(img.bodyBytes)}';
+                imgTag.attributes['src'] = dataUri;
+              }
             }
+          }
 
-            final modifiedHtmlContent = document.outerHtml;
-
+          return document.outerHtml;
+        }),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             return DefaultTextStyle(
               style: Theme.of(context).textTheme.bodySmall!,
               child: Html(
-                data: modifiedHtmlContent,
+                data: snapshot.data,
                 onLinkTap: (
                   linkUrl,
                   _,
@@ -225,9 +229,10 @@ class BlogWindow extends StatelessWidget with NavigationCard {
                 },
               ),
             );
-          },
-          future: null,
-        ),
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
