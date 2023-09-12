@@ -164,13 +164,10 @@ class FaqItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.fitWidth,
-                        child: Text(
-                          title,
-                          style: EnvoyTypography.body2Semibold
-                              .copyWith(color: EnvoyColors.accentPrimary),
-                        ),
+                      child: Text(
+                        title,
+                        style: EnvoyTypography.body2Semibold
+                            .copyWith(color: EnvoyColors.accentPrimary),
                       ),
                     ),
                     Transform.rotate(

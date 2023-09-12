@@ -154,13 +154,13 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        widget.video.title,
-                        style: EnvoyTypography.body2Semibold
-                            .copyWith(color: EnvoyColors.textPrimary),
-                      ),
+                    Text(
+                      widget.video.title,
+                      style: EnvoyTypography.body2Semibold
+                          .copyWith(color: EnvoyColors.textPrimary),
+                      softWrap: false,
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
                     ),
                     SizedBox(height: EnvoySpacing.xs),
                     Row(
