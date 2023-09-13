@@ -3,50 +3,45 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
+
 import 'package:animations/animations.dart';
+import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
-import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
+import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/home/cards/devices/devices_card.dart';
-import 'package:envoy/business/account.dart';
+import 'package:go_router/go_router.dart';
 
 //ignore: must_be_immutable
-class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
+class AccountsCard extends StatefulWidget {
   AccountsCard({
     Key? key,
   }) : super(key: key);
 
   @override
-  TopLevelNavigationCardState<TopLevelNavigationCard> createState() {
-    var state = AccountsCardState();
-    tlCardState = state;
-    return state;
-  }
+  State<AccountsCard> createState() => AccountsCardState();
 }
 
 // The keep alive mixin is necessary to maintain state when widget is not visible
 // Unfortunately it seems to only work with TabView
 class AccountsCardState extends State<AccountsCard>
-    with AutomaticKeepAliveClientMixin, TopLevelNavigationCardState {
+    with AutomaticKeepAliveClientMixin {
   void _showAddAccountPage() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       if (EnvoySeed().walletDerived()) {
@@ -80,37 +75,34 @@ class AccountsCardState extends State<AccountsCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    final navigator = CardNavigator(push, pop, hideOptions);
-
-    if (cardStack.isEmpty) {
-      navigator.push(AccountsList(navigator, _showAddAccountPage));
-    }
-
-    return WillPopScope(
-      onWillPop: () async {
-        if (cardStack.length > 1) {
-          pop();
-          return false;
-        }
-        return true;
-      },
-      child: IndexedTransitionSwitcher(
-        children: cardStack,
-        index: cardStack.length - 1,
-        transitionBuilder: (
-          Widget child,
-          Animation<double> primaryAnimation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return FadeThroughTransition(
-            animation: primaryAnimation,
-            fillColor: Colors.transparent,
-            secondaryAnimation: secondaryAnimation,
-            child: child,
-          );
-        },
-      ),
-    );
+    return AccountsList();
+    // final navigator = CardNavigator(push, pop, hideOptions);
+    //
+    // return WillPopScope(
+    //   onWillPop: () async {
+    //     if (cardStack.length > 1) {
+    //       pop();
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   child: IndexedTransitionSwitcher(
+    //     children: cardStack,
+    //     index: cardStack.length - 1,
+    //     transitionBuilder: (
+    //       Widget child,
+    //       Animation<double> primaryAnimation,
+    //       Animation<double> secondaryAnimation,
+    //     ) {
+    //       return FadeThroughTransition(
+    //         animation: primaryAnimation,
+    //         fillColor: Colors.transparent,
+    //         secondaryAnimation: secondaryAnimation,
+    //         child: child,
+    //       );
+    //     },
+    //   ),
+    // );
   }
 
   @override
@@ -118,34 +110,15 @@ class AccountsCardState extends State<AccountsCard>
 }
 
 //ignore: must_be_immutable
-class AccountsList extends ConsumerStatefulWidget with NavigationCard {
-  AccountsList(this.navigator, this.rightFunction) : super(key: UniqueKey()) {}
+class AccountsList extends ConsumerStatefulWidget {
+  final Widget? child;
+
+  AccountsList({this.child}) : super(key: UniqueKey()) {}
 
   final GlobalKey _listKey = GlobalKey();
 
   @override
   ConsumerState<AccountsList> createState() => _AccountsListState();
-
-  @override
-  IconData? rightFunctionIcon = Icons.add;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().envoy_home_accounts.toUpperCase();
 }
 
 class _AccountsListState extends ConsumerState<AccountsList> {
@@ -248,17 +221,17 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                   child: AccountListTile(
                     account,
                     onTap: () {
-                      ref.read(homePageAccountsProvider.notifier).state =
-                          HomePageAccountsState(
-                              HomePageAccountsNavigationState.details,
-                              currentAccount: account);
-                      widget.navigator!.push(AccountCard(
-                          account,
-                          widget.navigator,
-                          AccountOptions(
-                            account,
-                            navigator: widget.navigator,
-                          )));
+                      context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+                      return;
+                      // ref.read(homePageAccountsProvider.notifier).state =
+                      //     HomePageAccountsState(HomePageAccountsNavigationState.details, currentAccount: account);
+                      // widget.navigator!.push(AccountCard(
+                      //     account,
+                      //     widget.navigator,
+                      //     AccountOptions(
+                      //       account,
+                      //       navigator: widget.navigator,
+                      //     )));
                     },
                   ))
           ]),
