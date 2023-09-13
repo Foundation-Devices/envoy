@@ -3,52 +3,34 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
+import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
+import 'package:envoy/ui/home/cards/devices/devices_card.dart';
+import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 //ignore: must_be_immutable
-class DeviceCard extends StatefulWidget with NavigationCard {
+class DeviceCard extends ConsumerStatefulWidget {
   final Device device;
 
-  DeviceCard(this.device, this.navigator, this.optionsWidget)
-      : super(key: UniqueKey()) {}
+  DeviceCard(this.device) : super(key: UniqueKey()) {}
 
   @override
-  IconData? rightFunctionIcon = Icons.more_horiz;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().manage_device_details_heading.toUpperCase();
-
-  @override
-  State<DeviceCard> createState() => _DeviceCardState();
+  ConsumerState<DeviceCard> createState() => _DeviceCardState();
 }
 
-class _DeviceCardState extends State<DeviceCard> {
+class _DeviceCardState extends ConsumerState<DeviceCard> {
   _redraw() {
     setState(() {});
   }
@@ -58,6 +40,24 @@ class _DeviceCardState extends State<DeviceCard> {
     super.initState();
 
     // Redraw when we there are changes in devices
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(homePageTitleProvider.notifier).state =
+          S().manage_device_details_heading.toUpperCase();
+      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
+          optionsWidget: DevicesOptions(),
+          rightAction: Consumer(
+            builder: (context, ref, child) {
+              bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
+              return IconButton(
+                  onPressed: () {
+                    HomePageState.of(context)?.toggleOptions();
+                  },
+                  icon: Icon(
+                      menuVisible ? Icons.close : Icons.more_horiz_outlined));
+            },
+          ));
+    });
+
     Devices().addListener(_redraw);
   }
 
@@ -75,7 +75,7 @@ class _DeviceCardState extends State<DeviceCard> {
       Padding(
         padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
         child: DeviceListTile(widget.device, onTap: () {
-          widget.navigator!.pop();
+          GoRouter.of(context).pop();
         }),
       ),
       Padding(
