@@ -8,36 +8,16 @@ import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 //ignore: must_be_immutable
-class DescriptorCard extends StatelessWidget with NavigationCard {
+class DescriptorCard extends StatelessWidget {
   final Account account;
 
-  DescriptorCard(this.account, this.navigator) : super(key: UniqueKey()) {}
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  bool modal = true;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().manage_account_address_heading.toUpperCase();
+  DescriptorCard(this.account) : super(key: UniqueKey()) {}
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +61,7 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
                     )),
                 EnvoyTextButton(
                   onTap: () {
-                    navigator!.pop();
+                    context.pop();
                   },
                   label: S().component_ok,
                 ),
