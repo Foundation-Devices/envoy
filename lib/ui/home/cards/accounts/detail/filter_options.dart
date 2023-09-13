@@ -53,6 +53,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                       showModalBottomSheet(
                           context: context,
                           isDismissible: true,
+                          useRootNavigator: true,
                           barrierColor: Colors.black.withOpacity(0.2),
                           enableDrag: true,
                           isScrollControlled: true,

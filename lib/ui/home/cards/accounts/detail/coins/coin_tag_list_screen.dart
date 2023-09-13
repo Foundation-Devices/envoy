@@ -43,6 +43,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
               itemCount: tags.length,
               itemBuilder: (BuildContext context, int index) {
                 return BlurContainerTransform(
+                  useRootNavigator: true,
                   closedBuilder: (context, action) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
