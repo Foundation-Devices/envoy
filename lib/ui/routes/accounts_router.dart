@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
+import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,10 @@ const ROUTE_ACCOUNT_SEND = '${ROUTE_ACCOUNT_DETAIL}/${_SUB_ROUTE_ACCOUNT_SEND}';
 const _SUB_ROUT_ACCOUNT_RECEIVE = 'receive';
 const ROUTE_ACCOUNT_RECEIVE =
     '${ROUTE_ACCOUNT_DETAIL}/${_SUB_ROUT_ACCOUNT_RECEIVE}';
+
+const _SUB_ROUT_ACCOUNT_DESCRIPTOR = 'desc';
+const ROUTE_ACCOUNT_DESCRIPTOR =
+    '${ROUTE_ACCOUNT_DETAIL}/${_SUB_ROUT_ACCOUNT_DESCRIPTOR}';
 
 Page wrapWithVerticalAxisAnimation(Widget child) {
   return CustomTransitionPage(
@@ -68,6 +73,19 @@ final accountsRouter =
                 }
                 return wrapWithVerticalAxisAnimation(
                     AddressCard(account, null));
+              },
+            ),
+            GoRoute(
+              path: _SUB_ROUT_ACCOUNT_DESCRIPTOR,
+              pageBuilder: (context, state) {
+                Account? account;
+                if (state.extra is Map) {
+                  account =
+                      Account.fromJson(state.extra as Map<String, dynamic>);
+                } else {
+                  account = state.extra as Account;
+                }
+                return wrapWithVerticalAxisAnimation(DescriptorCard(account));
               },
             ),
           ],
