@@ -1,7 +1,7 @@
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,4 +54,8 @@ final homeTabRoutes = [
   "/",
 ];
 
-final modalModeRoutes = [ROUTE_ACCOUNT_SEND, ROUTE_ACCOUNT_RECEIVE];
+final modalModeRoutes = [
+  ROUTE_ACCOUNT_SEND,
+  ROUTE_ACCOUNT_RECEIVE,
+  ROUTE_ACCOUNT_DESCRIPTOR
+];
