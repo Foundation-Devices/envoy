@@ -4,58 +4,29 @@
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/learn/videos.dart';
-import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/learn/faq.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 //ignore: must_be_immutable
-class LearnCard extends StatefulWidget with TopLevelNavigationCard {
+class LearnCard extends StatefulWidget {
   @override
-  TopLevelNavigationCardState<TopLevelNavigationCard> createState() {
-    var state = LearnCardState();
-    tlCardState = state;
-    return state;
-  }
+  State<LearnCard> createState() => LearnCardState();
 }
 
-class LearnCardState extends State<LearnCard> with TopLevelNavigationCardState {
+class LearnCardState extends State<LearnCard> {
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
 
-    push(DefaultLearnCard());
-
     return AnimatedSwitcher(
-        duration: Duration(milliseconds: 250), child: cardStack.last);
+        duration: Duration(milliseconds: 250), child: DefaultLearnCard());
   }
 }
 
 //ignore: must_be_immutable
-class DefaultLearnCard extends StatelessWidget with NavigationCard {
+class DefaultLearnCard extends StatelessWidget {
   DefaultLearnCard() {}
-
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().envoy_home_learn.toUpperCase();
 
   @override
   Widget build(BuildContext context) {

@@ -15,7 +15,6 @@ import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 class BlogPostCard extends ConsumerStatefulWidget {
   final BlogPost blog;
@@ -147,34 +146,13 @@ class _BlogPostState extends ConsumerState<BlogPostCard> {
 }
 
 //ignore: must_be_immutable
-class BlogWindow extends StatelessWidget with NavigationCard {
+class BlogWindow extends StatelessWidget {
   BlogWindow({
     super.key,
     required this.blog,
   });
 
   final BlogPost blog;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  IconData? rightFunctionIcon;
-
-  @override
-  String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +190,8 @@ class BlogWindow extends StatelessWidget with NavigationCard {
                 },
               ),
             );
-          }, future: null,
+          },
+          future: null,
         ),
       ),
     );
