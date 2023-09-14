@@ -17,8 +17,9 @@ dependencies:
     sdk: flutter
   path_provider: ^2.0.2
   tor:
-    path: ../../packages/tor
-
+    git:
+      url: https://github.com/Foundation-Devices/tor.git
+      ref: 87a2247f5db09abd1efc9a064e263df4b3ea9941
 
 dev_dependencies:
   ffigen: ^6.0.0

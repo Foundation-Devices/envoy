@@ -206,7 +206,7 @@ class BlogPostCard extends StatelessWidget with NavigationCard {
             future: Future(() async {
               final document = htmlParser.parse(blog.description);
               final imageTags = document.getElementsByTagName('img');
-              final torClient = HttpTor(Tor());
+              final torClient = HttpTor(Tor.instance);
 
               // Fetch all the images with HttpTor
               for (final imgTag in imageTags) {

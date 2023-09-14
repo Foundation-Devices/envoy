@@ -51,7 +51,7 @@ class ExchangeRate extends ChangeNotifier {
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
-  HttpTor _http = HttpTor(Tor());
+  HttpTor _http = HttpTor(Tor.instance);
   String _serverAddress = Settings().nguServerAddress;
 
   static const String LAST_EXCHANGE_RATE_PREFS = "exchange_rate";

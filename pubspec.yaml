@@ -33,7 +33,9 @@ dependencies:
 
   # Rust FFI libraries
   tor:
-    path: packages/tor
+    git:
+      url: https://github.com/Foundation-Devices/tor.git
+      ref: 87a2247f5db09abd1efc9a064e263df4b3ea9941
   ur:
     path: packages/ur
   http_tor:

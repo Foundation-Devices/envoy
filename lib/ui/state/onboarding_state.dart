@@ -43,7 +43,7 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
   Future validateServer(String address, bool torRequired) async {
     try {
       this.state = NodeConnectionState(isConnected: false, isConnecting: true);
-      Tor tor = Tor();
+      Tor tor = Tor.instance;
       Settings().setTorEnabled(torRequired);
       if (torRequired) {
         tor.enable();
@@ -52,10 +52,10 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
         }
       } else {
         //disable tor this wont stop the tor process
-        Tor().disable();
+        Tor.instance.disable();
       }
       ElectrumServerFeatures features =
-          await Wallet.getServerFeatures(address, Tor().port);
+          await Wallet.getServerFeatures(address, Tor.instance.port);
       Settings().setCustomElectrumAddress(address);
       ConnectivityManager().electrumSuccess();
       Haptics.mediumImpact();

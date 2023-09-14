@@ -30,7 +30,7 @@ class AztecoVoucher {
   Future<bool> redeem(String address) async {
     String url = getRedeemUrl(address);
 
-    HttpTor _http = HttpTor(Tor());
+    HttpTor _http = HttpTor(Tor.instance);
 
     final response = await _http.get(url);
     switch (response.statusCode) {

@@ -113,7 +113,7 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
       _state = ElectrumServerEntryState.pending;
     });
 
-    Wallet.getServerFeatures(address, Tor().port).then((features) {
+    Wallet.getServerFeatures(address, Tor.instance.port).then((features) {
       ConnectivityManager().electrumSuccess();
       if (this.mounted) {
         setState(() {

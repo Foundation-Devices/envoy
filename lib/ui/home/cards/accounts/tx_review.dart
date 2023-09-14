@@ -723,7 +723,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       //Broadcast transaction
       await widget.account.wallet.broadcastTx(
           Settings().electrumAddress(widget.account.wallet.network),
-          Tor().port,
+          Tor.instance.port,
           widget.psbt.rawTx);
 
       await EnvoyStorage().addPendingTx(

@@ -13,7 +13,7 @@ void broadcast(
     Psbt psbt, BuildContext context, Wallet wallet, CardNavigator navigator) {
   wallet
       .broadcastTx(
-          Settings().electrumAddress(wallet.network), Tor().port, psbt.rawTx)
+          Settings().electrumAddress(wallet.network), Tor.instance.port, psbt.rawTx)
       .then((_) {
     navigator.pop(depth: 3);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
