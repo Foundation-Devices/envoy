@@ -80,13 +80,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
     var unit = ref.watch(sendScreenUnitProvider);
 
     bool renderGhostZeros = unit == AmountDisplayUnit.fiat &&
-        widget.displayedAmount.contains(decimalPoint);
+        widget.displayedAmount.contains(fiatDecimalSeparator);
 
     String ghostDigits = renderGhostZeros
         ? "0" *
             (2 - // TODO: use actual fractions of that fiat (some have as much as 10k -> 4 zeroes)
                 (widget.displayedAmount.length -
-                    widget.displayedAmount.indexOf(decimalPoint) -
+                    widget.displayedAmount.indexOf(fiatDecimalSeparator) -
                     1))
         : "";
 
