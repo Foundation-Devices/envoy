@@ -80,7 +80,10 @@ dependencies:
   bip32: ^2.0.0
   package_info_plus: ^4.0.0
   permission_handler: ^9.2.0
-  flutter_html: ^3.0.0-beta.2
+  flutter_html:
+    git:
+      url: https://github.com/icota/flutter_html.git
+      ref: master
   pub_semver: ^2.1.1
   flutter_riverpod: ^2.3.6
   cupertino_icons: ^1.0.5

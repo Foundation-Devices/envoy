@@ -12,7 +12,7 @@ BlogPost _$BlogPostFromJson(Map<String, dynamic> json) => BlogPost(
       DateTime.parse(json['publicationDate'] as String),
       json['url'] as String,
       json['id'] as String,
-      json['read'] as bool,
+      json['read'] as bool?,
       thumbnail:
           (json['thumbnail'] as List<dynamic>?)?.map((e) => e as int).toList(),
       thumbnailUrl: json['thumbnailUrl'] as String?,
