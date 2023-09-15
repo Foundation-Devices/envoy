@@ -9,7 +9,6 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -94,9 +93,8 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
 class DeviceOptions extends ConsumerStatefulWidget {
   final Device device;
-  final CardNavigator? navigator;
 
-  DeviceOptions(this.device, {this.navigator});
+  DeviceOptions(this.device);
 
   @override
   ConsumerState<DeviceOptions> createState() => _DeviceOptionsState();
@@ -182,7 +180,6 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                       onTap: () {
                         Devices().deleteDevice(widget.device);
                         Navigator.pop(context);
-                        widget.navigator!.pop();
                       },
                     ),
                   ],

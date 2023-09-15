@@ -10,7 +10,6 @@ import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/confirmation_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,34 +20,16 @@ final spendAddressProvider = StateProvider((ref) => "");
 final spendAmountProvider = StateProvider((ref) => 0);
 
 //ignore: must_be_immutable
-class SendCard extends ConsumerStatefulWidget with NavigationCard {
+class SendCard extends ConsumerStatefulWidget {
   final Account account;
   String? address;
   final int? amountSats;
 
-  SendCard(this.account, {this.address, this.navigator, this.amountSats})
+  SendCard(this.account, {this.address,this.amountSats})
       : super(key: UniqueKey()) {}
 
-  @override
-  bool modal = true;
 
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().send_qr_code_heading.toUpperCase();
+  // String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -212,12 +193,14 @@ class _SendCardState extends ConsumerState<SendCard>
                                   return;
                                 }
                               }
-                              widget.navigator!.push(ConfirmationCard(
-                                widget.account,
-                                _amount,
-                                _addressText,
-                                widget.navigator,
-                              ));
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) {
+                                return  ConfirmationCard(
+                                  widget.account,
+                                  _amount,
+                                  _addressText,
+                                );
+                              }));
                             }
                           },
                           error:

@@ -4,7 +4,6 @@
 
 import 'dart:ui';
 
-import 'package:animations/animations.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/embedded_video.dart';

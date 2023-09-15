@@ -25,10 +25,9 @@ const double containerWidth = 309.0;
 class BlogPostWidget extends ConsumerStatefulWidget {
   final BlogPost blog;
   final Function? onTap;
-  final CardNavigator? cardNavigator;
 
   const BlogPostWidget(
-      {Key? key, required this.blog, this.onTap, this.cardNavigator})
+      {Key? key, required this.blog, this.onTap})
       : super(key: key);
 
   @override
@@ -147,11 +146,10 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
 }
 
 //ignore: must_be_immutable
-class BlogPostCard extends StatelessWidget with NavigationCard {
+class BlogPostCard extends StatelessWidget  {
   BlogPostCard({
     super.key,
     required this.blog,
-    this.navigator,
   });
 
   final BlogPost blog;

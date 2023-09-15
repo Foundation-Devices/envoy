@@ -21,7 +21,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -45,32 +44,14 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
-class AccountCard extends ConsumerStatefulWidget with NavigationCard {
+class AccountCard extends ConsumerStatefulWidget  {
   final Account account;
 
-  AccountCard(this.account, this.navigator, this.optionsWidget)
+  AccountCard(this.account)
       : super(key: UniqueKey()) {}
 
-  @override
-  IconData? rightFunctionIcon = Icons.more_horiz;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().manage_account_address_heading.toUpperCase();
+  // @override
+  // String? title = S().manage_account_address_heading.toUpperCase();
 
   @override
   ConsumerState<AccountCard> createState() => _AccountCardState();
@@ -96,7 +77,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
           optionsWidget:
-              AccountOptions(widget.account, navigator: widget.navigator),
+              AccountOptions(widget.account),
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
@@ -136,7 +117,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: AccountListTile(widget.account, onTap: () {
-            widget.navigator!.pop();
+           Navigator.pop(context);
             ref.read(homePageAccountsProvider.notifier).state =
                 HomePageAccountsState(HomePageAccountsNavigationState.list);
           }),
@@ -233,10 +214,9 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                               [ScannerType.address, ScannerType.azteco],
                               account: widget.account,
                               onAddressValidated: (address, amount) {
-                            widget.navigator!.push(SendCard(widget.account,
-                                address: address,
-                                amountSats: amount,
-                                navigator: widget.navigator));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SendCard(widget.account,
+                            address: address,
+                            amountSats: amount,)));
                           });
                         }));
                       },
@@ -248,8 +228,8 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   onTap: () {
                     context.go(ROUTE_ACCOUNT_SEND, extra: widget.account);
                     return;
-                    widget.navigator!.push(
-                        SendCard(widget.account, navigator: widget.navigator));
+                    // widget.navigator!.push(
+                    //     SendCard(widget.account, navigator: widget.navigator));
                   },
                   label: S().receive_tx_list_send,
                 ),
@@ -542,9 +522,8 @@ class TransactionListTile extends StatelessWidget {
 
 class AccountOptions extends ConsumerStatefulWidget {
   final Account account;
-  final CardNavigator? navigator;
 
-  AccountOptions(this.account, {this.navigator}) : super(key: UniqueKey());
+  AccountOptions(this.account, ) : super(key: UniqueKey());
 
   @override
   ConsumerState<AccountOptions> createState() => _AccountOptionsState();
@@ -643,7 +622,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);
-                          widget.navigator!.pop();
+                          // widget.navigator!.pop();
                           Navigator.pop(context);
                         },
                       ),

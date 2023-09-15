@@ -7,7 +7,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/components/list_item.dart';
@@ -34,9 +33,8 @@ class ActivityCardState extends State<ActivityCard> {
 }
 
 //ignore: must_be_immutable
-class TopLevelActivityCard extends StatelessWidget  {
+class TopLevelActivityCard extends StatelessWidget {
   TopLevelActivityCard() {}
-
 
   @override
   Widget build(BuildContext context) {

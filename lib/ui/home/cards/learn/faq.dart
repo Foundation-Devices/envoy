@@ -15,11 +15,12 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'dart:math' as math;
 
 class Faq extends StatelessWidget {
+  final String? searchText;
+
   const Faq({
     Key? key,
     this.searchText,
   }) : super(key: key);
-  final String? searchText;
 
   @override
   Widget build(BuildContext context) {
