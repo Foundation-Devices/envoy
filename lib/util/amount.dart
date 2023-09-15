@@ -7,10 +7,10 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
 
-// To be replaced with whatever is in locale
+// Always use comma to group thousands of BTC and dot to separate the sats
 NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
-String decimalPoint = ".";
-String thousandsSeparator = ",";
+String btcSatoshiSeparator = ".";
+String thousandSatSeparator = ",";
 
 String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
     {bool includeUnit = false, bool testnet = false}) {
@@ -37,11 +37,25 @@ String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
       return satsFormatter.format(amountSats) +
           (includeUnit ? " " + unitString! : "");
     case AmountDisplayUnit.fiat:
-      return ExchangeRate().getSymbol() +
-          convertFiatToFiatString(double.parse(ExchangeRate()
-              .getFormattedAmount(amountSats, includeSymbol: false)
-              .replaceAll(thousandsSeparator, "")));
+      var formattedString = ExchangeRate().getFormattedAmount(
+        amountSats,
+        includeSymbol: false,
+      );
+      return removeFiatTrailingZeros(formattedString);
   }
+}
+
+String removeFiatTrailingZeros(String fiatAmount) {
+  if (fiatAmount.contains(fiatDecimalSeparator)) {
+    while (fiatAmount[fiatAmount.length - 1] == "0") {
+      fiatAmount = fiatAmount.substring(0, fiatAmount.length - 1);
+    }
+
+    if (fiatAmount[fiatAmount.length - 1] == fiatDecimalSeparator) {
+      fiatAmount = fiatAmount.substring(0, fiatAmount.length - 1);
+    }
+  }
+  return fiatAmount;
 }
 
 String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
@@ -54,14 +68,6 @@ String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
   return formatter.format(amountBtc);
 }
 
-String convertFiatToFiatString(double Fiat, {bool trailingZeroes = false}) {
-  NumberFormat formatter = NumberFormat();
-  formatter.minimumFractionDigits = trailingZeroes ? 2 : 0;
-  formatter.maximumFractionDigits = 2;
-
-  return formatter.format(Fiat);
-}
-
 int convertSatsStringToSats(String amountSats) {
   if (amountSats.isEmpty) {
     return 0;
@@ -69,8 +75,8 @@ int convertSatsStringToSats(String amountSats) {
 
   try {
     return int.parse(amountSats
-        .replaceAll(decimalPoint, "")
-        .replaceAll(thousandsSeparator, ""));
+        .replaceAll(btcSatoshiSeparator, "")
+        .replaceAll(thousandSatSeparator, ""));
   } catch (e) {
     return 0;
   }
@@ -82,11 +88,11 @@ int convertBtcStringToSats(String amountBtc) {
   }
 
   // There are 8 digits after the decimal point
-  String sanitized = amountBtc.replaceAll(thousandsSeparator, "");
-  int dotIndex = sanitized.indexOf(decimalPoint);
+  String sanitized = amountBtc;
+  int dotIndex = sanitized.indexOf(btcSatoshiSeparator);
   int missingZeros = dotIndex < 0 ? 8 : 8 - (sanitized.length - dotIndex - 1);
 
-  String dotRemoved = sanitized.replaceAll(decimalPoint, "");
+  String dotRemoved = sanitized.replaceAll(btcSatoshiSeparator, "");
 
   if (missingZeros < 0) {
     dotRemoved = dotRemoved.substring(0, dotRemoved.length + missingZeros);
