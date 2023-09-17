@@ -19,7 +19,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.d
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
@@ -44,11 +44,10 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
-class AccountCard extends ConsumerStatefulWidget  {
+class AccountCard extends ConsumerStatefulWidget {
   final Account account;
 
-  AccountCard(this.account)
-      : super(key: UniqueKey()) {}
+  AccountCard(this.account) : super(key: UniqueKey()) {}
 
   // @override
   // String? title = S().manage_account_address_heading.toUpperCase();
@@ -71,13 +70,15 @@ class _AccountCardState extends ConsumerState<AccountCard> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    super.initState();
+    // Redraw when we fetch exchange rate
+    ExchangeRate().addListener(_redraw);
+    Future.delayed(Duration()).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_account_address_heading;
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget:
-              AccountOptions(widget.account),
+          optionsWidget: AccountOptions(widget.account),
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
@@ -90,10 +91,6 @@ class _AccountCardState extends ConsumerState<AccountCard> {
             },
           ));
     });
-
-    super.initState();
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -117,7 +114,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: AccountListTile(widget.account, onTap: () {
-           Navigator.pop(context);
+            Navigator.pop(context);
             ref.read(homePageAccountsProvider.notifier).state =
                 HomePageAccountsState(HomePageAccountsNavigationState.list);
           }),
@@ -214,9 +211,12 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                               [ScannerType.address, ScannerType.azteco],
                               account: widget.account,
                               onAddressValidated: (address, amount) {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SendCard(widget.account,
-                            address: address,
-                            amountSats: amount,)));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SendCard(
+                                      widget.account,
+                                      address: address,
+                                      amountSats: amount,
+                                    )));
                           });
                         }));
                       },
@@ -523,7 +523,9 @@ class TransactionListTile extends StatelessWidget {
 class AccountOptions extends ConsumerStatefulWidget {
   final Account account;
 
-  AccountOptions(this.account, ) : super(key: UniqueKey());
+  AccountOptions(
+    this.account,
+  ) : super(key: UniqueKey());
 
   @override
   ConsumerState<AccountOptions> createState() => _AccountOptionsState();

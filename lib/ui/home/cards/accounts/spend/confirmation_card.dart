@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/amount_display.dart';
-import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -20,18 +19,16 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
 //ignore: must_be_immutable
-class ConfirmationCard extends StatefulWidget  {
+class ConfirmationCard extends StatefulWidget {
   final Account account;
   final bool sendMax;
   final int amount;
 
   final String initialAddress;
 
-  ConfirmationCard(
-      this.account, this.amount, this.initialAddress)
+  ConfirmationCard(this.account, this.amount, this.initialAddress)
       : this.sendMax = amount == account.wallet.balance,
         super(key: UniqueKey()) {}
-
 
   // String? title = S().send_qr_code_heading.toUpperCase();
 
@@ -158,22 +155,17 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                       // Increment the change index before displaying the PSBT
                       widget.account.wallet.getChangeAddress();
 
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => PsbtCard(
-                            _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                            widget.account
-                          )));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PsbtCard(
+                              _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                              widget.account)));
                     } else {
-                      Navigator.of(context).push(
-                       MaterialPageRoute(builder: (context) => TxReview(
-                         _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                         widget.account,
-                         onFinishNavigationClick: () {
-                           Navigator.popUntil(context, (route) => false);
-                           NavigatorState().popUntil((route) => false);
-                         },
-                       ),),
-                      );
+                      GoRouter.of(context)
+                          .push(ROUTE_ACCOUNT_SEND_REVIEW, extra: {
+                        "psbt":
+                            _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                        "account": widget.account,
+                      });
                     }
                   },
                   label: S().envoy_confirmation_confirm);

@@ -11,8 +11,8 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,16 +25,13 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/util/envoy_storage.dart';
 
 //ignore: must_be_immutable
-class TxReview extends ConsumerStatefulWidget  {
+class TxReview extends ConsumerStatefulWidget {
   final Psbt psbt;
   final Account account;
   final GestureTapCallback onFinishNavigationClick;
 
-  TxReview(this.psbt, this.account,
-      {required this.onFinishNavigationClick})
+  TxReview(this.psbt, this.account, {required this.onFinishNavigationClick})
       : super(key: UniqueKey()) {}
-
-
 
   // String? title = S().send_qr_code_heading.toUpperCase();
 

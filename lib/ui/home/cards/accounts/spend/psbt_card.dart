@@ -10,7 +10,7 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield.dart';
@@ -21,7 +21,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
-class PsbtCard extends StatelessWidget  {
+class PsbtCard extends StatelessWidget {
   final Psbt psbt;
   final Account account;
 
@@ -122,15 +122,14 @@ class PsbtCard extends StatelessWidget  {
                                 .push(MaterialPageRoute(builder: (context) {
                               return ScannerPage.tx((psbt) {
                                 account.wallet.decodePsbt(psbt).then((decoded) {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => TxReview(
-                                      decoded,
-                                      account,
-                                      onFinishNavigationClick: () {
-                                       context.go(ROUTE_ACCOUNTS_HOME);
-                                      },
-                                    ))
-                                  );
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => TxReview(
+                                            decoded,
+                                            account,
+                                            onFinishNavigationClick: () {
+                                              context.go(ROUTE_ACCOUNTS_HOME);
+                                            },
+                                          )));
                                 });
                               });
                             }));

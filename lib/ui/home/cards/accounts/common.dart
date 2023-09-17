@@ -10,8 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/generated/l10n.dart';
 
-void broadcast(
-    Psbt psbt, BuildContext context, Wallet wallet) {
+void broadcast(Psbt psbt, BuildContext context, Wallet wallet) {
   wallet
       .broadcastTx(
           Settings().electrumAddress(wallet.network), Tor().port, psbt.rawTx)

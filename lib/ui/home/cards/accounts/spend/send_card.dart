@@ -8,17 +8,15 @@ import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/ui/home/cards/accounts/confirmation_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/exceptions.dart';
-
-//For review screens
-final spendAddressProvider = StateProvider((ref) => "");
-final spendAmountProvider = StateProvider((ref) => 0);
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -26,9 +24,8 @@ class SendCard extends ConsumerStatefulWidget {
   String? address;
   final int? amountSats;
 
-  SendCard(this.account, {this.address,this.amountSats})
+  SendCard(this.account, {this.address, this.amountSats})
       : super(key: UniqueKey()) {}
-
 
   // String? title = .toUpperCase();
 
@@ -67,7 +64,6 @@ class _SendCardState extends ConsumerState<SendCard>
 
   @override
   void initState() {
-
     super.initState();
 
     _addressText = widget.address ?? "";
@@ -88,7 +84,7 @@ class _SendCardState extends ConsumerState<SendCard>
       setAmount(widget.amountSats!);
     }
     Future.delayed(Duration(milliseconds: 10)).then((value) {
-      ref.read(homePageTitleProvider.notifier).state =  S().send_qr_code_heading;
+      ref.read(homePageTitleProvider.notifier).state = S().send_qr_code_heading;
     });
   }
 
@@ -198,14 +194,21 @@ class _SendCardState extends ConsumerState<SendCard>
                                   return;
                                 }
                               }
-                              Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) {
-                                return  ConfirmationCard(
-                                  widget.account,
-                                  _amount,
-                                  _addressText,
-                                );
-                              }));
+                              // Navigator.of(context).push(
+                              //     MaterialPageRoute(builder: (context) {
+                              //   return  ConfirmationCard(
+                              //     widget.account,
+                              //     _amount,
+                              //     _addressText,
+                              //   );
+                              // }));
+
+                              GoRouter.of(context)
+                                  .push(ROUTE_ACCOUNT_SEND_CONFIRM, extra: {
+                                "account": widget.account,
+                                "amount": _amount,
+                                "address": _addressText,
+                              });
                             }
                           },
                           error:

@@ -4,7 +4,6 @@
 
 import 'dart:ui';
 
-import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -42,16 +41,6 @@ class AccountsCard extends StatefulWidget {
 // Unfortunately it seems to only work with TabView
 class AccountsCardState extends State<AccountsCard>
     with AutomaticKeepAliveClientMixin {
-  void _showAddAccountPage() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      if (EnvoySeed().walletDerived()) {
-        return OnboardPassportWelcomeScreen();
-      } else {
-        return OnboardEnvoyWelcomeScreen();
-      }
-    }));
-  }
-
   _redraw() {
     setState(() {});
   }

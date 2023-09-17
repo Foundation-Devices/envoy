@@ -8,26 +8,40 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 //ignore: must_be_immutable
-class AddressCard extends StatelessWidget  {
+class AddressCard extends ConsumerStatefulWidget {
   final Account account;
 
   AddressCard(this.account) : super(key: UniqueKey()) {}
 
+  @override
+  ConsumerState<AddressCard> createState() => _AddressCardState();
+}
 
-  // String? title = S().receive_qr_code_heading.toUpperCase();
+class _AddressCardState extends ConsumerState<AddressCard> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration(milliseconds: 10)).then((value) {
+      ref.read(homePageTitleProvider.notifier).state =
+          S().receive_qr_code_heading;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     return FutureBuilder<String>(
-        future: account.wallet.getAddress(),
+        future: widget.account.wallet.getAddress(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -42,9 +56,9 @@ class AddressCard extends StatelessWidget  {
                             margin: EdgeInsets.all(12),
                             padding: const EdgeInsets.all(6.0),
                             child: QrTab(
-                                title: account.name,
+                                title: widget.account.name,
                                 subtitle: S().envoy_address_explainer,
-                                account: account,
+                                account: widget.account,
                                 qr: QrImage(
                                   data: snapshot.data!,
                                   backgroundColor: Colors.white,
