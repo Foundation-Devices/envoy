@@ -20,5 +20,5 @@ final _routerStreamProvider =
 final routePathProvider = Provider<String>((ref) {
   RouteMatchList paths = ref.watch(_routerStreamProvider).value ??
       mainRouter.routerDelegate.currentConfiguration;
-  return paths.fullPath;
+  return paths.matches.last.matchedLocation;
 });
