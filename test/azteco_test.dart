@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wallet/wallet.dart';
 
 void main() {
-  test("Test create voucher from url", () async {
+  test("Test create voucher from old url format", () async {
     String qrCode = "https://azte.co/?c1=8042&c2=3544&c3=4181&c4=5682";
     AztecoVoucher voucher = AztecoVoucher(qrCode);
     expect(voucher.code, ["8042", "3544", "4181", "5682"]);
@@ -53,5 +53,17 @@ void main() {
         await EnvoyStorage().getPendingTxs("account", TransactionType.azteco);
 
     expect(txs[0].memo, "address");
+  });
+
+  test("Test create voucher from new url format", () async {
+    String qrCode = "https://azte.co/redeem?code=8042354441815682";
+    AztecoVoucher voucher = AztecoVoucher(qrCode);
+    expect(voucher.code, ["8042", "3544", "4181", "5682"]);
+
+    String redeemUrl =
+        voucher.getRedeemUrl("3H7g6JtnR6LATgdpuYWrRov6tyedam2L7m");
+
+    expect(redeemUrl,
+        "https://azte.co/fd_despatch.php?CODE_1=8042&CODE_2=3544&CODE_3=4181&CODE_4=5682&ADDRESS=3H7g6JtnR6LATgdpuYWrRov6tyedam2L7m");
   });
 }
