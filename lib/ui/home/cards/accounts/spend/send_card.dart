@@ -10,6 +10,7 @@ import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/confirmation_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,7 @@ class SendCard extends ConsumerStatefulWidget {
       : super(key: UniqueKey()) {}
 
 
-  // String? title = S().send_qr_code_heading.toUpperCase();
+  // String? title = .toUpperCase();
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -66,6 +67,7 @@ class _SendCardState extends ConsumerState<SendCard>
 
   @override
   void initState() {
+
     super.initState();
 
     _addressText = widget.address ?? "";
@@ -85,6 +87,9 @@ class _SendCardState extends ConsumerState<SendCard>
     if (widget.amountSats != null) {
       setAmount(widget.amountSats!);
     }
+    Future.delayed(Duration(milliseconds: 10)).then((value) {
+      ref.read(homePageTitleProvider.notifier).state =  S().send_qr_code_heading;
+    });
   }
 
   void setAmount(int amount) {

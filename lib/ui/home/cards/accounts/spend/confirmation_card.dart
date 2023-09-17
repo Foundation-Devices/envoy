@@ -169,9 +169,10 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                          _boostEnabled ? _currentPsbtBoost : _currentPsbt,
                          widget.account,
                          onFinishNavigationClick: () {
-                           GoRouter.of(context).pop(ROUTE_ACCOUNTS_HOME);
+                           Navigator.popUntil(context, (route) => false);
+                           NavigatorState().popUntil((route) => false);
                          },
-                       ),)
+                       ),),
                       );
                     }
                   },
