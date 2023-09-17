@@ -121,7 +121,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               key: ValueKey<String>(title),
               fit: BoxFit.fitWidth,
               child: Text(
-                title,
+                title.toUpperCase(),
               ),
             )),
         SizedBox(height: 50, child: IndicatorShield())
@@ -270,6 +270,7 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         StateMachineController.fromArtboard(file.mainArtboard, 'statemachine');
     setState(() => _menuArtBoard = file.mainArtboard);
     _menuArtBoard?.addController(_menuController!);
+    updateAnimationState(null);
   }
 
   @override
@@ -278,8 +279,7 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(covariant HamburgerMenu oldWidget) {
+  void updateAnimationState(HamburgerMenu? oldWidget) {
     switch (widget.iconState) {
       case HamburgerState.idle:
         _menuController?.findInput<double>("state_pos")?.change(0.0);
@@ -288,7 +288,10 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         _menuController?.findInput<double>("state_pos")?.change(1);
         break;
       case HamburgerState.back:
-        if (oldWidget.iconState == HamburgerState.upward) {
+        if (oldWidget == null) {
+          _menuController?.findInput<double>("state_pos")?.change(0.0);
+          break;
+        } else if (oldWidget.iconState == HamburgerState.upward) {
           _menuController?.findInput<double>("state_pos")?.change(2);
         } else {
           _menuController?.findInput<double>("state_pos")?.change(-1);
@@ -298,6 +301,11 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         _menuController?.findInput<double>("state_pos")?.change(0.0);
         break;
     }
+  }
+
+  @override
+  void didUpdateWidget(covariant HamburgerMenu oldWidget) {
+    updateAnimationState(oldWidget);
     super.didUpdateWidget(oldWidget);
   }
 
