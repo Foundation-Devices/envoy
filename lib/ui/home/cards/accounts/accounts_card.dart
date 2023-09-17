@@ -6,7 +6,6 @@ import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -15,8 +14,6 @@ import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
