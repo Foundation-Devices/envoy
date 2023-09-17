@@ -59,3 +59,8 @@ final modalModeRoutes = [
   ROUTE_ACCOUNT_RECEIVE,
   ROUTE_ACCOUNT_DESCRIPTOR
 ];
+
+final hideAppBarRoutes = [
+  // ROUTE_ACCOUNT_SEND_REVIEW,
+  // ROUTE_ACCOUNT_SEND_CONFIRM,
+];

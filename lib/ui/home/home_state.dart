@@ -7,6 +7,7 @@ final homeShellOptionsProvider =
 
 final homePageTitleProvider = StateProvider<String>((ref) => "");
 final homePageModalModeProvider = StateProvider<bool>((ref) => false);
+final homepageHideAppBar = StateProvider<bool>((ref) => false);
 final homePageBackdropModeProvider = StateProvider<bool>((ref) => false);
 
 // final homepageOptionsWidgetProvider = StateProvider<Widget>((ref) => Container());

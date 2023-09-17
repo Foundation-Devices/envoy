@@ -17,10 +17,9 @@ import 'package:envoy/ui/state/learn_page_state.dart';
 import 'package:envoy/ui/home/cards/learn/filter_state.dart';
 import 'package:envoy/ui/home/cards/learn/components/video_card.dart';
 import 'package:envoy/ui/home/cards/learn/components/filter_widget.dart';
-import 'package:envoy/ui/home/cards/learn/components/video_card.dart';
 
 //ignore: must_be_immutable
-class LearnCard extends ConsumerStatefulWidget  {
+class LearnCard extends ConsumerStatefulWidget {
   @override
   ConsumerState<LearnCard> createState() {
     var state = LearnCardState();
@@ -32,13 +31,12 @@ class LearnCardState extends ConsumerState<LearnCard> {
   @override
   Widget build(BuildContext context) {
 // ignore: unused_local_variable
-    return  DefaultLearnCard();
+    return DefaultLearnCard();
   }
 }
 
 //ignore: must_be_immutable
-class DefaultLearnCard extends ConsumerStatefulWidget  {
-
+class DefaultLearnCard extends ConsumerStatefulWidget {
   // String? title = S().envoy_home_learn.toUpperCase();
 
   final TextEditingController controller = TextEditingController();
@@ -201,11 +199,12 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                               child: BlogPostWidget(
                                   blog: blogPost,
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => BlogPostCard(
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => BlogPostCard(
                                         blog: blogs[index],
-                                      ),)
-                                    );
+                                      ),
+                                    ));
                                   }),
                             );
                           })),

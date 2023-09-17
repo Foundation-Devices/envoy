@@ -208,6 +208,7 @@ class HomePageState extends ConsumerState<HomePage>
     double _shieldGlowOffset = 30;
 
     bool _modalShown = ref.watch(homePageModalModeProvider);
+    bool _hideAppBar = ref.watch(homepageHideAppBar);
     HomePageBackgroundState _homepageBackDropState =
         ref.watch(homePageBackgroundProvider);
 
@@ -234,11 +235,31 @@ class HomePageState extends ConsumerState<HomePage>
       },
     );
 
+    double shieldTotalTop = _backgroundShown
+        ? _screenHeight + 20
+        : _optionsShown
+            ? _shieldTopOptionsShown
+            : _shieldTop;
+
+    double shieldTotalHeight = _modalShown
+        ? _shieldHeightModalShown
+        : _optionsShown
+            ? _shieldHeightOptionsShown
+            : _shieldHeight;
+
+    if (_hideAppBar) {
+      shieldTotalTop = AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight;
+      shieldTotalHeight = MediaQuery.of(context).size.height * 0.88;
+    }
+
     return Scaffold(
         extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
-            child: HomeAppBar(backGroundShown: false),
+            child: AnimatedOpacity(
+                child: HomeAppBar(backGroundShown: false),
+                opacity: _hideAppBar ? 0.0 : 1.0,
+                duration: _animationsDuration),
             preferredSize: Size.fromHeight(
                 AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
         body: // Something behind
@@ -266,13 +287,14 @@ class HomePageState extends ConsumerState<HomePage>
             AnimatedOpacity(
                 duration: Duration(
                     milliseconds: _animationsDuration.inMilliseconds ~/ 2),
-                opacity: _backgroundShown || (_modalShown || _optionsShown)
+                opacity: _backgroundShown ||
+                        (_modalShown || _optionsShown || _hideAppBar)
                     ? 0
                     : 1.0,
                 child: Container(
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    ignoring: _backgroundShown || _modalShown,
+                    ignoring: _backgroundShown || _modalShown || _hideAppBar,
                     child: EnvoyBottomNavigation(
                       onIndexChanged: (selectedIndex) {
                         widget.mainNavigationShell.goBranch(selectedIndex);
@@ -294,16 +316,8 @@ class HomePageState extends ConsumerState<HomePage>
             // Shield
             AnimatedPositioned(
               duration: _animationsDuration,
-              top: _backgroundShown
-                  ? _screenHeight + 20
-                  : _optionsShown
-                      ? _shieldTopOptionsShown
-                      : _shieldTop,
-              height: _modalShown
-                  ? _shieldHeightModalShown
-                  : _optionsShown
-                      ? _shieldHeightOptionsShown
-                      : _shieldHeight,
+              top: shieldTotalTop,
+              height: shieldTotalHeight,
               left: 5,
               right: 5,
               child: AnimatedOpacity(

@@ -26,8 +26,7 @@ class BlogPostWidget extends ConsumerStatefulWidget {
   final BlogPost blog;
   final Function? onTap;
 
-  const BlogPostWidget(
-      {Key? key, required this.blog, this.onTap})
+  const BlogPostWidget({Key? key, required this.blog, this.onTap})
       : super(key: key);
 
   @override
@@ -146,7 +145,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
 }
 
 //ignore: must_be_immutable
-class BlogPostCard extends StatelessWidget  {
+class BlogPostCard extends StatelessWidget {
   BlogPostCard({
     super.key,
     required this.blog,

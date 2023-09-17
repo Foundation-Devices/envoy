@@ -57,6 +57,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         } else {
           ref.read(homePageModalModeProvider.notifier).state = false;
         }
+        if (hideAppBarRoutes.contains(nextPath)) {
+          ref.read(homepageHideAppBar.notifier).state = true;
+        } else {
+          ref.read(homepageHideAppBar.notifier).state = false;
+        }
       },
     );
 
