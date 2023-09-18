@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
@@ -65,8 +68,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       },
     );
 
-    if (path.startsWith(ROUTE_ACCOUNT_DETAIL) ||
-        path.startsWith("${ROUTE_ACCOUNTS_HOME}/")) {
+    if (_showBackArrow(path)) {
       state = HamburgerState.back;
     } else {
       if (homePageDropState == HomePageBackgroundState.menu) {
@@ -167,6 +169,17 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                             : rightAction))))
       ],
     );
+  }
+
+  ///Show back arrow if current route is part of nested routes (shell routes)
+  bool _showBackArrow(String path) {
+    if (path.contains(ROUTE_ACCOUNT_DETAIL)) {
+      return true;
+    }
+    if (path.contains(ROUTE_DEVICE_DETAIL)) {
+      return true;
+    }
+    return false;
   }
 
   String _getTitle(String path, String defaultTitle) {

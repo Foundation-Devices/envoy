@@ -2,15 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:envoy/generated/l10n.dart';
-
-class EnvoyBottomNavigation extends StatefulWidget {
+class EnvoyBottomNavigation extends ConsumerStatefulWidget {
   final Function(int)? onIndexChanged;
   final int initialIndex;
 
@@ -21,7 +23,7 @@ class EnvoyBottomNavigation extends StatefulWidget {
   _EnvoyBottomNavigationState createState() => _EnvoyBottomNavigationState();
 }
 
-class _EnvoyBottomNavigationState extends State<EnvoyBottomNavigation> {
+class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   int _selectedIndex = 2;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;
@@ -35,6 +37,17 @@ class _EnvoyBottomNavigationState extends State<EnvoyBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<List<String>>(routeMatchListProvider, (previous, next) {
+      homeTabRoutes.forEach((homeRoute) {
+        if (next.contains(homeRoute)) {
+          if (homeTabRoutes.indexOf(homeRoute) != _selectedIndex) {
+            setState(() {
+              _selectedIndex = homeTabRoutes.indexOf(homeRoute);
+            });
+          }
+        }
+      });
+    });
     return Padding(
       padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
       child: BottomNavigationBar(

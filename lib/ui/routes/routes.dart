@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -11,13 +15,22 @@ const ROUTE_SPLASH = '/splash';
 const ROUTE_ONBOARD_PASSPORT = '/onboard';
 const ROUTE_ONBOARD_ENVOY = '/onboard/envoy';
 
+/// this key can be used in nested GoRoute to leverage main router
+/// for example:
+/// GoRoute( path: "account/details/new",parentNavigatorKey: mainNavigatorKey)
+/// here even if the route is nested it will use root navigator to show the widget
 final GlobalKey<NavigatorState> mainNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: "rootNavigator");
 
+/// The main router for the app.
+/// all the routes defined here will take the whole screen
 final GoRouter mainRouter = GoRouter(
   navigatorKey: mainNavigatorKey,
   initialLocation: ROUTE_ACCOUNTS_HOME,
   debugLogDiagnostics: kDebugMode,
+
+  /// this is a redirect to check if the user is onboarded or not
+  /// null means no redirect
   redirect: (context, state) {
     if (state.fullPath == ROUTE_ACCOUNTS_HOME) {
       if (LocalStorage().prefs.getBool("onboarded") != true) {
@@ -45,10 +58,12 @@ final GoRouter mainRouter = GoRouter(
   ],
 );
 
+///important to keep this in sync with the routes in home_router.dart
+///routes order is important, this will be used to determine the index of the bottom navigation bar
 final homeTabRoutes = [
-  ROUTE_ACCOUNTS_HOME,
-  ROUTE_PRIVACY,
   ROUTE_DEVICES,
+  ROUTE_PRIVACY,
+  ROUTE_ACCOUNTS_HOME,
   ROUTE_ACTIVITY,
   ROUTE_LEARN,
   "/",

@@ -176,8 +176,6 @@ class HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<HomePageTabState>(homePageTabProvider,
-        (HomePageTabState? _, HomePageTabState newState) {});
     bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
 
     double _screenHeight = MediaQuery.of(context).size.height;
