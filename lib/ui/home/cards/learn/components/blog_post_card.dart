@@ -87,18 +87,14 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                     : Container(
                         height: blogThumbnailHeight,
                         width: containerWidth,
-                        child: Image.memory(
-                          Uint8List.fromList(widget.blog.thumbnail!),
-                          fit: BoxFit.fitWidth,
+                        child: Opacity(
+                          opacity: _isBlogRead ? 0.3 : 1.0,
+                          child: Image.memory(
+                            Uint8List.fromList(widget.blog.thumbnail!),
+                            fit: BoxFit.fitWidth,
+                          ),
                         ),
                       ),
-                _isBlogRead
-                    ? Positioned.fill(
-                        child: Container(
-                          color: EnvoyColors.textPrimary.withOpacity(0.5),
-                        ),
-                      )
-                    : SizedBox(),
               ]),
             ),
           ),
@@ -239,6 +235,9 @@ class BlogPostCard extends StatelessWidget with NavigationCard {
                   style: Theme.of(context).textTheme.bodySmall!,
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: EnvoySpacing.xs,
+                      ),
                       Html(
                         data: snapshot.data,
                         onLinkTap: (
