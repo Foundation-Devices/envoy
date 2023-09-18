@@ -17,16 +17,18 @@ import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 
+import '../business/account.dart';
+
 enum AmountDisplayUnit { btc, sat, fiat }
 
 class AmountEntry extends ConsumerStatefulWidget {
-  final Wallet? wallet;
+  final Account? account;
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
 
   AmountEntry(
-      {this.wallet,
+      {this.account,
       this.onAmountChanged,
       this.initalSatAmount = 0,
       this.onPaste,
@@ -109,7 +111,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             String? text = cdata?.text ?? null;
             var decodedInfo = await BitcoinParser.parse(text!,
                 fiatExchangeRate: ExchangeRate().usdRate,
-                wallet: widget.wallet,
+                wallet: widget.account?.wallet,
                 selectedFiat: Settings().selectedFiat);
             ref.read(sendScreenUnitProvider.notifier).state =
                 decodedInfo.unit ?? unit;
@@ -199,11 +201,11 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         FittedBox(
           fit: BoxFit.fitWidth,
           child: AmountDisplay(
-            wallet: widget.wallet,
+            account: widget.account,
             inputMode: true,
             displayedAmount: _enteredAmount,
             amountSats: _amountSats,
-            testnet: widget.wallet?.network == Network.Testnet,
+            testnet: widget.account?.wallet.network == Network.Testnet,
             onUnitToggled: (enteredAmount) {
               // SFT-2508: special rule for circling through is to pad fiat with last 0
               final unit = ref.watch(sendScreenUnitProvider);

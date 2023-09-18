@@ -470,4 +470,13 @@ class AccountManager extends ChangeNotifier {
     }
     return null;
   }
+
+  Account? getAccountById(String accountId) {
+    for (var account in accounts) {
+      if (account.id == accountId) {
+        return account;
+      }
+    }
+    return null;
+  }
 }

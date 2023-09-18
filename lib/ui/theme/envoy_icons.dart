@@ -33,6 +33,16 @@ enum EnvoyIcons {
   delete,
   search,
   remove,
+  sats,
+  sats_testnet_envoy_account,
+  sats_testnet_neutral,
+  sats_testnet_passport_account,
+  sats_testnet_postmix_account,
+  btc,
+  btc_testnet_envoy_account,
+  btc_testnet_neutral,
+  btc_testnet_passport_account,
+  btc_testnet_postmix_account,
 }
 
 class EnvoyIcon extends StatelessWidget {

@@ -87,13 +87,6 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               fontWeight: FontWeight.w400,
             );
 
-    TextStyle _textStyleSatBtc =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: EnvoyColors.grey,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            );
-
     ref.watch(accountManagerProvider);
     var account = widget.account.wallet is GhostWallet
         ? widget.account
@@ -277,6 +270,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                   children: [
                                     Row(
                                       children: [
+                                        SizedBox(
+                                            height: 20,
+                                            child: getUnitIcon(widget.account)),
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 2.0)),
                                         FittedBox(
                                           fit: BoxFit.fitWidth,
                                           child: account.dateSynced == null ||
@@ -287,22 +286,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                 )
                                               : Text(
                                                   getFormattedAmount(balance,
-                                                      includeUnit: false,
                                                       testnet: account
                                                               .wallet.network ==
                                                           Network.Testnet),
                                                   style: _textStyleAmountSatBtc,
                                                 ),
-                                        ),
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 4.0)),
-                                        Text(
-                                          getUnitString(
-                                              testnet: widget
-                                                      .account.wallet.network ==
-                                                  Network.Testnet),
-                                          style: _textStyleSatBtc,
                                         ),
                                       ],
                                     ),

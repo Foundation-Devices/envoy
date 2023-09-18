@@ -333,8 +333,17 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                             ),
                                             children: [
                                             TextSpan(
-                                              text:
-                                                  "${getFormattedAmount(tx.fee, includeUnit: true)}",
+                                              text: "${getFormattedAmount(
+                                                tx.fee,
+                                              )}",
+                                            ),
+                                            WidgetSpan(
+                                              alignment:
+                                                  PlaceholderAlignment.middle,
+                                              child: SizedBox(
+                                                  height: 20,
+                                                  child: getUnitIcon(
+                                                      widget.account)),
                                             ),
                                             TextSpan(
                                                 text:
