@@ -42,6 +42,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
   double _playerProgress = 0;
 
+  bool _visibleTimeline = false;
+
   // Dart linter is reporting a false positive here
   // https://github.com/dart-lang/linter/issues/1381
   // Subscription is closed on widget disposal
@@ -92,6 +94,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
               _completer.complete();
               periodicallyUpdatePosition();
+              showOrHideTimeline();
             }
           } else {
             // Update the loading circle
@@ -104,6 +107,30 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     });
 
     _initializeVideoPlayerFuture = Future.wait([_completer.future]);
+  }
+
+  void showOrHideTimeline() {
+    if (!_visibleTimeline) {
+      setState(() {
+        _visibleTimeline = true;
+      });
+      Future.delayed(const Duration(seconds: 5), () {
+        if (this.mounted) {
+          setState(() {
+            _visibleTimeline = false;
+          });
+        }
+      });
+    } else
+      setState(() {
+        _visibleTimeline = false;
+      });
+  }
+
+  Future<void> restoreSystemUIOverlays() async {
+    await SystemChannels.platform.invokeMethod<void>(
+      'SystemChrome.restoreSystemUIOverlays',
+    );
   }
 
   void setFullScreenLandscapeMode() {
@@ -196,6 +223,18 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                     Positioned(
                       left: 0,
                       right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          showOrHideTimeline();
+                          restoreSystemUIOverlays();
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
                       top: 100,
                       bottom: 100,
                       child: GestureDetector(
@@ -206,55 +245,59 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                 : _controller!.play();
                             _isPlaying = !_isPlaying;
                           });
+                          showOrHideTimeline();
                         },
                       ),
                     ),
-                    Positioned(
-                      bottom: 20,
-                      left: 20,
-                      right: 20,
-                      child: Stack(alignment: Alignment.center, children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                          child: LinearProgressIndicator(
-                              color: EnvoyColors.grey85,
-                              backgroundColor: Colors.white,
-                              value: _downloadProgress),
-                        ),
-                        Slider(
-                          activeColor: EnvoyColors.darkTeal,
-                          inactiveColor: Colors.transparent,
-                          min: 0,
-                          value: _playerProgress,
-                          max: widget.video.duration.toDouble(),
-                          onChanged: (value) {
-                            setState(() {
-                              _playerProgress = value;
-                            });
-                          },
-                          onChangeEnd: (double newValue) {
-                            if (_updatePositionTimer != null) {
-                              _updatePositionTimer!.cancel();
-                            }
+                    if (_visibleTimeline)
+                      Positioned(
+                        bottom: 20,
+                        left: 20,
+                        right: 20,
+                        child: Stack(alignment: Alignment.center, children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: LinearProgressIndicator(
+                                color: EnvoyColors.grey85,
+                                backgroundColor: Colors.white,
+                                value: _downloadProgress),
+                          ),
+                          Slider(
+                            activeColor: EnvoyColors.darkTeal,
+                            inactiveColor: Colors.transparent,
+                            min: 0,
+                            value: _playerProgress,
+                            max: widget.video.duration.toDouble(),
+                            onChanged: (value) {
+                              setState(() {
+                                _playerProgress = value;
+                              });
+                            },
+                            onChangeEnd: (double newValue) {
+                              if (_updatePositionTimer != null) {
+                                _updatePositionTimer!.cancel();
+                              }
 
-                            _controller!
-                                .setMediaFromFile(streamFile, hwAcc: HwAcc.full)
-                                .then((_) {
-                              Future.delayed(Duration(milliseconds: 250))
+                              _controller!
+                                  .setMediaFromFile(streamFile,
+                                      hwAcc: HwAcc.full)
                                   .then((_) {
-                                _controller!
-                                    .setPosition(newValue /
-                                        widget.video.duration.toDouble() /
-                                        _downloadProgress)
+                                Future.delayed(Duration(milliseconds: 250))
                                     .then((_) {
-                                  periodicallyUpdatePosition();
+                                  _controller!
+                                      .setPosition(newValue /
+                                          widget.video.duration.toDouble() /
+                                          _downloadProgress)
+                                      .then((_) {
+                                    periodicallyUpdatePosition();
+                                  });
                                 });
                               });
-                            });
-                          },
-                        ),
-                      ]),
-                    )
+                            },
+                          ),
+                        ]),
+                      )
                   ]);
                 } else {
                   // If the VideoPlayerController is still initializing, show a
