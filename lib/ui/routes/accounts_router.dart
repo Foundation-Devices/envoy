@@ -56,6 +56,7 @@ Page wrapWithVerticalAxisAnimation(
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return SharedAxisTransition(
           animation: animation,
+          fillColor: Colors.transparent,
           secondaryAnimation: secondaryAnimation,
           transitionType: SharedAxisTransitionType.vertical,
           child: child);
@@ -63,83 +64,112 @@ Page wrapWithVerticalAxisAnimation(
   );
 }
 
-final accountsRouter =
-    StatefulShellBranch(restorationScopeId: 'accountsHomeRouterScope', routes: [
-  GoRoute(
-      path: ROUTE_ACCOUNTS_HOME,
-      pageBuilder: (context, state) =>
-          wrapWithVerticalAxisAnimation(AccountsCard()),
-      routes: [
-        GoRoute(
-          path: _ACCOUNT_DETAIL,
+final accountsRouter = StatefulShellBranch(
+    restorationScopeId: 'accountsHomeRouterScope',
+    initialLocation: ROUTE_ACCOUNTS_HOME,
+    routes: [
+      GoRoute(
+          path: ROUTE_ACCOUNTS_HOME,
+          pageBuilder: (context, state) =>
+              wrapWithVerticalAxisAnimation(AccountsCard()),
           routes: [
             GoRoute(
-                path: _ACCOUNT_SEND,
-                pageBuilder: (context, state) {
-                  Account? account;
-                  if (state.extra is Map) {
-                    account =
-                        Account.fromJson(state.extra as Map<String, dynamic>);
-                  } else {
-                    account = state.extra as Account;
-                  }
-                  return wrapWithVerticalAxisAnimation(SendCard(account));
-                },
-                routes: [
-                  GoRoute(
-                    name: "spend_confirm",
-                    path: _ACCOUNT_SEND_CONFIRM,
+              path: _ACCOUNT_DETAIL,
+              routes: [
+                GoRoute(
+                    path: _ACCOUNT_SEND,
+                    pageBuilder: (context, state) {
+                      Account? account;
+                      if (state.extra is Map) {
+                        account = Account.fromJson(
+                            state.extra as Map<String, dynamic>);
+                      } else {
+                        account = state.extra as Account;
+                      }
+                      return wrapWithVerticalAxisAnimation(SendCard(account));
+                    },
                     routes: [
                       GoRoute(
-                        name: "spend_review",
-                        path: _ACCOUNT_SEND_REVIEW,
+                        name: "spend_confirm",
+                        path: _ACCOUNT_SEND_CONFIRM,
+                        routes: [
+                          GoRoute(
+                            name: "spend_review",
+                            path: _ACCOUNT_SEND_REVIEW,
+                            pageBuilder: (context, state) {
+                              Account? account;
+                              Psbt? psbt;
+                              if (state.extra is Map) {
+                                Map extras = state.extra as Map;
+                                if (extras['account'] is Account) {
+                                  account = extras['account'] as Account;
+                                } else {
+                                  account = Account.fromJson(extras['account']
+                                      as Map<String, dynamic>);
+                                }
+                                if (extras['psbt'] is Psbt) {
+                                  psbt = extras['psbt'] as Psbt;
+                                }
+                              }
+                              return wrapWithVerticalAxisAnimation(TxReview(
+                                psbt!,
+                                account!,
+                                onFinishNavigationClick: () {
+                                  context.go(ROUTE_ACCOUNT_DETAIL,
+                                      extra: account);
+                                },
+                              ));
+                            },
+                          ),
+                        ],
                         pageBuilder: (context, state) {
                           Account? account;
-                          Psbt? psbt;
+                          int amount = 0;
+                          String initialAddress = "";
                           if (state.extra is Map) {
                             Map extras = state.extra as Map;
+                            amount = extras["amount"] as int? ?? 0;
+                            initialAddress = extras['address'] as String;
                             if (extras['account'] is Account) {
                               account = extras['account'] as Account;
                             } else {
                               account = Account.fromJson(
                                   extras['account'] as Map<String, dynamic>);
                             }
-                            if (extras['psbt'] is Psbt) {
-                              psbt = extras['psbt'] as Psbt;
-                            }
                           }
-                          return wrapWithVerticalAxisAnimation(TxReview(
-                            psbt!,
-                            account!,
-                            onFinishNavigationClick: () {
-                              context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
-                            },
-                          ));
+                          return wrapWithVerticalAxisAnimation(ConfirmationCard(
+                              account!, amount, initialAddress));
                         },
                       ),
-                    ],
-                    pageBuilder: (context, state) {
-                      Account? account;
-                      int amount = 0;
-                      String initialAddress = "";
-                      if (state.extra is Map) {
-                        Map extras = state.extra as Map;
-                        amount = extras["amount"] as int? ?? 0;
-                        initialAddress = extras['address'] as String;
-                        if (extras['account'] is Account) {
-                          account = extras['account'] as Account;
-                        } else {
-                          account = Account.fromJson(
-                              extras['account'] as Map<String, dynamic>);
-                        }
-                      }
-                      return wrapWithVerticalAxisAnimation(
-                          ConfirmationCard(account!, amount, initialAddress));
-                    },
-                  ),
-                ]),
-            GoRoute(
-              path: _ACCOUNT_RECEIVE,
+                    ]),
+                GoRoute(
+                  path: _ACCOUNT_RECEIVE,
+                  pageBuilder: (context, state) {
+                    Account? account;
+                    if (state.extra is Map) {
+                      account =
+                          Account.fromJson(state.extra as Map<String, dynamic>);
+                    } else {
+                      account = state.extra as Account;
+                    }
+                    return wrapWithVerticalAxisAnimation(AddressCard(account));
+                  },
+                ),
+                GoRoute(
+                  path: _ACCOUNT_DESCRIPTOR,
+                  pageBuilder: (context, state) {
+                    Account? account;
+                    if (state.extra is Map) {
+                      account =
+                          Account.fromJson(state.extra as Map<String, dynamic>);
+                    } else {
+                      account = state.extra as Account;
+                    }
+                    return wrapWithVerticalAxisAnimation(
+                        DescriptorCard(account));
+                  },
+                ),
+              ],
               pageBuilder: (context, state) {
                 Account? account;
                 if (state.extra is Map) {
@@ -148,38 +178,12 @@ final accountsRouter =
                 } else {
                   account = state.extra as Account;
                 }
-                return wrapWithVerticalAxisAnimation(AddressCard(account));
+                return wrapWithVerticalAxisAnimation(AccountCard(
+                  account,
+                ));
               },
             ),
-            GoRoute(
-              path: _ACCOUNT_DESCRIPTOR,
-              pageBuilder: (context, state) {
-                Account? account;
-                if (state.extra is Map) {
-                  account =
-                      Account.fromJson(state.extra as Map<String, dynamic>);
-                } else {
-                  account = state.extra as Account;
-                }
-                return wrapWithVerticalAxisAnimation(DescriptorCard(account));
-              },
-            ),
-          ],
-          pageBuilder: (context, state) {
-            Account? account;
-            if (state.extra is Map) {
-              account = Account.fromJson(state.extra as Map<String, dynamic>);
-            } else {
-              account = state.extra as Account;
-            }
-            return wrapWithVerticalAxisAnimation(AccountCard(
-              account,
-            ));
-          },
-        ),
-      ]
-      // builder: (context, state) => AccountsCard(),
-      ),
-]);
+          ]),
+    ]);
 
 final accountFullScreenRoute = [];

@@ -6,10 +6,11 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
-import 'package:envoy/ui/routes/onboarding_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -236,11 +237,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 Icons.add,
               ),
               onPressed: () {
-                if (EnvoySeed().walletDerived()) {
-                  GoRouter.of(context).push(ROUTE_PASSPORT_WELCOME);
-                } else {
-                  GoRouter.of(context).push(ROUTE_ONBOARD_ENVOY);
-                }
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    if (EnvoySeed().walletDerived()) {
+                      return OnboardPassportWelcomeScreen();
+                    } else {
+                      return OnboardEnvoyWelcomeScreen();
+                    }
+                  },
+                ));
               },
             ),
             optionsWidget: Container());

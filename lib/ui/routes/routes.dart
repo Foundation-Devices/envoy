@@ -45,7 +45,6 @@ final GoRouter mainRouter = GoRouter(
       builder: (context, state) => WelcomeScreen(),
     ),
     homeRouter,
-    ...accountFullScreenRoute,
     GoRoute(
         path: "/",
         redirect: (context, state) {

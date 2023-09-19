@@ -11,8 +11,8 @@ import 'package:go_router/go_router.dart';
 
 const ROUTE_DEVICES = '/devices';
 
-const _SUB_ROUTE_DEVICE_DETAIL = 'details';
-const ROUTE_DEVICE_DETAIL = '${ROUTE_DEVICES}/${_SUB_ROUTE_DEVICE_DETAIL}';
+const _DEVICE_DETAIL = 'details';
+const ROUTE_DEVICE_DETAIL = '${ROUTE_DEVICES}/${_DEVICE_DETAIL}';
 
 final devicesRouter =
     StatefulShellBranch(restorationScopeId: 'devicesScopeId', routes: [
@@ -21,7 +21,7 @@ final devicesRouter =
       pageBuilder: (context, state) => MaterialPage(child: DevicesCard()),
       routes: [
         GoRoute(
-            path: _SUB_ROUTE_DEVICE_DETAIL,
+            path: _DEVICE_DETAIL,
             pageBuilder: (context, state) {
               Device? device;
               if (state.extra is Map) {
