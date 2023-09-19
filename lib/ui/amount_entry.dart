@@ -89,8 +89,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     ref.watch(settingsProvider);
     var unit = ref.watch(sendScreenUnitProvider);
 
-    Numpad numpad =
-        Numpad(unit, isAmountZero: _amountSats == 0 || _enteredAmount == "0");
+    Numpad numpad = Numpad(unit,
+        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0");
     numpad.events.stream.listen((event) async {
       switch (event) {
         case NumpadEvents.backspace:
