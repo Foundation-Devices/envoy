@@ -53,122 +53,126 @@ class _AddressEntryState extends State<AddressEntry> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: TextFormField(
-              enabled: widget.canEdit,
-              controller: widget.controller,
-              style: TextStyle(
-                  fontSize: 14,
-                  overflow: TextOverflow.fade,
-                  fontWeight: FontWeight.w500),
-              onChanged: (value) async {
-                await validate(value);
-              },
-              decoration: InputDecoration(
-                // Disable the borders
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                prefixIcon: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4),
-                    child: Text("To:")),
-                isDense: true,
-                prefixIconConstraints: BoxConstraints(
-                  minWidth: 18,
-                  minHeight: 12,
-                ),
-                suffixIconConstraints: BoxConstraints(
-                  minWidth: 24,
-                  minHeight: 24,
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0),
-                suffixIcon: !widget.canEdit
-                    ? null
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 4),
-                              child: Icon(
-                                Icons.paste,
-                                size: 21,
-                                color: EnvoyColors.darkTeal,
+    return Material(
+      child: Form(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextFormField(
+                enabled: widget.canEdit,
+                controller: widget.controller,
+                style: TextStyle(
+                    fontSize: 14,
+                    overflow: TextOverflow.fade,
+                    fontWeight: FontWeight.w500),
+                onChanged: (value) async {
+                  await validate(value);
+                },
+                decoration: InputDecoration(
+                  // Disable the borders
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  prefixIcon: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4),
+                      child: Text("To:")),
+                  isDense: true,
+                  prefixIconConstraints: BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 12,
+                  ),
+                  suffixIconConstraints: BoxConstraints(
+                    minWidth: 24,
+                    minHeight: 24,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 0.0),
+                  suffixIcon: !widget.canEdit
+                      ? null
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 4),
+                                child: Icon(
+                                  Icons.paste,
+                                  size: 21,
+                                  color: EnvoyColors.darkTeal,
+                                ),
                               ),
+                              onTap: () async {
+                                if (widget.onPaste != null) {
+                                  ClipboardData? cdata =
+                                      await Clipboard.getData(
+                                          Clipboard.kTextPlain);
+                                  String? textCopied = cdata?.text ?? null;
+                                  var decodedInfo = await BitcoinParser.parse(
+                                      textCopied!,
+                                      fiatExchangeRate: ExchangeRate().usdRate,
+                                      wallet: widget.account.wallet,
+                                      selectedFiat: Settings().selectedFiat);
+                                  widget.onPaste!(decodedInfo);
+                                  if (decodedInfo.address != null) {
+                                    validate(decodedInfo.address!);
+                                  }
+                                } else {
+                                  ClipboardData? cdata =
+                                      await Clipboard.getData(
+                                          Clipboard.kTextPlain);
+                                  String? text = cdata?.text ?? null;
+                                  if (text != null) {
+                                    widget.controller?.text = text;
+                                    validate(text);
+                                  }
+                                }
+                              },
                             ),
-                            onTap: () async {
-                              if (widget.onPaste != null) {
-                                ClipboardData? cdata = await Clipboard.getData(
-                                    Clipboard.kTextPlain);
-                                String? textCopied = cdata?.text ?? null;
-                                var decodedInfo = await BitcoinParser.parse(
-                                    textCopied!,
-                                    fiatExchangeRate: ExchangeRate().usdRate,
-                                    wallet: widget.account.wallet,
-                                    selectedFiat: Settings().selectedFiat);
-                                widget.onPaste!(decodedInfo);
-                                if (decodedInfo.address != null) {
-                                  validate(decodedInfo.address!);
-                                }
-                              } else {
-                                ClipboardData? cdata = await Clipboard.getData(
-                                    Clipboard.kTextPlain);
-                                String? text = cdata?.text ?? null;
-                                if (text != null) {
-                                  widget.controller?.text = text;
-                                  validate(text);
-                                }
-                              }
-                            },
-                          ),
-                          InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 4),
-                              child: Icon(
-                                EnvoyIcons.qr_scan,
-                                size: 20,
-                                color: EnvoyColors.darkTeal,
+                            InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 4),
+                                child: Icon(
+                                  EnvoyIcons.qr_scan,
+                                  size: 20,
+                                  color: EnvoyColors.darkTeal,
+                                ),
                               ),
-                            ),
-                            onTap: () {
-                              // Maybe catch the result of pop instead of using callbacks?:
+                              onTap: () {
+                                // Maybe catch the result of pop instead of using callbacks?:
 
-                              // final result = await Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
-                              // );
+                                // final result = await Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
+                                // );
 
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return ScannerPage.address((address, amount) {
-                                  widget.controller?.text = address;
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return ScannerPage.address((address, amount) {
+                                    widget.controller?.text = address;
 
-                                  if (widget.onAddressChanged != null) {
-                                    widget.onAddressChanged!(true, address);
-                                  }
+                                    if (widget.onAddressChanged != null) {
+                                      widget.onAddressChanged!(true, address);
+                                    }
 
-                                  if (widget.onAmountChanged != null) {
-                                    widget.onAmountChanged!(amount);
-                                  }
-                                }, widget.account);
-                              }));
-                            },
-                          )
-                        ],
-                      ),
-              )),
+                                    if (widget.onAmountChanged != null) {
+                                      widget.onAmountChanged!(amount);
+                                    }
+                                  }, widget.account);
+                                }));
+                              },
+                            )
+                          ],
+                        ),
+                )),
+          ),
         ),
       ),
     );

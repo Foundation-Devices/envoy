@@ -18,7 +18,6 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 const double blogThumbnailHeight = 172.0;
 const double containerWidth = 309.0;
@@ -26,10 +25,8 @@ const double containerWidth = 309.0;
 class BlogPostWidget extends ConsumerStatefulWidget {
   final BlogPost blog;
   final Function? onTap;
-  final CardNavigator? cardNavigator;
 
-  const BlogPostWidget(
-      {Key? key, required this.blog, this.onTap, this.cardNavigator})
+  const BlogPostWidget({Key? key, required this.blog, this.onTap})
       : super(key: key);
 
   @override
@@ -144,35 +141,13 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
 }
 
 //ignore: must_be_immutable
-class BlogPostCard extends StatelessWidget with NavigationCard {
+class BlogPostCard extends StatelessWidget {
   BlogPostCard({
     super.key,
     required this.blog,
-    this.navigator,
   });
 
   final BlogPost blog;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  IconData? rightFunctionIcon;
-
-  @override
-  String? title;
 
   @override
   Widget build(BuildContext context) {

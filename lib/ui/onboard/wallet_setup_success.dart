@@ -27,7 +27,9 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;
         await Future.delayed(Duration(milliseconds: 200));
-        Navigator.of(context).popUntil(ModalRoute.withName("/"));
+        OnboardingPage.goHome(context);
+        //TODO:fix navigation
+        // GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
         return false;
       },
       child: OnboardPageBackground(
@@ -84,8 +86,8 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                                   .read(homePageBackgroundProvider.notifier)
                                   .state = HomePageBackgroundState.hidden;
                               await Future.delayed(Duration(milliseconds: 200));
-                              Navigator.of(context)
-                                  .popUntil(ModalRoute.withName("/"));
+                              // GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                              OnboardingPage.goHome(context);
                             });
                       },
                     ),

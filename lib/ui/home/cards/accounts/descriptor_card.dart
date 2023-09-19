@@ -6,42 +6,38 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 
 //ignore: must_be_immutable
-class DescriptorCard extends StatelessWidget with NavigationCard {
+class DescriptorCard extends ConsumerStatefulWidget {
   final Account account;
 
-  DescriptorCard(this.account, this.navigator) : super(key: UniqueKey()) {}
-  @override
-  IconData? rightFunctionIcon = null;
+  DescriptorCard(this.account) : super(key: UniqueKey()) {}
 
   @override
-  bool modal = true;
+  ConsumerState<DescriptorCard> createState() => _DescriptorCardState();
+}
 
+class _DescriptorCardState extends ConsumerState<DescriptorCard> {
   @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().manage_account_address_heading.toUpperCase();
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 10)).then((value) {
+      ref.read(homePageTitleProvider.notifier).state =
+          S().manage_account_address_heading;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = account.descriptor;
+    String descriptor = widget.account.descriptor;
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,9 +47,9 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: QrTab(
-                title: account.name,
+                title: widget.account.name,
                 subtitle: S().envoy_descriptor_explainer,
-                account: account,
+                account: widget.account,
                 qr: QrImage(
                   data: descriptor,
                   backgroundColor: Colors.white,
@@ -81,7 +77,7 @@ class DescriptorCard extends StatelessWidget with NavigationCard {
                     )),
                 EnvoyTextButton(
                   onTap: () {
-                    navigator!.pop();
+                    context.pop();
                   },
                   label: S().component_ok,
                 ),

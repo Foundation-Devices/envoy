@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/components/settings_header.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/components/big_tab.dart';
@@ -24,58 +22,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 
 //ignore: must_be_immutable
-class PrivacyCard extends StatefulWidget with TopLevelNavigationCard {
+class PrivacyCard extends StatefulWidget {
   @override
-  TopLevelNavigationCardState<TopLevelNavigationCard> createState() {
-    var state = PrivacyCardState();
-    tlCardState = state;
-    return state;
-  }
+  State<PrivacyCard> createState() => PrivacyCardState();
 }
 
-class PrivacyCardState extends State<PrivacyCard>
-    with TopLevelNavigationCardState {
-  @override
-  Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-
-    push(TopLevelPrivacyCard());
-    return AnimatedSwitcher(
-        duration: Duration(milliseconds: 250), child: cardStack.last);
-  }
-}
-
-//ignore: must_be_immutable
-class TopLevelPrivacyCard extends StatefulWidget with NavigationCard {
-  TopLevelPrivacyCard() {}
-
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().bottomNav_privacy.toUpperCase();
-
-  @override
-  _TopLevelPrivacyCardState createState() => _TopLevelPrivacyCardState();
-}
-
-//ignore: must_be_immutable
-class _TopLevelPrivacyCardState extends State<TopLevelPrivacyCard> {
+class PrivacyCardState extends State<PrivacyCard> {
   bool _showPersonalNodeTextField = false;
   bool _betterPerformance = !Settings().torEnabled();
 

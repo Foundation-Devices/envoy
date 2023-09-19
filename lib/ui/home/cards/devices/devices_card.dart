@@ -4,41 +4,34 @@
 
 import 'dart:ui';
 
-import 'package:animations/animations.dart';
-import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/embedded_video.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
-import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/home/cards/devices/device_card.dart';
-import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/embedded_video.dart';
 
 //ignore: must_be_immutable
-class DevicesCard extends StatefulWidget with TopLevelNavigationCard {
+class DevicesCard extends ConsumerStatefulWidget {
   DevicesCard({
     Key? key,
   }) : super(key: key);
 
   @override
-  TopLevelNavigationCardState<TopLevelNavigationCard> createState() {
-    var state = DevicesCardState();
-    tlCardState = state;
-    return state;
-  }
+  ConsumerState createState() => DevicesCardState();
 }
 
 // The mixin is necessary to maintain state when widgets is not visible
 // Unfortunately it seems to only work with TabView
-class DevicesCardState extends State<DevicesCard>
-    with AutomaticKeepAliveClientMixin, TopLevelNavigationCardState {
+class DevicesCardState extends ConsumerState<DevicesCard>
+    with AutomaticKeepAliveClientMixin {
   _redraw() {
     setState(() {});
   }
@@ -46,6 +39,8 @@ class DevicesCardState extends State<DevicesCard>
   @override
   void initState() {
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    // });
 
     // Redraw when we there are changes in devices
     Devices().addListener(_redraw);
@@ -62,32 +57,31 @@ class DevicesCardState extends State<DevicesCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    final navigator = CardNavigator(push, pop, hideOptions);
-
-    if (cardStack.isEmpty) {
-      navigator.push(DevicesList(
-          navigator,
-          DevicesOptions(
-            navigator: navigator,
-          )));
-    }
-
-    return IndexedTransitionSwitcher(
-      children: cardStack,
-      index: cardStack.length - 1,
-      transitionBuilder: (
-        Widget child,
-        Animation<double> primaryAnimation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return FadeThroughTransition(
-          animation: primaryAnimation,
-          fillColor: Colors.transparent,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
-        );
-      },
-    );
+    return DevicesList();
+    // final navigator = CardNavigator(push, pop, hideOptions);
+    //
+    // if (cardStack.isEmpty) {
+    //   navigator.push(DevicesList(
+    //     navigator,
+    //   ));
+    // }
+    //
+    // return IndexedTransitionSwitcher(
+    //   children: cardStack,
+    //   index: cardStack.length - 1,
+    //   transitionBuilder: (
+    //     Widget child,
+    //     Animation<double> primaryAnimation,
+    //     Animation<double> secondaryAnimation,
+    //   ) {
+    //     return FadeThroughTransition(
+    //       animation: primaryAnimation,
+    //       fillColor: Colors.transparent,
+    //       secondaryAnimation: secondaryAnimation,
+    //       child: child,
+    //     );
+    //   },
+    // );
   }
 
   @override
@@ -95,29 +89,8 @@ class DevicesCardState extends State<DevicesCard>
 }
 
 //ignore: must_be_immutable
-class DevicesList extends StatefulWidget with NavigationCard {
-  DevicesList(this.navigator, this.optionsWidget) : super(key: UniqueKey()) {}
-
-  @override
-  IconData? rightFunctionIcon = Icons.add;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().devices_heading.toUpperCase();
+class DevicesList extends StatefulWidget {
+  DevicesList() : super(key: UniqueKey()) {}
 
   @override
   State<DevicesList> createState() => _DevicesListState();
@@ -132,6 +105,7 @@ class _DevicesListState extends State<DevicesList> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
     // Redraw when we there are changes in devices
     Devices().addListener(_redraw);
   }
@@ -165,13 +139,14 @@ class _DevicesListState extends State<DevicesList> {
                   child: DeviceListTile(
                     device,
                     onTap: () {
-                      widget.navigator!.push(DeviceCard(
-                          device,
-                          widget.navigator,
-                          DeviceOptions(
-                            device,
-                            navigator: widget.navigator,
-                          )));
+                      context.go(ROUTE_DEVICE_DETAIL, extra: device);
+                      // widget.navigator!.push(DeviceCard(
+                      //     device,
+                      //     widget.navigator,
+                      //     DeviceOptions(
+                      //       device,
+                      //       navigator: widget.navigator,
+                      //     )));
                     },
                   ),
                 );
@@ -182,9 +157,7 @@ class _DevicesListState extends State<DevicesList> {
 }
 
 class DevicesOptions extends ConsumerWidget {
-  final CardNavigator? navigator;
-
-  DevicesOptions({this.navigator});
+  DevicesOptions();
 
   @override
   Widget build(context, ref) {

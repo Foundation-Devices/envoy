@@ -3,54 +3,34 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/amount_display.dart';
-import 'package:envoy/ui/home/cards/accounts/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/send_card.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/accounts/fee_toggle.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
 //ignore: must_be_immutable
-class ConfirmationCard extends StatefulWidget with NavigationCard {
+class ConfirmationCard extends StatefulWidget {
   final Account account;
   final bool sendMax;
   final int amount;
 
   final String initialAddress;
 
-  ConfirmationCard(
-      this.account, this.amount, this.initialAddress, this.navigator)
+  ConfirmationCard(this.account, this.amount, this.initialAddress)
       : this.sendMax = amount == account.wallet.balance,
         super(key: UniqueKey()) {}
 
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  bool modal = true;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().send_qr_code_heading.toUpperCase();
+  // String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   State<ConfirmationCard> createState() => _ConfirmationCardState();
@@ -175,20 +155,17 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                       // Increment the change index before displaying the PSBT
                       widget.account.wallet.getChangeAddress();
 
-                      widget.navigator!.push(PsbtCard(
-                        _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                        widget.account,
-                        widget.navigator,
-                      ));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PsbtCard(
+                              _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                              widget.account)));
                     } else {
-                      widget.navigator!.push(TxReview(
-                        _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                        widget.account,
-                        navigator: widget.navigator,
-                        onFinishNavigationClick: () {
-                          widget.navigator?.pop(depth: 3);
-                        },
-                      ));
+                      GoRouter.of(context)
+                          .push(ROUTE_ACCOUNT_SEND_REVIEW, extra: {
+                        "psbt":
+                            _boostEnabled ? _currentPsbtBoost : _currentPsbt,
+                        "account": widget.account,
+                      });
                     }
                   },
                   label: S().envoy_confirmation_confirm);

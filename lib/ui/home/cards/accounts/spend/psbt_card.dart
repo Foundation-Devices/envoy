@@ -10,42 +10,42 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/accounts/tx_review.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
-class PsbtCard extends StatelessWidget with NavigationCard {
+class PsbtCard extends StatelessWidget {
   final Psbt psbt;
   final Account account;
 
-  PsbtCard(this.psbt, this.account, this.navigator) : super(key: UniqueKey()) {}
+  PsbtCard(this.psbt, this.account) : super(key: UniqueKey()) {}
+  //
+  // @override
+  // IconData? rightFunctionIcon = null;
+  //
+  // @override
+  // bool modal = true;
+  //
+  // @override
+  // CardNavigator? navigator;
+  //
+  // @override
+  // Function()? onPop;
+  //
+  // @override
+  // Widget? optionsWidget = null;
+  //
+  // @override
+  // Function()? rightFunction;
 
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  bool modal = true;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().send_qr_code_heading.toUpperCase();
+  // String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   Widget build(BuildContext context) {
@@ -122,14 +122,14 @@ class PsbtCard extends StatelessWidget with NavigationCard {
                                 .push(MaterialPageRoute(builder: (context) {
                               return ScannerPage.tx((psbt) {
                                 account.wallet.decodePsbt(psbt).then((decoded) {
-                                  navigator!.push(TxReview(
-                                    decoded,
-                                    account,
-                                    navigator: navigator,
-                                    onFinishNavigationClick: () {
-                                      navigator?.pop(depth: 4);
-                                    },
-                                  ));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => TxReview(
+                                            decoded,
+                                            account,
+                                            onFinishNavigationClick: () {
+                                              context.go(ROUTE_ACCOUNTS_HOME);
+                                            },
+                                          )));
                                 });
                               });
                             }));

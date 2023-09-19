@@ -125,6 +125,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               child: Stack(children: [
                 Positioned.fill(
                   child: CustomPaint(
+                    willChange: false,
+                    isComplex: true,
                     painter: LinesPainter(
                         color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
                   ),
