@@ -7,8 +7,11 @@ import 'dart:math';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_privacy_setup.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -64,24 +67,38 @@ class WelcomeScreen extends StatelessWidget {
                       S().welcome_screen_cta2,
                       type: EnvoyButtonTypes.secondary,
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  OnboardPrivacySetup(setUpEnvoyWallet: false),
-                            ));
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            // Don't set up privacy if previously onboarded
+                            if (LocalStorage().prefs.getBool("onboarded") ==
+                                null) {
+                              return OnboardPrivacySetup(
+                                  setUpEnvoyWallet: false);
+                            }
+                            return LocalStorage().prefs.getBool("onboarded")!
+                                ? OnboardPassportWelcomeScreen()
+                                : OnboardPrivacySetup(setUpEnvoyWallet: false);
+                          },
+                        ));
                       },
                     ),
                     Padding(padding: EdgeInsets.all(8)),
                     EnvoyButton(
                       S().welcome_screen_ctA1,
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  OnboardPrivacySetup(setUpEnvoyWallet: true),
-                            ));
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            // Don't set up privacy if previously onboarded
+                            if (LocalStorage().prefs.getBool("onboarded") ==
+                                null) {
+                              return OnboardPrivacySetup(
+                                  setUpEnvoyWallet: true);
+                            }
+                            return LocalStorage().prefs.getBool("onboarded")!
+                                ? OnboardEnvoyWelcomeScreen()
+                                : OnboardPrivacySetup(setUpEnvoyWallet: true);
+                          },
+                        ));
                       },
                     )
                   ],

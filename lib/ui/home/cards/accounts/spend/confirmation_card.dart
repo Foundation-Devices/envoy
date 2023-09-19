@@ -134,7 +134,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
           child: FittedBox(
             fit: BoxFit.fitWidth,
             child: AmountDisplay(
-              wallet: widget.account.wallet,
+              account: widget.account,
               amountSats: _amount,
               testnet: widget.account.wallet.network == Network.Testnet,
               key: UniqueKey(),

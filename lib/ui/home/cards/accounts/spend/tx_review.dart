@@ -47,7 +47,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTestnet = widget.account.wallet.network == Network.Testnet;
     int amount = ref.watch(spendAmountProvider);
     AmountDisplayUnit unit = ref.watch(sendScreenUnitProvider);
     String address = ref.watch(spendAddressProvider);
@@ -270,24 +269,31 @@ class _TxReviewState extends ConsumerState<TxReview> {
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.end,
                                                     children: [
-                                                      Text(
-                                                        getDisplayAmount(
-                                                            amount,
-                                                            unit ==
-                                                                    AmountDisplayUnit
-                                                                        .fiat
-                                                                ? AmountDisplayUnit
-                                                                        .values[
-                                                                    Settings()
-                                                                        .displayUnit
-                                                                        .index]
-                                                                : unit,
-                                                            testnet: isTestnet,
-                                                            includeUnit: true),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textAlign:
-                                                            TextAlign.end,
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            getDisplayAmount(
+                                                              amount,
+                                                              unit ==
+                                                                      AmountDisplayUnit
+                                                                          .fiat
+                                                                  ? AmountDisplayUnit
+                                                                          .values[
+                                                                      Settings()
+                                                                          .displayUnit
+                                                                          .index]
+                                                                  : unit,
+                                                            ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.end,
+                                                          ),
+                                                          displayIcon(
+                                                              widget.account,
+                                                              unit),
+                                                        ],
                                                       ),
                                                       Padding(
                                                           padding:

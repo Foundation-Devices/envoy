@@ -30,12 +30,16 @@ class Account with _$Account {
 
   Color get color {
     // Postmix accounts are pure red
-    if (number == 2147483646) {
+    if (isPostmix()) {
       return Colors.red;
     }
     int colorIndex = (wallet.hot ? number + 1 : number) %
         (EnvoyColors.listAccountTileColors.length);
     return EnvoyColors.listAccountTileColors[colorIndex];
+  }
+
+  bool isPostmix() {
+    return number == 2147483646;
   }
 
   const factory Account(
