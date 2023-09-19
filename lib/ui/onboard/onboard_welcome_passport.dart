@@ -10,8 +10,10 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
@@ -131,7 +133,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     ?.copyWith(color: Colors.white),
                 type: EnvoyButtonTypes.tertiary,
                 onTap: () {
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
                 },
               ),
             )

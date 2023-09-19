@@ -146,19 +146,21 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
     ref.listen(accountsProvider, (List<Account>? previous, List<Account> next) {
       if (previous!.length < next.length) {
-        _scrollController.animateTo(
-          _listContentHeight, //when new acc, go to bottom to see the acc
-          duration: const Duration(milliseconds: 1),
-          curve: Curves.ease,
-        );
+        if (_scrollController.hasClients)
+          _scrollController.animateTo(
+            _listContentHeight, //when new acc, go to bottom to see the acc
+            duration: const Duration(milliseconds: 1),
+            curve: Curves.ease,
+          );
       }
 
       if (previous.length > next.length) {
-        _scrollController.animateTo(
-          0, //when delete acc go to top
-          duration: const Duration(seconds: 1),
-          curve: Curves.ease,
-        );
+        if (_scrollController.hasClients)
+          _scrollController.animateTo(
+            0, //when delete acc go to top
+            duration: const Duration(seconds: 1),
+            curve: Curves.ease,
+          );
       }
     });
 
