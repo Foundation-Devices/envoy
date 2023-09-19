@@ -16,7 +16,6 @@ import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/indexed_transition_switcher.dart';
 import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/tl_navigation_card.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -28,6 +27,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget with TopLevelNavigationCard {
@@ -52,7 +52,7 @@ class AccountsCardState extends State<AccountsCard>
       if (EnvoySeed().walletDerived()) {
         return OnboardPassportWelcomeScreen();
       } else {
-        return OnboardEnvoyWelcomeScreen();
+        return WelcomeScreen();
       }
     }));
   }
