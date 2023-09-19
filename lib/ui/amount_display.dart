@@ -18,6 +18,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
   final bool testnet;
+  final Function? onLongPress;
   final Account? account;
 
   final Function(String)? onUnitToggled;
@@ -28,6 +29,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.onUnitToggled,
       this.testnet = false,
       this.inputMode = false,
+      this.onLongPress,
       required this.account,
       Key? key})
       : super(key: key);
@@ -146,6 +148,11 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       ),
       onPressed: () {
         nextUnit();
+      },
+      onLongPress: () async {
+        if (widget.onLongPress != null) {
+          widget.onLongPress!();
+        }
       },
     );
   }
