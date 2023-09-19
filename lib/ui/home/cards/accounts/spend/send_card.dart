@@ -76,7 +76,6 @@ class _SendCardState extends ConsumerState<SendCard>
 
     _amountEntry = AmountEntry(
       onAmountChanged: _updateAmount,
-      wallet: widget.account.wallet,
       onPaste: _onPaste,
     );
 
@@ -95,7 +94,6 @@ class _SendCardState extends ConsumerState<SendCard>
         onAmountChanged: _updateAmount,
         initalSatAmount: _amount,
         key: UniqueKey(),
-        wallet: widget.account.wallet,
         onPaste: _onPaste,
       );
     });
@@ -161,7 +159,6 @@ class _SendCardState extends ConsumerState<SendCard>
                                   onAmountChanged: _updateAmount,
                                   initalSatAmount: _amount,
                                   key: UniqueKey(),
-                                  wallet: widget.account.wallet,
                                   onPaste: _onPaste,
                                 );
                               });
