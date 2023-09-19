@@ -6,11 +6,10 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
+import 'package:envoy/ui/routes/onboarding_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -36,6 +35,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 10)).then((value) {
+      _setOptionWidgetsForTabWidgets(
+          GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     HomeShellOptions? _homeShellState = ref.watch(homeShellOptionsProvider);
     bool _modalShown = ref.watch(homePageModalModeProvider);
@@ -50,7 +58,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     ref.listen(
       routePathProvider,
       (previous, nextPath) {
-        setOptionWidgetsForTabWidgets(nextPath);
+        _setOptionWidgetsForTabWidgets(nextPath);
         if (homeTabRoutes.contains(nextPath)) {
           ref.read(homePageTitleProvider.notifier).state = "";
           ref.read(homePageModalModeProvider.notifier).state = false;
@@ -200,7 +208,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     }
   }
 
-  void setOptionWidgetsForTabWidgets(String nextPath) {
+  void _setOptionWidgetsForTabWidgets(String nextPath) {
     final StateController<bool> optionsVisibility =
         ref.read(homePageOptionsVisibilityProvider.notifier);
     StateController<HomeShellOptions?> optionsState =
@@ -228,14 +236,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 Icons.add,
               ),
               onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  if (EnvoySeed().walletDerived()) {
-                    return OnboardPassportWelcomeScreen();
-                  } else {
-                    return OnboardEnvoyWelcomeScreen();
-                  }
-                }));
+                if (EnvoySeed().walletDerived()) {
+                  GoRouter.of(context).push(ROUTE_PASSPORT_WELCOME);
+                } else {
+                  GoRouter.of(context).push(ROUTE_ONBOARD_ENVOY);
+                }
               },
             ),
             optionsWidget: Container());
