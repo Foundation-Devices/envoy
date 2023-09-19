@@ -43,7 +43,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_device_details_heading.toUpperCase();
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: DevicesOptions(),
+          optionsWidget: DeviceOptions(widget.device),
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
@@ -151,6 +151,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                           Devices().renameDevice(
                               widget.device, textEntry.enteredText);
                           Navigator.pop(context);
+                          context.go(ROUTE_DEVICES);
                         },
                       ),
                     ],
