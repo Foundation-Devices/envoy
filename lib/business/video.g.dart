@@ -17,6 +17,7 @@ Video _$VideoFromJson(Map<String, dynamic> json) => Video(
       ),
       json['url'] as String,
       json['id'] as String,
+      json['watched'] as bool?,
       thumbnail:
           (json['thumbnail'] as List<dynamic>?)?.map((e) => e as int).toList(),
       thumbnailUrl: json['thumbnailUrl'] as String?,
@@ -34,6 +35,7 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
           instance.resolutionLinkMap.map((k, e) => MapEntry(k.toString(), e)),
       'url': instance.url,
       'id': instance.id,
+      'watched': instance.watched,
     };
 
 const _$VideoTypeEnumMap = {

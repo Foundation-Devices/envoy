@@ -452,4 +452,31 @@ class AccountManager extends ChangeNotifier {
       deleteAccount(account);
     }
   }
+
+  bool isAccountTestnet(String id) {
+    for (var account in accounts) {
+      if (account.id == id) {
+        if (account.wallet.network == Network.Testnet) return true;
+      }
+    }
+    return false;
+  }
+
+  Wallet? getWallet(String accountId) {
+    for (var account in accounts) {
+      if (account.id == accountId) {
+        return account.wallet;
+      }
+    }
+    return null;
+  }
+
+  Account? getAccountById(String accountId) {
+    for (var account in accounts) {
+      if (account.id == accountId) {
+        return account;
+      }
+    }
+    return null;
+  }
 }

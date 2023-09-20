@@ -10,21 +10,21 @@ import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tor/tor.dart';
 
 import 'business/fees.dart';
 import 'business/scv_server.dart';
-import 'business/video_manager.dart';
+import 'business/feed_manager.dart';
 import 'generated/l10n.dart';
 
 Future<void> main() async {
@@ -37,6 +37,7 @@ Future<void> main() async {
   } else {
     runApp(EnvoyApp());
   }
+  listenToRouteChanges();
 }
 
 Future<void> initSingletons() async {
@@ -61,7 +62,7 @@ Future<void> initSingletons() async {
   Fees.restore();
   AccountManager.init();
   Notifications.init();
-  VideoManager.init();
+  FeedManager.init();
   ConnectivityManager.init();
 }
 
@@ -90,37 +91,32 @@ class EnvoyApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return ProviderScope(
-      child: MaterialApp(
-          localizationsDelegates: [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          debugShowCheckedModeBanner: false,
-          title: 'Envoy',
-          themeMode: ThemeMode.light,
-          theme: ThemeData(
-            textTheme: envoyTextTheme,
-            pageTransitionsTheme: PageTransitionsTheme(builders: {
-              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-            }),
-            primaryColor: envoyAccentColor,
-            brightness: Brightness.light,
-            scaffoldBackgroundColor: envoyBaseColor,
-          ),
-          initialRoute: LocalStorage().prefs.getBool("onboarded") == true
-              ? "/"
-              : "/splash",
-          routes: {
-            '/': (context) => HomePage(),
-            '/splash': (context) => WelcomeScreen(),
+      child: MaterialApp.router(
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        debugShowCheckedModeBanner: false,
+        title: 'Envoy',
+        themeMode: ThemeMode.light,
+        theme: ThemeData(
+          textTheme: envoyTextTheme,
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
           }),
+          primaryColor: envoyAccentColor,
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: envoyBaseColor,
+        ),
+        routerConfig: mainRouter,
+      ),
     );
   }
 }

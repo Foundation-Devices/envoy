@@ -10,6 +10,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/business/account.dart';
 
 //ignore: must_be_immutable
 class AmountDisplay extends ConsumerStatefulWidget {
@@ -17,6 +18,8 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
   final bool testnet;
+  final Function? onLongPress;
+  final Account? account;
 
   final Function(String)? onUnitToggled;
 
@@ -26,6 +29,8 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.onUnitToggled,
       this.testnet = false,
       this.inputMode = false,
+      this.onLongPress,
+      required this.account,
       Key? key})
       : super(key: key);
 
@@ -77,13 +82,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
     var unit = ref.watch(sendScreenUnitProvider);
 
     bool renderGhostZeros = unit == AmountDisplayUnit.fiat &&
-        widget.displayedAmount.contains(decimalPoint);
+        widget.displayedAmount.contains(fiatDecimalSeparator);
 
     String ghostDigits = renderGhostZeros
         ? "0" *
             (2 - // TODO: use actual fractions of that fiat (some have as much as 10k -> 4 zeroes)
                 (widget.displayedAmount.length -
-                    widget.displayedAmount.indexOf(decimalPoint) -
+                    widget.displayedAmount.indexOf(fiatDecimalSeparator) -
                     1))
         : "";
 
@@ -106,36 +111,48 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                         : Theme.of(context).textTheme.headlineMedium),
               Padding(
                 padding: const EdgeInsets.only(left: 6.0),
-                child: Text(
-                  unit == AmountDisplayUnit.btc
-                      ? getBtcUnitString(testnet: widget.testnet)
-                      : (unit == AmountDisplayUnit.sat
-                          ? getSatsUnitString(testnet: widget.testnet)
-                          : ExchangeRate().getCode()),
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
+                child: displayIcon(widget.account!, unit),
               )
             ],
           ),
-          Text(
-            unit != AmountDisplayUnit.fiat
-                ? ExchangeRate().getFormattedAmount(widget.amountSats ?? 0)
-                : (Settings().displayUnit == DisplayUnit.btc
-                    ? getDisplayAmount(
-                        widget.amountSats ?? 0, AmountDisplayUnit.btc,
-                        includeUnit: true, testnet: widget.testnet)
-                    : getDisplayAmount(
-                        widget.amountSats ?? 0, AmountDisplayUnit.sat,
-                        includeUnit: true, testnet: widget.testnet)),
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(color: EnvoyColors.darkTeal),
-          ),
+          RichText(
+              text: TextSpan(
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: EnvoyColors.darkTeal, fontSize: 16),
+                  children: [
+                TextSpan(
+                  text: unit != AmountDisplayUnit.fiat
+                      ? ExchangeRate().getFormattedAmount(
+                          widget.amountSats ?? 0,
+                          wallet: widget.account?.wallet)
+                      : (Settings().displayUnit == DisplayUnit.btc
+                          ? getDisplayAmount(
+                              widget.amountSats ?? 0,
+                              AmountDisplayUnit.btc,
+                            )
+                          : getDisplayAmount(
+                              widget.amountSats ?? 0,
+                              AmountDisplayUnit.sat,
+                            )),
+                ),
+                if (unit == AmountDisplayUnit.fiat)
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: SizedBox(
+                        height: 20, child: getUnitIcon(widget.account!)),
+                  ),
+              ])),
         ],
       ),
       onPressed: () {
         nextUnit();
+      },
+      onLongPress: () async {
+        if (widget.onLongPress != null) {
+          widget.onLongPress!();
+        }
       },
     );
   }

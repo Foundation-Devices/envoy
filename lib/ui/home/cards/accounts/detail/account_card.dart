@@ -8,24 +8,25 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart' as oldIcons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/home/cards/accounts/address_card.dart';
-import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
+import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -33,42 +34,23 @@ import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/blur_container_transform.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 
 //ignore: must_be_immutable
-class AccountCard extends ConsumerStatefulWidget with NavigationCard {
+class AccountCard extends ConsumerStatefulWidget {
   final Account account;
 
-  AccountCard(this.account, this.navigator, this.optionsWidget)
-      : super(key: UniqueKey()) {}
+  AccountCard(this.account) : super(key: UniqueKey()) {}
 
-  @override
-  IconData? rightFunctionIcon = Icons.more_horiz;
-
-  @override
-  bool modal = false;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().manage_account_address_heading.toUpperCase();
+  // @override
+  // String? title = S().manage_account_address_heading.toUpperCase();
 
   @override
   ConsumerState<AccountCard> createState() => _AccountCardState();
@@ -91,6 +73,24 @@ class _AccountCardState extends ConsumerState<AccountCard> {
     super.initState();
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
+    Future.delayed(Duration()).then((value) {
+      ref.read(homePageTitleProvider.notifier).state =
+          S().manage_account_address_heading;
+
+      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
+          optionsWidget: AccountOptions(widget.account),
+          rightAction: Consumer(
+            builder: (context, ref, child) {
+              bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
+              return IconButton(
+                  onPressed: () {
+                    HomePageState.of(context)?.toggleOptions();
+                  },
+                  icon: Icon(
+                      menuVisible ? Icons.close : Icons.more_horiz_outlined));
+            },
+          ));
+    });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -114,7 +114,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: AccountListTile(widget.account, onTap: () {
-            widget.navigator!.pop();
+            Navigator.pop(context);
             ref.read(homePageAccountsProvider.notifier).state =
                 HomePageAccountsState(HomePageAccountsNavigationState.list);
           }),
@@ -190,13 +190,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 child: EnvoyTextButton(
                     label: S().receive_tx_list_receive,
                     onTap: () {
-                      //hide if prompt is not shown
-                      EnvoyStorage().addPromptState(
-                          DismissiblePrompt.userInteractedWithReceive);
-                      widget.navigator!.push(AddressCard(
-                        widget.account,
-                        widget.navigator,
-                      ));
+                      context.go(ROUTE_ACCOUNT_RECEIVE, extra: widget.account);
                     }),
               ),
             ),
@@ -217,10 +211,12 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                               [ScannerType.address, ScannerType.azteco],
                               account: widget.account,
                               onAddressValidated: (address, amount) {
-                            widget.navigator!.push(SendCard(widget.account,
-                                address: address,
-                                amountSats: amount,
-                                navigator: widget.navigator));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SendCard(
+                                      widget.account,
+                                      address: address,
+                                      amountSats: amount,
+                                    )));
                           });
                         }));
                       },
@@ -230,8 +226,10 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 alignment: Alignment.centerRight,
                 child: EnvoyTextButton(
                   onTap: () {
-                    widget.navigator!.push(
-                        SendCard(widget.account, navigator: widget.navigator));
+                    context.go(ROUTE_ACCOUNT_SEND, extra: widget.account);
+                    return;
+                    // widget.navigator!.push(
+                    //     SendCard(widget.account, navigator: widget.navigator));
                   },
                   label: S().receive_tx_list_send,
                 ),
@@ -365,6 +363,7 @@ class TransactionListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlurContainerTransform(
+      useRootNavigator: true,
       closedBuilder: (context, action) {
         return GestureDetector(
           onTap: () {
@@ -499,8 +498,9 @@ class TransactionListTile extends StatelessWidget {
                     child: Text(
                         transaction.type == TransactionType.azteco
                             ? ""
-                            : ExchangeRate()
-                                .getFormattedAmount(transaction.amount),
+                            : ExchangeRate().getFormattedAmount(
+                                transaction.amount,
+                                wallet: account.wallet),
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color:
                                 Theme.of(context).textTheme.bodySmall!.color)),
@@ -522,9 +522,10 @@ class TransactionListTile extends StatelessWidget {
 
 class AccountOptions extends ConsumerStatefulWidget {
   final Account account;
-  final CardNavigator? navigator;
 
-  AccountOptions(this.account, {this.navigator}) : super(key: UniqueKey());
+  AccountOptions(
+    this.account,
+  ) : super(key: UniqueKey());
 
   @override
   ConsumerState<AccountOptions> createState() => _AccountOptionsState();
@@ -554,10 +555,8 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
-            widget.navigator!.push(DescriptorCard(
-              widget.account,
-              widget.navigator,
-            ));
+            HomePageState.of(context)?.toggleOptions();
+            context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account);
           },
         ),
         SizedBox(
@@ -625,20 +624,201 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);
-                          widget.navigator!.pop();
+                          // widget.navigator!.pop();
                           Navigator.pop(context);
                         },
                       ),
                     ],
                   ));
             } else {
-              widget.navigator!.pop();
               ref.read(homePageBackgroundProvider.notifier).state =
                   HomePageBackgroundState.backups;
+              GoRouter.of(context).pop();
             }
           },
         ),
       ],
     );
   }
+}
+
+abstract class VisibilityAwareState<T extends StatefulWidget>
+    extends State<T> // ignore: prefer_mixin
+    with
+        WidgetsBindingObserver,
+        _StackChangedListener {
+  VisibilityAwareState({this.debugPrintsEnabled = false});
+
+  static final Set<String> _widgetStack = {};
+  static final Map<String, int> _widgetStackTimestamps = {};
+
+  static final Set<_StackChangedListener> _listeners = {};
+
+  bool debugPrintsEnabled;
+
+  bool _isWidgetRemoved = false;
+
+  WidgetVisibility? _widgetVisibility;
+
+  /// Adds [widgetName] to the set.
+  ///
+  /// Returns `true` if [widgetName] was not yet in the set.
+  /// Otherwise returns `false` and the set is not changed.
+  static bool _addToStack(String widgetName) {
+    final bool result = _widgetStack.add(widgetName);
+    if (result) {
+      _widgetStackTimestamps[widgetName] =
+          DateTime.now().millisecondsSinceEpoch;
+      for (final listener in _listeners) {
+        listener._onAddToStack(widgetName);
+      }
+      //debugPrint('_addToStack($widgetName) returns true, $_widgetStack');
+    }
+    return result;
+  }
+
+  /// Removes [widgetName] from the set.
+  ///
+  /// Returns `true` if [widgetName] was in the set, and `false` if not.
+  /// The method has no effect if [widgetName] was not in the set.
+  static bool _removeFromStack(String widgetName) {
+    final bool result = _widgetStack.remove(widgetName);
+    if (result) {
+      _widgetStackTimestamps.remove(widgetName);
+      //debugPrint('_removeFromStack($widgetName) returns true, $_widgetStack');
+      for (final listener in _listeners) {
+        listener._onRemoveFromStack();
+      }
+    }
+    return result;
+  }
+
+  @override
+  void _onAddToStack(String widgetName) {
+    if (_widgetVisibility != WidgetVisibility.INVISIBLE &&
+        runtimeType.toString() != widgetName &&
+        !_wasAddedTogetherWith(widgetName)) {
+      _onVisibilityChanged(WidgetVisibility.INVISIBLE);
+    }
+  }
+
+  @override
+  void _onRemoveFromStack() {
+    if (_widgetStack.isNotEmpty &&
+        (runtimeType.toString() == _widgetStack.last ||
+            _wasAddedTogetherWith(_widgetStack.last))) {
+      _onVisibilityChanged(WidgetVisibility.VISIBLE);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //debugPrint('$runtimeType.initState()');
+    WidgetsBinding.instance.addPostFrameCallback(_onWidgetLoaded);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _onWidgetLoaded(_) {
+    //debugPrint('$runtimeType.onWidgetLoaded()');
+    _listeners.add(this);
+    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+      //print(runtimeType);
+      if (!_isWidgetRemoved && _addToStack(runtimeType.toString())) {
+        //debugPrint('Adding $runtimeType to stack. widgetStack = $_widgetStack');
+        _onVisibilityChanged(WidgetVisibility.VISIBLE);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    //debugPrint('$runtimeType.dispose()');
+    _isWidgetRemoved = true;
+    _listeners.remove(this);
+    _removeFromStack(runtimeType.toString());
+    //print('Removing $runtimeType from stack. widgetStack = $_widgetStack');
+    _onVisibilityChanged(WidgetVisibility.GONE);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // move app to background: inactive -> paused
+    // open app from background: resumed
+    if (debugPrintsEnabled) {
+      debugPrint('$runtimeType.didChangeAppLifecycleState($state)');
+    }
+    if (state == AppLifecycleState.inactive) {
+      // app is inactive (called on iOS if app overview is shown)
+      _onVisibilityChanged(WidgetVisibility.INVISIBLE);
+    } else if (state == AppLifecycleState.paused) {
+      // user is about quit our app temporally
+      // (called on iOS if the app is in background and overview was closed)
+      _onVisibilityChanged(WidgetVisibility.INVISIBLE);
+    } else if (state == AppLifecycleState.resumed) {
+      // user returned to our app
+      if (_widgetStack.isNotEmpty &&
+          (runtimeType.toString() == _widgetStack.last ||
+              _wasAddedTogetherWith(_widgetStack.last))) {
+        _onVisibilityChanged(WidgetVisibility.VISIBLE);
+      }
+    } else if (state == AppLifecycleState.detached) {
+      // still hosted on a flutter engine but is detached from any host views
+    }
+  }
+
+  bool _wasAddedTogetherWith(String otherWidgetsName) {
+    final int? timeOtherWasAdded = _widgetStackTimestamps[otherWidgetsName];
+    final int? timeAdded = _widgetStackTimestamps[runtimeType.toString()];
+    if (timeOtherWasAdded == null || timeAdded == null) {
+      return false;
+    }
+
+    final int diff = (timeAdded > timeOtherWasAdded)
+        ? timeAdded - timeOtherWasAdded
+        : timeOtherWasAdded - timeAdded;
+
+    if (diff < 50) {
+      if (debugPrintsEnabled) {
+        debugPrint(
+            'diff of $otherWidgetsName and ${runtimeType.toString()}: $diff');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  void _onVisibilityChanged(WidgetVisibility visibility) {
+    if (_widgetVisibility != visibility) {
+      _widgetVisibility = visibility;
+      onVisibilityChanged(visibility);
+
+      if (debugPrintsEnabled) {}
+    }
+  }
+
+  void onVisibilityChanged(WidgetVisibility visibility) {}
+
+  bool isVisible() {
+    return _widgetVisibility == WidgetVisibility.VISIBLE;
+  }
+
+  void finish() {
+    // close the whole screen
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      SystemNavigator.pop();
+    }
+  }
+}
+
+enum WidgetVisibility { VISIBLE, INVISIBLE, GONE }
+
+mixin _StackChangedListener {
+  void _onAddToStack(String widgetName);
+
+  void _onRemoveFromStack();
 }

@@ -11,9 +11,8 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
-import 'package:envoy/ui/home/cards/navigation_card.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,35 +25,15 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/util/envoy_storage.dart';
 
 //ignore: must_be_immutable
-class TxReview extends ConsumerStatefulWidget with NavigationCard {
+class TxReview extends ConsumerStatefulWidget {
   final Psbt psbt;
   final Account account;
   final GestureTapCallback onFinishNavigationClick;
 
-  TxReview(this.psbt, this.account,
-      {this.navigator, required this.onFinishNavigationClick})
+  TxReview(this.psbt, this.account, {required this.onFinishNavigationClick})
       : super(key: UniqueKey()) {}
 
-  @override
-  IconData? rightFunctionIcon = null;
-
-  @override
-  bool modal = true;
-
-  @override
-  CardNavigator? navigator;
-
-  @override
-  Function()? onPop;
-
-  @override
-  Widget? optionsWidget = null;
-
-  @override
-  Function()? rightFunction;
-
-  @override
-  String? title = S().send_qr_code_heading.toUpperCase();
+  // String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
   ConsumerState<TxReview> createState() => _TxReviewState();
@@ -68,7 +47,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTestnet = widget.account.wallet.network == Network.Testnet;
     int amount = ref.watch(spendAmountProvider);
     AmountDisplayUnit unit = ref.watch(sendScreenUnitProvider);
     String address = ref.watch(spendAddressProvider);
@@ -291,31 +269,38 @@ class _TxReviewState extends ConsumerState<TxReview> {
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.end,
                                                     children: [
-                                                      Text(
-                                                        getDisplayAmount(
-                                                            amount,
-                                                            unit ==
-                                                                    AmountDisplayUnit
-                                                                        .fiat
-                                                                ? AmountDisplayUnit
-                                                                        .values[
-                                                                    Settings()
-                                                                        .displayUnit
-                                                                        .index]
-                                                                : unit,
-                                                            testnet: isTestnet,
-                                                            includeUnit: true),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textAlign:
-                                                            TextAlign.end,
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            getDisplayAmount(
+                                                              amount,
+                                                              unit ==
+                                                                      AmountDisplayUnit
+                                                                          .fiat
+                                                                  ? AmountDisplayUnit
+                                                                          .values[
+                                                                      Settings()
+                                                                          .displayUnit
+                                                                          .index]
+                                                                  : unit,
+                                                            ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.end,
+                                                          ),
+                                                          displayIcon(
+                                                              widget.account,
+                                                              unit),
+                                                        ],
                                                       ),
                                                       Padding(
                                                           padding:
                                                               EdgeInsets.all(
                                                                   2)),
                                                       Text(
-                                                        "${ExchangeRate().getFormattedAmount(amount)}",
+                                                        "${ExchangeRate().getFormattedAmount(amount, wallet: widget.account.wallet)}",
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: Theme.of(context)
@@ -454,7 +439,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                               S().stalls_before_sending_tx_cta2,
                               type: EnvoyButtonTypes.secondary,
                               onTap: () {
-                                widget.navigator?.pop();
+                                Navigator.pop(context);
                               },
                             ),
                             Padding(padding: EdgeInsets.all(6)),

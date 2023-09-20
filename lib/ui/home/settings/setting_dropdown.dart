@@ -30,7 +30,7 @@ class _SettingDropdownState extends State<SettingDropdown> {
       value: widget.getter(),
       onChanged: (value) {
         setState(() {
-          widget.setter(value as String?);
+          widget.setter(value);
         });
       },
       items: widget.options.entries

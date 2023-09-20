@@ -38,7 +38,10 @@ class OnboardingPage extends StatelessWidget {
   }
 
   static goHome(context) {
-    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+    // Pop until we get to the home page (GoRouter Shell)
+    Navigator.of(context).popUntil((route) {
+      return route.settings is MaterialPage;
+    });
   }
 
   OnboardingPage({

@@ -14,48 +14,41 @@ class TouPage extends StatelessWidget {
   Widget build(BuildContext context) {
     //ignore:unused_local_variable
 
-    return WillPopScope(
-      onWillPop: () {
-        Navigator.pop(context);
-        return Future.value(false);
-      },
-      child: OnboardingPage(
-        key: Key("tou"),
-        text: [
-          OnboardingText(header: S().envoy_passport_tou_heading),
-          Expanded(
-            flex: 5,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(4.0),
-              scrollDirection: Axis.vertical,
-              child: FutureBuilder<String>(
-                  future: rootBundle.loadString('assets/passport_tou.html'),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return DefaultTextStyle(
-                        style: Theme.of(context).textTheme.bodySmall!,
-                        child: Html(
-                          data: snapshot.data,
-                        ),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  }),
-            ),
-          )
-        ],
-        buttons: [
-          OnboardingButton(
-              label: S().envoy_passport_tou_cta,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScvIntroPage();
-                }));
-              }),
-        ],
-      ),
+    return OnboardingPage(
+      key: Key("tou"),
+      text: [
+        OnboardingText(header: S().envoy_passport_tou_heading),
+        Expanded(
+          flex: 5,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(4.0),
+            scrollDirection: Axis.vertical,
+            child: FutureBuilder<String>(
+                future: rootBundle.loadString('assets/passport_tou.html'),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return DefaultTextStyle(
+                      style: Theme.of(context).textTheme.bodySmall!,
+                      child: Html(
+                        data: snapshot.data,
+                      ),
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                }),
+          ),
+        )
+      ],
+      buttons: [
+        OnboardingButton(
+            label: S().envoy_passport_tou_cta,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ScvIntroPage();
+              }));
+            }),
+      ],
     );
   }
 }

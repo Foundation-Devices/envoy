@@ -4,7 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -15,6 +15,7 @@ import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
+import 'package:envoy/business/video.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -35,21 +36,40 @@ final pendingTxStreamProvider =
 final firmwareStreamProvider = StreamProvider.family<FirmwareInfo?, int>(
     (ref, deviceID) => EnvoyStorage().getfirmwareSteam(deviceID));
 
+const String txNotesStoreName = "tx_notes";
+const String videosStoreName = "videos";
+const String pendingTxStoreName = "pending_tx";
+const String dismissedPromptsStoreName = "dismissed_prompts";
+const String firmwareStoreName = "firmware";
+const String utxoBlockStateStoreName = "utxo_block_state";
+const String tagsStoreName = "tags";
+const String preferencesStoreName = "preferences";
+const String blogPostsStoreName = "blog_posts";
+
 class EnvoyStorage {
   String dbName = 'envoy.db';
   late Database _db;
 
-  StoreRef<String, String> txNotesStore = StoreRef<String, String>("tx_notes");
-  StoreRef<String, Map> pendingTxStore = StoreRef<String, Map>("pending_tx");
+  StoreRef<String, String> txNotesStore =
+      StoreRef<String, String>(txNotesStoreName);
+  StoreRef<String, Map> pendingTxStore =
+      StoreRef<String, Map>(pendingTxStoreName);
   StoreRef<String, bool> dismissedPromptsStore =
-      StoreRef<String, bool>("dismissed_prompts");
-  StoreRef<int, Map> firmwareStore = StoreRef<int, Map>("firmware");
+      StoreRef<String, bool>(dismissedPromptsStoreName);
 
-  StoreRef<String, bool> utxoBlockState = StoreRef("utxo_block_state");
-  StoreRef<String, Map<String, Object?>> tagStore = StoreRef('tags');
+  StoreRef<int, Map> firmwareStore = StoreRef<int, Map>(firmwareStoreName);
+
+  StoreRef<String, bool> utxoBlockState = StoreRef(utxoBlockStateStoreName);
+  StoreRef<String, Map<String, Object?>> tagStore = StoreRef(tagsStoreName);
+
+  StoreRef<String, String> videoStore =
+      StoreRef<String, String>(videosStoreName);
+
+  StoreRef<String, String> blogPostsStore =
+      StoreRef<String, String>(blogPostsStoreName);
 
   StoreRef<String, Object?> preferencesStore =
-      StoreRef<String, Object?>("preferences");
+      StoreRef<String, Object?>(preferencesStoreName);
   final Map<String, Object?> _preferencesCache = {};
 
   static final EnvoyStorage _instance = EnvoyStorage._();
@@ -340,6 +360,74 @@ class EnvoyStorage {
     final record = await preferencesStore.record(key);
     await record.put(_db, value);
     return true;
+  }
+
+  Future<bool> clearVideosStore() async {
+    var cleared = await videoStore.delete(_db);
+
+    return cleared > 0;
+  }
+
+  insertVideo(Video video) async {
+    await videoStore.record(video.id).put(_db, jsonEncode(video));
+  }
+
+  updateVideo(Video video) {
+    videoStore.record(video.id).update(_db, jsonEncode(video));
+  }
+
+  Video? transformVideo(RecordSnapshot<String, String> records) {
+    return Video.fromJson(jsonDecode(records.value));
+  }
+
+  Future<List<Video?>?> getAllVideos() async {
+    var videos = await videoStore.find(_db);
+
+    return videos.map((e) => transformVideo(e)).toList();
+  }
+
+  Stream<bool> isVideoWatched(String url) {
+    final filter = Finder(filter: Filter.byKey(url));
+
+    return EnvoyStorage()
+        .videoStore
+        .query(finder: filter)
+        .onSnapshots(_db)
+        .map((videos) {
+      var video = transformVideo(videos[0]);
+      return video?.watched ?? false;
+    });
+  }
+
+  updateBlogPost(BlogPost blog) {
+    blogPostsStore.record(blog.id).update(_db, jsonEncode(blog));
+  }
+
+  insertBlogPost(BlogPost blog) async {
+    await blogPostsStore.record(blog.id).put(_db, jsonEncode(blog));
+  }
+
+  BlogPost? transformBlog(RecordSnapshot<String, String> records) {
+    return BlogPost.fromJson(jsonDecode(records.value));
+  }
+
+  Future<List<BlogPost?>?> getAllBlogPosts() async {
+    var blogs = await blogPostsStore.find(_db);
+
+    return blogs.map((e) => transformBlog(e)).toList();
+  }
+
+  Stream<bool> isBlogRead(String url) {
+    final filter = Finder(filter: Filter.byKey(url));
+
+    return EnvoyStorage()
+        .blogPostsStore
+        .query(finder: filter)
+        .onSnapshots(_db)
+        .map((blogs) {
+      var blog = transformBlog(blogs[0]);
+      return blog?.read ?? false;
+    });
   }
 
   Database get db => _db;

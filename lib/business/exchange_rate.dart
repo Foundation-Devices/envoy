@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/settings.dart';
@@ -11,6 +12,19 @@ import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
+import 'package:wallet/wallet.dart';
+
+final String userLocale = Platform.localeName;
+NumberFormat numberFormat = NumberFormat.simpleCurrency(locale: userLocale);
+
+String get fiatDecimalSeparator {
+  return numberFormat.symbols.DECIMAL_SEP;
+}
+
+// Usually this is a thousands separator
+String get fiatGroupSeparator {
+  return numberFormat.symbols.GROUP_SEP;
+}
 
 class FiatCurrency {
   final String code;
@@ -39,6 +53,7 @@ final List<FiatCurrency> supportedFiat = [
   FiatCurrency('CAD', '\$'),
   FiatCurrency('CHF', 'fr.'),
   FiatCurrency('MYR', 'RM'),
+  FiatCurrency('BRL', 'R\$'),
 ];
 
 class ExchangeRate extends ChangeNotifier {
@@ -149,15 +164,28 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   // SATS to FIAT
-  String getFormattedAmount(int amountSats, {bool includeSymbol = true}) {
-    if (Settings().selectedFiat == null) {
+  String getFormattedAmount(int amountSats,
+      {bool includeSymbol = true, Wallet? wallet}) {
+    if (Settings().selectedFiat == null || wallet?.network == Network.Testnet) {
       return "";
     }
 
     NumberFormat currencyFormatter = NumberFormat.currency(
-        name: _currency!.symbol, symbol: includeSymbol ? null : "");
-    return currencyFormatter
+        locale: userLocale,
+        name: _currency!.symbol,
+        symbol: includeSymbol ? null : "");
+
+    String formattedAmount = currencyFormatter
         .format(_selectedCurrencyRate * amountSats / 100000000);
+
+    if (!includeSymbol) {
+      // NumberFormat still adds a non-breaking space if symbol is empty
+      const int $nbsp = 0x00A0;
+      formattedAmount =
+          formattedAmount.replaceAll(String.fromCharCode($nbsp), "");
+    }
+
+    return formattedAmount;
   }
 
   String getSymbol() {
@@ -168,9 +196,12 @@ class ExchangeRate extends ChangeNotifier {
     return _currency!.symbol;
   }
 
-  int fiatToSats(String amountFiat) {
-    amountFiat =
-        amountFiat.replaceAll(RegExp('[^0-9.]'), '').replaceAll(",", "");
+  int convertFiatStringToSats(String amountFiat) {
+    amountFiat = amountFiat
+        .replaceAll(RegExp('[^0-9$fiatDecimalSeparator]'), '')
+        .replaceAll(fiatGroupSeparator, "");
+
+    amountFiat = amountFiat.replaceAll(fiatDecimalSeparator, ".");
 
     if (Settings().selectedFiat == null) {
       return 0;

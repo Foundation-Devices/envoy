@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/components/envoy_chip.dart';
+import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
@@ -53,6 +53,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                       showModalBottomSheet(
                           context: context,
                           isDismissible: true,
+                          useRootNavigator: true,
                           barrierColor: Colors.black.withOpacity(0.2),
                           enableDrag: true,
                           isScrollControlled: true,

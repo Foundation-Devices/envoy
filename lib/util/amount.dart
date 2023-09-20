@@ -2,46 +2,50 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:wallet/wallet.dart';
 
-// To be replaced with whatever is in locale
+// Always use comma to group thousands of BTC and dot to separate the sats
 NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
-String decimalPoint = ".";
-String thousandsSeparator = ",";
+String btcSatoshiSeparator = ".";
+String thousandSatSeparator = ",";
 
-String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
-    {bool includeUnit = false, bool testnet = false}) {
-  String? unitString;
-
+String getDisplayAmount(
+  int amountSats,
+  AmountDisplayUnit unit,
+) {
   switch (unit) {
     case AmountDisplayUnit.btc:
-      unitString = getBtcUnitString(testnet: testnet);
-      break;
+      return convertSatsToBtcString(amountSats);
     case AmountDisplayUnit.sat:
-      unitString = getSatsUnitString(testnet: testnet);
-      break;
+      return satsFormatter.format(amountSats);
     case AmountDisplayUnit.fiat:
-      unitString = null;
-      break;
+      var formattedString = ExchangeRate().getFormattedAmount(
+        amountSats,
+        includeSymbol: false,
+      );
+      return removeFiatTrailingZeros(formattedString);
   }
-  ;
+}
 
-  switch (unit) {
-    case AmountDisplayUnit.btc:
-      return convertSatsToBtcString(amountSats) +
-          (includeUnit ? " " + unitString! : "");
-    case AmountDisplayUnit.sat:
-      return satsFormatter.format(amountSats) +
-          (includeUnit ? " " + unitString! : "");
-    case AmountDisplayUnit.fiat:
-      return ExchangeRate().getSymbol() +
-          convertFiatToFiatString(double.parse(ExchangeRate()
-              .getFormattedAmount(amountSats, includeSymbol: false)
-              .replaceAll(thousandsSeparator, "")));
+String removeFiatTrailingZeros(String fiatAmount) {
+  if (fiatAmount.contains(fiatDecimalSeparator)) {
+    while (fiatAmount[fiatAmount.length - 1] == "0") {
+      fiatAmount = fiatAmount.substring(0, fiatAmount.length - 1);
+    }
+
+    if (fiatAmount[fiatAmount.length - 1] == fiatDecimalSeparator) {
+      fiatAmount = fiatAmount.substring(0, fiatAmount.length - 1);
+    }
   }
+  return fiatAmount;
 }
 
 String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
@@ -54,14 +58,6 @@ String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
   return formatter.format(amountBtc);
 }
 
-String convertFiatToFiatString(double Fiat, {bool trailingZeroes = false}) {
-  NumberFormat formatter = NumberFormat();
-  formatter.minimumFractionDigits = trailingZeroes ? 2 : 0;
-  formatter.maximumFractionDigits = 2;
-
-  return formatter.format(Fiat);
-}
-
 int convertSatsStringToSats(String amountSats) {
   if (amountSats.isEmpty) {
     return 0;
@@ -69,8 +65,8 @@ int convertSatsStringToSats(String amountSats) {
 
   try {
     return int.parse(amountSats
-        .replaceAll(decimalPoint, "")
-        .replaceAll(thousandsSeparator, ""));
+        .replaceAll(btcSatoshiSeparator, "")
+        .replaceAll(thousandSatSeparator, ""));
   } catch (e) {
     return 0;
   }
@@ -82,11 +78,11 @@ int convertBtcStringToSats(String amountBtc) {
   }
 
   // There are 8 digits after the decimal point
-  String sanitized = amountBtc.replaceAll(thousandsSeparator, "");
-  int dotIndex = sanitized.indexOf(decimalPoint);
+  String sanitized = amountBtc;
+  int dotIndex = sanitized.indexOf(btcSatoshiSeparator);
   int missingZeros = dotIndex < 0 ? 8 : 8 - (sanitized.length - dotIndex - 1);
 
-  String dotRemoved = sanitized.replaceAll(decimalPoint, "");
+  String dotRemoved = sanitized.replaceAll(btcSatoshiSeparator, "");
 
   if (missingZeros < 0) {
     dotRemoved = dotRemoved.substring(0, dotRemoved.length + missingZeros);
@@ -101,27 +97,48 @@ int convertBtcStringToSats(String amountBtc) {
 String getFormattedAmount(int amountSats,
     {bool includeUnit = false, bool testnet = false, trailingZeroes = false}) {
   String text = Settings().displayUnit == DisplayUnit.btc
-      ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes) +
-          (includeUnit ? " " + getBtcUnitString(testnet: testnet) : "")
-      : satsFormatter.format(amountSats) +
-          (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");
+      ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes)
+      : satsFormatter.format(amountSats);
 
   return text;
 }
 
-String getFormattedSatsAmount(int amountSats,
-    {bool includeUnit = false, bool testnet = false}) {
-  String text = satsFormatter.format(amountSats) +
-      (includeUnit ? " " + getSatsUnitString(testnet: testnet) : "");
-  return text;
+EnvoyIcon getSatsIcon(Account account) {
+  if (account.wallet.network != Network.Testnet) {
+    return EnvoyIcon(EnvoyIcons.sats);
+  } else {
+    if (account.isPostmix()) {
+      return EnvoyIcon(EnvoyIcons.sats_testnet_postmix_account);
+    }
+    if (account.wallet.hot) {
+      return EnvoyIcon(EnvoyIcons.sats_testnet_envoy_account);
+    }
+
+    if (!account.wallet.hot) {
+      return EnvoyIcon(EnvoyIcons.sats_testnet_passport_account);
+    }
+    return EnvoyIcon(EnvoyIcons.sats_testnet_neutral);
+  }
 }
 
-String getSatsUnitString({testnet = false}) {
-  return testnet ? "TSATS".toLowerCase() : "SATS".toLowerCase();
-}
+EnvoyIcon getBtcIcon(Account account) {
+  if (account.wallet.network != Network.Testnet) {
+    return EnvoyIcon(EnvoyIcons.btc);
+  } else {
+    if (account.isPostmix()) {
+      return EnvoyIcon(EnvoyIcons.btc_testnet_postmix_account);
+    }
+    if (account.wallet.hot) {
+      return EnvoyIcon(
+        EnvoyIcons.btc_testnet_envoy_account,
+      );
+    }
 
-String getBtcUnitString({testnet = false}) {
-  return testnet ? "TBTC" : "BTC";
+    if (!account.wallet.hot) {
+      return EnvoyIcon(EnvoyIcons.btc_testnet_passport_account);
+    }
+    return EnvoyIcon(EnvoyIcons.btc_testnet_neutral);
+  }
 }
 
 String truncateWithEllipsisInCenter(String text, int maxLength) {
@@ -139,10 +156,24 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
   return '$firstHalf$ellipsis$secondHalf';
 }
 
-String getUnitString({testnet = false}) {
-  String textUint = Settings().displayUnit == DisplayUnit.btc
-      ? getBtcUnitString(testnet: testnet)
-      : getSatsUnitString(testnet: testnet);
+EnvoyIcon getUnitIcon(Account account) {
+  EnvoyIcon iconUint = Settings().displayUnit == DisplayUnit.btc
+      ? getBtcIcon(account)
+      : getSatsIcon(account);
 
-  return textUint;
+  return iconUint;
+}
+
+Widget displayIcon(Account account, AmountDisplayUnit unit) {
+  if (unit == AmountDisplayUnit.fiat) {
+    return Text(
+      ExchangeRate().getCode(),
+      // style: Theme.of(context).textTheme.headlineSmall,
+    );
+  }
+
+  if (unit == AmountDisplayUnit.btc) {
+    return getBtcIcon(account);
+  } else
+    return getSatsIcon(account);
 }

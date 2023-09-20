@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -23,6 +24,7 @@ class EnvoyListTile extends StatelessWidget {
     this.leftIcon,
     this.rightIcon,
     this.iconColor = EnvoyColors.textPrimary,
+    this.unitIcon,
   }) : super(key: key);
 
   final String textLeft1;
@@ -32,6 +34,7 @@ class EnvoyListTile extends StatelessWidget {
   final EnvoyIcons? leftIcon;
   final EnvoyIcons? rightIcon;
   final Color? iconColor;
+  final EnvoyIcon? unitIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +79,15 @@ class EnvoyListTile extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                      child: Text(
-                        textRight1!,
-                        style: EnvoyTypography.body2Medium,
+                      child: Row(
+                        children: [
+                          if (unitIcon != null)
+                            SizedBox(height: 20, child: unitIcon!),
+                          Text(
+                            textRight1!,
+                            style: EnvoyTypography.body2Medium,
+                          ),
+                        ],
                       ),
                     ),
                   if (textRight2 != null)
@@ -154,6 +163,7 @@ class ActivityListTile extends StatelessWidget {
     EnvoyIcons? leftIcon;
     EnvoyIcons? rightIcon;
     Color? iconColor;
+    EnvoyIcon? unitIcon;
 
     if (notification.type == EnvoyNotificationType.transaction) {
       leftIcon = notification.amount! >= 0
@@ -161,11 +171,14 @@ class ActivityListTile extends StatelessWidget {
           : EnvoyIcons.arrow_up_right;
       textLeft1 = notification.amount! >= 0 ? "Received" : "Sent";
       textLeft2 = timeago.format(notification.date);
-      textRight1 = getFormattedAmount(notification.amount!, includeUnit: true);
+      textRight1 = getFormattedAmount(notification.amount!);
       textRight2 = Settings().selectedFiat == null
           ? null
-          : ExchangeRate().getFormattedAmount(notification.amount!);
+          : ExchangeRate().getFormattedAmount(notification.amount!,
+              wallet: AccountManager().getWallet(notification.accountId!));
       iconColor = EnvoyColors.textTertiary;
+      unitIcon = getUnitIcon(
+          AccountManager().getAccountById(notification.accountId!)!);
     }
 
     return EnvoyListTile(
@@ -176,6 +189,7 @@ class ActivityListTile extends StatelessWidget {
       rightIcon: rightIcon,
       leftIcon: leftIcon,
       iconColor: iconColor,
+      unitIcon: unitIcon,
     );
   }
 }

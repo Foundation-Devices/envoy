@@ -12,21 +12,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as designSystem;
+
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
+import 'package:envoy/business/account.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
 class AmountEntry extends ConsumerStatefulWidget {
-  final Wallet? wallet;
+  final Account? account;
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
 
   AmountEntry(
-      {this.wallet,
+      {this.account,
       this.onAmountChanged,
       this.initalSatAmount = 0,
       this.onPaste,
@@ -47,7 +50,27 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         ? convertBtcStringToSats(_enteredAmount)
         : (unit == AmountDisplayUnit.sat
             ? convertSatsStringToSats(_enteredAmount)
-            : ExchangeRate().fiatToSats((_enteredAmount)));
+            : ExchangeRate().convertFiatStringToSats((_enteredAmount)));
+  }
+
+  Future<void> pasteAmount() async {
+    var unit = ref.read(sendScreenUnitProvider);
+    ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
+
+    String? text = cdata?.text ?? null;
+    var decodedInfo = await BitcoinParser.parse(text!,
+        fiatExchangeRate: ExchangeRate().usdRate,
+        wallet: widget.account?.wallet,
+        selectedFiat: Settings().selectedFiat);
+    ref.read(sendScreenUnitProvider.notifier).state = decodedInfo.unit ?? unit;
+
+    setState(() {
+      unit = decodedInfo.unit ?? unit;
+    });
+
+    if (widget.onPaste != null) {
+      widget.onPaste!(decodedInfo);
+    }
   }
 
   @override
@@ -66,7 +89,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     ref.watch(settingsProvider);
     var unit = ref.watch(sendScreenUnitProvider);
 
-    Numpad numpad = Numpad(unit, isAmountZero: _amountSats == 0);
+    Numpad numpad = Numpad(unit,
+        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0");
     numpad.events.stream.listen((event) async {
       switch (event) {
         case NumpadEvents.backspace:
@@ -103,42 +127,23 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           break;
         case NumpadEvents.clipboard:
           {
-            ClipboardData? cdata =
-                await Clipboard.getData(Clipboard.kTextPlain);
-
-            String? text = cdata?.text ?? null;
-            var decodedInfo = await BitcoinParser.parse(text!,
-                fiatExchangeRate: ExchangeRate().usdRate,
-                wallet: widget.wallet,
-                selectedFiat: Settings().selectedFiat);
-            ref.read(sendScreenUnitProvider.notifier).state =
-                decodedInfo.unit ?? unit;
-
-            setState(() {
-              unit = decodedInfo.unit ?? unit;
-            });
-
-            if (widget.onPaste != null) {
-              widget.onPaste!(decodedInfo);
-            }
+            pasteAmount();
             break;
           }
         default:
           {
             // No more than eight decimal digits for BTC
             if (unit == AmountDisplayUnit.btc &&
-                _enteredAmount.contains(decimalPoint) &&
-                ((_enteredAmount.length -
-                        _enteredAmount.indexOf(decimalPoint)) >
-                    8)) {
+                _enteredAmount.contains(".") &&
+                ((_enteredAmount.length - _enteredAmount.indexOf(".")) > 8)) {
               break;
             }
 
             // No more than two decimal digits for fiat
             if (unit == AmountDisplayUnit.fiat &&
-                _enteredAmount.contains(decimalPoint) &&
+                _enteredAmount.contains(fiatDecimalSeparator) &&
                 ((_enteredAmount.length -
-                        _enteredAmount.indexOf(decimalPoint)) >
+                        _enteredAmount.indexOf(fiatDecimalSeparator)) >
                     2)) {
               break;
             }
@@ -164,19 +169,27 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       // Make sure we don't do any formatting in certain situations
       bool addZero = (event == "0") &&
           (unit != AmountDisplayUnit.sat) &&
-          (_enteredAmount.contains(decimalPoint));
+          (_enteredAmount.contains(fiatDecimalSeparator));
 
       bool addDot = (event == NumpadEvents.dot) &&
-          (unit != AmountDisplayUnit.sat) &&
-          (!_enteredAmount.contains(decimalPoint));
+          (unit == AmountDisplayUnit.fiat &&
+                  !_enteredAmount.contains(fiatDecimalSeparator) ||
+              unit == AmountDisplayUnit.btc && !_enteredAmount.contains("."));
 
       bool removeZero = (event == NumpadEvents.backspace) &&
           (unit != AmountDisplayUnit.sat) &&
-          (_enteredAmount.contains(decimalPoint));
+          (_enteredAmount.contains(fiatDecimalSeparator));
 
       if (addZero || addDot || removeZero) {
         setState(() {
-          _enteredAmount = _enteredAmount + (addDot ? decimalPoint : "");
+          _enteredAmount = _enteredAmount == "" && addDot
+              ? "0"
+              : (_enteredAmount) +
+                  (addDot
+                      ? (unit == AmountDisplayUnit.fiat
+                          ? fiatDecimalSeparator
+                          : ".")
+                      : "");
         });
       } else {
         // Format it nicely
@@ -195,22 +208,26 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         FittedBox(
           fit: BoxFit.fitWidth,
           child: AmountDisplay(
+            account: widget.account,
             inputMode: true,
             displayedAmount: _enteredAmount,
             amountSats: _amountSats,
-            testnet: widget.wallet?.network == Network.Testnet,
+            testnet: widget.account?.wallet.network == Network.Testnet,
             onUnitToggled: (enteredAmount) {
               // SFT-2508: special rule for circling through is to pad fiat with last 0
               final unit = ref.watch(sendScreenUnitProvider);
               if (unit == AmountDisplayUnit.fiat &&
-                  enteredAmount.contains(decimalPoint) &&
+                  enteredAmount.contains(fiatDecimalSeparator) &&
                   ((enteredAmount.length -
-                          enteredAmount.indexOf(decimalPoint)) ==
+                          enteredAmount.indexOf(fiatDecimalSeparator)) ==
                       2)) {
                 enteredAmount = enteredAmount + "0";
               }
 
               _enteredAmount = enteredAmount;
+            },
+            onLongPress: () async {
+              pasteAmount();
             },
           ),
         ),
@@ -274,7 +291,9 @@ class _NumpadState extends State<Numpad> {
         widget.amountDisplayUnit != AmountDisplayUnit.sat
             ? NumpadButton(
                 NumpadButtonType.text,
-                text: decimalPoint,
+                text: widget.amountDisplayUnit == AmountDisplayUnit.fiat
+                    ? fiatDecimalSeparator
+                    : ".",
                 onTap: () {
                   Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.dot);
@@ -367,11 +386,8 @@ class NumpadButton extends StatelessWidget {
               case NumpadButtonType.backspace:
                 return Padding(
                     padding: const EdgeInsets.only(right: 3, top: 2),
-                    child: EnvoyIcon(
-                      EnvoyIcons.delete,
-                      color: Typography.blackHelsinki.headlineMedium!
-                          .color, // TODO: change to EnvoyColors
-                    ));
+                    child: EnvoyIcon(EnvoyIcons.delete,
+                        color: designSystem.EnvoyColors.teal500));
               case NumpadButtonType.clipboard:
                 return EnvoyIcon(
                   EnvoyIcons.clipboard,
