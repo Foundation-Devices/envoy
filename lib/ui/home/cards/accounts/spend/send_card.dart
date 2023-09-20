@@ -73,10 +73,10 @@ class _SendCardState extends ConsumerState<SendCard>
       _addressValid = true;
       _addressText = widget.address!;
     }
-
     _amountEntry = AmountEntry(
       onAmountChanged: _updateAmount,
       onPaste: _onPaste,
+      account: widget.account,
     );
 
     if (widget.amountSats != null) {
@@ -94,6 +94,7 @@ class _SendCardState extends ConsumerState<SendCard>
         onAmountChanged: _updateAmount,
         initalSatAmount: _amount,
         key: UniqueKey(),
+        account: widget.account,
         onPaste: _onPaste,
       );
     });
@@ -159,6 +160,7 @@ class _SendCardState extends ConsumerState<SendCard>
                                   onAmountChanged: _updateAmount,
                                   initalSatAmount: _amount,
                                   key: UniqueKey(),
+                                  account: widget.account,
                                   onPaste: _onPaste,
                                 );
                               });

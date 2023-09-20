@@ -19,7 +19,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.d
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
@@ -207,17 +206,21 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                       onPressed: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return ScannerPage(
-                              [ScannerType.address, ScannerType.azteco],
-                              account: widget.account,
-                              onAddressValidated: (address, amount) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SendCard(
-                                      widget.account,
-                                      address: address,
-                                      amountSats: amount,
-                                    )));
-                          });
+                          return MediaQuery.removePadding(
+                            removeTop: true,
+                            context: context,
+                            child: ScannerPage(
+                                [ScannerType.address, ScannerType.azteco],
+                                account: widget.account,
+                                onAddressValidated: (address, amount) {
+                              // Navigator.pop(context);
+                              context.go(ROUTE_ACCOUNT_SEND, extra: {
+                                "account": widget.account,
+                                "address": address,
+                                "amount": amount
+                              });
+                            }),
+                          );
                         }));
                       },
                     ))),
