@@ -11,12 +11,10 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:go_router/go_router.dart';
 
 class OnboardEnvoyWelcomeScreen extends StatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
