@@ -147,7 +147,7 @@ class SeedIntroScreen extends StatelessWidget {
               color: Colors.black,
               icon: Icon(Icons.close),
               onPressed: () {
-                GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                popBackToHome(context);
               },
             ),
           ]),

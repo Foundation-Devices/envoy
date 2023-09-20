@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                     ?.copyWith(color: Colors.white),
                 type: EnvoyButtonTypes.tertiary,
                 onTap: () {
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  popBackToHome(context);
                 },
               ),
             )

@@ -6,6 +6,13 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
 
+void popBackToHome(BuildContext context, {bool useRootNavigator = false}) {
+  // Pop until we get to the home page (GoRouter Shell)
+  Navigator.of(context, rootNavigator: useRootNavigator).popUntil((route) {
+    return route.settings is MaterialPage;
+  });
+}
+
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
 

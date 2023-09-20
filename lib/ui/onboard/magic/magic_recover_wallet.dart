@@ -9,6 +9,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -167,8 +168,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                                         .state = HomePageBackgroundState.hidden;
                                     await Future.delayed(
                                         Duration(milliseconds: 200));
-                                    GoRouter.of(context)
-                                        .push(ROUTE_ACCOUNTS_HOME);
+                                    popBackToHome(context);
                                   },
                                   icon: Icon(Icons.close)),
                             );
@@ -248,7 +248,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   ref.read(homePageBackgroundProvider.notifier).state =
                       HomePageBackgroundState.hidden;
                   await Future.delayed(Duration(milliseconds: 200));
-                  GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                  popBackToHome(context);
                 },
               ));
         },
@@ -676,7 +676,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                                 .read(homePageBackgroundProvider.notifier)
                                 .state = HomePageBackgroundState.hidden;
                             await Future.delayed(Duration(milliseconds: 200));
-                            GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                            popBackToHome(context);
                           });
                         });
                   },
