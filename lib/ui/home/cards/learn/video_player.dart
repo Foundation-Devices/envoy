@@ -52,6 +52,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   double _downloadProgress = 0;
 
   Timer? _updatePositionTimer;
+  Timer? _hideTopBarTimer;
 
   void Function()? _cancelDownload;
   bool _curtains = false;
@@ -94,7 +95,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
               _completer.complete();
               periodicallyUpdatePosition();
-              showOrHideTimeline();
+              showTimeline();
+              periodicallyHideBar();
             }
           } else {
             // Update the loading circle
@@ -109,7 +111,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     _initializeVideoPlayerFuture = Future.wait([_completer.future]);
   }
 
-  void showOrHideTimeline() {
+  void showTimeline() {
     if (!_visibleTimeline) {
       setState(() {
         _visibleTimeline = true;
@@ -121,10 +123,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
           });
         }
       });
-    } else
-      setState(() {
-        _visibleTimeline = false;
-      });
+    }
   }
 
   Future<void> restoreSystemUIOverlays() async {
@@ -151,6 +150,12 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     });
   }
 
+  void periodicallyHideBar() {
+    _hideTopBarTimer = Timer.periodic(Duration(seconds: 5), (_) async {
+      restoreSystemUIOverlays();
+    });
+  }
+
   @override
   void dispose() {
     if (_downloadProgressSubscription != null) {
@@ -171,6 +176,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     if (streamFile.existsSync()) {
       streamFile.deleteSync();
+    }
+    if (_hideTopBarTimer != null) {
+      _hideTopBarTimer!.cancel();
     }
 
     _downloaded = 0;
@@ -227,8 +235,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                       bottom: 0,
                       child: GestureDetector(
                         onTap: () {
-                          showOrHideTimeline();
-                          restoreSystemUIOverlays();
+                          showTimeline();
                         },
                       ),
                     ),
@@ -245,7 +252,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                 : _controller!.play();
                             _isPlaying = !_isPlaying;
                           });
-                          showOrHideTimeline();
+                          showTimeline();
                         },
                       ),
                     ),
