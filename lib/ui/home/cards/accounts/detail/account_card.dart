@@ -204,7 +204,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                         color: EnvoyColors.darkTeal,
                       ),
                       onPressed: () {
-                        Navigator.of(context)
+                        Navigator.of(context, rootNavigator: true)
                             .push(MaterialPageRoute(builder: (context) {
                           return MediaQuery.removePadding(
                             removeTop: true,
