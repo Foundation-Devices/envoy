@@ -25,39 +25,6 @@ class OnboardPageBackground extends StatelessWidget {
           child: Hero(
             tag: "shield",
             transitionOnUserGestures: true,
-            flightShuttleBuilder: (
-              BuildContext flightContext,
-              Animation<double> animation,
-              HeroFlightDirection flightDirection,
-              BuildContext fromHeroContext,
-              BuildContext toHeroContext,
-            ) {
-              return AnimatedBuilder(
-                animation: animation,
-                builder: (BuildContext context, Widget? child) {
-                  return flightDirection == HeroFlightDirection.push
-                      ? Stack(children: [
-                          Opacity(
-                              opacity: 1 - animation.value,
-                              child: fromHeroContext.widget),
-                          Opacity(
-                              opacity: animation.value,
-                              child: toHeroContext.widget)
-                        ])
-                      : Stack(children: [
-                          Opacity(
-                            opacity: 1 - animation.value,
-                            child: toHeroContext.widget,
-                          ),
-                          Opacity(
-                              opacity: animation.value,
-                              child: Shield(
-                                child: SizedBox.expand(),
-                              ))
-                        ]);
-                },
-              );
-            },
             child: Shield(
               child: Padding(
                   padding: const EdgeInsets.only(
