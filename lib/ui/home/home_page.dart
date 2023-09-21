@@ -319,7 +319,7 @@ class HomePageState extends ConsumerState<HomePage>
               left: 5,
               right: 5,
               child: AnimatedOpacity(
-                opacity: _backgroundShown ? 0.5 : 1.0,
+                opacity: _backgroundShown ? 0.1 : 1.0,
                 duration: _backgroundShown
                     ? Duration(
                         milliseconds: _animationsDuration.inMilliseconds ~/ 4)

@@ -80,13 +80,31 @@ final accountsRouter = StatefulShellBranch(
                     path: _ACCOUNT_SEND,
                     pageBuilder: (context, state) {
                       Account? account;
+                      int amount = 0;
+                      String initialAddress = "";
                       if (state.extra is Map) {
-                        account = Account.fromJson(
-                            state.extra as Map<String, dynamic>);
+                        Map extras = state.extra as Map;
+                        amount = extras["amount"] as int? ?? 0;
+                        initialAddress = extras['address'] as String;
+                        if (extras['account'] is Account) {
+                          account = extras['account'] as Account;
+                        } else {
+                          if (extras['account'] is Map) {
+                            account = Account.fromJson(
+                                extras['account'] as Map<String, dynamic>);
+                          } else {
+                            account = Account.fromJson(
+                                extras as Map<String, dynamic>);
+                          }
+                        }
                       } else {
                         account = state.extra as Account;
                       }
-                      return wrapWithVerticalAxisAnimation(SendCard(account));
+                      return wrapWithVerticalAxisAnimation(SendCard(
+                        account,
+                        address: initialAddress,
+                        amountSats: amount,
+                      ));
                     },
                     routes: [
                       GoRoute(
@@ -173,8 +191,19 @@ final accountsRouter = StatefulShellBranch(
               pageBuilder: (context, state) {
                 Account? account;
                 if (state.extra is Map) {
-                  account =
-                      Account.fromJson(state.extra as Map<String, dynamic>);
+                  if ((state.extra as Map).containsKey("account")) {
+                    if ((state.extra as Map<String, dynamic>)["account"]
+                        is Account) {
+                      account = (state.extra as Map<String, dynamic>)["account"]
+                          as Account;
+                    } else {
+                      account = Account.fromJson(
+                          (state.extra as Map<String, dynamic>)["account"]);
+                    }
+                  } else {
+                    account =
+                        Account.fromJson(state.extra as Map<String, dynamic>);
+                  }
                 } else {
                   account = state.extra as Account;
                 }

@@ -6,6 +6,13 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
 
+void popBackToHome(BuildContext context, {bool useRootNavigator = false}) {
+  // Pop until we get to the home page (GoRouter Shell)
+  Navigator.of(context, rootNavigator: useRootNavigator).popUntil((route) {
+    return route.settings is MaterialPage;
+  });
+}
+
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
 
@@ -25,39 +32,6 @@ class OnboardPageBackground extends StatelessWidget {
           child: Hero(
             tag: "shield",
             transitionOnUserGestures: true,
-            flightShuttleBuilder: (
-              BuildContext flightContext,
-              Animation<double> animation,
-              HeroFlightDirection flightDirection,
-              BuildContext fromHeroContext,
-              BuildContext toHeroContext,
-            ) {
-              return AnimatedBuilder(
-                animation: animation,
-                builder: (BuildContext context, Widget? child) {
-                  return flightDirection == HeroFlightDirection.push
-                      ? Stack(children: [
-                          Opacity(
-                              opacity: 1 - animation.value,
-                              child: fromHeroContext.widget),
-                          Opacity(
-                              opacity: animation.value,
-                              child: toHeroContext.widget)
-                        ])
-                      : Stack(children: [
-                          Opacity(
-                            opacity: 1 - animation.value,
-                            child: toHeroContext.widget,
-                          ),
-                          Opacity(
-                              opacity: animation.value,
-                              child: Shield(
-                                child: SizedBox.expand(),
-                              ))
-                        ]);
-                },
-              );
-            },
             child: Shield(
               child: Padding(
                   padding: const EdgeInsets.only(

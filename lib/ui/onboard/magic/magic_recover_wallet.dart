@@ -15,13 +15,11 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 
 class MagicRecoverWallet extends StatefulWidget {
@@ -167,8 +165,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                                         .state = HomePageBackgroundState.hidden;
                                     await Future.delayed(
                                         Duration(milliseconds: 200));
-                                    GoRouter.of(context)
-                                        .push(ROUTE_ACCOUNTS_HOME);
+                                    popBackToHome(context);
                                   },
                                   icon: Icon(Icons.close)),
                             );
@@ -248,7 +245,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                   ref.read(homePageBackgroundProvider.notifier).state =
                       HomePageBackgroundState.hidden;
                   await Future.delayed(Duration(milliseconds: 200));
-                  GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                  popBackToHome(context);
                 },
               ));
         },
@@ -676,7 +673,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                                 .read(homePageBackgroundProvider.notifier)
                                 .state = HomePageBackgroundState.hidden;
                             await Future.delayed(Duration(milliseconds: 200));
-                            GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                            popBackToHome(context);
                           });
                         });
                   },
