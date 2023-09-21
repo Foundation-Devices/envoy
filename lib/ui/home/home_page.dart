@@ -56,6 +56,8 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => HomePageState();
 }
 
+final backButtonDispatcher = RootBackButtonDispatcher();
+
 class HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
   bool _backgroundShown = false;
@@ -75,6 +77,11 @@ class HomePageState extends ConsumerState<HomePage>
 
   void initState() {
     super.initState();
+
+    Future.delayed(Duration(milliseconds: 10), () {
+      ///register for back button press
+      backButtonDispatcher.addCallback(_handleHomePageBackPress);
+    });
 
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
@@ -154,9 +161,35 @@ class HomePageState extends ConsumerState<HomePage>
     ).show(context);
   }
 
+  /// Handle the back button press behavior
+  /// true means the back button press is handled and shouldn't be propagated
+  Future<bool> _handleHomePageBackPress() async {
+    HomePageBackgroundState hpState = ref.read(homePageBackgroundProvider);
+    if (hpState == HomePageBackgroundState.hidden) {
+      ///if menu is hidden don't do anything, let the back button press propagate
+      return false;
+    } else {
+      ///if sub-menu is shown, go back to main menu otherwise hide menu
+      if (hpState != HomePageBackgroundState.menu) {
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.menu;
+      } else {
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+      }
+      return true;
+    }
+  }
+
   _notifyAboutHighBalance() {
     AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
     showSecurityDialog(context);
+  }
+
+  @override
+  void dispose() {
+    backButtonDispatcher.removeCallback(_handleHomePageBackPress);
+    super.dispose();
   }
 
   void toggleSettings() {
