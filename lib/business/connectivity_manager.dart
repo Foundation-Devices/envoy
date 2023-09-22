@@ -22,10 +22,10 @@ class ConnectivityManager {
       return false;
     }
 
-    return Tor().enabled;
+    return Tor.instance.enabled;
   }
 
-  bool get torCircuitEstablished => Tor().bootstrapped;
+  bool get torCircuitEstablished => Tor.instance.bootstrapped;
 
   bool get usingDefaultServer => Settings().usingDefaultElectrumServer;
 
@@ -66,7 +66,7 @@ class ConnectivityManager {
   ConnectivityManager._internal() {
     print("Instance of ConnectivityManager created!");
 
-    Tor().events.stream.listen((event) {
+    Tor.instance.events.stream.listen((event) {
       // Nudge listeners
       events.add(ConnectivityManagerEvent.TorStatusChange);
     });
@@ -101,7 +101,7 @@ class ConnectivityManager {
   restartTor() {
     // ENV-175
     if (torEnabled) {
-      Tor().restart();
+      Tor.instance.restart();
     }
   }
 }

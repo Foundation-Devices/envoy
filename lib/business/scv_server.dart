@@ -14,7 +14,7 @@ import 'package:envoy/business/local_storage.dart';
 part 'scv_server.g.dart';
 
 class ScvServer {
-  static HttpTor http = HttpTor(Tor());
+  static HttpTor http = HttpTor(Tor.instance);
   static String serverAddress = "https://validate.foundationdevices.com";
 
   LocalStorage _ls = LocalStorage();

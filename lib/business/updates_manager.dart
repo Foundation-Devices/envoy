@@ -13,7 +13,7 @@ import 'package:tor/tor.dart';
 import 'package:envoy/business/devices.dart';
 
 class UpdatesManager {
-  HttpTor http = HttpTor(Tor());
+  HttpTor http = HttpTor(Tor.instance);
   LocalStorage ls = LocalStorage();
   EnvoyStorage es = EnvoyStorage();
 

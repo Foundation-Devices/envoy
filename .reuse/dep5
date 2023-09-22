@@ -67,10 +67,6 @@ Files: packages/http_tor/lib/generated_bindings.dart
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later
 
-Files: packages/tor/lib/generated_bindings.dart
-Copyright: 2022 Foundation Devices Inc.
-License: GPL-3.0-or-later
-
 Files: packages/backup/lib/generated_bindings.dart
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later

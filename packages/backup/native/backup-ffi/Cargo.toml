@@ -15,7 +15,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 mla = "1.3.0"
 curve25519-parser = "0.3.0"
-reqwest = { version = "0.11.14", features = ["blocking", "json"] }
+reqwest = { version = "0.11.14", features = ["blocking", "json", "native-tls-vendored"] }
 effort = { git = "https://github.com/Foundation-Devices/effort", rev = "c6846ae8c31d2fd13b3733c0e76e9866dea9c35c" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

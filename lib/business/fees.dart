@@ -104,7 +104,7 @@ class Fees {
   }
 
   _getMempoolRates(Network network) {
-    HttpTor(Tor()).get(_mempoolUrls[network]!).then((response) {
+    HttpTor(Tor.instance).get(_mempoolUrls[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 

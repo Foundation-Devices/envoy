@@ -507,7 +507,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (ref.read(nodeConnectionStateProvider).isConnected) {
         setState(() {
-          _betterPerformance = !Tor().enabled;
+          _betterPerformance = !Tor.instance.enabled;
         });
       }
     });
@@ -531,7 +531,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
         //Setting tor state
         Settings().usingTor = next;
         if (next) {
-          Tor().enable();
+          Tor.instance.enable();
         }
         _privacyIconController?.findInput<bool>("toggle")?.change(!next);
         _improvedPerformanceController?.findInput<bool>("enable")?.change(next);
