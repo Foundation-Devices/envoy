@@ -39,7 +39,9 @@ class FeedManager {
       _addVideosFromBitcoinTv(feed);
     });
 
-    HttpTor(Tor.instance).get("https://foundationdevices.com/feed/").then((response) {
+    HttpTor(Tor.instance)
+        .get("https://foundationdevices.com/feed/")
+        .then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     });
