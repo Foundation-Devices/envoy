@@ -667,12 +667,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                         onTap: () {
                           EnvoySeed().get().then((seed) async {
                             EnvoySeed().deriveAndAddWallets(seed!);
-                            ref.read(homePageTabProvider.notifier).state =
-                                HomePageTabState.accounts;
-                            ref
-                                .read(homePageBackgroundProvider.notifier)
-                                .state = HomePageBackgroundState.hidden;
-                            await Future.delayed(Duration(milliseconds: 200));
                             popBackToHome(context);
                           });
                         });

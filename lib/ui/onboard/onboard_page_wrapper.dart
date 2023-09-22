@@ -3,14 +3,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-void popBackToHome(BuildContext context, {bool useRootNavigator = false}) {
+void popBackToHome(BuildContext context,
+    {bool useRootNavigator = false}) async {
+  GoRouter router = GoRouter.of(context);
   // Pop until we get to the home page (GoRouter Shell)
   Navigator.of(context, rootNavigator: useRootNavigator).popUntil((route) {
     return route.settings is MaterialPage;
   });
+  //if we are coming from the splash screen, we need to redirect to the home page
+  if (router.routerDelegate.currentConfiguration.fullPath == ROUTE_SPLASH) {
+    await Future.delayed(Duration(milliseconds: 50));
+    router.go("/");
+  }
 }
 
 class OnboardPageBackground extends StatelessWidget {
