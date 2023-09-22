@@ -13,17 +13,14 @@
 		7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */; };
 		7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */; };
 		7861873F299FFA0F00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */; };
-		787400BD2955C8010097D2C3 /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400B92955C8010097D2C3 /* libtor_ffi.a */; };
 		787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BA2955C8010097D2C3 /* libwallet_ffi.a */; };
 		787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BB2955C8010097D2C3 /* libhttp_ffi.a */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
 		78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760E27F831B4005559E4 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		78CFC743291BC27D00A3AFDC /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760A27F831A3005559E4 /* libtor_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760827F83192005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC76A292E5CE000A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC766292E5CDF00A3AFDC /* libhttp_ffi.a */; };
 		78CFC76B292E5CE000A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */; };
-		78CFC76C292E5CE000A3AFDC /* libtor_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC768292E5CDF00A3AFDC /* libtor_ffi.a */; };
 		78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC769292E5CDF00A3AFDC /* libur_ffi.a */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -54,18 +51,15 @@
 		7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
 		7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios/release/libbackup_ffi.a"; sourceTree = "<group>"; };
 		7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
-		787400B92955C8010097D2C3 /* libtor_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtor_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libtor_ffi.a"; sourceTree = "<group>"; };
 		787400BA2955C8010097D2C3 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
 		787400BB2955C8010097D2C3 /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libhttp_ffi.a"; sourceTree = "<group>"; };
 		787400BC2955C8010097D2C3 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		788D58E02795A8DC00CD47BA /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		78C3760827F83192005559E4 /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-ios/debug/libhttp_ffi.a"; sourceTree = "<group>"; };
-		78C3760A27F831A3005559E4 /* libtor_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtor_ffi.a; path = "../target/aarch64-apple-ios/debug/libtor_ffi.a"; sourceTree = "<group>"; };
 		78C3760C27F831AC005559E4 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		78C3760E27F831B4005559E4 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
 		78CFC766292E5CDF00A3AFDC /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-ios/release/libhttp_ffi.a"; sourceTree = "<group>"; };
 		78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios/release/libwallet_ffi.a"; sourceTree = "<group>"; };
-		78CFC768292E5CDF00A3AFDC /* libtor_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtor_ffi.a; path = "../target/aarch64-apple-ios/release/libtor_ffi.a"; sourceTree = "<group>"; };
 		78CFC769292E5CDF00A3AFDC /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios/release/libur_ffi.a"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		95A836B9AC41F16548DCAC7D /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -87,10 +81,7 @@
 			files = (
 				78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */,
 				78CFC76A292E5CE000A3AFDC /* libhttp_ffi.a in Frameworks */,
-				78CFC743291BC27D00A3AFDC /* libtor_ffi.a in Frameworks */,
-				787400BD2955C8010097D2C3 /* libtor_ffi.a in Frameworks */,
 				78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */,
-				78CFC76C292E5CE000A3AFDC /* libtor_ffi.a in Frameworks */,
 				78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */,
 				787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */,
 				787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */,
@@ -114,16 +105,13 @@
 				7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */,
 				7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */,
 				787400BB2955C8010097D2C3 /* libhttp_ffi.a */,
-				78CFC768292E5CDF00A3AFDC /* libtor_ffi.a */,
 				78CFC769292E5CDF00A3AFDC /* libur_ffi.a */,
 				787400BC2955C8010097D2C3 /* libur_ffi.a */,
 				78C3760E27F831B4005559E4 /* libwallet_ffi.a */,
 				78C3760C27F831AC005559E4 /* libur_ffi.a */,
-				78C3760A27F831A3005559E4 /* libtor_ffi.a */,
 				78C3760827F83192005559E4 /* libhttp_ffi.a */,
 				78CFC766292E5CDF00A3AFDC /* libhttp_ffi.a */,
 				78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */,
-				787400B92955C8010097D2C3 /* libtor_ffi.a */,
 				787400BA2955C8010097D2C3 /* libwallet_ffi.a */,
 				4255A42DB2AF56F644919A15 /* Pods_Runner.framework */,
 			);
