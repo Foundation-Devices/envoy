@@ -30,7 +30,7 @@ class FeedManager {
     _restoreVideos();
     _restoreBlogs();
 
-    HttpTor(Tor())
+    HttpTor(Tor.instance)
         .get("https://bitcointv.com/feeds/videos.xml?videoChannelId=62")
         // .get(
         //     "https://www.youtube.com/feeds/videos.xml?channel_id=UC3UcWMQ53oimbVxGJUnRXGw")
@@ -39,7 +39,7 @@ class FeedManager {
       _addVideosFromBitcoinTv(feed);
     });
 
-    HttpTor(Tor()).get("https://foundationdevices.com/feed/").then((response) {
+    HttpTor(Tor.instance).get("https://foundationdevices.com/feed/").then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     });
@@ -137,7 +137,7 @@ class FeedManager {
       }
 
       if (video.thumbnail == null) {
-        HttpTor(Tor()).get(video.thumbnailUrl!).then((response) {
+        HttpTor(Tor.instance).get(video.thumbnailUrl!).then((response) {
           video.thumbnail = response.bodyBytes;
           storeVideos();
         });
@@ -162,7 +162,7 @@ class FeedManager {
       }
 
       if (blog.thumbnail == null) {
-        HttpTor(Tor()).get(blog.thumbnailUrl!).then((response) {
+        HttpTor(Tor.instance).get(blog.thumbnailUrl!).then((response) {
           blog.thumbnail = response.bodyBytes;
           storeBlogPosts();
         });

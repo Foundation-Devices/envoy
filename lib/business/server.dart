@@ -15,7 +15,7 @@ class Server {
 
   Server({this.http}) {
     if (http == null) {
-      http = HttpTor(Tor());
+      http = HttpTor(Tor.instance);
     }
   }
 

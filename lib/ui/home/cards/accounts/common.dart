@@ -13,7 +13,7 @@ import 'package:envoy/generated/l10n.dart';
 void broadcast(Psbt psbt, BuildContext context, Wallet wallet) {
   wallet
       .broadcastTx(
-          Settings().electrumAddress(wallet.network), Tor().port, psbt.rawTx)
+          Settings().electrumAddress(wallet.network), Tor.instance.port, psbt.rawTx)
       .then((_) {
     GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

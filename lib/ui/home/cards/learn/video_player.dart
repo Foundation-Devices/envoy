@@ -73,7 +73,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     getApplicationDocumentsDirectory().then((dir) {
       streamFile = File(dir.path + "/stream.mp4");
-      HttpTor(Tor()).getFile(streamFile.path, widget.url).then((download) {
+      HttpTor(Tor.instance).getFile(streamFile.path, widget.url).then((download) {
         _cancelDownload = download.cancel;
         _downloadProgressSubscription = download.progress.listen((progress) {
           setState(() {

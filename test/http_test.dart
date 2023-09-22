@@ -15,7 +15,7 @@ void main() {
     // var uri =
     //     "https://bitcointv.com/static/streaming-playlists/hls/b573c370-381c-49a6-8315-bcfcba7a8b47/2a94a5e6-e942-4884-a729-f6c5381ef2b7-720-fragmented.mp4";
     //
-    // HttpTor http = HttpTor(Tor()..disable());
+    // HttpTor http = HttpTor(Tor.instance..disable());
     // var download = await http.getFile(file, uri);
     //
     // download.progress.listen((event) {

@@ -62,7 +62,7 @@ class Tor {
   int _proxyPort = -1;
   static final Tor _instance = Tor._internal();
 
-  factory Tor() {
+  factory Tor.instance {
     return _instance;
   }
 

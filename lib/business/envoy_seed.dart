@@ -165,7 +165,7 @@ class EnvoySeed {
       backupData[AccountManager.ACCOUNTS_PREFS] = jsonEncode(json);
     }
     return Backup.perform(
-            backupData, seed, Settings().envoyServerAddress, Tor(),
+            backupData, seed, Settings().envoyServerAddress, Tor.instance,
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) {
       if (cloud && success) {
@@ -188,7 +188,7 @@ class EnvoySeed {
     removeSeedFromNonSecure();
     removeSeedFromSecure();
 
-    return Backup.delete(seed!, Settings().envoyServerAddress, Tor());
+    return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
   Future<bool> restoreData({String? seed = null, String? filePath}) async {
@@ -206,7 +206,7 @@ class EnvoySeed {
 
     if (filePath == null) {
       try {
-        return Backup.restore(seed, Settings().envoyServerAddress, Tor())
+        return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) {
           return _processRecoveryData(seed!, data);
         });

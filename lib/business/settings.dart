@@ -117,9 +117,9 @@ class Settings extends ChangeNotifier {
   setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
-      Tor().enable();
+      Tor.instance.enable();
     } else {
-      Tor().disable();
+      Tor.instance.disable();
     }
 
     store();

@@ -135,7 +135,7 @@ class AccountManager extends ChangeNotifier {
 
     try {
       changed = await account.wallet
-          .sync(Settings().electrumAddress(account.wallet.network), Tor().port);
+          .sync(Settings().electrumAddress(account.wallet.network), Tor.instance.port);
     } on Exception catch (_) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {
