@@ -4,7 +4,7 @@
 
 [workspace]
 members = ["packages/http_tor/native/*", "packages/ur/native/*", "packages/wallet/native/*", "packages/backup/native/*"]
-exclude = ["passport2/extmod/foundation-rust", ".pub-cache/*"]
+exclude = ["passport2/extmod/foundation-rust", ".pub-cache/git/**/**"]
 
 [profile.release]
 lto = true
