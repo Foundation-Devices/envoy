@@ -244,6 +244,12 @@ class _DevOptions extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Text("Clear Envoy Logs")),
+          TextButton(
+              onPressed: () {
+                EnvoyStorage().clear();
+                Navigator.pop(context);
+              },
+              child: Text("Clear Envoy Preferences")),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
