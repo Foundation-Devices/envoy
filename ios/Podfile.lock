@@ -13,7 +13,7 @@ PODS:
     - Flutter
   - local_auth_ios (0.0.1):
     - Flutter
-  - MobileVLCKit (3.4.0)
+  - MobileVLCKit (3.5.1)
   - MTBBarcodeScanner (5.0.11)
   - package_info_plus (0.4.5):
     - Flutter
@@ -102,7 +102,7 @@ SPEC CHECKSUMS:
   flutter_vlc_player: a0bd756da5d2456f6d26963976616185a65ec677
   integration_test: 13825b8a9334a850581300559b8839134b124670
   local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
-  MobileVLCKit: 20ccee43f7788a94ea1f67179e33d9600779dfd9
+  MobileVLCKit: 144d5f565512d1147d63b0fa1379231b3fd66535
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943

@@ -1328,7 +1328,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "90837e05a5c6a12636e2f0e1e669455c99fc15c3"
+      resolved-ref: a833bec6488fe73de63f18ec8dc321046952883c
       url: "https://github.com/foundation-devices/tor.git"
     source: git
     version: "0.0.1"
