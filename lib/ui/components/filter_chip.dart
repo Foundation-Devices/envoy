@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 
 class EnvoyFilterChip extends StatelessWidget {
@@ -29,9 +30,7 @@ class EnvoyFilterChip extends StatelessWidget {
       mouseCursor: SystemMouseCursors.click,
       onTap: onTap,
       child: AnimatedContainer(
-        constraints: BoxConstraints(
-          minWidth: 84,
-        ),
+        constraints: BoxConstraints(),
         padding: EdgeInsets.all(EnvoySpacing.xs),
         decoration: BoxDecoration(
             color: selected
@@ -53,10 +52,8 @@ class EnvoyFilterChip extends StatelessWidget {
                   ),
                 ),
               Text(text,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                      color: foregroundColor)),
+                  style: EnvoyTypography.caption1Semibold
+                      .copyWith(color: foregroundColor)),
             ],
           ),
         ),
