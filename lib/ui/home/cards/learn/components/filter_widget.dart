@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/home/cards/learn/filter_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -24,10 +26,6 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
   Widget build(BuildContext context) {
     final learnFilterState = ref.watch(learnFilterStateProvider);
     final learnSortState = ref.watch(learnSortStateProvider);
-    final titleStyle = Theme.of(context)
-        .textTheme
-        .titleMedium
-        ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16);
     final filterButtonTextStyle = Theme.of(context)
         .textTheme
         .bodyMedium
@@ -49,6 +47,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
@@ -56,7 +55,8 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             children: [
               Text(
                 "Filter",
-                style: titleStyle,
+                style: EnvoyTypography.subtitle1Semibold
+                    .copyWith(color: EnvoyColors.textPrimary),
               ),
               TextButton(
                 onPressed: () {
@@ -102,22 +102,20 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               ),
               Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyFilterChip(
-                selected: _filterState?.contains(LearnFilters.Videos) ?? false,
+                selected:
+                    ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
+                        !(_filterState?.contains(LearnFilters.All) ?? true)),
                 text: "Videos",
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
                     ..addAll(_filterState!);
                   if (_filterState!.contains(LearnFilters.All)) {
-                    newState.remove(LearnFilters.All);
+                    newState.removeAll(_filterState!);
                   }
-                  if (_filterState!.contains(LearnFilters.Videos)) {
+                  if (newState.contains(LearnFilters.Videos)) {
                     newState.remove(LearnFilters.Videos);
                   } else {
                     newState.add(LearnFilters.Videos);
-                    if (_filterState!.contains(LearnFilters.Blogs) &&
-                        _filterState!.contains(LearnFilters.FAQs)) {
-                      newState.add(LearnFilters.All);
-                    }
                   }
                   setState(() {
                     _filterState = newState;
@@ -126,22 +124,20 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               ),
               Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyFilterChip(
-                selected: _filterState?.contains(LearnFilters.FAQs) ?? false,
+                selected:
+                    ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
+                        !(_filterState?.contains(LearnFilters.All) ?? true)),
                 text: "FAQs",
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
                     ..addAll(_filterState!);
                   if (_filterState!.contains(LearnFilters.All)) {
-                    newState.remove(LearnFilters.All);
+                    newState.removeAll(_filterState!);
                   }
-                  if (_filterState!.contains(LearnFilters.FAQs)) {
+                  if (newState.contains(LearnFilters.FAQs)) {
                     newState.remove(LearnFilters.FAQs);
                   } else {
                     newState.add(LearnFilters.FAQs);
-                    if (_filterState!.contains(LearnFilters.Blogs) &&
-                        _filterState!.contains(LearnFilters.Videos)) {
-                      newState.add(LearnFilters.All);
-                    }
                   }
                   setState(() {
                     _filterState = newState;
@@ -150,22 +146,20 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               ),
               Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyFilterChip(
-                selected: _filterState?.contains(LearnFilters.Blogs) ?? false,
+                selected:
+                    ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
+                        !(_filterState?.contains(LearnFilters.All) ?? true)),
                 text: "Blog posts",
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
                     ..addAll(_filterState!);
                   if (_filterState!.contains(LearnFilters.All)) {
-                    newState.remove(LearnFilters.All);
+                    newState.removeAll(_filterState!);
                   }
-                  if (_filterState!.contains(LearnFilters.Blogs)) {
+                  if (newState.contains(LearnFilters.Blogs)) {
                     newState.remove(LearnFilters.Blogs);
                   } else {
                     newState.add(LearnFilters.Blogs);
-                    if (_filterState!.contains(LearnFilters.Videos) &&
-                        _filterState!.contains(LearnFilters.FAQs)) {
-                      newState.add(LearnFilters.All);
-                    }
                   }
                   setState(() {
                     _filterState = newState;
@@ -175,28 +169,11 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             ],
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Sort by", style: titleStyle),
-              TextButton(
-                onPressed: () {
-                  ref.read(learnSortStateProvider.notifier).state =
-                      LearnSortTypes.newestFirst;
-                },
-                child: Text(
-                  "Reset sorting",
-                  style: filterButtonTextStyle,
-                ),
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).primaryColor,
-                  splashFactory: NoSplash.splashFactory,
-                ),
-              )
-            ],
-          ),
+          Text("Sort by",
+              style: EnvoyTypography.subtitle1Semibold
+                  .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(
-            text: "Newest First",
+            text: "Newest first",
             checked: _sortState == LearnSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -206,7 +183,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Oldest First",
+            text: "Oldest first",
             checked: _sortState == LearnSortTypes.oldestFirst,
             onTap: () {
               setState(() {
