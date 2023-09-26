@@ -123,7 +123,7 @@ class EnvoyTypography {
   static const TextStyle body2Medium = TextStyle(
     fontSize: 14,
     fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   );
 
   static const TextStyle body2Semibold = TextStyle(
