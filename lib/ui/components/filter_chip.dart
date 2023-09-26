@@ -52,8 +52,7 @@ class EnvoyFilterChip extends StatelessWidget {
                   ),
                 ),
               Text(text,
-                  style: EnvoyTypography.caption1Semibold
-                      .copyWith(color: foregroundColor)),
+                  style: EnvoyTypography.info.copyWith(color: foregroundColor)),
             ],
           ),
         ),
