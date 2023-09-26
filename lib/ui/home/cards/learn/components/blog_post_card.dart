@@ -214,6 +214,10 @@ class BlogPostCard extends StatelessWidget {
                       ),
                       Html(
                         data: snapshot.data,
+                        style: {
+                          "p": Style(fontSize: FontSize.medium),
+                          "a": Style(color: EnvoyColors.accentPrimary),
+                        },
                         onLinkTap: (
                           linkUrl,
                           _,
