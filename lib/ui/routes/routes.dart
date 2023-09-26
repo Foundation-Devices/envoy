@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 const ROUTE_SPLASH = '/splash';
 const ROUTE_ONBOARD_PASSPORT = '/onboard';
 const ROUTE_ONBOARD_ENVOY = '/onboard/envoy';
+const PREFS_ONBOARDED = 'onboarded';
 
 /// this key can be used in nested GoRoute to leverage main router
 /// for example:
@@ -33,7 +34,7 @@ final GoRouter mainRouter = GoRouter(
   /// null means no redirect
   redirect: (context, state) {
     if (state.fullPath == ROUTE_ACCOUNTS_HOME) {
-      if (LocalStorage().prefs.getBool("onboarded") != true) {
+      if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
         return ROUTE_SPLASH;
       } else {}
     }
@@ -48,7 +49,7 @@ final GoRouter mainRouter = GoRouter(
     GoRoute(
         path: "/",
         redirect: (context, state) {
-          if (LocalStorage().prefs.getBool("onboarded") != true) {
+          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
             return ROUTE_SPLASH;
           } else {
             return ROUTE_ACCOUNTS_HOME;

@@ -54,17 +54,6 @@ class EnvoySeed {
   static String HOT_WALLET_MAINNET_PATH = "m/84'/0'/0'";
   static String HOT_WALLET_TESTNET_PATH = "m/84'/1'/0'";
 
-  List<String> preferencesKeysToBackUp = [
-    Settings.SETTINGS_PREFS,
-    AccountManager.ACCOUNTS_PREFS,
-    Devices.DEVICES_PREFS,
-    // Notifications.NOTIFICATIONS_PREFS,
-    // UpdatesManager.LATEST_FIRMWARE_FILE_PATH_PREFS,
-    // UpdatesManager.LATEST_FIRMWARE_VERSION_PREFS,
-    // ScvServer.SCV_CHALLENGE_PREFS,
-    // Fees.FEE_RATE_PREFS,
-  ];
-
   StreamController<bool> backupCompletedStream = StreamController.broadcast();
 
   Future generate() async {
@@ -136,34 +125,15 @@ class EnvoySeed {
     }
 
     Map<String, String> backupData = {};
-    for (var key in preferencesKeysToBackUp) {
-      if (LocalStorage().prefs.containsKey(key)) {
-        backupData[key] = LocalStorage().prefs.getString(key)!;
-      }
-    }
 
     // Add sembast DB
     backupData[EnvoyStorage().dbName] = await EnvoyStorage().export();
 
     // Strip keys from hot wallets
-    if (backupData.containsKey(AccountManager.ACCOUNTS_PREFS)) {
-      var json = jsonDecode(backupData[AccountManager.ACCOUNTS_PREFS]!);
-
-      for (var account in json) {
-        Wallet wallet = Wallet.fromJson(account["wallet"]);
-
-        if (wallet.hot) {
-          wallet.externalDescriptor = null;
-          wallet.internalDescriptor = null;
-          wallet.publicExternalDescriptor = null;
-          wallet.publicInternalDescriptor = null;
-        }
-
-        account["wallet"] = wallet.toJson();
-      }
-
-      backupData[AccountManager.ACCOUNTS_PREFS] = jsonEncode(json);
+    if (backupData.containsKey(EnvoyStorage().dbName)) {
+      backupData = censorHotWalletDescriptors(backupData);
     }
+
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
             path: encryptedBackupFilePath, cloud: cloud)
@@ -176,6 +146,44 @@ class EnvoySeed {
       } else
         backupCompletedStream.sink.add(false);
     });
+  }
+
+  Map<String, String> censorHotWalletDescriptors(
+      Map<String, String> backupData) {
+    var json = jsonDecode(backupData[EnvoyStorage().dbName]!) as Map;
+
+    List<dynamic> stores = json["stores"];
+    var preferences = stores
+        .singleWhere((element) => element["name"] == preferencesStoreName);
+    int indexOfPreferences =
+        stores.indexWhere((element) => element["name"] == preferencesStoreName);
+
+    List<String> keys = List<String>.from(preferences["keys"]);
+    List<dynamic> values = preferences["values"];
+
+    var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
+    var jsonAccounts = jsonDecode(accounts);
+
+    for (var account in jsonAccounts) {
+      Wallet wallet = Wallet.fromJson(account["wallet"]);
+
+      if (wallet.hot) {
+        wallet.externalDescriptor = null;
+        wallet.internalDescriptor = null;
+        wallet.publicExternalDescriptor = null;
+        wallet.publicInternalDescriptor = null;
+      }
+
+      account["wallet"] = wallet.toJson();
+    }
+
+    accounts = jsonEncode(jsonAccounts);
+
+    json["stores"][indexOfPreferences]["values"]
+        [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
+
+    backupData[EnvoyStorage().dbName] = jsonEncode(json);
+    return backupData;
   }
 
   Future<bool> delete() async {
@@ -223,50 +231,69 @@ class EnvoySeed {
     }
   }
 
-  bool _processRecoveryData(String seed, Map<String, String>? data) {
+  Future<bool> _processRecoveryData(
+      String seed, Map<String, String>? data) async {
     bool success = data != null;
     if (success) {
-      if (data.containsKey(AccountManager.ACCOUNTS_PREFS)) {
-        var json = jsonDecode(data[AccountManager.ACCOUNTS_PREFS]!);
-
-        for (var account in json) {
-          Wallet wallet = Wallet.fromJson(account["wallet"]);
-          if (wallet.hot) {
-            var derived = Wallet.deriveWallet(
-                seed,
-                wallet.network == Network.Mainnet
-                    ? HOT_WALLET_MAINNET_PATH
-                    : HOT_WALLET_TESTNET_PATH,
-                AccountManager.walletsDirectory,
-                wallet.network,
-                privateKey: true,
-                passphrase: null,
-                initWallet: false);
-
-            wallet.internalDescriptor = derived.internalDescriptor;
-            wallet.externalDescriptor = derived.externalDescriptor;
-            wallet.publicInternalDescriptor = derived.publicInternalDescriptor;
-            wallet.publicExternalDescriptor = derived.publicExternalDescriptor;
-
-            account["wallet"] = wallet.toJson();
-          }
-        }
-
-        data[AccountManager.ACCOUNTS_PREFS] = jsonEncode(json);
+      // Restore wallets previously censored in censorHotWalletDescriptors
+      if (data.containsKey(EnvoyStorage().dbName)) {
+        data = restoreCensoredHotWallets(data, seed);
       }
-
-      data.forEach((key, value) {
-        LocalStorage().prefs.setString(key, value);
-      });
 
       // Restore the database
       if (data.containsKey(EnvoyStorage().dbName)) {
-        EnvoyStorage().restore(data[EnvoyStorage().dbName]!);
+        await EnvoyStorage().restore(data[EnvoyStorage().dbName]!);
       }
 
       _restoreSingletons();
     }
     return success;
+  }
+
+  Map<String, String> restoreCensoredHotWallets(
+      Map<String, String> data, String seed) {
+    var json = jsonDecode(data[EnvoyStorage().dbName]!) as Map;
+
+    List<dynamic> stores = json["stores"];
+    var preferences = stores
+        .singleWhere((element) => element["name"] == preferencesStoreName);
+    int indexOfPreferences =
+        stores.indexWhere((element) => element["name"] == preferencesStoreName);
+
+    List<String> keys = List<String>.from(preferences["keys"]);
+    List<dynamic> values = preferences["values"];
+
+    var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
+    var jsonAccounts = jsonDecode(accounts);
+
+    for (var account in jsonAccounts) {
+      Wallet wallet = Wallet.fromJson(account["wallet"]);
+      if (wallet.hot) {
+        var derived = Wallet.deriveWallet(
+            seed,
+            wallet.network == Network.Mainnet
+                ? HOT_WALLET_MAINNET_PATH
+                : HOT_WALLET_TESTNET_PATH,
+            AccountManager.walletsDirectory,
+            wallet.network,
+            privateKey: true,
+            passphrase: null,
+            initWallet: false);
+
+        wallet.internalDescriptor = derived.internalDescriptor;
+        wallet.externalDescriptor = derived.externalDescriptor;
+        wallet.publicInternalDescriptor = derived.publicInternalDescriptor;
+        wallet.publicExternalDescriptor = derived.publicExternalDescriptor;
+
+        account["wallet"] = wallet.toJson();
+      }
+    }
+
+    accounts = jsonEncode(jsonAccounts);
+    json["stores"][indexOfPreferences]["values"]
+        [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
+    data[EnvoyStorage().dbName] = jsonEncode(json);
+    return data;
   }
 
   _restoreSingletons() {
