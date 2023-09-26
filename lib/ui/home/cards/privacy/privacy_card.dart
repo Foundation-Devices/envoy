@@ -124,9 +124,9 @@ class PrivacyCardState extends State<PrivacyCard> {
                           text: _betterPerformance == true
                               ? S().privacy_privacyMode_torSuggestion
                               : S().privacy_privacyMode_torSuggestionOn,
-                          textStyle: EnvoyTypography.caption1Medium
+                          textStyle: EnvoyTypography.info
                               .copyWith(color: EnvoyColors.textSecondary),
-                          linkStyle: EnvoyTypography.caption1Semibold.copyWith(
+                          linkStyle: EnvoyTypography.info.copyWith(
                               color: _betterPerformance == true
                                   ? EnvoyColors.accentSecondary
                                   : EnvoyColors.accentPrimary)),
@@ -196,7 +196,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                   ),
                                   Text(
                                     S().privacy_applicationLock_title,
-                                    style: EnvoyTypography.body1Medium.copyWith(
+                                    style: EnvoyTypography.body.copyWith(
                                         color: EnvoyColors.textPrimary),
                                   ),
                                 ],
@@ -208,7 +208,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                 children: [
                                   Text(
                                     S().privacy_applicationLock_unlock,
-                                    style: EnvoyTypography.body2Medium.copyWith(
+                                    style: EnvoyTypography.body.copyWith(
                                       color: EnvoyColors.textPrimary,
                                     ),
                                   ),

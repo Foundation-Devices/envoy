@@ -86,7 +86,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                   onChanged: (text) {
                     widget.onChanged(text);
                   },
-                  style: EnvoyTypography.body1Medium,
+                  style: EnvoyTypography.body,
                   controller: widget.controller,
                   focusNode: _focus,
                   cursorColor: widget.isError
@@ -94,10 +94,10 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                       : EnvoyColors.accentPrimary,
                   decoration: InputDecoration(
                     labelText: widget.defaultText.toString(),
-                    labelStyle: EnvoyTypography.body1Medium.copyWith(
+                    labelStyle: EnvoyTypography.body.copyWith(
                       color: EnvoyColors.textTertiary,
                     ),
-                    floatingLabelStyle: EnvoyTypography.body1Medium.copyWith(
+                    floatingLabelStyle: EnvoyTypography.body.copyWith(
                       color: _focus.hasFocus
                           ? (widget.isError
                               ? EnvoyColors.danger
@@ -161,7 +161,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
             padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
             child: Text(
               widget.isError ? widget.errorText! : widget.informationalText!,
-              style: EnvoyTypography.caption1Medium.copyWith(
+              style: EnvoyTypography.info.copyWith(
                 color: widget.isError
                     ? EnvoyColors.danger
                     : EnvoyColors.textSecondary,

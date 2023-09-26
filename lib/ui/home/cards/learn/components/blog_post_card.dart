@@ -109,7 +109,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                   children: [
                     Text(
                       widget.blog.title,
-                      style: EnvoyTypography.body2Semibold
+                      style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                     SizedBox(height: EnvoySpacing.xs),
@@ -123,9 +123,8 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                           _isBlogRead
                               ? Text(
                                   "Read", // TODO: Sync from Figma
-                                  style: EnvoyTypography.caption1Medium
-                                      .copyWith(
-                                          color: EnvoyColors.textSecondary),
+                                  style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.textSecondary),
                                 )
                               : Text("")
                         ]),

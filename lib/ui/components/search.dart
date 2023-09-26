@@ -63,14 +63,14 @@ class _EnvoySearchState extends State<EnvoySearch> {
         onChanged: (text) {
           widget.filterSearchResults(text);
         },
-        style: EnvoyTypography.body1Medium,
+        style: EnvoyTypography.body,
         textAlignVertical: TextAlignVertical.top,
         controller: widget.controller,
         focusNode: _focus,
         cursorColor: EnvoyColors.accentPrimary,
         decoration: InputDecoration(
             labelText: "Search...",
-            labelStyle: EnvoyTypography.body1Medium.copyWith(
+            labelStyle: EnvoyTypography.body.copyWith(
               color: EnvoyColors.textTertiary,
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,

@@ -141,14 +141,14 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
                 child: Text(
                   widget.title!,
-                  style: EnvoyTypography.subtitle1Semibold,
+                  style: EnvoyTypography.heading,
                 ),
               ),
             Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
               child: Text(
                 widget.content,
-                style: EnvoyTypography.body2Medium,
+                style: EnvoyTypography.body,
                 textAlign: TextAlign.center,
               ),
             ),

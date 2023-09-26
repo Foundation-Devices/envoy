@@ -36,7 +36,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
           children: [
             Text(
               widget.label,
-              style: EnvoyTypography.subtitle3Medium.copyWith(
+              style: EnvoyTypography.body.copyWith(
                 color: EnvoyColors.textPrimary,
               ),
             ),
@@ -139,7 +139,7 @@ class _DialogCheckBoxState extends State<DialogCheckBox> {
             padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
             child: Text(
               widget.label,
-              style: EnvoyTypography.body2Medium.copyWith(
+              style: EnvoyTypography.button.copyWith(
                 color: EnvoyColors.textSecondary,
               ),
             ),

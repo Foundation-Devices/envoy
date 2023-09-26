@@ -48,14 +48,14 @@ class EnvoyListTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
           child: Text(
             textLeft1,
-            style: EnvoyTypography.body2Medium,
+            style: EnvoyTypography.body,
           ),
         ),
         subtitle: textLeft2 == null
             ? (textRight2 == null ? null : Text(""))
             : Text(
                 textLeft2!,
-                style: EnvoyTypography.caption1Medium
+                style: EnvoyTypography.info
                     .copyWith(color: EnvoyColors.textSecondary),
               ),
         leading: leftIcon == null
@@ -85,7 +85,7 @@ class EnvoyListTile extends StatelessWidget {
                             SizedBox(height: 20, child: unitIcon!),
                           Text(
                             textRight1!,
-                            style: EnvoyTypography.body2Medium,
+                            style: EnvoyTypography.body,
                           ),
                         ],
                       ),
@@ -93,7 +93,7 @@ class EnvoyListTile extends StatelessWidget {
                   if (textRight2 != null)
                     Text(
                       textRight2!,
-                      style: EnvoyTypography.caption1Medium
+                      style: EnvoyTypography.info
                           .copyWith(color: EnvoyColors.textSecondary),
                     ),
                   if (textRight2 == null && textLeft2 != null) Text(""),
@@ -130,8 +130,8 @@ class ListHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: EnvoyTypography.caption1Semibold
-                .copyWith(color: EnvoyColors.textTertiary),
+            style:
+                EnvoyTypography.info.copyWith(color: EnvoyColors.textTertiary),
           ),
           Padding(
             padding: const EdgeInsets.only(top: EnvoySpacing.small),
