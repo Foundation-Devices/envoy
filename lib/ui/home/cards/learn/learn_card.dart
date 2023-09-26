@@ -121,13 +121,17 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                         height: EnvoySpacing.large1,
                         width: EnvoySpacing.large1,
                         decoration: BoxDecoration(
-                            color: EnvoyColors.surface2,
+                            color: learnFilterState.contains(LearnFilters.All)
+                                ? EnvoyColors.surface2
+                                : EnvoyColors.accentPrimary,
                             shape: BoxShape.circle),
                         child: Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.small),
                           child: EnvoyIcon(
                             EnvoyIcons.filter,
-                            color: EnvoyColors.textTertiary,
+                            color: learnFilterState.contains(LearnFilters.All)
+                                ? EnvoyColors.textTertiary
+                                : EnvoyColors.textPrimaryInverse,
                           ),
                         )),
                   ),
