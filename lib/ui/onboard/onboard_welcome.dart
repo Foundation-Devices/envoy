@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -70,12 +71,14 @@ class WelcomeScreen extends StatelessWidget {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
                             // Don't set up privacy if previously onboarded
-                            if (LocalStorage().prefs.getBool("onboarded") ==
+                            if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
                                 null) {
                               return OnboardPrivacySetup(
                                   setUpEnvoyWallet: false);
                             }
-                            return LocalStorage().prefs.getBool("onboarded")!
+                            return LocalStorage()
+                                    .prefs
+                                    .getBool(PREFS_ONBOARDED)!
                                 ? OnboardPassportWelcomeScreen()
                                 : OnboardPrivacySetup(setUpEnvoyWallet: false);
                           },
@@ -89,12 +92,14 @@ class WelcomeScreen extends StatelessWidget {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
                             // Don't set up privacy if previously onboarded
-                            if (LocalStorage().prefs.getBool("onboarded") ==
+                            if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
                                 null) {
                               return OnboardPrivacySetup(
                                   setUpEnvoyWallet: true);
                             }
-                            return LocalStorage().prefs.getBool("onboarded")!
+                            return LocalStorage()
+                                    .prefs
+                                    .getBool(PREFS_ONBOARDED)!
                                 ? OnboardEnvoyWelcomeScreen()
                                 : OnboardPrivacySetup(setUpEnvoyWallet: true);
                           },

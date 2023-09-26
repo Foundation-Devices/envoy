@@ -296,10 +296,20 @@ class EnvoyStorage {
     });
   }
 
+  // Store everything except videos and blogs
+  List<String> storesToBackUp = [
+    txNotesStoreName,
+    pendingTxStoreName,
+    dismissedPromptsStoreName,
+    firmwareStoreName,
+    tagsStoreName,
+    utxoBlockStateStoreName,
+    preferencesStoreName,
+  ];
+
   Future<String> export() async {
-    // TODO: select which stores to export
-    // (To not make the payload too big)
-    return jsonEncode(await exportDatabase(_db));
+    await _updatePreferencesCache(_db);
+    return jsonEncode(await exportDatabase(_db, storeNames: storesToBackUp));
   }
 
   restore(String json) async {
@@ -312,6 +322,8 @@ class EnvoyStorage {
     await _db.close();
     _db = await importDatabase(
         map, databaseFactoryIo, join(appDocumentDir.path, dbName));
+
+    await _updatePreferencesCache(_db);
   }
 
   // Since version 3 we migrate away from using shared_preferences
