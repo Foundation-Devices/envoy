@@ -27,7 +27,7 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   int _selectedIndex = 2;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;
-  var labelStyle = EnvoyTypography.caption2Semibold;
+  var labelStyle = EnvoyTypography.label;
 
   @override
   void initState() {

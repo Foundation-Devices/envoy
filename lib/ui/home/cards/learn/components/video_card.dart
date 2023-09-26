@@ -156,7 +156,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                   children: [
                     Text(
                       widget.video.title,
-                      style: EnvoyTypography.body2Semibold
+                      style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.textPrimary),
                       softWrap: false,
                       maxLines: 1,
@@ -172,15 +172,14 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                                 (widget.video.duration % 60)
                                     .toString()
                                     .padLeft(2, '0'),
-                            style: EnvoyTypography.caption1Medium
+                            style: EnvoyTypography.info
                                 .copyWith(color: EnvoyColors.textSecondary),
                           ),
                           _isVideoWatched
                               ? Text(
                                   "Watched",
-                                  style: EnvoyTypography.caption1Medium
-                                      .copyWith(
-                                          color: EnvoyColors.textSecondary),
+                                  style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.textSecondary),
                                 )
                               : Text("")
                         ]),

@@ -465,7 +465,7 @@ class CheckBoxFilterItem extends StatelessWidget {
             Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Text(
               text,
-              style: EnvoyTypography.body2Medium
+              style: EnvoyTypography.body
                   .copyWith(color: newColorScheme.EnvoyColors.textPrimary),
             )
           ],

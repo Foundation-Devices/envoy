@@ -55,7 +55,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             children: [
               Text(
                 "Filter",
-                style: EnvoyTypography.subtitle1Semibold
+                style: EnvoyTypography.subheading
                     .copyWith(color: EnvoyColors.textPrimary),
               ),
               TextButton(
@@ -170,7 +170,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text("Sort by",
-              style: EnvoyTypography.subtitle1Semibold
+              style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(
             text: "Newest first",

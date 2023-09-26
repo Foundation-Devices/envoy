@@ -106,7 +106,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                           const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
                       child: Text(
                         widget.label,
-                        style: EnvoyTypography.subtitle3Semibold.copyWith(
+                        style: EnvoyTypography.button.copyWith(
                           color: _getMainColor(),
                         ),
                       ),

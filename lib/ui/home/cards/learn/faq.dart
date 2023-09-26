@@ -46,7 +46,7 @@ class Faq extends StatelessWidget {
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
                       "FAQs",
-                      style: EnvoyTypography.body1Medium
+                      style: EnvoyTypography.body
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                   ),
@@ -97,9 +97,9 @@ class FaqBodyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle defaultStyle =
-        EnvoyTypography.body2Medium.copyWith(color: EnvoyColors.textSecondary);
+        EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
     TextStyle linkStyle =
-        EnvoyTypography.body2Medium.copyWith(color: EnvoyColors.accentPrimary);
+        EnvoyTypography.button.copyWith(color: EnvoyColors.accentPrimary);
 
     List<TextSpan> spans = [];
 
@@ -167,7 +167,7 @@ class FaqItem extends StatelessWidget {
                     Flexible(
                       child: Text(
                         title,
-                        style: EnvoyTypography.body2Semibold
+                        style: EnvoyTypography.button
                             .copyWith(color: EnvoyColors.accentPrimary),
                       ),
                     ),
