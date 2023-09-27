@@ -631,6 +631,13 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
             return res.into();
         }
         res += 1;
+
+        // TODO: find the correct way to do this
+        // probably by not having a drain script in build_tx
+        // check if BDK supports that
+        if res >= 100 {
+            return res.into();
+        }
     }
 }
 
