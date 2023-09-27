@@ -238,7 +238,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: OnboardingButton(
-                label: S().magic_setup_generate_wallet_modal_ios_CTA,
+                label: S().magic_setup_generate_wallet_modal_ios_cta,
                 onTap: () async {
                   ref.read(homePageTabProvider.notifier).state =
                       HomePageTabState.accounts;

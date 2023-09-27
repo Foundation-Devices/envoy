@@ -141,11 +141,11 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                     );
                   }
                   return EnvoyDialog(
-                    title: S().envoy_device_rename,
+                    title: S().manage_device_rename_modal_heading,
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().component_save.toUpperCase(),
+                        S().manage_device_disconnect_modal_cta.toUpperCase(),
                         type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           Devices().renameDevice(
@@ -163,19 +163,17 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
+          child: Text(S().manage_device_disconnect_modal.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(
-                  title:
-                      S().envoy_device_delete_are_you_sure(widget.device.name),
-                  content: Text(S().envoy_device_delete_explainer),
+                  content: Text(S().manage_device_disconnect_modal),
                   actions: [
                     EnvoyButton(
-                      S().component_delete.toUpperCase(),
+                      S().manage_device_disconnect_modal.toUpperCase(),
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {

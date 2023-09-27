@@ -57,7 +57,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                             padding: const EdgeInsets.all(6.0),
                             child: QrTab(
                                 title: widget.account.name,
-                                subtitle: S().envoy_address_explainer,
+                                subtitle: S().manage_account_address_card_subheading,
                                 account: widget.account,
                                 qr: QrImage(
                                   data: snapshot.data!,
@@ -106,7 +106,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                           onTap: () {
                             GoRouter.of(context).pop();
                           },
-                          label: S().component_ok,
+                          label: S().OK,
                         ),
                         IconButton(
                             onPressed: () {
