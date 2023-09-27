@@ -141,11 +141,11 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                     );
                   }
                   return EnvoyDialog(
-                    title: S().envoy_device_rename,
+                    title: S().manage_device_rename_modal_heading,
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().component_save.toUpperCase(),
+                        S().manage_device_disconnect_modal_cta.toUpperCase(),
                         type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           Devices().renameDevice(
@@ -170,9 +170,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(
-                  title:
-                      S().envoy_device_delete_are_you_sure(widget.device.name),
-                  content: Text(S().envoy_device_delete_explainer),
+                  content: Text(S().manage_device_disconnect_modal),
                   actions: [
                     EnvoyButton(
                       S().manage_device_disconnect_modal.toUpperCase(),

@@ -67,7 +67,7 @@ class PsbtCard extends StatelessWidget {
                     maxWidth: 350,
                   ),
                   child: QrTab(
-                    title: S().envoy_psbt_scan_qr,
+                    title: S().send_qr_code_card_heading,
                     subtitle: S().envoy_psbt_explainer,
                     account: account,
                     qr: AnimatedQrImage(
