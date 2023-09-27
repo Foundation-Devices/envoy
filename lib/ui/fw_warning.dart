@@ -78,7 +78,7 @@ class _FwWarningState extends State<FwWarning> {
                                   mode: LaunchMode.externalApplication);
                             },
                           style: linkStyle,
-                          text: S().envoy_fw_error_modal_cta_3,
+                          text: S().envoy_fw_microsd_fails_cta2,
                         ),
                       ],
                     ),

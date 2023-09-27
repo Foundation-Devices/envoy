@@ -163,7 +163,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
+          child: Text(S().manage_device_disconnect_modal.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -175,7 +175,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   content: Text(S().envoy_device_delete_explainer),
                   actions: [
                     EnvoyButton(
-                      S().component_delete.toUpperCase(),
+                      S().manage_device_disconnect_modal.toUpperCase(),
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {

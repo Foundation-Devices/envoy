@@ -390,7 +390,7 @@ class TransactionListTile extends StatelessWidget {
                   },
                   icon: EnvoyIcons.info,
                   secondaryButtonLabel:
-                      S().coincontrol_coin_change_spendable_tate_modal_cta2,
+                      S().coincontrol_coin_change_spendable_state_modal_cta2,
                   onSecondaryButtonTap: () {
                     Navigator.pop(context);
                   },
@@ -416,8 +416,8 @@ class TransactionListTile extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: transaction.amount < 0
-                  ? Text(S().envoy_account_sent)
-                  : Text(S().envoy_account_received),
+                  ? Text(S().Sent)
+                  : Text(S().activity_received),
             ),
             subtitle: FittedBox(
               fit: BoxFit.scaleDown,
@@ -589,11 +589,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     isKeyboardShown = true;
                   }
                   return EnvoyDialog(
-                    title: S().envoy_account_rename,
+                    title: S().manage_account_rename_heading,
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().component_save.toUpperCase(),
+                        S().manage_account_rename_cta.toUpperCase(),
                         onTap: () {
                           AccountManager().renameAccount(
                               widget.account, textEntry.enteredText);
@@ -611,7 +611,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
+          child: Text(S().delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -623,7 +623,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     content: Text(S().envoy_account_delete_explainer),
                     actions: [
                       EnvoyButton(
-                        S().component_delete.toUpperCase(),
+                        S().manage_account_remove_cta.toUpperCase(),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);

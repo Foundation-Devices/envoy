@@ -113,7 +113,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
       ),
       topBarActions: [
         TextButton(
-          child: Text(S().magic_setup_tutorial_ios_skip,
+          child: Text(S().Skip,
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium

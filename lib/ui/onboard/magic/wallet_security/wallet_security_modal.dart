@@ -60,7 +60,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   List<String> stepHeadings = [
     S().wallet_security_modal_1_4_ios_heading,
     S().wallet_security_modal_2_4_heading,
-    S().wallet_security_modal_34_ios_heading,
+    S().wallet_security_modal_3_4_ios_heading,
     S().wallet_security_modal_4_4_heading,
   ];
 
@@ -79,7 +79,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
       S().wallet_security_modal_2_4_subheading,
       Platform.isAndroid
           ? S().wallet_security_modal_3_4_android_subheading
-          : S().wallet_security_modal_34_ios_subheading,
+          : S().wallet_security_modal_3_4_ios_subheading,
       widget.confirmationStep
           ? S().manual_backups_export_flow_modal_4_4_subheading
           : S().wallet_security_modal_4_4_subheading,

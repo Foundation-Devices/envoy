@@ -79,7 +79,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   onTap: () {
                     context.pop();
                   },
-                  label: S().component_ok,
+                  label: S().OK,
                 ),
                 IconButton(
                     onPressed: () {

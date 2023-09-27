@@ -599,7 +599,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 type: EnvoyButtonTypes.tertiary,
               ),
               EnvoyButton(
-                S().component_save.toUpperCase(),
+                S().add_note_modal_cta.toUpperCase(),
                 onTap: () async {
                   widget.coinTag.name = textEntry.enteredText;
                   int updated =

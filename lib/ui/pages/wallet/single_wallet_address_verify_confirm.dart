@@ -16,19 +16,19 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
       clipArt: Image.asset("assets/address_verify.png"),
       text: [
         OnboardingText(
-            header: S().single_envoy_wallet_address_verify_confirm_heading,
-            text: S().single_envoy_wallet_address_verify_confirm_subheading),
+            header: S().pair_new_device_address_heading,
+            text: S().pair_new_device_address_subheading),
       ],
       buttons: [
         OnboardingButton(
-          label: S().single_envoy_wallet_address_verify_confirm_cta1,
+          label: S().pair_new_device_address_cta2,
           onTap: () {
             launchUrl(Uri.parse("mailto:hello@foundationdevices.com"));
           },
           type: EnvoyButtonTypes.secondary,
         ),
         OnboardingButton(
-            label: S().single_envoy_wallet_address_verify_confirm_cta,
+            label: S().pair_new_device_address_cta1,
             onTap: () {
               OnboardingPage.goHome(context);
             }),

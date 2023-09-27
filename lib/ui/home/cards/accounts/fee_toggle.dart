@@ -71,8 +71,8 @@ class _FeeToggleState extends State<FeeToggle> {
         FeeToggleButton(
             selected: _selectedIndex == 0,
             icon: Icons.timer,
-            label: S().envoy_fee_standard,
-            topLabel: S().envoy_fee_60_min,
+            label: S().coincontrol_tx_detail_fee_standard,
+            topLabel: S().send_keyboard_network_fees_standard_time,
             bottomLabel: formatFee(widget.standardFee),
             onTap: () {
               setState(() {
@@ -89,8 +89,8 @@ class _FeeToggleState extends State<FeeToggle> {
         FeeToggleButton(
             selected: _selectedIndex != 0,
             icon: Icons.fast_forward,
-            label: S().envoy_fee_boost,
-            topLabel: S().envoy_fee_10_min,
+            label: S().send_keyboard_network_fees_boost_button,
+            topLabel: S().send_keyboard_network_fees_boost_time,
             bottomLabel: formatFee(widget.boostFee),
             onTap: () {
               setState(() {
