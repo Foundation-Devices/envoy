@@ -136,7 +136,7 @@ class _ManualSetupImportSeedState extends State<ManualSetupImportSeed> {
                             opacity: finishSeedEntries ? 1 : 0.5,
                             child: OnboardingButton(
                                 label:
-                                    S().manual_setup_import_seed_12_words_CTA,
+                                    S().manual_setup_import_seed_12_words_CTA_inactive,
                                 onTap: () {
                                   EnvoySeed()
                                       .create(currentWords,

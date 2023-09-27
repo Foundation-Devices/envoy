@@ -121,7 +121,7 @@ class BackupWarningModal extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: Text(
-                    S().manual_setup_create_and_store_backup_modal_heading,
+                    S().manual_setup_create_and_store_backup_modal_subheading,
                     textAlign: TextAlign.center,
                   ),
                 ),

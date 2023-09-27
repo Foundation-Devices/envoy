@@ -74,13 +74,13 @@ class PpSetupIntroPage extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              S().envoy_pp_setup_intro_card1_heading,
+                              S().envoy_pp_setup_intro_heading,
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             Padding(padding: EdgeInsets.all(6)),
                             Text(
-                              S().envoy_pp_setup_intro_card1_subheading,
+                              S().envoy_pp_setup_intro_subheading,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
                             ),

@@ -191,8 +191,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                             : 0) ==
                                         stepHeadings.length
                                     ? S()
-                                        .manual_backups_export_flow_modal_4_4_CTA
-                                    : S().wallet_security_modal_4_4_CTA,
+                                        .manual_setup_create_and_store_backup_modal_CTA
+                                    : S().component_continue,
                                 type: EnvoyButtonTypes.primaryModal,
                                 onTap: () {
                                   int currentPage =
