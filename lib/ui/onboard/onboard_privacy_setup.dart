@@ -27,6 +27,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 class OnboardPrivacySetup extends ConsumerStatefulWidget {
   final bool setUpEnvoyWallet;
@@ -171,7 +172,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                       //based on both conditions, set tor enabled or disabled. before entering to the main screen
                       Settings()
                           .setTorEnabled(torRequire || !betterPerformance);
-                      LocalStorage().prefs.setBool("onboarded", true);
+                      LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
                       if (!widget.setUpEnvoyWallet) {
                         Navigator.push(
                             context,
@@ -507,7 +508,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (ref.read(nodeConnectionStateProvider).isConnected) {
         setState(() {
-          _betterPerformance = !Tor().enabled;
+          _betterPerformance = !Tor.instance.enabled;
         });
       }
     });
@@ -531,7 +532,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
         //Setting tor state
         Settings().usingTor = next;
         if (next) {
-          Tor().enable();
+          Tor.instance.enable();
         }
         _privacyIconController?.findInput<bool>("toggle")?.change(!next);
         _improvedPerformanceController?.findInput<bool>("enable")?.change(next);

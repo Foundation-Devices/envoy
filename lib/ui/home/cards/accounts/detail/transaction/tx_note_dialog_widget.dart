@@ -78,7 +78,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(EnvoySpacing.medium1),
                   hintText: S().add_note_modal_ie_text_field,
-                  labelStyle: EnvoyTypography.body1Medium
+                  labelStyle: EnvoyTypography.body
                       .copyWith(color: EnvoyColors.textTertiary),
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,

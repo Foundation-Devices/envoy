@@ -35,7 +35,7 @@ class SettingsHeader extends StatelessWidget {
             ),
             Text(
               title,
-              style: EnvoyTypography.body1Medium,
+              style: EnvoyTypography.body,
             ),
           ],
         ),
@@ -45,7 +45,7 @@ class SettingsHeader extends StatelessWidget {
             onTap: onTap,
             child: Text(
               linkText,
-              style: EnvoyTypography.buttonText
+              style: EnvoyTypography.button
                   .copyWith(color: EnvoyColors.accentPrimary),
             ),
           ),

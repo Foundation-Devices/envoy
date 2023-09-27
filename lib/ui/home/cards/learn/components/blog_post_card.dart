@@ -109,7 +109,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                   children: [
                     Text(
                       widget.blog.title,
-                      style: EnvoyTypography.body2Semibold
+                      style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                     SizedBox(height: EnvoySpacing.xs),
@@ -123,9 +123,8 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                           _isBlogRead
                               ? Text(
                                   "Read", // TODO: Sync from Figma
-                                  style: EnvoyTypography.caption1Medium
-                                      .copyWith(
-                                          color: EnvoyColors.textSecondary),
+                                  style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.textSecondary),
                                 )
                               : Text("")
                         ]),
@@ -177,7 +176,7 @@ class BlogPostCard extends StatelessWidget {
             future: Future(() async {
               final document = htmlParser.parse(blog.description);
               final imageTags = document.getElementsByTagName('img');
-              final torClient = HttpTor(Tor());
+              final torClient = HttpTor(Tor.instance);
 
               // Fetch all the images with HttpTor
               for (final imgTag in imageTags) {
@@ -215,6 +214,10 @@ class BlogPostCard extends StatelessWidget {
                       ),
                       Html(
                         data: snapshot.data,
+                        style: {
+                          "p": Style(fontSize: FontSize.medium),
+                          "a": Style(color: EnvoyColors.accentPrimary),
+                        },
                         onLinkTap: (
                           linkUrl,
                           _,

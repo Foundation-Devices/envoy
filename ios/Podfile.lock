@@ -13,7 +13,7 @@ PODS:
     - Flutter
   - local_auth_ios (0.0.1):
     - Flutter
-  - MobileVLCKit (3.4.0)
+  - MobileVLCKit (3.5.1)
   - MTBBarcodeScanner (5.0.11)
   - package_info_plus (0.4.5):
     - Flutter
@@ -32,6 +32,8 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - tor (0.0.1):
+    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -50,6 +52,7 @@ DEPENDENCIES:
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - tor (from `.symlinks/plugins/tor/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -86,6 +89,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  tor:
+    :path: ".symlinks/plugins/tor/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -97,15 +102,16 @@ SPEC CHECKSUMS:
   flutter_vlc_player: a0bd756da5d2456f6d26963976616185a65ec677
   integration_test: 13825b8a9334a850581300559b8839134b124670
   local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
-  MobileVLCKit: 20ccee43f7788a94ea1f67179e33d9600779dfd9
+  MobileVLCKit: 144d5f565512d1147d63b0fa1379231b3fd66535
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
-  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
+  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   rive_common: 60ae7896ab40f9513974f36f015de33f70d2c5c5
   share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
+  tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: 2b24e370d86e71942e95dee86eac403a61accec4

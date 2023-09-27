@@ -80,6 +80,9 @@ RUN curl https://sh.rustup.rs -sSf | \
 
 ENV PATH=/root/.cargo/bin:$PATH
 
+# Keep Dart cache directory outside of home
+ENV PUB_CACHE=/pub-cache
+
 # Copy our files
 COPY . .
 

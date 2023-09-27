@@ -121,13 +121,17 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                         height: EnvoySpacing.large1,
                         width: EnvoySpacing.large1,
                         decoration: BoxDecoration(
-                            color: EnvoyColors.surface2,
+                            color: learnFilterState.contains(LearnFilters.All)
+                                ? EnvoyColors.surface2
+                                : EnvoyColors.accentPrimary,
                             shape: BoxShape.circle),
                         child: Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.small),
                           child: EnvoyIcon(
                             EnvoyIcons.filter,
-                            color: EnvoyColors.textTertiary,
+                            color: learnFilterState.contains(LearnFilters.All)
+                                ? EnvoyColors.textTertiary
+                                : EnvoyColors.textPrimaryInverse,
                           ),
                         )),
                   ),
@@ -148,7 +152,7 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
                       "Videos",
-                      style: EnvoyTypography.body1Medium
+                      style: EnvoyTypography.subheading
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                   ),
@@ -183,7 +187,7 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
                       "Blogs",
-                      style: EnvoyTypography.body1Medium
+                      style: EnvoyTypography.subheading
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                   ),
@@ -248,7 +252,7 @@ class LearnIntro extends StatelessWidget {
                   height: 50,
                 ),
                 Text("WELCOME TO THE\nLEARNING CENTER", // TODO: sync from Figma
-                    style: EnvoyTypography.subtitle1Medium
+                    style: EnvoyTypography.heading
                         .copyWith(color: EnvoyColors.textPrimaryInverse)),
               ],
             ),

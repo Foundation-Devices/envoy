@@ -104,7 +104,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     option.label,
-                    style: EnvoyTypography.body1Medium.copyWith(
+                    style: EnvoyTypography.body.copyWith(
                       color: EnvoyColors.textPrimary,
                     ),
                   ),
@@ -132,7 +132,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                         children: [
                           Text(
                             option.label,
-                            style: EnvoyTypography.body1Medium.copyWith(
+                            style: EnvoyTypography.body.copyWith(
                               color: isSelectedOption && _isTapped
                                   ? EnvoyColors.textPrimaryInverse
                                   : EnvoyColors.textPrimary,

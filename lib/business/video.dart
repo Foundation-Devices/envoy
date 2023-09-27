@@ -42,7 +42,7 @@ class Video {
       {this.thumbnail,
       this.thumbnailUrl}) {
     if (type == VideoType.youTube) {
-      HttpTor(Tor()).get(_getYouTubeThumbnailUrl()).then((response) {
+      HttpTor(Tor.instance).get(_getYouTubeThumbnailUrl()).then((response) {
         thumbnail = response.bodyBytes;
       });
     }

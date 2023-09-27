@@ -55,14 +55,14 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
                 ),
               Text(
                 title,
-                style: EnvoyTypography.subtitle1Semibold,
+                style: EnvoyTypography.subheading,
               ),
               Padding(
                 padding: const EdgeInsets.only(
                     top: EnvoySpacing.small, bottom: EnvoySpacing.medium3),
                 child: Text(
                   content,
-                  style: EnvoyTypography.body2Medium,
+                  style: EnvoyTypography.body,
                 ),
               ),
               EnvoyButton(

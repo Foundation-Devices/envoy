@@ -50,6 +50,7 @@ class Settings extends ChangeNotifier {
       displayUnit = DisplayUnit.btc;
     }
     notifyListeners();
+    store();
   }
 
   String? selectedFiat;
@@ -64,6 +65,7 @@ class Settings extends ChangeNotifier {
     }
 
     notifyListeners();
+    store();
   }
 
   Environment environment = Environment.production;
@@ -117,9 +119,9 @@ class Settings extends ChangeNotifier {
   setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
-      Tor().enable();
+      Tor.instance.enable();
     } else {
-      Tor().disable();
+      Tor.instance.disable();
     }
 
     store();
@@ -160,6 +162,7 @@ class Settings extends ChangeNotifier {
 
   setAllowScreenshots(bool allowScreenshots) {
     allowScreenshotsSetting = allowScreenshots;
+    store();
   }
 
   @JsonKey(defaultValue: false)
@@ -172,6 +175,7 @@ class Settings extends ChangeNotifier {
   setShowTestnetAccounts(bool showTestnetAccounts) {
     showTestnetAccountsSetting = showTestnetAccounts;
     notifyListeners();
+    store();
   }
 
   static final Settings _instance = Settings._internal();

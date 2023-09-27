@@ -69,7 +69,7 @@ class _BigTabState extends State<BigTab> {
                   children: [
                     Text(
                       widget.label,
-                      style: EnvoyTypography.caption1Bold.copyWith(
+                      style: EnvoyTypography.button.copyWith(
                         color: textColor,
                       ),
                     ),

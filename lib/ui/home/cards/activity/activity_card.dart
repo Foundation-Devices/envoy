@@ -70,7 +70,7 @@ class TopLevelActivityCard extends StatelessWidget {
                         ),
                         Text(
                           S().activity_emptyState_label,
-                          style: EnvoyTypography.body2Medium
+                          style: EnvoyTypography.body
                               .copyWith(color: EnvoyColors.textSecondary),
                         ),
                         SizedBox(

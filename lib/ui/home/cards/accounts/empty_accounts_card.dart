@@ -66,7 +66,7 @@ class EmptyAccountsCard extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context)
+                    Navigator.of(context, rootNavigator: true)
                         .push(MaterialPageRoute(builder: (context) {
                       return OnboardEnvoyWelcomeScreen();
                     }));

@@ -7,6 +7,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -464,10 +465,8 @@ class CheckBoxFilterItem extends StatelessWidget {
             Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Text(
               text,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  ),
+              style: EnvoyTypography.body
+                  .copyWith(color: newColorScheme.EnvoyColors.textPrimary),
             )
           ],
         ),
