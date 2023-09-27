@@ -8,20 +8,17 @@ part of 'blog_post.dart';
 
 BlogPost _$BlogPostFromJson(Map<String, dynamic> json) => BlogPost(
       json['title'] as String,
-      json['description'] as String,
+      json['description'] as String?,
       DateTime.parse(json['publicationDate'] as String),
       json['url'] as String,
       json['id'] as String,
       json['read'] as bool?,
-      thumbnail:
-          (json['thumbnail'] as List<dynamic>?)?.map((e) => e as int).toList(),
       thumbnailUrl: json['thumbnailUrl'] as String?,
     );
 
 Map<String, dynamic> _$BlogPostToJson(BlogPost instance) => <String, dynamic>{
       'title': instance.title,
       'description': instance.description,
-      'thumbnail': instance.thumbnail,
       'thumbnailUrl': instance.thumbnailUrl,
       'publicationDate': instance.publicationDate.toIso8601String(),
       'url': instance.url,

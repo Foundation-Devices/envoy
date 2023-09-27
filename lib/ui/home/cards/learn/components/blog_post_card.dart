@@ -75,23 +75,27 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                 EnvoyStorage().updateBlogPost(widget.blog);
               },
               child: Stack(children: [
-                widget.blog.thumbnail == null
-                    ? Center(
-                        child: Container(
-                          height: blogThumbnailHeight,
-                        ),
-                      )
-                    : Container(
-                        height: blogThumbnailHeight,
-                        width: containerWidth,
-                        child: Opacity(
-                          opacity: _isBlogRead ? 0.3 : 1.0,
-                          child: Image.memory(
-                            Uint8List.fromList(widget.blog.thumbnail!),
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                      ),
+                FutureBuilder(
+                    future: widget.blog.thumbnail,
+                    builder: (context, snapshot) {
+                      return !snapshot.hasData || snapshot.data == null
+                          ? Center(
+                              child: Container(
+                                height: blogThumbnailHeight,
+                              ),
+                            )
+                          : Container(
+                              height: blogThumbnailHeight,
+                              width: containerWidth,
+                              child: Opacity(
+                                opacity: _isBlogRead ? 0.3 : 1.0,
+                                child: Image.memory(
+                                  Uint8List.fromList(snapshot.data!),
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            );
+                    })
               ]),
             ),
           ),

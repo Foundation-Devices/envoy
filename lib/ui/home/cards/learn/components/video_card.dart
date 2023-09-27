@@ -84,24 +84,28 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                 EnvoyStorage().updateVideo(widget.video);
               },
               child: Stack(children: [
-                widget.video.thumbnail == null
-                    ? Container(
-                        height: videoImageHeight,
-                        child: Center(
-                            child: Icon(
-                          Icons.play_arrow,
-                          color: EnvoyColors.textPrimaryInverse,
-                          size: 40,
-                        )),
-                      )
-                    : Container(
-                        height: videoImageHeight,
-                        width: videoContainerWidth,
-                        child: Image.memory(
-                          Uint8List.fromList(widget.video.thumbnail!),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
+                FutureBuilder(
+                    future: widget.video.thumbnail,
+                    builder: (context, snapshot) {
+                      return !snapshot.hasData || snapshot.data == null
+                          ? Container(
+                              height: videoImageHeight,
+                              child: Center(
+                                  child: Icon(
+                                Icons.play_arrow,
+                                color: EnvoyColors.textPrimaryInverse,
+                                size: 40,
+                              )),
+                            )
+                          : Container(
+                              height: videoImageHeight,
+                              width: videoContainerWidth,
+                              child: Image.memory(
+                                Uint8List.fromList(snapshot.data!),
+                                fit: BoxFit.fitWidth,
+                              ),
+                            );
+                    }),
                 Positioned(
                   top: 0,
                   bottom: 0,
