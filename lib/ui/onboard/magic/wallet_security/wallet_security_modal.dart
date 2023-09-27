@@ -15,15 +15,13 @@ class WalletSecurityModal extends StatefulWidget {
   final Function onLastStep;
   final Function? onConfirmBackup;
   final Function? onDenyBackup;
-  final bool confirmationStep;
 
-  const WalletSecurityModal(
-      {Key? key,
-      required this.onLastStep,
-      this.onDenyBackup,
-      this.onConfirmBackup,
-      this.confirmationStep = false})
-      : super(key: key);
+  const WalletSecurityModal({
+    Key? key,
+    required this.onLastStep,
+    this.onDenyBackup,
+    this.onConfirmBackup,
+  }) : super(key: key);
 
   @override
   State<WalletSecurityModal> createState() => _WalletSecurityModalState();
@@ -66,8 +64,6 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
 
   late List<String> stepSubHeadings;
 
-  double _page = 0.0;
-
   @override
   void initState() {
     super.initState();
@@ -80,15 +76,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
       Platform.isAndroid
           ? S().wallet_security_modal_3_4_android_subheading
           : S().wallet_security_modal_3_4_ios_subheading,
-      widget.confirmationStep
-          ? S().manual_backups_export_flow_modal_4_4_subheading
-          : S().wallet_security_modal_4_4_subheading,
+      S().wallet_security_modal_4_4_subheading,
     ];
-    _pageController.addListener(() {
-      setState(() {
-        _page = _pageController.page ?? 0;
-      });
-    });
   }
 
   @override
@@ -228,11 +217,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   ),
                                 ],
                               ),
-                              crossFadeState: _page > 2.5
-                                  ? widget.confirmationStep
-                                      ? CrossFadeState.showSecond
-                                      : CrossFadeState.showFirst
-                                  : CrossFadeState.showFirst,
+                              crossFadeState: CrossFadeState.showFirst,
                               duration: Duration(milliseconds: 400))
                         ],
                       )),
