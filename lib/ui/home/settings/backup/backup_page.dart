@@ -190,7 +190,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                   ? S()
                                       .manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress
                                   : lastEnvoyServerBackup == null
-                                      ? "Pening backup to Foundation servers" //TODO: FIGMA
+                                      ? S()
+                                          .manual_toggle_on_seed_not_backedup_android_pending_backup
                                       : "${timeago.format(lastEnvoyServerBackup)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup).substring(1).toLowerCase()} to Foundation server", // TODO: FIGMA
                               color: EnvoyColors.grey,
                             ),
