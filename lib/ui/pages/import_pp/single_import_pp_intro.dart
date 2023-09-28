@@ -118,7 +118,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                             ),
                           ),
                           EnvoyButton(
-                            S().pair_existing_device_intro_CTA,
+                            S().accounts_empty_text_learn_more,
                             onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {

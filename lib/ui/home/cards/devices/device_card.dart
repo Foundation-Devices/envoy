@@ -79,11 +79,13 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 18.0, left: 35.0),
-        child: Text(S().envoy_device_serial + ": " + widget.device.serial),
+        child: Text(S().manage_device_details_deviceSerial +
+            ": " +
+            widget.device.serial),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-        child: Text(S().envoy_device_paired +
+        child: Text(S().manage_device_details_devicePaired +
             " " +
             timeago.format(widget.device.datePaired)),
       ),
@@ -120,7 +122,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         ),
         GestureDetector(
           child: Text(
-            S().envoy_device_edit_device_name.toUpperCase(),
+            S().manage_device_details_menu_editDeviceName.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {

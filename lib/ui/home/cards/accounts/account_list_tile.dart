@@ -187,7 +187,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                               padding: const EdgeInsets.only(
                                                   right: 7.0),
                                               child: Text(
-                                                "Testnet",
+                                                "Testnet", // TODO: FIGMA
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleSmall!

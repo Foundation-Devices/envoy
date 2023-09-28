@@ -57,7 +57,8 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                             padding: const EdgeInsets.all(6.0),
                             child: QrTab(
                                 title: widget.account.name,
-                                subtitle: S().manage_account_address_card_subheading,
+                                subtitle:
+                                    S().manage_account_address_card_subheading,
                                 account: widget.account,
                                 qr: QrImage(
                                   data: snapshot.data!,
@@ -141,7 +142,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     if (text != address) {
       Clipboard.setData(ClipboardData(text: address));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(S().envoy_address_copied_clipboard),
+        content: Text("Address copied to clipboard!"), //TODO: FIGMA
       ));
     }
   }

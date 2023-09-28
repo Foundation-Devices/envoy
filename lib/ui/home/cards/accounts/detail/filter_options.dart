@@ -44,7 +44,9 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                             ? AccountToggleState.Coins
                             : AccountToggleState.Tx;
                   },
-                  value: toggleState == AccountToggleState.Tx ? "Tx" : "Coins",
+                  value: toggleState == AccountToggleState.Tx
+                      ? "Tx"
+                      : "Coins", // TODO: FIGMA
                 ),
               ),
               Flexible(
@@ -158,7 +160,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Filter",
+                "Filter", // TODO: FIGMA
                 style: titleStyle,
               ),
               TextButton(
@@ -168,7 +170,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                   });
                 },
                 child: Text(
-                  "Reset filter",
+                  "Reset filter", // TODO: FIGMA
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -183,7 +185,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             children: [
               EnvoyFilterChip(
                 icon: Icons.call_made,
-                text: "Sent",
+                text: "Sent", // TODO: FIGMA
                 selected:
                     _filterState?.contains(TransactionFilters.Sent) ?? false,
                 onTap: () {
@@ -204,7 +206,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                 icon: Icons.call_received,
                 selected: _filterState?.contains(TransactionFilters.Received) ??
                     false,
-                text: "Received",
+                text: "Received", // TODO: FIGMA
                 onTap: () {
                   final Set<TransactionFilters> newState = Set()
                     ..addAll(_filterState!);
@@ -224,14 +226,14 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Sort by", style: titleStyle),
+              Text("Sort by", style: titleStyle), // TODO: FIGMA
               TextButton(
                 onPressed: () {
                   ref.read(txSortStateProvider.notifier).state =
                       TransactionSortTypes.newestFirst;
                 },
                 child: Text(
-                  "Reset sorting",
+                  "Reset sorting", // TODO: FIGMA
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -242,7 +244,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             ],
           ),
           CheckBoxFilterItem(
-            text: "Newest First",
+            text: "Newest First", // TODO: FIGMA
             checked: _sortState == TransactionSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -252,7 +254,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Oldest First",
+            text: "Oldest First", // TODO: FIGMA
             checked: _sortState == TransactionSortTypes.oldestFirst,
             onTap: () {
               setState(() {
@@ -261,7 +263,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Highest Value",
+            text: "Highest Value", // TODO: FIGMA
             checked: _sortState == TransactionSortTypes.amountHighToLow,
             onTap: () {
               Haptics.selectionClick();
@@ -271,7 +273,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Lowest Value",
+            text: "Lowest Value", // TODO: FIGMA
             checked: _sortState == TransactionSortTypes.amountLowToHigh,
             onTap: () {
               Haptics.selectionClick();
@@ -282,7 +284,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "Apply filters",
+            "Apply filters", // TODO: FIGMA
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();
@@ -344,7 +346,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Sort by",
+                "Sort by", // TODO: FIGMA
                 style: titleStyle,
               ),
               TextButton(
@@ -356,7 +358,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
                       _sortState!;
                 },
                 child: Text(
-                  "Reset filter",
+                  "Reset filter", // TODO: FIGMA
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -368,7 +370,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           CheckBoxFilterItem(
-            text: "A to Z",
+            text: "A to Z", // TODO: FIGMA
             checked: _sortState == CoinTagSortTypes.sortByTagNameAsc,
             onTap: () {
               Haptics.selectionClick();
@@ -378,7 +380,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Z to A",
+            text: "Z to A", // TODO: FIGMA
             checked: _sortState == CoinTagSortTypes.sortByTagNameDesc,
             onTap: () {
               setState(() {
@@ -387,7 +389,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Highest Value",
+            text: "Highest Value", // TODO: FIGMA
             checked: _sortState == CoinTagSortTypes.amountHighToLow,
             onTap: () {
               Haptics.selectionClick();
@@ -397,7 +399,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Lowest Value",
+            text: "Lowest Value", // TODO: FIGMA
             checked: _sortState == CoinTagSortTypes.amountLowToHigh,
             onTap: () {
               Haptics.selectionClick();
@@ -408,7 +410,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "Apply filters",
+            "Apply filters", // TODO: FIGMA
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();
@@ -493,7 +495,7 @@ class SlidingToggle extends StatefulWidget {
 
 class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
-  String value = "Tx";
+  String value = "Tx"; // TODO: FIGMA
 
   final Duration _duration = Duration(milliseconds: 150);
   late AnimationController _animationController;
@@ -502,7 +504,7 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = newColorScheme.EnvoyColors.textTertiary;
-  String _text = "Activity";
+  String _text = "Activity"; // TODO: FIGMA
 
   @override
   void initState() {
@@ -576,14 +578,14 @@ class _SlidingToggleState extends State<SlidingToggle>
     _animationController.addListener(() {
       setState(() {
         if (_animationController.value < 0.5) {
-          _text = "Activity";
+          _text = "Activity"; // TODO: FIGMA
         } else if (_animationController.value > 0.5) {
-          _text = "Tags";
+          _text = "Tags"; // TODO: FIGMA
         }
       });
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (value == "Tx")
+      if (value == "Tx") // TODO: FIGMA
         _animationController.reverse();
       else
         _animationController.animateTo(1.0,
@@ -599,11 +601,11 @@ class _SlidingToggleState extends State<SlidingToggle>
       builder: (context, constraints) {
         return GestureDetector(
           onTap: () async {
-            value = value == "Tx" ? "Coins" : "Tx";
+            value = value == "Tx" ? "Coins" : "Tx"; // TODO: FIGMA
             if (_animationController.isAnimating) {
               _animationController.stop();
             }
-            if (value == "Tx")
+            if (value == "Tx") // TODO: FIGMA
               _animationController.reverse();
             else
               _animationController.forward();

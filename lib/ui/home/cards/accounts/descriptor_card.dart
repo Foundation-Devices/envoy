@@ -48,7 +48,8 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
               padding: const EdgeInsets.all(15.0),
               child: QrTab(
                 title: widget.account.name,
-                subtitle: S().envoy_descriptor_explainer,
+                subtitle:
+                    "Make sure not to share this descriptor unless you are comfortable with your transactions being public.", //TODO: FIGMA
                 account: widget.account,
                 qr: QrImage(
                   data: descriptor,
@@ -67,7 +68,8 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: descriptor));
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(S().envoy_descriptor_copied_clipboard),
+                        content: Text(
+                            "Descriptor copied to clipboard!"), //TODO: FIGMA
                       ));
                     },
                     icon: Icon(

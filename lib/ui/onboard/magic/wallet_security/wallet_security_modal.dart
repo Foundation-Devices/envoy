@@ -195,28 +195,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   }
                                 },
                               ),
-                              secondChild: Column(
-                                children: [
-                                  Padding(padding: EdgeInsets.all(8)),
-                                  EnvoyButton(
-                                    S().manual_backups_export_flow_modal_4_4_CTA2,
-                                    onTap: () {
-                                      if (widget.onDenyBackup != null)
-                                        widget.onDenyBackup!.call();
-                                    },
-                                    type: EnvoyButtonTypes.tertiary,
-                                  ),
-                                  Padding(padding: EdgeInsets.all(8)),
-                                  EnvoyButton(
-                                    S().manual_backups_export_flow_modal_4_4_CTA1,
-                                    type: EnvoyButtonTypes.primaryModal,
-                                    onTap: () {
-                                      if (widget.onConfirmBackup != null)
-                                        widget.onConfirmBackup!.call();
-                                    },
-                                  ),
-                                ],
-                              ),
+                              secondChild: SizedBox(),
                               crossFadeState: CrossFadeState.showFirst,
                               duration: Duration(milliseconds: 400))
                         ],

@@ -37,7 +37,7 @@ class EmptyAccountsCard extends StatelessWidget {
               child: AccountListTile(
                   Account(
                       wallet: GhostWallet(),
-                      name: S().accounts_screen_account_default_name,
+                      name: S().accounts_screen_walletType_defaultName,
                       deviceSerial: 'envoy',
                       dateAdded: DateTime.now(),
                       number: 5,

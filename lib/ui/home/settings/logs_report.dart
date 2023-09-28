@@ -23,7 +23,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.black,
-        title: Text("Logs"),
+        title: Text("Logs"), // TODO: FIGMA
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
         ),
@@ -37,7 +37,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                     backgroundColor: Colors.lightBlue,
                     replaceExisting: true,
                     duration: Duration(milliseconds: 2000),
-                    message: "Logs copied to clipboard",
+                    message: "Logs copied to clipboard", // TODO: FIGMA
                     icon: Icon(
                       Icons.copy,
                       color: EnvoyColors.teal,
@@ -62,7 +62,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
           if (snapshot.hasData) {
             List<Map>? logs = snapshot.data;
             if (logs?.length == 0) {
-              return Center(child: Text("No logs found"));
+              return Center(child: Text("No logs found")); // TODO: FIGMA
             }
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -71,10 +71,10 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                   SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                     Map log = logs![index];
-                    String exception = log["exception"] ?? "";
-                    String stackTrace = log["stackTrace"] ?? "";
-                    String lib = log["lib"] ?? "";
-                    String time = log["time"] ?? "";
+                    String exception = log["exception"] ?? ""; // TODO: FIGMA
+                    String stackTrace = log["stackTrace"] ?? ""; // TODO: FIGMA
+                    String lib = log["lib"] ?? ""; // TODO: FIGMA
+                    String time = log["time"] ?? ""; // TODO: FIGMA
                     return Column(
                       children: [
                         Column(
@@ -82,7 +82,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                             SelectableText.rich(
                               TextSpan(children: [
                                 TextSpan(
-                                    text: "Time : ",
+                                    text: "Time : ", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
@@ -95,7 +95,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "Library : ",
+                                    text: "Library : ", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
@@ -108,7 +108,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "\nException\n\n",
+                                    text: "\nException\n\n", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
@@ -121,7 +121,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "\nStack Trace\n\n",
+                                    text: "\nStack Trace\n\n", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,

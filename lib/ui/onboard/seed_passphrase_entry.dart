@@ -109,7 +109,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
             ),
           ),
           hasError
-              ? Text("Passphrase did not match",
+              ? Text("Passphrase did not match", // TODO: FIGMA
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall

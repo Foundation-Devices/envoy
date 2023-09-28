@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
@@ -96,7 +97,6 @@ class FeedManager {
         item.link!,
         item.guid!,
         null,
-        thumbnail: null,
         thumbnailUrl: thumbnailUrl,
       ));
     }
@@ -118,29 +118,29 @@ class FeedManager {
         item.link!,
         item.guid!,
         null,
-        thumbnail: null,
         thumbnailUrl: thumbnailUrl,
       ));
     }
     updateBlogPosts(currentBlogPosts);
   }
 
-  updateVideos(List<Video> currentVideos) {
+  updateVideos(List<Video> currentVideos) async {
     for (var video in currentVideos) {
       for (var storedVideo in videos) {
-        if (storedVideo.thumbnailUrl == video.thumbnailUrl &&
-            storedVideo.thumbnail != null) {
-          video.thumbnail = storedVideo.thumbnail;
-        }
+        // if (storedVideo.thumbnailUrl == video.thumbnailUrl &&
+        //     storedVideo.thumbnail != null) {
+        //   video.thumbnail = storedVideo.thumbnail;
+        // }
         if (video.url == storedVideo.url && storedVideo.watched != null) {
           video.watched = storedVideo.watched;
           storeVideos();
         }
       }
 
-      if (video.thumbnail == null) {
+      if (await video.thumbnail == null) {
         HttpTor(Tor.instance).get(video.thumbnailUrl!).then((response) {
-          video.thumbnail = response.bodyBytes;
+          LocalStorage()
+              .saveFileBytes(video.thumbnailHash!, response.bodyBytes);
           storeVideos();
         });
       }
@@ -150,22 +150,23 @@ class FeedManager {
     storeVideos();
   }
 
-  updateBlogPosts(List<BlogPost> currentBlogPosts) {
+  updateBlogPosts(List<BlogPost> currentBlogPosts) async {
     for (var blog in currentBlogPosts) {
       for (var storedBlogPosts in blogs) {
-        if (storedBlogPosts.thumbnailUrl == blog.thumbnailUrl &&
-            storedBlogPosts.thumbnail != null) {
-          blog.thumbnail = storedBlogPosts.thumbnail;
-        }
+        // if (storedBlogPosts.thumbnailUrl == blog.thumbnailUrl &&
+        //     storedBlogPosts.thumbnail != null) {
+        //   // Save to thumbnailUrl hash
+        //   blog.thumbnail = storedBlogPosts.thumbnail;
+        // }
         if (blog.url == storedBlogPosts.url && storedBlogPosts.read != null) {
           blog.read = storedBlogPosts.read;
-          storeVideos();
+          storeBlogPosts();
         }
       }
 
-      if (blog.thumbnail == null) {
+      if (await blog.thumbnail == null) {
         HttpTor(Tor.instance).get(blog.thumbnailUrl!).then((response) {
-          blog.thumbnail = response.bodyBytes;
+          LocalStorage().saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
           storeBlogPosts();
         });
       }

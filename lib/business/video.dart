@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tor/tor.dart';
+import 'package:envoy/business/media.dart';
 
 // Generated
 part 'video.g.dart';
@@ -12,41 +11,24 @@ part 'video.g.dart';
 enum VideoType { youTube, bitcoinTv }
 
 @JsonSerializable()
-class Video {
+class Video extends Media {
   final VideoType type;
-  final String title;
-  final String? description;
-  List<int>? thumbnail;
-  final String? thumbnailUrl;
   final int duration;
-  final DateTime publicationDate;
   final Map<int, String> resolutionLinkMap;
-  final String url;
-  final String id;
   bool? watched;
-
-  String _getYouTubeThumbnailUrl() {
-    return "https://img.youtube.com/vi/" + id.substring(9) + "/1.jpg";
-  }
 
   Video(
       this.type,
-      this.title,
-      this.description,
+      String title,
+      String? description,
       this.duration,
-      this.publicationDate,
+      DateTime publicationDate,
       this.resolutionLinkMap,
-      this.url,
-      this.id,
+      String url,
+      String id,
       this.watched,
-      {this.thumbnail,
-      this.thumbnailUrl}) {
-    if (type == VideoType.youTube) {
-      HttpTor(Tor.instance).get(_getYouTubeThumbnailUrl()).then((response) {
-        thumbnail = response.bodyBytes;
-      });
-    }
-  }
+      {String? thumbnailUrl})
+      : super(title, description, thumbnailUrl, publicationDate, url, id) {}
 
   // Generated
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);

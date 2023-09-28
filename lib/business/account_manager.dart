@@ -171,7 +171,7 @@ class AccountManager extends ChangeNotifier {
     // TODO: look & feel of hot wallet accounts
     Account account = Account(
         wallet: wallet,
-        name: S().accounts_screen_account_default_name,
+        name: S().accounts_screen_walletType_defaultName,
         deviceSerial: "envoy",
         // Device code for wallets derived on phone
         dateAdded: DateTime.now(),

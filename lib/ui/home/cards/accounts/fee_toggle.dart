@@ -36,10 +36,10 @@ class _FeeToggleState extends State<FeeToggle> {
 
   String formatFee(int fee) {
     if (Settings().selectedFiat == null) {
-      return fee.toString() + " Sats";
+      return fee.toString() + " Sats"; // TODO: FIGMA
     } else {
       return fee.toString() +
-          " Sats" +
+          " Sats" + // TODO: FIGMA
           (widget.wallet!.network == Network.Testnet
               ? ""
               : (" ~ " +

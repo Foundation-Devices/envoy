@@ -33,7 +33,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "BodyText": MessageLookupByLibrary.simpleMessage("BodyText"),
         "Bodytext1": MessageLookupByLibrary.simpleMessage("Bodytext1"),
         "Bodytext2": MessageLookupByLibrary.simpleMessage("Bodytext2"),
+        "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "ButtonText": MessageLookupByLibrary.simpleMessage("ButtonText"),
+        "CoinInfo": MessageLookupByLibrary.simpleMessage(
+            "1 of 3 Coins Selected  |  1 Locked"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conference"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
@@ -42,6 +45,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "FAQ": MessageLookupByLibrary.simpleMessage("Is Envoy Open Source?"),
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Filter": MessageLookupByLibrary.simpleMessage("Filter"),
+        "Heading": MessageLookupByLibrary.simpleMessage(
+            "WELCOME TO THE\nLEARNING CENTER"),
         "Info": MessageLookupByLibrary.simpleMessage("Info"),
         "InfoText": MessageLookupByLibrary.simpleMessage("InfoText"),
         "Infotext": MessageLookupByLibrary.simpleMessage("Infotext"),
@@ -66,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Sats": MessageLookupByLibrary.simpleMessage("123,345,679 SATS"),
         "Sb": MessageLookupByLibrary.simpleMessage("Sb"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("SEND"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$754.68"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Sent": MessageLookupByLibrary.simpleMessage("Sent"),
@@ -74,6 +80,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Subheading": MessageLookupByLibrary.simpleMessage("Add a Note"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "T": MessageLookupByLibrary.simpleMessage("T"),
+        "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
+        "TagName": MessageLookupByLibrary.simpleMessage("Exchange"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
         "Timestamp":
@@ -82,6 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Watched": MessageLookupByLibrary.simpleMessage("Watched"),
         "XL": MessageLookupByLibrary.simpleMessage("XL"),
         "XS": MessageLookupByLibrary.simpleMessage("XS"),
+        "_": MessageLookupByLibrary.simpleMessage("Send Selected"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
                 "Active filters hide all transactions of this account.\nUpdate or reset filters to view transactions."),
@@ -94,6 +103,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Get Started"),
         "accounts_screen_heading":
             MessageLookupByLibrary.simpleMessage("Accounts"),
+        "accounts_screen_walletType_defaultName":
+            MessageLookupByLibrary.simpleMessage("Mobile Wallet"),
+        "accounts_screen_walletType_mobile":
+            MessageLookupByLibrary.simpleMessage("Envoy"),
         "activity_": MessageLookupByLibrary.simpleMessage(
             "Passport Tutorial - Block..."),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
@@ -200,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_title": MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "backups_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Envoy Seed"),
+        "bc1cq313af51bh5k0lsmna21x": MessageLookupByLibrary.simpleMessage(""),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Activity"),
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
@@ -226,6 +240,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_coin_change_spendable_tate_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
+        "coincontrol_edit_transaction_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "coincontrol_edit_transaction_required_inputs":
+            MessageLookupByLibrary.simpleMessage("Required amount"),
+        "coincontrol_edit_transaction_required_inputs_sats":
+            MessageLookupByLibrary.simpleMessage("1,500,000"),
         "coincontrol_edit_transaction_selected_inputs":
             MessageLookupByLibrary.simpleMessage("Selected amount"),
         "coincontrol_edit_transaction_selected_inputs_sats":
@@ -255,10 +275,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm Fee"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_cta":
             MessageLookupByLibrary.simpleMessage("Confirm Fee"),
+        "coincontrol_tx_detail_custom_fee_insufficients_funds_prompt":
+            MessageLookupByLibrary.simpleMessage("Insufficient Funds"),
         "coincontrol_tx_detail_custom_fee_sats_vb":
             MessageLookupByLibrary.simpleMessage("sats/vB"),
         "coincontrol_tx_detail_destination":
             MessageLookupByLibrary.simpleMessage("Destination"),
+        "coincontrol_tx_detail_destination_details":
+            MessageLookupByLibrary.simpleMessage("Show address"),
         "coincontrol_tx_detail_expand_heading":
             MessageLookupByLibrary.simpleMessage("Send"),
         "coincontrol_tx_detail_expand_note_note":
@@ -484,6 +508,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_pp_restore_backup_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Next, we will connect Envoy and Passport."),
+        "envoy_pp_restore_seed_backup_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "envoy_pp_restore_seed_backup_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Now, create an encrypted backup of your seed"),
+        "envoy_pp_restore_seed_backup_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Passport will back up your seed and device settings to an encrypted microSD card."),
         "envoy_pp_restore_seed_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_pp_restore_seed_heading": MessageLookupByLibrary.simpleMessage(
@@ -546,6 +578,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "On Passport, select Envoy App and scan this QR Code"),
         "envoy_scv_show_qr_subheading": MessageLookupByLibrary.simpleMessage(
             "This QR code provides information for validation and setup."),
+        "envoy_support_documentation":
+            MessageLookupByLibrary.simpleMessage("Documentation"),
+        "envoy_support_email": MessageLookupByLibrary.simpleMessage("Email"),
+        "envoy_support_telegram":
+            MessageLookupByLibrary.simpleMessage("Telegram"),
         "envoy_welcome_screen_cta1":
             MessageLookupByLibrary.simpleMessage("Enable Magic Backups"),
         "envoy_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
@@ -721,19 +758,35 @@ class MessageLookup extends MessageLookupByLibrary {
                 "For privacy, we create a new address each time you visit this screen."),
         "manage_account_address_heading":
             MessageLookupByLibrary.simpleMessage("Account details"),
+        "manage_account_menu_delete":
+            MessageLookupByLibrary.simpleMessage("DELETE"),
+        "manage_account_menu_editAccountName":
+            MessageLookupByLibrary.simpleMessage("EDIT ACCOUNT NAME"),
         "manage_account_menu_menu": MessageLookupByLibrary.simpleMessage(
             "COPY PSBT TO CLIPBOARD\n\nSHARE PSBT"),
+        "manage_account_menu_showDescriptor":
+            MessageLookupByLibrary.simpleMessage("SHOW DESCRIPTOR"),
         "manage_account_remove_cta":
             MessageLookupByLibrary.simpleMessage("Delete"),
+        "manage_account_remove_heading":
+            MessageLookupByLibrary.simpleMessage("Are you sure?"),
         "manage_account_remove_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Are you sure?\nThis only removes the account from Envoy."),
+                "This only removes the account from Envoy."),
         "manage_account_rename_cta":
             MessageLookupByLibrary.simpleMessage("Save"),
         "manage_account_rename_heading":
             MessageLookupByLibrary.simpleMessage("Rename Account"),
+        "manage_device_details_devicePaired":
+            MessageLookupByLibrary.simpleMessage("Paired"),
+        "manage_device_details_deviceSerial":
+            MessageLookupByLibrary.simpleMessage("Serial: "),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("Device DETAILS"),
+        "manage_device_details_menu_deleteDevice":
+            MessageLookupByLibrary.simpleMessage("DELETE DEVICE"),
+        "manage_device_details_menu_editDeviceName":
+            MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
         "manage_device_disconnect_modal":
             MessageLookupByLibrary.simpleMessage("Delete"),
         "manage_device_disconnect_modal_cta":
@@ -817,14 +870,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Write Down these 12 Words"),
         "manual_setup_import_backup_CTA1":
-            MessageLookupByLibrary.simpleMessage("Create Envoy Backup File"),
+            MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
         "manual_setup_import_backup_CTA2":
-            MessageLookupByLibrary.simpleMessage("Import Envoy Backup File"),
+            MessageLookupByLibrary.simpleMessage("Import Envoy Backup"),
+        "manual_setup_import_backup_fails_modal_continue":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "manual_setup_import_backup_fails_modal_heading":
+            MessageLookupByLibrary.simpleMessage("We can’t read Envoy Backup"),
+        "manual_setup_import_backup_fails_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Make sure you have selected the right file."),
         "manual_setup_import_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Import Envoy Backup File"),
+            MessageLookupByLibrary.simpleMessage("Import Envoy Backup"),
         "manual_setup_import_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Would you like to restore an existing Envoy Backup File?\n\nIf not, Envoy will create a new encrypted backup file."),
+                "Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file."),
         "manual_setup_import_existing_backup_CTA1":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
         "manual_setup_import_existing_backup_heading":
@@ -1075,6 +1135,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("SETTINGS"),
         "menu_support": MessageLookupByLibrary.simpleMessage("support"),
+        "pair_existing_device_intro_cta":
+            MessageLookupByLibrary.simpleMessage("Get Started"),
+        "pair_existing_device_intro_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Connect Passport \nwith Envoy"),
+        "pair_existing_device_intro_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "On Passport, select Manage Account > Connect Wallet > Envoy."),
         "pair_new_device_QR_code_address": MessageLookupByLibrary.simpleMessage(
             "tb1q33xnrjena6apwnhx5t375pwnhx5t375"),
         "pair_new_device_QR_code_cta":
@@ -1277,6 +1345,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "For privacy, we create a new address each time you visit this screen."),
         "receive_qr_code_heading":
             MessageLookupByLibrary.simpleMessage("RECEIVE"),
+        "receive_tx_list_awaitingConfirmation":
+            MessageLookupByLibrary.simpleMessage("Awaiting confirmation"),
         "receive_tx_list_receive":
             MessageLookupByLibrary.simpleMessage("Receive"),
         "receive_tx_list_send": MessageLookupByLibrary.simpleMessage("Send"),
@@ -1294,6 +1364,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "To recover your Magic Backup, follow these simple instructions."),
+        "recovery_scenario_ios_heading":
+            MessageLookupByLibrary.simpleMessage("How to Recover?"),
         "recovery_scenario_ios_instruction1":
             MessageLookupByLibrary.simpleMessage(
                 "Sign into iCloud and restore your iCloud backup"),
@@ -1303,6 +1375,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_ios_instruction3":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will then automatically restore your Magic Backup"),
+        "recovery_scenario_ios_subheading": MessageLookupByLibrary.simpleMessage(
+            "To recover your Envoy wallet, follow these simple instructions."),
         "screenTitle_activity": MessageLookupByLibrary.simpleMessage("Learn"),
         "screenTitle_privacy":
             MessageLookupByLibrary.simpleMessage("Screen HEADING"),
@@ -1366,6 +1440,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
         "settings_biometric": MessageLookupByLibrary.simpleMessage(
             "Unlock with Biometrics or PIN"),
+        "settings_currency": MessageLookupByLibrary.simpleMessage("Currency"),
         "settings_electrum":
             MessageLookupByLibrary.simpleMessage("Connect my Node"),
         "settings_show_fiat":
@@ -1385,6 +1460,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Amount"),
         "stalls_before_sending_tx_cta1":
             MessageLookupByLibrary.simpleMessage("Scan QR from Passport"),
+        "stalls_before_sending_tx_cta2":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
         "stalls_before_sending_tx_fiat":
             MessageLookupByLibrary.simpleMessage("\$3.25"),
         "stalls_before_sending_tx_heading":

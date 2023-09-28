@@ -169,7 +169,8 @@ class ActivityListTile extends StatelessWidget {
       leftIcon = notification.amount! >= 0
           ? EnvoyIcons.arrow_down_left
           : EnvoyIcons.arrow_up_right;
-      textLeft1 = notification.amount! >= 0 ? "Received" : "Sent";
+      textLeft1 =
+          notification.amount! >= 0 ? "Received" : "Sent"; // TODO: FIGMA
       textLeft2 = timeago.format(notification.date);
       textRight1 = getFormattedAmount(notification.amount!);
       textRight2 = Settings().selectedFiat == null

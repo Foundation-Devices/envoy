@@ -24,6 +24,7 @@ class CreateCoinTag extends StatefulWidget {
 }
 
 List<String> tagSuggestions = [
+  // TODO: FIGMA
   "Expenses",
   "Business",
   "Fuel",
@@ -124,7 +125,9 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   )),
             ),
             Padding(padding: EdgeInsets.all(8)),
-            tags.length != 0 ? Text("Most Used") : Text("Suggestions"),
+            tags.length != 0
+                ? Text("Most Used")
+                : Text("Suggestions"), // TODO: FIGMA
             Container(
               constraints: BoxConstraints(maxHeight: 100),
               margin: EdgeInsets.symmetric(vertical: 12),
@@ -172,7 +175,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
               ),
             ),
             Padding(padding: EdgeInsets.all(8)),
-            EnvoyButton("Continue",
+            EnvoyButton("Continue", // TODO: FIGMA
                 enabled: _tagController.text.isNotEmpty,
                 textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: _tagController.text.isNotEmpty

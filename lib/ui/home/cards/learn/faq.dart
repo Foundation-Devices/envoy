@@ -45,7 +45,7 @@ class Faq extends StatelessWidget {
                     padding:
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
-                      "FAQs",
+                      "FAQs", // TODO: FIGMA
                       style: EnvoyTypography.body
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
