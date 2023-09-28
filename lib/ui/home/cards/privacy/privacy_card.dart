@@ -121,6 +121,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                         ),
                       ),
                       LinkText(
+                          textAlign: TextAlign.start,
                           text: _betterPerformance == true
                               ? S().privacy_privacyMode_torSuggestion
                               : S().privacy_privacyMode_torSuggestionOn,

@@ -307,10 +307,16 @@ class LinkText extends StatelessWidget {
   final String text;
   final Function? onTap;
 
+  final TextAlign textAlign;
   final TextStyle? textStyle;
   final TextStyle? linkStyle;
 
-  LinkText({required this.text, this.onTap, this.textStyle, this.linkStyle});
+  LinkText(
+      {required this.text,
+      this.onTap,
+      this.textStyle,
+      this.linkStyle,
+      this.textAlign = TextAlign.center});
 
   @override
   Widget build(BuildContext context) {
@@ -349,7 +355,7 @@ class LinkText extends StatelessWidget {
     }
 
     return RichText(
-      textAlign: TextAlign.center,
+      textAlign: textAlign,
       text: TextSpan(
         style: textStyleBuild,
         children: <TextSpan>[...spans],
