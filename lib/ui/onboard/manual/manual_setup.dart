@@ -104,7 +104,7 @@ class _ManualSetupState extends State<ManualSetup> {
       ),
       topBarActions: [
         TextButton(
-          child: Text(S().magic_setup_tutorial_ios_skip,
+          child: Text(S().component_skip,
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium

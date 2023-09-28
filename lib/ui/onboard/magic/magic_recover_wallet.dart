@@ -238,7 +238,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: OnboardingButton(
-                label: S().magic_setup_generate_wallet_modal_ios_CTA,
+                label: S().magic_setup_generate_wallet_modal_ios_cta,
                 onTap: () async {
                   ref.read(homePageTabProvider.notifier).state =
                       HomePageTabState.accounts;
@@ -463,7 +463,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              S().magic_setup_recovery_heading,
+              "Recovering your Envoy wallet", //TODO: FIGMA
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),

@@ -17,7 +17,7 @@ class TouPage extends StatelessWidget {
     return OnboardingPage(
       key: Key("tou"),
       text: [
-        OnboardingText(header: S().envoy_passport_tou_heading),
+        OnboardingText(header: S().envoy_account_tos_heading),
         Expanded(
           flex: 5,
           child: SingleChildScrollView(
@@ -42,7 +42,7 @@ class TouPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            label: S().envoy_passport_tou_cta,
+            label: S().envoy_account_tos_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ScvIntroPage();

@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:envoy/generated/l10n.dart';
+//import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -31,7 +31,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText(S().envoy_about_app_version),
+                AboutText("App Version"), //TODO: FIGMA
                 FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
                     builder: (context, snapshot) {
@@ -50,9 +50,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText(S().envoy_about_licences),
+                AboutText("Open Source Licences"), //TODO: FIGMA
                 AboutButton(
-                  S().envoy_about_show,
+                  "Show", //TODO: FIGMA
                   onTap: () {
                     showLicensePage(
                         context: context,
@@ -75,9 +75,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText(S().envoy_about_terms_of_use),
+                AboutText("Terms of Use"), //TODO: FIGMA
                 AboutButton(
-                  S().envoy_about_show,
+                  "Show", //TODO: FIGMA
                   onTap: () {
                     launchUrlString("https://foundationdevices.com/terms/");
                   },
@@ -88,9 +88,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText(S().envoy_about_privacy_policy),
+                AboutText("Privacy Policy"), //TODO: FIGMA
                 AboutButton(
-                  S().envoy_about_show,
+                  "Show", //TODO: FIGMA
                   onTap: () {
                     launchUrlString("https://foundationdevices.com/privacy/");
                   },

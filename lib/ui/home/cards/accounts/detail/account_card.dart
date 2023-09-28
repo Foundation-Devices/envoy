@@ -384,13 +384,13 @@ class TransactionListTile extends StatelessWidget {
                     Clipboard.setData(
                         ClipboardData(text: transaction.txId)); // here
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text(S().envoy_account_transaction_copied_clipboard),
+                      content: Text(
+                          "Transaction ID copied to clipboard!"), //TODO: FIGMA
                     ));
                   },
                   icon: EnvoyIcons.info,
                   secondaryButtonLabel:
-                      S().coincontrol_coin_change_spendable_tate_modal_cta2,
+                      S().coincontrol_coin_change_spendable_state_modal_cta2,
                   onSecondaryButtonTap: () {
                     Navigator.pop(context);
                   },
@@ -407,7 +407,8 @@ class TransactionListTile extends StatelessWidget {
             } else {
               Clipboard.setData(ClipboardData(text: transaction.txId)); // here
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(S().envoy_account_transaction_copied_clipboard),
+                content:
+                    Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
               ));
             }
           },
@@ -416,8 +417,8 @@ class TransactionListTile extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: transaction.amount < 0
-                  ? Text(S().envoy_account_sent)
-                  : Text(S().envoy_account_received),
+                  ? Text(S().Sent)
+                  : Text(S().activity_received),
             ),
             subtitle: FittedBox(
               fit: BoxFit.scaleDown,
@@ -426,7 +427,7 @@ class TransactionListTile extends StatelessWidget {
                   ? Text(S().azteco_account_tx_history_pending_voucher)
                   : transaction.isConfirmed
                       ? Text(timeago.format(transaction.date))
-                      : Text(S().envoy_account_awaiting_confirmation),
+                      : Text(S().receive_tx_list_awaitingConfirmation),
             ),
             leading: transaction.amount < 0
                 ? Icon(Icons.call_made)
@@ -554,7 +555,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
         ),
         GestureDetector(
           child: Text(
-            S().envoy_account_show_descriptor.toUpperCase(),
+            S().manage_account_menu_showDescriptor.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -567,7 +568,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
         ),
         GestureDetector(
           child: Text(
-            S().envoy_account_edit_name.toUpperCase(),
+            S().manage_account_menu_editAccountName.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -589,11 +590,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     isKeyboardShown = true;
                   }
                   return EnvoyDialog(
-                    title: S().envoy_account_rename,
+                    title: S().manage_account_rename_heading,
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().component_save.toUpperCase(),
+                        S().manage_account_rename_cta.toUpperCase(),
                         onTap: () {
                           AccountManager().renameAccount(
                               widget.account, textEntry.enteredText);
@@ -611,7 +612,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
+          child: Text(S().delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -619,11 +620,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               showEnvoyDialog(
                   context: context,
                   dialog: EnvoyDialog(
-                    title: S().envoy_account_delete_are_you_sure,
-                    content: Text(S().envoy_account_delete_explainer),
+                    title: S().manage_account_remove_heading,
+                    content: Text(S().manage_account_remove_subheading),
                     actions: [
                       EnvoyButton(
-                        S().component_delete.toUpperCase(),
+                        S().manage_account_remove_cta.toUpperCase(),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () {
                           AccountManager().deleteAccount(widget.account);

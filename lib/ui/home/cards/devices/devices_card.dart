@@ -171,7 +171,7 @@ class DevicesOptions extends ConsumerWidget {
         ),
         GestureDetector(
           child: Text(
-            S().envoy_devices_options_existing_passport.toUpperCase(),
+            S().passport_welcome_screen_cta2.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -185,7 +185,7 @@ class DevicesOptions extends ConsumerWidget {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().envoy_devices_options_new_passport.toUpperCase(),
+          child: Text(S().passport_welcome_screen_cta1.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;

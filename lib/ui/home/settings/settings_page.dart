@@ -79,7 +79,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: nestedMargin),
-                      child: SettingText(S().envoy_settings_currency),
+                      child: SettingText("Currency"), //TODO: FIGMA
                     ),
                     SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
                   ],

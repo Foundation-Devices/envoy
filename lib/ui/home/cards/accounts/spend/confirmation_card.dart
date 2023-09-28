@@ -169,7 +169,7 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                       });
                     }
                   },
-                  label: S().envoy_confirmation_confirm);
+                  label: S().send_keyboard_address_confirm);
             },
           ))
     ]);

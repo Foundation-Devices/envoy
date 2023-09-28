@@ -78,7 +78,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     child: Consumer(
                       builder: (context, ref, child) {
                         return OnboardingButton(
-                            label: S().wallet_setup_success_CTA,
+                            label: S().component_continue,
                             onTap: () async {
                               ref.read(homePageTabProvider.notifier).state =
                                   HomePageTabState.accounts;
