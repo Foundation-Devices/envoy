@@ -204,8 +204,13 @@ class GhostDevice extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final device = Device("Primary", DeviceType.passportGen12, "serial",
-      DateTime.now(), "2.1.1", Colors.grey);
+  final device = Device(
+      "Primary",
+      DeviceType.passportGen12,
+      "serial", // TODO: FIGMA
+      DateTime.now(),
+      "2.1.1",
+      Colors.grey);
 
   @override
   Widget build(BuildContext context) {

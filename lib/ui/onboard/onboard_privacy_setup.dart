@@ -411,7 +411,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                     )),
                                 Padding(padding: EdgeInsets.all(4)),
                                 Text(
-                                    "Connected to ${nodeConnectionState.electrumServerFeatures?.serverVersion}"),
+                                    "Connected to ${nodeConnectionState.electrumServerFeatures?.serverVersion}"), // TODO: FIGMA
                               ],
                             );
                           }

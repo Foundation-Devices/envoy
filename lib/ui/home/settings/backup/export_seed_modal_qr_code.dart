@@ -72,7 +72,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
 
                         // Add a note to query the user for passphrase on other device
                         if (hasPassphrase) {
-                          seed = seed + (" passphrase");
+                          seed = seed + (" passphrase"); // TODO: FIGMA
                         }
 
                         return QrImage(data: seed);

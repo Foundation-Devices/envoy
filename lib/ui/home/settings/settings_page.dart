@@ -56,7 +56,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 SettingText(S().settings_show_fiat),
                 SettingToggle(() => s.displayFiat() != null, (enabled) {
                   setState(() {
-                    s.setDisplayFiat(enabled ? "USD" : null);
+                    s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
                     if (!enabled) {
                       ref.read(sendScreenUnitProvider.notifier).state =
                           s.displayUnitSat()
@@ -124,6 +124,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SettingText("Dev options", onTap: () {
+                                // TODO: FIGMA
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -150,7 +151,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Advanced",
+                Text("Advanced", // TODO: FIGMA
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -195,6 +196,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SettingText("View Envoy Logs", onTap: () {
+                        // TODO: FIGMA
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -222,7 +224,7 @@ class _DevOptions extends StatelessWidget {
     bool loading = false;
     return AlertDialog(
       backgroundColor: Colors.white,
-      title: Text("Developer options"),
+      title: Text("Developer options"), // TODO: FIGMA
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -231,25 +233,25 @@ class _DevOptions extends StatelessWidget {
                 EnvoyStorage().clearDismissedStatesStore();
                 Navigator.pop(context);
               },
-              child: Text("Clear Prompt states")),
+              child: Text("Clear Prompt states")), // TODO: FIGMA
           TextButton(
               onPressed: () {
                 EnvoyStorage().clearPendingStore();
                 Navigator.pop(context);
               },
-              child: Text("Clear Azteco states")),
+              child: Text("Clear Azteco states")), // TODO: FIGMA
           TextButton(
               onPressed: () {
                 EnvoyReport().clearAll();
                 Navigator.pop(context);
               },
-              child: Text("Clear Envoy Logs")),
+              child: Text("Clear Envoy Logs")), // TODO: FIGMA
           TextButton(
               onPressed: () {
                 EnvoyStorage().clear();
                 Navigator.pop(context);
               },
-              child: Text("Clear Envoy Preferences")),
+              child: Text("Clear Envoy Preferences")), // TODO: FIGMA
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
@@ -276,7 +278,7 @@ class _DevOptions extends StatelessWidget {
                       print(e);
                     }
                   },
-                  child: Text("Wipe Envoy Wallet"));
+                  child: Text("Wipe Envoy Wallet")); // TODO: FIGMA
             },
           )
         ],

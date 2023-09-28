@@ -58,7 +58,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(12)),
                 Text(
-                  "WARNING",
+                  "WARNING", // TODO: FIGMA
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -98,7 +98,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                         ),
                       ),
                       Text(
-                        "Do not remind me",
+                        "Do not remind me", // TODO: FIGMA
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color:
                                   dismissed ? Colors.black : Color(0xff808080),
@@ -181,7 +181,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(12)),
                 Text(
-                  "Create a tag",
+                  "Create a tag", // TODO: FIGMA
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -190,7 +190,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 Padding(padding: EdgeInsets.all(12)),
                 //TODO: updated copy & localization
                 Text(
-                    "Tags are a useful way to categorize coins within an account.",
+                    "Tags are a useful way to categorize coins within an account.", // TODO: FIGMA
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
@@ -219,7 +219,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                         ),
                       ),
                       Text(
-                        "Do not remind me",
+                        "Do not remind me", // TODO: FIGMA
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color:
                                   dismissed ? Colors.black : Color(0xff808080),
@@ -230,7 +230,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(12)),
                 EnvoyButton(
-                  "Return to my coins",
+                  "Return to my coins", // TODO: FIGMA
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -238,7 +238,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 EnvoyButton(
-                  "Continue",
+                  "Continue", // TODO: FIGMA
                   onTap: () {
                     if (!dismissed) {
                       EnvoyStorage().addPromptState(

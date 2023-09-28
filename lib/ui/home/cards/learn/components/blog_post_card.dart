@@ -126,7 +126,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                           ),
                           _isBlogRead
                               ? Text(
-                                  "Read", // TODO: Sync from Figma
+                                  "Read", // TODO: FIGMA
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )

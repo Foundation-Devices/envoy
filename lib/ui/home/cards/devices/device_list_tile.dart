@@ -132,8 +132,8 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                       Text(
                                         widget.device.type ==
                                                 DeviceType.passportGen12
-                                            ? "Passport"
-                                            : "Founder's Edition",
+                                            ? "Passport" // TODO: FIGMA
+                                            : "Founder's Edition", // TODO: FIGMA
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!
@@ -141,7 +141,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                       ),
                                       widget.ghostDevice
                                           ? Text(
-                                              "FW 2.1.1",
+                                              "FW 2.1.1", // TODO: FIGMA
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!
@@ -217,10 +217,10 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                           fwInfo.hasValue &&
                                                                   fwInfo.value !=
                                                                       null
-                                                              ? ("FW " +
+                                                              ? ("FW " + // TODO: FIGMA
                                                                   fwInfo.value!
                                                                       .storedVersion)
-                                                              : "Loading",
+                                                              : "Loading", // TODO: FIGMA
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme

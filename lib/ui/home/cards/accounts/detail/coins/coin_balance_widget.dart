@@ -203,10 +203,10 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                 builder: Builder(
                   builder: (context) {
                     return CoinLockWarning(
-                      buttonTitle: "Lock Coins",
+                      buttonTitle: "Lock Coins", // TODO: FIGMA
                       promptType: DismissiblePrompt.coinLockWarning,
                       warningMessage:
-                          "You’re about to lock coins.\nThis will prevent them from being used in transactions.",
+                          "You’re about to lock coins.\nThis will prevent them from being used in transactions.", // TODO: FIGMA
                       onContinue: () {
                         Navigator.pop(context);
                         _lockUnLockCoin(coin);
@@ -227,10 +227,10 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                 builder: Builder(
                   builder: (context) {
                     return CoinLockWarning(
-                      buttonTitle: "Unlock coins",
+                      buttonTitle: "Unlock coins", // TODO: FIGMA
                       promptType: DismissiblePrompt.coinUnlockWarning,
                       warningMessage:
-                          "Unlocking coins will make them available for use in transactions.",
+                          "Unlocking coins will make them available for use in transactions.", // TODO: FIGMA
                       onContinue: () {
                         Navigator.pop(context);
                         _lockUnLockCoin(coin);
@@ -305,10 +305,10 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   builder: Builder(
                     builder: (context) {
                       return CoinLockWarning(
-                        buttonTitle: "Lock Coins",
+                        buttonTitle: "Lock Coins", // TODO: FIGMA
                         promptType: DismissiblePrompt.coinLockWarning,
                         warningMessage:
-                            "You’re about to lock coins.\nThis will prevent them from being used in transactions.",
+                            "You’re about to lock coins.\nThis will prevent them from being used in transactions.", // TODO: FIGMA
                         onContinue: () {
                           Navigator.pop(context);
                           coinTag.updateLockState(true);
@@ -329,10 +329,10 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   builder: Builder(
                     builder: (context) {
                       return CoinLockWarning(
-                        buttonTitle: "Unlock coins",
+                        buttonTitle: "Unlock coins", // TODO: FIGMA
                         promptType: DismissiblePrompt.coinUnlockWarning,
                         warningMessage:
-                            "Unlocking coins will make them available for use in transactions.",
+                            "Unlocking coins will make them available for use in transactions.", // TODO: FIGMA
                         onContinue: () {
                           Navigator.pop(context);
                           coinTag.updateLockState(false);
@@ -463,26 +463,26 @@ class CoinSubTitleText extends ConsumerWidget {
     final lockedCoins = tag.coins.where((element) => element.locked);
     final availableCoins = tag.numOfCoins - lockedCoins.length;
     String selectionMessage =
-        "${selectedCoins.length} of ${availableCoins} coins selected";
+        "${selectedCoins.length} of ${availableCoins} coins selected"; // TODO: FIGMA
 
     if (availableCoins == 0 || availableCoins == selectedCoins.length) {
-      selectionMessage = "${selectedCoins.length} selected";
+      selectionMessage = "${selectedCoins.length} selected"; // TODO: FIGMA
     }
 
-    String message = "${tag.numOfCoins} coins";
+    String message = "${tag.numOfCoins} coins"; // TODO: FIGMA
     if (selectedCoins.isEmpty) {
-      message = "${tag.numOfCoins} coins";
+      message = "${tag.numOfCoins} coins"; // TODO: FIGMA
       if (lockedCoins.isNotEmpty) {
-        message = "$message | ${lockedCoins.length} locked";
+        message = "$message | ${lockedCoins.length} locked"; // TODO: FIGMA
       }
     } else {
       message = "${selectionMessage}";
       if (lockedCoins.isNotEmpty) {
-        message = "$message | ${lockedCoins.length} locked";
+        message = "$message | ${lockedCoins.length} locked"; // TODO: FIGMA
       }
     }
     if (tag.numOfCoins == lockedCoins.length) {
-      message = "${tag.numOfCoins} locked";
+      message = "${tag.numOfCoins} locked"; // TODO: FIGMA
     }
     return Text(
       message,

@@ -110,7 +110,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           CoinTagListItem(
-                            title: "Address",
+                            title: "Address", // TODO: FIGMA
                             icon: SvgPicture.asset(
                               "assets/icons/ic_spend.svg",
                               color: Colors.black,
@@ -143,7 +143,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                             ),
                           ),
                           CoinTagListItem(
-                            title: "Transaction ID",
+                            title: "Transaction ID", // TODO: FIGMA
                             icon: Icon(
                               CupertinoIcons.compass,
                               size: 16,
@@ -157,7 +157,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     color: EnvoyColors.accentPrimary)),
                           ),
                           CoinTagListItem(
-                            title: "Date",
+                            title: "Date", // TODO: FIGMA
                             icon: Icon(
                               Icons.calendar_today_outlined,
                               size: 16,
@@ -168,7 +168,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 style: trailingTextStyle),
                           ),
                           CoinTagListItem(
-                            title: "Tag",
+                            title: "Tag", // TODO: FIGMA
                             icon: SvgPicture.asset(
                               "assets/icons/ic_tag.svg",
                               color: Colors.black,
@@ -178,14 +178,14 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 style: trailingTextStyle),
                           ),
                           CoinTagListItem(
-                            title: "Status",
+                            title: "Status", // TODO: FIGMA
                             icon: SvgPicture.asset(
                               "assets/icons/ic_status_icon.svg",
                               color: Colors.black,
                               height: 14,
                             ),
                             trailing: Text(
-                                "${tx.isConfirmed ? "Confirmed" : "Pending"} ",
+                                "${tx.isConfirmed ? "Confirmed" : "Pending"} ", // TODO: FIGMA
                                 style: trailingTextStyle),
                           ),
                           GestureDetector(
@@ -196,7 +196,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   alignment: Alignment(0.0, -0.8));
                             },
                             child: CoinTagListItem(
-                              title: "Notes",
+                              title: "Notes", // TODO: FIGMA
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_notes.svg",
                                 color: Colors.black,
