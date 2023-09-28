@@ -69,7 +69,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
         focusNode: _focus,
         cursorColor: EnvoyColors.accentPrimary,
         decoration: InputDecoration(
-            labelText: "Search...",
+            labelText: "Search...", // TODO: FIGMA
             labelStyle: EnvoyTypography.body.copyWith(
               color: EnvoyColors.textTertiary,
             ),

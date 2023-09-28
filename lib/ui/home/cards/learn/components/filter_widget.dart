@@ -54,7 +54,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Filter",
+                "Filter", // TODO: FIGMA
                 style: EnvoyTypography.subheading
                     .copyWith(color: EnvoyColors.textPrimary),
               ),
@@ -65,7 +65,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   });
                 },
                 child: Text(
-                  "Reset filter",
+                  "Reset filter", // TODO: FIGMA
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -79,7 +79,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
           Row(
             children: [
               EnvoyFilterChip(
-                text: "All",
+                text: "All", // TODO: FIGMA
                 selected: _filterState?.contains(LearnFilters.All) ?? false,
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
@@ -105,7 +105,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 selected:
                     ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
                         !(_filterState?.contains(LearnFilters.All) ?? true)),
-                text: "Videos",
+                text: "Videos", // TODO: FIGMA
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
                     ..addAll(_filterState!);
@@ -127,7 +127,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 selected:
                     ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
                         !(_filterState?.contains(LearnFilters.All) ?? true)),
-                text: "FAQs",
+                text: "FAQs", // TODO: FIGMA
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
                     ..addAll(_filterState!);
@@ -149,7 +149,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 selected:
                     ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
                         !(_filterState?.contains(LearnFilters.All) ?? true)),
-                text: "Blog posts",
+                text: "Blog posts", // TODO: FIGMA
                 onTap: () {
                   final Set<LearnFilters> newState = Set()
                     ..addAll(_filterState!);
@@ -169,11 +169,11 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             ],
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text("Sort by",
+          Text("Sort by", // TODO: FIGMA
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(
-            text: "Newest first",
+            text: "Newest first", // TODO: FIGMA
             checked: _sortState == LearnSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -183,7 +183,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Oldest first",
+            text: "Oldest first", // TODO: FIGMA
             checked: _sortState == LearnSortTypes.oldestFirst,
             onTap: () {
               setState(() {
@@ -193,7 +193,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "Apply filters",
+            "Apply filters", // TODO: FIGMA
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();

@@ -181,7 +181,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                           ),
                           _isVideoWatched
                               ? Text(
-                                  "Watched",
+                                  "Watched", // TODO: FIGMA
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )

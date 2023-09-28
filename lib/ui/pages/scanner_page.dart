@@ -36,11 +36,11 @@ enum ScannerType {
 }
 
 final SnackBar invalidAddressSnackbar = SnackBar(
-  content: Text("Not a valid address"),
+  content: Text("Not a valid address"), // TODO: FIGMA
 );
 
 final SnackBar invalidSeedSnackbar = SnackBar(
-  content: Text("Not a valid seed"),
+  content: Text("Not a valid seed"), // TODO: FIGMA
 );
 
 class ScannerPage extends StatefulWidget {
@@ -301,7 +301,7 @@ class _ScannerPageState extends State<ScannerPage> {
         } else {
           // Tell the user to use testnet
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Please use Testnet"),
+            content: Text("Please use Testnet"), // TODO: FIGMA
           ));
         }
       }
@@ -370,7 +370,7 @@ class _ScannerPageState extends State<ScannerPage> {
   void _binaryValidated(Binary binary) {
     AccountManager().addEnvoyAccountFromJson(binary).catchError((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Account already connected"),
+        content: Text("Account already connected"), // TODO: FIGMA
       ));
       return null;
     }, test: (e) => e is AccountAlreadyPaired).then((account) {

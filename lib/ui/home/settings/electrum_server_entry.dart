@@ -119,7 +119,7 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
         setState(() {
           _state = ElectrumServerEntryState.valid;
           _isError = false;
-          _textBelow = "Connected to " + features.serverVersion;
+          _textBelow = "Connected to " + features.serverVersion; // TODO: FIGMA
         });
       }
       ;

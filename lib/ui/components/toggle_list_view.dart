@@ -84,7 +84,7 @@ class _EnvoyListToggleState extends State<EnvoyListToggle> {
                         Padding(
                           padding: const EdgeInsets.only(left: EnvoySpacing.xs),
                           child: Text(
-                            isEnabled ? "Card" : "List",
+                            isEnabled ? "Card" : "List", // TODO: FIGMA
                             style: EnvoyTypography.info.copyWith(
                                 color: EnvoyColors.textPrimaryInverse),
                           ),

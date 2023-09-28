@@ -67,7 +67,7 @@ class _FwWarningState extends State<FwWarning> {
                       children: [
                         TextSpan(
                           text:
-                              "Sorry, we can’t get the firmware update right now.\n\n",
+                              "Sorry, we can’t get the firmware update right now.\n\n", // TODO: FIGMA
                         ),
                         TextSpan(
                           recognizer: TapGestureRecognizer()

@@ -204,6 +204,7 @@ class _SendCardState extends ConsumerState<SendCard>
 
                               GoRouter.of(context)
                                   .push(ROUTE_ACCOUNT_SEND_CONFIRM, extra: {
+                                // TODO: FIGMA
                                 "account": widget.account,
                                 "amount": _amount,
                                 "address": _addressText,

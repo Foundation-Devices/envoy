@@ -137,7 +137,7 @@ class _SeedScreenState extends State<SeedScreen> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(14)),
-              Text("Generating Seed",
+              Text("Generating Seed", // TODO: FIGMA
                   style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
