@@ -9,7 +9,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
@@ -24,6 +23,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -127,7 +128,7 @@ class HomePageState extends ConsumerState<HomePage>
           message: S().manual_toggle_on_seed_backup_in_progress_toast_heading,
           icon: Icon(
             Icons.info_outline,
-            color: EnvoyColors.darkTeal,
+            color: EnvoyColors.accentPrimary,
           ),
         ).show(context);
       else
@@ -138,7 +139,7 @@ class HomePageState extends ConsumerState<HomePage>
           message: "Unable to backup. Please try again later.", // TODO: FIGMA
           icon: Icon(
             Icons.error_outline_rounded,
-            color: EnvoyColors.darkCopper,
+            color: EnvoyColors.accentSecondary,
           ),
         ).show(context);
     });
@@ -149,9 +150,9 @@ class HomePageState extends ConsumerState<HomePage>
       backgroundColor: Colors.lightBlue,
       replaceExisting: true,
       message: S().tor_connectivity_toast_warning,
-      icon: Icon(
-        Icons.error_outline_rounded,
-        color: EnvoyColors.darkCopper,
+      icon: EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
       ),
       actionButtonText: S().tor_connectivity_toast_warning_learn_more,
       onActionTap: () {
