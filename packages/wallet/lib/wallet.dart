@@ -548,17 +548,18 @@ class Wallet {
 
   static Pointer<rust.UtxoList> _createUtxoListPointer(List<Utxo>? utxos) {
     final listPointer = calloc<rust.UtxoList>(1);
-    listPointer.ref.utxos_len = utxos?.length ?? 0;
+    final len = utxos?.length ?? 0;
+
+    listPointer.ref.utxos_len = len;
+    listPointer.ref.utxos = calloc<rust.Utxo>(len);
 
     utxos?.forEachIndexed((index, utxo) {
-      final utxoPointer = calloc<rust.Utxo>(1);
-
-      utxoPointer.ref.value = utxo.value;
-      utxoPointer.ref.vout = utxo.vout;
-      utxoPointer.ref.txid = utxo.txid.toNativeUtf8().cast();
-
-      listPointer.ref.utxos.elementAt(index).ref = utxoPointer as rust.Utxo;
+      listPointer.ref.utxos.elementAt(index).ref.value = utxo.value;
+      listPointer.ref.utxos.elementAt(index).ref.vout = utxo.vout;
+      listPointer.ref.utxos.elementAt(index).ref.txid =
+          utxo.txid.toNativeUtf8().cast();
     });
+
     return listPointer;
   }
 
@@ -569,7 +570,6 @@ class Wallet {
     return Isolate.run(() {
       final lib = rust.NativeLibrary(load(_libName));
       Pointer<rust.UtxoList> listPointer = _createUtxoListPointer(utxos);
-      //return 5;
       return lib
           .wallet_get_max_feerate(Pointer.fromAddress(walletAddress),
               sendTo.toNativeUtf8() as Pointer<Char>, amount, listPointer)
