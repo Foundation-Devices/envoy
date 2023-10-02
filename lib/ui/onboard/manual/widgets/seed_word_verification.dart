@@ -66,7 +66,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                 SliverPadding(padding: EdgeInsets.all(8)),
                 SliverToBoxAdapter(
                   child: Text(
-                      "What’s your seed word number ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?",
+                      "What’s your seed word number ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
                       style: Theme.of(context).textTheme.titleSmall,
                       textAlign: TextAlign.center),
                 ),
@@ -120,7 +120,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                               totalPages: _puzzleOptions.length)),
                       Padding(padding: EdgeInsets.all(6)),
                       !_finishedAnswers
-                          ? Text("Choose a word to continue ",
+                          ? Text("Choose a word to continue ", // TODO: FIGMA
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -129,7 +129,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                               padding: EdgeInsets.symmetric(
                                   vertical: 4, horizontal: 0),
                               child: OnboardingButton(
-                                  label: "Continue",
+                                  label: "Continue", // TODO: FIGMA
                                   onTap: () {
                                     widget.onVerificationFinished(true);
                                   })),
@@ -287,7 +287,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               ),
               Padding(padding: EdgeInsets.all(4)),
               Text(
-                S().manual_setup_generate_seed_verify_seed_quiz_success_success,
+                S().manual_setup_generate_seed_verify_seed_quiz_success_correct,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -303,7 +303,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                   color: EnvoyColors.brown, size: 14),
               Padding(padding: EdgeInsets.all(4)),
               Text(
-                S().manual_setup_generate_seed_verify_seed_quiz_fail_error,
+                S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium

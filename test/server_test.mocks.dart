@@ -66,6 +66,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
           Invocation.getter(#tor),
         ),
       ) as _i2.Tor);
+
   @override
   _i4.Future<_i3.Response> get(
     String? uri, {
@@ -93,6 +94,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
           ),
         )),
       ) as _i4.Future<_i3.Response>);
+
   @override
   _i4.Future<_i3.Response> post(
     String? uri, {
@@ -120,6 +122,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
           ),
         )),
       ) as _i4.Future<_i3.Response>);
+
   @override
   _i4.Future<String> getIp() => (super.noSuchMethod(
         Invocation.method(
@@ -128,6 +131,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
         ),
         returnValue: _i4.Future<String>.value(''),
       ) as _i4.Future<String>);
+
   @override
   _i4.Future<_i3.Download> getFile(
     String? path,

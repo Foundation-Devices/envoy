@@ -119,7 +119,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     child: IndicatorShield(),
                   ),
                   Text(
-                    _selectedCoin == null ? "TAG DETAILS" : "COIN DETAILS",
+                    _selectedCoin == null
+                        ? "TAG DETAILS"
+                        : "COIN DETAILS", // TODO: FIGMA
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                           color: Colors.white,
                           fontSize: 18,
@@ -215,7 +217,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           child: Text(
-                            "Edit Tag Name".toUpperCase(),
+                            "Edit Tag Name".toUpperCase(), // TODO: FIGMA
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -227,7 +229,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           child: Text(
-                            "Delete Tag".toUpperCase(),
+                            "Delete Tag".toUpperCase(), // TODO: FIGMA
                             style: TextStyle(color: EnvoyColors.lightCopper),
                           ),
                         ),
@@ -355,7 +357,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                 ),
                                                 //TODO: localize
                                                 Text(
-                                                  "There are no coins assigned to this tag.",
+                                                  "There are no coins assigned to this tag.", // TODO: FIGMA
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall,
@@ -386,7 +388,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                EnvoyButton("Change Tag",
+                                EnvoyButton("Change Tag", // TODO: FIGMA
                                     type: EnvoyButtonTypes.tertiary,
                                     onTap: () async {
                                   //Shows warning dialog
@@ -521,7 +523,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        "Warning\n\nYou’re about to delete a tag.The coins will be marked as untagged once tag is deleted.",
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
@@ -532,7 +533,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             ),
             actions: [
               EnvoyButton(
-                "Delete Tag anyway",
+                "Delete Tag anyway", // TODO: FIGMA
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -549,8 +550,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 type: EnvoyButtonTypes.tertiary,
               ),
               EnvoyButton(
-                "Return to my coins",
-                type: EnvoyButtonTypes.primaryModal,
+                "Return to my coins", // TODO: FIGMA
                 onTap: () async {
                   Navigator.pop(context);
                 },
@@ -582,7 +582,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Text(
-                        "Edit Tag Name",
+                        "Edit Tag Name", // TODO: FIGMA
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
@@ -593,15 +593,14 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             ),
             actions: [
               EnvoyButton(
-                "Return to my coins",
+                "Return to my coins", // TODO: FIGMA
                 onTap: () {
                   Navigator.pop(context);
                 },
                 type: EnvoyButtonTypes.tertiary,
               ),
               EnvoyButton(
-                S().component_save.toUpperCase(),
-                type: EnvoyButtonTypes.primaryModal,
+                S().add_note_modal_cta.toUpperCase(),
                 onTap: () async {
                   widget.coinTag.name = textEntry.enteredText;
                   int updated =

@@ -46,7 +46,7 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: EnvoyButton(
-                S().envoy_welcome_right_action,
+                S().envoy_welcome_screen_skip,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium

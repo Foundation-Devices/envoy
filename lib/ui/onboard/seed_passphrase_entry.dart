@@ -40,7 +40,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
             S()
                 .manual_setup_verify_seed_12_words_enter_passphrase_modal_heading,
             widget.recovering
-                ? S().export_seed_modal_passphrase_2_3_subheading
+                ? S().manual_setup_recovery_passphrase_modal_subheading
                 : S()
                     .manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading,
             context),
@@ -109,7 +109,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
             ),
           ),
           hasError
-              ? Text("Passphrase did not match",
+              ? Text("Passphrase did not match", // TODO: FIGMA
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
@@ -117,7 +117,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
               : SizedBox.shrink(),
           Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
-            S().recovery_scenario_ios_CTA,
+            S().component_continue,
             borderRadius: BorderRadius.all(Radius.circular(8)),
             onTap: () {
               if (!verify && _textEditingController.text.isNotEmpty) {

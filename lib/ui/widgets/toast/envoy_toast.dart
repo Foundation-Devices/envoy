@@ -89,7 +89,7 @@ class EnvoyToastState extends State<EnvoyToast> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(minHeight: Platform.isIOS ? 100 : 90),
+        constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,

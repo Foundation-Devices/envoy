@@ -4,23 +4,19 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'media.dart';
+
 // Generated
 part 'blog_post.g.dart';
 
 @JsonSerializable()
-class BlogPost {
-  final String title;
-  final String description;
-  List<int>? thumbnail;
-  final String? thumbnailUrl;
-  final DateTime publicationDate;
-  final String url;
-  final String id;
+class BlogPost extends Media {
   bool? read;
 
-  BlogPost(this.title, this.description, this.publicationDate, this.url,
-      this.id, this.read,
-      {this.thumbnail, this.thumbnailUrl}) {}
+  BlogPost(String title, String? description, DateTime publicationDate,
+      String url, String id, this.read,
+      {String? thumbnailUrl})
+      : super(title, description, thumbnailUrl, publicationDate, url, id) {}
 
   // Generated
   factory BlogPost.fromJson(Map<String, dynamic> json) =>

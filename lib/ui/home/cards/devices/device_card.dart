@@ -79,11 +79,13 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 18.0, left: 35.0),
-        child: Text(S().envoy_device_serial + ": " + widget.device.serial),
+        child: Text(S().manage_device_details_deviceSerial +
+            ": " +
+            widget.device.serial),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-        child: Text(S().envoy_device_paired +
+        child: Text(S().manage_device_details_devicePaired +
             " " +
             timeago.format(widget.device.datePaired)),
       ),
@@ -120,7 +122,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         ),
         GestureDetector(
           child: Text(
-            S().envoy_device_edit_device_name.toUpperCase(),
+            S().manage_device_details_menu_editDeviceName.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -141,11 +143,11 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                     );
                   }
                   return EnvoyDialog(
-                    title: S().envoy_device_rename,
+                    title: S().manage_device_rename_modal_heading,
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().component_save.toUpperCase(),
+                        S().manage_device_disconnect_modal_cta.toUpperCase(),
                         type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           Devices().renameDevice(
@@ -163,19 +165,17 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
+          child: Text(S().manage_device_disconnect_modal.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(
-                  title:
-                      S().envoy_device_delete_are_you_sure(widget.device.name),
-                  content: Text(S().envoy_device_delete_explainer),
+                  content: Text(S().manage_device_disconnect_modal),
                   actions: [
                     EnvoyButton(
-                      S().component_delete.toUpperCase(),
+                      S().manage_device_disconnect_modal.toUpperCase(),
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {

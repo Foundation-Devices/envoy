@@ -151,7 +151,7 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                     padding:
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
-                      "Videos",
+                      "Videos", // TODO: FIGMA
                       style: EnvoyTypography.subheading
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
@@ -186,7 +186,7 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                     padding:
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
-                      "Blogs",
+                      "Blogs", // TODO: FIGMA
                       style: EnvoyTypography.subheading
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
@@ -251,7 +251,7 @@ class LearnIntro extends StatelessWidget {
                 SizedBox(
                   height: 50,
                 ),
-                Text("WELCOME TO THE\nLEARNING CENTER", // TODO: sync from Figma
+                Text("WELCOME TO THE\nLEARNING CENTER", // TODO: FIGMA
                     style: EnvoyTypography.heading
                         .copyWith(color: EnvoyColors.textPrimaryInverse)),
               ],

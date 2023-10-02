@@ -40,7 +40,7 @@ class FwMicrosdPage extends ConsumerWidget {
       buttons: [
         OnboardingButton(
             enabled: fwInfo.hasValue,
-            label: S().envoy_fw_microsd_cta,
+            label: S().envoy_fw_microsd_heading_cta,
             onTap: () async {
               try {
                 File firmwareFile =

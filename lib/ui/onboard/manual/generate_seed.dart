@@ -137,7 +137,7 @@ class _SeedScreenState extends State<SeedScreen> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(14)),
-              Text("Generating Seed",
+              Text("Generating Seed", // TODO: FIGMA
                   style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
@@ -197,7 +197,7 @@ class _SeedScreenState extends State<SeedScreen> {
                 _pageController.nextPage(
                     duration: Duration(milliseconds: 300), curve: Curves.ease);
               },
-              label: S().manual_setup_generate_seed_write_words_CTA,
+              label: S().component_done,
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
@@ -333,7 +333,7 @@ class _SeedScreenState extends State<SeedScreen> {
                   child: SizedBox.shrink(),
                 ),
                 OnboardingButton(
-                    label: S().manual_setup_generate_seed_verify_seed_CTA,
+                    label: S().component_continue,
                     fontWeight: FontWeight.w600,
                     onTap: () {
                       _pageController.nextPage(

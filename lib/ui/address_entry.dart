@@ -80,7 +80,7 @@ class _AddressEntryState extends State<AddressEntry> {
                   disabledBorder: InputBorder.none,
                   prefixIcon: Container(
                       margin: EdgeInsets.symmetric(horizontal: 4),
-                      child: Text("To:")),
+                      child: Text("To:")), // TODO: FIGMA
                   isDense: true,
                   prefixIconConstraints: BoxConstraints(
                     minWidth: 18,

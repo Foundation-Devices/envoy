@@ -83,7 +83,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              S().pair_existing_device_intro_heading,
+                              S().pair_new_device_intro_heading,
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
@@ -118,7 +118,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                             ),
                           ),
                           EnvoyButton(
-                            S().pair_existing_device_intro_CTA,
+                            S().accounts_empty_text_learn_more,
                             onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {

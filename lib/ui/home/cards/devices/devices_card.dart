@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
@@ -170,7 +171,7 @@ class DevicesOptions extends ConsumerWidget {
         ),
         GestureDetector(
           child: Text(
-            S().envoy_devices_options_existing_passport.toUpperCase(),
+            S().passport_welcome_screen_cta2.toUpperCase(),
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -184,7 +185,7 @@ class DevicesOptions extends ConsumerWidget {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().envoy_devices_options_new_passport.toUpperCase(),
+          child: Text(S().passport_welcome_screen_cta1.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -203,8 +204,13 @@ class GhostDevice extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final device = Device("Primary", DeviceType.passportGen12, "serial",
-      DateTime.now(), "2.1.1", Colors.grey);
+  final device = Device(
+      "Primary",
+      DeviceType.passportGen12,
+      "serial", // TODO: FIGMA
+      DateTime.now(),
+      "2.1.1",
+      Colors.grey);
 
   @override
   Widget build(BuildContext context) {
@@ -242,9 +248,8 @@ class GhostDevice extends StatelessWidget {
               GestureDetector(
                 child: Text(
                   S().devices_empty_learn_more,
-                  style: _explainerTextStyle.copyWith(
-                    color: EnvoyColors.teal,
-                  ),
+                  style:
+                      EnvoyTypography.button.copyWith(color: EnvoyColors.teal),
                 ),
                 onTap: () {
                   showDialog(

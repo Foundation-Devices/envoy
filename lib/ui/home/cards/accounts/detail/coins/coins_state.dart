@@ -116,7 +116,7 @@ final coinsTagProvider =
   if (coins.isNotEmpty)
     tags.add(CoinTag(
         id: CoinTag.generateNewId(),
-        name: "Untagged",
+        name: "Untagged", // TODO: FIGMA
         account: accountId,
         untagged: true)
       ..addCoins(coins));

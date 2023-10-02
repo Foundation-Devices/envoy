@@ -21,18 +21,18 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
       clipArt: Image.asset("assets/circle_ok.png"),
       text: [
         OnboardingText(
-            header: S().single_envoy_wallet_pair_success_heading,
-            text: S().single_envoy_wallet_pair_success_subheading),
+            header: S().pair_new_device_success_heading,
+            text: S().pair_new_device_success_subheading),
       ],
       buttons: [
         OnboardingButton(
             type: EnvoyButtonTypes.secondary,
-            label: S().single_envoy_wallet_pair_success_cta1,
+            label: S().pair_new_device_success_cta2,
             onTap: () {
               OnboardingPage.goHome(context);
             }),
         OnboardingButton(
-            label: S().single_envoy_wallet_pair_success_cta,
+            label: S().pair_new_device_success_cta1,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleWalletAddressVerifyPage(pairedWallet);

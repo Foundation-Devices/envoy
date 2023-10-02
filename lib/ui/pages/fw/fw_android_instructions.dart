@@ -22,16 +22,16 @@ class FwAndroidInstructionsPage extends StatelessWidget {
       key: Key("fw_android_instructions"),
       text: [
         OnboardingText(
-          header: "Allow phone to access the microSD card",
+          header: "Allow phone to access the microSD card", // TODO: FIGMA
           text:
-              "Grant phone access to copy files to the microSD card with the name PASSPORT-SD.",
+              "Grant phone access to copy files to the microSD card with the name PASSPORT-SD.", // TODO: FIGMA
         )
       ],
       navigationDots: 6,
       navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
-            label: "Continue",
+            label: "Continue", // TODO: FIGMA
             onTap: () {
               UpdatesManager().getStoredFw(deviceId).then((File file) {
                 FwUploader(file).getDirectoryContentPermission();

@@ -162,13 +162,14 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
                     } else {
                       GoRouter.of(context)
                           .push(ROUTE_ACCOUNT_SEND_REVIEW, extra: {
+                        // TODO: FIGMA
                         "psbt":
                             _boostEnabled ? _currentPsbtBoost : _currentPsbt,
                         "account": widget.account,
                       });
                     }
                   },
-                  label: S().envoy_confirmation_confirm);
+                  label: S().send_keyboard_address_confirm);
             },
           ))
     ]);

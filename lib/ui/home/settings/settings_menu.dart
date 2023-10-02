@@ -15,6 +15,7 @@ import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/ui/home/home_state.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   @override
@@ -56,30 +57,36 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
           HomePageNotification(
               leftFunction: null, title: S().menu_heading.toUpperCase())
             ..dispatch(context);
+          ref.read(homePageTitleProvider.notifier).state =
+              S().menu_heading.toUpperCase();
         });
         break;
       case HomePageBackgroundState.settings:
         setState(() {
           _currentPage = SettingsPage();
           HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+          ref.read(homePageTitleProvider.notifier).state = S().menu_settings;
         });
         break;
       case HomePageBackgroundState.backups:
         setState(() {
           _currentPage = BackupPage();
           HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+          ref.read(homePageTitleProvider.notifier).state = S().menu_backups;
         });
         break;
       case HomePageBackgroundState.support:
         setState(() {
           _currentPage = SupportPage();
           HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+          ref.read(homePageTitleProvider.notifier).state = S().menu_support;
         });
         break;
       case HomePageBackgroundState.about:
         setState(() {
           _currentPage = AboutPage();
           HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
+          ref.read(homePageTitleProvider.notifier).state = S().menu_about;
         });
         break;
       default:

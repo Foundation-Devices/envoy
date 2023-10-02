@@ -19,12 +19,12 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
       qrCode: pairedWallet.getAddress(),
       text: [
         OnboardingText(
-            header: S().single_envoy_wallet_address_verify_heading,
-            text: S().single_envoy_wallet_address_verify_subheading),
+            header: S().pair_new_device_QR_code_heading,
+            text: S().pair_new_device_QR_code_subheading),
       ],
       buttons: [
         OnboardingButton(
-            label: S().single_envoy_wallet_address_verify_cta,
+            label: S().pair_new_device_QR_code_cta,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleWalletAddressVerifyConfirmPage();

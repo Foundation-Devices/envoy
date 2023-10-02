@@ -89,7 +89,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                 child: IndicatorShield(),
               ),
               Text(
-                "Transaction Details",
+                "Transaction Details", // TODO: FIGMA
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: Colors.white,
                       fontSize: 18,
@@ -222,7 +222,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CoinTagListItem(
-                                title: "Address",
+                                title: "Address", // TODO: FIGMA
                                 icon: SvgPicture.asset(
                                   "assets/icons/ic_spend.svg",
                                   color: Colors.black,
@@ -248,7 +248,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                 ),
                               ),
                               CoinTagListItem(
-                                title: "Transaction ID",
+                                title: "Transaction ID", // TODO: FIGMA
                                 icon: Icon(
                                   CupertinoIcons.compass,
                                   size: 16,
@@ -262,7 +262,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                         color: EnvoyColors.accentPrimary)),
                               ),
                               CoinTagListItem(
-                                title: "Date",
+                                title: "Date", // TODO: FIGMA
                                 icon: Icon(
                                   Icons.calendar_today_outlined,
                                   size: 16,
@@ -273,7 +273,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                     style: trailingTextStyle),
                               ),
                               CoinTagListItem(
-                                title: "Tags",
+                                title: "Tags", // TODO: FIGMA
                                 icon: SvgPicture.asset(
                                   "assets/icons/ic_tag.svg",
                                   color: Colors.black,
@@ -305,18 +305,18 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                 }).toList())),
                               ),
                               CoinTagListItem(
-                                title: "Status",
+                                title: "Status", // TODO: FIGMA
                                 icon: SvgPicture.asset(
                                   "assets/icons/ic_status_icon.svg",
                                   color: Colors.black,
                                   height: 14,
                                 ),
                                 trailing: Text(
-                                    "${tx.isConfirmed ? "Confirmed" : "Pending"}",
+                                    "${tx.isConfirmed ? "Confirmed" : "Pending"}", // TODO: FIGMA
                                     style: trailingTextStyle),
                               ),
                               CoinTagListItem(
-                                title: "Fee",
+                                title: "Fee", // TODO: FIGMA
                                 icon: SvgPicture.asset(
                                   "assets/icons/ic_bitcoin_straight_circle.svg",
                                   color: Colors.black,
@@ -362,7 +362,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                       alignment: Alignment(0.0, -0.8));
                                 },
                                 child: CoinTagListItem(
-                                  title: "Notes",
+                                  title: "Notes", // TODO: FIGMA
                                   icon: SvgPicture.asset(
                                     "assets/icons/ic_notes.svg",
                                     color: Colors.black,

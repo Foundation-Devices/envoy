@@ -67,8 +67,8 @@ class PsbtCard extends StatelessWidget {
                     maxWidth: 350,
                   ),
                   child: QrTab(
-                    title: S().envoy_psbt_scan_qr,
-                    subtitle: S().envoy_psbt_explainer,
+                    title: S().send_qr_code_card_heading,
+                    subtitle: S().send_qr_code_card_heading,
                     account: account,
                     qr: AnimatedQrImage(
                       base64Decode(psbt.base64),
@@ -99,7 +99,8 @@ class PsbtCard extends StatelessWidget {
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: psbt.base64));
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(S().envoy_psbt_copied_clipboard),
+                        content:
+                            Text("PSBT copied to clipboard!"), //TODO: FIGMA
                       ));
                     },
                     icon: EnvoyIcon(
