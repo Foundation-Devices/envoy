@@ -225,8 +225,8 @@ class EnvoySeed {
       try {
         var data = Backup.restoreOffline(seed, filePath);
         return _processRecoveryData(seed, data);
-      } on Exception catch (ex) {
-        throw ex;
+      } on Exception {
+        return false;
       }
     }
   }
