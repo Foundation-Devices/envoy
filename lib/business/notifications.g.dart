@@ -32,4 +32,5 @@ const _$EnvoyNotificationTypeEnumMap = {
   EnvoyNotificationType.firmware: 'firmware',
   EnvoyNotificationType.transaction: 'transaction',
   EnvoyNotificationType.security: 'security',
+  EnvoyNotificationType.envoyUpdate: 'envoyUpdate',
 };

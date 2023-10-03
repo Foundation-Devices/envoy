@@ -13,6 +13,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -170,7 +171,7 @@ class ActivityListTile extends StatelessWidget {
           ? EnvoyIcons.arrow_down_left
           : EnvoyIcons.arrow_up_right;
       textLeft1 =
-          notification.amount! >= 0 ? "Received" : "Sent"; // TODO: FIGMA
+          notification.amount! >= 0 ? S().activity_received : S().activity_sent;
       textLeft2 = timeago.format(notification.date);
       textRight1 = getFormattedAmount(notification.amount!);
       textRight2 = Settings().selectedFiat == null
@@ -180,6 +181,23 @@ class ActivityListTile extends StatelessWidget {
       iconColor = EnvoyColors.textTertiary;
       unitIcon = getUnitIcon(
           AccountManager().getAccountById(notification.accountId!)!);
+    }
+
+    if (notification.type == EnvoyNotificationType.firmware) {
+      leftIcon = EnvoyIcons.tool;
+      textLeft1 = S().activity_firmwareUpdate;
+      textLeft2 = timeago.format(notification.date);
+      textRight1 = notification.body;
+      //textRight2 = notification.id; //should be the type of passport in the notification? e.g. passportGen1 or Foundation Passport
+      iconColor = EnvoyColors.textTertiary;
+    }
+
+    if (notification.type == EnvoyNotificationType.envoyUpdate) {
+      leftIcon = EnvoyIcons.tool;
+      textLeft1 = S().activity_envoyUpdate;
+      textLeft2 = timeago.format(notification.date);
+      textRight1 = notification.body;
+      iconColor = EnvoyColors.textTertiary;
     }
 
     return EnvoyListTile(
