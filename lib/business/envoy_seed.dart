@@ -129,9 +129,8 @@ class EnvoySeed {
     // Add sembast DB
     backupData[EnvoyStorage().dbName] = await EnvoyStorage().export();
 
-    // Strip keys from hot wallets
     if (backupData.containsKey(EnvoyStorage().dbName)) {
-      backupData = censorHotWalletDescriptors(backupData);
+      backupData = processBackupData(backupData, cloud);
     }
 
     return Backup.perform(
@@ -148,8 +147,8 @@ class EnvoySeed {
     });
   }
 
-  Map<String, String> censorHotWalletDescriptors(
-      Map<String, String> backupData) {
+  Map<String, String> processBackupData(
+      Map<String, String> backupData, bool isOnlineBackup) {
     var json = jsonDecode(backupData[EnvoyStorage().dbName]!) as Map;
 
     List<dynamic> stores = json["stores"];
@@ -161,6 +160,17 @@ class EnvoySeed {
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
+    // SFT-2447: flip cloud syncing to false if we're making an offline file
+    if (!isOnlineBackup) {
+      var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
+      var jsonSettings = jsonDecode(settings);
+      jsonSettings["syncToCloudSetting"] = false;
+      settings = jsonEncode(jsonSettings);
+      json["stores"][indexOfPreferences]["values"]
+          [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
+    }
+
+    // Strip keys from hot wallets
     var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
     var jsonAccounts = jsonDecode(accounts);
 
