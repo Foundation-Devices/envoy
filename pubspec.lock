@@ -312,6 +312,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "6f07cba3f7b3448d42d015bfd3d53fe12e5b36da2423f23838efc1d5fb31a263"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.8"
   dots_indicator:
     dependency: "direct main"
     description:
@@ -468,10 +476,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_svg
-      sha256: c9bb2757b8a0bbf8e45f4069a90d2b9dbafc80b1a5e28d43e29088be533e6df4
+      sha256: "6ff9fa12892ae074092de2fa6a9938fb21dbabfdaa2ff57dc697ff912fc8d4b2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -1435,6 +1443,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "11.7.1"
+  wakelock_plus:
+    dependency: "direct main"
+    description:
+      name: wakelock_plus
+      sha256: aac3f3258f01781ec9212df94eecef1eb9ba9350e106728def405baa096ba413
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
+  wakelock_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: wakelock_plus_platform_interface
+      sha256: "40fabed5da06caff0796dc638e1f07ee395fb18801fbff3255a2372db2d80385"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   wallet:
     dependency: "direct main"
     description:
@@ -1479,7 +1503,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: e4285367faa08029c39bfe733f251b04562b3f23
+      resolved-ref: f6c13566b5641022f5a953965f5a2061fbc40c13
       url: "https://github.com/icota/webfeed.git"
     source: git
     version: "0.7.0"
@@ -1511,10 +1535,10 @@ packages:
     dependency: transitive
     description:
       name: xml
-      sha256: "80d494c09849dc3f899d227a78c30c5b949b985ededf884cb3f3bcd39f4b447a"
+      sha256: "979ee37d622dec6365e2efa4d906c37470995871fe9ae080d967e192d88286b5"
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.1"
+    version: "6.2.2"
   yaml:
     dependency: transitive
     description:
