@@ -43,6 +43,7 @@ enum EnvoyIcons {
   btc_testnet_neutral,
   btc_testnet_passport_account,
   btc_testnet_postmix_account,
+  tool,
 }
 
 class EnvoyIcon extends StatelessWidget {
