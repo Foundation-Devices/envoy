@@ -143,105 +143,123 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
   }
 }
 
-//ignore: must_be_immutable
-class BlogPostCard extends StatelessWidget {
+class BlogPostCard extends StatefulWidget {
   BlogPostCard({
-    super.key,
+    Key? key,
     required this.blog,
-  });
+  }) : super(key: key);
 
   final BlogPost blog;
 
   @override
+  _BlogPostCardState createState() => _BlogPostCardState();
+}
+
+class _BlogPostCardState extends State<BlogPostCard> {
+  double topGradientEnd = 0.0;
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: EnvoySpacing.large1,
-        left: EnvoySpacing.medium1,
-        right: EnvoySpacing.medium1,
-      ),
-      child: ShaderMask(
-        shaderCallback: (Rect rect) {
-          return LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              EnvoyColors.solidWhite,
-              Colors.transparent,
-              Colors.transparent,
-              EnvoyColors.solidWhite,
-            ],
-            stops: [0.0, 0.07, 0.93, 1.0],
-          ).createShader(rect);
-        },
-        blendMode: BlendMode.dstOut,
-        child: SingleChildScrollView(
-          child: FutureBuilder<String>(
-            future: Future(() async {
-              final document = htmlParser.parse(blog.description);
-              final imageTags = document.getElementsByTagName('img');
-              final torClient = HttpTor(Tor.instance);
-
-              // Fetch all the images with HttpTor
-              for (final imgTag in imageTags) {
-                imgTag.attributes['width'] = 'auto';
-                imgTag.attributes['height'] = 'auto';
-
-                final srcset = imgTag.attributes['srcset'];
-                if (srcset != null && srcset.isNotEmpty) {
-                  final srcsetUrls = srcset.split(',').map((e) {
-                    final parts = e.trim().split(' ');
-                    return parts.first;
-                  }).toList();
-
-                  if (srcsetUrls.isNotEmpty) {
-                    final firstSrcsetUrl = srcsetUrls.first;
-                    final img = await torClient.get(firstSrcsetUrl);
-                    final dataUri =
-                        'data:image/png;base64,${base64Encode(img.bodyBytes)}';
-                    imgTag.attributes['src'] = dataUri;
-                    imgTag.attributes['style'] = 'border-radius: 16;';
-                  }
-                }
-              }
-
-              return document.outerHtml;
-            }),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return DefaultTextStyle(
-                  style: Theme.of(context).textTheme.bodySmall!,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: EnvoySpacing.xs,
-                      ),
-                      Html(
-                        data: snapshot.data,
-                        style: {
-                          "p": Style(fontSize: FontSize.medium),
-                          "a": Style(color: EnvoyColors.accentPrimary),
-                        },
-                        onLinkTap: (
-                          linkUrl,
-                          _,
-                          __,
-                        ) {
-                          launchUrlString(linkUrl!);
-                        },
-                      ),
-                      // Add an empty div on the end with a height of 100px using inline HTML
-                      Html(data: '<div style="height: 100px;"></div>'),
-                    ],
-                  ),
-                );
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          bottom: EnvoySpacing.large1,
+          left: EnvoySpacing.medium1,
+          right: EnvoySpacing.medium1,
+        ),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollUpdateNotification) {
+              if (notification.metrics.pixels == 0) {
+                setState(() {
+                  topGradientEnd = 0.0;
+                });
               } else {
-                return Padding(
-                  padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                  child: Center(child: CircularProgressIndicator()),
-                );
+                setState(() {
+                  topGradientEnd = 0.07;
+                });
               }
+            }
+            return false;
+          },
+          child: ShaderMask(
+            shaderCallback: (Rect rect) {
+              return LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  EnvoyColors.solidWhite,
+                  Colors.transparent,
+                  Colors.transparent,
+                  EnvoyColors.solidWhite,
+                ],
+                stops: [0.0, topGradientEnd, 0.93, 1.0],
+              ).createShader(rect);
             },
+            blendMode: BlendMode.dstOut,
+            child: SingleChildScrollView(
+              child: FutureBuilder<String>(
+                future: Future(() async {
+                  final document = htmlParser.parse(widget.blog.description);
+                  final imageTags = document.getElementsByTagName('img');
+                  final torClient = HttpTor(Tor.instance);
+
+                  for (final imgTag in imageTags) {
+                    imgTag.attributes['width'] = 'auto';
+                    imgTag.attributes['height'] = 'auto';
+
+                    final srcset = imgTag.attributes['srcset'];
+                    if (srcset != null && srcset.isNotEmpty) {
+                      final srcsetUrls = srcset.split(',').map((e) {
+                        final parts = e.trim().split(' ');
+                        return parts.first;
+                      }).toList();
+
+                      if (srcsetUrls.isNotEmpty) {
+                        final firstSrcsetUrl = srcsetUrls.first;
+                        final img = await torClient.get(firstSrcsetUrl);
+                        final dataUri =
+                            'data:image/png;base64,${base64Encode(img.bodyBytes)}';
+                        imgTag.attributes['src'] = dataUri;
+                        imgTag.attributes['style'] = 'border-radius: 16;';
+                      }
+                    }
+                  }
+
+                  return document.outerHtml;
+                }),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return DefaultTextStyle(
+                      style: Theme.of(context).textTheme.bodySmall!,
+                      child: Column(
+                        children: [
+                          Html(
+                            data: snapshot.data!,
+                            style: {
+                              "p": Style(fontSize: FontSize.medium),
+                              "a": Style(color: EnvoyColors.accentPrimary),
+                            },
+                            onLinkTap: (linkUrl, _, __) {
+                              launchUrlString(linkUrl!);
+                            },
+                          ),
+                          Html(data: '<div style="height: 100px;"></div>'),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                      child: Container(
+                          height: 60,
+                          width: 60,
+                          child: CircularProgressIndicator()),
+                    );
+                  }
+                },
+              ),
+            ),
           ),
         ),
       ),
