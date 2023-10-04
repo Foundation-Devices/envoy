@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
@@ -69,10 +70,14 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         } else {
           ref.read(homePageModalModeProvider.notifier).state = false;
         }
+        print("hideAppBarRoutes ${nextPath}");
         if (hideAppBarRoutes.contains(nextPath)) {
-          ref.read(homepageHideAppBar.notifier).state = true;
+          ref.read(fullscreenHomePageProvider.notifier).state = true;
         } else {
-          ref.read(homepageHideAppBar.notifier).state = false;
+          ref.read(fullscreenHomePageProvider.notifier).state = false;
+        }
+        if (nextPath == ROUTE_ACCOUNTS_HOME) {
+          ref.read(coinSelectionStateProvider.notifier).reset();
         }
       },
     );
