@@ -228,7 +228,8 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
   _i3.Future<int> getMaxFeeRate(
     String? sendTo,
     int? amount, {
-    List<_i2.Utxo>? utxos,
+    List<_i2.Utxo>? mustSpendUtxos,
+    List<_i2.Utxo>? dontSpendUtxos,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -237,7 +238,10 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
             sendTo,
             amount,
           ],
-          {#utxos: utxos},
+          {
+            #mustSpendUtxos: mustSpendUtxos,
+            #dontSpendUtxos: dontSpendUtxos,
+          },
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
@@ -247,7 +251,8 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
     String? sendTo,
     int? amount,
     double? feeRate, {
-    List<_i2.Utxo>? utxos,
+    List<_i2.Utxo>? mustSpendUtxos,
+    List<_i2.Utxo>? dontSpendUtxos,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -257,7 +262,10 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
             amount,
             feeRate,
           ],
-          {#utxos: utxos},
+          {
+            #mustSpendUtxos: mustSpendUtxos,
+            #dontSpendUtxos: dontSpendUtxos,
+          },
         ),
         returnValue: _i3.Future<_i2.Psbt>.value(_FakePsbt_0(
           this,
@@ -268,7 +276,10 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
               amount,
               feeRate,
             ],
-            {#utxos: utxos},
+            {
+              #mustSpendUtxos: mustSpendUtxos,
+              #dontSpendUtxos: dontSpendUtxos,
+            },
           ),
         )),
       ) as _i3.Future<_i2.Psbt>);

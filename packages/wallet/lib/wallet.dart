@@ -143,18 +143,6 @@ class NativeSeed extends Struct {
   external Pointer<Uint8> fingerprint;
 }
 
-class NativePsbt extends Struct {
-  @Uint64()
-  external int sent;
-  @Uint64()
-  external int received;
-  @Uint64()
-  external int fee;
-  external Pointer<Uint8> base64;
-  external Pointer<Uint8> txid;
-  external Pointer<Uint8> rawtx;
-}
-
 class NativeServerFeatures extends Struct {
   external Pointer<Uint8> serverVersion;
   external Pointer<Uint8> protocolMin;
@@ -207,24 +195,10 @@ typedef WalletGetTransactionsRust = NativeTransactionList Function(
 typedef WalletGetTransactionsDart = NativeTransactionList Function(
     Pointer<Uint8> wallet);
 
-typedef WalletCreatePsbtRust = NativePsbt Function(
-    Pointer<Uint8> wallet,
-    Pointer<Utf8> sendTo,
-    Uint64 amount,
-    Double feeRate,
-    Pointer<rust.UtxoList>);
-typedef WalletCreatePsbtDart = NativePsbt Function(Pointer<Uint8> wallet,
-    Pointer<Utf8> sendTo, int amount, double feeRate, Pointer<rust.UtxoList>);
-
 typedef WalletBroadcastTxRust = Pointer<Utf8> Function(
     Pointer<Utf8> electrumAddress, Int32 torPort, Pointer<Utf8> tx);
 typedef WalletBroadcastTxDart = Pointer<Utf8> Function(
     Pointer<Utf8> electrumAddress, int torPort, Pointer<Utf8> tx);
-
-typedef WalletDecodePsbtRust = NativePsbt Function(
-    Pointer<Uint8> wallet, Pointer<Utf8> psbt);
-typedef WalletDecodePsbtDart = NativePsbt Function(
-    Pointer<Uint8> wallet, Pointer<Utf8> psbt);
 
 typedef WalletValidateAddressRust = Uint8 Function(
     Pointer<Uint8> wallet, Pointer<Utf8> address);
@@ -288,14 +262,14 @@ class Psbt {
 
   Psbt(this.sent, this.received, this.fee, this.base64, this.txid, this.rawTx);
 
-  factory Psbt.fromNative(NativePsbt psbt) {
+  factory Psbt.fromNative(rust.Psbt psbt) {
     return Psbt(
         psbt.sent,
         psbt.received,
         psbt.fee,
         psbt.base64.cast<Utf8>().toDartString(),
         psbt.txid.cast<Utf8>().toDartString(),
-        psbt.rawtx.cast<Utf8>().toDartString());
+        psbt.raw_tx.cast<Utf8>().toDartString());
   }
 }
 
@@ -564,46 +538,73 @@ class Wallet {
   }
 
   Future<int> getMaxFeeRate(String sendTo, int amount,
-      {List<Utxo>? utxos}) async {
+      {List<Utxo>? mustSpendUtxos, List<Utxo>? dontSpendUtxos}) async {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
       final lib = rust.NativeLibrary(load(_libName));
-      Pointer<rust.UtxoList> listPointer = _createUtxoListPointer(utxos);
-      return lib
-          .wallet_get_max_feerate(Pointer.fromAddress(walletAddress),
-              sendTo.toNativeUtf8() as Pointer<Char>, amount, listPointer)
+
+      Pointer<rust.UtxoList> mustSpendUtxoList =
+          _createUtxoListPointer(mustSpendUtxos);
+      Pointer<rust.UtxoList> dontSpendUtxoList =
+          _createUtxoListPointer(dontSpendUtxos);
+
+      final maxFeeRate = lib
+          .wallet_get_max_feerate(
+              Pointer.fromAddress(walletAddress),
+              sendTo.toNativeUtf8() as Pointer<Char>,
+              amount,
+              mustSpendUtxoList,
+              dontSpendUtxoList)
           .toInt();
+
+      calloc.free(mustSpendUtxoList);
+      calloc.free(dontSpendUtxoList);
+
+      return maxFeeRate;
     });
   }
 
   Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
-      {List<Utxo>? utxos}) async {
-    final rustFunction =
-        _lib.lookup<NativeFunction<WalletCreatePsbtRust>>('wallet_create_psbt');
-    final dartFunction = rustFunction.asFunction<WalletCreatePsbtDart>();
+      {List<Utxo>? mustSpendUtxos, List<Utxo>? dontSpendUtxos}) async {
+    final walletAddress = _self.address;
 
-    Pointer<rust.UtxoList> listPointer = _createUtxoListPointer(utxos);
+    return Isolate.run(() {
+      final lib = rust.NativeLibrary(load(_libName));
 
-    return Future(() {
-      NativePsbt psbt = dartFunction(
-          _self, sendTo.toNativeUtf8(), amount, feeRate, listPointer);
+      Pointer<rust.UtxoList> mustSpendUtxoList =
+          _createUtxoListPointer(mustSpendUtxos);
+      Pointer<rust.UtxoList> dontSpendUtxoList =
+          _createUtxoListPointer(dontSpendUtxos);
+
+      rust.Psbt psbt = lib.wallet_create_psbt(
+          Pointer.fromAddress(walletAddress),
+          sendTo.toNativeUtf8() as Pointer<Char>,
+          amount,
+          feeRate,
+          mustSpendUtxoList,
+          dontSpendUtxoList);
+
       if (psbt.base64 == nullptr) {
         throwRustException(_lib);
       }
 
-      calloc.free(listPointer);
+      calloc.free(mustSpendUtxoList);
+      calloc.free(dontSpendUtxoList);
+
       return Psbt.fromNative(psbt);
     });
   }
 
   Future<Psbt> decodePsbt(String base64Psbt) async {
-    final rustFunction =
-        _lib.lookup<NativeFunction<WalletDecodePsbtRust>>('wallet_decode_psbt');
-    final dartFunction = rustFunction.asFunction<WalletDecodePsbtDart>();
+    final walletAddress = _self.address;
 
-    return Future(() {
-      NativePsbt psbt = dartFunction(_self, base64Psbt.toNativeUtf8());
+    return Isolate.run(() {
+      final lib = rust.NativeLibrary(load(_libName));
+
+      rust.Psbt psbt = lib.wallet_decode_psbt(
+          Pointer.fromAddress(walletAddress),
+          base64Psbt.toNativeUtf8() as Pointer<Char>);
 
       if (psbt.base64 == nullptr) {
         throwRustException(_lib);

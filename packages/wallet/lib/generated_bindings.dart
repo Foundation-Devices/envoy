@@ -239,37 +239,45 @@ class NativeLibrary {
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> send_to,
     int amount,
-    ffi.Pointer<UtxoList> utxos,
+    ffi.Pointer<UtxoList> must_spend,
+    ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_get_max_feerate(
       wallet,
       send_to,
       amount,
-      utxos,
+      must_spend,
+      dont_spend,
     );
   }
 
   late final _wallet_get_max_feeratePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Double Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-              ffi.Uint64, ffi.Pointer<UtxoList>)>>('wallet_get_max_feerate');
+          ffi.Double Function(
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Uint64,
+              ffi.Pointer<UtxoList>,
+              ffi.Pointer<UtxoList>)>>('wallet_get_max_feerate');
   late final _wallet_get_max_feerate = _wallet_get_max_feeratePtr.asFunction<
       double Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int,
-          ffi.Pointer<UtxoList>)>();
+          ffi.Pointer<UtxoList>, ffi.Pointer<UtxoList>)>();
 
   Psbt wallet_create_psbt(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> send_to,
     int amount,
     double fee_rate,
-    ffi.Pointer<UtxoList> utxos,
+    ffi.Pointer<UtxoList> must_spend,
+    ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_create_psbt(
       wallet,
       send_to,
       amount,
       fee_rate,
-      utxos,
+      must_spend,
+      dont_spend,
     );
   }
 
@@ -280,10 +288,11 @@ class NativeLibrary {
               ffi.Pointer<ffi.Char>,
               ffi.Uint64,
               ffi.Double,
+              ffi.Pointer<UtxoList>,
               ffi.Pointer<UtxoList>)>>('wallet_create_psbt');
   late final _wallet_create_psbt = _wallet_create_psbtPtr.asFunction<
       Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, double,
-          ffi.Pointer<UtxoList>)>();
+          ffi.Pointer<UtxoList>, ffi.Pointer<UtxoList>)>();
 
   Psbt wallet_decode_psbt(
     ffi.Pointer<ffi.Char> wallet,

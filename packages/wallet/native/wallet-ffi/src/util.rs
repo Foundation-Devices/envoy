@@ -154,6 +154,7 @@ pub fn build_tx(
     wallet: &MutexGuard<bdk::Wallet<Tree>>,
     send_to: Address,
     must_spend: &Vec<OutPoint>,
+    dont_spend: &Vec<OutPoint>,
 ) -> Result<(PartiallySignedTransaction, TransactionDetails), bdk::Error> {
     let mut builder = wallet.build_tx();
     builder
@@ -165,6 +166,10 @@ pub fn build_tx(
         .add_utxos(&*must_spend)
         .unwrap()
         .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
+
+    for outpoint in dont_spend {
+        builder.add_unspendable(*outpoint);
+    }
 
     builder.finish()
 }

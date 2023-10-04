@@ -608,14 +608,17 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     send_to: *const c_char,
     amount: u64,
-    utxos: *const UtxoList,
+    must_spend: *const UtxoList,
+    dont_spend: *const UtxoList
 ) -> f64 {
     let error_return = 0.0;
 
     let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
     let address = CStr::from_ptr(send_to).to_str().unwrap();
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
-    let must_spend = util::extract_utxo_list(utxos);
+
+    let must_spend = util::extract_utxo_list(must_spend);
+    let dont_spend = util::extract_utxo_list(dont_spend);
 
     let mut res = 1;
 
@@ -625,12 +628,19 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
             res as f64 / 100000.0,
             &wallet,
             send_to.clone(),
-            &must_spend,
+            &must_spend, &dont_spend
         );
         if tx.is_err() {
             return res.into();
         }
         res += 1;
+
+        // TODO: find the correct way to do this
+        // probably by not having a drain script in build_tx
+        // check if BDK supports that
+        if res >= 100 {
+            return res.into();
+        }
     }
 }
 
@@ -640,7 +650,8 @@ pub unsafe extern "C" fn wallet_create_psbt(
     send_to: *const c_char,
     amount: u64,
     fee_rate: f64,
-    utxos: *const UtxoList,
+    must_spend: *const UtxoList,
+    dont_spend: *const UtxoList
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
@@ -653,9 +664,10 @@ pub unsafe extern "C" fn wallet_create_psbt(
     let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
     let address = CStr::from_ptr(send_to).to_str().unwrap();
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
-    let must_spend = util::extract_utxo_list(utxos);
+    let must_spend = util::extract_utxo_list(must_spend);
+    let dont_spend = util::extract_utxo_list(dont_spend);
 
-    let tx = util::build_tx(amount, fee_rate, &wallet, send_to, &must_spend);
+    let tx = util::build_tx(amount, fee_rate, &wallet, send_to, &must_spend, &dont_spend);
     match tx {
         Ok((mut psbt, _)) => {
             let sign_options = SignOptions {
