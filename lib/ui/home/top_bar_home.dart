@@ -70,7 +70,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         } else {
           ref.read(homePageModalModeProvider.notifier).state = false;
         }
-        print("hideAppBarRoutes ${nextPath}");
         if (hideAppBarRoutes.contains(nextPath)) {
           ref.read(fullscreenHomePageProvider.notifier).state = true;
         } else {

@@ -8,12 +8,12 @@ import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/confirmation_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/wallet.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -78,33 +78,16 @@ final accountsRouter = StatefulShellBranch(
               routes: [
                 GoRoute(
                     path: _ACCOUNT_SEND,
+                    onExit: (context) {
+                      /// if we are exiting the send screen, we need to clear the spend state
+                      /// but only if we are not in edit mode
+                      if (!ProviderScope.containerOf(context)
+                          .read(spendEditModeProvider))
+                        clearSpendState(ProviderScope.containerOf(context));
+                      return true;
+                    },
                     pageBuilder: (context, state) {
-                      Account? account;
-                      int amount = 0;
-                      String initialAddress = "";
-                      if (state.extra is Map) {
-                        Map extras = state.extra as Map;
-                        amount = extras["amount"] as int? ?? 0;
-                        initialAddress = extras['address'] as String;
-                        if (extras['account'] is Account) {
-                          account = extras['account'] as Account;
-                        } else {
-                          if (extras['account'] is Map) {
-                            account = Account.fromJson(
-                                extras['account'] as Map<String, dynamic>);
-                          } else {
-                            account = Account.fromJson(
-                                extras as Map<String, dynamic>);
-                          }
-                        }
-                      } else {
-                        account = state.extra as Account;
-                      }
-                      return wrapWithVerticalAxisAnimation(SendCard(
-                        account,
-                        address: initialAddress,
-                        amountSats: amount,
-                      ));
+                      return wrapWithVerticalAxisAnimation(SendCard());
                     },
                     routes: [
                       GoRoute(
@@ -115,48 +98,12 @@ final accountsRouter = StatefulShellBranch(
                             name: "spend_review",
                             path: _ACCOUNT_SEND_REVIEW,
                             pageBuilder: (context, state) {
-                              Account? account;
-                              Psbt? psbt;
-                              if (state.extra is Map) {
-                                Map extras = state.extra as Map;
-                                if (extras['account'] is Account) {
-                                  account = extras['account'] as Account;
-                                } else {
-                                  account = Account.fromJson(extras['account']
-                                      as Map<String, dynamic>);
-                                }
-                                if (extras['psbt'] is Psbt) {
-                                  psbt = extras['psbt'] as Psbt;
-                                }
-                              }
-                              return wrapWithVerticalAxisAnimation(TxReview(
-                                psbt!,
-                                account!,
-                                onFinishNavigationClick: () {
-                                  context.go(ROUTE_ACCOUNT_DETAIL,
-                                      extra: account);
-                                },
-                              ));
+                              return wrapWithVerticalAxisAnimation(TxReview());
                             },
                           ),
                         ],
                         pageBuilder: (context, state) {
-                          Account? account;
-                          int amount = 0;
-                          String initialAddress = "";
-                          if (state.extra is Map) {
-                            Map extras = state.extra as Map;
-                            amount = extras["amount"] as int? ?? 0;
-                            initialAddress = extras['address'] as String;
-                            if (extras['account'] is Account) {
-                              account = extras['account'] as Account;
-                            } else {
-                              account = Account.fromJson(
-                                  extras['account'] as Map<String, dynamic>);
-                            }
-                          }
-                          return wrapWithVerticalAxisAnimation(ConfirmationCard(
-                              account!, amount, initialAddress));
+                          return wrapWithVerticalAxisAnimation(TxReview());
                         },
                       ),
                     ]),
@@ -189,27 +136,7 @@ final accountsRouter = StatefulShellBranch(
                 ),
               ],
               pageBuilder: (context, state) {
-                Account? account;
-                if (state.extra is Map) {
-                  if ((state.extra as Map).containsKey("account")) {
-                    if ((state.extra as Map<String, dynamic>)["account"]
-                        is Account) {
-                      account = (state.extra as Map<String, dynamic>)["account"]
-                          as Account;
-                    } else {
-                      account = Account.fromJson(
-                          (state.extra as Map<String, dynamic>)["account"]);
-                    }
-                  } else {
-                    account =
-                        Account.fromJson(state.extra as Map<String, dynamic>);
-                  }
-                } else {
-                  account = state.extra as Account;
-                }
-                return wrapWithVerticalAxisAnimation(AccountCard(
-                  account,
-                ));
+                return wrapWithVerticalAxisAnimation(AccountCard());
               },
             ),
           ]),

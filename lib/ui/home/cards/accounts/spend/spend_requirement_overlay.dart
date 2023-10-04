@@ -17,7 +17,6 @@ AnimationController? _spendOverlayAnimationController;
 OverlayEntry? overlayEntry = null;
 
 showSpendRequirementOverlay(BuildContext context, Account account) async {
-  print("OVERLAY Started ");
   if (overlayEntry != null) {
     overlayEntry?.remove();
     overlayEntry?.dispose();
@@ -66,9 +65,9 @@ class _SpendRequirementOverlayState
     extends ConsumerState<SpendRequirementOverlay>
     with SingleTickerProviderStateMixin {
   late Animation<Alignment> _appearAnimation;
-  bool _isDragging = true;
-
-  bool _dismissed = false;
+  // bool _isDragging = true;
+  //
+  // bool _dismissed = false;
 
   @override
   void initState() {

@@ -15,10 +15,13 @@ import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart' as oldIcons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
@@ -26,6 +29,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -44,9 +48,9 @@ import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
-  final Account account;
+  final bool showUtxoPage;
 
-  AccountCard(this.account) : super(key: UniqueKey()) {}
+  AccountCard({this.showUtxoPage = false}) : super(key: UniqueKey()) {}
 
   // @override
   // String? title = S().manage_account_address_heading.toUpperCase();
@@ -55,7 +59,12 @@ class AccountCard extends ConsumerStatefulWidget {
   ConsumerState<AccountCard> createState() => _AccountCardState();
 }
 
-class _AccountCardState extends ConsumerState<AccountCard> {
+class _AccountCardState extends ConsumerState<AccountCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late Account account;
+  late Animation<Alignment> animation;
+
   TextStyle _explainerTextStyleWallet = TextStyle(
       height: 2.0,
       fontFamily: 'Montserrat',
@@ -72,12 +81,20 @@ class _AccountCardState extends ConsumerState<AccountCard> {
     super.initState();
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    animation = Tween(begin: Alignment(0.0, 1.0), end: Alignment(0.0, 0.65))
+        .animate(CurvedAnimation(
+            parent: animationController, curve: Curves.easeInOut));
+
     Future.delayed(Duration()).then((value) {
+      account =
+          ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_account_address_heading;
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: AccountOptions(widget.account),
+          optionsWidget: AccountOptions(account),
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
@@ -89,6 +106,13 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                       menuVisible ? Icons.close : Icons.more_horiz_outlined));
             },
           ));
+
+      bool showOverlay = ref.read(showSpendRequirementOverlayProvider);
+      bool isInEditMode = ref.read(spendEditModeProvider);
+      String path = ref.read(routePathProvider);
+      if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
+        showSpendRequirementOverlay(context, account);
+      }
     });
   }
 
@@ -96,14 +120,25 @@ class _AccountCardState extends ConsumerState<AccountCard> {
 
   @override
   void dispose() {
+    hideSpendRequirementOverlay();
     super.dispose();
     ExchangeRate().removeListener(_redraw);
   }
 
   @override
   Widget build(BuildContext context) {
+    account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
+
+    ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
+      print("Overlay state changed to $next $previous");
+      if (next) {
+        showSpendRequirementOverlay(context, account);
+      } else {
+        hideSpendRequirementOverlay();
+      }
+    });
     List<Transaction> transactions =
-        ref.watch(transactionsProvider(widget.account.id));
+        ref.watch(transactionsProvider(account.id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
 
@@ -112,7 +147,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
       body: Column(children: [
         Padding(
           padding: const EdgeInsets.all(20.0),
-          child: AccountListTile(widget.account, onTap: () {
+          child: AccountListTile(account, onTap: () {
             Navigator.pop(context);
             ref.read(homePageAccountsProvider.notifier).state =
                 HomePageAccountsState(HomePageAccountsNavigationState.list);
@@ -130,7 +165,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
-            child: widget.account.dateSynced == null
+            child: account.dateSynced == null
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     itemCount: 4,
@@ -189,7 +224,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 child: EnvoyTextButton(
                     label: S().receive_tx_list_receive,
                     onTap: () {
-                      context.go(ROUTE_ACCOUNT_RECEIVE, extra: widget.account);
+                      context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
                     }),
               ),
             ),
@@ -211,11 +246,11 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                             context: context,
                             child: ScannerPage(
                                 [ScannerType.address, ScannerType.azteco],
-                                account: widget.account,
+                                account: account,
                                 onAddressValidated: (address, amount) {
                               // Navigator.pop(context);
                               context.go(ROUTE_ACCOUNT_SEND, extra: {
-                                "account": widget.account,
+                                "account": account,
                                 "address": address,
                                 "amount": amount
                               });
@@ -229,7 +264,7 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                 alignment: Alignment.centerRight,
                 child: EnvoyTextButton(
                   onTap: () {
-                    context.go(ROUTE_ACCOUNT_SEND, extra: widget.account);
+                    context.go(ROUTE_ACCOUNT_SEND);
                     return;
                     // widget.navigator!.push(
                     //     SendCard(widget.account, navigator: widget.navigator));
@@ -277,13 +312,12 @@ class _AccountCardState extends ConsumerState<AccountCard> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       child: TransactionListTile(
-                          transaction: transactions[index],
-                          account: widget.account),
+                          transaction: transactions[index], account: account),
                     );
                   },
                 );
               }))
-          : CoinsList(account: widget.account),
+          : CoinsList(account: account),
     );
   }
 }
@@ -394,7 +428,8 @@ class TransactionListTile extends StatelessWidget {
                   onSecondaryButtonTap: () {
                     Navigator.pop(context);
                   },
-                  checkBoxText: "Don’t show again", // TODO: FIGMA
+                  checkBoxText: "Don’t show again",
+                  // TODO: FIGMA
                   checkedValue: dismissed,
                   onCheckBoxChanged: (checkedValue) {
                     if (!checkedValue) {

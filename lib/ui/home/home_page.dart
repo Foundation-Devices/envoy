@@ -10,6 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/shield.dart';
@@ -25,6 +26,12 @@ import 'package:go_router/go_router.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+
+final _fullScreenProvider = Provider((ref) {
+  bool fullScreen = ref.watch(homePageModalModeProvider);
+  Set selections = ref.watch(coinSelectionStateProvider);
+  return fullScreen || selections.isNotEmpty;
+});
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -166,6 +173,10 @@ class HomePageState extends ConsumerState<HomePage>
   /// true means the back button press is handled and shouldn't be propagated
   Future<bool> _handleHomePageBackPress() async {
     HomePageBackgroundState hpState = ref.read(homePageBackgroundProvider);
+    bool optionsVisible = ref.read(homePageOptionsVisibilityProvider);
+    if (optionsVisible) {
+      return true;
+    }
     if (hpState == HomePageBackgroundState.hidden) {
       ///if menu is hidden don't do anything, let the back button press propagate
       return false;
@@ -239,8 +250,9 @@ class HomePageState extends ConsumerState<HomePage>
     // ignore: unused_local_variable
     double _shieldGlowOffset = 30;
 
-    bool _modalShown = ref.watch(homePageModalModeProvider);
-    bool _hideAppBar = ref.watch(homepageHideAppBar);
+    bool _modalShown = ref.watch(_fullScreenProvider);
+    bool _fullScreen = ref.watch(fullscreenHomePageProvider);
+
     HomePageBackgroundState _homepageBackDropState =
         ref.watch(homePageBackgroundProvider);
 
@@ -279,19 +291,26 @@ class HomePageState extends ConsumerState<HomePage>
             ? _shieldHeightOptionsShown
             : _shieldHeight;
 
-    if (_hideAppBar) {
+    if (_fullScreen) {
       shieldTotalTop = AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight;
       shieldTotalHeight = MediaQuery.of(context).size.height * 0.88;
     }
 
+    Widget mainWidget = Material(
+      type: MaterialType.transparency,
+      child: Shield(child: widget.mainNavigationShell),
+    );
     return Scaffold(
         extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
-            child: AnimatedOpacity(
-                child: HomeAppBar(backGroundShown: false),
-                opacity: _hideAppBar ? 0.0 : 1.0,
-                duration: _animationsDuration),
+            child: IgnorePointer(
+              ignoring: _fullScreen,
+              child: AnimatedOpacity(
+                  child: HomeAppBar(backGroundShown: false),
+                  opacity: _fullScreen ? 0.0 : 1.0,
+                  duration: _animationsDuration),
+            ),
             preferredSize: Size.fromHeight(
                 AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
         body: // Something behind
@@ -320,13 +339,13 @@ class HomePageState extends ConsumerState<HomePage>
                 duration: Duration(
                     milliseconds: _animationsDuration.inMilliseconds ~/ 2),
                 opacity: _backgroundShown ||
-                        (_modalShown || _optionsShown || _hideAppBar)
+                        (_modalShown || _optionsShown || _fullScreen)
                     ? 0
                     : 1.0,
                 child: Container(
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    ignoring: _backgroundShown || _modalShown || _hideAppBar,
+                    ignoring: _backgroundShown || _modalShown || _fullScreen,
                     child: EnvoyBottomNavigation(
                       onIndexChanged: (selectedIndex) {
                         widget.mainNavigationShell.goBranch(selectedIndex);
@@ -361,12 +380,16 @@ class HomePageState extends ConsumerState<HomePage>
                 curve: _backgroundShown
                     ? Curves.linear
                     : ShieldFadeInAnimationCurve(),
-                child: Hero(
-                  tag: "shield",
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Shield(child: widget.mainNavigationShell),
-                  ),
+                child: Stack(
+                  children: [
+                    Hero(
+                        tag: "shield",
+                        child: Shield(
+                            child: Container(
+                          color: Colors.transparent,
+                        ))),
+                    mainWidget,
+                  ],
                 ),
               ),
             ),

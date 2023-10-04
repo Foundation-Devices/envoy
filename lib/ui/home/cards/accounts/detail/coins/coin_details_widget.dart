@@ -54,6 +54,10 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
           fontWeight: FontWeight.w500,
         );
 
+    if (coinTag.untagged) {
+      accountAccentColor = Color(0xff808080);
+    }
+
     return Container(
       padding: EdgeInsets.all(8),
       child: AnimatedContainer(
