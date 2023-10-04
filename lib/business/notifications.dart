@@ -5,16 +5,23 @@
 import 'dart:async';
 
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:tor/tor.dart';
 import 'dart:convert';
-
 import 'account.dart';
 
 part 'notifications.g.dart';
 
-enum EnvoyNotificationType { firmware, transaction, security }
+enum EnvoyNotificationType { firmware, transaction, security, envoyUpdate }
+
+const String updateAppId = "updateApp";
 
 @JsonSerializable()
 class EnvoyNotification {
@@ -98,12 +105,13 @@ class Notifications {
     sync();
   }
 
-  _checkForNotificationsToAdd() {
+  _checkForNotificationsToAdd() async {
     bool _notificationsAdded = false;
+    bool _newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
+
     for (var account in AccountManager().accounts) {
       for (var tx in account.wallet.transactions) {
-        if ((tx.date.isAfter(lastUpdated) || !tx.isConfirmed) &&
-            tx.amount > 0) {
+        if ((tx.date.isAfter(lastUpdated) || !tx.isConfirmed)) {
           bool skip = false;
 
           for (var notification in notifications) {
@@ -124,6 +132,54 @@ class Notifications {
             _notificationsAdded = true;
           }
         }
+      }
+    }
+
+    for (var device in Devices().devices) {
+      final version = Devices().getDeviceFirmwareVersion(device.serial);
+      bool _fwUpdateAvailable =
+          await UpdatesManager().shouldUpdate(version, device.type);
+      final newVersion =
+          await UpdatesManager().getStoredFwVersion(device.type.index);
+      for (var notification in notifications) {
+        if (notification.id == device.type.toString().split('.').last) {
+          if (notification.body == newVersion!) {
+            _fwUpdateAvailable = false;
+          }
+        }
+      }
+
+      if (_fwUpdateAvailable) {
+        add(EnvoyNotification(
+          "Firmware", // TODO: FIGMA
+          DateTime.now(),
+          EnvoyNotificationType.firmware,
+          newVersion!,
+          device.type.toString().split('.').last,
+        ));
+        _notificationsAdded = true;
+      }
+    }
+
+    if (_newEnvoyVersionAvailable) {
+      var latestEnvoyVersion = await fetchLatestEnvoyVersionFromGit();
+      bool skip = false;
+      for (var notification in notifications) {
+        if (notification.type == EnvoyNotificationType.envoyUpdate) {
+          if (notification.body == latestEnvoyVersion) {
+            skip = true;
+          }
+        }
+      }
+      if (!skip) {
+        add(EnvoyNotification(
+          "App Update", // TODO: FIGMA
+          DateTime.now(),
+          EnvoyNotificationType.envoyUpdate,
+          latestEnvoyVersion,
+          EnvoyNotificationType.envoyUpdate.name,
+        ));
+        _notificationsAdded = true;
       }
     }
 
@@ -187,6 +243,41 @@ class Notifications {
     _syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
       _checkForNotificationsToAdd();
     });
+  }
+
+  Future<String> fetchLatestEnvoyVersionFromGit() async {
+    HttpTor http = HttpTor(Tor.instance);
+    final response = await http.get(
+        'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
+        headers: {'User-Agent': 'request'});
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data.containsKey('tag_name')) {
+        final version = data['tag_name'];
+        return version;
+      } else
+        throw Exception("Couldn't find tag_name in GitHub response");
+    } else {
+      throw Exception("Couldn't reach GitHub");
+    }
+  }
+
+  Future<bool> isThereNewEnvoyVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    Version envoyVersionOnPhone = Version.parse(packageInfo.version);
+
+    String versionOnGitHub;
+
+    try {
+      versionOnGitHub = await fetchLatestEnvoyVersionFromGit();
+    } on Exception catch (_) {
+      return false;
+    }
+
+    var latestGitHubVersion =
+        Version.parse(versionOnGitHub.replaceAll("v", ""));
+    return latestGitHubVersion > envoyVersionOnPhone;
   }
 
   void sync() {

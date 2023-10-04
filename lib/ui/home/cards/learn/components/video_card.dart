@@ -53,7 +53,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
   _playBitcoinTvVideo(Video video) async {
     Navigator.of(context, rootNavigator: true).push(
         PageRouteBuilder(pageBuilder: (context, animation, secondAnimation) {
-      return FullScreenVideoPlayer(video, key: UniqueKey());
+      return FullScreenVideoPlayer(video);
     }, transitionsBuilder: (context, animation, anotherAnimation, child) {
       animation = CurvedAnimation(curve: Curves.linear, parent: animation);
       return FadeTransition(

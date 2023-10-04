@@ -13,6 +13,7 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:envoy/business/video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
   final Video video;
@@ -53,6 +54,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
   Timer? _updatePositionTimer;
   Timer? _hideTopBarTimer;
+  Timer? _showTorExplainerTimer;
+  Timer? _showTimelineTimer;
 
   void Function()? _cancelDownload;
   bool _curtains = false;
@@ -61,7 +64,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(milliseconds: 300), () {
+    _showTorExplainerTimer = Timer(Duration(milliseconds: 300), () {
       setFullScreenLandscapeMode();
       if (ConnectivityManager().torEnabled) {
         setState(() {
@@ -69,6 +72,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         });
       }
     });
+
     final Completer _completer = new Completer();
 
     getApplicationDocumentsDirectory().then((dir) {
@@ -118,7 +122,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       setState(() {
         _visibleTimeline = true;
       });
-      Future.delayed(const Duration(seconds: 5), () {
+      _showTimelineTimer = Timer(const Duration(seconds: 5), () {
         if (this.mounted) {
           setState(() {
             _visibleTimeline = false;
@@ -135,6 +139,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void setFullScreenLandscapeMode() {
+    // Keep the screen on
+    WakelockPlus.enable();
+
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -160,32 +167,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
   @override
   void dispose() {
-    if (_downloadProgressSubscription != null) {
-      _downloadProgressSubscription!.cancel();
-    }
-
-    if (_updatePositionTimer != null) {
-      _updatePositionTimer!.cancel();
-    }
-
-    if (_controller != null) {
-      _controller!.dispose();
-    }
-
-    if (_cancelDownload != null) {
-      _cancelDownload!();
-    }
-
-    if (streamFile.existsSync()) {
-      streamFile.deleteSync();
-    }
-    if (_hideTopBarTimer != null) {
-      _hideTopBarTimer!.cancel();
-    }
-
-    _downloaded = 0;
-    _showTorExplainer = false;
-
+    exitPlayer(context);
     super.dispose();
   }
 
@@ -201,9 +183,19 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () {
-        exitPlayer(context);
-        return Future.value(true);
+      onWillPop: () async {
+        _controller?.stop();
+
+        setState(() {
+          _curtains = true;
+          _downloaded = 0;
+          _showTorExplainer = false;
+        });
+
+        setPortraitMode();
+
+        await Future.delayed(Duration(milliseconds: 300));
+        return true;
       },
       child: Material(
           color: Colors.black,
@@ -331,7 +323,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                         !ConnectivityManager()
                                             .torCircuitEstablished
                                     ? "Connecting to the Tor Network" // TODO: FIGMA
-                                    : "Envoy is loading your video over the Tor Network",
+                                    : "Envoy is loading your video over the Tor Network", // TODO: FIGMA
                                 style: TextStyle(
                                   color: Colors.white70,
                                 ),
@@ -344,21 +336,19 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                 }
               },
             ),
-            Positioned(
-                top: 20,
-                left: 20,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    exitPlayer(context);
-                    Future.delayed(Duration(milliseconds: 400), () {
+            if (_visibleTimeline)
+              Positioned(
+                  top: 20,
+                  left: 20,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white70,
+                    ),
+                    onPressed: () {
                       Navigator.of(context).pop();
-                    });
-                  },
-                )),
+                    },
+                  )),
             // Black curtains
             Positioned.fill(
               child: IgnorePointer(
@@ -376,18 +366,21 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void exitPlayer(BuildContext context) {
-    if (_updatePositionTimer != null) {
-      _updatePositionTimer!.cancel();
+    _downloadProgressSubscription?.cancel();
+
+    if (_cancelDownload != null) {
+      _cancelDownload!();
     }
 
-    if (_controller != null) {
-      _controller!.stop();
+    if (streamFile.existsSync()) {
+      streamFile.deleteSync();
     }
 
-    setState(() {
-      _curtains = true;
-    });
+    _hideTopBarTimer?.cancel();
+    _updatePositionTimer?.cancel();
+    _showTorExplainerTimer?.cancel();
+    _showTimelineTimer?.cancel();
 
-    setPortraitMode();
+    WakelockPlus.disable();
   }
 }

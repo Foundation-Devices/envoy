@@ -151,9 +151,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     if (_isBroadcastSuccess) {
                       title = S()
                           .stalls_before_sending_tx_scanning_broadcasting_success_heading;
-                      subTitle = "";
-                      // Disabled until coin control
-                      // S() .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                      subTitle = S()
+                          .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
                     } else {
                       title = S()
                           .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
