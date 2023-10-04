@@ -89,9 +89,17 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..loading = true;
       // TODO: max fee rate
       // print("maxFeerate ${maxFeerate} ${FeeRates().electrumFastRate} ${FeeRates().electrumFastRate}");
+
+      List<Utxo>? mustSpend = utxos.isEmpty ? null : utxos;
+      List<Utxo>? dontSpend = utxos.isEmpty
+          ? null
+          : account.wallet.utxos
+              .where((element) => !utxos.map((e) => e.id).contains(element.id))
+              .toList();
+
       Psbt psbt = await account.wallet.createPsbt(
           sendTo, amount, convertToFeeRate(feeRate.toInt()),
-          utxos: utxos.isEmpty ? null : utxos);
+          dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
       state = state.clone()
         ..psbt = psbt

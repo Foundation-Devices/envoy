@@ -10,7 +10,7 @@ final homeShellOptionsProvider =
     StateProvider<HomeShellOptions?>((ref) => null);
 
 final homePageTitleProvider = StateProvider<String>((ref) => "");
-final homePageModalModeProvider = StateProvider<bool>((ref) => false);
+final hideBottomNavProvider = StateProvider<bool>((ref) => false);
 
 final fullscreenHomePageProvider = StateProvider<bool>((ref) => false);
 final homePageBackdropModeProvider = StateProvider<bool>((ref) => false);

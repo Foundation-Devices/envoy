@@ -28,7 +28,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 
 final _fullScreenProvider = Provider((ref) {
-  bool fullScreen = ref.watch(homePageModalModeProvider);
+  bool fullScreen = ref.watch(hideBottomNavProvider);
   Set selections = ref.watch(coinSelectionStateProvider);
   return fullScreen || selections.isNotEmpty;
 });

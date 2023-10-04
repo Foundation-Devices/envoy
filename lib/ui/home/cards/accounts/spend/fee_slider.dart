@@ -173,7 +173,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
-  List<num> list = List.generate(24, (index) => index + 1);
+  List<num> list = List.generate(100, (index) => index + 1);
 
   @override
   void initState() {

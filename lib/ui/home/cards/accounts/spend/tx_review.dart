@@ -207,6 +207,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
           EnvoyButton(
             S().stalls_before_sending_tx_scanning_broadcasting_success_cta,
             onTap: () {
+              clearSpendState(ProviderScope.containerOf(context));
               GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
             },
           ),
@@ -277,7 +278,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       await Future.delayed(Duration(milliseconds: 1000));
-      clearSpendState(ProviderScope.containerOf(context));
       setState(() {
         _isBroadcastInProgress = false;
         _isBroadcastSuccess = true;
@@ -429,6 +429,8 @@ class _TransactionReviewScreenState
                             children: [
                               Text(
                                 "Amount to send",
+
+                                ///TODO: figma localization
                                 style: titleStyle,
                               ),
                               GestureDetector(
@@ -438,6 +440,8 @@ class _TransactionReviewScreenState
                                   children: [
                                     Text(
                                       "Show details",
+
+                                      ///TODO: figma localization
                                       style: trailingStyle,
                                     ),
                                     Icon(
@@ -482,7 +486,7 @@ class _TransactionReviewScreenState
                                           ? 0
                                           : 8),
                                   child: Text(
-                                    "${getFormattedAmount(amount, trailingZeroes: true)}",
+                                    "${getFormattedAmount(amount.toInt(), trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -496,7 +500,8 @@ class _TransactionReviewScreenState
                               ],
                             ),
                             Text(
-                                ExchangeRate().getFormattedAmount(amount,
+                                ExchangeRate().getFormattedAmount(
+                                    amount.toInt(),
                                     wallet: account.wallet),
                                 style: Theme.of(context)
                                     .textTheme
@@ -745,7 +750,7 @@ class _TransactionReviewScreenState
                                           ? 0
                                           : 8),
                                   child: Text(
-                                    "${getFormattedAmount(amount, trailingZeroes: true)}",
+                                    "${getFormattedAmount(amount.toInt(), trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -759,7 +764,8 @@ class _TransactionReviewScreenState
                               ],
                             ),
                             Text(
-                                ExchangeRate().getFormattedAmount(amount,
+                                ExchangeRate().getFormattedAmount(
+                                    amount.toInt(),
                                     wallet: account.wallet),
                                 style: Theme.of(context)
                                     .textTheme

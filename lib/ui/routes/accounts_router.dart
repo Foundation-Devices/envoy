@@ -96,6 +96,15 @@ final accountsRouter = StatefulShellBranch(
                         routes: [
                           GoRoute(
                             name: "spend_review",
+                            onExit: (context) {
+                              /// if we are exiting the send screen, we need to clear the spend state
+                              /// but only if we are not in edit mode
+                              if (!ProviderScope.containerOf(context)
+                                  .read(spendEditModeProvider))
+                                clearSpendState(
+                                    ProviderScope.containerOf(context));
+                              return true;
+                            },
                             path: _ACCOUNT_SEND_REVIEW,
                             pageBuilder: (context, state) {
                               return wrapWithVerticalAxisAnimation(TxReview());

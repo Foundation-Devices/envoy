@@ -112,6 +112,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
       String path = ref.read(routePathProvider);
       if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
         showSpendRequirementOverlay(context, account);
+        ref.read(hideBottomNavProvider.notifier).state = true;
       }
     });
   }
