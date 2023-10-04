@@ -69,13 +69,15 @@ final homeTabRoutes = [
   "/",
 ];
 
+/// Any routes that required hiding bottombar and keeping the appbar
 final modalModeRoutes = [
   ROUTE_ACCOUNT_SEND,
   ROUTE_ACCOUNT_RECEIVE,
-  ROUTE_ACCOUNT_DESCRIPTOR
+  ROUTE_ACCOUNT_DESCRIPTOR,
 ];
 
+///Any routes that required the app bar and bottom navigation bar to be hidden
 final hideAppBarRoutes = [
-  // ROUTE_ACCOUNT_SEND_REVIEW,
-  // ROUTE_ACCOUNT_SEND_CONFIRM,
+  // ROUTE_ACCOUNT_SEND,
+  ROUTE_ACCOUNT_SEND_CONFIRM
 ];
