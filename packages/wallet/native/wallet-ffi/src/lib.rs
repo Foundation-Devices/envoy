@@ -609,7 +609,7 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     send_to: *const c_char,
     amount: u64,
     must_spend: *const UtxoList,
-    dont_spend: *const UtxoList
+    dont_spend: *const UtxoList,
 ) -> f64 {
     let error_return = 0.0;
 
@@ -628,7 +628,8 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
             res as f64 / 100000.0,
             &wallet,
             send_to.clone(),
-            &must_spend, &dont_spend
+            &must_spend,
+            &dont_spend,
         );
         if tx.is_err() {
             return res.into();
@@ -651,7 +652,7 @@ pub unsafe extern "C" fn wallet_create_psbt(
     amount: u64,
     fee_rate: f64,
     must_spend: *const UtxoList,
-    dont_spend: *const UtxoList
+    dont_spend: *const UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
