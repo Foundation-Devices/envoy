@@ -3,22 +3,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+
+import 'package:envoy/business/account.dart';
+import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as designSystem;
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as designSystem;
-
-import 'package:envoy/util/amount.dart';
-import 'package:envoy/ui/amount_display.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/business/bitcoin_parser.dart';
-import 'package:envoy/business/account.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
@@ -223,7 +225,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                       2)) {
                 enteredAmount = enteredAmount + "0";
               }
-
               _enteredAmount = enteredAmount;
             },
             onLongPress: () async {
@@ -231,11 +232,68 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             },
           ),
         ),
-        SizedBox(height: 35),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: SpendableAmountWidget(),
+        ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: numpad,
         ),
+      ],
+    );
+  }
+}
+
+class SpendableAmountWidget extends ConsumerWidget {
+  const SpendableAmountWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+    final totalAmount = ref.watch(totalSpendableAmountProvider);
+    final isCoinsSelected = ref.watch(isCoinsSelectedProvider);
+
+    return Row(
+      children: [
+        Text(
+          isCoinsSelected ? "Selected amount" : "Available balance",
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: EnvoyColors.grey,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+              ),
+        ),
+        Spacer(),
+        Row(
+          children: [
+            Container(
+              alignment: Alignment(0, 0),
+              child: SizedBox.square(
+                  dimension: 12,
+                  child: SvgPicture.asset(
+                    sendScreenUnit == AmountDisplayUnit.btc
+                        ? "assets/icons/ic_bitcoin_straight.svg"
+                        : "assets/icons/ic_sats.svg",
+                    color: Color(0xff808080),
+                  )),
+            ),
+            Container(
+              alignment: Alignment.centerRight,
+              child: Text(
+                " ${sendScreenUnit == AmountDisplayUnit.btc ? convertSatsToBtcString(totalAmount, trailingZeroes: true) : satsFormatter.format(totalAmount)}",
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      color: EnvoyColors.grey,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }

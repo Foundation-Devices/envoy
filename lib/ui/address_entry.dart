@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 
 class AddressEntry extends StatefulWidget {
-  final Function(bool, String)? onAddressChanged;
+  final Function(String)? onAddressChanged;
   final Function(int)? onAmountChanged;
   final bool canEdit;
   final Account account;
@@ -69,7 +69,7 @@ class _AddressEntryState extends State<AddressEntry> {
                     overflow: TextOverflow.fade,
                     fontWeight: FontWeight.w500),
                 onChanged: (value) async {
-                  await validate(value);
+                  widget.onAddressChanged?.call(value);
                 },
                 decoration: InputDecoration(
                   // Disable the borders
@@ -157,11 +157,9 @@ class _AddressEntryState extends State<AddressEntry> {
                                     .push(MaterialPageRoute(builder: (context) {
                                   return ScannerPage.address((address, amount) {
                                     widget.controller?.text = address;
-
                                     if (widget.onAddressChanged != null) {
-                                      widget.onAddressChanged!(true, address);
+                                      widget.onAddressChanged?.call(address);
                                     }
-
                                     if (widget.onAmountChanged != null) {
                                       widget.onAmountChanged!(amount);
                                     }
@@ -181,6 +179,6 @@ class _AddressEntryState extends State<AddressEntry> {
   Future<void> validate(String value) async {
     final check = await widget.account.wallet.validateAddress(value);
     setState(() => addressValid = check);
-    widget.onAddressChanged!(addressValid, value);
+    widget.onAddressChanged?.call(value);
   }
 }
