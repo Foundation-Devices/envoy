@@ -206,8 +206,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
         children: [
           EnvoyButton(
             S().stalls_before_sending_tx_scanning_broadcasting_success_cta,
-            onTap: () {
+            onTap: () async {
               clearSpendState(ProviderScope.containerOf(context));
+              await Future.delayed(Duration(milliseconds: 100));
               GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
             },
           ),

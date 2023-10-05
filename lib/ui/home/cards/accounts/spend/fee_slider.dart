@@ -177,12 +177,16 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
-  List<num> list = List.generate(100, (index) => index + 1);
+  List<num> list = List.generate(2, (index) => index + 1);
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 10)).then((value) {
+      int maxFeeRate = ref.read(spendMaxFeeRateProvider);
+      setState(() {
+        list = List.generate(maxFeeRate, (index) => index + 1);
+      });
       num feeRate = ref.read(spendFeeRateProvider);
       if (feeRate != selectedItem) {
         setState(() {
@@ -204,6 +208,13 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   @override
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
+
+    ref.listen(spendMaxFeeRateProvider, (previous, maxFeeRate) {
+      setState(() {
+        list = List.generate(maxFeeRate, (index) => index + 1);
+      });
+    });
+
     return Container(
         height: (MediaQuery.of(context).size.height * 0.27).clamp(220, 250),
         child: Column(
