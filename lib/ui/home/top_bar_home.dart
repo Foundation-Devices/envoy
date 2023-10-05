@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
@@ -47,7 +49,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   @override
   Widget build(BuildContext context) {
     HomeShellOptions? _homeShellState = ref.watch(homeShellOptionsProvider);
-    bool _modalShown = ref.watch(homePageModalModeProvider);
+    bool _modalShown = ref.watch(hideBottomNavProvider);
     bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
     Widget rightAction = _homeShellState?.rightAction ?? SizedBox.shrink();
     HomePageBackgroundState homePageDropState =
@@ -62,17 +64,22 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         _setOptionWidgetsForTabWidgets(nextPath);
         if (homeTabRoutes.contains(nextPath)) {
           ref.read(homePageTitleProvider.notifier).state = "";
-          ref.read(homePageModalModeProvider.notifier).state = false;
+          ref.read(hideBottomNavProvider.notifier).state = false;
         }
         if (modalModeRoutes.contains(nextPath)) {
-          ref.read(homePageModalModeProvider.notifier).state = true;
+          ref.read(hideBottomNavProvider.notifier).state = true;
         } else {
-          ref.read(homePageModalModeProvider.notifier).state = false;
+          ref.read(hideBottomNavProvider.notifier).state = false;
         }
         if (hideAppBarRoutes.contains(nextPath)) {
-          ref.read(homepageHideAppBar.notifier).state = true;
+          ref.read(fullscreenHomePageProvider.notifier).state = true;
         } else {
-          ref.read(homepageHideAppBar.notifier).state = false;
+          ref.read(fullscreenHomePageProvider.notifier).state = false;
+        }
+        if (nextPath == ROUTE_ACCOUNTS_HOME) {
+          ref.read(coinSelectionStateProvider.notifier).reset();
+          ref.read(spendEditModeProvider.notifier).state = false;
+          clearSpendState(ProviderScope.containerOf(context));
         }
       },
     );

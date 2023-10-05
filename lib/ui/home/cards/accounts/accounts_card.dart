@@ -11,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -209,18 +210,11 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                   height: _accountHeight,
                   child: AccountListTile(
                     account,
-                    onTap: () {
+                    onTap: () async {
+                      ref.read(selectedAccountProvider.notifier).state =
+                          account;
                       context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
                       return;
-                      // ref.read(homePageAccountsProvider.notifier).state =
-                      //     HomePageAccountsState(HomePageAccountsNavigationState.details, currentAccount: account);
-                      // widget.navigator!.push(AccountCard(
-                      //     account,
-                      //     widget.navigator,
-                      //     AccountOptions(
-                      //       account,
-                      //       navigator: widget.navigator,
-                      //     )));
                     },
                   ))
           ]),

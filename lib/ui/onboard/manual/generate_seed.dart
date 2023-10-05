@@ -79,7 +79,7 @@ class _SeedScreenState extends State<SeedScreen> {
                     if (widget.generate) {
                       EnvoySeed().create(seedList).then((success) {
                         if (success) {
-                          Navigator.of(context)
+                          Navigator.of(context, rootNavigator: true)
                               .push(MaterialPageRoute(builder: (context) {
                             return ManualSetupCreateAndStoreBackup();
                           }));

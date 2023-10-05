@@ -4,10 +4,10 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
-import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -16,18 +16,10 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/exceptions.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
-  final Account account;
-  String? address;
-  final int? amountSats;
-
-  SendCard(this.account, {this.address, this.amountSats})
-      : super(key: UniqueKey()) {}
-
-  // String? title = .toUpperCase();
+  SendCard() : super(key: UniqueKey()) {}
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -35,21 +27,16 @@ class SendCard extends ConsumerStatefulWidget {
 
 class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
-  String _addressText = "";
-  bool _addressValid = false;
-  bool _canProceed = true;
-  bool _amountTooLow = false;
+  Account? account;
   TextEditingController _controller = TextEditingController();
-
-  int _amount = 0;
 
   var _amountEntry = AmountEntry();
 
   Future<void> _onPaste(ParseResult parsed) async {
     setState(() {
       if (parsed.address != null) {
-        widget.address = parsed.address!;
         _controller.text = parsed.address!;
+        ref.read(spendAddressProvider.notifier).state = parsed.address!;
       }
 
       if (parsed.amountSats != null) {
@@ -65,52 +52,46 @@ class _SendCardState extends ConsumerState<SendCard>
   @override
   void initState() {
     super.initState();
-
-    _addressText = widget.address ?? "";
-
-    // Addresses from the scanner are already validated
-    if (widget.address != null) {
-      _addressValid = true;
-      _addressText = widget.address!;
-    }
     _amountEntry = AmountEntry(
       onAmountChanged: _updateAmount,
       onPaste: _onPaste,
-      account: widget.account,
+      account: ref.read(selectedAccountProvider),
     );
-
-    if (widget.amountSats != null) {
-      setAmount(widget.amountSats!);
-    }
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state = S().send_qr_code_heading;
+      account = ref.read(selectedAccountProvider);
+      if (ref.read(spendAmountProvider) != 0) {
+        setAmount(ref.read(spendAmountProvider));
+      }
+      if (account == null) {
+        context.pop();
+        return;
+      }
     });
   }
 
   void setAmount(int amount) {
+    ref.read(spendAmountProvider.notifier).state = amount;
     setState(() {
-      _amount = amount;
       _amountEntry = AmountEntry(
         onAmountChanged: _updateAmount,
-        initalSatAmount: _amount,
         key: UniqueKey(),
-        account: widget.account,
+        account: account,
+        initalSatAmount: amount,
         onPaste: _onPaste,
       );
     });
   }
 
   _updateAmount(amount) {
-    setState(() {
-      _amount = amount;
-      _canProceed = !(amount > widget.account.wallet.balance);
-      _amountTooLow = false;
-    });
+    ref.read(spendAmountProvider.notifier).state = amount;
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    account = ref.read(selectedAccountProvider);
+    String _addressText = ref.read(spendAddressProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -123,8 +104,8 @@ class _SendCardState extends ConsumerState<SendCard>
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: new AddressEntry(
-                        account: widget.account,
-                        initalAddress: widget.address,
+                        account: account!,
+                        initalAddress: _addressText,
                         controller: _controller,
                         onPaste: _onPaste,
                         onAmountChanged: (amount) {
@@ -132,98 +113,98 @@ class _SendCardState extends ConsumerState<SendCard>
                             setAmount(amount);
                           }
                         },
-                        onAddressChanged: (valid, text) {
-                          Future.delayed(Duration.zero, () async {
-                            setState(() {
-                              _addressValid = valid;
-                            });
-                            if (valid) {
-                              _addressText = text;
-                              ref.read(spendAddressProvider.notifier).state =
-                                  _addressText;
-                            }
-                          });
+                        onAddressChanged: (text) {
+                          ref.read(spendAddressProvider.notifier).state = text;
                         }),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    padding: const EdgeInsets.symmetric(horizontal: 26),
                     child: _amountEntry,
                   ),
                   Padding(
                       padding: const EdgeInsets.all(50.0),
-                      child: EnvoyTextButton(
-                          onTap: () async {
-                            if (_amount == 0) {
-                              setState(() {
-                                _amount = widget.account.wallet.balance;
-                                _amountEntry = AmountEntry(
-                                  onAmountChanged: _updateAmount,
-                                  initalSatAmount: _amount,
-                                  key: UniqueKey(),
-                                  account: widget.account,
-                                  onPaste: _onPaste,
-                                );
-                              });
-                              return;
-                            }
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final formValidation =
+                              ref.watch(spendValidationProvider);
+                          int spendAmount = ref.watch(spendAmountProvider);
+                          TransactionModel tx =
+                              ref.watch(spendTransactionProvider);
+                          bool txValidation = tx.valid;
+                          bool valid = formValidation;
 
-                            if (_addressValid && _canProceed && (_amount > 0)) {
-                              // Only check amount if we are not sending max
-                              if (_amount != widget.account.wallet.balance) {
-                                try {
-                                  await widget.account.wallet.createPsbt(
-                                      _addressText,
-                                      _amount,
-                                      Fees().fastRate(
-                                          widget.account.wallet.network));
-                                } on InsufficientFunds {
-                                  // If amount is equal to balance user wants to send max
-                                  if (_amount !=
-                                      widget.account.wallet.balance) {
-                                    setState(() {
-                                      _canProceed = false;
-                                    });
+                          final addressEmpty =
+                              ref.watch(spendAddressProvider).isEmpty;
+                          final validationError =
+                              ref.watch(spendValidationErrorProvider);
+                          String buttonText = "";
+                          bool isFormEmpty = addressEmpty || spendAmount == 0;
+
+                          if (isFormEmpty) {
+                            valid = true;
+                            buttonText = S().send_keyboard_address_confirm;
+                            if (spendAmount == 0) {
+                              buttonText = S().send_keyboard_send_max;
+                            }
+                          } else {
+                            if (addressEmpty) {
+                              if (spendAmount == 0) {
+                                buttonText = S().send_keyboard_send_max;
+                              }
+                              buttonText = S().send_keyboard_address_confirm;
+                            } else {
+                              if (validationError == null) {
+                                buttonText = S().send_keyboard_address_confirm;
+                              } else {
+                                valid = txValidation && formValidation;
+                                if (valid) {
+                                  buttonText =
+                                      S().send_keyboard_address_confirm;
+                                } else {
+                                  buttonText = validationError;
+                                }
+                              }
+                            }
+                          }
+                          if (tx.loading) {
+                            buttonText = "Loading...";
+                          }
+
+                          return EnvoyTextButton(
+                              onTap: () async {
+                                if (formValidation) {
+                                  try {
+                                    bool valid = await ref
+                                        .read(spendTransactionProvider.notifier)
+                                        .validate(
+                                            ProviderScope.containerOf(context));
+                                    if (valid)
+                                      GoRouter.of(context)
+                                          .push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                                  } catch (e) {
+                                    print(e);
                                   }
-                                  return;
-                                } on BelowDustLimit {
+                                }
+                                if (spendAmount == 0) {
+                                  ref.read(spendAmountProvider.notifier).state =
+                                      ref.read(totalSpendableAmountProvider);
                                   setState(() {
-                                    _canProceed = false;
-                                    _amountTooLow = true;
+                                    _amountEntry = AmountEntry(
+                                      onAmountChanged: _updateAmount,
+                                      initalSatAmount: ref
+                                          .read(totalSpendableAmountProvider),
+                                      key: UniqueKey(),
+                                      account: account!,
+                                      onPaste: _onPaste,
+                                    );
                                   });
                                   return;
                                 }
-                              }
-                              // Navigator.of(context).push(
-                              //     MaterialPageRoute(builder: (context) {
-                              //   return  ConfirmationCard(
-                              //     widget.account,
-                              //     _amount,
-                              //     _addressText,
-                              //   );
-                              // }));
-
-                              GoRouter.of(context)
-                                  .push(ROUTE_ACCOUNT_SEND_CONFIRM, extra: {
-                                // TODO: FIGMA
-                                "account": widget.account,
-                                "amount": _amount,
-                                "address": _addressText,
-                              });
-                            }
-                          },
-                          error:
-                              !_addressValid || !_canProceed || (_amount == 0),
-                          label: _amount == 0
-                              ? S().send_keyboard_send_max
-                              : _canProceed
-                                  ? _addressValid
-                                      ? S().send_keyboard_address_confirm
-                                      : S()
-                                          .send_keyboard_amount_enter_valid_address
-                                  : _amountTooLow
-                                      ? S().send_keyboard_amount_too_low_info
-                                      : S()
-                                          .send_keyboard_amount_insufficient_funds_info))
+                              },
+                              error: !valid,
+                              label: buttonText);
+                        },
+                      ))
                 ]),
           ),
         );

@@ -3,9 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/amount_display.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +17,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 
 //ignore: must_be_immutable
-class ConfirmationCard extends StatefulWidget {
+class ConfirmationCard extends ConsumerStatefulWidget {
   final Account account;
   final bool sendMax;
   final int amount;
@@ -33,10 +31,10 @@ class ConfirmationCard extends StatefulWidget {
   // String? title = S().send_qr_code_heading.toUpperCase();
 
   @override
-  State<ConfirmationCard> createState() => _ConfirmationCardState();
+  ConsumerState<ConfirmationCard> createState() => _ConfirmationCardState();
 }
 
-class _ConfirmationCardState extends State<ConfirmationCard> {
+class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
   static Psbt _emptyPtsb = Psbt(0, 0, 0, "", "", "");
 
   Psbt _currentPsbt = _emptyPtsb;
@@ -58,6 +56,9 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
       account: widget.account,
     );
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(fullscreenHomePageProvider.notifier).state = true;
+    });
     _getPsbts();
   }
 
@@ -124,54 +125,46 @@ class _ConfirmationCardState extends State<ConfirmationCard> {
       },
     );
 
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: address,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            GoRouter.of(context).pop();
+          },
+        ),
       ),
-      Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: AmountDisplay(
-              account: widget.account,
-              amountSats: _amount,
-              testnet: widget.account.wallet.network == Network.Testnet,
-              key: UniqueKey(),
-            ),
-          )),
-      _feeToggle,
-      Padding(
-          padding: const EdgeInsets.all(50.0),
-          child: Consumer(
-            builder: (context, ref, child) {
-              return EnvoyTextButton(
-                  onTap: () {
-                    ref.read(spendAmountProvider.notifier).state = _amount;
-                    ref.read(spendAddressProvider.notifier).state =
-                        widget.initialAddress;
-
-                    if (!widget.account.wallet.hot) {
-                      // Increment the change index before displaying the PSBT
-                      widget.account.wallet.getChangeAddress();
-
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => PsbtCard(
-                              _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                              widget.account)));
-                    } else {
-                      GoRouter.of(context)
-                          .push(ROUTE_ACCOUNT_SEND_REVIEW, extra: {
-                        // TODO: FIGMA
-                        "psbt":
-                            _boostEnabled ? _currentPsbtBoost : _currentPsbt,
-                        "account": widget.account,
-                      });
-                    }
-                  },
-                  label: S().send_keyboard_address_confirm);
-            },
-          ))
-    ]);
+      body:
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: address,
+        ),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: AmountDisplay(
+                account: widget.account,
+                amountSats: _amount,
+                testnet: widget.account.wallet.network == Network.Testnet,
+                key: UniqueKey(),
+              ),
+            )),
+        _feeToggle,
+        Padding(
+            padding: const EdgeInsets.all(50.0),
+            child: Consumer(
+              builder: (context, ref, child) {
+                return EnvoyTextButton(
+                    onTap: () {
+                      GoRouter.of(context).pop();
+                      return;
+                    },
+                    label: S().send_keyboard_address_confirm);
+              },
+            ))
+      ]),
+    );
   }
 }

@@ -23,6 +23,7 @@ class EnvoyScaffold extends StatelessWidget {
   final Widget? child;
   final Color backgroundColor;
   final bool removeAppBarPadding;
+  final bool extendBody;
   final Widget? bottom;
   final List<Widget> topBarActions;
   final Widget? topBarLeading;
@@ -34,6 +35,7 @@ class EnvoyScaffold extends StatelessWidget {
   const EnvoyScaffold(
       {super.key,
       required this.child,
+      this.extendBody = false,
       this.topBarActions = const [],
       this.hasScrollBody = false,
       this.backgroundColor = Colors.transparent,
@@ -55,6 +57,7 @@ class EnvoyScaffold extends StatelessWidget {
       removeTop: removeAppBarPadding,
       context: context,
       child: Scaffold(
+        extendBody: extendBody,
         backgroundColor: backgroundColor,
         //use custom appbar if provided, otherwise use default
         appBar: appBar ??

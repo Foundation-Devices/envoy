@@ -523,7 +523,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        "Warning\n\nYou’re about to delete a tag.The coins will be marked as untagged once tag is deleted.", // TODO: FIGMA
+                        "Warning\n\nYou’re about to delete a tag.The coins will be marked as untagged once tag is deleted.",
+                        // TODO: FIGMA,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
