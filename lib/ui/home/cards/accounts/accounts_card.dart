@@ -9,7 +9,6 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
@@ -23,6 +22,8 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget {
@@ -246,7 +247,7 @@ class AccountPrompts extends ConsumerWidget {
         fontFamily: 'Montserrat',
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
-        color: EnvoyColors.grey);
+        color: EnvoyColors.textTertiary);
     var isHideAmountDismissed =
         ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
 
@@ -272,7 +273,8 @@ class AccountPrompts extends ConsumerWidget {
         GestureDetector(
           child: Text(
             S().hot_wallet_accounts_creation_done_button,
-            style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+            style:
+                _explainerTextStyle.copyWith(color: EnvoyColors.accentPrimary),
           ),
           onTap: () {
             EnvoyStorage()
@@ -294,7 +296,8 @@ class AccountPrompts extends ConsumerWidget {
               GestureDetector(
                 child: Text(
                   S().hide_amount_first_time_text_button,
-                  style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+                  style: _explainerTextStyle.copyWith(
+                      color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
                   EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
@@ -318,7 +321,8 @@ class AccountPrompts extends ConsumerWidget {
               GestureDetector(
                 child: Text(
                   S().tap_and_drag_first_time_text_button,
-                  style: _explainerTextStyle.copyWith(color: EnvoyColors.teal),
+                  style: EnvoyTypography.button
+                      .copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
                   EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
