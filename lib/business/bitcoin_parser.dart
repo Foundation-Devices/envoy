@@ -64,7 +64,7 @@ class BitcoinParser {
     if (data.contains("\$") && isFiatSelected) {
       unit = AmountDisplayUnit.fiat;
       data = data.replaceAll("\$", "");
-      amountInSats = getSatsFromUsd(data, fiatExchangeRate);
+      amountInSats = getSatsFromFiat(data, fiatExchangeRate);
       return ParseResult(
         address: address,
         amountSats: amountInSats,
@@ -114,7 +114,7 @@ class BitcoinParser {
         amountInSats = convertBtcStringToSats(data);
         unit = AmountDisplayUnit.btc;
       } else {
-        amountInSats = getSatsFromUsd(data, fiatExchangeRate);
+        amountInSats = getSatsFromFiat(data, fiatExchangeRate);
         unit = AmountDisplayUnit.fiat;
       }
     }
@@ -137,7 +137,7 @@ class BitcoinParser {
     return true;
   }
 
-  static int getSatsFromUsd(amountFiat, fiatRate) {
+  static int getSatsFromFiat(amountFiat, fiatRate) {
     amountFiat =
         amountFiat.replaceAll(RegExp('[^0-9.]'), '').replaceAll(",", "");
 

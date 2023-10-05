@@ -60,8 +60,9 @@ class ExchangeRate extends ChangeNotifier {
   LocalStorage _ls = LocalStorage();
 
   double _selectedCurrencyRate = 0;
-  double? _usdRate = 0;
+  double? get selectedCurrencyRate => _selectedCurrencyRate;
 
+  double? _usdRate = 0;
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
