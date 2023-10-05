@@ -7,17 +7,18 @@ import 'dart:ui';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/embedded_video.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
@@ -186,7 +187,7 @@ class DevicesOptions extends ConsumerWidget {
         ),
         GestureDetector(
           child: Text(S().passport_welcome_screen_cta1.toUpperCase(),
-              style: TextStyle(color: EnvoyColors.lightCopper)),
+              style: TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -218,7 +219,7 @@ class GhostDevice extends StatelessWidget {
         fontFamily: 'Montserrat',
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
-        color: EnvoyColors.grey);
+        color: EnvoyColors.textTertiary);
     return Column(
       children: [
         ClipRRect(
@@ -244,13 +245,11 @@ class GhostDevice extends StatelessWidget {
                 S().devices_empty_text_explainer,
                 style: _explainerTextStyle,
               ),
-              SizedBox(width: 10),
+              SizedBox(width: EnvoySpacing.small),
               GestureDetector(
-                child: Text(
-                  S().devices_empty_learn_more,
-                  style:
-                      EnvoyTypography.button.copyWith(color: EnvoyColors.teal),
-                ),
+                child: Text(S().devices_empty_learn_more,
+                    style: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary)),
                 onTap: () {
                   showDialog(
                     context: context,
@@ -359,7 +358,8 @@ class DeviceEmptyVideo extends StatelessWidget {
               GestureDetector(
                 child: Text(
                   S().devices_empty_modal_video_cta1,
-                  style: _ctaTextStyle.copyWith(color: EnvoyColors.teal),
+                  style:
+                      _ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
                   launchUrlString("https://foundationdevices.com/passport/");
