@@ -136,10 +136,10 @@ class EnvoySeed {
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
             path: encryptedBackupFilePath, cloud: cloud)
-        .then((success) {
+        .then((success) async {
       if (cloud && success) {
         backupCompletedStream.sink.add(true);
-        LocalStorage()
+        await LocalStorage()
             .prefs
             .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
       } else
