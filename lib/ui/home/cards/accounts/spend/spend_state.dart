@@ -87,8 +87,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..amount = amount
         ..utxos = utxos
         ..loading = true;
-      // TODO: max fee rate
-      // print("maxFeerate ${maxFeerate} ${FeeRates().electrumFastRate} ${FeeRates().electrumFastRate}");
 
       List<Utxo>? mustSpend = utxos.isEmpty ? null : utxos;
       List<Utxo>? dontSpend = utxos.isEmpty
@@ -97,6 +95,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               .where((element) => !utxos.map((e) => e.id).contains(element.id))
               .toList();
 
+      int maxFeeRate = await account.wallet.getMaxFeeRate(sendTo, amount,
+          dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
+      container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
       Psbt psbt = await account.wallet.createPsbt(
           sendTo, amount, convertToFeeRate(feeRate.toInt()),
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
@@ -159,6 +160,7 @@ final spendEditModeProvider = StateProvider((ref) => false);
 final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);
+final spendMaxFeeRateProvider = StateProvider((ref) => 1);
 final spendFeeRateProvider = StateProvider<num>((ref) {
   return ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
       100000;
