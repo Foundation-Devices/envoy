@@ -38,82 +38,110 @@ class TopLevelActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: EnvoyColors.surface1,
-      child: Padding(
-        padding: EdgeInsets.all(EnvoySpacing.medium2),
-        child: Consumer(
-          builder: (context, ref, _) {
-            List<EnvoyNotification> notifications =
-                ref.watch(filteredNotificationStreamProvider);
-            ref.read(notificationTypeFilterProvider.notifier).state = null;
+    return ShaderMask(
+      shaderCallback: (Rect rect) {
+        return LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            EnvoyColors.solidWhite,
+            Colors.transparent,
+            Colors.transparent,
+            EnvoyColors.solidWhite,
+          ],
+          stops: [0.0, 0.02, 0.97, 1.0],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.dstOut,
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              color: EnvoyColors.surface1,
+              child: Padding(
+                padding: EdgeInsets.all(EnvoySpacing.medium2),
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    List<EnvoyNotification> notifications =
+                        ref.watch(filteredNotificationStreamProvider);
+                    ref.read(notificationTypeFilterProvider.notifier).state =
+                        null;
 
-            return notifications.isEmpty
-                ? Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: EnvoySpacing.small,
-                            ),
-                            ListHeader(
-                              title: S().activity_listHeader_Today,
-                            ),
-                            GhostListTile(
-                              animate: false,
-                              isLeadingRound: true,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          S().activity_emptyState_label,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textSecondary),
-                        ),
-                        SizedBox(
-                          height: EnvoySpacing.medium2,
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        ListView.builder(
-                            padding: EdgeInsets.only(top: 15.0),
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Column(
-                                children: [
-                                  if (index == 0 ||
-                                      showHeader(notifications[index],
-                                          notifications[index - 1]))
-                                    Column(
-                                      children: [
-                                        if (index != 0)
-                                          SizedBox(
-                                            height: EnvoySpacing.medium2,
-                                          ),
-                                        ListHeader(
-                                            title: getTransactionDateString(
-                                                notifications[index])),
-                                      ],
+                    return notifications.isEmpty
+                        ? Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: EnvoySpacing.small,
                                     ),
-                                  ActivityListTile(notifications[index]),
-                                ],
-                              );
-                            },
-                            itemCount: notifications.length)
-                      ],
-                    ),
-                  );
-          },
-        ),
+                                    ListHeader(
+                                      title: S().activity_listHeader_Today,
+                                    ),
+                                    GhostListTile(
+                                      animate: false,
+                                      isLeadingRound: true,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  S().activity_emptyState_label,
+                                  style: EnvoyTypography.body.copyWith(
+                                      color: EnvoyColors.textSecondary),
+                                ),
+                                SizedBox(
+                                  height: EnvoySpacing.medium2,
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                ListView.builder(
+                                    padding: EdgeInsets.only(top: 15.0),
+                                    shrinkWrap: true,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Column(
+                                        children: [
+                                          if (index == 0 ||
+                                              showHeader(notifications[index],
+                                                  notifications[index - 1]))
+                                            Column(
+                                              children: [
+                                                if (index != 0)
+                                                  SizedBox(
+                                                    height:
+                                                        EnvoySpacing.medium2,
+                                                  ),
+                                                ListHeader(
+                                                    title:
+                                                        getTransactionDateString(
+                                                            notifications[
+                                                                index])),
+                                              ],
+                                            ),
+                                          ActivityListTile(
+                                              notifications[index]),
+                                        ],
+                                      );
+                                    },
+                                    itemCount: notifications.length)
+                              ],
+                            ),
+                          );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
