@@ -61,7 +61,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     String? text = cdata?.text ?? null;
     var decodedInfo = await BitcoinParser.parse(text!,
-        fiatExchangeRate: ExchangeRate().usdRate,
+        fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
         wallet: widget.account?.wallet,
         selectedFiat: Settings().selectedFiat);
     ref.read(sendScreenUnitProvider.notifier).state = decodedInfo.unit ?? unit;

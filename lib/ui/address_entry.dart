@@ -116,7 +116,8 @@ class _AddressEntryState extends State<AddressEntry> {
                                   String? textCopied = cdata?.text ?? null;
                                   var decodedInfo = await BitcoinParser.parse(
                                       textCopied!,
-                                      fiatExchangeRate: ExchangeRate().usdRate,
+                                      fiatExchangeRate:
+                                          ExchangeRate().selectedCurrencyRate,
                                       wallet: widget.account.wallet,
                                       selectedFiat: Settings().selectedFiat);
                                   widget.onPaste!(decodedInfo);
