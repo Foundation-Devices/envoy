@@ -365,12 +365,14 @@ class EnvoyStorage {
 
   Future<bool> setBool(String key, bool value) async {
     await preferencesStore.record(key).put(_db, value);
+    _updatePreferencesCache(_db);
     return true;
   }
 
   Future<bool> setString(String key, String value) async {
     final record = await preferencesStore.record(key);
     await record.put(_db, value);
+    _updatePreferencesCache(_db);
     return true;
   }
 
