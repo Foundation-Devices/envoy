@@ -127,21 +127,15 @@ class FeedManager {
   updateVideos(List<Video> currentVideos) async {
     for (var video in currentVideos) {
       for (var storedVideo in videos) {
-        // if (storedVideo.thumbnailUrl == video.thumbnailUrl &&
-        //     storedVideo.thumbnail != null) {
-        //   video.thumbnail = storedVideo.thumbnail;
-        // }
         if (video.url == storedVideo.url && storedVideo.watched != null) {
           video.watched = storedVideo.watched;
-          storeVideos();
         }
       }
 
       if (await video.thumbnail == null) {
-        HttpTor(Tor.instance).get(video.thumbnailUrl!).then((response) {
-          LocalStorage()
+        HttpTor(Tor.instance).get(video.thumbnailUrl!).then((response) async {
+          await LocalStorage()
               .saveFileBytes(video.thumbnailHash!, response.bodyBytes);
-          storeVideos();
         });
       }
     }
@@ -153,11 +147,6 @@ class FeedManager {
   updateBlogPosts(List<BlogPost> currentBlogPosts) async {
     for (var blog in currentBlogPosts) {
       for (var storedBlogPosts in blogs) {
-        // if (storedBlogPosts.thumbnailUrl == blog.thumbnailUrl &&
-        //     storedBlogPosts.thumbnail != null) {
-        //   // Save to thumbnailUrl hash
-        //   blog.thumbnail = storedBlogPosts.thumbnail;
-        // }
         if (blog.url == storedBlogPosts.url && storedBlogPosts.read != null) {
           blog.read = storedBlogPosts.read;
           storeBlogPosts();
@@ -165,9 +154,8 @@ class FeedManager {
       }
 
       if (await blog.thumbnail == null) {
-        HttpTor(Tor.instance).get(blog.thumbnailUrl!).then((response) {
-          LocalStorage().saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
-          storeBlogPosts();
+        HttpTor(Tor.instance).get(blog.thumbnailUrl!).then((response) async {
+          await LocalStorage().saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
         });
       }
     }
