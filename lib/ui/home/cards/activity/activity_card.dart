@@ -135,7 +135,7 @@ class TopLevelActivityCard extends StatelessWidget {
 }
 
 String getTransactionDateString(EnvoyNotification notification) {
-  return DateFormat('dd/MM/yy', defaultLocale).format(notification.date);
+  return DateFormat.yMd(defaultLocale).format(notification.date);
 }
 
 bool showHeader(EnvoyNotification notificationCurrent,
