@@ -51,35 +51,47 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
     _tryAutomaticRecovery();
   }
 
+  @override
+  void dispose() {
+    _stateMachineController?.dispose();
+    super.dispose();
+  }
+
   void _tryAutomaticRecovery() async {
     await Future.delayed(Duration(seconds: 1));
     var success = false;
     try {
       success = await EnvoySeed().restoreData();
-      setState(() {
-        if (success) {
-          _magicRecoverWalletState = MagicRecoveryWalletState.success;
-        } else {
-          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-        }
-      });
+      if (mounted)
+        setState(() {
+          if (success) {
+            _magicRecoverWalletState = MagicRecoveryWalletState.success;
+          } else {
+            _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+          }
+        });
     } on BackupNotFound {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-      });
+      if (mounted)
+        setState(() {
+          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
+        });
     } on SeedNotFound {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
-      });
+      if (mounted)
+        setState(() {
+          _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
+        });
     } on ServerUnreachable {
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
-      });
+      if (mounted)
+        setState(() {
+          _magicRecoverWalletState =
+              MagicRecoveryWalletState.serverNotReachable;
+        });
     } catch (e) {
-      setState(() {
-        _magicRecoverWalletState =
-            MagicRecoveryWalletState.unableToDecryptBackup;
-      });
+      if (mounted)
+        setState(() {
+          _magicRecoverWalletState =
+              MagicRecoveryWalletState.unableToDecryptBackup;
+        });
     } finally {
       if (success) {
         _setHappyState();
