@@ -76,16 +76,18 @@ class AztecoVoucher {
 }
 
 aztecoSync(Account account) async {
-  final aztecoTxs =
+  final pendingAztecoTxs =
       await EnvoyStorage().getPendingTxs(account.id!, TransactionType.azteco);
 
-  if (aztecoTxs.isEmpty) return;
+  if (pendingAztecoTxs.isEmpty) return;
 
-  for (var aztecoTx in aztecoTxs) {
+  for (var pendingAztecoTx in pendingAztecoTxs) {
     account.wallet.transactions
-        .where((tx) => tx.outputs!.contains(aztecoTx.memo))
-        .forEach((txToRemove) {
-      EnvoyStorage().deletePendingTx(aztecoTx.memo);
+        .where((tx) => tx.outputs!.contains(pendingAztecoTx.memo))
+        .forEach((actualAztecoTx) {
+      EnvoyStorage()
+          .addTxNote("Azteco voucher", actualAztecoTx.txId); // TODO: FIGMA
+      EnvoyStorage().deletePendingTx(pendingAztecoTx.memo);
     });
   }
 }
