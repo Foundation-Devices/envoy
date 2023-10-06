@@ -43,8 +43,8 @@ class EnvoyListTile extends StatelessWidget {
       onTap: () {},
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 0),
-        minLeadingWidth: EnvoySpacing.medium1,
-        horizontalTitleGap: EnvoySpacing.medium1,
+        minLeadingWidth: 0,
+        horizontalTitleGap: EnvoySpacing.small,
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
           child: Text(
@@ -124,15 +124,20 @@ class ListHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: EnvoySpacing.small),
+      padding: const EdgeInsets.only(
+        top: EnvoySpacing.small,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style:
-                EnvoyTypography.info.copyWith(color: EnvoyColors.textTertiary),
+          Padding(
+            padding: const EdgeInsets.only(left: EnvoySpacing.medium3),
+            child: Text(
+              title,
+              style: EnvoyTypography.info
+                  .copyWith(color: EnvoyColors.textTertiary),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: EnvoySpacing.small),
