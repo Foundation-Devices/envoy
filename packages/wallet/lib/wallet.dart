@@ -570,7 +570,8 @@ class Wallet {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
-      final lib = rust.NativeLibrary(load(_libName));
+      DynamicLibrary library = load(_libName);
+      final lib = rust.NativeLibrary(library);
 
       Pointer<rust.UtxoList> mustSpendUtxoList =
           _createUtxoListPointer(mustSpendUtxos);
@@ -586,7 +587,7 @@ class Wallet {
           dontSpendUtxoList);
 
       if (psbt.base64 == nullptr) {
-        throwRustException(_lib);
+        throwRustException(library);
       }
 
       calloc.free(mustSpendUtxoList);

@@ -345,7 +345,18 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                       Icons.arrow_back,
                       color: Colors.white70,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      _controller?.stop();
+
+                      setState(() {
+                        _curtains = true;
+                        _downloaded = 0;
+                        _showTorExplainer = false;
+                      });
+
+                      setPortraitMode();
+
+                      await Future.delayed(Duration(milliseconds: 300));
                       Navigator.of(context).pop();
                     },
                   )),

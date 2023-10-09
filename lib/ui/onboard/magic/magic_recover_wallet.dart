@@ -252,10 +252,6 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
               child: OnboardingButton(
                 label: S().magic_setup_generate_wallet_modal_ios_cta,
                 onTap: () async {
-                  ref.read(homePageTabProvider.notifier).state =
-                      HomePageTabState.accounts;
-                  ref.read(homePageBackgroundProvider.notifier).state =
-                      HomePageBackgroundState.hidden;
                   await Future.delayed(Duration(milliseconds: 200));
                   popBackToHome(context);
                 },
@@ -337,7 +333,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                                   child: SeedPassphraseEntry(
                                       onPassphraseEntered: (value) {
                                     passphrase = value;
-                                    Navigator.pop(context);
+                                    Navigator.maybePop(context);
                                   })),
                               context: context);
                           setState(() {
@@ -667,7 +663,7 @@ class _MagicRecoverWalletState extends State<MagicRecoverWallet> {
                         .manual_setup_recovery_import_backup_modal_fail_connectivity_cta2,
                     type: EnvoyButtonTypes.tertiary,
                     onTap: () async {
-                      Navigator.pop(context);
+                      Navigator.maybePop(context);
                     }),
                 Padding(padding: EdgeInsets.all(2)),
                 Consumer(

@@ -5,7 +5,6 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
@@ -22,14 +21,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        ref.read(homePageTabProvider.notifier).state =
-            HomePageTabState.accounts;
-        ref.read(homePageBackgroundProvider.notifier).state =
-            HomePageBackgroundState.hidden;
-        await Future.delayed(Duration(milliseconds: 200));
-        OnboardingPage.goHome(context);
-        //TODO:fix navigation
-        // GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+        popBackToHome(context);
         return false;
       },
       child: OnboardPageBackground(
@@ -80,14 +72,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                         return OnboardingButton(
                             label: S().component_continue,
                             onTap: () async {
-                              ref.read(homePageTabProvider.notifier).state =
-                                  HomePageTabState.accounts;
-                              ref
-                                  .read(homePageBackgroundProvider.notifier)
-                                  .state = HomePageBackgroundState.hidden;
-                              await Future.delayed(Duration(milliseconds: 200));
-                              // GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
-                              OnboardingPage.goHome(context);
+                              popBackToHome(context);
                             });
                       },
                     ),

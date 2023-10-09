@@ -9,16 +9,20 @@ import 'package:go_router/go_router.dart';
 
 void popBackToHome(BuildContext context,
     {bool useRootNavigator = false}) async {
+  /// get the router and navigator instance from the context
+  /// if the parent widget of context get disposed,we wont be able to access goroouter and navigator.
   GoRouter router = GoRouter.of(context);
+  NavigatorState navigator =
+      Navigator.of(context, rootNavigator: useRootNavigator);
 
   /// push main route to make sure we are on the home page
   router.go("/");
 
   /// wait for the go router to push the route
-  await Future.delayed(Duration(milliseconds: 210));
+  await Future.delayed(Duration(milliseconds: 100));
 
   /// Pop until we get to the home page (GoRouter Shell)
-  Navigator.of(context, rootNavigator: useRootNavigator).popUntil((route) {
+  navigator.popUntil((route) {
     return route.settings is MaterialPage;
   });
 }
