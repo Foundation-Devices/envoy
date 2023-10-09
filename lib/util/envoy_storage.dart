@@ -47,7 +47,7 @@ const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 
 class EnvoyStorage {
-  String dbName = 'envoy.db';
+  static String dbName = 'envoy.db';
   late Database _db;
 
   StoreRef<String, String> txNotesStore =

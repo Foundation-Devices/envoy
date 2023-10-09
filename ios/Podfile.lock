@@ -36,6 +36,8 @@ PODS:
     - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
+  - wakelock_plus (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -54,6 +56,7 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - tor (from `.symlinks/plugins/tor/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 SPEC REPOS:
   trunk:
@@ -93,6 +96,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/tor/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  wakelock_plus:
+    :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
   file_picker: 1d63c4949e05e386da864365f8c13e1e64787675
@@ -113,6 +118,7 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
 
 PODFILE CHECKSUM: 2b24e370d86e71942e95dee86eac403a61accec4
 

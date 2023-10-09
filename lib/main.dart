@@ -50,8 +50,6 @@ Future<void> initSingletons() async {
   ScvServer.init();
   EnvoySeed.init();
 
-  Tor.instance.enabled == Settings().torEnabled();
-
   // Start Tor regardless of whether we are using it or not
   try {
     Tor.instance.start();
