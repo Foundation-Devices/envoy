@@ -127,9 +127,9 @@ class EnvoySeed {
     Map<String, String> backupData = {};
 
     // Add sembast DB
-    backupData[EnvoyStorage().dbName] = await EnvoyStorage().export();
+    backupData[EnvoyStorage.dbName] = await EnvoyStorage().export();
 
-    if (backupData.containsKey(EnvoyStorage().dbName)) {
+    if (backupData.containsKey(EnvoyStorage.dbName)) {
       backupData = processBackupData(backupData, cloud);
     }
 
@@ -149,7 +149,7 @@ class EnvoySeed {
 
   Map<String, String> processBackupData(
       Map<String, String> backupData, bool isOnlineBackup) {
-    var json = jsonDecode(backupData[EnvoyStorage().dbName]!) as Map;
+    var json = jsonDecode(backupData[EnvoyStorage.dbName]!) as Map;
 
     List<dynamic> stores = json["stores"];
     var preferences = stores
@@ -192,7 +192,7 @@ class EnvoySeed {
     json["stores"][indexOfPreferences]["values"]
         [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
 
-    backupData[EnvoyStorage().dbName] = jsonEncode(json);
+    backupData[EnvoyStorage.dbName] = jsonEncode(json);
     return backupData;
   }
 
@@ -245,14 +245,16 @@ class EnvoySeed {
       String seed, Map<String, String>? data) async {
     bool success = data != null;
     if (success) {
+      migrateFromSharedPreferences(data);
+
       // Restore wallets previously censored in censorHotWalletDescriptors
-      if (data.containsKey(EnvoyStorage().dbName)) {
+      if (data.containsKey(EnvoyStorage.dbName)) {
         data = restoreCensoredHotWallets(data, seed);
       }
 
       // Restore the database
-      if (data.containsKey(EnvoyStorage().dbName)) {
-        await EnvoyStorage().restore(data[EnvoyStorage().dbName]!);
+      if (data.containsKey(EnvoyStorage.dbName)) {
+        await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
       }
 
       _restoreSingletons();
@@ -260,9 +262,31 @@ class EnvoySeed {
     return success;
   }
 
+  static void migrateFromSharedPreferences(Map<String, String> data) {
+    List<String> preferencesKeysFormerlyBackedUp = [
+      Settings.SETTINGS_PREFS,
+      AccountManager.ACCOUNTS_PREFS,
+      Devices.DEVICES_PREFS,
+    ];
+
+    List<String> preferencesKeysPresentInData = data.keys
+        .where((element) => preferencesKeysFormerlyBackedUp.contains(element))
+        .toList();
+
+    Map<String, dynamic> db = jsonDecode(data[EnvoyStorage.dbName]!);
+    List<dynamic> stores = db["stores"];
+    stores.add({
+      "name": preferencesStoreName,
+      "keys": preferencesKeysPresentInData,
+      "values": preferencesKeysPresentInData.map((e) => data[e]).toList()
+    });
+
+    data[EnvoyStorage.dbName] = jsonEncode(db);
+  }
+
   Map<String, String> restoreCensoredHotWallets(
       Map<String, String> data, String seed) {
-    var json = jsonDecode(data[EnvoyStorage().dbName]!) as Map;
+    var json = jsonDecode(data[EnvoyStorage.dbName]!) as Map;
 
     List<dynamic> stores = json["stores"];
     var preferences = stores
@@ -302,7 +326,7 @@ class EnvoySeed {
     accounts = jsonEncode(jsonAccounts);
     json["stores"][indexOfPreferences]["values"]
         [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
-    data[EnvoyStorage().dbName] = jsonEncode(json);
+    data[EnvoyStorage.dbName] = jsonEncode(json);
     return data;
   }
 

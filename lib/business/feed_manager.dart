@@ -155,7 +155,8 @@ class FeedManager {
 
       if (await blog.thumbnail == null) {
         HttpTor(Tor.instance).get(blog.thumbnailUrl!).then((response) async {
-          await LocalStorage().saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
+          await LocalStorage()
+              .saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
         });
       }
     }
