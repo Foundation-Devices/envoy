@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 import 'package:envoy/ui/home/cards/learn/learn_card.dart';
 import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
@@ -11,10 +12,14 @@ import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/home/cards/learn/components/blog_post_card.dart';
 
 const ROUTE_PRIVACY = '/privacy';
 const ROUTE_ACTIVITY = '/activity';
 const ROUTE_LEARN = '/learn';
+
+const _SUBROUTE_BLOG = 'blog';
+const ROUTE_LEARN_BLOG = '$ROUTE_LEARN/$_SUBROUTE_BLOG';
 
 /// home router is responsible for showing shell like ui ( bottom navigation with center widget that changes based on the selected tab)
 /// in order to maintain the state of the selected tab we use StatefulShellRoute
@@ -42,8 +47,26 @@ final homeRouter = StatefulShellRoute.indexedStack(
       ]),
       StatefulShellBranch(restorationScopeId: 'learnScopeId', routes: [
         GoRoute(
-          path: ROUTE_LEARN,
-          pageBuilder: (context, state) => MaterialPage(child: LearnCard()),
-        ),
+            path: ROUTE_LEARN,
+            pageBuilder: (context, state) => MaterialPage(child: LearnCard()),
+            routes: [
+              GoRoute(
+                path: _SUBROUTE_BLOG,
+                pageBuilder: (context, state) {
+                  BlogPost? post;
+                  if (state.extra is Map) {
+                    post =
+                        BlogPost.fromJson(state.extra as Map<String, dynamic>);
+                  } else {
+                    post = state.extra as BlogPost;
+                  }
+
+                  return MaterialPage(
+                      child: BlogPostCard(
+                    blog: post,
+                  ));
+                },
+              )
+            ]),
       ]),
     ]);

@@ -195,6 +195,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     if (path.contains(ROUTE_DEVICE_DETAIL)) {
       return true;
     }
+    if (path.contains(ROUTE_LEARN_BLOG)) {
+      return true;
+    }
     return false;
   }
 

@@ -17,6 +17,8 @@ import 'package:envoy/ui/state/learn_page_state.dart';
 import 'package:envoy/ui/home/cards/learn/filter_state.dart';
 import 'package:envoy/ui/home/cards/learn/components/video_card.dart';
 import 'package:envoy/ui/home/cards/learn/components/filter_widget.dart';
+import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/routes/home_router.dart';
 
 //ignore: must_be_immutable
 class LearnCard extends ConsumerStatefulWidget {
@@ -204,12 +206,8 @@ class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
                               child: BlogPostWidget(
                                   blog: blogPost,
                                   onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) => BlogPostCard(
-                                        blog: blogs[index],
-                                      ),
-                                    ));
+                                    context.go(ROUTE_LEARN_BLOG,
+                                        extra: blogPost);
                                   }),
                             );
                           })),
