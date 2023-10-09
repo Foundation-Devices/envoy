@@ -262,6 +262,8 @@ class EnvoySeed {
     return success;
   }
 
+  /// Settings, devices and accounts used to be stored in SharedPreferences
+  /// Now they are in a Sembast store so we need a migration step for old backups
   static void migrateFromSharedPreferences(Map<String, String> data) {
     List<String> preferencesKeysFormerlyBackedUp = [
       Settings.SETTINGS_PREFS,
