@@ -7,24 +7,28 @@ import 'dart:math';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnboardEnvoyWelcomeScreen extends StatefulWidget {
+class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<OnboardEnvoyWelcomeScreen> createState() =>
+  ConsumerState<OnboardEnvoyWelcomeScreen> createState() =>
       _OnboardEnvoyWelcomeScreenState();
 }
 
-class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
+final _triedAutomaticRecovery = StateProvider((ref) => false);
+
+class _OnboardEnvoyWelcomeScreenState
+    extends ConsumerState<OnboardEnvoyWelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
@@ -146,14 +150,18 @@ class _OnboardEnvoyWelcomeScreenState extends State<OnboardEnvoyWelcomeScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      try {
-        if (await EnvoySeed().get() != null) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => MagicRecoverWallet()));
+    Future.delayed(Duration(milliseconds: 100)).then((value) async {
+      ///while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
+      if (!ref.read(_triedAutomaticRecovery)) {
+        try {
+          if (await EnvoySeed().get() != null) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MagicRecoverWallet()));
+          }
+        } catch (e) {
+          //no-op
         }
-      } catch (e) {
-        //no-op
+        ref.read(_triedAutomaticRecovery.notifier).state = true;
       }
     });
     super.initState();
