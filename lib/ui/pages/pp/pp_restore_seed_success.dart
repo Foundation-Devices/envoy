@@ -12,7 +12,12 @@ class PpRestoreSeedSuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("pp_restore_seed_success"),
-      clipArt: Image.asset("assets/circle_ok.png"),
+      clipArt: Center(
+        child: Image.asset(
+          "assets/circle_ok.png",
+          height: 140,
+        ),
+      ),
       text: [
         OnboardingText(
             header: S().envoy_pp_restore_seed_success_heading,
