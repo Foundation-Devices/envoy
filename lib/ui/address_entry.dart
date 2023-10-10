@@ -80,7 +80,8 @@ class _AddressEntryState extends State<AddressEntry> {
                   disabledBorder: InputBorder.none,
                   prefixIcon: Container(
                       margin: EdgeInsets.symmetric(horizontal: 4),
-                      child: Text("To:")), // TODO: FIGMA
+                      child: Text("To:")),
+                  // TODO: FIGMA
                   isDense: true,
                   prefixIconConstraints: BoxConstraints(
                     minWidth: 18,
@@ -154,17 +155,21 @@ class _AddressEntryState extends State<AddressEntry> {
                                 //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
                                 // );
 
-                                Navigator.of(context)
+                                Navigator.of(context, rootNavigator: true)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return ScannerPage.address((address, amount) {
-                                    widget.controller?.text = address;
-                                    if (widget.onAddressChanged != null) {
-                                      widget.onAddressChanged?.call(address);
-                                    }
-                                    if (widget.onAmountChanged != null) {
-                                      widget.onAmountChanged!(amount);
-                                    }
-                                  }, widget.account);
+                                  return MediaQuery.removePadding(
+                                    context: context,
+                                    child:
+                                        ScannerPage.address((address, amount) {
+                                      widget.controller?.text = address;
+                                      if (widget.onAddressChanged != null) {
+                                        widget.onAddressChanged?.call(address);
+                                      }
+                                      if (widget.onAmountChanged != null) {
+                                        widget.onAmountChanged!(amount);
+                                      }
+                                    }, widget.account),
+                                  );
                                 }));
                               },
                             )

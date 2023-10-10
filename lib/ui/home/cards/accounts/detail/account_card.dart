@@ -243,7 +243,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         Navigator.of(context, rootNavigator: true)
                             .push(MaterialPageRoute(builder: (context) {
                           return MediaQuery.removePadding(
-                            removeTop: true,
                             context: context,
                             child: ScannerPage(
                                 [ScannerType.address, ScannerType.azteco],
