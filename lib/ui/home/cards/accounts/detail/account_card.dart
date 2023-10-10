@@ -249,6 +249,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                 account: account,
                                 onAddressValidated: (address, amount) {
                               // Navigator.pop(context);
+                              ref.read(spendAddressProvider.notifier).state =
+                                  address;
+                              ref.read(spendAmountProvider.notifier).state =
+                                  amount;
                               context.go(ROUTE_ACCOUNT_SEND, extra: {
                                 "account": account,
                                 "address": address,
