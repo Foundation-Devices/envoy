@@ -8,7 +8,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
@@ -17,6 +16,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
   const MagicSetupTutorial({Key? key}) : super(key: key);
@@ -61,6 +62,8 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
               text: Platform.isAndroid
                   ? S().magic_setup_tutorial_android_subheading
                   : S().magic_setup_tutorial_ios_subheading,
+              linkStyle: EnvoyTypography.button
+                  .copyWith(color: EnvoyColors.accentPrimary),
               onTap: () {
                 _playerKey.currentState?.pause();
                 showEnvoyDialog(
@@ -79,7 +82,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                     type: EnvoyButtonTypes.secondary,
                     label: S().magic_setup_tutorial_ios_CTA2,
                     textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: EnvoyColors.darkTeal,
+                        color: EnvoyColors.accentPrimary,
                         fontWeight: FontWeight.w600),
                     onTap: () {
                       _playerKey.currentState?.pause();
@@ -91,7 +94,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                 OnboardingButton(
                     fontWeight: FontWeight.w600,
                     textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: EnvoyColors.white100,
+                        color: EnvoyColors.surface2,
                         fontWeight: FontWeight.w600),
                     label: S().magic_setup_tutorial_ios_CTA1,
                     onTap: () {
