@@ -6,7 +6,6 @@ import 'dart:math';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
@@ -15,6 +14,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);
@@ -63,9 +64,10 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                   LinkText(
                     text: S().passport_welcome_screen_cta3,
                     textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w800, color: EnvoyColors.grey),
-                    linkStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w800, color: EnvoyColors.teal),
+                        fontWeight: FontWeight.w800,
+                        color: EnvoyColors.textTertiary),
+                    linkStyle: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary),
                     onTap: () {
                       launchUrl(
                           Uri.parse("https://foundationdevices.com/passport"));
@@ -200,13 +202,13 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                 .labelLarge
                                 ?.copyWith(
                                     fontWeight: FontWeight.w800,
-                                    color: EnvoyColors.grey),
+                                    color: EnvoyColors.textTertiary),
                             linkStyle: Theme.of(context)
                                 .textTheme
                                 .labelLarge
                                 ?.copyWith(
                                     fontWeight: FontWeight.w800,
-                                    color: EnvoyColors.teal),
+                                    color: EnvoyColors.accentPrimary),
                             onTap: () {
                               launchUrl(Uri.parse(
                                   "https://foundationdevices.com/passport"));
