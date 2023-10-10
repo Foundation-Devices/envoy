@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:io';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -23,6 +24,23 @@ class ActivityCard extends StatefulWidget {
 }
 
 class ActivityCardState extends State<ActivityCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
@@ -33,11 +51,15 @@ class ActivityCardState extends State<ActivityCard> {
 }
 
 //ignore: must_be_immutable
-class TopLevelActivityCard extends StatelessWidget {
+class TopLevelActivityCard extends ConsumerWidget {
   TopLevelActivityCard() {}
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context, ref) {
+    List<EnvoyNotification> notifications =
+        ref.watch(filteredNotificationStreamProvider);
+    ref.read(notificationTypeFilterProvider.notifier).state = null;
+
     return ShaderMask(
       shaderCallback: (Rect rect) {
         return LinearGradient(
@@ -55,80 +77,72 @@ class TopLevelActivityCard extends StatelessWidget {
       blendMode: BlendMode.dstOut,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-        child: Consumer(
-          builder: (context, ref, _) {
-            List<EnvoyNotification> notifications =
-                ref.watch(filteredNotificationStreamProvider);
-            ref.read(notificationTypeFilterProvider.notifier).state = null;
-
-            return CustomScrollView(slivers: [
-              notifications.isEmpty
-                  ? SliverFillRemaining(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: EnvoySpacing.small,
-                              ),
-                              ListHeader(
-                                title: S().activity_listHeader_Today,
-                              ),
-                              ActivityGhostListTile(
-                                animate: false,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            S().activity_emptyState_label,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textSecondary),
-                          ),
-                          SizedBox(
-                            height: EnvoySpacing.medium2,
-                          ),
-                        ],
-                      ),
-                    )
-                  : SliverToBoxAdapter(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
+        child: CustomScrollView(slivers: [
+          notifications.isEmpty
+              ? SliverFillRemaining(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          ListView.builder(
-                              padding: EdgeInsets.only(top: 15.0),
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (BuildContext context, int index) {
-                                return Column(
-                                  children: [
-                                    if (index == 0 ||
-                                        showHeader(notifications[index],
-                                            notifications[index - 1]))
-                                      Column(
-                                        children: [
-                                          if (index != 0)
-                                            SizedBox(
-                                              height: EnvoySpacing.medium2,
-                                            ),
-                                          ListHeader(
-                                              title: getTransactionDateString(
-                                                  notifications[index])),
-                                        ],
-                                      ),
-                                    ActivityListTile(notifications[index]),
-                                  ],
-                                );
-                              },
-                              itemCount: notifications.length)
+                        children: [
+                          SizedBox(
+                            height: EnvoySpacing.small,
+                          ),
+                          ListHeader(
+                            title: S().activity_listHeader_Today,
+                          ),
+                          ActivityGhostListTile(
+                            animate: false,
+                          ),
                         ],
                       ),
-                    )
-            ]);
-          },
-        ),
+                      Text(
+                        S().activity_emptyState_label,
+                        style: EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.textSecondary),
+                      ),
+                      SizedBox(
+                        height: EnvoySpacing.medium2,
+                      ),
+                    ],
+                  ),
+                )
+              : SliverToBoxAdapter(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      ListView.builder(
+                          padding: EdgeInsets.only(top: 15.0),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Column(
+                              children: [
+                                if (index == 0 ||
+                                    showHeader(notifications[index],
+                                        notifications[index - 1]))
+                                  Column(
+                                    children: [
+                                      if (index != 0)
+                                        SizedBox(
+                                          height: EnvoySpacing.medium2,
+                                        ),
+                                      ListHeader(
+                                          title: getTransactionDateString(
+                                              notifications[index])),
+                                    ],
+                                  ),
+                                ActivityListTile(notifications[index]),
+                              ],
+                            );
+                          },
+                          itemCount: notifications.length)
+                    ],
+                  ),
+                )
+        ]),
       ),
     );
   }

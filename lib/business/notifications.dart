@@ -64,7 +64,7 @@ final filteredNotificationStreamProvider =
     notifications.sort((a, b) => b.date.compareTo(a.date));
   }
   if (filter == null) {
-    return notifications;
+    return List<EnvoyNotification>.from(notifications);
   } else {
     return notifications.where((element) => element.type == filter).toList();
   }
