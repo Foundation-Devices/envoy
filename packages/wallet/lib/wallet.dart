@@ -273,6 +273,51 @@ class Psbt {
   }
 }
 
+class RawTransaction {
+  final int version;
+  final List<RawTransactionOutput> outputs;
+  final List<RawTransactionInput> inputs;
+
+  RawTransaction(this.version, this.outputs, this.inputs);
+
+  factory RawTransaction.fromNative(rust.RawTransaction tx) {
+    List<RawTransactionOutput> outputs = [];
+    List<RawTransactionInput> inputs = [];
+
+    for (var i = 0; i < tx.outputs_len; i++) {
+      rust.RawTransactionOutput nativeOutput = tx.outputs.elementAt(i).ref;
+      outputs.add(RawTransactionOutput(
+          address: nativeOutput.address.cast<Utf8>().toDartString(),
+          amount: nativeOutput.amount));
+    }
+
+    for (var i = 0; i < tx.inputs_len; i++) {
+      rust.RawTransactionInput nativeInput = tx.inputs.elementAt(i).ref;
+      inputs.add(RawTransactionInput(
+          previousOutputHash:
+              nativeInput.previous_output.cast<Utf8>().toDartString(),
+          previousOutputIndex: nativeInput.previous_output_index));
+    }
+
+    return RawTransaction(tx.version, outputs, inputs);
+  }
+}
+
+class RawTransactionInput {
+  final int previousOutputIndex;
+  final String previousOutputHash;
+
+  RawTransactionInput(
+      {required this.previousOutputIndex, required this.previousOutputHash});
+}
+
+class RawTransactionOutput {
+  final int amount;
+  final String address;
+
+  RawTransactionOutput({required this.amount, required this.address});
+}
+
 @freezed
 class Utxo with _$Utxo {
   const factory Utxo({
@@ -612,6 +657,23 @@ class Wallet {
       }
 
       return Psbt.fromNative(psbt);
+    });
+  }
+
+  static Future<RawTransaction> decodeRawTx(
+      String rawTransaction, Network network) async {
+    return Isolate.run(() {
+      final dynlib = load(_libName);
+      final lib = rust.NativeLibrary(dynlib);
+
+      rust.RawTransaction rawTx = lib.wallet_decode_raw_tx(
+          rawTransaction.toNativeUtf8() as Pointer<Char>, network.index);
+
+      if (rawTx.version == -1) {
+        throwRustException(dynlib);
+      }
+
+      return RawTransaction.fromNative(rawTx);
     });
   }
 

@@ -95,6 +95,27 @@ pub struct TransactionList {
 }
 
 #[repr(C)]
+pub struct RawTransaction {
+    version: i32,
+    outputs_len: u8,
+    outputs: *const RawTransactionOutput,
+    inputs_len: u8,
+    inputs: *const RawTransactionInput,
+}
+
+#[repr(C)]
+pub struct RawTransactionOutput {
+    amount: u64,
+    address: *const c_char,
+}
+
+#[repr(C)]
+pub struct RawTransactionInput {
+    previous_output_index: u32,
+    previous_output: *const c_char,
+}
+
+#[repr(C)]
 pub struct Utxo {
     txid: *const c_char,
     vout: u32,
@@ -721,6 +742,71 @@ pub unsafe extern "C" fn wallet_decode_psbt(
             update_last_error(e);
             error_return
         }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_decode_raw_tx(
+    raw_tx: *const c_char,
+    network: NetworkType,
+) -> RawTransaction {
+    let error_return = RawTransaction {
+        version: -1,
+        outputs_len: 0,
+        outputs: ptr::null(),
+        inputs_len: 0,
+        inputs: ptr::null(),
+    };
+
+    let data = unwrap_or_return!(
+        hex::decode(CStr::from_ptr(raw_tx).to_str().unwrap()),
+        error_return
+    );
+
+    let tx: Result<bdk::bitcoin::blockdata::transaction::Transaction, _> = deserialize(&data);
+    let decoded_tx = unwrap_or_return!(tx, error_return);
+
+    let outputs: Vec<_> = decoded_tx
+        .output
+        .iter()
+        .map(|o| RawTransactionOutput {
+            amount: o.value.clone(),
+            address: CString::new(
+                Address::from_script(&o.script_pubkey, network.into())
+                    .unwrap()
+                    .to_string(),
+            )
+            .unwrap()
+            .into_raw() as *const c_char,
+        })
+        .collect();
+
+    let outputs_len = outputs.len() as u8;
+    let outputs_ptr = outputs.as_ptr();
+    std::mem::forget(outputs);
+
+    let inputs: Vec<_> = decoded_tx
+        .input
+        .iter()
+        .into_iter()
+        .map(|i| RawTransactionInput {
+            previous_output_index: i.previous_output.vout.clone(),
+            previous_output: CString::new(format!("{}", i.previous_output.txid))
+                .unwrap()
+                .into_raw() as *const c_char,
+        })
+        .collect();
+
+    let inputs_len = inputs.len() as u8;
+    let inputs_ptr = inputs.as_ptr();
+    std::mem::forget(inputs);
+
+    RawTransaction {
+        version: decoded_tx.version,
+        outputs_len,
+        outputs: outputs_ptr,
+        inputs_len,
+        inputs: inputs_ptr,
     }
 }
 

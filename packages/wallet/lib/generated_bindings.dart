@@ -311,6 +311,23 @@ class NativeLibrary {
   late final _wallet_decode_psbt = _wallet_decode_psbtPtr.asFunction<
       Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
+  RawTransaction wallet_decode_raw_tx(
+    ffi.Pointer<ffi.Char> raw_tx,
+    int network,
+  ) {
+    return _wallet_decode_raw_tx(
+      raw_tx,
+      network,
+    );
+  }
+
+  late final _wallet_decode_raw_txPtr = _lookup<
+      ffi.NativeFunction<
+          RawTransaction Function(
+              ffi.Pointer<ffi.Char>, ffi.Int32)>>('wallet_decode_raw_tx');
+  late final _wallet_decode_raw_tx = _wallet_decode_raw_txPtr
+      .asFunction<RawTransaction Function(ffi.Pointer<ffi.Char>, int)>();
+
   ffi.Pointer<ffi.Char> wallet_broadcast_tx(
     ffi.Pointer<ffi.Char> electrum_address,
     int tor_port,
@@ -584,6 +601,35 @@ class Psbt extends ffi.Struct {
   external ffi.Pointer<ffi.Char> txid;
 
   external ffi.Pointer<ffi.Char> raw_tx;
+}
+
+class RawTransactionOutput extends ffi.Struct {
+  @ffi.Uint64()
+  external int amount;
+
+  external ffi.Pointer<ffi.Char> address;
+}
+
+class RawTransactionInput extends ffi.Struct {
+  @ffi.Uint32()
+  external int previous_output_index;
+
+  external ffi.Pointer<ffi.Char> previous_output;
+}
+
+class RawTransaction extends ffi.Struct {
+  @ffi.Int32()
+  external int version;
+
+  @ffi.Uint8()
+  external int outputs_len;
+
+  external ffi.Pointer<RawTransactionOutput> outputs;
+
+  @ffi.Uint8()
+  external int inputs_len;
+
+  external ffi.Pointer<RawTransactionInput> inputs;
 }
 
 class Seed extends ffi.Struct {
