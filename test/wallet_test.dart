@@ -202,4 +202,23 @@ void main() async {
         privateKey: true);
     expect(wallet.internalDescriptor!.contains("xprv"), true);
   });
+
+  test('Decode raw transaction', () async {
+    final rawtx =
+        "01000000000101f5ed2be11f13de37bf31e22517d4ca5c5d9cd4eaaef7aa55d9de425de27fc2920100000000fdffffff022003000000000000160014467773c555e53962facffa55abff15e3912309eaa3bf000000000000160014a15b3b2165c6b0b61dace7d849d4aafb810d140c02463043021f1b88a64f7e455d654b9ef87b56c9726151e3875bd54602a0cfa659331fdf38022010afd343e00b425cef896fb468845727c1958048bdd17d3732b1f81923f5d64a0121028138a91e835576d89266482e4c2300647c792f5a8c69d01cd490e4e6b15f5a689fa12600";
+
+    final decoded = await Wallet.decodeRawTx(rawtx, Network.Testnet);
+
+    expect(decoded.outputs[0].amount, 800);
+    expect(decoded.outputs[0].address,
+        "tb1qgemh8324u5uk97k0lf26hlc4uwgjxz02j0z885");
+
+    expect(decoded.outputs[1].amount, 49059);
+    expect(decoded.outputs[1].address,
+        "tb1q59dnkgt9c6ctv8dvulvyn492lwqs69qv3acunp");
+
+    expect(decoded.inputs[0].previousOutputIndex, 1);
+    expect(decoded.inputs[0].previousOutputHash,
+        "92c27fe25d42ded955aaf7aeead49c5d5ccad41725e231bf37de131fe12bedf5");
+  });
 }
