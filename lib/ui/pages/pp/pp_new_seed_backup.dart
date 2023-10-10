@@ -12,7 +12,12 @@ class PpNewSeedBackupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("pp_new_seed_backup"),
-      clipArt: Image.asset("assets/pp_seed_backup.png"),
+      clipArt: Center(
+        child: Image.asset(
+          "assets/pp_seed_backup.png",
+          height: 120,
+        ),
+      ),
       text: [
         OnboardingText(
             header: S().envoy_pp_new_seed_backup_heading,
