@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
@@ -18,6 +20,7 @@ class TransactionModel {
   int amount;
   double feeRate;
   Psbt? psbt;
+  RawTransaction? rawTransaction;
   List<Utxo>? utxos;
   bool valid = false;
   bool canProceed = false;
@@ -32,6 +35,7 @@ class TransactionModel {
       required this.feeRate,
       this.utxos,
       this.psbt,
+      this.rawTransaction,
       this.valid = false,
       this.loading = false,
       this.belowDustLimit = false,
@@ -46,6 +50,7 @@ class TransactionModel {
       error: mode.error,
       utxos: mode.utxos,
       psbt: mode.psbt,
+      rawTransaction: mode.rawTransaction,
       valid: mode.valid,
       loading: mode.loading,
       canProceed: mode.canProceed,
@@ -95,22 +100,32 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               .where((element) => !utxos.map((e) => e.id).contains(element.id))
               .toList();
 
+      ///get max fee rate that we can use on this transaction
       int maxFeeRate = await account.wallet.getMaxFeeRate(sendTo, amount,
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
+
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
+
+      ///Construct PSBT object from the given parameters
       Psbt psbt = await account.wallet.createPsbt(
           sendTo, amount, convertToFeeRate(feeRate.toInt()),
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
+      ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
+      /// this is used to show staging transaction details
+      RawTransaction rawTransaction =
+          await Wallet.decodeRawTx(psbt.rawTx, account.wallet.network);
       state = state.clone()
         ..psbt = psbt
         ..loading = false
+        ..rawTransaction = rawTransaction
         ..valid = true;
       return true;
     } on InsufficientFunds {
       state = state.clone()
         ..loading = false
         ..psbt = null
+        ..rawTransaction = null
         ..canProceed = false;
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
@@ -118,6 +133,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       state = state.clone()
         ..loading = false
         ..psbt = null
+        ..rawTransaction = null
         ..belowDustLimit = true
         ..canProceed = false;
       container.read(spendValidationErrorProvider.notifier).state =
@@ -125,9 +141,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } catch (e, stackTrace) {
       print("Error ${e}");
       debugPrintStack(stackTrace: stackTrace);
+
       state = state.clone()
         ..loading = false
         ..psbt = null
+        ..rawTransaction = null
         ..error = e.toString();
     }
     return false;
@@ -137,6 +155,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     state = emptyTransactionModel.clone();
   }
 
+  /// used to update finalized PSBT ( for hardware wallet signing)
   void updateWithFinalPSBT(Psbt psbt) {
     state = state.clone()
       ..psbt = psbt
@@ -149,14 +168,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 }
 
 final emptyTransactionModel =
-    TransactionModel(sendTo: "", amount: 0, feeRate: 0);
+    TransactionModel(sendTo: "", amount: 0, feeRate: 1);
 final spendTransactionProvider =
     StateNotifierProvider<TransactionModeNotifier, TransactionModel>(
         (ref) => TransactionModeNotifier(emptyTransactionModel));
 
 final spendEditModeProvider = StateProvider((ref) => false);
-
-// For review screens
 final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);
@@ -164,6 +181,76 @@ final spendMaxFeeRateProvider = StateProvider((ref) => 1);
 final spendFeeRateProvider = StateProvider<num>((ref) {
   return ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
       100000;
+});
+
+final rawTransactionProvider = Provider<RawTransaction?>(
+    (ref) => ref.watch(spendTransactionProvider).rawTransaction);
+
+/// these providers will extract change-output Address and Amount from the staging transaction
+final changeOutputProvider = Provider<Tuple2<String, int>?>((ref) {
+  RawTransaction? rawTx = ref.watch(rawTransactionProvider);
+  String spendAddress = ref.watch(spendAddressProvider);
+  if (rawTx == null) {
+    return null;
+  }
+
+  ///outputs that are not the destination output
+  List<RawTransactionOutput> outs = rawTx.outputs
+      .where((element) => element.address != spendAddress)
+      .toList();
+
+  if (outs.isEmpty) {
+    return null;
+  }
+
+  ///take the output that is not the destination output
+  return Tuple2(outs.first.address, outs.first.amount);
+});
+
+/// these providers will extract receive Address and Amount from the staging transaction
+final receiveOutputProvider = Provider<Tuple2<String, int>?>((ref) {
+  RawTransaction? rawTx = ref.watch(rawTransactionProvider);
+  String spendAddress = ref.watch(spendAddressProvider);
+  if (rawTx == null) {
+    return null;
+  }
+
+  ///output that is destination output
+  List<RawTransactionOutput> outs = rawTx.outputs
+      .where((element) => element.address == spendAddress)
+      .toList();
+
+  if (outs.isEmpty) {
+    return null;
+  }
+  return Tuple2(outs.first.address, outs.first.amount);
+});
+
+/// these providers will extract receive and change Amount from the staging transaction
+final receiveAmountProvider =
+    Provider<int>((ref) => ref.watch(receiveOutputProvider)?.item2 ?? 0);
+final changeAmountProvider =
+    Provider<int>((ref) => ref.watch(changeOutputProvider)?.item2 ?? 0);
+
+final spendInputTagsProvider = Provider<List<Tuple2<CoinTag, Coin>>?>((ref) {
+  RawTransaction? rawTx = ref.watch(rawTransactionProvider);
+  Account? account = ref.watch(selectedAccountProvider);
+  if (account == null || rawTx == null) {
+    return null;
+  }
+  List<CoinTag> coinTags = ref.read(coinsTagProvider(account.id!));
+  List<String> inputs = rawTx.inputs
+      .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
+      .toList();
+  List<Tuple2<CoinTag, Coin>> items = [];
+  coinTags.forEach((coinTag) {
+    coinTag.coins.forEach((coin) {
+      if (inputs.contains(coin.id)) {
+        items.add(Tuple2(coinTag, coin));
+      }
+    });
+  });
+  return items;
 });
 
 ///returns the total spendable amount for selected account and selected coins
@@ -190,6 +277,11 @@ final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
   return coins.fold(
       0, (previousValue, element) => previousValue + element.amount);
 });
+
+///these providers are used to track notes and change output tag for staging transaction
+///because the transaction needs to be broadcast tx firs and then we can store these values to the database
+final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
+final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
 ///returns if the user has selected coins
 final isCoinsSelectedProvider = Provider<bool>((ref) {
