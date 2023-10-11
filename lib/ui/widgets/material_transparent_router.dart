@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 
 class MaterialTransparentRoute<T> extends PageRoute<T>
     with MaterialRouteTransitionMixin<T> {
+  bool transparent = false;
   MaterialTransparentRoute({
     required this.builder,
+    this.transparent = false,
     RouteSettings? settings,
     this.maintainState = true,
     bool fullscreenDialog = false,
@@ -21,7 +23,7 @@ class MaterialTransparentRoute<T> extends PageRoute<T>
   }
 
   @override
-  bool get opaque => false;
+  bool get opaque => this.transparent;
 
   @override
   final bool maintainState;
