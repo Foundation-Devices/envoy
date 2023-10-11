@@ -3,37 +3,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class EnvoyTypography {
-  static const TextStyle heading = TextStyle(
+  static TextStyle heading = GoogleFonts.montserrat(
     fontSize: 16,
-    fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w600,
   );
-  static const TextStyle subheading = TextStyle(
+  static TextStyle subheading = GoogleFonts.montserrat(
     fontSize: 16,
-    fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w600,
   );
-
-  static const TextStyle button = TextStyle(
+  static TextStyle button = GoogleFonts.montserrat(
     fontSize: 14,
-    fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w600,
   );
-  static const TextStyle body = TextStyle(
+  static TextStyle body = GoogleFonts.montserrat(
     fontSize: 14,
-    fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle info = TextStyle(
+  static TextStyle info = GoogleFonts.montserrat(
     fontSize: 12,
-    fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w500,
   );
-  static const TextStyle label = TextStyle(
+  static TextStyle label = GoogleFonts.montserrat(
     fontSize: 10,
-    fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w500,
   );
 }
