@@ -8,6 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
@@ -74,6 +75,12 @@ final accountsRouter = StatefulShellBranch(
               wrapWithVerticalAxisAnimation(AccountsCard()),
           routes: [
             GoRoute(
+              onExit: (context) {
+                ProviderScope.containerOf(context)
+                    .read(accountToggleStateProvider.notifier)
+                    .state = AccountToggleState.Tx;
+                return true;
+              },
               path: _ACCOUNT_DETAIL,
               routes: [
                 GoRoute(
