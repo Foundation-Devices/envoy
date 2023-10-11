@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/azteco_voucher.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,6 +43,7 @@ void main() {
       return ".";
     });
 
+    LocalStorage.init();
     EnvoyStorage();
     EnvoyStorage().init();
 
