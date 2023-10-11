@@ -16,6 +16,7 @@ import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
 import 'package:envoy/business/video.dart';
+import 'package:envoy/business/envoy_seed.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -45,6 +46,9 @@ const String utxoBlockStateStoreName = "utxo_block_state";
 const String tagsStoreName = "tags";
 const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
+const String exchangeRateStoreName = "exchange_rate";
+
+const String exchangeRateKey = exchangeRateStoreName;
 
 class EnvoyStorage {
   static String dbName = 'envoy.db';
@@ -71,6 +75,12 @@ class EnvoyStorage {
   StoreRef<String, Object?> preferencesStore =
       StoreRef<String, Object?>(preferencesStoreName);
   final Map<String, Object?> _preferencesCache = {};
+
+  StoreRef<String, Map> exchangeRateStore =
+      StoreRef<String, Map>(exchangeRateStoreName);
+
+  // Store everything except videos and blogs
+  Map<String, StoreRef> storesToBackUp = {};
 
   static final EnvoyStorage _instance = EnvoyStorage._();
 
@@ -116,6 +126,33 @@ class EnvoyStorage {
         (transaction, changes) {
       _updatePreferencesCache(_db);
     });
+
+    storesToBackUp = {
+      txNotesStoreName: txNotesStore,
+      pendingTxStoreName: pendingTxStore,
+      dismissedPromptsStoreName: dismissedPromptsStore,
+      firmwareStoreName: firmwareStore,
+      tagsStoreName: tagStore,
+      utxoBlockStateStoreName: utxoBlockState,
+      preferencesStoreName: preferencesStore,
+    };
+
+    for (var store in storesToBackUp.values) {
+      store.addOnChangesListener(_db, (transaction, changes) {
+        _possiblyBackUp();
+        //return null;
+      });
+    }
+  }
+
+  _possiblyBackUp() {
+    // Only back up if an hour has passed
+    DateTime lastBackUpTime = EnvoySeed().getLastBackupTime() ?? DateTime(2000);
+    if (lastBackUpTime
+        .add(const Duration(minutes: 60))
+        .isBefore(DateTime.now())) {
+      EnvoySeed().backupData();
+    }
   }
 
   // Preferences are stored in a cache for fast retrieval
@@ -295,20 +332,10 @@ class EnvoyStorage {
     });
   }
 
-  // Store everything except videos and blogs
-  List<String> storesToBackUp = [
-    txNotesStoreName,
-    pendingTxStoreName,
-    dismissedPromptsStoreName,
-    firmwareStoreName,
-    tagsStoreName,
-    utxoBlockStateStoreName,
-    preferencesStoreName,
-  ];
-
   Future<String> export() async {
     await _updatePreferencesCache(_db);
-    return jsonEncode(await exportDatabase(_db, storeNames: storesToBackUp));
+    return jsonEncode(
+        await exportDatabase(_db, storeNames: storesToBackUp.keys.toList()));
   }
 
   restore(String json) async {
@@ -367,6 +394,20 @@ class EnvoyStorage {
     await record.put(_db, value);
     _updatePreferencesCache(_db);
     return true;
+  }
+
+  Future<bool> setExchangeRate(Map<dynamic, dynamic> data) async {
+    final record = await exchangeRateStore.record(exchangeRateKey);
+    await record.put(_db, data);
+
+    return true;
+  }
+
+  Future<Map?>? getExchangeRate() async {
+    if (await exchangeRateStore.record(exchangeRateKey).exists(_db))
+      return exchangeRateStore.record(exchangeRateKey).get(_db);
+    else
+      return null;
   }
 
   Future<bool> clearVideosStore() async {

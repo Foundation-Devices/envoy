@@ -6,10 +6,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
@@ -57,8 +57,6 @@ final List<FiatCurrency> supportedFiat = [
 ];
 
 class ExchangeRate extends ChangeNotifier {
-  LocalStorage _ls = LocalStorage();
-
   double _selectedCurrencyRate = 0;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
@@ -69,7 +67,6 @@ class ExchangeRate extends ChangeNotifier {
   HttpTor _http = HttpTor(Tor.instance);
   String _serverAddress = Settings().nguServerAddress;
 
-  static const String LAST_EXCHANGE_RATE_PREFS = "exchange_rate";
   static final ExchangeRate _instance = ExchangeRate._internal();
 
   factory ExchangeRate() {
@@ -96,14 +93,12 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  _restoreRate() {
-    if (_ls.prefs.containsKey(LAST_EXCHANGE_RATE_PREFS)) {
-      var storedExchangeRate =
-          jsonDecode(_ls.prefs.getString(LAST_EXCHANGE_RATE_PREFS)!);
-      _selectedCurrencyRate = storedExchangeRate["rate"];
-      _usdRate = storedExchangeRate["usdRate"];
-      setCurrency(storedExchangeRate["currency"]);
-    }
+  _restoreRate() async {
+    final storedExchangeRate = await EnvoyStorage().getExchangeRate();
+
+    _selectedCurrencyRate = storedExchangeRate?["rate"];
+    _usdRate = storedExchangeRate?["usdRate"];
+    setCurrency(storedExchangeRate?["currency"]);
   }
 
   void setCurrency(String currencyCode) {
@@ -132,8 +127,8 @@ class ExchangeRate extends ChangeNotifier {
       "rate": rate,
       "usdRate": _usdRate
     };
-    String json = jsonEncode(exchangeRateMap);
-    _ls.prefs.setString(LAST_EXCHANGE_RATE_PREFS, json);
+
+    EnvoyStorage().setExchangeRate(exchangeRateMap);
   }
 
   _getRate() {
