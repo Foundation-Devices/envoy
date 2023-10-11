@@ -557,10 +557,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: "6b6f10f0ce3c42f6552d1c70d2c28d764cf22bb487f50f66cca31dcd5194f4d6"
+      sha256: f0b8d115a13ecf827013ec9fc883390ccc0e87a96ed5347a3114cac177ef18e8
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.4"
+    version: "6.1.0"
   graphs:
     dependency: transitive
     description:
@@ -597,10 +597,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.6"
+    version: "1.1.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -641,10 +641,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl_utils
-      sha256: db392393fbf891e3eb32f6beb1928b00cdb33e3c54597fd5f5dc5c43e5ba601c
+      sha256: "0d38f605f292321c0729f8c0632b845be77aa12d272b7bc5e3022bb670a7309e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.8.2"
+    version: "2.8.4"
   io:
     dependency: transitive
     description:
@@ -1010,18 +1010,18 @@ packages:
     dependency: "direct main"
     description:
       name: rive
-      sha256: "8bf4cd46f625a6b9816210145ba1201a23cf95ba1ae53dad3aa3e0ad193e6b4a"
+      sha256: f2117a96a189758bc79bf7933865625c7a44a420ae537d2a8f6c492900136a71
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.1"
+    version: "0.11.17"
   rive_common:
     dependency: transitive
     description:
       name: rive_common
-      sha256: "7153f296a9d58d1b02aaffaad938f65a92d820f8420c6c69134ecb2ed710f638"
+      sha256: e41f12917cb58e0c9376836490ebaa431e12744da0c67e19dad8d4bee9fedd46
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.2.7"
   riverpod:
     dependency: transitive
     description:

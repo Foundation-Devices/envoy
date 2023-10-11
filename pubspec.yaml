@@ -65,7 +65,7 @@ dependencies:
   shared_preferences: ^2.0.11
   cbor: ^4.1.0
   uuid: ^3.0.5
-  google_fonts: ^4.0.4
+  google_fonts: ^6.1.0
   carousel_slider: ^4.0.0
   url_launcher: ^6.0.18
   email_validator: ^2.0.1
@@ -89,7 +89,7 @@ dependencies:
   pub_semver: ^2.1.1
   flutter_riverpod: ^2.3.6
   cupertino_icons: ^1.0.5
-  rive: 0.11.1
+  rive: ^0.11.1
   local_auth: ^2.1.6
   file_saver: ^0.1.1
   file_picker: ^5.2.5
