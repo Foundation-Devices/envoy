@@ -7,6 +7,7 @@ extension IterableModifier<E> on Iterable<E> {
       cast<E?>().firstWhere((v) => v != null && test(v), orElse: () => null);
 }
 
+/// Extension to remove duplicates from a list
 extension Unique<E, Id> on List<E> {
   List<E> unique([Id Function(E element)? id, bool inplace = true]) {
     final ids = Set();

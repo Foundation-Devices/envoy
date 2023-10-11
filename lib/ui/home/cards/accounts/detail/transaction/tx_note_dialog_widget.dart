@@ -8,14 +8,23 @@ import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TxNoteDialog extends ConsumerStatefulWidget {
   final String txId;
+  final Function(String) onAdd;
+  final String noteTitle;
+  final String noteSubTitle;
+  final String noteHintText;
 
-  const TxNoteDialog({super.key, required this.txId});
+  const TxNoteDialog(
+      {super.key,
+      required this.noteTitle,
+      required this.onAdd,
+      required this.noteSubTitle,
+      required this.noteHintText,
+      required this.txId});
 
   @override
   ConsumerState<TxNoteDialog> createState() => _TxNoteDialogState();
@@ -37,9 +46,10 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
-      height: 334,
+      height: 324,
       padding: EdgeInsets.all(EnvoySpacing.medium1),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Align(
             alignment: Alignment.topRight,
@@ -50,11 +60,10 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
               },
             ),
           ),
-          Text(S().add_note_modal_heading,
-              style: Theme.of(context).textTheme.titleLarge),
+          Text(widget.noteTitle, style: Theme.of(context).textTheme.titleLarge),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
-            S().add_note_modal_subheading,
+            widget.noteSubTitle,
             style:
                 Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 12),
             textAlign: TextAlign.center,
@@ -77,7 +86,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
                     ?.copyWith(fontSize: 14),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(EnvoySpacing.medium1),
-                  hintText: S().add_note_modal_ie_text_field,
+                  hintText: widget.noteHintText,
                   labelStyle: EnvoyTypography.body
                       .copyWith(color: EnvoyColors.textTertiary),
                   border: InputBorder.none,
@@ -94,9 +103,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
           EnvoyButton(
             S().add_note_modal_cta,
             onTap: () {
-              EnvoyStorage()
-                  .addTxNote(_textEditingController.text, widget.txId);
-              Navigator.pop(context);
+              widget.onAdd(_textEditingController.text);
             },
             type: EnvoyButtonTypes.primaryModal,
           )

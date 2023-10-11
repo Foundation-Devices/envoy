@@ -402,6 +402,15 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                           builder: (context) => CreateCoinTag(
                                             accountId: tag.account,
                                             tag: tag,
+                                            onTagUpdate: () {
+                                              ref
+                                                  .read(
+                                                      coinSelectionStateProvider
+                                                          .notifier)
+                                                  .reset();
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            },
                                           ),
                                         ),
                                         alignment: Alignment(0.0, -.6));
@@ -420,6 +429,15 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   builder: (context) =>
                                                       CreateCoinTag(
                                                     accountId: tag.account,
+                                                    onTagUpdate: () {
+                                                      ref
+                                                          .read(
+                                                              coinSelectionStateProvider
+                                                                  .notifier)
+                                                          .reset();
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                    },
                                                     tag: tag,
                                                   ),
                                                 ),

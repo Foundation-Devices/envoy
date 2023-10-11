@@ -6,6 +6,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -19,6 +20,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -358,7 +360,19 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                 onTap: () {
                                   showEnvoyDialog(
                                       context: context,
-                                      dialog: TxNoteDialog(txId: tx.txId),
+                                      dialog: TxNoteDialog(
+                                        txId: tx.txId,
+                                        noteTitle: S().add_note_modal_heading,
+                                        noteHintText:
+                                            S().add_note_modal_ie_text_field,
+                                        noteSubTitle:
+                                            S().add_note_modal_subheading,
+                                        onAdd: (note) {
+                                          EnvoyStorage()
+                                              .addTxNote(note, tx.txId);
+                                          Navigator.pop(context);
+                                        },
+                                      ),
                                       alignment: Alignment(0.0, -0.8));
                                 },
                                 child: CoinTagListItem(
