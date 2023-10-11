@@ -214,7 +214,6 @@ class EnvoyStorage {
   Future<bool> deletePendingTx(String key) async {
     if (await pendingTxStore.record(key).exists(_db)) {
       await pendingTxStore.record(key).delete(_db);
-
       return true;
     }
     return false;
@@ -349,18 +348,12 @@ class EnvoyStorage {
 
   Future<bool> clear() async {
     var cleared = await preferencesStore.delete(_db);
-    if (cleared != 0)
-      return true;
-    else
-      return false;
+    return cleared != 0;
   }
 
   Future<bool> remove(key) async {
     var removed = await preferencesStore.record(key).delete(_db);
-    if (removed == key)
-      return true;
-    else
-      return false;
+    return removed == key;
   }
 
   Future<bool> setBool(String key, bool value) async {

@@ -15,6 +15,7 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -255,6 +256,9 @@ class EnvoySeed {
       // Restore the database
       if (data.containsKey(EnvoyStorage.dbName)) {
         await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
+
+        // This always happens after onboarding
+        await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
       }
 
       _restoreSingletons();
