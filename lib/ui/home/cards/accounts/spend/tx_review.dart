@@ -101,9 +101,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
-                  Tuple2<String, int>? changeOutPut =
+                  Tuple<String, int>? changeOutPut =
                       ref.read(changeOutputProvider);
-                  List<Tuple2<CoinTag, Coin>>? spendingTagSet =
+                  List<Tuple<CoinTag, Coin>>? spendingTagSet =
                       ref.read(spendInputTagsProvider);
                   CoinTag? changeOutPutTag =
                       ref.read(stagingTxChangeOutPutTagProvider);
@@ -337,7 +337,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
       String? note = ref.read(stagingTxNoteProvider);
       CoinTag? changeOutPutTag = ref.read(stagingTxChangeOutPutTagProvider);
-      Tuple2<String, int>? changeOutPut = ref.read(changeOutputProvider);
+      Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
       RawTransaction? transaction = ref.read(rawTransactionProvider);
 
       if (note != null) {

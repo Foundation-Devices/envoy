@@ -187,7 +187,7 @@ final rawTransactionProvider = Provider<RawTransaction?>(
     (ref) => ref.watch(spendTransactionProvider).rawTransaction);
 
 /// these providers will extract change-output Address and Amount from the staging transaction
-final changeOutputProvider = Provider<Tuple2<String, int>?>((ref) {
+final changeOutputProvider = Provider<Tuple<String, int>?>((ref) {
   RawTransaction? rawTx = ref.watch(rawTransactionProvider);
   String spendAddress = ref.watch(spendAddressProvider);
   if (rawTx == null) {
@@ -204,11 +204,11 @@ final changeOutputProvider = Provider<Tuple2<String, int>?>((ref) {
   }
 
   ///take the output that is not the destination output
-  return Tuple2(outs.first.address, outs.first.amount);
+  return Tuple(outs.first.address, outs.first.amount);
 });
 
 /// these providers will extract receive Address and Amount from the staging transaction
-final receiveOutputProvider = Provider<Tuple2<String, int>?>((ref) {
+final receiveOutputProvider = Provider<Tuple<String, int>?>((ref) {
   RawTransaction? rawTx = ref.watch(rawTransactionProvider);
   String spendAddress = ref.watch(spendAddressProvider);
   if (rawTx == null) {
@@ -223,7 +223,7 @@ final receiveOutputProvider = Provider<Tuple2<String, int>?>((ref) {
   if (outs.isEmpty) {
     return null;
   }
-  return Tuple2(outs.first.address, outs.first.amount);
+  return Tuple(outs.first.address, outs.first.amount);
 });
 
 /// these providers will extract receive and change Amount from the staging transaction
@@ -232,7 +232,7 @@ final receiveAmountProvider =
 final changeAmountProvider =
     Provider<int>((ref) => ref.watch(changeOutputProvider)?.item2 ?? 0);
 
-final spendInputTagsProvider = Provider<List<Tuple2<CoinTag, Coin>>?>((ref) {
+final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
   RawTransaction? rawTx = ref.watch(rawTransactionProvider);
   Account? account = ref.watch(selectedAccountProvider);
   if (account == null || rawTx == null) {
@@ -242,11 +242,11 @@ final spendInputTagsProvider = Provider<List<Tuple2<CoinTag, Coin>>?>((ref) {
   List<String> inputs = rawTx.inputs
       .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
       .toList();
-  List<Tuple2<CoinTag, Coin>> items = [];
+  List<Tuple<CoinTag, Coin>> items = [];
   coinTags.forEach((coinTag) {
     coinTag.coins.forEach((coin) {
       if (inputs.contains(coin.id)) {
-        items.add(Tuple2(coinTag, coin));
+        items.add(Tuple(coinTag, coin));
       }
     });
   });
