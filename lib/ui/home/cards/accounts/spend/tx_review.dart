@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+// SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -6,6 +6,8 @@ import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/coin_tag.dart';
+import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -14,15 +16,23 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -91,15 +101,67 @@ class _TxReviewState extends ConsumerState<TxReview> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
-                  if (account.wallet.hot) {
-                    broadcastTx(context);
+                  Tuple2<String, int>? changeOutPut =
+                      ref.read(changeOutputProvider);
+                  List<Tuple2<CoinTag, Coin>>? spendingTagSet =
+                      ref.read(spendInputTagsProvider);
+                  CoinTag? changeOutPutTag =
+                      ref.read(stagingTxChangeOutPutTagProvider);
+                  List<CoinTag> spendingTags = spendingTagSet
+                          ?.map((e) => e.item1)
+                          .toList()
+                          .unique((element) => element.id)
+                          .toList() ??
+                      [];
+
+                  if (spendingTags.length == 1) {
+                    ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+                        spendingTags[0];
+                  }
+
+                  ///if the the change output is not tagged and there are more input from different tags
+                  ///then show the tag selection dialog
+                  if (changeOutPut != null &&
+                      spendingTags.length >= 2 &&
+                      changeOutPutTag == null) {
+                    showEnvoyDialog(
+                        useRootNavigator: true,
+                        context: context,
+                        builder: Builder(
+                          builder: (context) => ChooseTagForStagingTx(
+                            accountId: account.id!,
+                            onTagUpdate: () async {
+                              Navigator.pop(context);
+                              if (account.wallet.hot) {
+                                broadcastTx(context);
+                              } else {
+                                await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => PsbtCard(
+                                            transactionModel.psbt!, account)));
+                                await Future.delayed(
+                                    Duration(milliseconds: 200));
+                                if (ref
+                                    .read(spendTransactionProvider)
+                                    .isPSBTFinalized) {
+                                  broadcastTx(context);
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                        alignment: Alignment(0.0, -.6));
                   } else {
-                    await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            PsbtCard(transactionModel.psbt!, account)));
-                    await Future.delayed(Duration(milliseconds: 200));
-                    if (ref.read(spendTransactionProvider).isPSBTFinalized) {
+                    if (account.wallet.hot) {
                       broadcastTx(context);
+                    } else {
+                      await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              PsbtCard(transactionModel.psbt!, account)));
+                      await Future.delayed(Duration(milliseconds: 200));
+                      if (ref.read(spendTransactionProvider).isPSBTFinalized) {
+                        broadcastTx(context);
+                      }
                     }
                   }
                 },
@@ -273,6 +335,33 @@ class _TxReviewState extends ConsumerState<TxReview> {
       await EnvoyStorage().addPendingTx(psbt.txid, account.id!, DateTime.now(),
           TransactionType.pending, psbt.sent + psbt.fee);
 
+      String? note = ref.read(stagingTxNoteProvider);
+      CoinTag? changeOutPutTag = ref.read(stagingTxChangeOutPutTagProvider);
+      Tuple2<String, int>? changeOutPut = ref.read(changeOutputProvider);
+      RawTransaction? transaction = ref.read(rawTransactionProvider);
+
+      if (note != null) {
+        await EnvoyStorage().addTxNote(note, psbt.txid);
+      }
+      if (transaction != null &&
+          changeOutPutTag != null &&
+          changeOutPut != null) {
+        int index = transaction.outputs.indexWhere((element) =>
+            element.address == changeOutPut.item1 &&
+            element.amount == changeOutPut.item2);
+        if (index != -1) {
+          changeOutPutTag.addCoin(Coin(
+              Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
+              account: account.id!));
+          final _ = ref.refresh(accountsProvider);
+        }
+      }
+
+      ref.read(coinSelectionStateProvider.notifier).reset();
+      ref.read(spendEditModeProvider.notifier).state = false;
+      clearSpendState(ProviderScope.containerOf(context));
+      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
+      ref.read(stagingTxNoteProvider.notifier).state = null;
       //wait for animation
       await Future.delayed(Duration(seconds: 1));
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
@@ -330,6 +419,8 @@ class _TransactionReviewScreenState
     Account? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
+    final spendAmount = ref.watch(receiveAmountProvider);
+    final unit = ref.watch(sendScreenUnitProvider);
 
     if (account == null || transactionModel.psbt == null) {
       return Container(
@@ -435,7 +526,30 @@ class _TransactionReviewScreenState
                                 style: titleStyle,
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  // Navigator.of(context,rootNavigator: true).push(MaterialTransparentRoute(builder: (context) {
+                                  //   return SpendTxDetails();
+                                  // },fullscreenDialog: true));
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                              secondaryAnimation) {
+                                            return StagingTxDetails();
+                                          },
+                                          transitionDuration:
+                                              Duration(milliseconds: 100),
+                                          transitionsBuilder: (context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            );
+                                          },
+                                          opaque: false,
+                                          fullscreenDialog: true));
+                                },
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -468,8 +582,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        Settings().displayUnit ==
-                                                DisplayUnit.btc
+                                        unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: Color(0xff808080),
@@ -478,16 +591,10 @@ class _TransactionReviewScreenState
                                 Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(
-                                      left: Settings().displayUnit ==
-                                              DisplayUnit.btc
-                                          ? 4
-                                          : 0,
-                                      right: Settings().displayUnit ==
-                                              DisplayUnit.btc
-                                          ? 0
-                                          : 8),
+                                      left: unit == DisplayUnit.btc ? 4 : 0,
+                                      right: unit == DisplayUnit.btc ? 0 : 8),
                                   child: Text(
-                                    "${getFormattedAmount(amount.toInt(), trailingZeroes: true)}",
+                                    "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -502,7 +609,7 @@ class _TransactionReviewScreenState
                             ),
                             Text(
                                 ExchangeRate().getFormattedAmount(
-                                    amount.toInt(),
+                                    spendAmount.toInt(),
                                     wallet: account.wallet),
                                 style: Theme.of(context)
                                     .textTheme
@@ -624,8 +731,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        Settings().displayUnit ==
-                                                DisplayUnit.btc
+                                        unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: Color(0xff808080),
@@ -655,8 +761,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        Settings().displayUnit ==
-                                                DisplayUnit.btc
+                                        unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: Color(0xff808080),
@@ -664,10 +769,9 @@ class _TransactionReviewScreenState
                                 ),
                                 Text(
                                   "${ExchangeRate().getFormattedAmount(psbt.fee)}",
-                                  textAlign:
-                                      Settings().displayUnit == DisplayUnit.btc
-                                          ? TextAlign.start
-                                          : TextAlign.end,
+                                  textAlign: unit == DisplayUnit.btc
+                                      ? TextAlign.start
+                                      : TextAlign.end,
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall!
@@ -707,9 +811,11 @@ class _TransactionReviewScreenState
                                       color: Colors.white,
                                     ),
                                     Consumer(builder: (context, ref, child) {
-                                      // final spendTimeEstimationProvider = ref.watch(spendTimeEstimationProvider);
+                                      final spendTimeEstimationProvider =
+                                          ref.watch(
+                                              spendEstimatedBlockTimeProvider);
                                       return Text(
-                                        "10 min",
+                                        " $spendTimeEstimationProvider min", //TODO localize
                                         style: trailingStyle,
                                       );
                                     }),
@@ -732,8 +838,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        Settings().displayUnit ==
-                                                DisplayUnit.btc
+                                        unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: Color(0xff808080),
@@ -742,14 +847,8 @@ class _TransactionReviewScreenState
                                 Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(
-                                      left: Settings().displayUnit ==
-                                              DisplayUnit.btc
-                                          ? 4
-                                          : 0,
-                                      right: Settings().displayUnit ==
-                                              DisplayUnit.btc
-                                          ? 0
-                                          : 8),
+                                      left: unit == DisplayUnit.btc ? 4 : 0,
+                                      right: unit == DisplayUnit.btc ? 0 : 8),
                                   child: Text(
                                     "${getFormattedAmount(amount.toInt(), trailingZeroes: true)}",
                                     style: Theme.of(context)

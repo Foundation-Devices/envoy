@@ -232,6 +232,7 @@ Future<T?> showEnvoyDialog<T>(
     double blur = 6,
     routeSettings,
     Widget? dialog,
+    bool useRootNavigator = false,
     Alignment alignment = Alignment.center,
     Builder? builder,
     bool dismissible = true}) async {
@@ -243,5 +244,6 @@ Future<T?> showEnvoyDialog<T>(
       alignment: alignment,
       dismissible: dismissible,
       settings: routeSettings);
-  return await Navigator.of(context, rootNavigator: false).push(route);
+  return await Navigator.of(context, rootNavigator: useRootNavigator)
+      .push(route);
 }

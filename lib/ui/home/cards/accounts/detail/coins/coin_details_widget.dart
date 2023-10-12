@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart' as LegacyColors;
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -15,6 +16,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -196,7 +198,18 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                             onTap: () {
                               showEnvoyDialog(
                                   context: context,
-                                  dialog: TxNoteDialog(txId: tx.txId),
+                                  dialog: TxNoteDialog(
+                                    txId: tx.txId,
+                                    noteTitle: S().add_note_modal_heading,
+                                    noteHintText:
+                                        S().add_note_modal_ie_text_field,
+                                    noteSubTitle: S().add_note_modal_subheading,
+                                    onAdd: (note) async {
+                                      await EnvoyStorage()
+                                          .addTxNote(note, tx.txId);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
                                   alignment: Alignment(0.0, -0.8));
                             },
                             child: CoinTagListItem(

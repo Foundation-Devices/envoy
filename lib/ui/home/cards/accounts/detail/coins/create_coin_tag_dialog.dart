@@ -16,8 +16,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CreateCoinTag extends StatefulWidget {
   final String accountId;
   final CoinTag tag;
+  final Function onTagUpdate;
 
-  const CreateCoinTag({super.key, required this.accountId, required this.tag});
+  const CreateCoinTag(
+      {super.key,
+      required this.onTagUpdate,
+      required this.accountId,
+      required this.tag});
 
   @override
   State<CreateCoinTag> createState() => _CreateCoinTagState();
@@ -232,10 +237,8 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
               //Wait for the refresh to propagate
               await Future.delayed(Duration(milliseconds: 180));
               //Reset the selection
-              ref.read(coinSelectionStateProvider.notifier).reset();
               Haptics.lightImpact();
-              Navigator.pop(context);
-              Navigator.pop(context);
+              widget.onTagUpdate();
             }),
           ],
         );
