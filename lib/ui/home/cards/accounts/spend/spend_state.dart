@@ -185,7 +185,7 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
   if (account == null) {
     return 1;
   }
-  return Fees().fees[Network.Mainnet].mempoolFastestRate * 100000;
+  return Fees().fees[account.wallet.network].mempoolFastestRate * 100000;
 });
 
 final rawTransactionProvider = Provider<RawTransaction?>(
