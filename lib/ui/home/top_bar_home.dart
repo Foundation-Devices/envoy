@@ -357,6 +357,8 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
       child: GestureDetector(
         onTap: widget.onPressed,
         child: Container(
+          height: 42,
+          width: 42,
           padding: const EdgeInsets.all(EnvoySpacing.small),
           child: Center(
             child: Container(
