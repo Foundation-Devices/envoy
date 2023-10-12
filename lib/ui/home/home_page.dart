@@ -335,13 +335,15 @@ class HomePageState extends ConsumerState<HomePage>
                   )),
             ),
             // Tab bar
-            AnimatedOpacity(
-                duration: Duration(
-                    milliseconds: _animationsDuration.inMilliseconds ~/ 2),
-                opacity: _backgroundShown ||
-                        (_modalShown || _optionsShown || _fullScreen)
-                    ? 0
-                    : 1.0,
+            AnimatedSlide(
+                duration:
+                    Duration(milliseconds: _animationsDuration.inMilliseconds),
+                offset: Offset(
+                    0,
+                    _backgroundShown ||
+                            (_modalShown || _optionsShown || _fullScreen)
+                        ? 0.5
+                        : 0.0),
                 child: Container(
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
