@@ -108,7 +108,13 @@ pub unsafe extern "C" fn backup_perform(
     rt.block_on(async move {
         let (tx, mut _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 
-        let challenge = get_challenge_async(server_url, proxy_port).await;
+        let challenge = match get_challenge_async(server_url, proxy_port).await {
+            None => {
+                return false;
+            }
+            Some(c) => c,
+        };
+
         let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
         post_backup_async(
             server_url,
@@ -317,15 +323,22 @@ fn _get_challenge(server_url: &str, proxy_port: i32) -> ChallengeResponse {
     response.json().unwrap()
 }
 
-async fn get_challenge_async(server_url: &str, proxy_port: i32) -> ChallengeResponse {
+async fn get_challenge_async(server_url: &str, proxy_port: i32) -> Option<ChallengeResponse> {
     let client = get_reqwest_client(proxy_port);
     let response = client
         .get(server_url.to_owned() + "/backup/challenge")
         .send()
-        .await
-        .unwrap();
+        .await;
 
-    response.json().await.unwrap()
+    match response {
+        Ok(r) => match r.json::<ChallengeResponse>().await {
+            Ok(r) => Some(r),
+            Err(_) => None,
+        },
+        Err(_) => {
+            return None;
+        }
+    }
 }
 
 async fn post_backup_async(
@@ -407,7 +420,7 @@ mod tests {
     #[tokio::test]
     async fn test_get_and_solve_challenge() {
         let server_url = "https://envoy.foundationdevices.com";
-        let challenge = get_challenge_async(server_url, -1).await;
+        let challenge = get_challenge_async(server_url, -1).await.unwrap();
         let (tx, _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 
         let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
