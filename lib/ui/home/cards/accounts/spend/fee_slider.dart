@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -49,8 +50,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   Widget build(BuildContext context) {
     Wallet? wallet = ref.read(selectedAccountProvider)?.wallet;
     if (wallet != null) {
-      standardFee = (wallet.feeRateSlow) * 100000;
-      fasterFee = (wallet.feeRateFast) * 100000;
+      standardFee = Fees().slowRate(wallet.network) * 100000;
+      fasterFee = Fees().fastRate(wallet.network) * 100000;
       if (standardFee == fasterFee) {
         fasterFee = standardFee + 1;
       }

@@ -5,6 +5,7 @@
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -91,6 +92,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..sendTo = sendTo
         ..amount = amount
         ..utxos = utxos
+        ..feeRate = feeRate.toDouble()
         ..loading = true;
 
       List<Utxo>? mustSpend = utxos.isEmpty ? null : utxos;
@@ -179,8 +181,11 @@ final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);
 final spendMaxFeeRateProvider = StateProvider((ref) => 1);
 final spendFeeRateProvider = StateProvider<num>((ref) {
-  return ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
-      100000;
+  Account? account = ref.watch(selectedAccountProvider);
+  if (account == null) {
+    return 1;
+  }
+  return Fees().fees[Network.Mainnet].mempoolFastestRate * 100000;
 });
 
 final rawTransactionProvider = Provider<RawTransaction?>(
@@ -284,17 +289,36 @@ final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
 final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
 ///returns estimated block time for the transaction
-///TODO: include medium fee rate for better estimation
-final spendEstimatedBlockTimeProvider = Provider<int>((ref) {
+final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   final feeRate = ref.watch(spendFeeRateProvider);
+  ref.watch(spendTransactionProvider);
   final account = ref.read(selectedAccountProvider);
   if (account == null) {
-    return 10;
+    return "~10";
   }
-  if (account.wallet.feeRateFast <= convertToFeeRate(feeRate)) {
-    return 10;
+
+  Network network = account.wallet.network;
+  // Network network = Network.Mainnet;
+
+  //with in 10 minutes
+  double feeRateFast = Fees().fees[network]!.mempoolFastestRate;
+  //with in 30 minutes
+  double feeHalfHourRate = Fees().fees[network]!.mempoolHalfHourRate;
+
+  double feeHourRate = Fees().fees[network]!.mempoolHourRate;
+
+  double selectedFeeRate = convertToFeeRate(feeRate);
+
+  if (feeRateFast <= selectedFeeRate) {
+    return "~10";
+  } else if (feeHalfHourRate <= selectedFeeRate &&
+      selectedFeeRate < feeRateFast) {
+    return "~20";
+  } else if (feeHourRate <= selectedFeeRate &&
+      selectedFeeRate < feeHalfHourRate) {
+    return "~30";
   } else {
-    return 30;
+    return "40+";
   }
 });
 
