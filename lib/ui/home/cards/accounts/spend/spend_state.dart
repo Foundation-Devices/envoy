@@ -283,6 +283,21 @@ final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
 final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
 final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
+///returns estimated block time for the transaction
+///TODO: include medium fee rate for better estimation
+final spendEstimatedBlockTimeProvider = Provider<int>((ref) {
+  final feeRate = ref.watch(spendFeeRateProvider);
+  final account = ref.read(selectedAccountProvider);
+  if (account == null) {
+    return 10;
+  }
+  if (account.wallet.feeRateFast <= convertToFeeRate(feeRate)) {
+    return 10;
+  } else {
+    return 30;
+  }
+});
+
 ///returns if the user has selected coins
 final isCoinsSelectedProvider = Provider<bool>((ref) {
   final account = ref.watch(selectedAccountProvider);

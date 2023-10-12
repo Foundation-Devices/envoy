@@ -811,9 +811,11 @@ class _TransactionReviewScreenState
                                       color: Colors.white,
                                     ),
                                     Consumer(builder: (context, ref, child) {
-                                      // final spendTimeEstimationProvider = ref.watch(spendTimeEstimationProvider);
+                                      final spendTimeEstimationProvider =
+                                          ref.watch(
+                                              spendEstimatedBlockTimeProvider);
                                       return Text(
-                                        "10 min",
+                                        " $spendTimeEstimationProvider min", //TODO localize
                                         style: trailingStyle,
                                       );
                                     }),
