@@ -139,13 +139,20 @@ class EnvoySeed {
             path: encryptedBackupFilePath, cloud: cloud)
         .then((success) async {
       if (cloud && success) {
+        // Only notify if we are doing an online backup
         backupCompletedStream.sink.add(true);
-        await LocalStorage()
-            .prefs
-            .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
+        await _storeLastBackupTimestamp();
+      } else if (!Settings().syncToCloud && success) {
+        await _storeLastBackupTimestamp();
       } else
         backupCompletedStream.sink.add(false);
     });
+  }
+
+  Future<void> _storeLastBackupTimestamp() async {
+    await LocalStorage()
+        .prefs
+        .setString(LAST_BACKUP_PREFS, DateTime.now().toIso8601String());
   }
 
   Map<String, String> processBackupData(

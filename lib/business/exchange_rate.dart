@@ -57,6 +57,10 @@ final List<FiatCurrency> supportedFiat = [
 ];
 
 class ExchangeRate extends ChangeNotifier {
+  final String RATE_KEY = "rate";
+  final String USD_RATE_KEY = "usdRate";
+  final String CURRENCY_KEY = "currency";
+
   double _selectedCurrencyRate = 0;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
@@ -96,9 +100,11 @@ class ExchangeRate extends ChangeNotifier {
   _restoreRate() async {
     final storedExchangeRate = await EnvoyStorage().getExchangeRate();
 
-    _selectedCurrencyRate = storedExchangeRate?["rate"];
-    _usdRate = storedExchangeRate?["usdRate"];
-    setCurrency(storedExchangeRate?["currency"]);
+    if (storedExchangeRate != null) {
+      _selectedCurrencyRate = storedExchangeRate[RATE_KEY] ?? 0;
+      _usdRate = storedExchangeRate[USD_RATE_KEY];
+      setCurrency(storedExchangeRate[CURRENCY_KEY] ?? "USD");
+    }
   }
 
   void setCurrency(String currencyCode) {
@@ -123,9 +129,9 @@ class ExchangeRate extends ChangeNotifier {
     notifyListeners();
 
     Map exchangeRateMap = {
-      "currency": currencyCode,
-      "rate": rate,
-      "usdRate": _usdRate
+      CURRENCY_KEY: currencyCode,
+      RATE_KEY: rate,
+      USD_RATE_KEY: _usdRate
     };
 
     EnvoyStorage().setExchangeRate(exchangeRateMap);
