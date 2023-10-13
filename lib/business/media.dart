@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'local_storage.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:crypto/crypto.dart';
 
 class Media {

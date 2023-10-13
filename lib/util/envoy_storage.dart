@@ -54,6 +54,8 @@ class EnvoyStorage {
   static String dbName = 'envoy.db';
   late Database _db;
 
+  bool _backupInProgress = false;
+
   StoreRef<String, String> txNotesStore =
       StoreRef<String, String>(txNotesStoreName);
   StoreRef<String, Map> pendingTxStore =
@@ -145,13 +147,19 @@ class EnvoyStorage {
     }
   }
 
-  _possiblyBackUp() {
+  void _possiblyBackUp() {
+    if (_backupInProgress) {
+      return;
+    }
+
     // Only back up if an hour has passed
     DateTime lastBackUpTime = EnvoySeed().getLastBackupTime() ?? DateTime(2000);
     if (lastBackUpTime
         .add(const Duration(minutes: 60))
         .isBefore(DateTime.now())) {
-      EnvoySeed().backupData();
+      _backupInProgress = true;
+      EnvoySeed().backupData().then((_) => _backupInProgress = false,
+          onError: (_) => _backupInProgress = false);
     }
   }
 
