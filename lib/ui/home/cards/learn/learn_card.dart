@@ -20,34 +20,14 @@ import 'package:envoy/ui/home/cards/learn/components/filter_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 
-//ignore: must_be_immutable
 class LearnCard extends ConsumerStatefulWidget {
-  @override
-  ConsumerState<LearnCard> createState() {
-    var state = LearnCardState();
-    return state;
-  }
-}
-
-class LearnCardState extends ConsumerState<LearnCard> {
-  @override
-  Widget build(BuildContext context) {
-// ignore: unused_local_variable
-    return DefaultLearnCard();
-  }
-}
-
-//ignore: must_be_immutable
-class DefaultLearnCard extends ConsumerStatefulWidget {
-  // String? title = S().envoy_home_learn.toUpperCase();
-
   final TextEditingController controller = TextEditingController();
 
   @override
-  ConsumerState<DefaultLearnCard> createState() => _DefaultLearnCardState();
+  ConsumerState<LearnCard> createState() => _LearnCardState();
 }
 
-class _DefaultLearnCardState extends ConsumerState<DefaultLearnCard> {
+class _LearnCardState extends ConsumerState<LearnCard> {
   @override
   Widget build(BuildContext context) {
     List<Video> videos = ref.watch(learnVideosProvider(widget.controller.text));

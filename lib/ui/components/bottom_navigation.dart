@@ -62,6 +62,10 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         onTap: (int index) {
           setState(
             () {
+              if (index == _selectedIndex) {
+                return;
+              }
+
               _selectedIndex = index;
               if (widget.onIndexChanged != null) {
                 widget.onIndexChanged!(_selectedIndex);

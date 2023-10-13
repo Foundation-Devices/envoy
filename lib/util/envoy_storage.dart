@@ -148,7 +148,7 @@ class EnvoyStorage {
   }
 
   void _possiblyBackUp() {
-    if (_backupInProgress == true) {
+    if (_backupInProgress) {
       return;
     }
 
