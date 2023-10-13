@@ -138,7 +138,8 @@ class TopLevelActivityCard extends ConsumerWidget {
                               ],
                             );
                           },
-                          itemCount: notifications.length)
+                          itemCount: notifications.length),
+                      SizedBox(height: EnvoySpacing.large2)
                     ],
                   ),
                 )
