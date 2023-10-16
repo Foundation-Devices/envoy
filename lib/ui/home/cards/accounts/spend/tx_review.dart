@@ -16,7 +16,6 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
@@ -24,13 +23,11 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +35,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as Rive;
-import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
@@ -269,9 +265,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
           EnvoyButton(
             S().stalls_before_sending_tx_scanning_broadcasting_success_cta,
             onTap: () async {
-              clearSpendState(ProviderScope.containerOf(context));
-              await Future.delayed(Duration(milliseconds: 100));
+              final providerScope = ProviderScope.containerOf(context);
               GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
+              clearSpendState(providerScope);
             },
           ),
         ],
@@ -309,8 +305,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
       return;
     }
 
-    Psbt psbt = transactionModel.psbt!;
-
     setState(() {
       _showBroadcastProgress = true;
       _isBroadcastInProgress = true;
@@ -321,53 +315,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
-      await Future.delayed(Duration(seconds: 1));
-
-      // Increment the change index before broadcasting
-      await account.wallet.getChangeAddress();
-
-      //Broadcast transaction
-      await account.wallet.broadcastTx(
-          Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port,
-          psbt.rawTx);
-
-      await EnvoyStorage().addPendingTx(psbt.txid, account.id!, DateTime.now(),
-          TransactionType.pending, psbt.sent + psbt.fee);
-
-      String? note = ref.read(stagingTxNoteProvider);
-      CoinTag? changeOutPutTag = ref.read(stagingTxChangeOutPutTagProvider);
-      Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
-      RawTransaction? transaction = ref.read(rawTransactionProvider);
-
-      if (note != null) {
-        await EnvoyStorage().addTxNote(note, psbt.txid);
-      }
-      if (transaction != null &&
-          changeOutPutTag != null &&
-          changeOutPut != null) {
-        int index = transaction.outputs.indexWhere((element) =>
-            element.address == changeOutPut.item1 &&
-            element.amount == changeOutPut.item2);
-        if (index != -1) {
-          changeOutPutTag.addCoin(Coin(
-              Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
-              account: account.id!));
-          final _ = ref.refresh(accountsProvider);
-        }
-      }
-
-      ref.read(coinSelectionStateProvider.notifier).reset();
-      ref.read(spendEditModeProvider.notifier).state = false;
-      clearSpendState(ProviderScope.containerOf(context));
-      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
-      ref.read(stagingTxNoteProvider.notifier).state = null;
+      await Future.delayed(Duration(milliseconds: 500));
+      ref
+          .read(spendTransactionProvider.notifier)
+          .broadcast(ProviderScope.containerOf(context));
       //wait for animation
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(milliseconds: 500));
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      await Future.delayed(Duration(milliseconds: 1000));
+      await Future.delayed(Duration(milliseconds: 500));
       setState(() {
         _isBroadcastInProgress = false;
         _isBroadcastSuccess = true;

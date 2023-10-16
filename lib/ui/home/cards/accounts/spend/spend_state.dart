@@ -6,12 +6,16 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/fees.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
@@ -27,6 +31,7 @@ class TransactionModel {
   bool canProceed = false;
   bool belowDustLimit = false;
   bool loading = false;
+  bool broadcastFinished = false;
   bool isPSBTFinalized = false;
   String? error;
 
@@ -40,6 +45,7 @@ class TransactionModel {
       this.valid = false,
       this.loading = false,
       this.belowDustLimit = false,
+      this.broadcastFinished = false,
       this.canProceed = false,
       this.error = null});
 
@@ -56,6 +62,7 @@ class TransactionModel {
       loading: mode.loading,
       canProceed: mode.canProceed,
       belowDustLimit: mode.belowDustLimit,
+      broadcastFinished: mode.broadcastFinished,
     );
   }
 
@@ -76,10 +83,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     int amount = container.read(spendAmountProvider);
     num feeRate = container.read(spendFeeRateProvider);
     Account? account = container.read(selectedAccountProvider);
-    if (account == null) {
-      state = state.clone()
-        ..canProceed = false
-        ..valid = false;
+    if (sendTo.isEmpty ||
+        amount == 0 ||
+        account == null ||
+        state.broadcastFinished) {
       return false;
     }
     List<Utxo> utxos = container
@@ -166,6 +173,68 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       /// to prevent the user from editing the transaction, this is used when user scans signed PSBT
       ..isPSBTFinalized = true
       ..valid = true;
+  }
+
+  void broadcast(ProviderContainer ref) async {
+    try {
+      Account? account = ref.read(selectedAccountProvider);
+      if (!(account != null &&
+          state.psbt != null &&
+          !state.broadcastFinished)) {
+        return;
+      }
+      // Increment the change index before broadcasting
+      await account.wallet.getChangeAddress();
+
+      Psbt psbt = state.psbt!;
+      //Broadcast transaction
+      await account.wallet.broadcastTx(
+          Settings().electrumAddress(account.wallet.network),
+          Tor.instance.port,
+          psbt.rawTx);
+
+      await EnvoyStorage().addPendingTx(psbt.txid, account.id!, DateTime.now(),
+          TransactionType.pending, psbt.sent + psbt.fee);
+
+      String? note = ref.read(stagingTxNoteProvider);
+      CoinTag? changeOutPutTag = ref.read(stagingTxChangeOutPutTagProvider);
+      Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
+      RawTransaction? transaction = ref.read(rawTransactionProvider);
+
+      if (note != null) {
+        await EnvoyStorage().addTxNote(note, psbt.txid);
+      }
+
+      /// add change output to selected/default tag
+      if (transaction != null &&
+          changeOutPutTag != null &&
+          changeOutPut != null) {
+        int index = transaction.outputs.indexWhere((element) =>
+            element.address == changeOutPut.item1 &&
+            element.amount == changeOutPut.item2);
+        if (index != -1) {
+          changeOutPutTag.addCoin(Coin(
+              Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
+              account: account.id!));
+          final _ = ref.refresh(accountsProvider);
+        }
+      }
+
+      /// clear staging transaction states
+      this.state = state.clone()
+        ..broadcastFinished = true
+        ..loading = false;
+
+      ///wait for transaction to be broadcast and propagated to the UI
+      await Future.delayed(Duration(seconds: 2));
+      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
+      ref.read(stagingTxNoteProvider.notifier).state = null;
+    } catch (e) {
+      this.state = state.clone()
+        ..broadcastFinished = false
+        ..loading = false;
+      throw e;
+    }
   }
 }
 
