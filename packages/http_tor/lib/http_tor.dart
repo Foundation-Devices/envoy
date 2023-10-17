@@ -213,8 +213,10 @@ class HttpTor {
       {String? body, Map<String, String>? headers}) async {
     await tor.isReady();
     int torPort = tor.port;
-    return scheduler.run(() => Isolate.run(() => _makeRequest(
-          Request(Verb.Get, uri, torPort, body: body, headers: headers)))).result
+    return scheduler
+        .run(() => Isolate.run(() => _makeRequest(
+            Request(Verb.Get, uri, torPort, body: body, headers: headers))))
+        .result
         .then((response) => response, onError: (e) {
       throw Exception(e.message);
     });
@@ -224,8 +226,10 @@ class HttpTor {
       {String? body, Map<String, String>? headers}) async {
     await tor.isReady();
     int torPort = tor.port;
-    return scheduler.run(() => Isolate.run(() => _makeRequest(
-        Request(Verb.Post, uri, torPort, body: body, headers: headers)))).result
+    return scheduler
+        .run(() => Isolate.run(() => _makeRequest(
+            Request(Verb.Post, uri, torPort, body: body, headers: headers))))
+        .result
         .then((response) => response, onError: (e) {
       throw Exception(e.message);
     });
