@@ -5,6 +5,7 @@
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
@@ -43,6 +44,7 @@ Future<void> main() async {
 Future<void> initSingletons() async {
   await EnvoyStorage().init();
   await LocalStorage.init();
+  EnvoyScheduler.init();
   EnvoyReport().init();
   Settings.restore();
   Tor.init(enabled: Settings().torEnabled());

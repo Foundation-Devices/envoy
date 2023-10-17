@@ -6,8 +6,8 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
-
-import 'account.dart';
+import 'package:envoy/business/account.dart';
+import 'package:envoy/business/scheduler.dart';
 
 class AztecoVoucher {
   List<String> code = [];
@@ -40,7 +40,7 @@ class AztecoVoucher {
   Future<bool> redeem(String address) async {
     String url = getRedeemUrl(address);
 
-    HttpTor _http = HttpTor(Tor.instance);
+    HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
     final response = await _http.get(url);
     switch (response.statusCode) {

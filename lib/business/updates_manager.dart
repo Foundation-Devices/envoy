@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/server.dart';
@@ -13,7 +14,7 @@ import 'package:tor/tor.dart';
 import 'package:envoy/business/devices.dart';
 
 class UpdatesManager {
-  HttpTor http = HttpTor(Tor.instance);
+  HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   LocalStorage ls = LocalStorage();
   EnvoyStorage es = EnvoyStorage();
 

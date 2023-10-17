@@ -13,6 +13,7 @@ import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/scheduler.dart';
 
 final String userLocale = Platform.localeName;
 NumberFormat numberFormat = NumberFormat.simpleCurrency(locale: userLocale);
@@ -68,7 +69,7 @@ class ExchangeRate extends ChangeNotifier {
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
-  HttpTor _http = HttpTor(Tor.instance);
+  HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   String _serverAddress = Settings().nguServerAddress;
 
   static final ExchangeRate _instance = ExchangeRate._internal();

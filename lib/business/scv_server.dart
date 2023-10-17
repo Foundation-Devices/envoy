@@ -9,12 +9,13 @@ import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/scheduler.dart';
 
 // Generated
 part 'scv_server.g.dart';
 
 class ScvServer {
-  static HttpTor http = HttpTor(Tor.instance);
+  static HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   static String serverAddress = "https://validate.foundationdevices.com";
 
   LocalStorage _ls = LocalStorage();

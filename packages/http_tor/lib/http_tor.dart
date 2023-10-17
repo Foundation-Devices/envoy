@@ -10,6 +10,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:tor/tor.dart';
+import 'package:schedulers/schedulers.dart';
 
 enum Verb { Get, Post }
 
@@ -153,8 +154,9 @@ class Download {
 class HttpTor {
   static late String _libName = "http_ffi";
   final Tor tor;
+  final ParallelScheduler scheduler;
 
-  HttpTor(this.tor);
+  HttpTor(this.tor, this.scheduler);
 
   static Future<Response> _makeRequest(Request request) async {
     var lib = load(_libName);
@@ -210,8 +212,9 @@ class HttpTor {
   Future<Response> get(String uri,
       {String? body, Map<String, String>? headers}) async {
     await tor.isReady();
-    return compute(_makeRequest,
-            Request(Verb.Get, uri, tor.port, body: body, headers: headers))
+    int torPort = tor.port;
+    return scheduler.run(() => Isolate.run(() => _makeRequest(
+          Request(Verb.Get, uri, torPort, body: body, headers: headers)))).result
         .then((response) => response, onError: (e) {
       throw Exception(e.message);
     });
@@ -220,8 +223,9 @@ class HttpTor {
   Future<Response> post(String uri,
       {String? body, Map<String, String>? headers}) async {
     await tor.isReady();
-    return compute(_makeRequest,
-            Request(Verb.Post, uri, tor.port, body: body, headers: headers))
+    int torPort = tor.port;
+    return scheduler.run(() => Isolate.run(() => _makeRequest(
+        Request(Verb.Post, uri, torPort, body: body, headers: headers)))).result
         .then((response) => response, onError: (e) {
       throw Exception(e.message);
     });

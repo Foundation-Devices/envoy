@@ -15,7 +15,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'dart:convert';
-import 'account.dart';
+import 'package:envoy/business/account.dart';
+import 'package:envoy/business/scheduler.dart';
 
 part 'notifications.g.dart';
 
@@ -246,7 +247,7 @@ class Notifications {
   }
 
   Future<String> fetchLatestEnvoyVersionFromGit() async {
-    HttpTor http = HttpTor(Tor.instance);
+    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
     final response = await http.get(
         'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
         headers: {'User-Agent': 'request'});

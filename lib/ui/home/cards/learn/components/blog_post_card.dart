@@ -18,6 +18,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/business/scheduler.dart';
 
 const double blogThumbnailHeight = 172.0;
 const double containerWidth = 309.0;
@@ -187,7 +188,7 @@ class _BlogPostCardState extends State<BlogPostCard> {
               future: Future(() async {
                 final document = htmlParser.parse(widget.blog.description);
                 final imageTags = document.getElementsByTagName('img');
-                final torClient = HttpTor(Tor.instance);
+                final torClient = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
                 for (final imgTag in imageTags) {
                   imgTag.attributes['width'] = 'auto';

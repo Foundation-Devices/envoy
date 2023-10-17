@@ -10,6 +10,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/fee_rates.dart';
+import 'package:envoy/business/scheduler.dart';
 
 // Generated
 part 'fees.g.dart';
@@ -104,7 +105,7 @@ class Fees {
   }
 
   _getMempoolRates(Network network) {
-    HttpTor(Tor.instance).get(_mempoolUrls[network]!).then((response) {
+    HttpTor(Tor.instance, EnvoyScheduler().parallel).get(_mempoolUrls[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
