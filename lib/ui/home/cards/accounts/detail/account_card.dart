@@ -165,7 +165,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: account.dateSynced == null
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
@@ -199,7 +199,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
         ),
       ]),
       bottomNavigationBar: Container(
-        height: 94,
+        height: 100,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -215,8 +215,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
             ),
           ],
         ),
-        padding: const EdgeInsets.only(
-            left: 50.0, right: 50.0, bottom: 24.0, top: 8.0),
+        padding: const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 35.0),
         child: Row(
           children: [
             Expanded(
