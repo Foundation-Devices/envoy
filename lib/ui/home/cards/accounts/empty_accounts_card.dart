@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EmptyAccountsCard extends StatelessWidget {
   EmptyAccountsCard() : super(key: UniqueKey()) {}
@@ -19,7 +20,7 @@ class EmptyAccountsCard extends StatelessWidget {
         fontFamily: 'Montserrat',
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
-        color: EnvoyColors.grey);
+        color: EnvoyColors.textTertiary);
     return Column(
       children: [
         ClipRRect(
@@ -61,9 +62,8 @@ class EmptyAccountsCard extends StatelessWidget {
                 GestureDetector(
                   child: Text(
                     S().accounts_empty_text_learn_more,
-                    style: _explainerTextStyle.copyWith(
-                      color: EnvoyColors.teal,
-                    ),
+                    style: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary),
                   ),
                   onTap: () {
                     Navigator.of(context, rootNavigator: true)

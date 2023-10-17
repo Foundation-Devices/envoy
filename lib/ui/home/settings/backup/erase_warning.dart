@@ -8,7 +8,6 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
@@ -20,6 +19,8 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({Key? key}) : super(key: key);
@@ -463,10 +464,8 @@ class AndroidBackupWarning extends StatelessWidget {
                         onTap: () {
                           openAndroidSettings();
                         },
-                        linkStyle: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontSize: 14, color: EnvoyColors.blue),
+                        linkStyle: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.accentPrimary),
                         textStyle: Theme.of(context)
                             .textTheme
                             .bodySmall

@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:collection/collection.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class WalletSecurityModal extends StatefulWidget {
   final Function onLastStep;
@@ -144,6 +146,10 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                         duration: Duration(milliseconds: 400),
                                         child: LinkText(
                                           text: stepSubHeadings[i],
+                                          linkStyle: EnvoyTypography.button
+                                              .copyWith(
+                                                  color: EnvoyColors
+                                                      .accentPrimary),
                                           onTap: () {
                                             launchUrl(Uri.parse(Platform
                                                     .isAndroid

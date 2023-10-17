@@ -7,6 +7,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/fw/fw_microsd.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 //ignore: must_be_immutable
 class FwIntroPage extends StatelessWidget {
@@ -24,6 +26,8 @@ class FwIntroPage extends StatelessWidget {
         OnboardingText(header: S().envoy_fw_intro_heading),
         LinkText(
             text: S().envoy_fw_intro_subheading,
+            linkStyle: EnvoyTypography.button
+                .copyWith(color: EnvoyColors.accentPrimary),
             onTap: () {
               launchUrlString(
                   "https://github.com/Foundation-Devices/passport2/releases");
