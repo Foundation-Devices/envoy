@@ -288,11 +288,9 @@ class AccountPrompts extends ConsumerWidget {
                 style: _explainerTextStyle,
               ),
               GestureDetector(
-                child: Text(
-                  S().hide_amount_first_time_text_button,
-                  style: _explainerTextStyle.copyWith(
-                      color: EnvoyColors.accentPrimary),
-                ),
+                child: Text(S().hide_amount_first_time_text_button,
+                    style: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary)),
                 onTap: () {
                   EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
                 },

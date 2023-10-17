@@ -22,6 +22,8 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   @override
@@ -338,6 +340,8 @@ class TestnetInfoModal extends StatelessWidget {
                     child: LinkText(
                         text: S().settings_advanced_enabled_testnet_modal_link,
                         textStyle: textStyle,
+                        linkStyle: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.accentPrimary),
                         onTap: () {
                           launchUrlString(
                               "https://www.youtube.com/watch?v=nRGFAHlYIeU");

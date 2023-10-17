@@ -4,8 +4,9 @@
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -24,11 +25,6 @@ class _TorWarningState extends State<TorWarning> {
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
         );
-
-    var linkStyle = Theme.of(context)
-        .textTheme
-        .bodyMedium
-        ?.copyWith(color: EnvoyColors.darkTeal, fontWeight: FontWeight.w800);
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
@@ -54,13 +50,14 @@ class _TorWarningState extends State<TorWarning> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(EnvoyIcons.exclamation_warning,
-                    color: EnvoyColors.darkCopper, size: 84),
+                    color: EnvoyColors.accentSecondary, size: 84),
                 Padding(
                     padding: const EdgeInsets.only(top: 18.0),
                     child: LinkText(
                       text: S().torToast_learnMore_warningBody,
                       textStyle: textStyle,
-                      linkStyle: linkStyle,
+                      linkStyle: EnvoyTypography.button
+                          .copyWith(color: EnvoyColors.accentPrimary),
                       onTap: () {
                         launchUrl(
                             Uri.parse(

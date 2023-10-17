@@ -12,7 +12,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
-
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'fw_intro.dart';
 
 //ignore: must_be_immutable
@@ -92,6 +93,8 @@ class _FwProgressPageState extends ConsumerState<FwProgressPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: LinkText(
                           text: S().envoy_fw_fail_subheading,
+                          linkStyle: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.accentPrimary),
                           onTap: () {
                             launchUrlString(
                                 "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
