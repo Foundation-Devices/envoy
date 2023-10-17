@@ -21,8 +21,8 @@ class ScvScanQrPage extends StatelessWidget {
       clipArt: Image.asset("assets/scv_scan_qr.png"),
       text: [
         OnboardingText(
-            header: S().envoy_scv_scan_qr_heading,
-            text: S().envoy_scv_scan_qr_subheading)
+            header: S().pair_new_device_scan_heading,
+            text: S().pair_new_device_scan_subheading)
       ],
       navigationDots: 3,
       navigationDotsIndex: 2,
