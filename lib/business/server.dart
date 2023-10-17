@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:envoy/business/settings.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
+import 'package:envoy/business/scheduler.dart';
 
 class Server {
   HttpTor? http;
@@ -15,7 +16,7 @@ class Server {
 
   Server({this.http}) {
     if (http == null) {
-      http = HttpTor(Tor.instance);
+      http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
     }
   }
 

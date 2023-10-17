@@ -286,6 +286,10 @@ class EnvoySeed {
         .where((element) => preferencesKeysFormerlyBackedUp.contains(element))
         .toList();
 
+    if (preferencesKeysPresentInData.isEmpty) {
+      return;
+    }
+
     Map<String, dynamic> db = jsonDecode(data[EnvoyStorage.dbName]!);
     List<dynamic> stores = db["stores"];
     stores.add({

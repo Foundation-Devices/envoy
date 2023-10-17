@@ -10,6 +10,7 @@ import 'package:tor/tor.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/blog_post.dart';
+import 'package:envoy/business/scheduler.dart';
 
 class FeedManager {
   List<Video> videos = [];
@@ -31,16 +32,14 @@ class FeedManager {
     _restoreVideos();
     _restoreBlogs();
 
-    HttpTor(Tor.instance)
+    HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get("https://bitcointv.com/feeds/videos.xml?videoChannelId=62")
-        // .get(
-        //     "https://www.youtube.com/feeds/videos.xml?channel_id=UC3UcWMQ53oimbVxGJUnRXGw")
         .then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addVideosFromBitcoinTv(feed);
     });
 
-    HttpTor(Tor.instance)
+    HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get("https://foundationdevices.com/feed/")
         .then((response) {
       RssFeed feed = RssFeed.parse(response.body);
@@ -133,7 +132,7 @@ class FeedManager {
       }
 
       if (await video.thumbnail == null) {
-        HttpTor(Tor.instance).get(video.thumbnailUrl!).then((response) async {
+        HttpTor(Tor.instance, EnvoyScheduler().parallel).get(video.thumbnailUrl!).then((response) async {
           await LocalStorage()
               .saveFileBytes(video.thumbnailHash!, response.bodyBytes);
         });
@@ -154,7 +153,7 @@ class FeedManager {
       }
 
       if (await blog.thumbnail == null) {
-        HttpTor(Tor.instance).get(blog.thumbnailUrl!).then((response) async {
+        HttpTor(Tor.instance, EnvoyScheduler().parallel).get(blog.thumbnailUrl!).then((response) async {
           await LocalStorage()
               .saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
         });

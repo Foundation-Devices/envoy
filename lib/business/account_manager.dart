@@ -15,6 +15,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -22,7 +23,6 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
-import 'package:schedulers/schedulers.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
@@ -39,8 +39,7 @@ class AccountManager extends ChangeNotifier {
   // prevents concurrent modification of accounts list, when moving accounts
   bool _accountSchedulerMutex = false;
 
-  // SFT-1544: never sync more than 4 account at once
-  final _syncScheduler = ParallelScheduler(4);
+  final _syncScheduler = EnvoyScheduler().parallel;
 
   static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();

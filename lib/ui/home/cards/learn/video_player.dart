@@ -14,6 +14,7 @@ import 'package:envoy/business/video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:envoy/business/scheduler.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
   final Video video;
@@ -77,7 +78,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     getApplicationDocumentsDirectory().then((dir) {
       streamFile = File(dir.path + "/stream.mp4");
-      HttpTor(Tor.instance)
+      HttpTor(Tor.instance, EnvoyScheduler().parallel)
           .getFile(streamFile.path, widget.url)
           .then((download) {
         _cancelDownload = download.cancel;
