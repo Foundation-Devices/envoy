@@ -132,7 +132,9 @@ class FeedManager {
       }
 
       if (await video.thumbnail == null) {
-        HttpTor(Tor.instance, EnvoyScheduler().parallel).get(video.thumbnailUrl!).then((response) async {
+        HttpTor(Tor.instance, EnvoyScheduler().parallel)
+            .get(video.thumbnailUrl!)
+            .then((response) async {
           await LocalStorage()
               .saveFileBytes(video.thumbnailHash!, response.bodyBytes);
         });
@@ -153,7 +155,9 @@ class FeedManager {
       }
 
       if (await blog.thumbnail == null) {
-        HttpTor(Tor.instance, EnvoyScheduler().parallel).get(blog.thumbnailUrl!).then((response) async {
+        HttpTor(Tor.instance, EnvoyScheduler().parallel)
+            .get(blog.thumbnailUrl!)
+            .then((response) async {
           await LocalStorage()
               .saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
         });
