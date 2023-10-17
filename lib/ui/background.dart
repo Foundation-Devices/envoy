@@ -28,8 +28,10 @@ class AppBackgroundState extends State<AppBackground> {
               child: FractionallySizedBox(
                 alignment: Alignment.centerRight,
                 widthFactor: 0.5,
-                child: CustomPaint(
-                  painter: LinesPainter(),
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    painter: LinesPainter(),
+                  ),
                 ),
               ),
             ),
