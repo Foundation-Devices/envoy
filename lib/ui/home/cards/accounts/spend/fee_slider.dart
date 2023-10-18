@@ -125,7 +125,12 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                           ),
                         ));
                   },
-                );
+                ).then((value) {
+                  /// if the user cancels/sets the fee slider , we need to reset/set the fee rate that used in block estimation
+                  /// otherwise set the fee rate to selected value
+                  ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
+                      ref.read(spendFeeRateProvider);
+                });
                 break;
             }
           },
@@ -379,5 +384,6 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     setState(() {
       selectedItem = list.reversed.toList()[index];
     });
+    ref.read(spendFeeRateBlockEstimationProvider.notifier).state = selectedItem;
   }
 }
