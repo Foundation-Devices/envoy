@@ -357,11 +357,13 @@ final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
 final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
 final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
+final spendFeeRateBlockEstimationProvider =
+    StateProvider<num>((ref) => ref.read(spendFeeRateProvider));
+
 ///returns estimated block time for the transaction
 final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
-  final feeRate = ref.watch(spendFeeRateProvider);
-  ref.watch(spendTransactionProvider);
-  final account = ref.read(selectedAccountProvider);
+  final feeRate = ref.watch(spendFeeRateBlockEstimationProvider);
+  final account = ref.watch(selectedAccountProvider);
   if (account == null) {
     return "~10";
   }
