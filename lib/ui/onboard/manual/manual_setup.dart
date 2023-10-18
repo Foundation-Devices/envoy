@@ -74,6 +74,7 @@ class _ManualSetupState extends State<ManualSetup> {
                     type: EnvoyButtonTypes.secondary,
                     fontWeight: FontWeight.w600,
                     onTap: () {
+                      _playerKey.currentState?.pause();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
                         return SeedIntroScreen(
@@ -86,6 +87,7 @@ class _ManualSetupState extends State<ManualSetup> {
                         label: S().manual_setup_tutorial_CTA1,
                         fontWeight: FontWeight.w600,
                         onTap: () {
+                          _playerKey.currentState?.pause();
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return SeedIntroScreen(
