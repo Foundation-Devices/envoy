@@ -35,6 +35,7 @@ import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/blur_container_transform.dart';
@@ -147,7 +148,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
       extendBody: true,
       body: Column(children: [
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.only(
+            top: 20,
+            bottom: 0,
+            left: 20,
+            right: 20,
+          ),
           child: AccountListTile(account, onTap: () {
             Navigator.pop(context);
             ref.read(homePageAccountsProvider.notifier).state =
@@ -158,14 +164,16 @@ class _AccountCardState extends ConsumerState<AccountCard>
           duration: Duration(milliseconds: 200),
           child: (transactions.isNotEmpty || txFiltersEnabled)
               ? Container(
-                  padding: EdgeInsets.only(bottom: 0),
+                  padding: EdgeInsets.only(
+                      top: EnvoySpacing.medium2, bottom: EnvoySpacing.small),
                   child: FilterOptions(),
                 )
               : SizedBox.shrink(),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.small),
             child: account.dateSynced == null
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
@@ -184,7 +192,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           Expanded(
                             child: Center(
                               child: Padding(
-                                padding: EdgeInsets.only(top: 14),
+                                padding: EdgeInsets.only(bottom: 128),
                                 child: Text(
                                   S().account_empty_tx_history_text_explainer,
                                   style: _explainerTextStyleWallet.copyWith(),
