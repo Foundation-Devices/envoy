@@ -13,12 +13,12 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
-import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/business/locale.dart';
 
 const double blogThumbnailHeight = 172.0;
 const double containerWidth = 309.0;
@@ -122,7 +122,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            DateFormat('MMMM dd, yyyy', defaultLocale)
+                            DateFormat('MMMM dd, yyyy', currentLocale)
                                 .format(widget.blog.publicationDate),
                           ),
                           _isBlogRead
