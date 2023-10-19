@@ -11,6 +11,7 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
+import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class AmountDisplay extends ConsumerStatefulWidget {
@@ -50,7 +51,8 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
     int length = AmountDisplayUnit.values.length;
 
     // Fiat is always at the end of enum
-    if (Settings().selectedFiat == null) {
+    if (Settings().selectedFiat == null ||
+        widget.account?.wallet.network == Network.Testnet) {
       length--;
     }
 
