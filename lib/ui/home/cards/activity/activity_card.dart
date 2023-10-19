@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'dart:io';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +13,8 @@ import 'package:envoy/ui/components/list_item.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/loader_ghost.dart';
+import 'package:envoy/business/locale.dart';
 
-final String defaultLocale = Platform.localeName;
-
-//ignore: must_be_immutable
 class ActivityCard extends StatefulWidget {
   @override
   State<ActivityCard> createState() => ActivityCardState();
@@ -150,7 +147,7 @@ class TopLevelActivityCard extends ConsumerWidget {
 }
 
 String getTransactionDateString(EnvoyNotification notification) {
-  return DateFormat.yMd(defaultLocale).format(notification.date);
+  return DateFormat.yMd(currentLocale).format(notification.date);
 }
 
 bool showHeader(EnvoyNotification notificationCurrent,

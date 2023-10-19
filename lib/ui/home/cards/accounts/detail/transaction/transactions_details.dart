@@ -28,6 +28,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/locale.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -57,8 +58,6 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
           color: EnvoyColors.textPrimary,
           fontWeight: FontWeight.w600,
         );
-    final localizationTag =
-        Localizations.maybeLocaleOf(context)?.toLanguageTag();
     TextStyle _textStyleAmountSatBtc =
         Theme.of(context).textTheme.headlineSmall!.copyWith(
               color: EnvoyColors.textPrimary,
@@ -271,7 +270,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                   color: Colors.black,
                                 ),
                                 trailing: Text(
-                                    "${DateFormat.yMd(localizationTag).format(tx.date)} at ${DateFormat.Hm(localizationTag).format(tx.date)}",
+                                    getTransactionDateAndTimeString(tx),
                                     style: trailingTextStyle),
                               ),
                               CoinTagListItem(
@@ -455,4 +454,14 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
       ),
     );
   }
+}
+
+String getTransactionDateAndTimeString(Transaction transaction) {
+  final String transactionDateInfo =
+      DateFormat.yMd(currentLocale).format(transaction.date) +
+          " " +
+          "at" + // TODO: FIGMA
+          " " +
+          DateFormat.Hm(currentLocale).format(transaction.date);
+  return transactionDateInfo;
 }
