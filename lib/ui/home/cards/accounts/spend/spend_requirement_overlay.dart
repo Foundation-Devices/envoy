@@ -284,7 +284,9 @@ class _SpendRequirementOverlayState
                           /// if the user is in utxo details screen we need to wait animations to finish
                           /// before we can pop back to home screen
                           if (Navigator.canPop(context)) {
-                            popBackToHome(context);
+                            Navigator.of(context).popUntil((route) {
+                              return route.settings is MaterialPage;
+                            });
                             await Future.delayed(Duration(milliseconds: 320));
                           }
                           hideSpendRequirementOverlay();
