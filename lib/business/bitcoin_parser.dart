@@ -18,7 +18,10 @@ class ParseResult {
 // Extract payment data from a random string
 class BitcoinParser {
   static Future<ParseResult> parse(String data,
-      {double? fiatExchangeRate, Wallet? wallet, String? selectedFiat}) async {
+      {double? fiatExchangeRate,
+      Wallet? wallet,
+      String? selectedFiat,
+      AmountDisplayUnit? currentUnit}) async {
     bool isBip21 = true;
 
     String? address;
@@ -77,22 +80,72 @@ class BitcoinParser {
     } else {
       var copiedStringParsed = double.parse(data);
 
+      if (copiedStringParsed >= 21000000) {
+        if ((copiedStringParsed % 1) == 0) {
+          unit = (currentUnit == AmountDisplayUnit.btc)
+              ? AmountDisplayUnit.sat
+              : currentUnit;
+
+          if (unit == AmountDisplayUnit.sat) {
+            amountInSats = int.parse(data);
+          }
+          if (currentUnit == AmountDisplayUnit.fiat) {
+            amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+          }
+        } else {
+          unit = AmountDisplayUnit.fiat;
+
+          amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+        }
+
+        return ParseResult(address: null, amountSats: amountInSats, unit: unit);
+      }
+
       if ((copiedStringParsed % 1) == 0) {
         // check is int
-        unit = AmountDisplayUnit.sat;
-        amountInSats = int.parse(data);
+        unit = currentUnit;
 
-        return ParseResult(
-            address: null,
-            amountSats: amountInSats,
-            unit: AmountDisplayUnit.sat);
+        switch (unit) {
+          case AmountDisplayUnit.sat:
+            amountInSats = int.parse(data);
+            break;
+
+          case AmountDisplayUnit.btc:
+            amountInSats = convertBtcStringToSats(data);
+            break;
+
+          case AmountDisplayUnit.fiat:
+            amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+            break;
+          case null:
+            break;
+        }
+
+        return ParseResult(address: null, amountSats: amountInSats, unit: unit);
       }
+
       if (!isFiatSelected) {
         unit = AmountDisplayUnit.btc;
         amountInSats = convertBtcStringToSats(data);
         return ParseResult(address: null, amountSats: amountInSats, unit: unit);
       }
 
+      if (copiedStringParsed < 1 && copiedStringParsed >= 0.01) {
+        unit = (currentUnit == AmountDisplayUnit.sat)
+            ? AmountDisplayUnit.btc
+            : currentUnit;
+        if (currentUnit == AmountDisplayUnit.btc) {
+          amountInSats = convertBtcStringToSats(data);
+        }
+        if (currentUnit == AmountDisplayUnit.fiat) {
+          amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+        }
+        return ParseResult(
+          address: null,
+          amountSats: amountInSats,
+          unit: unit,
+        );
+      }
       if (copiedStringParsed <= 0.001) {
         unit = AmountDisplayUnit.btc;
         amountInSats = convertBtcStringToSats(data);
