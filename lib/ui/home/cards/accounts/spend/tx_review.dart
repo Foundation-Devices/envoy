@@ -895,7 +895,7 @@ class _TransactionReviewScreenState
                   EnvoyButton(
                     account.wallet.hot
                         ? S().coincontrol_tx_detail_cta1
-                        : S().stalls_before_sending_tx_cta1,
+                        : S().coincontrol_txDetail_cta1_passport,
                     onTap: () {
                       widget.onBroadcast();
                     },
