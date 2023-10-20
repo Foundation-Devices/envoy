@@ -15,6 +15,8 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
@@ -24,8 +26,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -143,7 +143,8 @@ class HomePageState extends ConsumerState<HomePage>
           backgroundColor: Colors.lightBlue,
           replaceExisting: true,
           duration: Duration(seconds: 3),
-          message: "Unable to backup. Please try again later.", // TODO: FIGMA
+          message: "Unable to backup. Please try again later.",
+          // TODO: FIGMA
           icon: Icon(
             Icons.error_outline_rounded,
             color: EnvoyColors.accentSecondary,
@@ -178,6 +179,12 @@ class HomePageState extends ConsumerState<HomePage>
       return true;
     }
     if (hpState == HomePageBackgroundState.hidden) {
+      if (widget.mainNavigationShell.currentIndex != 2) {
+        /// navigate to accounts home and consume backpress event
+        widget.mainNavigationShell.goBranch(2);
+        return true;
+      }
+
       ///if menu is hidden don't do anything, let the back button press propagate
       return false;
     } else {
