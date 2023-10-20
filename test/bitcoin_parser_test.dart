@@ -42,7 +42,9 @@ void main() async {
     var pasted = "23\$";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.fiat);
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
@@ -52,7 +54,9 @@ void main() async {
     var pasted = "23,5";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
@@ -61,7 +65,8 @@ void main() async {
   test("Test small amount", () async {
     var pasted = "0.0008";
 
-    var parsed = await BitcoinParser.parse(pasted);
+    var parsed =
+        await BitcoinParser.parse(pasted, currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
     expect(parsed.amountSats, 80000);
@@ -76,7 +81,10 @@ void main() async {
     when(wallet.validateAddress(pasted)).thenAnswer((_) async => false);
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, wallet: wallet, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        wallet: wallet,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
@@ -84,7 +92,8 @@ void main() async {
 
   test("Test negative amount", () async {
     var copied = "-7";
-    var decoded = await BitcoinParser.parse(copied);
+    var decoded =
+        await BitcoinParser.parse(copied, currentUnit: AmountDisplayUnit.btc);
 
     expect(decoded.address, null);
     expect(decoded.amountSats, null);
@@ -94,7 +103,8 @@ void main() async {
   test("Test rounded amount", () async {
     var copied = "7";
 
-    var decoded = await BitcoinParser.parse(copied);
+    var decoded =
+        await BitcoinParser.parse(copied, currentUnit: AmountDisplayUnit.sat);
 
     expect(decoded.address, null);
     expect(decoded.amountSats, 7);
@@ -109,8 +119,10 @@ void main() async {
     when(wallet.balance).thenReturn(10000000);
     when(wallet.validateAddress(pasted)).thenAnswer((_) async => false);
 
-    var parsed =
-        await BitcoinParser.parse(pasted, fiatExchangeRate: 1, wallet: wallet);
+    var parsed = await BitcoinParser.parse(pasted,
+        fiatExchangeRate: 1,
+        wallet: wallet,
+        currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
     expect(parsed.amountSats, 5000000);
@@ -126,7 +138,10 @@ void main() async {
     when(wallet.validateAddress(pasted)).thenAnswer((_) async => false);
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, wallet: wallet, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        wallet: wallet,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.fiat);
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
@@ -135,7 +150,9 @@ void main() async {
     var pasted = "0,05";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.fiat);
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
@@ -145,7 +162,9 @@ void main() async {
     var pasted = "23,2\$";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.fiat);
 
     expect(parsed.address, null);
     expect(parsed.amountSats, 2320000000);
@@ -155,7 +174,9 @@ void main() async {
     var pasted = "1.22\$";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: "USD");
+        fiatExchangeRate: 1,
+        selectedFiat: "USD",
+        currentUnit: AmountDisplayUnit.fiat);
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
@@ -176,7 +197,9 @@ void main() async {
     var pasted = "1.22\$";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: null);
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
     expect(parsed.unit, null);
@@ -186,11 +209,65 @@ void main() async {
     var pasted = "1.22";
 
     var parsed = await BitcoinParser.parse(pasted,
-        fiatExchangeRate: 1, selectedFiat: null);
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
     expect(parsed.amountSats, 122000000);
     expect(parsed.unit, AmountDisplayUnit.btc);
+  });
+
+  test("test whole number", () async {
+    var pasted = "1";
+
+    var parsed = await BitcoinParser.parse(pasted,
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.btc);
+
+    expect(parsed.address, null);
+    expect(parsed.amountSats, 100000000);
+    expect(parsed.unit, AmountDisplayUnit.btc);
+  });
+
+  test("test (pasted > 0.001 && pasted < 1)", () async {
+    var pasted = "0.02";
+
+    var parsed = await BitcoinParser.parse(pasted,
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.sat);
+
+    expect(parsed.address, null);
+    expect(parsed.amountSats, 2000000);
+    expect(parsed.unit, AmountDisplayUnit.btc);
+  });
+
+  test("test (num < 21000000)", () async {
+    var pasted = "19000000.005";
+
+    var parsed = await BitcoinParser.parse(pasted,
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.btc);
+
+    expect(parsed.address, null);
+    expect(parsed.amountSats, 1900000000500000);
+    expect(parsed.unit, AmountDisplayUnit.btc);
+  });
+
+  test("test (num >= 21000000)", () async {
+    var pasted = "21000100.02";
+
+    var parsed = await BitcoinParser.parse(pasted,
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.btc);
+
+    expect(parsed.address, null);
+    expect(parsed.amountSats, 2100010002000000);
+    expect(parsed.unit, AmountDisplayUnit.fiat);
   });
 }
 

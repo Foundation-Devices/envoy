@@ -11,8 +11,12 @@ import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
+import 'dart:async';
 
-class AddressEntry extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class AddressEntry extends ConsumerStatefulWidget {
   final Function(String)? onAddressChanged;
   final Function(int)? onAmountChanged;
   final bool canEdit;
@@ -31,10 +35,10 @@ class AddressEntry extends StatefulWidget {
       required this.account});
 
   @override
-  State<AddressEntry> createState() => _AddressEntryState();
+  ConsumerState<AddressEntry> createState() => _AddressEntryState();
 }
 
-class _AddressEntryState extends State<AddressEntry> {
+class _AddressEntryState extends ConsumerState<AddressEntry> {
   String get text => widget.controller?.text ?? "";
   bool addressValid = false;
 
@@ -53,6 +57,8 @@ class _AddressEntryState extends State<AddressEntry> {
 
   @override
   Widget build(BuildContext context) {
+    var unit = ref.read(sendScreenUnitProvider);
+
     return Material(
       child: Form(
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -120,7 +126,8 @@ class _AddressEntryState extends State<AddressEntry> {
                                       fiatExchangeRate:
                                           ExchangeRate().selectedCurrencyRate,
                                       wallet: widget.account.wallet,
-                                      selectedFiat: Settings().selectedFiat);
+                                      selectedFiat: Settings().selectedFiat,
+                                      currentUnit: unit);
                                   widget.onPaste!(decodedInfo);
                                   if (decodedInfo.address != null) {
                                     validate(decodedInfo.address!);
