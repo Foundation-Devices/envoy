@@ -20,10 +20,9 @@ AnimationController? _spendOverlayAnimationController;
 OverlayEntry? overlayEntry = null;
 
 showSpendRequirementOverlay(BuildContext context, Account account) async {
+  /// already visible
   if (overlayEntry != null) {
-    overlayEntry?.remove();
-    overlayEntry?.dispose();
-    overlayEntry = null;
+    return;
   }
   await Future.delayed(Duration(milliseconds: 50));
   overlayEntry = OverlayEntry(builder: (context) {
@@ -167,7 +166,8 @@ class _SpendRequirementOverlayState
     );
 
     bool hideRequiredAmount = requiredAmount == 0;
-
+    bool valid =
+        (totalSelectedAmount != 0 && totalSelectedAmount >= requiredAmount);
     return GestureDetector(
       onPanDown: (details) {
         _spendOverlayAnimationController!.stop();
@@ -278,6 +278,8 @@ class _SpendRequirementOverlayState
                         ],
                       ),
                       EnvoyButton(
+                        enabled: valid,
+                        readOnly: !valid,
                         S().coincontrol_edit_transaction_cta,
                         onTap: () async {
                           /// if the user is in utxo details screen we need to wait animations to finish
@@ -290,7 +292,13 @@ class _SpendRequirementOverlayState
                           }
                           hideSpendRequirementOverlay();
                           await Future.delayed(Duration(milliseconds: 120));
-                          GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
+                          if (ref.read(spendEditModeProvider)) {
+                            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
+                            GoRouter.of(context)
+                                .push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                          } else {
+                            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
+                          }
                         },
                       )
                     ],

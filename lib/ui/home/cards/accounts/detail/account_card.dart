@@ -132,11 +132,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
     ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
-      print("Overlay state changed to $next $previous");
       if (next) {
         showSpendRequirementOverlay(context, account);
       } else {
-        hideSpendRequirementOverlay();
+        if (!ref.read(spendEditModeProvider)) {
+          hideSpendRequirementOverlay();
+        }
       }
     });
     List<Transaction> transactions =

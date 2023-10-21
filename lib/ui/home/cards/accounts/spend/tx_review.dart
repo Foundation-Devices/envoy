@@ -888,7 +888,12 @@ class _TransactionReviewScreenState
                       ///toggle to coins view for coin control
                       ref.read(accountToggleStateProvider.notifier).state =
                           AccountToggleState.Coins;
-                      context.go(ROUTE_ACCOUNT_DETAIL);
+
+                      ///pop review
+                      GoRouter.of(context).pop();
+
+                      ///pop spend form
+                      GoRouter.of(context).pop();
                     },
                   ),
                   Padding(padding: EdgeInsets.all(6)),
