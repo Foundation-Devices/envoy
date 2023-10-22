@@ -45,3 +45,14 @@ final coinTagSortStateProvider =
 
 final accountToggleStateProvider =
     StateProvider<AccountToggleState>((ref) => AccountToggleState.Tx);
+
+///clears existing filter states. this will be called when the user navigates to account detail page
+clearFilterState(WidgetRef ref) {
+  ref.read(txSortStateProvider.notifier).state =
+      TransactionSortTypes.newestFirst;
+  ref.read(txFilterStateProvider.notifier).state = Set()
+    ..addAll(TransactionFilters.values);
+  ref.read(coinTagSortStateProvider.notifier).state =
+      CoinTagSortTypes.sortByTagNameAsc;
+  ref.read(accountToggleStateProvider.notifier).state = AccountToggleState.Tx;
+}

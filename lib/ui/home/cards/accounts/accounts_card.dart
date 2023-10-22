@@ -12,6 +12,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -47,7 +48,6 @@ class AccountsCardState extends State<AccountsCard>
   @override
   void initState() {
     super.initState();
-
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
   }
@@ -211,6 +211,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                   child: AccountListTile(
                     account,
                     onTap: () async {
+                      clearFilterState(ref);
                       ref.read(selectedAccountProvider.notifier).state =
                           account;
                       context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
