@@ -8,10 +8,12 @@ import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,15 +31,15 @@ const ROUTE_ACCOUNTS_HOME = '/account';
 const _ACCOUNT_DETAIL = 'details';
 const ROUTE_ACCOUNT_DETAIL = '${ROUTE_ACCOUNTS_HOME}/${_ACCOUNT_DETAIL}';
 
-const _ACCOUNT_SEND = 'send';
-const ROUTE_ACCOUNT_SEND = '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_SEND}';
-
 const _ACCOUNT_RECEIVE = 'receive';
 const ROUTE_ACCOUNT_RECEIVE = '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_RECEIVE}';
 
 const _ACCOUNT_DESCRIPTOR = 'desc';
 const ROUTE_ACCOUNT_DESCRIPTOR =
     '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_DESCRIPTOR}';
+
+const _ACCOUNT_SEND = 'send';
+const ROUTE_ACCOUNT_SEND = '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_SEND}';
 
 const _ACCOUNT_SEND_CONFIRM = 'confirm';
 const ROUTE_ACCOUNT_SEND_CONFIRM =
@@ -75,7 +77,27 @@ final accountsRouter = StatefulShellBranch(
               wrapWithVerticalAxisAnimation(AccountsCard()),
           routes: [
             GoRoute(
-              onExit: (context) {
+              onExit: (context) async {
+                ProviderContainer providerContainer =
+                    ProviderScope.containerOf(context);
+                bool isInEdit = providerContainer.read(spendEditModeProvider);
+                if (providerContainer
+                        .read(coinSelectionStateProvider)
+                        .isNotEmpty ||
+                    isInEdit) {
+                  providerContainer
+                      .read(coinSelectionStateProvider.notifier)
+                      .reset();
+                  providerContainer.read(spendEditModeProvider.notifier).state =
+                      false;
+                  await Future.delayed(Duration(milliseconds: 50));
+                  providerContainer.read(hideBottomNavProvider.notifier).state =
+                      false;
+                  clearSpendState(providerContainer);
+
+                  ///TODO: show a dialog to confirm the user wants to exit the selection mode;
+                  return false;
+                }
                 ProviderScope.containerOf(context)
                     .read(accountToggleStateProvider.notifier)
                     .state = AccountToggleState.Tx;

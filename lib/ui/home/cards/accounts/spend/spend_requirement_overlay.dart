@@ -7,7 +7,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/amount.dart';
@@ -21,10 +20,9 @@ AnimationController? _spendOverlayAnimationController;
 OverlayEntry? overlayEntry = null;
 
 showSpendRequirementOverlay(BuildContext context, Account account) async {
+  /// already visible
   if (overlayEntry != null) {
-    overlayEntry?.remove();
-    overlayEntry?.dispose();
-    overlayEntry = null;
+    return;
   }
   await Future.delayed(Duration(milliseconds: 50));
   overlayEntry = OverlayEntry(builder: (context) {
@@ -168,7 +166,8 @@ class _SpendRequirementOverlayState
     );
 
     bool hideRequiredAmount = requiredAmount == 0;
-
+    bool valid =
+        (totalSelectedAmount != 0 && totalSelectedAmount >= requiredAmount);
     return GestureDetector(
       onPanDown: (details) {
         _spendOverlayAnimationController!.stop();
@@ -279,17 +278,27 @@ class _SpendRequirementOverlayState
                         ],
                       ),
                       EnvoyButton(
+                        enabled: valid,
+                        readOnly: !valid,
                         S().coincontrol_edit_transaction_cta,
                         onTap: () async {
                           /// if the user is in utxo details screen we need to wait animations to finish
                           /// before we can pop back to home screen
                           if (Navigator.canPop(context)) {
-                            popBackToHome(context);
+                            Navigator.of(context).popUntil((route) {
+                              return route.settings is MaterialPage;
+                            });
                             await Future.delayed(Duration(milliseconds: 320));
                           }
                           hideSpendRequirementOverlay();
                           await Future.delayed(Duration(milliseconds: 120));
-                          GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
+                          if (ref.read(spendEditModeProvider)) {
+                            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
+                            GoRouter.of(context)
+                                .push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                          } else {
+                            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
+                          }
                         },
                       )
                     ],

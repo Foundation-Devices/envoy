@@ -231,6 +231,9 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                 onPressed: () {
                   ref.read(txSortStateProvider.notifier).state =
                       TransactionSortTypes.newestFirst;
+                  setState(() {
+                    _sortState = TransactionSortTypes.newestFirst;
+                  });
                 },
                 child: Text(
                   "Reset sorting", // TODO: FIGMA

@@ -125,6 +125,8 @@ class _SendCardState extends ConsumerState<SendCard>
                       padding: const EdgeInsets.all(50.0),
                       child: Consumer(
                         builder: (context, ref, child) {
+                          final isCoinSelected =
+                              ref.watch(isCoinsSelectedProvider);
                           final formValidation =
                               ref.watch(spendValidationProvider);
                           int spendAmount = ref.watch(spendAmountProvider);
@@ -144,12 +146,20 @@ class _SendCardState extends ConsumerState<SendCard>
                             valid = true;
                             buttonText = S().send_keyboard_address_confirm;
                             if (spendAmount == 0) {
-                              buttonText = S().send_keyboard_send_max;
+                              if (isCoinSelected) {
+                                buttonText = "Send Selected";
+                              } else {
+                                buttonText = S().send_keyboard_send_max;
+                              }
                             }
                           } else {
                             if (addressEmpty) {
                               if (spendAmount == 0) {
-                                buttonText = S().send_keyboard_send_max;
+                                if (isCoinSelected) {
+                                  buttonText = "Send Selected";
+                                } else {
+                                  buttonText = S().send_keyboard_send_max;
+                                }
                               }
                               buttonText = S().send_keyboard_address_confirm;
                             } else {
