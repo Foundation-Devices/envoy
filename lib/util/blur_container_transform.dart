@@ -497,8 +497,12 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
         return _FlippableTweenSequence<double>(
           <TweenSequenceItem<double>>[
             TweenSequenceItem<double>(
-              tween: ConstantTween<double>(1.0),
-              weight: 1,
+              tween: ConstantTween(1),
+              weight: 0.5,
+            ),
+            TweenSequenceItem<double>(
+              tween: ConstantTween<double>(0.0),
+              weight: .5,
             ),
           ],
         );
@@ -760,22 +764,14 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                   color: Colors.transparent,
                   elevation: 0,
                   shape: openShape,
-                  child: TweenAnimationBuilder<Color?>(
-                    //Slowly fade in scrim color
-                    duration: Duration(seconds: 3),
-                    builder: (context, value, child) {
-                      return Container(
-                        color: value,
-                        child: Builder(
-                          key: _openBuilderKey,
-                          builder: (BuildContext context) {
-                            return openBuilder(context, closeContainer);
-                          },
-                        ),
-                      );
-                    },
-                    tween: ColorTween(
-                        begin: Colors.transparent, end: scrimBlackColor),
+                  child: Container(
+                    color: scrimBlackColor,
+                    child: Builder(
+                      key: _openBuilderKey,
+                      builder: (BuildContext context) {
+                        return openBuilder(context, closeContainer);
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -831,7 +827,10 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                       Tween(begin: 0.0, end: 10.0).evaluate(curvedAnimation),
                   tileMode: TileMode.repeated),
               child: Container(
-                // color: scrimTween?.animate(curvedAnimation).value,
+                color: ColorTween(
+                  begin: Colors.transparent,
+                  end: scrimBlackColor,
+                ).evaluate(curvedAnimation),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Transform.translate(
