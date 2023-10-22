@@ -90,7 +90,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                 child: IndicatorShield(),
               ),
               Text(
-                "Transaction Details", // TODO: FIGMA
+                "Transaction Details".toUpperCase(), // TODO: FIGMA
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: Colors.white,
                       fontSize: 18,
@@ -103,7 +103,8 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
           child: AnimatedContainer(
             height: 340,
             duration: Duration(milliseconds: 250),

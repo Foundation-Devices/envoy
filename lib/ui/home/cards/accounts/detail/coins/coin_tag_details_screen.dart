@@ -20,6 +20,7 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -145,7 +146,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             ],
           ),
           body: Container(
-            height: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
             child: PageTransitionSwitcher(
               reverse: _selectedCoin == null,
               transitionBuilder: (
