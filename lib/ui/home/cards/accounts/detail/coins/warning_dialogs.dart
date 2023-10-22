@@ -201,6 +201,12 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                   onTap: () {
                     setState(() {
                       dismissed = !dismissed;
+                      if (dismissed)
+                        EnvoyStorage().addPromptState(
+                            DismissiblePrompt.createCoinTagWarning);
+                      else
+                        EnvoyStorage().removePromptState(
+                            DismissiblePrompt.createCoinTagWarning);
                     });
                   },
                   child: Row(
@@ -214,6 +220,12 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                             if (value != null)
                               setState(() {
                                 dismissed = value;
+                                if (dismissed)
+                                  EnvoyStorage().addPromptState(
+                                      DismissiblePrompt.createCoinTagWarning);
+                                else
+                                  EnvoyStorage().removePromptState(
+                                      DismissiblePrompt.createCoinTagWarning);
                               });
                           },
                         ),
