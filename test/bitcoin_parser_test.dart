@@ -250,7 +250,7 @@ void main() async {
     var parsed = await BitcoinParser.parse(pasted,
         fiatExchangeRate: 1,
         selectedFiat: null,
-        currentUnit: AmountDisplayUnit.btc);
+        currentUnit: AmountDisplayUnit.sat);
 
     expect(parsed.address, null);
     expect(parsed.amountSats, 1900000000500000);
@@ -258,16 +258,29 @@ void main() async {
   });
 
   test("test (num >= 21000000)", () async {
+    var pasted = "21000100";
+
+    var parsed = await BitcoinParser.parse(pasted,
+        fiatExchangeRate: 1,
+        selectedFiat: null,
+        currentUnit: AmountDisplayUnit.sat);
+
+    expect(parsed.address, null);
+    expect(parsed.amountSats, 21000100);
+    expect(parsed.unit, AmountDisplayUnit.sat);
+  });
+
+  test("test (num >= 21000000) - with decimal places", () async {
     var pasted = "21000100.02";
 
     var parsed = await BitcoinParser.parse(pasted,
         fiatExchangeRate: 1,
         selectedFiat: null,
-        currentUnit: AmountDisplayUnit.btc);
+        currentUnit: AmountDisplayUnit.sat);
 
     expect(parsed.address, null);
-    expect(parsed.amountSats, 2100010002000000);
-    expect(parsed.unit, AmountDisplayUnit.fiat);
+    expect(parsed.amountSats, null);
+    expect(parsed.unit, null);
   });
 }
 
