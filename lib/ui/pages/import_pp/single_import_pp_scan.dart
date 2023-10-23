@@ -20,9 +20,8 @@ class SingleImportPpScanPage extends OnboardingPage {
         clipArt: Image.asset("assets/pair_new_device_scan.png"),
         text: [
           OnboardingText(
-            header: S().envoy_scv_intro_loading_heading,
-            text: S().envoy_scv_intro_loading_subheading,
-          )
+              header: S().pair_new_device_scan_heading,
+              text: S().pair_new_device_scan_subheading)
         ],
         navigationDots: 2,
         navigationDotsIndex: 1,
