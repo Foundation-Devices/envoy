@@ -15,18 +15,19 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ManualSetupCreateAndStoreBackup extends StatefulWidget {
+class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
   const ManualSetupCreateAndStoreBackup({Key? key}) : super(key: key);
 
   @override
-  State<ManualSetupCreateAndStoreBackup> createState() =>
+  ConsumerState<ManualSetupCreateAndStoreBackup> createState() =>
       _ManualSetupCreateAndStoreBackupState();
 }
 
 class _ManualSetupCreateAndStoreBackupState
-    extends State<ManualSetupCreateAndStoreBackup> {
+    extends ConsumerState<ManualSetupCreateAndStoreBackup> {
   @override
   Widget build(BuildContext context) {
+    final globalState = ref.watch(globalStateProvider);
     return OnboardPageBackground(
         child: Column(
       children: [
@@ -78,8 +79,15 @@ class _ManualSetupCreateAndStoreBackupState
                     child: OnboardingButton(
                         type: EnvoyButtonTypes.primary,
                         label: S().manual_setup_create_and_store_backup_CTA,
-                        onTap: () {
-                          showWarningModal(context);
+                        onTap: () async {
+                          await EnvoySeed().saveOfflineData();
+
+                          if (globalState == GlobalState.nuclearDelete) {
+                            showEnvoyDialog(
+                                context: context,
+                                dialog: EraseWalletsConfirmation());
+                          } else
+                            showWarningModal(context);
                         }))
               ],
             ),
@@ -102,7 +110,6 @@ class BackupWarningModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final globalState = ref.watch(globalStateProvider);
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
@@ -133,18 +140,12 @@ class BackupWarningModal extends ConsumerWidget {
                 label: S().manual_setup_create_and_store_backup_modal_CTA,
                 onTap: () async {
                   Navigator.pop(context);
-                  await EnvoySeed().saveOfflineData();
-                  if (globalState == GlobalState.nuclearDelete) {
-                    showEnvoyDialog(
-                        context: context, dialog: EraseWalletsConfirmation());
-                  } else {
-                    //make sure system filepicker shown before navigating to success screen
-                    await Future.delayed(Duration(milliseconds: 200));
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return WalletSetupSuccess();
-                    }));
-                  }
+                  //make sure system filepicker shown before navigating to success screen
+                  await Future.delayed(Duration(milliseconds: 200));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return WalletSetupSuccess();
+                  }));
+                  //}
                 }),
             Padding(padding: EdgeInsets.all(12)),
           ],
