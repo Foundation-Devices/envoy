@@ -13,6 +13,9 @@ import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -172,11 +175,31 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyDialog(
-                  content: Text(S().manage_device_disconnect_modal),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      EnvoyIcon(
+                        EnvoyIcons.alert,
+                        color: EnvoyColors.darkCopper,
+                        size: EnvoyIconSize.big,
+                      ),
+                      SizedBox(
+                        height: EnvoySpacing.medium1,
+                      ),
+                      Text(
+                        "Are you sure you want to disconnect Passport? This will remove the device from Envoy alongside any connected accounts.", // TODO: FIGMA
+                        style: EnvoyTypography.info,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                   actions: [
                     EnvoyButton(
-                      S().manage_device_disconnect_modal.toUpperCase(),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      S().manage_device_disconnect_modal,
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(EnvoySpacing.small)),
+                      textStyle: EnvoyTypography.button
+                          .copyWith(color: EnvoyColors.white100),
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {
                         Devices().deleteDevice(widget.device);
