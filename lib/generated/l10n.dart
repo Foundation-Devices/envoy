@@ -106,6 +106,8 @@ class S {
 
   // skipped getter for the '<- Find fee icon' key
 
+  // skipped getter for the '?' key
+
   // skipped getter for the 'AZTECO VOUCHERS' key
 
   // skipped getter for the 'Account Name' key
@@ -150,10 +152,10 @@ class S {
     );
   }
 
-  /// `3,000,000`
+  /// `-TBD`
   String get Balance {
     return Intl.message(
-      '3,000,000',
+      '-TBD',
       name: 'Balance',
       desc: '',
       args: [],
@@ -252,10 +254,10 @@ class S {
 
   // skipped getter for the 'Click Here For More' key
 
-  /// `1 of 3 Coins Selected  |  1 Locked`
+  /// `1 Locked`
   String get CoinInfo {
     return Intl.message(
-      '1 of 3 Coins Selected  |  1 Locked',
+      '1 Locked',
       name: 'CoinInfo',
       desc: '',
       args: [],
@@ -680,10 +682,10 @@ class S {
     );
   }
 
-  /// `SEND`
+  /// `account Details`
   String get ScreenTitle {
     return Intl.message(
-      'SEND',
+      'account Details',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -694,10 +696,12 @@ class S {
 
   // skipped getter for the 'Search...' key
 
-  /// `$754.68`
+  // skipped getter for the 'Second Value' key
+
+  /// `$T.BD`
   String get Secondary {
     return Intl.message(
-      '\$754.68',
+      '\$T.BD',
       name: 'Secondary',
       desc: '',
       args: [],
@@ -796,10 +800,10 @@ class S {
     );
   }
 
-  /// `Exchange`
+  /// `Conferences`
   String get TagName {
     return Intl.message(
-      'Exchange',
+      'Conferences',
       name: 'TagName',
       desc: '',
       args: [],
@@ -854,6 +858,18 @@ class S {
 
   // skipped getter for the 'Unboxing Passport Pt.1' key
 
+  /// `5,000,000`
+  String get Value {
+    return Intl.message(
+      '5,000,000',
+      name: 'Value',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'WIP, please STAGING' key
+
   /// `Watched`
   String get Watched {
     return Intl.message(
@@ -884,10 +900,10 @@ class S {
     );
   }
 
-  /// `Send Selected`
+  /// `SOURCE`
   String get _ {
     return Intl.message(
-      'Send Selected',
+      'SOURCE',
       name: '_',
       desc: '',
       args: [],
@@ -1636,11 +1652,41 @@ class S {
     );
   }
 
+  /// `Tags`
+  String get coincontrol_coin_filter_off_LabeledSwitch_tags {
+    return Intl.message(
+      'Tags',
+      name: 'coincontrol_coin_filter_off_LabeledSwitch_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get coincontrol_edit_transaction_confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'coincontrol_edit_transaction_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get coincontrol_edit_transaction_cta {
     return Intl.message(
       'Continue',
       name: 'coincontrol_edit_transaction_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insufficient funds`
+  String get coincontrol_edit_transaction_insufficientFunds {
+    return Intl.message(
+      'Insufficient funds',
+      name: 'coincontrol_edit_transaction_insufficientFunds',
       desc: '',
       args: [],
     );
@@ -1676,11 +1722,21 @@ class S {
     );
   }
 
-  /// `1,500,000`
+  /// `0`
   String get coincontrol_edit_transaction_selected_inputs_sats {
     return Intl.message(
-      '1,500,000',
+      '0',
       name: 'coincontrol_edit_transaction_selected_inputs_sats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Selected`
+  String get coincontrol_edit_transaction_sendSelected {
+    return Intl.message(
+      'Send Selected',
+      name: 'coincontrol_edit_transaction_sendSelected',
       desc: '',
       args: [],
     );
@@ -1701,6 +1757,26 @@ class S {
     return Intl.message(
       'WARNING\n\nUnlocking coins will make them available for use in transactions.',
       name: 'coincontrol_lock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get coincontrol_send_transaction_continue {
+    return Intl.message(
+      'Continue',
+      name: 'coincontrol_send_transaction_continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Max`
+  String get coincontrol_send_transaction_sendMax {
+    return Intl.message(
+      'Send Max',
+      name: 'coincontrol_send_transaction_sendMax',
       desc: '',
       args: [],
     );
@@ -1844,10 +1920,10 @@ class S {
     );
   }
 
-  /// `Send`
+  /// `TRANSACTION Details`
   String get coincontrol_tx_detail_expand_heading {
     return Intl.message(
-      'Send',
+      'TRANSACTION Details',
       name: 'coincontrol_tx_detail_expand_heading',
       desc: '',
       args: [],
@@ -1874,30 +1950,30 @@ class S {
     );
   }
 
-  /// `Custom`
+  /// `Faster`
   String get coincontrol_tx_detail_fee_custom {
     return Intl.message(
-      'Custom',
+      'Faster',
       name: 'coincontrol_tx_detail_fee_custom',
       desc: '',
       args: [],
     );
   }
 
-  /// `Faster`
+  /// `Standard`
   String get coincontrol_tx_detail_fee_faster {
     return Intl.message(
-      'Faster',
+      'Standard',
       name: 'coincontrol_tx_detail_fee_faster',
       desc: '',
       args: [],
     );
   }
 
-  /// `Standard`
+  /// `Custom`
   String get coincontrol_tx_detail_fee_standard {
     return Intl.message(
-      'Standard',
+      'Custom',
       name: 'coincontrol_tx_detail_fee_standard',
       desc: '',
       args: [],
@@ -1919,6 +1995,16 @@ class S {
     return Intl.message(
       'Confirm the transaction details are correct before sending.',
       name: 'coincontrol_tx_detail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get coincontrol_tx_history_filter_off_LabeledSwitch_activity {
+    return Intl.message(
+      'Activity',
+      name: 'coincontrol_tx_history_filter_off_LabeledSwitch_activity',
       desc: '',
       args: [],
     );
@@ -2156,6 +2242,16 @@ class S {
     );
   }
 
+  /// `Suggestions`
+  String get create_first_tag_modal_2_2_suggest {
+    return Intl.message(
+      'Suggestions',
+      name: 'create_first_tag_modal_2_2_suggest',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get create_second_tag_modal_1_2_cta1 {
     return Intl.message(
@@ -2206,11 +2302,71 @@ class S {
     );
   }
 
+  /// `Donations`
+  String get create_second_tag_modal_2_2_exampleTag_donations {
+    return Intl.message(
+      'Donations',
+      name: 'create_second_tag_modal_2_2_exampleTag_donations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exchange`
+  String get create_second_tag_modal_2_2_exampleTag_exchange {
+    return Intl.message(
+      'Exchange',
+      name: 'create_second_tag_modal_2_2_exampleTag_exchange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal`
+  String get create_second_tag_modal_2_2_exampleTag_personal {
+    return Intl.message(
+      'Personal',
+      name: 'create_second_tag_modal_2_2_exampleTag_personal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Savings`
+  String get create_second_tag_modal_2_2_exampleTag_savings {
+    return Intl.message(
+      'Savings',
+      name: 'create_second_tag_modal_2_2_exampleTag_savings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Travel`
+  String get create_second_tag_modal_2_2_exampleTag_travel {
+    return Intl.message(
+      'Travel',
+      name: 'create_second_tag_modal_2_2_exampleTag_travel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choose a Tag`
   String get create_second_tag_modal_2_2_heading {
     return Intl.message(
       'Choose a Tag',
       name: 'create_second_tag_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most used`
+  String get create_second_tag_modal_2_2_mostUsed {
+    return Intl.message(
+      'Most used',
+      name: 'create_second_tag_modal_2_2_mostUsed',
       desc: '',
       args: [],
     );
@@ -2241,6 +2397,36 @@ class S {
   // skipped getter for the 'delete tag_modal_cta2' key
 
   // skipped getter for the 'delete tag_modal_subheading' key
+
+  /// `Back`
+  String get delete_tag_modal_cta1 {
+    return Intl.message(
+      'Back',
+      name: 'delete_tag_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Tag`
+  String get delete_tag_modal_cta2 {
+    return Intl.message(
+      'Delete Tag',
+      name: 'delete_tag_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING\n\nDeleting this tag will automatically mark these coins as untagged.`
+  String get delete_tag_modal_subheading {
+    return Intl.message(
+      'WARNING\n\nDeleting this tag will automatically mark these coins as untagged.',
+      name: 'delete_tag_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Go to Settings`
   String get delete_wallet_for_good_instant_android_cta1 {
@@ -3633,6 +3819,166 @@ class S {
     return Intl.message(
       'Please try again',
       name: 'launch_screen_faceID_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get learning_center_filter_all {
+    return Intl.message(
+      'All',
+      name: 'learning_center_filter_all',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blog posts`
+  String get learning_center_filter_blog {
+    return Intl.message(
+      'Blog posts',
+      name: 'learning_center_filter_blog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FAQs`
+  String get learning_center_filter_faqs {
+    return Intl.message(
+      'FAQs',
+      name: 'learning_center_filter_faqs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter`
+  String get learning_center_filter_heading {
+    return Intl.message(
+      'Filter',
+      name: 'learning_center_filter_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset filter`
+  String get learning_center_filter_reset_filter_cta {
+    return Intl.message(
+      'Reset filter',
+      name: 'learning_center_filter_reset_filter_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Videos`
+  String get learning_center_filter_videos {
+    return Intl.message(
+      'Videos',
+      name: 'learning_center_filter_videos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WELCOME TO THE\nLEARNING CENTER`
+  String get learning_center_heading {
+    return Intl.message(
+      'WELCOME TO THE\nLEARNING CENTER',
+      name: 'learning_center_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply filters`
+  String get learning_center_main_cta {
+    return Intl.message(
+      'Apply filters',
+      name: 'learning_center_main_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search...`
+  String get learning_center_search_input {
+    return Intl.message(
+      'Search...',
+      name: 'learning_center_search_input',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sort by`
+  String get learning_center_sort_heading {
+    return Intl.message(
+      'Sort by',
+      name: 'learning_center_sort_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Newest first`
+  String get learning_center_sort_newest {
+    return Intl.message(
+      'Newest first',
+      name: 'learning_center_sort_newest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oldest first`
+  String get learning_center_sort_oldest {
+    return Intl.message(
+      'Oldest first',
+      name: 'learning_center_sort_oldest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset sorting`
+  String get learning_center_sort_reset_sort_cta {
+    return Intl.message(
+      'Reset sorting',
+      name: 'learning_center_sort_reset_sort_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blog`
+  String get learning_center_title_blog {
+    return Intl.message(
+      'Blog',
+      name: 'learning_center_title_blog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FAQs`
+  String get learning_center_title_faq {
+    return Intl.message(
+      'FAQs',
+      name: 'learning_center_title_faq',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Videos`
+  String get learning_center_title_video {
+    return Intl.message(
+      'Videos',
+      name: 'learning_center_title_video',
       desc: '',
       args: [],
     );
@@ -6182,10 +6528,10 @@ class S {
     );
   }
 
-  /// `Connect to home screen`
+  /// `Continue to home screen`
   String get pair_new_device_success_cta2 {
     return Intl.message(
-      'Connect to home screen',
+      'Continue to home screen',
       name: 'pair_new_device_success_cta2',
       desc: '',
       args: [],
@@ -6272,6 +6618,16 @@ class S {
     );
   }
 
+  /// `Like-Type Change`
+  String get privacy_advancedSettings_likeTypeChange_text {
+    return Intl.message(
+      'Like-Type Change',
+      name: 'privacy_advancedSettings_likeTypeChange_text',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Application lock`
   String get privacy_applicationLock_title {
     return Intl.message(
@@ -6282,10 +6638,10 @@ class S {
     );
   }
 
-  /// `Like-Type Change`
+  /// `Unlock with biometrics or PIN`
   String get privacy_applicationLock_unlock {
     return Intl.message(
-      'Like-Type Change',
+      'Unlock with biometrics or PIN',
       name: 'privacy_applicationLock_unlock',
       desc: '',
       args: [],
@@ -6342,10 +6698,10 @@ class S {
     );
   }
 
-  /// `FAQs`
+  /// `Advanced settings`
   String get privacy_node_title {
     return Intl.message(
-      'FAQs',
+      'Advanced settings',
       name: 'privacy_node_title',
       desc: '',
       args: [],
@@ -6407,6 +6763,36 @@ class S {
     return Intl.message(
       'Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.',
       name: 'privacy_privacyMode_torSuggestionOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn more`
+  String get privacy_screenHeading_popupWarning_learnMore {
+    return Intl.message(
+      'Learn more',
+      name: 'privacy_screenHeading_popupWarning_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disabling like-type change addresses may harm your privacy. `
+  String get privacy_screenHeading_popupWarning_subtitle {
+    return Intl.message(
+      'Disabling like-type change addresses may harm your privacy. ',
+      name: 'privacy_screenHeading_popupWarning_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warning`
+  String get privacy_screenHeading_popupWarning_title {
+    return Intl.message(
+      'Warning',
+      name: 'privacy_screenHeading_popupWarning_title',
       desc: '',
       args: [],
     );
@@ -7022,10 +7408,10 @@ class S {
     );
   }
 
-  /// `SEND`
+  /// `Send`
   String get send_keyboard_heading {
     return Intl.message(
-      'SEND',
+      'Send',
       name: 'send_keyboard_heading',
       desc: '',
       args: [],
@@ -7092,10 +7478,10 @@ class S {
     );
   }
 
-  /// `Send max`
+  /// `Send Max`
   String get send_keyboard_send_max {
     return Intl.message(
-      'Send max',
+      'Send Max',
       name: 'send_keyboard_send_max',
       desc: '',
       args: [],
@@ -7112,20 +7498,20 @@ class S {
     );
   }
 
-  /// `Scan the QR with Passport`
+  /// `Scan the QR with your Passport`
   String get send_qr_code_card_heading {
     return Intl.message(
-      'Scan the QR with Passport',
+      'Scan the QR with your Passport',
       name: 'send_qr_code_card_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `It contains the transaction for your Passport to sign. Tap QR to enlarge.`
+  /// `It contains the transaction for your Passport to sign.`
   String get send_qr_code_card_subheading {
     return Intl.message(
-      'It contains the transaction for your Passport to sign. Tap QR to enlarge.',
+      'It contains the transaction for your Passport to sign.',
       name: 'send_qr_code_card_subheading',
       desc: '',
       args: [],
@@ -7142,10 +7528,10 @@ class S {
     );
   }
 
-  /// `Sending Max: \nFees are deducted from amount being sent.`
+  /// `You can now scan the QR code displayed on your Passport with your phone camera.`
   String get send_qr_code_subheading {
     return Intl.message(
-      'Sending Max: \nFees are deducted from amount being sent.',
+      'You can now scan the QR code displayed on your Passport with your phone camera.',
       name: 'send_qr_code_subheading',
       desc: '',
       args: [],
@@ -7157,6 +7543,16 @@ class S {
     return Intl.message(
       'Sending Max: \nFees are deducted from amount being sent.',
       name: 'send_reviewScreen_sendMaxWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To:`
+  String get send_screen_address_entry_to {
+    return Intl.message(
+      'To:',
+      name: 'send_screen_address_entry_to',
       desc: '',
       args: [],
     );
@@ -7372,10 +7768,10 @@ class S {
     );
   }
 
-  /// `Scan QR from Passport`
+  /// `Send transaction`
   String get stalls_before_sending_tx_cta1 {
     return Intl.message(
-      'Scan QR from Passport',
+      'Send transaction',
       name: 'stalls_before_sending_tx_cta1',
       desc: '',
       args: [],
@@ -7532,10 +7928,10 @@ class S {
     );
   }
 
-  /// `Fee`
+  /// `TX ID`
   String get stalls_before_sending_tx_txid {
     return Intl.message(
-      'Fee',
+      'TX ID',
       name: 'stalls_before_sending_tx_txid',
       desc: '',
       args: [],
@@ -7587,6 +7983,16 @@ class S {
     return Intl.message(
       'Dismiss',
       name: 'tap_and_drag_first_time_text_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tb1q33xnrjena6apwnhx5t375`
+  String get tb1q33xnrjena6apwnhx5t375 {
+    return Intl.message(
+      'tb1q33xnrjena6apwnhx5t375',
+      name: 'tb1q33xnrjena6apwnhx5t375',
       desc: '',
       args: [],
     );
