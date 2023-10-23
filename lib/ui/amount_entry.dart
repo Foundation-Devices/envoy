@@ -9,10 +9,9 @@ import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_display.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as designSystem;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
@@ -263,7 +262,7 @@ class SpendableAmountWidget extends ConsumerWidget {
         Text(
           isCoinsSelected ? "Selected amount" : "Available balance",
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: EnvoyColors.grey,
+                color: EnvoyColors.textSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
               ),
@@ -279,7 +278,7 @@ class SpendableAmountWidget extends ConsumerWidget {
                     sendScreenUnit == AmountDisplayUnit.btc
                         ? "assets/icons/ic_bitcoin_straight.svg"
                         : "assets/icons/ic_sats.svg",
-                    color: Color(0xff808080),
+                    color: EnvoyColors.gray600,
                   )),
             ),
             Container(
@@ -287,7 +286,7 @@ class SpendableAmountWidget extends ConsumerWidget {
               child: Text(
                 " ${sendScreenUnit == AmountDisplayUnit.btc ? convertSatsToBtcString(totalAmount, trailingZeroes: true) : satsFormatter.format(totalAmount)}",
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      color: EnvoyColors.grey,
+                      color: EnvoyColors.textSecondary,
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                     ),
@@ -427,7 +426,7 @@ class NumpadButton extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: EnvoyColors.grey22,
+            color: EnvoyColors.border2,
           ),
           child: Center(child: () {
             switch (type) {
@@ -446,11 +445,11 @@ class NumpadButton extends StatelessWidget {
                 return Padding(
                     padding: const EdgeInsets.only(right: 3, top: 2),
                     child: EnvoyIcon(EnvoyIcons.delete,
-                        color: designSystem.EnvoyColors.teal500));
+                        color: EnvoyColors.accentPrimary));
               case NumpadButtonType.clipboard:
                 return EnvoyIcon(
                   EnvoyIcons.clipboard,
-                  color: Colors.teal,
+                  color: EnvoyColors.accentPrimary,
                 );
             }
           }()),
