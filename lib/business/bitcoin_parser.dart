@@ -79,6 +79,9 @@ class BitcoinParser {
       return ParseResult(address: null, amountSats: null, unit: null);
     } else {
       var copiedStringParsed = double.parse(data);
+      String numberAsString = copiedStringParsed.toString();
+      int decimalPlaces =
+          numberAsString.length - numberAsString.indexOf('.') - 1;
 
       if (copiedStringParsed >= 21000000) {
         if ((copiedStringParsed % 1) == 0) {
@@ -93,9 +96,12 @@ class BitcoinParser {
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);
           }
         } else {
-          unit = AmountDisplayUnit.fiat;
-
-          amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+          if (!isFiatSelected) {
+            return ParseResult(address: null, amountSats: null, unit: unit);
+          } else {
+            unit = AmountDisplayUnit.fiat;
+            amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+          }
         }
 
         return ParseResult(address: null, amountSats: amountInSats, unit: unit);
@@ -124,31 +130,31 @@ class BitcoinParser {
         return ParseResult(address: null, amountSats: amountInSats, unit: unit);
       }
 
-      if (!isFiatSelected) {
+      if (!isFiatSelected || decimalPlaces >= 3) {
         unit = AmountDisplayUnit.btc;
         amountInSats = convertBtcStringToSats(data);
         return ParseResult(address: null, amountSats: amountInSats, unit: unit);
       }
 
       if (copiedStringParsed < 1 && copiedStringParsed >= 0.01) {
-        unit = (currentUnit == AmountDisplayUnit.sat)
-            ? AmountDisplayUnit.btc
-            : currentUnit;
-        if (currentUnit == AmountDisplayUnit.btc) {
-          amountInSats = convertBtcStringToSats(data);
+        unit = currentUnit;
+
+        switch (unit) {
+          case AmountDisplayUnit.sat:
+            unit = AmountDisplayUnit.btc;
+            amountInSats = convertBtcStringToSats(data);
+            break;
+
+          case AmountDisplayUnit.btc:
+            amountInSats = convertBtcStringToSats(data);
+            break;
+
+          case AmountDisplayUnit.fiat:
+            amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+            break;
+          case null:
+            break;
         }
-        if (currentUnit == AmountDisplayUnit.fiat) {
-          amountInSats = getSatsFromFiat(data, fiatExchangeRate);
-        }
-        return ParseResult(
-          address: null,
-          amountSats: amountInSats,
-          unit: unit,
-        );
-      }
-      if (copiedStringParsed <= 0.001) {
-        unit = AmountDisplayUnit.btc;
-        amountInSats = convertBtcStringToSats(data);
         return ParseResult(
           address: null,
           amountSats: amountInSats,
