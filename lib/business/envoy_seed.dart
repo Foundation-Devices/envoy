@@ -144,8 +144,7 @@ class EnvoySeed {
         await _storeLastBackupTimestamp();
       } else if (!Settings().syncToCloud && success) {
         await _storeLastBackupTimestamp();
-      } else
-        backupCompletedStream.sink.add(false);
+      } else if (cloud && !success) backupCompletedStream.sink.add(false);
     });
   }
 

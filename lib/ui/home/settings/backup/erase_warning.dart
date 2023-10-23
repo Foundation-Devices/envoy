@@ -399,15 +399,14 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
       //Show android backup info
       if (Platform.isAndroid) {
-        Navigator.of(context).popUntil(ModalRoute.withName("/"));
         await Future.delayed(Duration(milliseconds: 300));
         await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => AndroidBackupWarning()));
       } else {
-        Navigator.of(context).popUntil(ModalRoute.withName("/"));
         //wait for pop animation to finish
         await Future.delayed(Duration(milliseconds: 300));
         // Show home page and navigate to accounts
+        OnboardingPage.goHome(context);
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;
         ref.read(homePageTabProvider.notifier).state =
@@ -485,7 +484,7 @@ class AndroidBackupWarning extends StatelessWidget {
                             label:
                                 S().delete_wallet_for_good_instant_android_cta2,
                             onTap: () async {
-                              Navigator.of(context).pop();
+                              OnboardingPage.goHome(context);
                               ref
                                   .read(homePageBackgroundProvider.notifier)
                                   .state = HomePageBackgroundState.hidden;
