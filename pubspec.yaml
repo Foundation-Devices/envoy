@@ -102,6 +102,9 @@ dependencies:
   go_router: ^10.2.0
   wakelock_plus: ^1.1.1
 
+dependency_overrides:
+  watcher: ^1.1.0
+
 dev_dependencies:
   test: any
   flutter_test:
