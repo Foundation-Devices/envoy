@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
@@ -28,12 +29,22 @@ class _BackupPageState extends ConsumerState<BackupPage>
     with WidgetsBindingObserver {
   late EnvoySeed seed;
   bool _isBackupInProgress = false;
+  Timer? _timer;
 
   @override
   void initState() {
     seed = EnvoySeed();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _timer = Timer.periodic(Duration(minutes: 1), (Timer timer) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future createBackup() async {
