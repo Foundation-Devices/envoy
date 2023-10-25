@@ -15,12 +15,14 @@ class TxNoteDialog extends ConsumerStatefulWidget {
   final String txId;
   final Function(String) onAdd;
   final String noteTitle;
+  final String? value;
   final String noteSubTitle;
   final String noteHintText;
 
   const TxNoteDialog(
       {super.key,
       required this.noteTitle,
+      this.value,
       required this.onAdd,
       required this.noteSubTitle,
       required this.noteHintText,
@@ -38,7 +40,13 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _textEditingController.text = ref.read(txNoteProvider(widget.txId)) ?? "";
+      /// if value is passed as param, use that
+      if (widget.value != null) {
+        _textEditingController.text = widget.value!;
+      } else {
+        _textEditingController.text =
+            ref.read(txNoteProvider(widget.txId)) ?? "";
+      }
     });
   }
 

@@ -503,7 +503,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                   ///TODO: figma
                                                   noteTitle: "Add a Note",
 
-                                                  ///TODO: figma
+                                                  value: ref.read(
+                                                      stagingTxNoteProvider),
                                                 ),
                                                 alignment:
                                                     Alignment(0.0, -0.8));
@@ -539,7 +540,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               EdgeInsets.all(
                                                                   4)),
                                                       Text(
-                                                        "Notes",
+                                                        "Notes", //TODO: figma
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodySmall
@@ -591,12 +592,24 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               EdgeInsets.all(
                                                                   EnvoySpacing
                                                                       .xs)),
-                                                      Icon(
-                                                          Icons
-                                                              .add_circle_rounded,
-                                                          color: EnvoyColors
-                                                              .accentPrimary,
-                                                          size: 16),
+                                                      note.trim().isNotEmpty
+                                                          ? SvgPicture.asset(
+                                                              note
+                                                                      .trim()
+                                                                      .isNotEmpty
+                                                                  ? "assets/icons/ic_edit_note.svg"
+                                                                  : "assets/icons/ic_notes.svg",
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                              height: 14,
+                                                            )
+                                                          : Icon(
+                                                              Icons
+                                                                  .add_circle_rounded,
+                                                              color: EnvoyColors
+                                                                  .accentPrimary,
+                                                              size: 16),
                                                     ],
                                                   ),
                                                 )),
