@@ -49,7 +49,7 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
       });
     });
     return Padding(
-      padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+      padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: activeColor,
