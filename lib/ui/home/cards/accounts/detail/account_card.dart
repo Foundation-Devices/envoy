@@ -173,38 +173,18 @@ class _AccountCardState extends ConsumerState<AccountCard>
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.small),
-            child: account.dateSynced == null
-                ? ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: 4,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GhostListTile();
-                    },
-                  )
-                : (transactions.isNotEmpty)
-                    ? _getMainWidget(context, transactions)
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          GhostListTile(animate: false),
-                          Expanded(
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(bottom: 128),
-                                child: Text(
-                                  S().account_empty_tx_history_text_explainer,
-                                  style: _explainerTextStyleWallet.copyWith(),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-          ),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium1,
+                  vertical: EnvoySpacing.small),
+              child: account.dateSynced == null
+                  ? ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: 4,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GhostListTile();
+                      },
+                    )
+                  : _getMainWidget(context, transactions)),
         ),
       ]),
       bottomNavigationBar: Container(
@@ -310,27 +290,53 @@ class _AccountCardState extends ConsumerState<AccountCard>
         );
       },
       child: accountToggleState == AccountToggleState.Tx
-          ? FadingEdgeScrollView.fromScrollView(
-              gradientFractionOnEnd: 0.1,
-              gradientFractionOnStart: 0.1,
-              scrollController: _scrollController,
-              child: StatefulBuilder(builder: (c, s) {
-                return ListView.builder(
-                  //Space for the white gradient shadow at the bottom
-                  padding: EdgeInsets.only(bottom: 120),
-                  physics: BouncingScrollPhysics(),
-                  controller: _scrollController,
-                  itemCount: transactions.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      child: TransactionListTile(
-                          transaction: transactions[index], account: account),
-                    );
-                  },
-                );
-              }))
+          ? _buildTransactionListWidget(transactions)
           : CoinsList(account: account),
     );
+  }
+
+  Widget _buildTransactionListWidget(List<Transaction> transactions) {
+    if (transactions.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          GhostListTile(animate: false),
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 128),
+                child: Text(
+                  S().account_empty_tx_history_text_explainer,
+                  style: _explainerTextStyleWallet.copyWith(),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return FadingEdgeScrollView.fromScrollView(
+          gradientFractionOnEnd: 0.1,
+          gradientFractionOnStart: 0.1,
+          scrollController: _scrollController,
+          child: StatefulBuilder(builder: (c, s) {
+            return ListView.builder(
+              //Space for the white gradient shadow at the bottom
+              padding: EdgeInsets.only(bottom: 120),
+              physics: BouncingScrollPhysics(),
+              controller: _scrollController,
+              itemCount: transactions.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  child: TransactionListTile(
+                      transaction: transactions[index], account: account),
+                );
+              },
+            );
+          }));
+    }
   }
 }
 
