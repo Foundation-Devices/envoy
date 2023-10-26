@@ -399,6 +399,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                   if (dismissed) {
                                     showEnvoyDialog(
                                         context: context,
+                                        useRootNavigator: true,
                                         builder: Builder(
                                           builder: (context) => CreateCoinTag(
                                             accountId: tag.account,
@@ -417,6 +418,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                         alignment: Alignment(0.0, -.6));
                                   } else {
                                     showEnvoyDialog(
+                                        useRootNavigator: true,
                                         context: context,
                                         builder: Builder(builder: (context) {
                                           return CreateCoinTagWarning(
@@ -426,6 +428,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                             //Shows Coin create dialog
                                             showEnvoyDialog(
                                                 context: context,
+                                                useRootNavigator: true,
                                                 builder: Builder(
                                                   builder: (context) =>
                                                       CreateCoinTag(
@@ -524,6 +527,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   _deleteTag(BuildContext context) {
     showEnvoyDialog(
       context: context,
+      useRootNavigator: true,
       dialog: Builder(
         builder: (context) {
           return EnvoyDialog(

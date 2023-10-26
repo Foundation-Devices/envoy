@@ -200,6 +200,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
             showEnvoyDialog(
                 context: context,
                 alignment: Alignment(0.0, -.6),
+                useRootNavigator: true,
                 builder: Builder(
                   builder: (context) {
                     return CoinLockWarning(
@@ -302,6 +303,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
               showEnvoyDialog(
                   context: context,
                   alignment: Alignment(0.0, -.6),
+                  useRootNavigator: true,
                   builder: Builder(
                     builder: (context) {
                       return CoinLockWarning(
@@ -326,6 +328,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
               showEnvoyDialog(
                   context: context,
                   alignment: Alignment(0.0, -.6),
+                  useRootNavigator: true,
                   builder: Builder(
                     builder: (context) {
                       return CoinLockWarning(
