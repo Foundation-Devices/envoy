@@ -417,7 +417,9 @@ class _TransactionReviewScreenState
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               child: ListTile(
                 title: Text(
-                  S().stalls_before_sending_tx_heading,
+                  account.wallet.hot
+                      ? S().coincontrol_tx_detail_passport_heading
+                      : S().coincontrol_txDetail_heading_passport,
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
@@ -427,7 +429,9 @@ class _TransactionReviewScreenState
                 subtitle: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
-                    S().stalls_before_sending_tx_subheading,
+                    account.wallet.hot
+                        ? S().coincontrol_tx_detail_passport_subheading
+                        : S().coincontrol_txDetail_subheading_passport,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
@@ -772,7 +776,8 @@ class _TransactionReviewScreenState
                                           ref.watch(
                                               spendEstimatedBlockTimeProvider);
                                       return Text(
-                                        " $spendTimeEstimationProvider min", //TODO localize
+                                        " $spendTimeEstimationProvider min",
+                                        //TODO localize
                                         style: trailingStyle,
                                       );
                                     }),

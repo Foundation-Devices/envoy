@@ -60,8 +60,6 @@ class S {
 
   // skipped getter for the '03:37' key
 
-  // skipped getter for the '1' key
-
   // skipped getter for the '1.123456' key
 
   // skipped getter for the '1.123456 BTC' key
@@ -226,16 +224,6 @@ class S {
     );
   }
 
-  /// `Done`
-  String get Button {
-    return Intl.message(
-      'Done',
-      name: 'Button',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Button Large' key
 
   // skipped getter for the 'Button Small' key
@@ -253,16 +241,6 @@ class S {
   // skipped getter for the 'Choice 1' key
 
   // skipped getter for the 'Click Here For More' key
-
-  /// `1 Locked`
-  String get CoinInfo {
-    return Intl.message(
-      '1 Locked',
-      name: 'CoinInfo',
-      desc: '',
-      args: [],
-    );
-  }
 
   /// `List`
   String get CoinText {
@@ -336,8 +314,6 @@ class S {
 
   // skipped getter for the 'FRED - THESE ARE MY VERSION 2 UPDATE PER THIS COMMENT. https://linear.app/foundation-devices/issue/DES-1217#comment-52da9a1f' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   // skipped getter for the 'Face ID' key
 
   // skipped getter for the 'Feature Heading' key
@@ -363,16 +339,6 @@ class S {
   }
 
   // skipped getter for the 'Font Size text-xs text-sm text-base text-lg text-xl text-2xl text-3xl text-4xl text-5xl text-6xl text-7xl text-8xl text-9xl Font Weight font-thin font-extralight font-light font-normal font-medium font-semibold font-bold font-extrabold font-black' key
-
-  /// `WELCOME TO THE\nLEARNING CENTER`
-  String get Heading {
-    return Intl.message(
-      'WELCOME TO THE\nLEARNING CENTER',
-      name: 'Heading',
-      desc: '',
-      args: [],
-    );
-  }
 
   // skipped getter for the 'Heading (Subheading written All Caps)' key
 
@@ -682,16 +648,6 @@ class S {
     );
   }
 
-  /// `account Details`
-  String get ScreenTitle {
-    return Intl.message(
-      'account Details',
-      name: 'ScreenTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   // skipped getter for the 'Search input' key
 
   // skipped getter for the 'Search...' key
@@ -789,26 +745,6 @@ class S {
   }
 
   // skipped getter for the 'Tab Bar' key
-
-  /// `Learn`
-  String get TabBarItemHeading {
-    return Intl.message(
-      'Learn',
-      name: 'TabBarItemHeading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Conferences`
-  String get TagName {
-    return Intl.message(
-      'Conferences',
-      name: 'TagName',
-      desc: '',
-      args: [],
-    );
-  }
 
   /// `Tags`
   String get Tags {
@@ -1165,6 +1101,36 @@ class S {
     return Intl.message(
       'Received',
       name: 'azteco_account_tx_history_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get azteco_connection_modal_fail_cta {
+    return Intl.message(
+      'Continue',
+      name: 'azteco_connection_modal_fail_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Connect`
+  String get azteco_connection_modal_fail_heading {
+    return Intl.message(
+      'Unable to Connect',
+      name: 'azteco_connection_modal_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later.`
+  String get azteco_connection_modal_fail_subheading {
+    return Intl.message(
+      'Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later.',
+      name: 'azteco_connection_modal_fail_subheading',
       desc: '',
       args: [],
     );
@@ -1672,61 +1638,11 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get coincontrol_edit_transaction_cta {
-    return Intl.message(
-      'Continue',
-      name: 'coincontrol_edit_transaction_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Insufficient funds`
   String get coincontrol_edit_transaction_insufficientFunds {
     return Intl.message(
       'Insufficient funds',
       name: 'coincontrol_edit_transaction_insufficientFunds',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Required amount`
-  String get coincontrol_edit_transaction_required_inputs {
-    return Intl.message(
-      'Required amount',
-      name: 'coincontrol_edit_transaction_required_inputs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `1,500,000`
-  String get coincontrol_edit_transaction_required_inputs_sats {
-    return Intl.message(
-      '1,500,000',
-      name: 'coincontrol_edit_transaction_required_inputs_sats',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Selected amount`
-  String get coincontrol_edit_transaction_selected_inputs {
-    return Intl.message(
-      'Selected amount',
-      name: 'coincontrol_edit_transaction_selected_inputs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `0`
-  String get coincontrol_edit_transaction_selected_inputs_sats {
-    return Intl.message(
-      '0',
-      name: 'coincontrol_edit_transaction_selected_inputs_sats',
       desc: '',
       args: [],
     );
@@ -1880,16 +1796,6 @@ class S {
     );
   }
 
-  /// `Insufficient Funds`
-  String get coincontrol_tx_detail_custom_fee_insufficients_funds_prompt {
-    return Intl.message(
-      'Insufficient Funds',
-      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_prompt',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `sats/vB`
   String get coincontrol_tx_detail_custom_fee_sats_vb {
     return Intl.message(
@@ -1950,41 +1856,51 @@ class S {
     );
   }
 
-  /// `Faster`
-  String get coincontrol_tx_detail_fee_custom {
+  /// `Your transaction is ready \nto be sent`
+  String get coincontrol_tx_detail_heading {
     return Intl.message(
-      'Faster',
-      name: 'coincontrol_tx_detail_fee_custom',
+      'Your transaction is ready \nto be sent',
+      name: 'coincontrol_tx_detail_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Standard`
-  String get coincontrol_tx_detail_fee_faster {
+  /// `Send transaction`
+  String get coincontrol_tx_detail_passport_cta1 {
     return Intl.message(
-      'Standard',
-      name: 'coincontrol_tx_detail_fee_faster',
+      'Send transaction',
+      name: 'coincontrol_tx_detail_passport_cta1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Custom`
-  String get coincontrol_tx_detail_fee_standard {
+  /// `Cancel`
+  String get coincontrol_tx_detail_passport_cta2 {
     return Intl.message(
-      'Custom',
-      name: 'coincontrol_tx_detail_fee_standard',
+      'Cancel',
+      name: 'coincontrol_tx_detail_passport_cta2',
       desc: '',
       args: [],
     );
   }
 
   /// `Your transaction is ready \nto be sent`
-  String get coincontrol_tx_detail_heading {
+  String get coincontrol_tx_detail_passport_heading {
     return Intl.message(
       'Your transaction is ready \nto be sent',
-      name: 'coincontrol_tx_detail_heading',
+      name: 'coincontrol_tx_detail_passport_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details are correct before sending.`
+  String get coincontrol_tx_detail_passport_subheading {
+    return Intl.message(
+      'Confirm the transaction details are correct before sending.',
+      name: 'coincontrol_tx_detail_passport_subheading',
       desc: '',
       args: [],
     );
@@ -4484,10 +4400,10 @@ class S {
     );
   }
 
-  /// `Delete`
+  /// `Review transaction`
   String get manage_account_remove_cta {
     return Intl.message(
-      'Delete',
+      'Review transaction',
       name: 'manage_account_remove_cta',
       desc: '',
       args: [],
@@ -4504,10 +4420,10 @@ class S {
     );
   }
 
-  /// `This only removes the account from Envoy.`
+  /// `By canceling you will lose all transaction progress.`
   String get manage_account_remove_subheading {
     return Intl.message(
-      'This only removes the account from Envoy.',
+      'By canceling you will lose all transaction progress.',
       name: 'manage_account_remove_subheading',
       desc: '',
       args: [],
@@ -7778,10 +7694,10 @@ class S {
     );
   }
 
-  /// `Cancel`
+  /// `Cancel transaction`
   String get stalls_before_sending_tx_cta2 {
     return Intl.message(
-      'Cancel',
+      'Cancel transaction',
       name: 'stalls_before_sending_tx_cta2',
       desc: '',
       args: [],
@@ -7983,16 +7899,6 @@ class S {
     return Intl.message(
       'Dismiss',
       name: 'tap_and_drag_first_time_text_button',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `tb1q33xnrjena6apwnhx5t375`
-  String get tb1q33xnrjena6apwnhx5t375 {
-    return Intl.message(
-      'tb1q33xnrjena6apwnhx5t375',
-      name: 'tb1q33xnrjena6apwnhx5t375',
       desc: '',
       args: [],
     );
