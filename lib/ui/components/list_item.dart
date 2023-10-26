@@ -35,7 +35,7 @@ class EnvoyListTile extends StatelessWidget {
   final EnvoyIcons? leftIcon;
   final EnvoyIcons? rightIcon;
   final Color? iconColor;
-  final EnvoyIcon? unitIcon;
+  final Widget? unitIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +169,7 @@ class ActivityListTile extends StatelessWidget {
     EnvoyIcons? leftIcon;
     EnvoyIcons? rightIcon;
     Color? iconColor;
-    EnvoyIcon? unitIcon;
+    Widget? unitIcon;
 
     if (notification.type == EnvoyNotificationType.transaction) {
       leftIcon = notification.amount! >= 0

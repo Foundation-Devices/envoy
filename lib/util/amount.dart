@@ -106,41 +106,25 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
-EnvoyIcon getSatsIcon(Account account) {
+Widget getSatsIcon(Account account) {
   if (account.wallet.network != Network.Testnet) {
     return EnvoyIcon(EnvoyIcons.sats);
   } else {
-    if (account.isPostmix()) {
-      return EnvoyIcon(EnvoyIcons.sats_testnet_postmix_account);
-    }
-    if (account.wallet.hot) {
-      return EnvoyIcon(EnvoyIcons.sats_testnet_envoy_account);
-    }
-
-    if (!account.wallet.hot) {
-      return EnvoyIcon(EnvoyIcons.sats_testnet_passport_account);
-    }
-    return EnvoyIcon(EnvoyIcons.sats_testnet_neutral);
+    return TestnetIcon(
+      EnvoyIcons.sats,
+      color: account.color,
+    );
   }
 }
 
-EnvoyIcon getBtcIcon(Account account) {
+Widget getBtcIcon(Account account) {
   if (account.wallet.network != Network.Testnet) {
     return EnvoyIcon(EnvoyIcons.btc);
   } else {
-    if (account.isPostmix()) {
-      return EnvoyIcon(EnvoyIcons.btc_testnet_postmix_account);
-    }
-    if (account.wallet.hot) {
-      return EnvoyIcon(
-        EnvoyIcons.btc_testnet_envoy_account,
-      );
-    }
-
-    if (!account.wallet.hot) {
-      return EnvoyIcon(EnvoyIcons.btc_testnet_passport_account);
-    }
-    return EnvoyIcon(EnvoyIcons.btc_testnet_neutral);
+    return TestnetIcon(
+      EnvoyIcons.btc,
+      color: account.color,
+    );
   }
 }
 
@@ -159,8 +143,8 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
   return '$firstHalf$ellipsis$secondHalf';
 }
 
-EnvoyIcon getUnitIcon(Account account) {
-  EnvoyIcon iconUint = Settings().displayUnit == DisplayUnit.btc
+Widget getUnitIcon(Account account) {
+  Widget iconUint = Settings().displayUnit == DisplayUnit.btc
       ? getBtcIcon(account)
       : getSatsIcon(account);
 
