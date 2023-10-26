@@ -463,26 +463,27 @@ class CoinSubTitleText extends ConsumerWidget {
     final lockedCoins = tag.coins.where((element) => element.locked);
     final availableCoins = tag.numOfCoins - lockedCoins.length;
     String selectionMessage =
-        "${selectedCoins.length} of ${availableCoins} coins selected"; // TODO: FIGMA
+        "${selectedCoins.length} of ${availableCoins} Coins Selected"; // TODO: FIGMA
 
     if (availableCoins == 0 || availableCoins == selectedCoins.length) {
-      selectionMessage = "${selectedCoins.length} selected"; // TODO: FIGMA
+      selectionMessage =
+          "${selectedCoins.length} Coins Selected"; // TODO: FIGMA
     }
 
-    String message = "${tag.numOfCoins} coins"; // TODO: FIGMA
+    String message = "${tag.numOfCoins} Coins"; // TODO: FIGMA
     if (selectedCoins.isEmpty) {
-      message = "${tag.numOfCoins} coins"; // TODO: FIGMA
+      message = "${tag.numOfCoins} Coins"; // TODO: FIGMA
       if (lockedCoins.isNotEmpty) {
-        message = "$message | ${lockedCoins.length} locked"; // TODO: FIGMA
+        message = "$message | ${lockedCoins.length} Locked"; // TODO: FIGMA
       }
     } else {
       message = "${selectionMessage}";
       if (lockedCoins.isNotEmpty) {
-        message = "$message | ${lockedCoins.length} locked"; // TODO: FIGMA
+        message = "$message | ${lockedCoins.length} Locked"; // TODO: FIGMA
       }
     }
     if (tag.numOfCoins == lockedCoins.length) {
-      message = "${tag.numOfCoins} locked"; // TODO: FIGMA
+      message = "${tag.numOfCoins} Locked"; // TODO: FIGMA
     }
     return Text(
       message,
