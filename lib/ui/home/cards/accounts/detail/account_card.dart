@@ -27,6 +27,7 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/loader_ghost.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
@@ -670,10 +671,10 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       EnvoyButton(
                         S().manage_account_remove_cta.toUpperCase(),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        onTap: () {
+                        onTap: () async {
+                          OnboardingPage.goHome(context);
+                          await Future.delayed(Duration(milliseconds: 50));
                           AccountManager().deleteAccount(widget.account);
-                          // widget.navigator!.pop();
-                          Navigator.pop(context);
                         },
                       ),
                     ],
