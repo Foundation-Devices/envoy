@@ -198,6 +198,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                             onTap: () {
                               showEnvoyDialog(
                                   context: context,
+                                  useRootNavigator: true,
                                   dialog: TxNoteDialog(
                                     txId: tx.txId,
                                     noteTitle: S().add_note_modal_heading,
