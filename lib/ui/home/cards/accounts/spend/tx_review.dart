@@ -378,7 +378,6 @@ class _TransactionReviewScreenState
     String address = ref.watch(spendAddressProvider);
     final spendAmount = ref.watch(receiveAmountProvider);
     final unit = ref.watch(sendScreenUnitProvider);
-
     if (account == null || transactionModel.psbt == null) {
       return Container(
           child: Center(
@@ -793,7 +792,7 @@ class _TransactionReviewScreenState
                                       left: unit == DisplayUnit.btc ? 4 : 0,
                                       right: unit == DisplayUnit.btc ? 0 : 8),
                                   child: Text(
-                                    "${getFormattedAmount(amount.toInt(), trailingZeroes: true)}",
+                                    "${getFormattedAmount(amount.toInt() + psbt.fee, trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
