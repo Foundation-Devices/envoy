@@ -34,6 +34,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final rate = ref.read(spendFeeRateProvider);
+      final account = ref.read(selectedAccountProvider);
+      standardFee =
+          Fees().slowRate(account?.wallet.network ?? Network.Mainnet) * 100000;
+      fasterFee =
+          Fees().fastRate(account?.wallet.network ?? Network.Mainnet) * 100000;
       if (rate == standardFee) {
         _tabController.animateTo(0);
       } else {
