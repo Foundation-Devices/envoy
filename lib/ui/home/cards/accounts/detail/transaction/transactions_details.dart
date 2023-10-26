@@ -3,13 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
@@ -22,7 +19,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,8 +47,8 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
-    final List<CoinTag> tags = ref.watch(tagsFilteredByTxIdProvider(
-        FilterTagPayload(widget.account.id, tx.txId)));
+    // final List<CoinTag> tags = ref.watch(tagsFilteredByTxIdProvider(
+    //     FilterTagPayload(widget.account.id, tx.txId)));
     final accountAccentColor = widget.account.color;
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
@@ -274,38 +270,38 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                     getTransactionDateAndTimeString(tx),
                                     style: trailingTextStyle),
                               ),
-                              CoinTagListItem(
-                                title: "Tags", // TODO: FIGMA
-                                icon: SvgPicture.asset(
-                                  "assets/icons/ic_tag.svg",
-                                  color: Colors.black,
-                                  height: 16,
-                                ),
-                                trailing: RichText(
-                                    text: TextSpan(
-                                        children: tags.map((e) {
-                                  return TextSpan(
-                                      mouseCursor: SystemMouseCursors.click,
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          Navigator.of(context)
-                                              .push(BlurDialogRoute(
-                                            cardColor: Colors.transparent,
-                                            builder: Builder(
-                                              builder: (context) =>
-                                                  CoinTagDetailsScreen(
-                                                coinTag: e,
-                                                showCoins: true,
-                                              ),
-                                            ),
-                                          ));
-                                        },
-                                      text:
-                                          "${e.name}${tags.length > 1 ? ", " : ""}",
-                                      style: trailingTextStyle?.copyWith(
-                                          color: EnvoyColors.accentPrimary));
-                                }).toList())),
-                              ),
+                              // CoinTagListItem(
+                              //   title: "Tags", // TODO: FIGMA
+                              //   icon: SvgPicture.asset(
+                              //     "assets/icons/ic_tag.svg",
+                              //     color: Colors.black,
+                              //     height: 16,
+                              //   ),
+                              //   trailing: RichText(
+                              //       text: TextSpan(
+                              //           children: tags.map((e) {
+                              //     return TextSpan(
+                              //         mouseCursor: SystemMouseCursors.click,
+                              //         recognizer: TapGestureRecognizer()
+                              //           ..onTap = () {
+                              //             Navigator.of(context)
+                              //                 .push(BlurDialogRoute(
+                              //               cardColor: Colors.transparent,
+                              //               builder: Builder(
+                              //                 builder: (context) =>
+                              //                     CoinTagDetailsScreen(
+                              //                   coinTag: e,
+                              //                   showCoins: true,
+                              //                 ),
+                              //               ),
+                              //             ));
+                              //           },
+                              //         text:
+                              //             "${e.name}${tags.length > 1 ? ", " : ""}",
+                              //         style: trailingTextStyle?.copyWith(
+                              //             color: EnvoyColors.accentPrimary));
+                              //   }).toList())),
+                              // ),
                               CoinTagListItem(
                                 title: "Status", // TODO: FIGMA
                                 icon: SvgPicture.asset(
