@@ -100,6 +100,11 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (unit != AmountDisplayUnit.fiat)
+                Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: displayIcon(widget.account!, unit),
+                ),
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
                   style: Theme.of(context).textTheme.headlineMedium),
@@ -111,10 +116,11 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                             .headlineMedium
                             ?.copyWith(color: EnvoyColors.grey85)
                         : Theme.of(context).textTheme.headlineMedium),
-              Padding(
-                padding: const EdgeInsets.only(left: 6.0),
-                child: displayIcon(widget.account!, unit),
-              )
+              if (unit == AmountDisplayUnit.fiat)
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0),
+                  child: displayIcon(widget.account!, unit),
+                )
             ],
           ),
           RichText(
