@@ -38,6 +38,20 @@ final transactionsProvider =
   transactions.addAll(walletTransactions);
   transactions.addAll(pendingTransactions);
 
+  if (txFilterState.contains(TransactionFilters.Sent) &&
+      txFilterState.contains(TransactionFilters.Received)) {
+    //do nothing
+  } else {
+    if (txFilterState.contains(TransactionFilters.Sent)) {
+      transactions =
+          transactions.where((element) => element.amount < 0).toList();
+    }
+    if (txFilterState.contains(TransactionFilters.Received)) {
+      transactions =
+          transactions.where((element) => element.amount > 0).toList();
+    }
+  }
+
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
       transactions.sort((t1, t2) {
@@ -78,7 +92,7 @@ final transactionsProvider =
     case TransactionSortTypes.amountLowToHigh:
       transactions.sort(
         (a, b) {
-          if (b.amount > a.amount) {
+          if (b.amount.abs() > a.amount.abs()) {
             return 0;
           }
           return 1;
@@ -88,7 +102,7 @@ final transactionsProvider =
     case TransactionSortTypes.amountHighToLow:
       transactions.sort(
         (a, b) {
-          if (a.amount > b.amount) {
+          if (a.amount.abs() > b.amount.abs()) {
             return 0;
           }
           return 1;
@@ -96,20 +110,6 @@ final transactionsProvider =
       );
       break;
   }
-  if (txFilterState.contains(TransactionFilters.Sent) &&
-      txFilterState.contains(TransactionFilters.Received)) {
-    //do nothing
-  } else {
-    if (txFilterState.contains(TransactionFilters.Sent)) {
-      transactions =
-          transactions.where((element) => element.amount < 0).toList();
-    }
-    if (txFilterState.contains(TransactionFilters.Received)) {
-      transactions =
-          transactions.where((element) => element.amount > 0).toList();
-    }
-  }
-
   if (txFilterState.isEmpty) {
     transactions = [];
   }
