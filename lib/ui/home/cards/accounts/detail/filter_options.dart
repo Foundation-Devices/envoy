@@ -357,8 +357,6 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
                   setState(() {
                     _sortState = CoinTagSortTypes.sortByTagNameAsc;
                   });
-                  ref.read(coinTagSortStateProvider.notifier).state =
-                      _sortState!;
                 },
                 child: Text(
                   "Reset filter", // TODO: FIGMA
