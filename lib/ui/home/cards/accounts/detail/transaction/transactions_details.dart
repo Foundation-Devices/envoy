@@ -102,7 +102,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
           padding: EdgeInsets.symmetric(
               horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
           child: AnimatedContainer(
-            height: 340,
+            height: 300,
             duration: Duration(milliseconds: 250),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(24)),
