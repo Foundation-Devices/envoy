@@ -14,7 +14,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
@@ -36,6 +35,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -69,14 +69,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 leading: IconButton(
                   icon: Icon(
                     Icons.close,
-                    color: Colors.black,
+                    color: EnvoyColors.textPrimary,
                   ),
                   onPressed: () {
                     GoRouter.of(context).pop();
                   },
                 )),
             body: Center(
-              child: Text("Unable to build transaction"),
+              child: Text("Unable to build transaction"), //TODO: figma
             )),
       );
     }
@@ -382,19 +382,19 @@ class _TransactionReviewScreenState
     if (account == null || transactionModel.psbt == null) {
       return Container(
           child: Center(
-        child: Text("Unable to build transaction"),
+        child: Text("Unable to build transaction"), //TODO: figma
       ));
     }
 
     Psbt psbt = transactionModel.psbt!;
 
-    TextStyle? titleStyle = Theme.of(context)
-        .textTheme
-        .titleSmall
-        ?.copyWith(color: Colors.white, fontWeight: FontWeight.w700);
+    TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
+        color: EnvoyColors.textPrimaryInverse, fontWeight: FontWeight.w700);
 
     TextStyle? trailingStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-        color: Colors.white, fontWeight: FontWeight.w400, fontSize: 13);
+        color: EnvoyColors.textPrimaryInverse,
+        fontWeight: FontWeight.w400,
+        fontSize: 13);
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
@@ -404,7 +404,7 @@ class _TransactionReviewScreenState
       topBarLeading: IconButton(
         icon: Icon(
           Icons.close,
-          color: Colors.black,
+          color: EnvoyColors.textPrimary,
         ),
         onPressed: () {
           GoRouter.of(context).pop();
@@ -443,13 +443,15 @@ class _TransactionReviewScreenState
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(22)),
                 border: Border.all(
-                    color: Colors.black, width: 2, style: BorderStyle.solid),
+                    color: EnvoyColors.textPrimary,
+                    width: 2,
+                    style: BorderStyle.solid),
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
                       account.color,
-                      Colors.black,
+                      EnvoyColors.textPrimary,
                     ]),
               ),
               child: ClipRRect(
@@ -458,7 +460,7 @@ class _TransactionReviewScreenState
                   isComplex: true,
                   willChange: false,
                   painter: LinesPainter(
-                      color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
+                      color: EnvoyColors.textPrimary, opacity: 1.0),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: EnvoySpacing.small,
@@ -477,9 +479,7 @@ class _TransactionReviewScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Amount to send",
-
-                                ///TODO: figma localization
+                                "Amount to send", //TODO: figma
                                 style: titleStyle,
                               ),
                               GestureDetector(
@@ -511,14 +511,12 @@ class _TransactionReviewScreenState
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      "Show details",
-
-                                      ///TODO: figma localization
+                                      "Show details", //TODO: figma
                                       style: trailingStyle,
                                     ),
                                     Icon(
                                       Icons.chevron_right_outlined,
-                                      color: Colors.white,
+                                      color: EnvoyColors.textPrimaryInverse,
                                     )
                                   ],
                                 ),
@@ -542,7 +540,7 @@ class _TransactionReviewScreenState
                                         unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
-                                        color: Color(0xff808080),
+                                        color: EnvoyColors.textSecondary,
                                       )),
                                 ),
                                 Container(
@@ -588,7 +586,7 @@ class _TransactionReviewScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Destination",
+                                "Destination", //TODO: figma
                                 style: titleStyle,
                               ),
                               GestureDetector(
@@ -601,7 +599,7 @@ class _TransactionReviewScreenState
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      "Show address",
+                                      "Show address", //TODO: figma
                                       style: trailingStyle,
                                     ),
                                     AnimatedRotation(
@@ -609,7 +607,7 @@ class _TransactionReviewScreenState
                                       turns: _showFullAddress ? -.25 : 0,
                                       child: Icon(
                                         Icons.chevron_right_outlined,
-                                        color: Colors.white,
+                                        color: EnvoyColors.textPrimaryInverse,
                                       ),
                                     )
                                   ],
@@ -648,7 +646,7 @@ class _TransactionReviewScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Fee",
+                                "Fee", //TODO: figma
                                 style: titleStyle,
                               ),
                               Row(
@@ -659,7 +657,7 @@ class _TransactionReviewScreenState
                                       dimension: 8,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 1,
-                                        color: Colors.white,
+                                        color: EnvoyColors.textPrimaryInverse,
                                       ),
                                     ),
                                   ),
@@ -691,7 +689,7 @@ class _TransactionReviewScreenState
                                         unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
-                                        color: Color(0xff808080),
+                                        color: EnvoyColors.textSecondary,
                                       )),
                                 ),
                                 Container(
@@ -713,19 +711,8 @@ class _TransactionReviewScreenState
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
-                                  alignment: Alignment(0, 0),
-                                  child: SizedBox.square(
-                                      dimension: 12,
-                                      child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
-                                            ? "assets/icons/ic_bitcoin_straight.svg"
-                                            : "assets/icons/ic_sats.svg",
-                                        color: Color(0xff808080),
-                                      )),
-                                ),
                                 Text(
-                                  "${ExchangeRate().getFormattedAmount(psbt.fee)}",
+                                  "${ExchangeRate().getFormattedAmount(psbt.fee, wallet: account.wallet)}",
                                   textAlign: unit == DisplayUnit.btc
                                       ? TextAlign.start
                                       : TextAlign.end,
@@ -752,9 +739,7 @@ class _TransactionReviewScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Total",
-
-                                /// TODO: figma localize
+                                "Total", // TODO: figma
                                 style: titleStyle,
                               ),
                               GestureDetector(
@@ -765,14 +750,15 @@ class _TransactionReviewScreenState
                                     Icon(
                                       Icons.timer_outlined,
                                       size: 14,
-                                      color: Colors.white,
+                                      color: EnvoyColors.textPrimaryInverse,
                                     ),
                                     Consumer(builder: (context, ref, child) {
                                       final spendTimeEstimationProvider =
                                           ref.watch(
                                               spendEstimatedBlockTimeProvider);
                                       return Text(
-                                        " $spendTimeEstimationProvider min", //TODO localize
+                                        " $spendTimeEstimationProvider min",
+                                        //TODO: figma
                                         style: trailingStyle,
                                       );
                                     }),
@@ -798,7 +784,7 @@ class _TransactionReviewScreenState
                                         unit == DisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
-                                        color: Color(0xff808080),
+                                        color: EnvoyColors.textSecondary,
                                       )),
                                 ),
                                 Container(
@@ -925,7 +911,7 @@ class _TransactionReviewScreenState
         decoration: BoxDecoration(
             borderRadius:
                 BorderRadius.all(Radius.circular(constraints.maxWidth)),
-            color: Colors.white),
+            color: EnvoyColors.textPrimaryInverse),
         padding:
             EdgeInsets.symmetric(vertical: 6, horizontal: EnvoySpacing.small),
         child: child,
