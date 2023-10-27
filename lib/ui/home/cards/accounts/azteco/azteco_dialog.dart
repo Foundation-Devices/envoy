@@ -8,8 +8,9 @@ import 'package:envoy/ui/home/cards/accounts/azteco/loading_modal.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
-import 'azteco_redeem_modal_fail.dart';
-import 'azteco_redeem_modal_success.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_connection_modal_fail.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal_fail.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal_success.dart';
 
 class AztecoDialog extends StatelessWidget {
   final AztecoVoucher voucher;
@@ -39,6 +40,7 @@ class AztecoDialog extends StatelessWidget {
           ),
           AztecoRedeemModalFail(controller: controller),
           AztecoRedeemModalSuccess(),
+          AztecoConnectionModalFail(controller: controller),
         ],
       ),
     );

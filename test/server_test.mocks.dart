@@ -3,10 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
 
-import 'package:http_tor/http_tor.dart' as _i3;
+import 'package:http_tor/http_tor.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:schedulers/schedulers.dart' as _i3;
 import 'package:tor/tor.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -30,8 +31,9 @@ class _FakeTor_0 extends _i1.SmartFake implements _i2.Tor {
         );
 }
 
-class _FakeResponse_1 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_1(
+class _FakeParallelScheduler_1 extends _i1.SmartFake
+    implements _i3.ParallelScheduler {
+  _FakeParallelScheduler_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -40,8 +42,18 @@ class _FakeResponse_1 extends _i1.SmartFake implements _i3.Response {
         );
 }
 
-class _FakeDownload_2 extends _i1.SmartFake implements _i3.Download {
-  _FakeDownload_2(
+class _FakeResponse_2 extends _i1.SmartFake implements _i4.Response {
+  _FakeResponse_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeDownload_3 extends _i1.SmartFake implements _i4.Download {
+  _FakeDownload_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -53,7 +65,7 @@ class _FakeDownload_2 extends _i1.SmartFake implements _i3.Download {
 /// A class which mocks [HttpTor].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
+class MockHttpTor extends _i1.Mock implements _i4.HttpTor {
   MockHttpTor() {
     _i1.throwOnMissingStub(this);
   }
@@ -68,7 +80,16 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
       ) as _i2.Tor);
 
   @override
-  _i4.Future<_i3.Response> get(
+  _i3.ParallelScheduler get scheduler => (super.noSuchMethod(
+        Invocation.getter(#scheduler),
+        returnValue: _FakeParallelScheduler_1(
+          this,
+          Invocation.getter(#scheduler),
+        ),
+      ) as _i3.ParallelScheduler);
+
+  @override
+  _i5.Future<_i4.Response> get(
     String? uri, {
     String? body,
     Map<String, String>? headers,
@@ -82,7 +103,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
             #headers: headers,
           },
         ),
-        returnValue: _i4.Future<_i3.Response>.value(_FakeResponse_1(
+        returnValue: _i5.Future<_i4.Response>.value(_FakeResponse_2(
           this,
           Invocation.method(
             #get,
@@ -93,10 +114,10 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
             },
           ),
         )),
-      ) as _i4.Future<_i3.Response>);
+      ) as _i5.Future<_i4.Response>);
 
   @override
-  _i4.Future<_i3.Response> post(
+  _i5.Future<_i4.Response> post(
     String? uri, {
     String? body,
     Map<String, String>? headers,
@@ -110,7 +131,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
             #headers: headers,
           },
         ),
-        returnValue: _i4.Future<_i3.Response>.value(_FakeResponse_1(
+        returnValue: _i5.Future<_i4.Response>.value(_FakeResponse_2(
           this,
           Invocation.method(
             #post,
@@ -121,19 +142,19 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
             },
           ),
         )),
-      ) as _i4.Future<_i3.Response>);
+      ) as _i5.Future<_i4.Response>);
 
   @override
-  _i4.Future<String> getIp() => (super.noSuchMethod(
+  _i5.Future<String> getIp() => (super.noSuchMethod(
         Invocation.method(
           #getIp,
           [],
         ),
-        returnValue: _i4.Future<String>.value(''),
-      ) as _i4.Future<String>);
+        returnValue: _i5.Future<String>.value(''),
+      ) as _i5.Future<String>);
 
   @override
-  _i4.Future<_i3.Download> getFile(
+  _i5.Future<_i4.Download> getFile(
     String? path,
     String? uri,
   ) =>
@@ -145,7 +166,7 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
             uri,
           ],
         ),
-        returnValue: _i4.Future<_i3.Download>.value(_FakeDownload_2(
+        returnValue: _i5.Future<_i4.Download>.value(_FakeDownload_3(
           this,
           Invocation.method(
             #getFile,
@@ -155,5 +176,5 @@ class MockHttpTor extends _i1.Mock implements _i3.HttpTor {
             ],
           ),
         )),
-      ) as _i4.Future<_i3.Download>);
+      ) as _i5.Future<_i4.Download>);
 }
