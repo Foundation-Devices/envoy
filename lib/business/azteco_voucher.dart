@@ -8,6 +8,13 @@ import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'dart:async';
+
+enum AztecoVoucherRedeemResult {
+  Success,
+  Timeout,
+  VoucherInvalid // Able to reach server but problem with voucher
+}
 
 class AztecoVoucher {
   List<String> code = [];
@@ -37,23 +44,30 @@ class AztecoVoucher {
     }
   }
 
-  Future<bool> redeem(String address) async {
+  Future<AztecoVoucherRedeemResult> redeem(String address) async {
     String url = getRedeemUrl(address);
 
     HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-    final response = await _http.get(url);
+    Response? response = null;
+
+    try {
+      response = await _http.get(url);
+    } on TimeoutException {
+      return AztecoVoucherRedeemResult.Timeout;
+    }
+
     switch (response.statusCode) {
       case 200:
         // Request succeeded, parse the response
-        return true;
+        return AztecoVoucherRedeemResult.Success;
 
       default:
         // Request failed
         break;
     }
 
-    return false;
+    return AztecoVoucherRedeemResult.VoucherInvalid;
   }
 
   String getRedeemUrl(String address) {

@@ -117,8 +117,10 @@ throwRustException(DynamicLibrary lib) {
 }
 
 Exception _getRustException(String rustError) {
-  // TODO: convert the Rust errors here to more specific exceptions
-  return Exception(rustError);
+  if (rustError.contains('timed out')) {
+    return TimeoutException("Timed out");
+  } else
+    return Exception(rustError);
 }
 
 String _lastErrorMessage(DynamicLibrary lib) {
@@ -209,30 +211,30 @@ class HttpTor {
   //   print("$downloaded / $total");
   // }
 
-  Future<Response> get(String uri,
+  Future<Response> _makeHttpRequest(Verb verb, String uri,
       {String? body, Map<String, String>? headers}) async {
     await tor.isReady();
     int torPort = tor.port;
     return scheduler
         .run(() => Isolate.run(() => _makeRequest(
-            Request(Verb.Get, uri, torPort, body: body, headers: headers))))
+            Request(verb, uri, torPort, body: body, headers: headers))))
         .result
         .then((response) => response, onError: (e) {
+      if (e is TimeoutException) {
+        throw TimeoutException("Timed out");
+      }
       throw Exception(e.message);
     });
   }
 
+  Future<Response> get(String uri,
+      {String? body, Map<String, String>? headers}) async {
+    return _makeHttpRequest(Verb.Get, uri, body: body, headers: headers);
+  }
+
   Future<Response> post(String uri,
       {String? body, Map<String, String>? headers}) async {
-    await tor.isReady();
-    int torPort = tor.port;
-    return scheduler
-        .run(() => Isolate.run(() => _makeRequest(
-            Request(Verb.Post, uri, torPort, body: body, headers: headers))))
-        .result
-        .then((response) => response, onError: (e) {
-      throw Exception(e.message);
-    });
+    return _makeHttpRequest(Verb.Post, uri, body: body, headers: headers);
   }
 
   static Future<String> _getIp(int torPort) async {
