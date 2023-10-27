@@ -185,7 +185,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         return GhostListTile();
                       },
                     )
-                  : _getMainWidget(context, transactions)),
+                  : _getMainWidget(context, transactions, txFiltersEnabled)),
         ),
       ]),
       bottomNavigationBar: Container(
@@ -272,7 +272,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
     );
   }
 
-  Widget _getMainWidget(BuildContext context, List<Transaction> transactions) {
+  Widget _getMainWidget(BuildContext context, List<Transaction> transactions,
+      bool txFiltersEnabled) {
     AccountToggleState accountToggleState =
         ref.watch(accountToggleStateProvider);
     return PageTransitionSwitcher(
@@ -291,12 +292,13 @@ class _AccountCardState extends ConsumerState<AccountCard>
         );
       },
       child: accountToggleState == AccountToggleState.Tx
-          ? _buildTransactionListWidget(transactions)
+          ? _buildTransactionListWidget(transactions, txFiltersEnabled)
           : CoinsList(account: account),
     );
   }
 
-  Widget _buildTransactionListWidget(List<Transaction> transactions) {
+  Widget _buildTransactionListWidget(
+      List<Transaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -308,7 +310,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
               child: Padding(
                 padding: EdgeInsets.only(bottom: 128),
                 child: Text(
-                  S().account_empty_tx_history_text_explainer,
+                  txFiltersEnabled
+                      ? S().account_emptyTxHistoryTextExplainer_FilteredView
+                      : S().account_empty_tx_history_text_explainer,
                   style: _explainerTextStyleWallet.copyWith(),
                   textAlign: TextAlign.center,
                 ),
