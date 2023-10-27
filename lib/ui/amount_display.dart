@@ -130,6 +130,12 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                       .titleSmall!
                       .copyWith(color: EnvoyColors.darkTeal, fontSize: 16),
                   children: [
+                if (unit == AmountDisplayUnit.fiat)
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: SizedBox(
+                        height: 20, child: getUnitIcon(widget.account!)),
+                  ),
                 TextSpan(
                   text: unit != AmountDisplayUnit.fiat
                       ? ExchangeRate().getFormattedAmount(
@@ -145,12 +151,6 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                               AmountDisplayUnit.sat,
                             )),
                 ),
-                if (unit == AmountDisplayUnit.fiat)
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
-                    child: SizedBox(
-                        height: 20, child: getUnitIcon(widget.account!)),
-                  ),
               ])),
         ],
       ),
