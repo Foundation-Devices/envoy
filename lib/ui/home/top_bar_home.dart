@@ -8,7 +8,6 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
@@ -22,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -252,7 +252,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                     if (EnvoySeed().walletDerived()) {
                       return OnboardPassportWelcomeScreen();
                     } else {
-                      return OnboardEnvoyWelcomeScreen();
+                      return WelcomeScreen();
                     }
                   },
                 ));
