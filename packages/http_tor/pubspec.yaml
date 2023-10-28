@@ -12,7 +12,10 @@ environment:
   flutter: ">=1.20.0"
 
 dependencies:
-  schedulers: ^1.0.1
+  schedulers:
+    git:
+      url: https://github.com/icota/schedulers_dart.git
+      ref: master
   ffi: ^2.0.1
   flutter:
     sdk: flutter
