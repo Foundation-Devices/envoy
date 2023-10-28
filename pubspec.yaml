@@ -35,7 +35,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/foundation-devices/tor.git
-      ref: main
+      ref: 09ba92cb11d4e3cacf97256e57863b805f79f2e5
   ur:
     path: packages/ur
   http_tor:
@@ -94,7 +94,10 @@ dependencies:
   file_saver: ^0.1.1
   file_picker: ^5.2.5
   intl_utils: ^2.8.2
-  schedulers: ^1.0.1
+  schedulers:
+    git:
+      url: https://github.com/icota/schedulers_dart.git
+      ref: master
   sembast: ^3.4.3+1
   path_provider: ^2.0.14
   stack_trace: ^1.11.0
