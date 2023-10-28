@@ -409,8 +409,7 @@ class EnvoySeed {
       return null;
     }
 
-    final seed = await LocalStorage().readSecure(SEED_KEY);
-    return seed!;
+    return await LocalStorage().readSecure(SEED_KEY);
   }
 
   Future<File> _saveNonSecure(String data, String name) async {
