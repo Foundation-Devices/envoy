@@ -19,7 +19,7 @@ class ShieldClipper extends CustomClipper<Path> {
     double arcSize = size.width / 5;
     double padding = 0;
 
-    double shieldCrestAngle = 170;
+    double shieldCrestAngle = 164;
     double arcAngle = (180 - shieldCrestAngle) / 2;
 
     double shieldCrestOffset =
