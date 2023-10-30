@@ -73,22 +73,13 @@ class EnvoyIcon extends StatelessWidget {
 /// Testnet icons have a coloured 'T' badge
 class TestnetIcon extends StatelessWidget {
   final EnvoyIcons icon;
-  final EnvoyIconSize size;
+  final double? size;
   final Color? color;
 
-  TestnetIcon(this.icon, {this.color, this.size = EnvoyIconSize.normal});
+  TestnetIcon(this.icon, {this.color, this.size = 24});
 
-  double getSize() {
-    switch (size) {
-      case EnvoyIconSize.normal:
-        return 24.0; // Default
-      case EnvoyIconSize.small:
-        return 18.0;
-      case EnvoyIconSize.big:
-        return 64;
-      default:
-        return 24.0;
-    }
+  double? getSize() {
+    return size;
   }
 
   @override
@@ -96,13 +87,13 @@ class TestnetIcon extends StatelessWidget {
     return Stack(children: [
       SvgPicture.asset(
         "assets/components/icons/testnet_badge.svg",
-        width: getSize() / 2,
-        height: getSize() / 2,
+        width: getSize()! / 2,
+        height: getSize()! / 2,
         color: this.color,
       ),
       Padding(
         padding: EdgeInsets.only(
-          left: getSize() / 5,
+          left: getSize()! / 5,
         ),
         child: SvgPicture.asset(
           "assets/components/icons/${this.icon.name}.svg",
