@@ -117,7 +117,8 @@ throwRustException(DynamicLibrary lib) {
 }
 
 Exception _getRustException(String rustError) {
-  if (rustError.contains('timed out')) {
+  if (rustError.contains('timed out') ||
+      rustError.contains("error sending request")) {
     return TimeoutException("Timed out");
   } else
     return Exception(rustError);
