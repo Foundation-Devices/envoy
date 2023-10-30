@@ -152,6 +152,11 @@ class _SendCardState extends ConsumerState<SendCard>
                                 buttonText = S().send_keyboard_send_max;
                               }
                             }
+                            if (spendAmount != 0 && addressEmpty) {
+                              buttonText =
+                                  S().send_keyboard_amount_enter_valid_address;
+                              valid = false;
+                            }
                           } else {
                             if (addressEmpty) {
                               if (spendAmount == 0) {
