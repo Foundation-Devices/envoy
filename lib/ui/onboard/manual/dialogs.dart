@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 void showRestoreFailedDialog(BuildContext context) {
   showEnvoyDialog(
@@ -82,14 +84,30 @@ void showRestoreFailedDialog(BuildContext context) {
 void openBackupFile(BuildContext context) {
   FilePicker.platform.pickFiles().then((result) {
     if (result != null) {
+      showEnvoyDialog(
+          context: context,
+          dialog: Center(
+            child: Container(
+              height: 150,
+              width: 150,
+              child: CircularProgressIndicator(
+                color: EnvoyColors.accentPrimary,
+                backgroundColor: EnvoyColors.gray500,
+                strokeWidth: EnvoySpacing.medium1,
+              ),
+            ), // Display a loading spinner
+          ));
+
       EnvoySeed()
           .restoreData(filePath: result.files.single.path!)
           .then((success) {
         if (success) {
+          Navigator.pop(context);
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return WalletSetupSuccess();
           }));
         } else {
+          Navigator.pop(context);
           showRestoreFailedDialog(context);
         }
       });
