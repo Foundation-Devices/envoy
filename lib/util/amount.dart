@@ -106,24 +106,26 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
-Widget getSatsIcon(Account account) {
+Widget getSatsIcon(Account account, {double? size}) {
   if (account.wallet.network != Network.Testnet) {
     return EnvoyIcon(EnvoyIcons.sats);
   } else {
     return TestnetIcon(
       EnvoyIcons.sats,
       color: account.color,
+      size: size ?? 24,
     );
   }
 }
 
-Widget getBtcIcon(Account account) {
+Widget getBtcIcon(Account account, {double? size}) {
   if (account.wallet.network != Network.Testnet) {
     return EnvoyIcon(EnvoyIcons.btc);
   } else {
     return TestnetIcon(
       EnvoyIcons.btc,
       color: account.color,
+      size: size ?? 24,
     );
   }
 }
@@ -143,10 +145,10 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
   return '$firstHalf$ellipsis$secondHalf';
 }
 
-Widget getUnitIcon(Account account) {
+Widget getUnitIcon(Account account, {double? size}) {
   Widget iconUint = Settings().displayUnit == DisplayUnit.btc
-      ? getBtcIcon(account)
-      : getSatsIcon(account);
+      ? getBtcIcon(account, size: size)
+      : getSatsIcon(account, size: size);
 
   return iconUint;
 }
