@@ -4,8 +4,8 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
@@ -156,7 +156,8 @@ Widget getUnitIcon(Account account, {double? size}) {
 Widget displayIcon(Account account, AmountDisplayUnit unit) {
   if (unit == AmountDisplayUnit.fiat) {
     return Text(
-      ExchangeRate().getCode(),
+      ExchangeRate().getSymbol(),
+      style: EnvoyTypography.body.copyWith(color: Colors.black, fontSize: 20),
       // style: Theme.of(context).textTheme.headlineSmall,
     );
   }
