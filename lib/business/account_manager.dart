@@ -283,7 +283,6 @@ class AccountManager extends ChangeNotifier {
       }
     }
 
-    syncAll();
     _startPeriodicSync();
   }
 
