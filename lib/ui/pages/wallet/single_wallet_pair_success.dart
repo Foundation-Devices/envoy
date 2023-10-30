@@ -18,7 +18,10 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("single_wallet_pair_success"),
-      clipArt: Image.asset("assets/circle_ok.png"),
+      clipArt: Image.asset(
+        "assets/circle_ok.png",
+        height: 140,
+      ),
       text: [
         OnboardingText(
             header: S().pair_new_device_success_heading,
