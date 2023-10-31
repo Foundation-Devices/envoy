@@ -62,10 +62,10 @@ class PrivacyCardState extends State<PrivacyCard> {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: EnvoySpacing.large2),
+        padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
         child: FadingEdgeScrollView.fromSingleChildScrollView(
-            gradientFractionOnEnd: 0.2,
-            gradientFractionOnStart: 0.2,
+            gradientFractionOnStart: 0.03,
+            gradientFractionOnEnd: 0.06,
             child: SingleChildScrollView(
               reverse: true,
               controller: _scrollController,
@@ -248,7 +248,11 @@ class PrivacyCardState extends State<PrivacyCard> {
                       if (keyboardHeight != 0.0 && bottomPadding > 0)
                         Padding(
                           padding: EdgeInsets.only(bottom: bottomPadding),
-                        )
+                        ),
+                      Container(
+                        height: 40,
+                        color: Colors.transparent,
+                      )
                     ],
                   ),
                 ),

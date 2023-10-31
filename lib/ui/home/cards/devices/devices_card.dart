@@ -130,29 +130,57 @@ class _DevicesListState extends State<DevicesList> {
             ],
           )
         : Padding(
-            padding: const EdgeInsets.all(20),
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: Devices().devices.length,
-              itemBuilder: (BuildContext context, int index) {
-                var device = Devices().devices[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: DeviceListTile(
-                    device,
-                    onTap: () {
-                      context.go(ROUTE_DEVICE_DETAIL, extra: device);
-                      // widget.navigator!.push(DeviceCard(
-                      //     device,
-                      //     widget.navigator,
-                      //     DeviceOptions(
-                      //       device,
-                      //       navigator: widget.navigator,
-                      //     )));
-                    },
-                  ),
-                );
+            padding: const EdgeInsets.all(EnvoySpacing.medium1),
+            child: ShaderMask(
+              shaderCallback: (Rect rect) {
+                return LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    EnvoyColors.solidWhite,
+                    Colors.transparent,
+                    Colors.transparent,
+                    EnvoyColors.solidWhite,
+                  ],
+                  stops: [0.0, 0.01, 0.97, 1.0],
+                ).createShader(rect);
               },
+              blendMode: BlendMode.dstOut,
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        var device = Devices().devices[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: EnvoySpacing.medium1),
+                          child: DeviceListTile(
+                            device,
+                            onTap: () {
+                              context.go(ROUTE_DEVICE_DETAIL, extra: device);
+                              // widget.navigator!.push(DeviceCard(
+                              //     device,
+                              //     widget.navigator,
+                              //     DeviceOptions(
+                              //       device,
+                              //       navigator: widget.navigator,
+                              //     )));
+                            },
+                          ),
+                        );
+                      },
+                      childCount: Devices().devices.length,
+                    ),
+                  ),
+                  SliverPadding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
+                ],
+              ),
             ),
           );
   }

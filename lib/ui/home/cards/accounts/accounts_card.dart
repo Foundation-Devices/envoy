@@ -19,6 +19,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -168,8 +169,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
     _scrollView = FadingEdgeScrollView.fromScrollView(
       scrollController: _scrollController,
-      gradientFractionOnStart: _isFadingEnabled ? 0.1 : 0.0,
-      gradientFractionOnEnd: _isFadingEnabled ? 0.1 : 0.0,
+      gradientFractionOnStart: _isFadingEnabled ? 0.03 : 0.0,
+      gradientFractionOnEnd: _isFadingEnabled ? 0.06 : 0.0,
       child: ReorderableListView(
           key: widget._listKey,
           footer: Opacity(
@@ -223,13 +224,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
     return _accounts.isEmpty
         ? Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
           )
-        : Padding(
-            padding:
-                const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
-            child: _scrollView);
+        : Padding(padding: const EdgeInsets.all(20), child: _scrollView);
   }
 }
 
@@ -276,6 +274,10 @@ class AccountPrompts extends ConsumerWidget {
                 .addPromptState(DismissiblePrompt.userInteractedWithReceive);
           },
         ),
+        Container(
+          height: 40,
+          color: Colors.transparent,
+        )
       ]));
     } else {
       if (!isHideAmountDismissed && !accountsHaveZeroBalance) {
@@ -296,6 +298,10 @@ class AccountPrompts extends ConsumerWidget {
                   EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
                 },
               ),
+              Container(
+                height: 40,
+                color: Colors.transparent,
+              )
             ],
           ),
         );
@@ -321,12 +327,20 @@ class AccountPrompts extends ConsumerWidget {
                   EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
                 },
               ),
+              Container(
+                height: 40,
+                color: Colors.transparent,
+              )
             ],
           ),
         );
       }
     }
-    return SizedBox.square();
+
+    return Container(
+      height: 40,
+      color: Colors.transparent,
+    );
   }
 }
 
@@ -338,7 +352,7 @@ void showSecurityDialog(BuildContext context) {
       dialog: Container(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -355,7 +369,7 @@ void showSecurityDialog(BuildContext context) {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(16)),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -364,18 +378,18 @@ void showSecurityDialog(BuildContext context) {
                     height: 60,
                     width: 60,
                   ),
-                  Padding(padding: EdgeInsets.all(16)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                   Container(
                     constraints: BoxConstraints(maxWidth: 200),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small, horizontal: 12),
                     child: Text(S().wallet_security_modal__heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small, horizontal: 12),
                     child: Text(
                       S().wallet_security_modal_subheading,
                       style: Theme.of(context).textTheme.bodySmall,
