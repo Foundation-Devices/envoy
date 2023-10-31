@@ -125,7 +125,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         ),
         GestureDetector(
           child: Text(
-            S().manage_device_details_menu_editDeviceName.toUpperCase(),
+            "Edit Device Name".toUpperCase(), // TODO: Figma
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {

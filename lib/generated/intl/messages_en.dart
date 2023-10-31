@@ -20,23 +20,22 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(tagName) =>
+      "WARNING\n\nYour ${tagName} tag is now empty. Would you like to delete it?";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "A": MessageLookupByLibrary.simpleMessage("0"),
+        "Action": MessageLookupByLibrary.simpleMessage("exclude?"),
         "Activity": MessageLookupByLibrary.simpleMessage("Activity"),
         "Aswer": MessageLookupByLibrary.simpleMessage(
             "Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler.\n\nEnvoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet."),
-        "BTC": MessageLookupByLibrary.simpleMessage("BTC"),
         "Balance": MessageLookupByLibrary.simpleMessage("-TBD"),
-        "Bd": MessageLookupByLibrary.simpleMessage("Bd"),
-        "Body": MessageLookupByLibrary.simpleMessage("Body"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
-        "BodyText": MessageLookupByLibrary.simpleMessage("BodyText"),
-        "Bodytext1": MessageLookupByLibrary.simpleMessage("Bodytext1"),
-        "Bodytext2": MessageLookupByLibrary.simpleMessage("Bodytext2"),
         "Button": MessageLookupByLibrary.simpleMessage("Done"),
-        "ButtonText": MessageLookupByLibrary.simpleMessage("ButtonText"),
         "CoinInfo": MessageLookupByLibrary.simpleMessage("1 Locked"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
+        "Coins": MessageLookupByLibrary.simpleMessage("Coins"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conference"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
         "Default": MessageLookupByLibrary.simpleMessage("Apply filters"),
@@ -44,31 +43,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "FAQ": MessageLookupByLibrary.simpleMessage("Is Envoy Open Source?"),
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Filter": MessageLookupByLibrary.simpleMessage("Filter"),
-        "Heading": MessageLookupByLibrary.simpleMessage(
-            "WELCOME TO THE\nLEARNING CENTER"),
-        "Info": MessageLookupByLibrary.simpleMessage("Info"),
-        "InfoText": MessageLookupByLibrary.simpleMessage("InfoText"),
-        "Infotext": MessageLookupByLibrary.simpleMessage("Infotext"),
-        "L": MessageLookupByLibrary.simpleMessage("L"),
+        "Heading": MessageLookupByLibrary.simpleMessage("Secure "),
         "Label": MessageLookupByLibrary.simpleMessage(" "),
         "Left": MessageLookupByLibrary.simpleMessage("Receive"),
         "Letter": MessageLookupByLibrary.simpleMessage("return"),
-        "M": MessageLookupByLibrary.simpleMessage("M"),
-        "Md": MessageLookupByLibrary.simpleMessage("Md"),
-        "NOTES": MessageLookupByLibrary.simpleMessage("NOTES"),
-        "Navigation": MessageLookupByLibrary.simpleMessage("Navigation"),
+        "Menu": MessageLookupByLibrary.simpleMessage("SEND"),
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "PermissionDetails": MessageLookupByLibrary.simpleMessage(
-            "Transaction notes can be useful when making future spends."),
+        "Option": MessageLookupByLibrary.simpleMessage("Option"),
+        "PermissionDetails":
+            MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "Primary": MessageLookupByLibrary.simpleMessage("17,210"),
-        "Properties": MessageLookupByLibrary.simpleMessage("Properties"),
         "Read": MessageLookupByLibrary.simpleMessage("Read"),
         "Receive": MessageLookupByLibrary.simpleMessage("Receive"),
         "Right": MessageLookupByLibrary.simpleMessage("Send"),
         "SEND": MessageLookupByLibrary.simpleMessage("SEND"),
-        "Sample": MessageLookupByLibrary.simpleMessage("Sample"),
         "Sats": MessageLookupByLibrary.simpleMessage("123,345,679 SATS"),
-        "Sb": MessageLookupByLibrary.simpleMessage("Sb"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
         "ScreenTitle": MessageLookupByLibrary.simpleMessage("account Details"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$T.BD"),
@@ -76,24 +65,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "Sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "Skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "Status": MessageLookupByLibrary.simpleMessage("Untitled"),
-        "Subheading": MessageLookupByLibrary.simpleMessage("Add a Note"),
+        "Subheading":
+            MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
-        "T": MessageLookupByLibrary.simpleMessage("T"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "TagName": MessageLookupByLibrary.simpleMessage("Conferences"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Received 3 hours ago"),
-        "USD": MessageLookupByLibrary.simpleMessage("USD"),
         "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Watched"),
-        "XL": MessageLookupByLibrary.simpleMessage("XL"),
-        "XS": MessageLookupByLibrary.simpleMessage("XS"),
         "_": MessageLookupByLibrary.simpleMessage("SOURCE"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
-                "Active filters hide all transactions of this account.\nUpdate or reset filters to view transactions."),
+                "Applied filters are hiding all transactions.\nUpdate or reset filters to view transactions."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "There are no transactions in this account.\nReceive your first transaction below."),
@@ -120,12 +106,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_received": MessageLookupByLibrary.simpleMessage("Received"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "add_note_modal_cta": MessageLookupByLibrary.simpleMessage("Save"),
+        "add_note_modal_cta2": MessageLookupByLibrary.simpleMessage("Cancel"),
         "add_note_modal_filled_cta":
             MessageLookupByLibrary.simpleMessage("Save"),
+        "add_note_modal_filled_cta2":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
         "add_note_modal_filled_heading":
             MessageLookupByLibrary.simpleMessage("Add a Note"),
         "add_note_modal_filled_max_characters":
             MessageLookupByLibrary.simpleMessage("3/255"),
+        "add_note_modal_filled_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Record some details about this transaction."),
         "add_note_modal_heading":
             MessageLookupByLibrary.simpleMessage("Add a Note"),
         "add_note_modal_ie_text_field": MessageLookupByLibrary.simpleMessage(
@@ -142,6 +134,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pending Azteco voucher"),
         "azteco_account_tx_history_receive":
             MessageLookupByLibrary.simpleMessage("Received"),
+        "azteco_connection_modal_fail_cta":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "azteco_connection_modal_fail_heading":
+            MessageLookupByLibrary.simpleMessage("Unable to Connect"),
+        "azteco_connection_modal_fail_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
         "azteco_redeem_modal__voucher_code_data":
@@ -204,16 +203,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_erase_wallets_and_backups_show_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!"),
-        "backups_export_flow_advanced":
-            MessageLookupByLibrary.simpleMessage("Auto Backup"),
-        "backups_export_flow_export_backup":
-            MessageLookupByLibrary.simpleMessage("Seed state"),
-        "backups_export_flow_export_seed":
-            MessageLookupByLibrary.simpleMessage("You don’t have any seed"),
         "backups_title": MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "backups_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Envoy Seed"),
-        "bc1cq313af51bh5k0lsmna21x": MessageLookupByLibrary.simpleMessage(""),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Activity"),
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
@@ -222,7 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "change_output_from_multiple_tags_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "change_output_from_multiple_tags_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Back"),
+            MessageLookupByLibrary.simpleMessage("Edit Transaction"),
         "change_output_from_multiple_tags_modal_heading":
             MessageLookupByLibrary.simpleMessage("Choose a Tag"),
         "change_output_from_multiple_tags_modal_subehading":
@@ -260,9 +252,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Send Selected"),
         "coincontrol_lock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Lock"),
+        "coincontrol_lock_coin_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Back"),
+        "coincontrol_lock_coin_modal_dontShowAgain":
+            MessageLookupByLibrary.simpleMessage("Don’t show again"),
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nUnlocking coins will make them available for use in transactions."),
+                "WARNING\n\nLocking coins will prevent them from being used in transactions."),
         "coincontrol_send_transaction_continue":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "coincontrol_send_transaction_sendMax":
@@ -285,12 +281,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Edit Transaction"),
         "coincontrol_tx_detail_custom_fee_cta":
             MessageLookupByLibrary.simpleMessage("Confirm Fee"),
+        "coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta":
+            MessageLookupByLibrary.simpleMessage("Over 25%"),
+        "coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt":
+            MessageLookupByLibrary.simpleMessage("Over 25%"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_cta":
             MessageLookupByLibrary.simpleMessage("Confirm Fee"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_prompt":
-            MessageLookupByLibrary.simpleMessage("Insufficient Funds"),
+            MessageLookupByLibrary.simpleMessage("Over 25%"),
         "coincontrol_tx_detail_custom_fee_sats_vb":
-            MessageLookupByLibrary.simpleMessage("sats/vB"),
+            MessageLookupByLibrary.simpleMessage("sats/vb"),
         "coincontrol_tx_detail_destination":
             MessageLookupByLibrary.simpleMessage("Destination"),
         "coincontrol_tx_detail_destination_details":
@@ -302,13 +302,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_fee":
             MessageLookupByLibrary.simpleMessage("Fee"),
         "coincontrol_tx_detail_fee_custom":
-            MessageLookupByLibrary.simpleMessage("Faster"),
-        "coincontrol_tx_detail_fee_faster":
-            MessageLookupByLibrary.simpleMessage("Standard"),
-        "coincontrol_tx_detail_fee_standard":
             MessageLookupByLibrary.simpleMessage("Custom"),
+        "coincontrol_tx_detail_fee_faster":
+            MessageLookupByLibrary.simpleMessage("Faster"),
+        "coincontrol_tx_detail_fee_standard":
+            MessageLookupByLibrary.simpleMessage("Standard"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
+        "coincontrol_tx_detail_passport_cta":
+            MessageLookupByLibrary.simpleMessage("Review transaction"),
+        "coincontrol_tx_detail_passport_cta1":
+            MessageLookupByLibrary.simpleMessage("Send transaction"),
+        "coincontrol_tx_detail_passport_cta2":
+            MessageLookupByLibrary.simpleMessage("Cancel transaction"),
+        "coincontrol_tx_detail_passport_heading":
+            MessageLookupByLibrary.simpleMessage("Are you sure?"),
+        "coincontrol_tx_detail_passport_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "By canceling you will lose all transaction progress."),
         "coincontrol_tx_detail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Confirm the transaction details are correct before sending."),
@@ -339,6 +350,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("TX ID"),
         "coincontrol_unlock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Unlock"),
+        "coincontrol_unlock_coin_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Back"),
+        "coincontrol_unlock_coin_modal_dontShowAgain":
+            MessageLookupByLibrary.simpleMessage("Don’t show again"),
         "coincontrol_unlock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "WARNING\n\nUnlocking coins will make them available for use in transactions."),
@@ -358,8 +373,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue"),
         "create_first_tag_modal_2_2_heading":
             MessageLookupByLibrary.simpleMessage("Choose a Tag"),
-        "create_first_tag_modal_2_2_subheading":
-            MessageLookupByLibrary.simpleMessage("Suggestions"),
         "create_first_tag_modal_2_2_suggest":
             MessageLookupByLibrary.simpleMessage("Suggestions"),
         "create_second_tag_modal_1_2_cta1":
@@ -387,9 +400,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Choose a Tag"),
         "create_second_tag_modal_2_2_mostUsed":
             MessageLookupByLibrary.simpleMessage("Most used"),
-        "create_second_tag_modal_2_2_subheading":
-            MessageLookupByLibrary.simpleMessage("Most used"),
-        "delete": MessageLookupByLibrary.simpleMessage("delete"),
+        "delete_emptyTag_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Back"),
+        "delete_emptyTag_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Delete Tag"),
+        "delete_emptyTag_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "WARNING\n\nAre you sure you want to delete this tag?"),
         "delete_tag_modal_cta1": MessageLookupByLibrary.simpleMessage("Back"),
         "delete_tag_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Delete Tag"),
@@ -435,6 +452,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Learn More"),
         "devices_text_explainer":
             MessageLookupByLibrary.simpleMessage("Don’t have a Passport?"),
+        "empty_tag_modal_cta1": MessageLookupByLibrary.simpleMessage("Back"),
+        "empty_tag_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("Delete Tag"),
+        "empty_tag_modal_subheading": m0,
         "envoy_account_tos_cta":
             MessageLookupByLibrary.simpleMessage("I Accept"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
@@ -827,8 +848,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("DELETE"),
         "manage_account_menu_editAccountName":
             MessageLookupByLibrary.simpleMessage("EDIT ACCOUNT NAME"),
-        "manage_account_menu_menu": MessageLookupByLibrary.simpleMessage(
-            "COPY PSBT TO CLIPBOARD\n\nSHARE PSBT"),
         "manage_account_menu_showDescriptor":
             MessageLookupByLibrary.simpleMessage("SHOW DESCRIPTOR"),
         "manage_account_remove_cta":
@@ -848,10 +867,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Serial: "),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("Device DETAILS"),
-        "manage_device_details_menu_deleteDevice":
-            MessageLookupByLibrary.simpleMessage("DELETE DEVICE"),
-        "manage_device_details_menu_editDeviceName":
-            MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
         "manage_device_disconnect_modal":
             MessageLookupByLibrary.simpleMessage("Delete"),
         "manage_device_disconnect_modal_cta":
@@ -1241,13 +1256,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_new_device_intro_connect_envoy_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. "),
-        "pair_new_device_intro_cta":
-            MessageLookupByLibrary.simpleMessage("Get Started"),
-        "pair_new_device_intro_heading": MessageLookupByLibrary.simpleMessage(
-            "Connect Passport \nwith Envoy"),
-        "pair_new_device_intro_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "On Passport, select Manage Account > Connect Wallet > Envoy."),
         "pair_new_device_qr_code_address": MessageLookupByLibrary.simpleMessage(
             "tb1q33xnrjena6apwnhx5t375pwnhx5t375"),
         "pair_new_device_qr_code_cta":
@@ -1292,8 +1300,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skip"),
         "passport_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
-        "privacy_advancedSettings_likeTypeChange_text":
-            MessageLookupByLibrary.simpleMessage("Like-Type Change"),
+        "privacy_applicationLock_learnMore":
+            MessageLookupByLibrary.simpleMessage("Learn more"),
         "privacy_applicationLock_title":
             MessageLookupByLibrary.simpleMessage("Application lock"),
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
@@ -1308,8 +1316,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foundation (Default)"),
         "privacy_node_nodeType_personal":
             MessageLookupByLibrary.simpleMessage("Personal Node"),
-        "privacy_node_title":
-            MessageLookupByLibrary.simpleMessage("Advanced settings"),
+        "privacy_node_title": MessageLookupByLibrary.simpleMessage("FAQs"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "privacy_privacyMode_improvedPrivacy":
@@ -1322,13 +1329,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
             "Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable."),
-        "privacy_screenHeading_popupWarning_learnMore":
-            MessageLookupByLibrary.simpleMessage("Learn more"),
-        "privacy_screenHeading_popupWarning_subtitle":
-            MessageLookupByLibrary.simpleMessage(
-                "Disabling like-type change addresses may harm your privacy. "),
-        "privacy_screenHeading_popupWarning_title":
-            MessageLookupByLibrary.simpleMessage("Warning"),
         "privacy_setting_add_node_modal_cta":
             MessageLookupByLibrary.simpleMessage("Connect"),
         "privacy_setting_add_node_modal_heading":
@@ -1453,8 +1453,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_ios_subheading": MessageLookupByLibrary.simpleMessage(
             "To recover your Envoy wallet, follow these simple instructions."),
         "screenTitle_activity": MessageLookupByLibrary.simpleMessage("Learn"),
-        "screenTitle_privacy":
-            MessageLookupByLibrary.simpleMessage("Screen HEADING"),
+        "screenTitle_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
@@ -1489,8 +1488,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_reviewScreen_sendMaxWarning":
             MessageLookupByLibrary.simpleMessage(
                 "Sending Max: \nFees are deducted from amount being sent."),
-        "send_screen_address_entry_to":
-            MessageLookupByLibrary.simpleMessage("To:"),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
         "settings_advanced_enabled_testnet_modal_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
@@ -1524,30 +1521,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
         "settings_tor":
             MessageLookupByLibrary.simpleMessage("Connect with Tor"),
-        "stalls_before_sending_tx_account_name":
-            MessageLookupByLibrary.simpleMessage("Account name"),
-        "stalls_before_sending_tx_add_note":
-            MessageLookupByLibrary.simpleMessage("Add Note"),
-        "stalls_before_sending_tx_address":
-            MessageLookupByLibrary.simpleMessage("Address"),
-        "stalls_before_sending_tx_address_content":
+        "stalls_before_sending_tx_add_note_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Save"),
+        "stalls_before_sending_tx_add_note_modal_cta2":
+            MessageLookupByLibrary.simpleMessage("No thanks"),
+        "stalls_before_sending_tx_add_note_modal_dontAskAgain":
+            MessageLookupByLibrary.simpleMessage("Don’t show again"),
+        "stalls_before_sending_tx_add_note_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Add a Note"),
+        "stalls_before_sending_tx_add_note_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "tb1q33xnrjena6apwnhx5t375..."),
-        "stalls_before_sending_tx_amount":
-            MessageLookupByLibrary.simpleMessage("Amount"),
-        "stalls_before_sending_tx_cta1":
-            MessageLookupByLibrary.simpleMessage("Send transaction"),
-        "stalls_before_sending_tx_cta2":
-            MessageLookupByLibrary.simpleMessage("Cancel"),
-        "stalls_before_sending_tx_fiat":
-            MessageLookupByLibrary.simpleMessage("\$3.25"),
-        "stalls_before_sending_tx_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Your transaction is ready \nto be sent"),
-        "stalls_before_sending_tx_pp_name":
-            MessageLookupByLibrary.simpleMessage("Passport name"),
-        "stalls_before_sending_tx_sats":
-            MessageLookupByLibrary.simpleMessage(" 25.000 sats"),
+                "Transaction notes can be useful when making future spends."),
         "stalls_before_sending_tx_scanning_broadcasting_fail_cta1":
             MessageLookupByLibrary.simpleMessage("Try Again"),
         "stalls_before_sending_tx_scanning_broadcasting_fail_cta2":
@@ -1571,13 +1555,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This might a take few seconds"),
-        "stalls_before_sending_tx_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Confirm the transaction details are correct before sending."),
-        "stalls_before_sending_tx_txid":
-            MessageLookupByLibrary.simpleMessage("TX ID"),
-        "stalls_before_sending_tx_txid_content":
-            MessageLookupByLibrary.simpleMessage("XXXXXXXXXXXXXXXXXXXXXX..."),
         "tagged_coin_details_menu_cta1":
             MessageLookupByLibrary.simpleMessage("EDIT TAG NAME"),
         "tagged_coin_details_menu_cta2":

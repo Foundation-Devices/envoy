@@ -661,7 +661,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().delete.toUpperCase(),
+          child: Text(S().manage_account_menu_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
