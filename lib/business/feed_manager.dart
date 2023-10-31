@@ -131,7 +131,8 @@ class FeedManager {
         }
       }
 
-      if (await video.thumbnail == null) {
+      final thumbnail = await video.thumbnail;
+      if (thumbnail == null || thumbnail.isEmpty) {
         HttpTor(Tor.instance, EnvoyScheduler().parallel)
             .get(video.thumbnailUrl!)
             .then((response) async {
@@ -154,7 +155,8 @@ class FeedManager {
         }
       }
 
-      if (await blog.thumbnail == null) {
+      final thumbnail = await blog.thumbnail;
+      if (thumbnail == null || thumbnail.isEmpty) {
         HttpTor(Tor.instance, EnvoyScheduler().parallel)
             .get(blog.thumbnailUrl!)
             .then((response) async {
