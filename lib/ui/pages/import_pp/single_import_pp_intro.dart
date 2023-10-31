@@ -83,7 +83,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              S().pair_new_device_intro_heading,
+                              S().pair_existing_device_intro_heading,
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
