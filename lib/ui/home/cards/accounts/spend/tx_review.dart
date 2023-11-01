@@ -395,6 +395,9 @@ class _TransactionReviewScreenState
         fontWeight: FontWeight.w400,
         fontSize: 13);
 
+    // total amount to spend including fee
+    int totalSpendAmount = amount + psbt.fee;
+
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -796,7 +799,7 @@ class _TransactionReviewScreenState
                                       left: unit == DisplayUnit.btc ? 4 : 0,
                                       right: unit == DisplayUnit.btc ? 0 : 8),
                                   child: Text(
-                                    "${getFormattedAmount(amount.toInt() + psbt.fee, trailingZeroes: true)}",
+                                    "${getFormattedAmount(totalSpendAmount, trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -811,7 +814,7 @@ class _TransactionReviewScreenState
                             ),
                             Text(
                                 ExchangeRate().getFormattedAmount(
-                                    amount.toInt(),
+                                    totalSpendAmount.toInt(),
                                     wallet: account.wallet),
                                 style: Theme.of(context)
                                     .textTheme
