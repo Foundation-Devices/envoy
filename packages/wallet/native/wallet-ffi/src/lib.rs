@@ -517,9 +517,14 @@ pub unsafe extern "C" fn wallet_get_server_features(
 pub unsafe extern "C" fn wallet_get_transactions(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> TransactionList {
-    let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
+    let error_return = TransactionList {
+        transactions_len: 0,
+        transactions: ptr::null(),
+    };
 
-    let transactions = wallet.list_transactions(true).unwrap();
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
+
+    let transactions = unwrap_or_return!(wallet.list_transactions(true), error_return);
     let transactions_len = transactions.len() as u32;
 
     let mut transactions_vec: Vec<Transaction> = vec![];
@@ -540,10 +545,6 @@ pub unsafe extern "C" fn wallet_get_transactions(
         }
 
         let outputs_iter = transaction.transaction.clone().unwrap().output.into_iter();
-
-        //let txout = Address::from_script(&transaction.transaction.unwrap().output[1].script_pubkey, wallet.network()).unwrap().to_string();
-
-        //let address = !wallet.is_mine(&o.script_pubkey).unwrap_or(false);
 
         let address = {
             let mut ret = "".to_string();

@@ -758,6 +758,10 @@ class Wallet {
     NativeTransactionList txList =
         dartFunction(Pointer.fromAddress(walletAddress));
 
+    if (txList.transactions == nullptr) {
+      throwRustException(lib);
+    }
+
     List<Transaction> transactions = [];
     for (var i = 0; i < txList.transactionsLen; i++) {
       var tx = txList.transactions.elementAt(i).ref;
