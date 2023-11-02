@@ -92,13 +92,17 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         ? widget.account
         : ref.watch(accountStateProvider(widget.account.id!));
 
+    if (account == null) {
+      return SizedBox.shrink();
+    }
+
     int balance = widget.account.wallet is GhostWallet
         ? 0
-        : ref.watch(accountBalanceProvider(account!.id));
+        : ref.watch(accountBalanceProvider(account.id));
 
     return CardSwipeWrapper(
       height: containerHeight,
-      account: account!,
+      account: account,
       child: Container(
         height: containerHeight,
         decoration: BoxDecoration(

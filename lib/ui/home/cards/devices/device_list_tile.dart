@@ -150,8 +150,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                             )
                                           : GestureDetector(
                                               onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .push(MaterialPageRoute(
                                                         builder: (context) {
                                                   return FwIntroPage(
                                                     onboarding: false,
