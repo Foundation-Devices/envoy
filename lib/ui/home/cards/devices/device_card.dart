@@ -203,7 +203,12 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {
                         Devices().deleteDevice(widget.device);
+
+                        // Pop the dialog
                         Navigator.pop(context);
+
+                        // Go back to devices list
+                        GoRouter.of(context).pop();
                       },
                     ),
                   ],
