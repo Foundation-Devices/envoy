@@ -173,22 +173,13 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    NumberFormat currencyFormatter = NumberFormat.currency(
-        locale: userLocale,
-        name: _currency!.symbol,
-        symbol: includeSymbol ? null : "");
+    NumberFormat currencyFormatter =
+        NumberFormat.currency(name: _currency!.code, symbol: "");
 
     String formattedAmount = currencyFormatter
         .format(_selectedCurrencyRate * amountSats / 100000000);
 
-    if (!includeSymbol) {
-      // NumberFormat still adds a non-breaking space if symbol is empty
-      const int $nbsp = 0x00A0;
-      formattedAmount =
-          formattedAmount.replaceAll(String.fromCharCode($nbsp), "");
-    }
-
-    return formattedAmount;
+    return (includeSymbol ? _currency!.symbol : "") + formattedAmount;
   }
 
   String getSymbol() {

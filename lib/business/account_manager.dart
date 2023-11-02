@@ -20,6 +20,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
@@ -136,11 +137,13 @@ class AccountManager extends ChangeNotifier {
       changed = await account.wallet.sync(
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port);
-    } on Exception catch (_) {
+    } on Exception catch (e) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {
         ConnectivityManager().electrumFailure();
       }
+
+      EnvoyReport().log("wallet", "Couldn't sync: ${e}");
     }
 
     if (changed != null) {
