@@ -470,23 +470,30 @@ class CoinSubTitleText extends ConsumerWidget {
 
     if (availableCoins == 0 || availableCoins == selectedCoins.length) {
       selectionMessage =
-          "${selectedCoins.length} Coins Selected"; // TODO: FIGMA
+          "${selectedCoins.length} ${selectedCoins.length == 1 ? 'Coin' : 'Coins'} Selected"; // TODO: FIGMA
     }
 
     String message = "${tag.numOfCoins} Coins"; // TODO: FIGMA
     if (selectedCoins.isEmpty) {
-      message = "${tag.numOfCoins} Coins"; // TODO: FIGMA
+      message =
+          "${tag.numOfCoins} ${tag.numOfCoins == 1 ? 'Coin' : 'Coins'}"; // TODO: FIGMA
       if (lockedCoins.isNotEmpty) {
-        message = "$message | ${lockedCoins.length} Locked"; // TODO: FIGMA
+        message =
+            "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? 'Coin' : 'Coins'} Locked"; // TODO: FIGMA
       }
     } else {
       message = "${selectionMessage}";
       if (lockedCoins.isNotEmpty) {
-        message = "$message | ${lockedCoins.length} Locked"; // TODO: FIGMA
+        message =
+            "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? 'Coin' : 'Coins'} Locked"; // TODO: FIGMA
       }
     }
     if (tag.numOfCoins == lockedCoins.length) {
-      message = "${tag.numOfCoins} Locked"; // TODO: FIGMA
+      message =
+          "${tag.numOfCoins} ${tag.numOfCoins == 1 ? 'Coin' : 'Coins'} Locked"; // TODO: FIGMA
+    }
+    if (tag.numOfCoins == 0) {
+      message = "0 Coins"; // TODO: FIGMA
     }
     return Text(
       message,
