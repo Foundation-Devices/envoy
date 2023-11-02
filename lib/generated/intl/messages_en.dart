@@ -271,6 +271,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_txDetail_subheading_passport":
             MessageLookupByLibrary.simpleMessage(
                 "Confirm the transaction details are correct before signing with Passport."),
+        "coincontrol_tx_add_note_heading":
+            MessageLookupByLibrary.simpleMessage("Add a Note"),
+        "coincontrol_tx_add_note_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Save some details about your transaction."),
         "coincontrol_tx_detail_amount_details":
             MessageLookupByLibrary.simpleMessage("Show details"),
         "coincontrol_tx_detail_amount_to_sent":
@@ -707,6 +712,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Authentication Failed"),
         "launch_screen_faceID_fail_subheading":
             MessageLookupByLibrary.simpleMessage("Please try again"),
+        "learning_center_blog_title":
+            MessageLookupByLibrary.simpleMessage("Blog"),
+        "learning_center_faq_title":
+            MessageLookupByLibrary.simpleMessage("FAQs"),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "learning_center_filter_blog":
@@ -723,6 +732,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "WELCOME TO THE\nLEARNING CENTER"),
         "learning_center_main_cta":
             MessageLookupByLibrary.simpleMessage("Apply filters"),
+        "learning_center_podcast_title":
+            MessageLookupByLibrary.simpleMessage("Podcast"),
+        "learning_center_results_title":
+            MessageLookupByLibrary.simpleMessage("Results"),
         "learning_center_search_input":
             MessageLookupByLibrary.simpleMessage("Search..."),
         "learning_center_sort_heading":
@@ -738,6 +751,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "learning_center_title_faq":
             MessageLookupByLibrary.simpleMessage("FAQs"),
         "learning_center_title_video":
+            MessageLookupByLibrary.simpleMessage("Videos"),
+        "learning_center_tooltops_title":
+            MessageLookupByLibrary.simpleMessage("Tooltips"),
+        "learning_center_video_title":
             MessageLookupByLibrary.simpleMessage("Videos"),
         "magic_setup_generate_backup_heading":
             MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
@@ -1316,7 +1333,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foundation (Default)"),
         "privacy_node_nodeType_personal":
             MessageLookupByLibrary.simpleMessage("Personal Node"),
-        "privacy_node_title": MessageLookupByLibrary.simpleMessage("FAQs"),
+        "privacy_node_title": MessageLookupByLibrary.simpleMessage("Node"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "privacy_privacyMode_improvedPrivacy":
