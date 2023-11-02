@@ -1560,6 +1560,26 @@ class S {
     );
   }
 
+  /// `Add a Note`
+  String get coincontrol_tx_add_note_heading {
+    return Intl.message(
+      'Add a Note',
+      name: 'coincontrol_tx_add_note_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save some details about your transaction.`
+  String get coincontrol_tx_add_note_subheading {
+    return Intl.message(
+      'Save some details about your transaction.',
+      name: 'coincontrol_tx_add_note_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Show details`
   String get coincontrol_tx_detail_amount_details {
     return Intl.message(
@@ -3658,6 +3678,26 @@ class S {
     );
   }
 
+  /// `Blog`
+  String get learning_center_blog_title {
+    return Intl.message(
+      'Blog',
+      name: 'learning_center_blog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FAQs`
+  String get learning_center_faq_title {
+    return Intl.message(
+      'FAQs',
+      name: 'learning_center_faq_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `All`
   String get learning_center_filter_all {
     return Intl.message(
@@ -3738,6 +3778,26 @@ class S {
     );
   }
 
+  /// `Podcast`
+  String get learning_center_podcast_title {
+    return Intl.message(
+      'Podcast',
+      name: 'learning_center_podcast_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Results`
+  String get learning_center_results_title {
+    return Intl.message(
+      'Results',
+      name: 'learning_center_results_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Search...`
   String get learning_center_search_input {
     return Intl.message(
@@ -3813,6 +3873,26 @@ class S {
     return Intl.message(
       'Videos',
       name: 'learning_center_title_video',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tooltips`
+  String get learning_center_tooltops_title {
+    return Intl.message(
+      'Tooltips',
+      name: 'learning_center_tooltops_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Videos`
+  String get learning_center_video_title {
+    return Intl.message(
+      'Videos',
+      name: 'learning_center_video_title',
       desc: '',
       args: [],
     );
@@ -6472,10 +6552,10 @@ class S {
     );
   }
 
-  /// `FAQs`
+  /// `Node`
   String get privacy_node_title {
     return Intl.message(
-      'FAQs',
+      'Node',
       name: 'privacy_node_title',
       desc: '',
       args: [],
