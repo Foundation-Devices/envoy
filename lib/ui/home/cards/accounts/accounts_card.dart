@@ -125,9 +125,11 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   }
 
   void _afterLayout(_) {
-    setState(() {
-      _listWidgetHeight = _getListHeight();
-    });
+    if (mounted) {
+      setState(() {
+        _listWidgetHeight = _getListHeight();
+      });
+    }
   }
 
   double _getListHeight() {
