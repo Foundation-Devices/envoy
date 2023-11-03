@@ -579,9 +579,10 @@ pub unsafe extern "C" fn wallet_get_transactions(
         let outputs: Vec<_> = outputs_iter
             .map(|o| {
                 CString::new(
-                    Address::from_script(&o.script_pubkey, wallet.network())
-                        .unwrap()
-                        .to_string(),
+                    match Address::from_script(&o.script_pubkey, wallet.network()) {
+                        Ok(a) => a.to_string(),
+                        Err(_) => "".to_string(),
+                    }
                 )
                 .unwrap()
                 .into_raw() as *const c_char
