@@ -21,6 +21,7 @@ import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -211,14 +212,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   padding: EdgeInsets.only(top: 8),
                   child: Column(
                     children: [
-                      //TODO: localize
                       GestureDetector(
                         //Padding added for better touch target
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           child: Text(
-                            "Edit Tag Name".toUpperCase(), // TODO: FIGMA
+                            S().tagged_coin_details_menu_cta1,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -230,11 +230,16 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           child: Text(
-                            "Delete Tag".toUpperCase(), // TODO: FIGMA
+                            S().tagged_coin_details_menu_cta2,
                             style: TextStyle(color: EnvoyColors.lightCopper),
                           ),
                         ),
-                        onTap: () => _deleteTag(context),
+                        onTap: () {
+                          if (tag.coins.isEmpty)
+                            _deleteEmptyTag(context);
+                          else
+                            _deleteTag(context);
+                        },
                       ),
                     ],
                   ),
@@ -348,7 +353,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(16))),
                                             child: Column(
-                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisSize: MainAxisSize.min,
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
@@ -358,7 +363,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                 ),
                                                 //TODO: localize
                                                 Text(
-                                                  "There are no coins assigned to this tag.", // TODO: FIGMA
+                                                  "There are no coins assigned to this tag.",
+                                                  // TODO: FIGMA
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall,
@@ -389,7 +395,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                EnvoyButton("Change Tag", // TODO: FIGMA
+                                EnvoyButton(
+                                    S().untagged_coin_details_spendable_cta2,
                                     type: EnvoyButtonTypes.tertiary,
                                     onTap: () async {
                                   //Shows warning dialog
@@ -530,58 +537,47 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       useRootNavigator: true,
       dialog: Builder(
         builder: (context) {
-          return EnvoyDialog(
-            content: Builder(
-              builder: (context) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Image.asset("assets/exclamation_triangle.png",
-                          width: 48),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        "Warning\n\nYou’re about to delete a tag.The coins will be marked as untagged once tag is deleted.",
-                        // TODO: FIGMA,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                  ],
-                );
+          return DeleteTagDialog(
+              dialogSubheading: S().delete_tag_modal_subheading,
+              primaryButtonText: S().delete_tag_modal_cta1,
+              secondaryButtonText: S().delete_tag_modal_cta2,
+              onPrimaryButtonTap: () {
+                Navigator.pop(context);
               },
-            ),
-            actions: [
-              EnvoyButton(
-                "Delete Tag anyway", // TODO: FIGMA
-                textStyle: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: EnvoyColors.darkCopper),
-                onTap: () async {
-                  await CoinRepository().deleteTag(widget.coinTag);
-                  //refresh coins list to update deleted tag item
-                  final __ = ref.refresh(coinsProvider(widget.coinTag.account));
-                  // await Future.delayed(Duration(milliseconds: 200));
-                  Navigator.pop(context);
-                  _menuVisible = false;
-                  Navigator.pop(context);
-                },
-                type: EnvoyButtonTypes.tertiary,
-              ),
-              EnvoyButton(
-                "Return to my coins", // TODO: FIGMA
-                onTap: () async {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
+              onSecondaryButtonTap: () async {
+                await CoinRepository().deleteTag(widget.coinTag);
+                //refresh coins list to update deleted tag item
+                final __ = ref.refresh(coinsProvider(widget.coinTag.account));
+                Navigator.pop(context);
+                _menuVisible = false;
+                Navigator.pop(context);
+              });
+        },
+      ),
+    );
+  }
+
+  _deleteEmptyTag(BuildContext context) {
+    showEnvoyDialog(
+      context: context,
+      useRootNavigator: true,
+      dialog: Builder(
+        builder: (context) {
+          return DeleteTagDialog(
+              dialogSubheading: S().delete_emptyTag_modal_subheading,
+              primaryButtonText: S().delete_emptyTag_modal_cta1,
+              secondaryButtonText: S().delete_emptyTag_modal_cta2,
+              onPrimaryButtonTap: () {
+                Navigator.pop(context);
+              },
+              onSecondaryButtonTap: () async {
+                await CoinRepository().deleteTag(widget.coinTag);
+                //refresh coins list to update deleted tag item
+                final __ = ref.refresh(coinsProvider(widget.coinTag.account));
+                Navigator.pop(context);
+                _menuVisible = false;
+                Navigator.pop(context);
+              });
         },
       ),
     );
@@ -643,6 +639,73 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           );
         },
       ),
+    );
+  }
+}
+
+class DeleteTagDialog extends StatelessWidget {
+  const DeleteTagDialog({
+    super.key,
+    required this.dialogSubheading,
+    required this.primaryButtonText,
+    required this.secondaryButtonText,
+    required this.onPrimaryButtonTap,
+    required this.onSecondaryButtonTap,
+  });
+
+  final String dialogSubheading;
+  final String primaryButtonText;
+  final String secondaryButtonText;
+  final Function onPrimaryButtonTap;
+  final Function onSecondaryButtonTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return EnvoyDialog(
+      content: Builder(
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child:
+                      Image.asset("assets/exclamation_triangle.png", width: 68),
+                ),
+                Text(
+                  dialogSubheading,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.info,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      actions: [
+        EnvoyButton(
+          secondaryButtonText,
+          textStyle: EnvoyTypography.body
+              .copyWith(color: EnvoyColors.darkCopper, fontSize: 16),
+          onTap: () async {
+            await onSecondaryButtonTap();
+          },
+          type: EnvoyButtonTypes.tertiary,
+        ),
+        EnvoyButton(
+          primaryButtonText,
+          textStyle: EnvoyTypography.body
+              .copyWith(color: EnvoyColors.white100, fontSize: 16),
+          type: EnvoyButtonTypes.primaryModal,
+          onTap: () async {
+            await onPrimaryButtonTap();
+          },
+        ),
+      ],
     );
   }
 }
