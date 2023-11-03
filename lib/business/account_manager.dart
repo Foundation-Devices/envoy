@@ -146,18 +146,6 @@ class AccountManager extends ChangeNotifier {
       EnvoyReport().log("wallet", "Couldn't sync: ${e}");
     }
 
-    // DEBUGGING: some wallets have dodgy outputs
-    for (final tx in account.wallet.transactions) {
-      if (tx.outputs != null) {
-        for (final output in tx.outputs!) {
-          if (output.isEmpty) {
-            EnvoyReport()
-                .log("wallet", "Couldn't parse output from ${tx.txId}");
-          }
-        }
-      }
-    }
-
     if (changed != null) {
       // Let ConnectivityManager know that we've synced
       if (account.wallet.network == Network.Mainnet) {
