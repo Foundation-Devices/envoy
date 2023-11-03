@@ -517,14 +517,14 @@ pub unsafe extern "C" fn wallet_get_server_features(
 pub unsafe extern "C" fn wallet_get_transactions(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> TransactionList {
-    let error_return = TransactionList {
+    let err_ret = TransactionList {
         transactions_len: 0,
         transactions: ptr::null(),
     };
 
-    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), err_ret);
 
-    let transactions = unwrap_or_return!(wallet.list_transactions(true), error_return);
+    let transactions = unwrap_or_return!(wallet.list_transactions(true), err_ret);
     let transactions_len = transactions.len() as u32;
 
     let mut transactions_vec: Vec<Transaction> = vec![];
@@ -538,13 +538,20 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 confirmation_height = 0;
                 confirmation_time = 0;
             }
-            Some(_) => {
-                confirmation_height = transaction.confirmation_time.as_ref().unwrap().height;
-                confirmation_time = transaction.confirmation_time.as_ref().unwrap().timestamp;
+            Some(block_time) => {
+                confirmation_height = block_time.height.clone();
+                confirmation_time = block_time.timestamp.clone();
             }
         }
 
-        let outputs_iter = transaction.transaction.clone().unwrap().output.into_iter();
+        let tx = match transaction.transaction.clone() {
+            Some(t) => t,
+            None => {
+                continue;
+            }
+        };
+
+        let outputs_iter = tx.output.into_iter();
 
         let address = {
             let mut ret = "".to_string();
@@ -554,9 +561,13 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 if (is_mine.clone() && transaction.received.clone() > 0)
                     || (!is_mine && transaction.sent.clone() > 0)
                 {
-                    ret = Address::from_script(&output.script_pubkey, wallet.network())
-                        .unwrap()
-                        .to_string();
+                    ret = match Address::from_script(&output.script_pubkey, wallet.network()) {
+                        Ok(a) => a,
+                        Err(_) => {
+                            continue; // keep looking
+                        }
+                    }
+                    .to_string();
 
                     break;
                 }
@@ -581,9 +592,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
         let outputs_ptr = outputs.as_ptr();
         std::mem::forget(outputs);
 
-        let inputs: Vec<_> = transaction
-            .transaction
-            .unwrap()
+        let inputs: Vec<_> = tx
             .input
             .into_iter()
             .map(|i| {
