@@ -582,7 +582,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
                     match Address::from_script(&o.script_pubkey, wallet.network()) {
                         Ok(a) => a.to_string(),
                         Err(_) => "".to_string(),
-                    }
+                    },
                 )
                 .unwrap()
                 .into_raw() as *const c_char
