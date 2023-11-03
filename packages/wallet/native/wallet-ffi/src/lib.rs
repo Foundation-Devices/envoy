@@ -612,7 +612,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 .into_raw(),
             received: transaction.received,
             sent: transaction.sent,
-            fee: transaction.fee.unwrap(),
+            fee: transaction.fee.unwrap_or(0),
             confirmation_height,
             confirmation_time,
             outputs_len,
