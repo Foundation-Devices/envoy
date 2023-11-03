@@ -12,6 +12,9 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'coin_tag_details_screen.dart';
 
 class CreateCoinTag extends StatefulWidget {
   final String accountId;
@@ -131,8 +134,8 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
             ),
             Padding(padding: EdgeInsets.all(8)),
             tags.length != 0
-                ? Text("Most Used")
-                : Text("Suggestions"), // TODO: FIGMA
+                ? Text(S().create_second_tag_modal_2_2_mostUsed)
+                : Text(S().create_first_tag_modal_2_2_suggest),
             Container(
               constraints: BoxConstraints(maxHeight: 100),
               margin: EdgeInsets.symmetric(vertical: 12),
@@ -180,7 +183,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
               ),
             ),
             Padding(padding: EdgeInsets.all(8)),
-            EnvoyButton("Continue", // TODO: FIGMA
+            EnvoyButton(S().create_first_tag_modal_2_2_cta,
                 enabled: _tagController.text.isNotEmpty,
                 textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: _tagController.text.isNotEmpty
@@ -221,10 +224,18 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                     }
                   }
                 } else {
+                  selectedCoins.forEach((selectedCoin) {
+                    widget.tag.removeCoin(selectedCoin);
+                  });
+                  await CoinRepository().updateCoinTag(widget.tag);
                   existingTag.addCoins(selectedCoins);
                   await CoinRepository().updateCoinTag(existingTag);
                 }
               } else {
+                selectedCoins.forEach((selectedCoin) {
+                  widget.tag.removeCoin(selectedCoin);
+                });
+                await CoinRepository().updateCoinTag(widget.tag);
                 CoinTag tag = CoinTag(
                   id: CoinTag.generateNewId(),
                   name: _tagController.text,
@@ -233,11 +244,21 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 )..addCoins(selectedCoins);
                 await CoinRepository().addCoinTag(tag);
               }
+
               final _ = ref.refresh(accountsProvider);
               //Wait for the refresh to propagate
               await Future.delayed(Duration(milliseconds: 180));
+              await CoinRepository().updateCoinTag(widget.tag);
+
               //Reset the selection
               Haptics.lightImpact();
+              if (widget.tag.coins.isEmpty && !widget.tag.untagged) {
+                Navigator.pop(context);
+                _emptyTag(context, widget.tag);
+                ref.read(coinSelectionStateProvider.notifier).reset();
+                return;
+              }
+
               widget.onTagUpdate();
             }),
           ],
@@ -245,4 +266,28 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
       },
     );
   }
+}
+
+_emptyTag(BuildContext context, CoinTag tag) {
+  showEnvoyDialog(
+    context: context,
+    useRootNavigator: true,
+    dialog: Builder(
+      builder: (context) {
+        return DeleteTagDialog(
+            dialogSubheading: S().empty_tag_modal_subheading(tag.name),
+            primaryButtonText: S().empty_tag_modal_cta1,
+            secondaryButtonText: S().empty_tag_modal_cta2,
+            onPrimaryButtonTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            onSecondaryButtonTap: () async {
+              await CoinRepository().deleteTag(tag);
+              Navigator.pop(context);
+              Navigator.pop(context);
+            });
+      },
+    ),
+  );
 }
