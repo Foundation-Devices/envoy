@@ -22,7 +22,6 @@ final sdFwUploadProgressProvider = StateProvider.autoDispose<bool?>((ref) {
 });
 
 class FwUploader {
-  Function? onUploaded;
   File fw;
   String _sdCardPath =
       "/private/var/mobile/Library/LiveFiles/com.apple.filesystems.userfsd/PASSPORT-SD/";
@@ -31,30 +30,13 @@ class FwUploader {
 
   static const platform = MethodChannel('envoy');
 
-  FwUploader(this.fw, {this.onUploaded}) {
+  FwUploader(this.fw) {
     var prefs = LocalStorage().prefs;
 
     // Get the last used SD CARD path
     if (prefs.containsKey(LAST_SD_CARD_PATH_PREFS)) {
       _sdCardPath = prefs.getString(LAST_SD_CARD_PATH_PREFS)!;
     }
-
-    // On iOS updates are received asynchronously from platform
-    sdCardEventChannel
-        .receiveBroadcastStream()
-        .asBroadcastStream()
-        .listen((event) {
-      print(" sdCardEventChannel.receiveBroadcastStream() ${event}");
-      if (event is bool) {
-        onUploaded!();
-      } else {
-        String pathFromPlatform = (event as String);
-        if (Platform.isIOS) {
-          _sdCardPath = pathFromPlatform.substring(7);
-          prefs.setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
-        }
-      }
-    });
 
     // Android
     if (Platform.isAndroid) {
@@ -65,8 +47,13 @@ class FwUploader {
     }
   }
 
-  promptUserForFolderAccess() {
-    platform.invokeMethod('prompt_folder_access');
+  promptUserForFolderAccess() async {
+    final result = await platform.invokeMethod('prompt_folder_access');
+    if (result != null && result is String) {
+      _sdCardPath = result.substring(7);
+    }
+
+    return result;
   }
 
   _accessFolder() {
@@ -93,11 +80,11 @@ class FwUploader {
     });
   }
 
-  upload() {
+  upload() async {
     if (Platform.isAndroid) {
-      _androidUpload();
+      await _androidUpload();
     } else {
-      _iosUpload();
+      await _iosUpload();
     }
   }
 
@@ -107,8 +94,6 @@ class FwUploader {
 
     print("SD: trying to copy file to " + _sdCardPath);
     fw.copySync(_sdCardPath + basename(fw.path));
-
-    onUploaded!();
   }
 
   _androidUpload() {

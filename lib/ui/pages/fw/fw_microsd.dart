@@ -45,19 +45,19 @@ class FwMicrosdPage extends ConsumerWidget {
               try {
                 File firmwareFile =
                     await UpdatesManager().getStoredFw(deviceId);
-                FwUploader(firmwareFile, onUploaded: () {
-                  if (Platform.isIOS) {
-                    Devices().markDeviceUpdated(
-                        deviceId, fwInfo.value!.storedVersion);
+                await FwUploader(firmwareFile).upload();
 
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return FwPassportPage(
-                        onboarding: onboarding,
-                      );
-                    }));
-                  }
-                }).upload();
+                Devices()
+                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+
+                if (Platform.isIOS) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return FwPassportPage(
+                      onboarding: onboarding,
+                    );
+                  }));
+                }
 
                 if (Platform.isAndroid) {
                   await Future.delayed(Duration(milliseconds: 500));

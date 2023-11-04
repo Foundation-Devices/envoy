@@ -11,6 +11,8 @@ private var eventSink: FlutterEventSink? = nil
 private let localSecretCloudStorageKey = "localSecret"
 private let localSecretFileName = "local.secret";
 
+private var folderAccessResult: FlutterResult? = nil
+
 func getSdCardBookmark() -> URL {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)
     return URL.init(fileURLWithPath: paths[0].path + "/sd_card")
@@ -36,7 +38,7 @@ func getSdCardBookmark() -> URL {
         setUpSecureScreen(window: window)
         
         envoyMethodChannel.setMethodCallHandler({
-            [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
+            [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             // Note: this method is invoked on the UI thread.\
             if(call.method == "make_screen_secure"){
                 if let args = call.arguments as? Dictionary<String, Any>,
@@ -48,7 +50,8 @@ func getSdCardBookmark() -> URL {
                 }
             }else
             if call.method == "prompt_folder_access" {
-                self?.promptUserForFolderAccess(result: result)
+                folderAccessResult = result
+                self?.promptUserForFolderAccess()
                 return
             } else if call.method == "access_folder" {
                 // We don't need arguments for this call but keeping the below for future reference
@@ -179,7 +182,7 @@ func getSdCardBookmark() -> URL {
         }
     }
 
-    private func promptUserForFolderAccess(result: FlutterResult) {
+    private func promptUserForFolderAccess() {
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         // Create a document picker for directories
         let documentPicker =
@@ -189,17 +192,15 @@ func getSdCardBookmark() -> URL {
         // Always start from the top level (where SD card would be)
         let topLevelURL = URL.init(string: "file:///private/var/mobile/Library/LiveFiles/com.apple.filesystems.userfsd/");
         documentPicker.directoryURL = topLevelURL;
-
+        
         // Present the picker
         controller.present(documentPicker, animated: true, completion: nil)
-
-        result(true)
     }
 
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         // Start accessing the security-scoped resource
         guard url.startAccessingSecurityScopedResource() else {
-            // TODO: Handle the failure here?
+            folderAccessResult?(nil)
             return
         }
 
@@ -211,7 +212,7 @@ func getSdCardBookmark() -> URL {
             print(error)
         }
 
-        eventSink?(url.absoluteString)
+        folderAccessResult?(url.absoluteString)
     }
     func makeSecure(window:UIWindow, secure:Bool) {
         secureTextField.isSecureTextEntry = secure
