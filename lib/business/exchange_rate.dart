@@ -62,7 +62,7 @@ class ExchangeRate extends ChangeNotifier {
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";
 
-  double _selectedCurrencyRate = 0;
+  double? _selectedCurrencyRate = 0;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
   double? _usdRate = 0;
@@ -109,10 +109,16 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   void setCurrency(String currencyCode) {
+    if (_currency == null || currencyCode != _currency?.code) {
+      _selectedCurrencyRate = null;
+    }
+
     // If code is wrong (for whatever reason) go with default
     _currency = supportedFiat.firstWhere(
         (element) => element.code == currencyCode,
         orElse: () => supportedFiat[0]);
+
+    notifyListeners();
 
     // Fetch rates for this session
     _getRate();
@@ -169,7 +175,9 @@ class ExchangeRate extends ChangeNotifier {
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
       {bool includeSymbol = true, Wallet? wallet}) {
-    if (Settings().selectedFiat == null || wallet?.network == Network.Testnet) {
+    if (Settings().selectedFiat == null ||
+        wallet?.network == Network.Testnet ||
+        _selectedCurrencyRate == null) {
       return "";
     }
 
@@ -177,7 +185,7 @@ class ExchangeRate extends ChangeNotifier {
         NumberFormat.currency(name: _currency!.code, symbol: "");
 
     String formattedAmount = currencyFormatter
-        .format(_selectedCurrencyRate * amountSats / 100000000);
+        .format(_selectedCurrencyRate! * amountSats / 100000000);
 
     return (includeSymbol ? _currency!.symbol : "") + formattedAmount;
   }
@@ -205,7 +213,11 @@ class ExchangeRate extends ChangeNotifier {
       return 0;
     }
 
-    return double.parse(amountFiat) * 100000000 ~/ _selectedCurrencyRate;
+    if (_selectedCurrencyRate == null) {
+      return 0;
+    }
+
+    return double.parse(amountFiat) * 100000000 ~/ _selectedCurrencyRate!;
   }
 
   String getCode() {
