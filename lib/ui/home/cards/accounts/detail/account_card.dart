@@ -44,6 +44,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
@@ -509,17 +510,33 @@ class TransactionListTile extends StatelessWidget {
                       return child ?? Container();
                     }
                   },
-                  child: Text(
-                    transaction.type == TransactionType.azteco
-                        ? ""
-                        : getFormattedAmount(transaction.amount,
-                            trailingZeroes: true),
-                    style: Settings().selectedFiat == null
-                        ? Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontSize: 20.0)
-                        : Theme.of(context).textTheme.titleMedium,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(right: 4),
+                        child: SizedBox.square(
+                            dimension: 12,
+                            child: SvgPicture.asset(
+                              Settings().displayUnit == DisplayUnit.btc
+                                  ? "assets/icons/ic_bitcoin_straight.svg"
+                                  : "assets/icons/ic_sats.svg",
+                              color: EnvoyColors.blackish,
+                            )),
+                      ),
+                      Text(
+                        transaction.type == TransactionType.azteco
+                            ? ""
+                            : getFormattedAmount(transaction.amount,
+                                trailingZeroes: true),
+                        style: Settings().selectedFiat == null
+                            ? Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontSize: 20.0)
+                            : Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
                   ),
                 ),
                 if (Settings().selectedFiat != null)
@@ -548,15 +565,24 @@ class TransactionListTile extends StatelessWidget {
                         return child ?? Container();
                       }
                     },
-                    child: Text(
-                        transaction.type == TransactionType.azteco
-                            ? ""
-                            : ExchangeRate().getFormattedAmount(
-                                transaction.amount,
-                                wallet: account.wallet),
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color:
-                                Theme.of(context).textTheme.bodySmall!.color)),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                      child: Text(
+                          transaction.type == TransactionType.azteco
+                              ? ""
+                              : ExchangeRate().getFormattedAmount(
+                                  transaction.amount,
+                                  wallet: account.wallet),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .color)),
+                    ),
                   ),
               ],
             ),
