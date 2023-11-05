@@ -143,32 +143,33 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   : SizedBox.shrink(),
             ],
           ),
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-            child: PageTransitionSwitcher(
-              reverse: _selectedCoin == null,
-              transitionBuilder: (
-                Widget child,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  fillColor: Colors.transparent,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.scaled,
-                  child: child,
-                );
-              },
-              child: _selectedCoin != null
-                  ? Align(
-                      alignment: Alignment.topCenter,
+          body: PageTransitionSwitcher(
+            reverse: _selectedCoin == null,
+            transitionBuilder: (
+              Widget child,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+            ) {
+              return SharedAxisTransition(
+                animation: animation,
+                fillColor: Colors.transparent,
+                secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.scaled,
+                child: child,
+              );
+            },
+            child: _selectedCoin != null
+                ? Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
                       child: CoinDetailsWidget(
                         coin: _selectedCoin!,
                         tag: widget.coinTag,
-                      ))
-                  : CoinTagDetails(context),
-            ),
+                      ),
+                    ))
+                : CoinTagDetails(context),
           ),
         ),
       ),
@@ -177,8 +178,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget CoinTagDetails(BuildContext context) {
     final tag = widget.coinTag;
+    final maxContainerHeight = MediaQuery.of(context).size.height * 0.50;
     double totalTagHeight = tag.coins.length == 1 ? 98 : 108;
-    double coinListHeight = (tag.coins.length * 38).toDouble().clamp(34, 260);
+    double coinListHeight =
+        (tag.coins.length * 38).toDouble().clamp(34, maxContainerHeight);
     if (widget.showCoins) {
       totalTagHeight += coinListHeight;
     }
@@ -190,13 +193,27 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
 
     if (tag.coins.isEmpty) {
+      ///for empty state
       totalTagHeight = 240;
     }
     //Listen to coin tag lock states
     ref.watch(coinTagLockStateProvider(widget.coinTag));
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 12),
+    return RawScrollbar(
+      thumbColor: Colors.white38,
+      trackVisibility: true,
+      thumbVisibility: totalTagHeight >= maxContainerHeight,
+
+      ///to show scroller outside of the main container widget
+      padding: EdgeInsets.only(top: 200, right: 24, left: 2),
+
+      ///sets up top margin for scroller
+      mainAxisMargin: -100,
+      thickness: 6,
+      trackRadius: Radius.circular(EnvoySpacing.medium1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+      ),
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -251,13 +268,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             bottom: 0,
             curve: EnvoyEasing.easeInOut,
             duration: Duration(milliseconds: 250),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  // minHeight: coinListHeight,
-                  maxHeight: 680,
-                ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              child: Container(
+                padding: EdgeInsets.all(8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
