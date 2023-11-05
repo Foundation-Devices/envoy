@@ -49,7 +49,7 @@ class BalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hide = ref.watch(balanceHideStateStatusProvider(accountId));
-    bool hideFiat = !AccountManager().isAccountTestnet(accountId);
+    bool hideFiat = AccountManager().isAccountTestnet(accountId);
 
     TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.grey,
