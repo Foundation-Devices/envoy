@@ -177,7 +177,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget CoinTagDetails(BuildContext context) {
     final tag = widget.coinTag;
-    double totalTagHeight = 108;
+    double totalTagHeight = tag.coins.length == 1 ? 98 : 108;
     double coinListHeight = (tag.coins.length * 38).toDouble().clamp(34, 260);
     if (widget.showCoins) {
       totalTagHeight += coinListHeight;
