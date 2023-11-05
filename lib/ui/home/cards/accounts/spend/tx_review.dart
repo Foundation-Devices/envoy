@@ -15,6 +15,7 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
@@ -876,6 +877,23 @@ class _TransactionReviewScreenState
                     onTap: () {
                       ///indicating that we are in edit mode
                       ref.read(spendEditModeProvider.notifier).state = true;
+
+                      /// The user has is in edit mode and if the psbt
+                      /// has inputs then use them to populate the coin selection state
+                      if (ref.read(rawTransactionProvider) != null) {
+                        List<String> inputs = ref
+                            .read(rawTransactionProvider)!
+                            .inputs
+                            .map((e) =>
+                                "${e.previousOutputHash}:${e.previousOutputIndex}")
+                            .toList();
+
+                        if (ref.read(coinSelectionStateProvider).isEmpty) {
+                          ref
+                              .read(coinSelectionStateProvider.notifier)
+                              .addAll(inputs);
+                        }
+                      }
 
                       ///toggle to coins view for coin control
                       ref.read(accountToggleStateProvider.notifier).state =
