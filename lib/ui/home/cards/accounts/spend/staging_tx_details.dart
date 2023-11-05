@@ -124,7 +124,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         child: IndicatorShield(),
                       ),
                       Text(
-                        "Transaction Details", // TODO: FIGMA
+                        "Transaction Details".toUpperCase(), // TODO: FIGMA
                         style:
                             Theme.of(context).textTheme.displayMedium?.copyWith(
                                   color: Colors.white,
