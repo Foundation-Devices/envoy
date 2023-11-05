@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -48,7 +49,7 @@ class BalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hide = ref.watch(balanceHideStateStatusProvider(accountId));
-    bool hideFiat = AccountManager().isAccountTestnet(accountId);
+    bool hideFiat = !AccountManager().isAccountTestnet(accountId);
 
     TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.grey,
@@ -62,6 +63,49 @@ class BalanceWidget extends ConsumerWidget {
               fontSize: 15,
               fontWeight: FontWeight.w400,
             );
+
+    List<Widget> rowItems = [];
+    rowItems.add(Container(
+      constraints: BoxConstraints(minWidth: 80),
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+      child: hide
+          ? LoaderGhost(
+              width: 40,
+              height: 20,
+              animate: false,
+            )
+          : Text(
+              hideFiat ? "" : ExchangeRate().getFormattedAmount(amount),
+              style: _textStyleFiat,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+            ),
+    ));
+    if (showLock && switchWidget != null) {
+      rowItems.add(Padding(
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+        child: FittedBox(
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return CoinLockButton(
+                locked: locked,
+                gestureTapCallback: () => onLockTap?.call(),
+              );
+            },
+          ),
+        ),
+      ));
+    }
+    if (switchWidget != null) {
+      rowItems.add(Flexible(
+          child: AnimatedOpacity(
+              opacity: locked ? 0.2 : 1,
+              duration: Duration(milliseconds: 250),
+              child: IgnorePointer(
+                  ignoring: locked,
+                  child: switchWidget ?? SizedBox.shrink()))));
+    }
 
     return Container(
       alignment: Alignment.center,
@@ -119,47 +163,8 @@ class BalanceWidget extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  constraints: BoxConstraints(minWidth: 80),
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: hide
-                      ? LoaderGhost(
-                          width: 40,
-                          height: 20,
-                          animate: false,
-                        )
-                      : Text(
-                          hideFiat
-                              ? ""
-                              : ExchangeRate().getFormattedAmount(amount),
-                          style: _textStyleFiat,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.end,
-                        ),
-                ),
-                showLock
-                    ? FittedBox(
-                        child: StatefulBuilder(
-                          builder: (context, setState) {
-                            return CoinLockButton(
-                              locked: locked,
-                              gestureTapCallback: () => onLockTap?.call(),
-                            );
-                          },
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                Flexible(
-                    child: AnimatedOpacity(
-                        opacity: locked ? 0.0 : 1,
-                        duration: Duration(milliseconds: 250),
-                        child: IgnorePointer(
-                            ignoring: locked,
-                            child: switchWidget ?? SizedBox.shrink()))),
-              ],
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: rowItems,
             ),
           )
         ],
@@ -279,8 +284,10 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
 
 class CoinTagBalanceWidget extends ConsumerWidget {
   final CoinTag coinTag;
+  final bool isListScreen;
 
-  const CoinTagBalanceWidget({super.key, required this.coinTag});
+  const CoinTagBalanceWidget(
+      {super.key, required this.coinTag, this.isListScreen = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -348,48 +355,51 @@ class CoinTagBalanceWidget extends ConsumerWidget {
             }
           }
         },
-        switchWidget: Consumer(
-          builder: (context, ref, child) {
-            final coins = coinTag.coins_id;
-            final selectedItems = ref
-                .watch(coinSelectionStateProvider)
-                .where(
-                  (element) => coins.contains(element),
-                )
-                .toList();
-            CoinTagSwitchState coinTagSwitchState = selectedItems.length == 0
-                ? CoinTagSwitchState.off
-                : CoinTagSwitchState.partial;
-            if (selectedItems.length == coinTag.numOfCoins) {
-              coinTagSwitchState = CoinTagSwitchState.on;
-            }
-            if (coinTag.coins.isEmpty) {
-              coinTagSwitchState = CoinTagSwitchState.off;
-            }
-            return CoinTagSwitch(
-              triState: true,
-              value: coinTagSwitchState,
-              onChanged: (value) {
-                final selectionState =
-                    ref.read(coinSelectionStateProvider.notifier);
-                if (value == CoinTagSwitchState.on ||
-                    value == CoinTagSwitchState.partial) {
-                  final ids = coinTag.coins
-                      .where((element) => !element.locked)
-                      .map((e) => e.id)
+        switchWidget: (coinTag.isAllCoinsLocked && isListScreen)
+            ? null
+            : Consumer(
+                builder: (context, ref, child) {
+                  final coins = coinTag.coins_id;
+                  final selectedItems = ref
+                      .watch(coinSelectionStateProvider)
+                      .where(
+                        (element) => coins.contains(element),
+                      )
                       .toList();
-                  selectionState.addAll(ids);
-                } else {
-                  final ids = coinTag.coins
-                      .where((element) => !element.locked)
-                      .map((e) => e.id)
-                      .toList();
-                  selectionState.removeAll(ids);
-                }
-              },
-            );
-          },
-        ),
+                  CoinTagSwitchState coinTagSwitchState =
+                      selectedItems.length == 0
+                          ? CoinTagSwitchState.off
+                          : CoinTagSwitchState.partial;
+                  if (selectedItems.length == coinTag.numOfCoins) {
+                    coinTagSwitchState = CoinTagSwitchState.on;
+                  }
+                  if (coinTag.coins.isEmpty) {
+                    coinTagSwitchState = CoinTagSwitchState.off;
+                  }
+                  return CoinTagSwitch(
+                    triState: true,
+                    value: coinTagSwitchState,
+                    onChanged: (value) {
+                      final selectionState =
+                          ref.read(coinSelectionStateProvider.notifier);
+                      if (value == CoinTagSwitchState.on ||
+                          value == CoinTagSwitchState.partial) {
+                        final ids = coinTag.coins
+                            .where((element) => !element.locked)
+                            .map((e) => e.id)
+                            .toList();
+                        selectionState.addAll(ids);
+                      } else {
+                        final ids = coinTag.coins
+                            .where((element) => !element.locked)
+                            .map((e) => e.id)
+                            .toList();
+                        selectionState.removeAll(ids);
+                      }
+                    },
+                  );
+                },
+              ),
       ),
     );
   }
