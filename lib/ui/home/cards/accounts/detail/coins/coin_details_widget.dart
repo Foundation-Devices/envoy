@@ -63,10 +63,10 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     return Container(
       padding: EdgeInsets.all(8),
       child: AnimatedContainer(
-        height: 280,
+        height: 268,
         duration: Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
           border: Border.all(
               color: Colors.black, width: 2, style: BorderStyle.solid),
           gradient: LinearGradient(
@@ -79,13 +79,15 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         ),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
               border: Border.all(
                   color: accountAccentColor,
                   width: 2,
                   style: BorderStyle.solid)),
           child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
               child: StripesBackground(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -96,7 +98,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       padding: EdgeInsets.symmetric(horizontal: 4),
                       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium2)),
                         color: Colors.white,
                       ),
                       child: CoinBalanceWidget(
@@ -106,9 +109,9 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                     Expanded(
                         child: Container(
                       margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderRadius: BorderRadius.all(Radius.circular(18)),
                         color: Colors.white,
                       ),
                       child: Column(
