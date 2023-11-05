@@ -95,6 +95,7 @@ class BlurContainerTransform<T extends Object?> extends StatefulWidget {
     this.closedColor = Colors.white,
     this.openColor = Colors.white,
     this.middleColor,
+    this.onTap = null,
     this.closedElevation = 1.0,
     this.openElevation = 4.0,
     this.closedShape = const RoundedRectangleBorder(
@@ -139,6 +140,8 @@ class BlurContainerTransform<T extends Object?> extends StatefulWidget {
   ///
   ///  * [Material.color], which is used to implement this property.
   final Color openColor;
+
+  final GestureTapCallback? onTap;
 
   /// The color to use for the background color during the transition
   /// with [ContainerTransitionType.fadeThrough].
@@ -293,6 +296,7 @@ class _BlurContainerTransformState<T>
   Future<void> openContainer() async {
     final Color middleColor =
         widget.middleColor ?? Theme.of(context).canvasColor;
+    this.widget.onTap?.call();
     final T? data = await Navigator.of(
       context,
       rootNavigator: widget.useRootNavigator,

@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.da
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/util/blur_container_transform.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,6 +45,9 @@ class _CoinsListState extends ConsumerState<CoinsList> {
               itemBuilder: (BuildContext context, int index) {
                 return BlurContainerTransform(
                   useRootNavigator: true,
+                  onTap: () {
+                    Haptics.lightImpact();
+                  },
                   closedBuilder: (context, action) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
