@@ -28,7 +28,8 @@ showSpendRequirementOverlay(BuildContext context, Account account) async {
   overlayEntry = OverlayEntry(builder: (context) {
     return SpendRequirementOverlay(account: account);
   });
-  Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
+  if (context.mounted)
+    Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
 }
 
 hideSpendRequirementOverlay({bool noAnimation = false}) {
