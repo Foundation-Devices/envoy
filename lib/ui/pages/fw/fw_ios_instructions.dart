@@ -10,7 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/pages/fw/fw_passport.dart';
+import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
 
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends ConsumerWidget {
@@ -49,7 +49,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
 
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return FwPassportPage(
+                  return FwIosSuccessPage(
                     onboarding: onboarding,
                   );
                 }));

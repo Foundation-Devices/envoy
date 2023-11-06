@@ -11,10 +11,10 @@ class SdCardSpinner extends ConsumerStatefulWidget {
   const SdCardSpinner({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<SdCardSpinner> createState() => _MoodySpinnerAnimationState();
+  ConsumerState<SdCardSpinner> createState() => _SdCardSpinnerState();
 }
 
-class _MoodySpinnerAnimationState extends ConsumerState<SdCardSpinner> {
+class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
   SMIBool? happy;
   SMIBool? unHappy;
   SMIBool? indeterminate;

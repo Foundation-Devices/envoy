@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
-import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 const sdCardEventChannel = EventChannel('sd_card_events');
 final sdFwUploadStreamProvider = StreamProvider.autoDispose(
@@ -31,18 +31,16 @@ class FwUploader {
   static const platform = MethodChannel('envoy');
 
   FwUploader(this.fw) {
-    var prefs = LocalStorage().prefs;
-
     // Get the last used SD CARD path
-    if (prefs.containsKey(LAST_SD_CARD_PATH_PREFS)) {
-      _sdCardPath = prefs.getString(LAST_SD_CARD_PATH_PREFS)!;
+    if (EnvoyStorage().containsKey(LAST_SD_CARD_PATH_PREFS)) {
+      _sdCardPath = EnvoyStorage().getString(LAST_SD_CARD_PATH_PREFS)!;
     }
 
     // Android
     if (Platform.isAndroid) {
       platform.invokeMethod('get_sd_card_path').then((value) {
         _sdCardPath = value;
-        prefs.setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
+        EnvoyStorage().setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
       });
     }
   }
@@ -51,6 +49,7 @@ class FwUploader {
     final result = await platform.invokeMethod('prompt_folder_access');
     if (result != null && result is String) {
       _sdCardPath = result.substring(7);
+      EnvoyStorage().setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
     }
 
     return result;
