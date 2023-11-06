@@ -3,11 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
@@ -21,7 +24,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -57,6 +59,18 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     String path = ref.watch(routePathProvider);
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
+    ///show spend overlay for account detail page
+    ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
+      if (next) {
+        final account = ref.read(selectedAccountProvider);
+        if (account != null) showSpendRequirementOverlay(context, account);
+      } else {
+        if (!ref.read(spendEditModeProvider)) {
+          hideSpendRequirementOverlay();
+        }
+      }
+    });
+
     String homePageTitle = ref.watch(homePageTitleProvider);
     ref.listen(
       routePathProvider,
@@ -80,6 +94,20 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           ref.read(coinSelectionStateProvider.notifier).reset();
           ref.read(spendEditModeProvider.notifier).state = false;
           clearSpendState(ProviderScope.containerOf(context));
+        }
+
+        ///shows/hide spend overlay for account detail page, ovelay is only needed within account detail page..
+        /// any other navigation should hide the overlay (except coin tag screens)
+        if (nextPath == ROUTE_ACCOUNT_DETAIL) {
+          if (ref.read(showSpendRequirementOverlayProvider) ||
+              ref.read(coinSelectionStateProvider).isNotEmpty) {
+            final account = ref.read(selectedAccountProvider);
+            if (account != null) showSpendRequirementOverlay(context, account);
+          } else {
+            if (!ref.read(spendEditModeProvider)) {
+              hideSpendRequirementOverlay();
+            }
+          }
         }
       },
     );

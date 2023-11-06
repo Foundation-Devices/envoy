@@ -68,6 +68,7 @@ class _SpendRequirementOverlayState
     extends ConsumerState<SpendRequirementOverlay>
     with SingleTickerProviderStateMixin {
   late Animation<Alignment> _appearAnimation;
+
   // bool _isDragging = true;
   //
   // bool _dismissed = false;

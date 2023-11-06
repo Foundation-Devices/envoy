@@ -20,7 +20,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.d
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
@@ -67,7 +66,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
   late AnimationController animationController;
   late Account account;
   late Animation<Alignment> animation;
-
   TextStyle _explainerTextStyleWallet = TextStyle(
       height: 2.0,
       fontFamily: 'Montserrat',
@@ -90,7 +88,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
         .animate(CurvedAnimation(
             parent: animationController, curve: Curves.easeInOut));
 
-    Future.delayed(Duration()).then((value) {
+    Future.delayed(Duration(milliseconds: 100)).then((value) {
       account =
           ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state =
@@ -114,7 +112,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
       bool isInEditMode = ref.read(spendEditModeProvider);
       String path = ref.read(routePathProvider);
       if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
-        showSpendRequirementOverlay(context, account);
         ref.read(hideBottomNavProvider.notifier).state = true;
       }
     });
@@ -124,7 +121,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
   @override
   void dispose() {
-    hideSpendRequirementOverlay();
     super.dispose();
     ExchangeRate().removeListener(_redraw);
   }
@@ -133,15 +129,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
   Widget build(BuildContext context) {
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
-    ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
-      if (next) {
-        showSpendRequirementOverlay(context, account);
-      } else {
-        if (!ref.read(spendEditModeProvider)) {
-          hideSpendRequirementOverlay();
-        }
-      }
-    });
     List<Transaction> transactions =
         ref.watch(transactionsProvider(account.id));
 
