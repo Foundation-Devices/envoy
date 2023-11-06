@@ -95,6 +95,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
       builder: (context, ref, child) {
         final tags = ref.watch(coinsTagProvider(widget.accountId)).toList()
           ..sort((a, b) => b.coins.length.compareTo(a.coins.length))
+          ..removeWhere((element) => element.untagged)
           ..take(5);
 
         List<String> suggestions =
