@@ -24,8 +24,8 @@ import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -939,5 +939,57 @@ class _TransactionReviewScreenState
         child: child,
       );
     });
+  }
+}
+
+class DiscardTransactionDialog extends StatelessWidget {
+  const DiscardTransactionDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      constraints: BoxConstraints(
+        minHeight: 270,
+        maxWidth: MediaQuery.of(context).size.width * 0.80,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            color: EnvoyColors.accentSecondary,
+            size: 42,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Text(S().coincontrol_tx_detail_passport_heading,
+              style: Theme.of(context).textTheme.titleSmall),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Text(
+            S().coincontrol_tx_detail_passport_subheading,
+            style: Theme.of(context).textTheme.titleSmall,
+            textAlign: TextAlign.center,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            S().coincontrol_tx_detail_passport_cta2,
+            type: EnvoyButtonTypes.secondary,
+            onTap: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            S().coincontrol_tx_detail_passport_cta,
+            type: EnvoyButtonTypes.primaryModal,
+            onTap: () {
+              Navigator.of(context).pop(false);
+            },
+          )
+        ],
+      ),
+    );
   }
 }
