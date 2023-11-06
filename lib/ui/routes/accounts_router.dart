@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -121,6 +122,17 @@ final accountsRouter = StatefulShellBranch(
                     routes: [
                       GoRoute(
                         name: "spend_confirm",
+                        onExit: (context) async {
+                          if (ProviderScope.containerOf(context)
+                                  .read(spendEditModeProvider) ==
+                              false) {
+                            bool item = await showEnvoyDialog(
+                                context: context,
+                                dialog: DiscardTransactionDialog());
+                            return item;
+                          }
+                          return true;
+                        },
                         path: _ACCOUNT_SEND_CONFIRM,
                         routes: [
                           GoRoute(

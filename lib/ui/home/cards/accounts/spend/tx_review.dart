@@ -20,11 +20,12 @@ import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -36,7 +37,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -116,6 +116,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
                         spendingTags[0];
                   }
 
+                  if (!account.wallet.hot && transactionModel.isPSBTFinalized) {
+                    broadcastTx(context);
+                    return;
+                  }
+
                   ///if the the change output is not tagged and there are more input from different tags
                   ///then show the tag selection dialog
                   if (changeOutPut != null &&
@@ -136,13 +141,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
                                     MaterialPageRoute(
                                         builder: (context) => PsbtCard(
                                             transactionModel.psbt!, account)));
-                                await Future.delayed(
-                                    Duration(milliseconds: 200));
-                                if (ref
-                                    .read(spendTransactionProvider)
-                                    .isPSBTFinalized) {
-                                  broadcastTx(context);
-                                }
                               }
                             },
                           ),
@@ -155,10 +153,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       await Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
                               PsbtCard(transactionModel.psbt!, account)));
-                      await Future.delayed(Duration(milliseconds: 200));
-                      if (ref.read(spendTransactionProvider).isPSBTFinalized) {
-                        broadcastTx(context);
-                      }
                     }
                   }
                 },
@@ -399,6 +393,14 @@ class _TransactionReviewScreenState
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;
 
+    String header = (account.wallet.hot || transactionModel.isPSBTFinalized)
+        ? S().coincontrol_tx_detail_heading
+        : S().coincontrol_txDetail_heading_passport;
+
+    String subHeading = (account.wallet.hot || transactionModel.isPSBTFinalized)
+        ? S().coincontrol_tx_detail_subheading
+        : S().coincontrol_txDetail_subheading_passport;
+
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -420,9 +422,7 @@ class _TransactionReviewScreenState
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               child: ListTile(
                 title: Text(
-                  account.wallet.hot
-                      ? S().coincontrol_tx_detail_heading
-                      : S().coincontrol_txDetail_heading_passport,
+                  header,
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
@@ -432,9 +432,7 @@ class _TransactionReviewScreenState
                 subtitle: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
-                    account.wallet.hot
-                        ? S().coincontrol_tx_detail_subheading
-                        : S().coincontrol_txDetail_subheading_passport,
+                    subHeading,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
@@ -672,7 +670,7 @@ class _TransactionReviewScreenState
                                   Opacity(
                                     child: FeeChooser(),
                                     opacity: transactionModel.isPSBTFinalized
-                                        ? 0.1
+                                        ? 0.0
                                         : 1,
                                   ),
                                 ],
@@ -908,7 +906,7 @@ class _TransactionReviewScreenState
                   ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
-                    account.wallet.hot
+                    (account.wallet.hot || transactionModel.isPSBTFinalized)
                         ? S().coincontrol_tx_detail_cta1
                         : S().coincontrol_txDetail_cta1_passport,
                     onTap: () {
@@ -941,5 +939,57 @@ class _TransactionReviewScreenState
         child: child,
       );
     });
+  }
+}
+
+class DiscardTransactionDialog extends StatelessWidget {
+  const DiscardTransactionDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      constraints: BoxConstraints(
+        minHeight: 270,
+        maxWidth: MediaQuery.of(context).size.width * 0.80,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            color: EnvoyColors.accentSecondary,
+            size: 42,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Text(S().coincontrol_tx_detail_passport_heading,
+              style: Theme.of(context).textTheme.titleSmall),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Text(
+            S().coincontrol_tx_detail_passport_subheading,
+            style: Theme.of(context).textTheme.titleSmall,
+            textAlign: TextAlign.center,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            S().coincontrol_tx_detail_passport_cta2,
+            type: EnvoyButtonTypes.secondary,
+            onTap: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            S().coincontrol_tx_detail_passport_cta,
+            type: EnvoyButtonTypes.primaryModal,
+            onTap: () {
+              Navigator.of(context).pop(false);
+            },
+          )
+        ],
+      ),
+    );
   }
 }
