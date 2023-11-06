@@ -249,7 +249,8 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 EnvoyButton(
                   "Continue", // TODO: FIGMA
                   onTap: () {
-                    if (!dismissed) {
+                    ///user has dismissed the prompt
+                    if (dismissed) {
                       EnvoyStorage().addPromptState(
                           DismissiblePrompt.createCoinTagWarning);
                     } else {
