@@ -92,20 +92,14 @@ final transactionsProvider =
     case TransactionSortTypes.amountLowToHigh:
       transactions.sort(
         (a, b) {
-          if (b.amount.abs() > a.amount.abs()) {
-            return 0;
-          }
-          return 1;
+          return a.amount.abs().toInt().compareTo(b.amount.abs());
         },
       );
       break;
     case TransactionSortTypes.amountHighToLow:
       transactions.sort(
         (a, b) {
-          if (a.amount.abs() > b.amount.abs()) {
-            return 0;
-          }
-          return 1;
+          return b.amount.abs().toInt().compareTo(a.amount.abs());
         },
       );
       break;
