@@ -201,7 +201,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
     return RawScrollbar(
       thumbColor: Colors.white38,
-      trackVisibility: true,
       thumbVisibility: totalTagHeight >= maxContainerHeight,
 
       ///to show scroller outside of the main container widget
