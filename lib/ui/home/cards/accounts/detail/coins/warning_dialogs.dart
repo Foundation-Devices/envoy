@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -31,7 +32,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 300,
+        width: 280,
         height: 420,
         padding: EdgeInsets.all(24),
         child: Stack(
@@ -50,13 +51,13 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(8)),
                 Image.asset(
                   "assets/exclamation_triangle.png",
                   height: 68,
                   width: 68,
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(8)),
                 Text(
                   "WARNING", // TODO: FIGMA
                   style: Theme.of(context)
@@ -64,7 +65,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                       .titleMedium
                       ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(8)),
                 //TODO: updated copy & localization
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -75,7 +76,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                           ?.copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                       textAlign: TextAlign.center),
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(8)),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -98,7 +99,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                         ),
                       ),
                       Text(
-                        "Do not remind me", // TODO: FIGMA
+                        S().coincontrol_lock_coin_modal_dontShowAgain,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color:
                                   dismissed ? Colors.black : Color(0xff808080),
@@ -107,7 +108,15 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                     ],
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(8)),
+                EnvoyButton(
+                  S().coincontrol_lock_coin_modal_cta2,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  type: EnvoyButtonTypes.tertiary,
+                ),
+                Padding(padding: EdgeInsets.all(8)),
                 EnvoyButton(
                   widget.buttonTitle,
                   onTap: () {
