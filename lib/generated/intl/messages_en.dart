@@ -516,10 +516,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "This might take few seconds. Please do not remove the microSD card."),
         "envoy_fw_success_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
+        "envoy_fw_success_cta_ios":
+            MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_fw_success_heading": MessageLookupByLibrary.simpleMessage(
+            "Firmware was successfully copied onto the microSD card"),
+        "envoy_fw_success_heading_ios": MessageLookupByLibrary.simpleMessage(
             "Firmware was successfully copied onto the microSD card"),
         "envoy_fw_success_subheading": MessageLookupByLibrary.simpleMessage(
             "Make sure to tap the Unmount SD Card button from your File Manager before removing your microSD card from your phone."),
+        "envoy_fw_success_subheading_ios": MessageLookupByLibrary.simpleMessage(
+            "The latest firmware has been copied to the microSD card and is ready to be applied to Passport."),
         "envoy_pin_intro_cta": MessageLookupByLibrary.simpleMessage("Continue"),
         "envoy_pin_intro_heading": MessageLookupByLibrary.simpleMessage(
             "Enter a 6-12 digit PIN on your Passport"),

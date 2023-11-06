@@ -113,7 +113,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
-  rive_common: 60ae7896ab40f9513974f36f015de33f70d2c5c5
+  rive_common: 8a159d68033a8b073e5853acc50f03aa486a2888
   share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb

@@ -16,18 +16,18 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'fw_intro.dart';
 
-//ignore: must_be_immutable
-class FwProgressPage extends ConsumerStatefulWidget {
+class FwAndroidProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
   final int deviceId;
 
-  FwProgressPage(this.deviceId, {this.onboarding = true});
+  FwAndroidProgressPage(this.deviceId, {this.onboarding = true});
 
   @override
-  ConsumerState<FwProgressPage> createState() => _FwProgressPageState();
+  ConsumerState<FwAndroidProgressPage> createState() =>
+      _FwAndroidProgressPageState();
 }
 
-class _FwProgressPageState extends ConsumerState<FwProgressPage> {
+class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   bool done = false;
   int currentDotIndex = 3;
   int navigationDots = 6;

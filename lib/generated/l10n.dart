@@ -2756,6 +2756,16 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get envoy_fw_success_cta_ios {
+    return Intl.message(
+      'Continue',
+      name: 'envoy_fw_success_cta_ios',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Firmware was successfully copied onto the microSD card`
   String get envoy_fw_success_heading {
     return Intl.message(
@@ -2766,11 +2776,31 @@ class S {
     );
   }
 
+  /// `Firmware was successfully copied onto the microSD card`
+  String get envoy_fw_success_heading_ios {
+    return Intl.message(
+      'Firmware was successfully copied onto the microSD card',
+      name: 'envoy_fw_success_heading_ios',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Make sure to tap the Unmount SD Card button from your File Manager before removing your microSD card from your phone.`
   String get envoy_fw_success_subheading {
     return Intl.message(
       'Make sure to tap the Unmount SD Card button from your File Manager before removing your microSD card from your phone.',
       name: 'envoy_fw_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The latest firmware has been copied to the microSD card and is ready to be applied to Passport.`
+  String get envoy_fw_success_subheading_ios {
+    return Intl.message(
+      'The latest firmware has been copied to the microSD card and is ready to be applied to Passport.',
+      name: 'envoy_fw_success_subheading_ios',
       desc: '',
       args: [],
     );
