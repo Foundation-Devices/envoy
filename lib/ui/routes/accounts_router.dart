@@ -123,15 +123,23 @@ final accountsRouter = StatefulShellBranch(
                       GoRoute(
                         name: "spend_confirm",
                         onExit: (context) async {
-                          if (ProviderScope.containerOf(context)
-                                  .read(spendEditModeProvider) ==
-                              false) {
-                            bool item = await showEnvoyDialog(
+                          ProviderContainer providerContainer =
+                              ProviderScope.containerOf(context);
+
+                          /// if the user is not going back for editing and broadcast is not finished
+                          /// show a dialog to confirm the user wants to discard the transaction
+                          if (providerContainer.read(spendEditModeProvider) ==
+                              true) {
+                            return true;
+                          } else if (providerContainer
+                              .read(spendTransactionProvider)
+                              .broadcastFinished) {
+                            return true;
+                          } else {
+                            return await showEnvoyDialog(
                                 context: context,
                                 dialog: DiscardTransactionDialog());
-                            return item;
                           }
-                          return true;
                         },
                         path: _ACCOUNT_SEND_CONFIRM,
                         routes: [

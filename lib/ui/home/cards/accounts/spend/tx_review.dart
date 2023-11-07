@@ -872,7 +872,9 @@ class _TransactionReviewScreenState
                   EnvoyButton(
                     S().coincontrol_tx_detail_cta2,
                     type: EnvoyButtonTypes.secondary,
-                    onTap: () {
+                    onTap: () async {
+                      final router = GoRouter.of(context);
+
                       ///indicating that we are in edit mode
                       ref.read(spendEditModeProvider.notifier).state = true;
 
@@ -898,10 +900,11 @@ class _TransactionReviewScreenState
                           AccountToggleState.Coins;
 
                       ///pop review
-                      GoRouter.of(context).pop();
+                      router.pop();
+                      await Future.delayed(Duration(milliseconds: 100));
 
                       ///pop spend form
-                      GoRouter.of(context).pop();
+                      router.pop();
                     },
                   ),
                   Padding(padding: EdgeInsets.all(6)),
