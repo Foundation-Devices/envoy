@@ -462,7 +462,7 @@ class TransactionListTile extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: transaction.type == TransactionType.azteco
                   ? Text(S().azteco_account_tx_history_pending_voucher)
-                  : transaction.isConfirmed
+                  : transaction.type == TransactionType.normal
                       ? Text(timeago.format(transaction.date))
                       : Text(S().receive_tx_list_awaitingConfirmation),
             ),

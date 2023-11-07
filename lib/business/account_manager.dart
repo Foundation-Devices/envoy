@@ -122,9 +122,9 @@ class AccountManager extends ChangeNotifier {
     if (pendingTxs.isEmpty) return;
 
     for (var pendingTx in pendingTxs) {
-      account.wallet.transactions
-          .where((tx) => tx.txId == pendingTx.txId)
-          .forEach((txToRemove) {
+      account.wallet.transactions.where((tx) {
+        return tx.txId == pendingTx.txId && tx.isConfirmed;
+      }).forEach((txToRemove) {
         EnvoyStorage().deletePendingTx(pendingTx.txId);
       });
     }

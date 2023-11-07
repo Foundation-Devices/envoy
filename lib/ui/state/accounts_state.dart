@@ -39,7 +39,18 @@ final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
   }
 
   final pendingTransactions = ref.watch(pendingTransactionsProvider(id));
-  final pendingTxSum = pendingTransactions
+
+  List<Transaction> walletTransactions =
+      ref.watch(accountStateProvider(id))?.wallet.transactions ?? [];
+
+  List<Transaction> transactionsToSum = [];
+
+  pendingTransactions.forEach((element) async {
+    final isTxIdExist = walletTransactions.any((tx) => tx.txId == element.txId);
+    if (!isTxIdExist) transactionsToSum.add(element);
+  });
+
+  final pendingTxSum = transactionsToSum
       .where((tx) => tx.type == TransactionType.pending)
       .map((tx) => tx.amount)
       .toList()
