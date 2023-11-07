@@ -310,7 +310,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                   height: 14,
                                 ),
                                 trailing: Text(
-                                    "${tx.isConfirmed ? "Confirmed" : "Pending"}", // TODO: FIGMA
+                                    "${tx.type == TransactionType.normal ? "Confirmed" : "Pending"}", // TODO: FIGMA
                                     style: trailingTextStyle),
                               ),
                               CoinTagListItem(

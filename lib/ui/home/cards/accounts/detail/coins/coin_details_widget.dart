@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:wallet/wallet.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
   final Coin coin;
@@ -194,7 +195,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                               height: 14,
                             ),
                             trailing: Text(
-                                "${tx.isConfirmed ? "Confirmed" : "Pending"} ", // TODO: FIGMA
+                                "${tx.type == TransactionType.normal ? "Confirmed" : "Pending"} ", // TODO: FIGMA
                                 style: trailingTextStyle),
                           ),
                           GestureDetector(

@@ -35,7 +35,25 @@ final transactionsProvider =
   List<Transaction> walletTransactions =
       ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
-  transactions.addAll(walletTransactions);
+  List<Transaction> walletConfirmedTransactions =
+      walletTransactions.where((transaction) {
+    return transaction.isConfirmed;
+  }).toList();
+
+  List<Transaction> walletRecievedUnconfirmedTransactions =
+      walletTransactions.where((transaction) {
+    return !transaction.isConfirmed && transaction.amount > 0;
+  }).toList();
+
+  walletRecievedUnconfirmedTransactions.forEach((element) async {
+    final isTxIdExist =
+        pendingTransactions.any((tx) => tx.txId == element.txId);
+    if (!isTxIdExist)
+      await EnvoyStorage().addPendingTx(element.txId, accountId!,
+          DateTime.now(), TransactionType.pending, -(element.received));
+  });
+
+  transactions.addAll(walletConfirmedTransactions);
   transactions.addAll(pendingTransactions);
 
   if (txFilterState.contains(TransactionFilters.Sent) &&
