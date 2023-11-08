@@ -176,85 +176,94 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   : _getMainWidget(context, transactions, txFiltersEnabled)),
         ),
       ]),
-      bottomNavigationBar: Container(
-        height: 100,
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: EnvoyColors.white100,
-              spreadRadius: 0,
-              blurRadius: 24,
-              offset: Offset(0, -8), // changes position of shadow
-            ),
-            BoxShadow(
-              color: EnvoyColors.white100,
-              spreadRadius: 12,
-              blurRadius: 24,
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 35.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: EnvoyTextButton(
-                    label: S().receive_tx_list_receive,
-                    onTap: () {
-                      context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
-                    }),
+      bottomNavigationBar: Consumer(
+        builder: (context, ref, child) {
+          bool hide = ref.watch(showSpendRequirementOverlayProvider);
+          return AnimatedOpacity(
+              duration: Duration(milliseconds: 200),
+              opacity: hide ? 0 : 1,
+              child: child);
+        },
+        child: Container(
+          height: 100,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: EnvoyColors.white100,
+                spreadRadius: 0,
+                blurRadius: 24,
+                offset: Offset(0, -8), // changes position of shadow
               ),
-            ),
-            QrShield(
-                child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(
-                        oldIcons.EnvoyIcons.qr_scan,
-                        size: 30,
-                        color: EnvoyColors.darkTeal,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return MediaQuery.removePadding(
-                            context: context,
-                            child: ScannerPage(
-                                [ScannerType.address, ScannerType.azteco],
-                                account: account,
-                                onAddressValidated: (address, amount) {
-                              // Navigator.pop(context);
-                              ref.read(spendAddressProvider.notifier).state =
-                                  address;
-                              ref.read(spendAmountProvider.notifier).state =
-                                  amount;
-                              context.go(ROUTE_ACCOUNT_SEND, extra: {
-                                "account": account,
-                                "address": address,
-                                "amount": amount
-                              });
-                            }),
-                          );
-                        }));
-                      },
-                    ))),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: EnvoyTextButton(
-                  onTap: () {
-                    context.go(ROUTE_ACCOUNT_SEND);
-                    return;
-                    // widget.navigator!.push(
-                    //     SendCard(widget.account, navigator: widget.navigator));
-                  },
-                  label: S().receive_tx_list_send,
+              BoxShadow(
+                color: EnvoyColors.white100,
+                spreadRadius: 12,
+                blurRadius: 24,
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 35.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: EnvoyTextButton(
+                      label: S().receive_tx_list_receive,
+                      onTap: () {
+                        context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
+                      }),
                 ),
               ),
-            ),
-          ],
+              QrShield(
+                  child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          oldIcons.EnvoyIcons.qr_scan,
+                          size: 30,
+                          color: EnvoyColors.darkTeal,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return MediaQuery.removePadding(
+                              context: context,
+                              child: ScannerPage(
+                                  [ScannerType.address, ScannerType.azteco],
+                                  account: account,
+                                  onAddressValidated: (address, amount) {
+                                // Navigator.pop(context);
+                                ref.read(spendAddressProvider.notifier).state =
+                                    address;
+                                ref.read(spendAmountProvider.notifier).state =
+                                    amount;
+                                context.go(ROUTE_ACCOUNT_SEND, extra: {
+                                  "account": account,
+                                  "address": address,
+                                  "amount": amount
+                                });
+                              }),
+                            );
+                          }));
+                        },
+                      ))),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: EnvoyTextButton(
+                    onTap: () {
+                      context.go(ROUTE_ACCOUNT_SEND);
+                      return;
+                      // widget.navigator!.push(
+                      //     SendCard(widget.account, navigator: widget.navigator));
+                    },
+                    label: S().receive_tx_list_send,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
