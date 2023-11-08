@@ -211,8 +211,13 @@ class EnvoySeed {
     LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, false);
     Settings().syncToCloud = false;
 
-    removeSeedFromNonSecure();
-    removeSeedFromSecure();
+    try {
+      await removeSeedFromNonSecure();
+    } on Exception catch (e) {
+      print("Cannot delete seed: ${e.toString()}");
+    }
+
+    await removeSeedFromSecure();
 
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
