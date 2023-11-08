@@ -179,26 +179,28 @@ class EnvoySeed {
     }
 
     // Strip keys from hot wallets
-    var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
-    var jsonAccounts = jsonDecode(accounts);
+    if (keys.contains(AccountManager.ACCOUNTS_PREFS)) {
+      var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
+      var jsonAccounts = jsonDecode(accounts);
 
-    for (var account in jsonAccounts) {
-      Wallet wallet = Wallet.fromJson(account["wallet"]);
+      for (var account in jsonAccounts) {
+        Wallet wallet = Wallet.fromJson(account["wallet"]);
 
-      if (wallet.hot) {
-        wallet.externalDescriptor = null;
-        wallet.internalDescriptor = null;
-        wallet.publicExternalDescriptor = null;
-        wallet.publicInternalDescriptor = null;
+        if (wallet.hot) {
+          wallet.externalDescriptor = null;
+          wallet.internalDescriptor = null;
+          wallet.publicExternalDescriptor = null;
+          wallet.publicInternalDescriptor = null;
+        }
+
+        account["wallet"] = wallet.toJson();
       }
 
-      account["wallet"] = wallet.toJson();
+      accounts = jsonEncode(jsonAccounts);
+
+      json["stores"][indexOfPreferences]["values"]
+          [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
     }
-
-    accounts = jsonEncode(jsonAccounts);
-
-    json["stores"][indexOfPreferences]["values"]
-        [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
 
     backupData[EnvoyStorage.dbName] = jsonEncode(json);
     return backupData;
@@ -211,8 +213,13 @@ class EnvoySeed {
     LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, false);
     Settings().syncToCloud = false;
 
-    removeSeedFromNonSecure();
-    removeSeedFromSecure();
+    try {
+      await removeSeedFromNonSecure();
+    } on Exception catch (e) {
+      print("Cannot delete seed: ${e.toString()}");
+    }
+
+    await removeSeedFromSecure();
 
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }

@@ -21,7 +21,7 @@ class FullScreenVideoPlayer extends StatefulWidget {
   final String url;
 
   FullScreenVideoPlayer(this.video, {Key? key})
-      : url = video.resolutionLinkMap[480]!,
+      : url = video.resolutionLinkMap[540]!,
         super(key: key);
 
   @override
@@ -39,7 +39,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   bool _showTorExplainer = false;
   bool _isPlaying = true;
 
-  int _playThreshold = 500000; // Download 500 kb before even trying
+  int _playThreshold = 1000000; // Download 1 mb before even trying
   int _downloaded = 0;
 
   double _playerProgress = 0;

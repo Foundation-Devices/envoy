@@ -8,17 +8,13 @@ import 'package:envoy/business/media.dart';
 // Generated
 part 'video.g.dart';
 
-enum VideoType { youTube, bitcoinTv }
-
 @JsonSerializable()
 class Video extends Media {
-  final VideoType type;
   final int duration;
   final Map<int, String> resolutionLinkMap;
   bool? watched;
 
   Video(
-      this.type,
       String title,
       String? description,
       this.duration,

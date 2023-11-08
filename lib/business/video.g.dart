@@ -7,7 +7,6 @@ part of 'video.dart';
 // **************************************************************************
 
 Video _$VideoFromJson(Map<String, dynamic> json) => Video(
-      $enumDecode(_$VideoTypeEnumMap, json['type']),
       json['title'] as String,
       json['description'] as String?,
       json['duration'] as int,
@@ -28,14 +27,8 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
       'publicationDate': instance.publicationDate.toIso8601String(),
       'url': instance.url,
       'id': instance.id,
-      'type': _$VideoTypeEnumMap[instance.type]!,
       'duration': instance.duration,
       'resolutionLinkMap':
           instance.resolutionLinkMap.map((k, e) => MapEntry(k.toString(), e)),
       'watched': instance.watched,
     };
-
-const _$VideoTypeEnumMap = {
-  VideoType.youTube: 'youTube',
-  VideoType.bitcoinTv: 'bitcoinTv',
-};
