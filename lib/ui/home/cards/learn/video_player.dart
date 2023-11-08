@@ -18,11 +18,8 @@ import 'package:envoy/business/scheduler.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
   final Video video;
-  final String url;
 
-  FullScreenVideoPlayer(this.video, {Key? key})
-      : url = video.resolutionLinkMap[540]!,
-        super(key: key);
+  FullScreenVideoPlayer(this.video, {Key? key}) : super(key: key);
 
   @override
   State<FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
@@ -39,8 +36,10 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   bool _showTorExplainer = false;
   bool _isPlaying = true;
 
-  int _playThreshold = 1000000; // Download 1 mb before even trying
+  int _playThreshold = 2000000; // Download 2 mb before even trying
   int _downloaded = 0;
+
+  int _desiredResolution = 540;
 
   double _playerProgress = 0;
 
@@ -61,6 +60,24 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   void Function()? _cancelDownload;
   bool _curtains = false;
 
+  /// Get download link with optimal resolution
+  String _getDownloadLink() {
+    final resolutionLinkMap = widget.video.resolutionLinkMap;
+    List<int> availableResolutions = resolutionLinkMap.keys.toList()..sort();
+
+    if (availableResolutions.contains(_desiredResolution)) {
+      return resolutionLinkMap[_desiredResolution]!;
+    }
+
+    try {
+      int greater =
+          availableResolutions.firstWhere((e) => e > _desiredResolution);
+      return resolutionLinkMap[greater]!;
+    } catch (_) {
+      return resolutionLinkMap[availableResolutions.last]!;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -79,7 +96,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     getApplicationDocumentsDirectory().then((dir) {
       streamFile = File(dir.path + "/stream.mp4");
       HttpTor(Tor.instance, EnvoyScheduler().parallel)
-          .getFile(streamFile.path, widget.url)
+          .getFile(streamFile.path, _getDownloadLink())
           .then((download) {
         _cancelDownload = download.cancel;
         _downloadProgressSubscription = download.progress.listen((progress) {
@@ -324,7 +341,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                         !ConnectivityManager()
                                             .torCircuitEstablished
                                     ? "Connecting to the Tor Network" // TODO: FIGMA
-                                    : "Envoy is loading your video over the Tor Network", // TODO: FIGMA
+                                    : "Envoy is loading your video over the Tor Network",
+                                // TODO: FIGMA
                                 style: TextStyle(
                                   color: Colors.white70,
                                 ),
