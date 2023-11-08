@@ -137,6 +137,7 @@ class EnvoyStorage {
       tagsStoreName: tagStore,
       utxoBlockStateStoreName: utxoBlockState,
       preferencesStoreName: preferencesStore,
+      exchangeRateStoreName: exchangeRateStore,
     };
 
     for (var store in storesToBackUp.values) {

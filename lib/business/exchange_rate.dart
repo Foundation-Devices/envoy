@@ -87,7 +87,7 @@ class ExchangeRate extends ChangeNotifier {
     print("Instance of ExchangeRate created!");
 
     // First get whatever we saved last
-    _restoreRate();
+    restoreRate();
 
     // Double check that that's still the choice
     setCurrency(Settings().selectedFiat ?? "USD");
@@ -98,7 +98,7 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  _restoreRate() async {
+  restoreRate() async {
     final storedExchangeRate = await EnvoyStorage().getExchangeRate();
 
     if (storedExchangeRate != null) {

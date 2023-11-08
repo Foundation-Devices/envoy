@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
@@ -352,6 +353,7 @@ class EnvoySeed {
     Settings.restore();
     Devices().restore();
     AccountManager().restore();
+    ExchangeRate().restoreRate();
   }
 
   DateTime? getLastBackupTime() {
