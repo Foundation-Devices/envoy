@@ -50,7 +50,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
     super.dispose();
   }
 
-  _playBitcoinTvVideo(Video video) async {
+  _playVimeoVideo(Video video) async {
     Navigator.of(context, rootNavigator: true).push(
         PageRouteBuilder(pageBuilder: (context, animation, secondAnimation) {
       return FullScreenVideoPlayer(video);
@@ -75,7 +75,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
           children: [
             GestureDetector(
               onTap: () {
-                _playBitcoinTvVideo(widget.video);
+                _playVimeoVideo(widget.video);
                 widget.video.watched = true;
                 EnvoyStorage().updateVideo(widget.video);
               },

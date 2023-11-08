@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -13,6 +14,9 @@ import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/scheduler.dart';
 
 class FeedManager {
+  static const vimeoToken = "141c53cdd50a0285e03885dc6f444f9a";
+  static const vimeoAccountId = "210701027";
+
   List<Video> videos = [];
   List<BlogPost> blogs = [];
 
@@ -33,17 +37,16 @@ class FeedManager {
     _restoreBlogs();
 
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get("https://bitcointv.com/feeds/videos.xml?videoChannelId=62")
-        .then((response) {
-      RssFeed feed = RssFeed.parse(response.body);
-      _addVideosFromBitcoinTv(feed);
-    });
-
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get("https://foundationdevices.com/feed/")
         .then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
+    });
+    HttpTor(Tor.instance, EnvoyScheduler().parallel)
+        .get("https://api.vimeo.com/users/$vimeoAccountId/videos", headers: {
+      'authorization': "bearer $vimeoToken",
+    }).then((response) {
+      _addVideosFromVimeo(response);
     });
   }
 
@@ -73,32 +76,32 @@ class FeedManager {
     }
   }
 
-  _addVideosFromBitcoinTv(RssFeed feed) async {
+  _addVideosFromVimeo(Response response) async {
     List<Video> currentVideos = [];
+    final data = json.decode(response.body);
+    final videos = (data['data'] as List);
 
-    for (RssItem item in feed.items!) {
-      var thumbnailUrl = item.media!.thumbnails![0].url!;
+    videos.forEach((video) {
+      var downloads = video["download"];
 
       Map<int, String> contentMap = {};
-      for (var content in item.media!.group!.contents!) {
-        if (content.height != null) {
-          contentMap[content.height!] = content.url!;
-        }
+
+      for (var content in downloads) {
+        contentMap[content['height']] = content["link"];
       }
 
       currentVideos.add(Video(
-        VideoType.bitcoinTv,
-        item.title!,
-        item.content?.value,
-        item.media!.group!.contents![0].duration!,
-        item.pubDate!,
+        video["name"],
+        video["description"],
+        video["duration"],
+        DateTime.parse(video["release_time"]),
         contentMap,
-        item.link!,
-        item.guid!,
+        video["player_embed_url"],
+        video["link"],
         null,
-        thumbnailUrl: thumbnailUrl,
+        thumbnailUrl: (video["pictures"])["sizes"][2]["link"],
       ));
-    }
+    });
 
     updateVideos(currentVideos);
   }
