@@ -47,7 +47,9 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
       _position = (await _videoPlayerController!.getPosition()).inSeconds;
       _duration = (await _videoPlayerController!.getDuration()).inSeconds;
 
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 

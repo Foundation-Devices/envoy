@@ -99,7 +99,7 @@ class FeedManager {
         video["player_embed_url"],
         video["link"],
         null,
-        thumbnailUrl: (video["pictures"])["sizes"][2]["link"],
+        thumbnailUrl: (video["pictures"])["sizes"][3]["link"],
       ));
     });
 
