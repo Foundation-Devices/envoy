@@ -14,6 +14,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   double blur = 6;
   Color blurColor;
   Color? cardColor;
+  double borderRadius;
   final Alignment alignment;
   bool dismissible;
 
@@ -29,6 +30,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     this.dismissible = true,
     this.alignment = Alignment.center,
     this.cardColor,
+    this.borderRadius = 14,
   }) : super(settings: settings);
 
   @override
@@ -66,7 +68,8 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
                           color: cardColor,
                           elevation: _elevation?.value,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
+                              borderRadius:
+                                  BorderRadius.circular(borderRadius)),
                           child: Builder(
                             builder: this.builder.build,
                           )),
@@ -235,7 +238,8 @@ Future<T?> showEnvoyDialog<T>(
     bool useRootNavigator = false,
     Alignment alignment = Alignment.center,
     Builder? builder,
-    bool dismissible = true}) async {
+    bool dismissible = true,
+    double borderRadius = 14}) async {
   var route = BlurDialogRoute<T>(
       blur: blur,
       builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
@@ -243,7 +247,8 @@ Future<T?> showEnvoyDialog<T>(
       cardColor: cardColor,
       alignment: alignment,
       dismissible: dismissible,
-      settings: routeSettings);
+      settings: routeSettings,
+      borderRadius: borderRadius);
   return await Navigator.of(context, rootNavigator: useRootNavigator)
       .push(route);
 }

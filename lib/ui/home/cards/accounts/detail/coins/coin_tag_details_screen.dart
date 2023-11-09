@@ -28,6 +28,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -545,6 +546,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,
+      borderRadius: 20,
       dialog: Builder(
         builder: (context) {
           return DeleteTagDialog(
@@ -571,6 +573,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,
+      borderRadius: 20,
       dialog: Builder(
         builder: (context) {
           return DeleteTagDialog(
@@ -671,51 +674,64 @@ class DeleteTagDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EnvoyDialog(
-      content: Builder(
-        builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child:
-                      Image.asset("assets/exclamation_triangle.png", width: 68),
-                ),
-                Text(
-                  dialogSubheading,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.info,
-                ),
-              ],
-            ),
-          );
-        },
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: 270,
+        maxWidth: MediaQuery.of(context).size.width * 0.80,
       ),
-      actions: [
-        EnvoyButton(
-          secondaryButtonText,
-          textStyle: EnvoyTypography.body
-              .copyWith(color: EnvoyColors.darkCopper, fontSize: 16),
-          onTap: () async {
-            await onSecondaryButtonTap();
-          },
-          type: EnvoyButtonTypes.tertiary,
+      child: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight.add(Alignment(.1, 0)),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: Image.asset("assets/exclamation_triangle.png", width: 68),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+              child: Text(
+                dialogSubheading,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.info
+                    .copyWith(color: newColors.EnvoyColors.textPrimary),
+              ),
+            ),
+            EnvoyButton(
+              secondaryButtonText,
+              textStyle: EnvoyTypography.body
+                  .copyWith(color: EnvoyColors.copper, fontSize: 16),
+              onTap: () async {
+                await onSecondaryButtonTap();
+              },
+              type: EnvoyButtonTypes.tertiary,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: EnvoyButton(
+                primaryButtonText,
+                textStyle: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.white100, fontSize: 16),
+                type: EnvoyButtonTypes.primaryModal,
+                borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                onTap: () async {
+                  await onPrimaryButtonTap();
+                },
+              ),
+            ),
+          ],
         ),
-        EnvoyButton(
-          primaryButtonText,
-          textStyle: EnvoyTypography.body
-              .copyWith(color: EnvoyColors.white100, fontSize: 16),
-          type: EnvoyButtonTypes.primaryModal,
-          onTap: () async {
-            await onPrimaryButtonTap();
-          },
-        ),
-      ],
+      ),
     );
   }
 }
