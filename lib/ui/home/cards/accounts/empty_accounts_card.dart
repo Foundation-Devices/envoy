@@ -7,9 +7,9 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class EmptyAccountsCard extends StatelessWidget {
   EmptyAccountsCard() : super(key: UniqueKey()) {}
@@ -68,7 +68,7 @@ class EmptyAccountsCard extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true)
                         .push(MaterialPageRoute(builder: (context) {
-                      return OnboardEnvoyWelcomeScreen();
+                      return WelcomeScreen();
                     }));
                   },
                 ),
