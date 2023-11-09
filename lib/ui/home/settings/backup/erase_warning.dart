@@ -216,7 +216,9 @@ class _EraseWalletsBalanceWarningState
                       HomePageBackgroundState.hidden;
                   ref.read(homePageTabProvider.notifier).state =
                       HomePageTabState.accounts;
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 }),
             Padding(padding: EdgeInsets.all(12)),
           ],
