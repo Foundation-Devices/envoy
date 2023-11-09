@@ -44,6 +44,7 @@ class EnvoyColors {
 
   static const Color darkCopper = Color(0xFFBF755F);
   static const Color lightCopper = Color(0xFFFBC4AA);
+  static const Color copper = Color(0xFFC3806C);
 
   static const Color danger = Color(0xFFBB6E5A);
 

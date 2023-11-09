@@ -273,6 +273,7 @@ _emptyTag(BuildContext context, CoinTag tag) {
   showEnvoyDialog(
     context: context,
     useRootNavigator: true,
+    borderRadius: 20,
     dialog: Builder(
       builder: (context) {
         return DeleteTagDialog(
