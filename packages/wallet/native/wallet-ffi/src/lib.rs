@@ -18,7 +18,7 @@ use bdk::database::{ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, SignOptions, SyncOptions};
+use bdk::{electrum_client, miniscript, SignOptions, SyncOptions, TransactionDetails};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -567,7 +567,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
                             continue; // keep looking
                         }
                     }
-                    .to_string();
+                        .to_string();
 
                     break;
                 }
@@ -584,8 +584,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
                         Err(_) => "".to_string(), // These are OP_RETURNS
                     },
                 )
-                .unwrap()
-                .into_raw() as *const c_char
+                    .unwrap()
+                    .into_raw() as *const c_char
             })
             .collect();
 
@@ -652,28 +652,30 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let must_spend = util::extract_utxo_list(must_spend);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
-    let mut res = 1;
-
     loop {
-        let tx = util::build_tx(
+        match util::build_tx(
             amount.clone(),
-            res as f64 / 100000.0,
+            100000.0f64 / 100000.0,
             &wallet,
             send_to.clone(),
             &must_spend,
             &dont_spend,
-        );
-        if tx.is_err() {
-            return res.into();
+        ) {
+            Ok(_) => {
+                return error_return;
+            }
+            Err(e) => {
+                match e {
+                    bdk::Error::InsufficientFunds { needed, available } => {
+                        println!("{}", needed);
+                        println!("{}", available);
+                    }
+                    _ => {}
+                }
+            }
         }
-        res += 1;
 
-        // TODO: find the correct way to do this
-        // probably by not having a drain script in build_tx
-        // check if BDK supports that
-        if res >= 100 {
-            return res.into();
-        }
+        return 4.0;
     }
 }
 
@@ -787,8 +789,8 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
                     .unwrap()
                     .to_string(),
             )
-            .unwrap()
-            .into_raw() as *const c_char,
+                .unwrap()
+                .into_raw() as *const c_char,
         })
         .collect();
 
@@ -883,7 +885,7 @@ pub unsafe extern "C" fn wallet_sign_offline(
         network.into(),
         MemoryDatabase::new(),
     )
-    .unwrap();
+        .unwrap();
 
     let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
