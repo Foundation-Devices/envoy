@@ -24,8 +24,8 @@ import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -311,13 +311,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      //wait for animation
-      await Future.delayed(Duration(milliseconds: 500));
-      ref
+      await ref
           .read(spendTransactionProvider.notifier)
           .broadcast(ProviderScope.containerOf(context));
-      //wait for animation
-      await Future.delayed(Duration(milliseconds: 500));
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);

@@ -176,7 +176,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..valid = true;
   }
 
-  void broadcast(ProviderContainer ref) async {
+  Future broadcast(ProviderContainer ref) async {
     try {
       Account? account = ref.read(selectedAccountProvider);
       if (!(account != null &&
@@ -245,6 +245,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       this.state = state.clone()
         ..broadcastFinished = true
         ..loading = false;
+      return true;
     } catch (e) {
       this.state = state.clone()
         ..broadcastFinished = false
