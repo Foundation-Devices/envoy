@@ -567,7 +567,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
                             continue; // keep looking
                         }
                     }
-                        .to_string();
+                    .to_string();
 
                     break;
                 }
@@ -584,8 +584,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
                         Err(_) => "".to_string(), // These are OP_RETURNS
                     },
                 )
-                    .unwrap()
-                    .into_raw() as *const c_char
+                .unwrap()
+                .into_raw() as *const c_char
             })
             .collect();
 
@@ -652,31 +652,27 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let must_spend = util::extract_utxo_list(must_spend);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
-    loop {
-        match util::build_tx(
-            amount.clone(),
-            100000.0f64 / 100000.0,
-            &wallet,
-            send_to.clone(),
-            &must_spend,
-            &dont_spend,
-        ) {
-            Ok(_) => {
-                return error_return;
-            }
-            Err(e) => {
-                match e {
-                    bdk::Error::InsufficientFunds { needed, available } => {
-                        println!("{}", needed);
-                        println!("{}", available);
-                    }
-                    _ => {}
-                }
-            }
+    match util::build_tx(
+        amount.clone(),
+        100000.0f64 / 100000.0,
+        &wallet,
+        send_to.clone(),
+        &must_spend,
+        &dont_spend,
+    ) {
+        Ok(_) => {
+            return error_return;
         }
-
-        return 4.0;
+        Err(e) => match e {
+            bdk::Error::InsufficientFunds { needed, available } => {
+                println!("{}", needed);
+                println!("{}", available);
+            }
+            _ => {}
+        },
     }
+
+    return 4.0;
 }
 
 #[no_mangle]
@@ -789,8 +785,8 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
                     .unwrap()
                     .to_string(),
             )
-                .unwrap()
-                .into_raw() as *const c_char,
+            .unwrap()
+            .into_raw() as *const c_char,
         })
         .collect();
 
@@ -885,7 +881,7 @@ pub unsafe extern "C" fn wallet_sign_offline(
         network.into(),
         MemoryDatabase::new(),
     )
-        .unwrap();
+    .unwrap();
 
     let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
