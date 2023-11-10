@@ -111,7 +111,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           .toList() ??
                       [];
 
-                  if (spendingTags.length == 1) {
+                  if (spendingTags.length == 1 &&
+                      ref.read(stagingTxChangeOutPutTagProvider) == null) {
                     ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
                         spendingTags[0];
                   }
@@ -132,6 +133,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                         builder: Builder(
                           builder: (context) => ChooseTagForStagingTx(
                             accountId: account.id!,
+                            hasMultipleTagsInput: true,
                             onTagUpdate: () async {
                               Navigator.pop(context);
                               if (account.wallet.hot) {

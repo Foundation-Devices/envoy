@@ -11,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
@@ -204,31 +205,46 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       if (note != null) {
         await EnvoyStorage().addTxNote(note, psbt.txid);
       }
+      try {
+        /// add change output to selected/default tag
+        if (transaction != null &&
+            changeOutPutTag != null &&
+            changeOutPut != null) {
+          ///store change tag if it is not already stored
+          CoinTag tag = ref.read(stagingTxChangeOutPutTagProvider)!;
+          final tags = ref
+              .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
 
-      /// add change output to selected/default tag
-      if (transaction != null &&
-          changeOutPutTag != null &&
-          changeOutPut != null) {
-        int index = transaction.outputs.indexWhere((element) =>
-            element.address == changeOutPut.item1 &&
-            element.amount == changeOutPut.item2);
-        if (index != -1) {
-          changeOutPutTag.addCoin(Coin(
-              Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
-              account: account.id!));
-          final _ = ref.refresh(accountsProvider);
+          if (tags.map((e) => e.id).contains(tag.id) == false &&
+              tag.untagged == false) {
+            await CoinRepository().addCoinTag(tag);
+            await Future.delayed(Duration(milliseconds: 100));
+          }
+
+          int index = transaction.outputs.indexWhere((element) =>
+              element.address == changeOutPut.item1 &&
+              element.amount == changeOutPut.item2);
+          if (index != -1) {
+            changeOutPutTag.addCoin(Coin(
+                Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
+                account: account.id!));
+            await CoinRepository().updateCoinTag(changeOutPutTag);
+            final _ = ref.refresh(accountsProvider);
+            await Future.delayed(Duration(seconds: 1));
+            await ref.refresh(coinsTagProvider(account.id!));
+          }
         }
-      }
+      } catch (e) {}
+      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
+      ref.read(stagingTxNoteProvider.notifier).state = null;
+
+      /// wait for bdk to update the transaction list and utxos list
+      await Future.delayed(Duration(seconds: 2));
 
       /// clear staging transaction states
       this.state = state.clone()
         ..broadcastFinished = true
         ..loading = false;
-
-      ///wait for transaction to be broadcast and propagated to the UI
-      await Future.delayed(Duration(seconds: 2));
-      ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
-      ref.read(stagingTxNoteProvider.notifier).state = null;
     } catch (e) {
       this.state = state.clone()
         ..broadcastFinished = false
