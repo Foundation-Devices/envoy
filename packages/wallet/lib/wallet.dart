@@ -587,14 +587,15 @@ class Wallet {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
-      final lib = rust.NativeLibrary(load(_libName));
+      final lib = load(_libName);
+      final native = rust.NativeLibrary(lib);
 
       Pointer<rust.UtxoList> mustSpendUtxoList =
           _createUtxoListPointer(mustSpendUtxos);
       Pointer<rust.UtxoList> dontSpendUtxoList =
           _createUtxoListPointer(dontSpendUtxos);
 
-      final maxFeeRate = lib
+      final maxFeeRate = native
           .wallet_get_max_feerate(
               Pointer.fromAddress(walletAddress),
               sendTo.toNativeUtf8() as Pointer<Char>,
@@ -605,6 +606,10 @@ class Wallet {
 
       calloc.free(mustSpendUtxoList);
       calloc.free(dontSpendUtxoList);
+
+      if (maxFeeRate == 0) {
+        throwRustException(lib);
+      }
 
       return maxFeeRate;
     });
