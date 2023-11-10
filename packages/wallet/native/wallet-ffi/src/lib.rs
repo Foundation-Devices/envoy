@@ -18,7 +18,7 @@ use bdk::database::{ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, SignOptions, SyncOptions, TransactionDetails};
+use bdk::{electrum_client, miniscript, Balance, FeeRate, SignOptions, SyncOptions};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -37,6 +37,7 @@ use bdk::keys::{
     DerivableKey, DescriptorKey, ExtendedKey, GeneratableDefaultOptions, GeneratedKey,
 };
 use bdk::miniscript::psbt::PsbtExt;
+use bdk::psbt::PsbtUtils;
 use bip39::{Language, Mnemonic};
 use std::sync::Mutex;
 
@@ -422,6 +423,10 @@ pub unsafe extern "C" fn wallet_sync(
 pub unsafe extern "C" fn wallet_get_balance(wallet: *mut Mutex<bdk::Wallet<Tree>>) -> u64 {
     let wallet = util::get_wallet_mutex(wallet).lock().unwrap();
     let balance = wallet.get_balance().unwrap();
+    get_total_balance(balance)
+}
+
+fn get_total_balance(balance: Balance) -> u64 {
     balance.confirmed + balance.immature + balance.trusted_pending + balance.untrusted_pending
 }
 
@@ -652,27 +657,28 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let must_spend = util::extract_utxo_list(must_spend);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
+    let balance = get_total_balance(wallet.get_balance().unwrap());
+
     match util::build_tx(
         amount.clone(),
-        100000.0f64 / 100000.0,
+        0.0,
+        Some(balance - amount),
         &wallet,
         send_to.clone(),
         &must_spend,
         &dont_spend,
     ) {
-        Ok(_) => {
+        Ok((psbt, _)) => {
+            return match psbt.fee_rate() {
+                None => error_return,
+                Some(r) => r.as_sat_per_vb() as f64,
+            };
+        }
+        Err(e) => {
+            update_last_error(e);
             return error_return;
         }
-        Err(e) => match e {
-            bdk::Error::InsufficientFunds { needed, available } => {
-                println!("{}", needed);
-                println!("{}", available);
-            }
-            _ => {}
-        },
     }
-
-    return 4.0;
 }
 
 #[no_mangle]
@@ -698,7 +704,15 @@ pub unsafe extern "C" fn wallet_create_psbt(
     let must_spend = util::extract_utxo_list(must_spend);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
-    let tx = util::build_tx(amount, fee_rate, &wallet, send_to, &must_spend, &dont_spend);
+    let tx = util::build_tx(
+        amount,
+        fee_rate,
+        None,
+        &wallet,
+        send_to,
+        &must_spend,
+        &dont_spend,
+    );
     match tx {
         Ok((mut psbt, _)) => {
             let sign_options = SignOptions {

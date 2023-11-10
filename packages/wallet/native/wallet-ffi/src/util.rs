@@ -151,6 +151,7 @@ pub unsafe fn extract_utxo_list(utxos: *const UtxoList) -> Vec<OutPoint> {
 pub fn build_tx(
     amount: u64,
     fee_rate: f64,
+    fee_absolute: Option<u64>,
     wallet: &MutexGuard<bdk::Wallet<Tree>>,
     send_to: Address,
     must_spend: &Vec<OutPoint>,
@@ -164,8 +165,16 @@ pub fn build_tx(
         .add_recipient(send_to.script_pubkey(), amount)
         .enable_rbf()
         .add_utxos(&*must_spend)
-        .unwrap()
-        .fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
+        .unwrap();
+
+    match fee_absolute {
+        None => {
+            builder.fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
+        }
+        Some(fee) => {
+            builder.fee_absolute(fee);
+        }
+    }
 
     for outpoint in dont_spend {
         builder.add_unspendable(*outpoint);
