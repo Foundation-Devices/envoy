@@ -156,39 +156,43 @@ pub unsafe extern "C" fn http_request(
     header_number: u8,
     headers: *const *const c_char,
 ) -> HttpResponse {
-    let error_return = HttpResponse {
+    let err_ret = HttpResponse {
         status_code: 0,
         body_len: 0,
         body: ptr::null(),
     };
 
-    let url = unwrap_or_return!(CStr::from_ptr(url).to_str(), error_return);
+    let url = unwrap_or_return!(CStr::from_ptr(url).to_str(), err_ret);
 
     let client: reqwest::blocking::Client;
 
     if tor_port > 0 {
-        let proxy =
-            reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &tor_port.to_string()).unwrap();
-        client = reqwest::blocking::Client::builder()
-            .proxy(proxy)
-            .build()
-            .unwrap();
+        let proxy = unwrap_or_return!(
+            reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &tor_port.to_string()),
+            err_ret
+        );
+        client = unwrap_or_return!(
+            reqwest::blocking::Client::builder().proxy(proxy).build(),
+            err_ret
+        );
     } else {
-        client = reqwest::blocking::Client::builder().build().unwrap();
+        client = unwrap_or_return!(reqwest::blocking::Client::builder().build(), err_ret);
     }
 
-    let body = unwrap_or_return!(CStr::from_ptr(body).to_str(), error_return);
+    let body = unwrap_or_return!(CStr::from_ptr(body).to_str(), err_ret);
 
     let mut header_map = HeaderMap::new();
 
     for i in 0..header_number {
-        let key = CStr::from_ptr(*headers.offset(i as isize))
-            .to_str()
-            .unwrap();
-        let value = CStr::from_ptr(*headers.offset((i + 1) as isize))
-            .to_str()
-            .unwrap();
-        header_map.append(key, value.parse().unwrap());
+        let key = unwrap_or_return!(
+            CStr::from_ptr(*headers.offset(i as isize)).to_str(),
+            err_ret
+        );
+        let value = unwrap_or_return!(
+            CStr::from_ptr(*headers.offset((i + 1) as isize)).to_str(),
+            err_ret
+        );
+        header_map.append(key, unwrap_or_return!(value.parse(), err_ret));
     }
 
     let request = match verb {
@@ -196,10 +200,10 @@ pub unsafe extern "C" fn http_request(
         Verb::Post => client.post(url),
     };
 
-    let response = unwrap_or_return!(request.body(body).headers(header_map).send(), error_return);
+    let response = unwrap_or_return!(request.body(body).headers(header_map).send(), err_ret);
 
     let status_code = response.status().as_u16();
-    let body = unwrap_or_return!(response.bytes(), error_return);
+    let body = unwrap_or_return!(response.bytes(), err_ret);
     let body_len = body.len();
     let body_ptr = body.as_ptr();
 
