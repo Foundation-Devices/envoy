@@ -132,8 +132,9 @@ final accountsRouter = StatefulShellBranch(
                               true) {
                             return true;
                           } else if (providerContainer
-                              .read(spendTransactionProvider)
-                              .broadcastFinished) {
+                                  .read(spendTransactionProvider)
+                                  .broadcastProgress ==
+                              BroadcastProgress.success) {
                             return true;
                           } else {
                             return await showEnvoyDialog(

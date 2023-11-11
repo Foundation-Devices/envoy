@@ -49,8 +49,6 @@ class TxReview extends ConsumerStatefulWidget {
 final _truncatedAddressLength = 16.0;
 
 class _TxReviewState extends ConsumerState<TxReview> {
-  bool _showBroadcastProgress = false;
-
   //TODO: disable note
   // String _txNote = "";
 
@@ -82,7 +80,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       );
     }
     return PageTransitionSwitcher(
-      reverse: !_showBroadcastProgress,
+      reverse: transactionModel.broadcastProgress == BroadcastProgress.staging,
       transitionBuilder: (child, animation, secondaryAnimation) {
         return SharedAxisTransition(
           animation: animation,
@@ -91,9 +89,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
           child: child,
         );
       },
-      child: _showBroadcastProgress
-          ? _buildBroadcastProgress()
-          : Padding(
+      child: transactionModel.broadcastProgress == BroadcastProgress.staging
+          ? Padding(
               key: Key("review"),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
@@ -159,16 +156,15 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   }
                 },
               ),
-            ),
+            )
+          : _buildBroadcastProgress(),
     );
   }
 
   Rive.StateMachineController? _stateMachineController;
 
-  bool _isBroadcastSuccess = false;
-  bool _isBroadcastInProgress = false;
-
   Widget _buildBroadcastProgress() {
+    final spendState = ref.watch(spendTransactionProvider);
     return Padding(
       key: Key("progress"),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
@@ -202,8 +198,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   String title = S().stalls_before_sending_tx_scanning_heading;
                   String subTitle =
                       S().stalls_before_sending_tx_scanning_subheading;
-                  if (!_isBroadcastInProgress) {
-                    if (_isBroadcastSuccess) {
+                  if (spendState.broadcastProgress !=
+                      BroadcastProgress.inProgress) {
+                    if (spendState.broadcastProgress ==
+                        BroadcastProgress.success) {
                       title = S()
                           .stalls_before_sending_tx_scanning_broadcasting_success_heading;
                       subTitle = S()
@@ -251,10 +249,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   Widget _ctaButtons(BuildContext context) {
-    if (_isBroadcastInProgress) {
+    final spendState = ref.watch(spendTransactionProvider);
+    if (spendState.broadcastProgress == BroadcastProgress.inProgress) {
       return SizedBox();
     }
-    if (_isBroadcastSuccess) {
+    if (spendState.broadcastProgress == BroadcastProgress.success) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
@@ -275,6 +274,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         EnvoyButton(
+          enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
           S().stalls_before_sending_tx_scanning_broadcasting_fail_cta1,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
@@ -283,11 +283,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
         ),
         Padding(padding: EdgeInsets.all(6)),
         EnvoyButton(
+          enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
           S().stalls_before_sending_tx_scanning_broadcasting_fail_cta2,
           onTap: () {
-            setState(() {
-              _showBroadcastProgress = false;
-            });
+            ref.read(spendTransactionProvider.notifier).resetBroadcastState();
           },
         ),
       ],
@@ -302,11 +301,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
       return;
     }
 
-    setState(() {
-      _showBroadcastProgress = true;
-      _isBroadcastInProgress = true;
-      _isBroadcastSuccess = false;
-    });
     try {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
@@ -318,19 +312,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       await Future.delayed(Duration(milliseconds: 500));
-      setState(() {
-        _isBroadcastInProgress = false;
-        _isBroadcastSuccess = true;
-      });
     } catch (e) {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
       await Future.delayed(Duration(milliseconds: 800));
-      setState(() {
-        _isBroadcastInProgress = false;
-        _isBroadcastSuccess = false;
-      });
     }
   }
 }

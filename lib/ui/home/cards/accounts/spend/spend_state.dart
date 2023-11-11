@@ -20,6 +20,13 @@ import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
+enum BroadcastProgress {
+  inProgress,
+  success,
+  failed,
+  staging,
+}
+
 /// This model is used to track the state of the transaction composition
 class TransactionModel {
   String sendTo;
@@ -32,7 +39,7 @@ class TransactionModel {
   bool canProceed = false;
   bool belowDustLimit = false;
   bool loading = false;
-  bool broadcastFinished = false;
+  BroadcastProgress broadcastProgress = BroadcastProgress.staging;
   bool isPSBTFinalized = false;
   String? error;
 
@@ -46,8 +53,8 @@ class TransactionModel {
       this.valid = false,
       this.loading = false,
       this.belowDustLimit = false,
-      this.broadcastFinished = false,
       this.canProceed = false,
+      this.broadcastProgress = BroadcastProgress.staging,
       this.error = null});
 
   static TransactionModel copy(TransactionModel mode) {
@@ -63,7 +70,7 @@ class TransactionModel {
       loading: mode.loading,
       canProceed: mode.canProceed,
       belowDustLimit: mode.belowDustLimit,
-      broadcastFinished: mode.broadcastFinished,
+      broadcastProgress: mode.broadcastProgress,
     );
   }
 
@@ -87,7 +94,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     if (sendTo.isEmpty ||
         amount == 0 ||
         account == null ||
-        state.broadcastFinished) {
+        state.broadcastProgress == BroadcastProgress.inProgress) {
       return false;
     }
     List<Utxo> utxos = container
@@ -170,6 +177,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     state = state.clone()
       ..psbt = psbt
       ..loading = false
+      ..broadcastProgress = BroadcastProgress.staging
 
       /// to prevent the user from editing the transaction, this is used when user scans signed PSBT
       ..isPSBTFinalized = true
@@ -181,12 +189,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       Account? account = ref.read(selectedAccountProvider);
       if (!(account != null &&
           state.psbt != null &&
-          !state.broadcastFinished)) {
+          (state.broadcastProgress != BroadcastProgress.success ||
+              state.broadcastProgress != BroadcastProgress.inProgress))) {
         return;
       }
       // Increment the change index before broadcasting
       await account.wallet.getChangeAddress();
-
+      this.state = state.clone()
+        ..broadcastProgress = BroadcastProgress.inProgress;
       Psbt psbt = state.psbt!;
       //Broadcast transaction
       await account.wallet.broadcastTx(
@@ -205,6 +215,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       if (note != null) {
         await EnvoyStorage().addTxNote(note, psbt.txid);
       }
+
       try {
         /// add change output to selected/default tag
         if (transaction != null &&
@@ -242,16 +253,16 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       await Future.delayed(Duration(seconds: 2));
 
       /// clear staging transaction states
-      this.state = state.clone()
-        ..broadcastFinished = true
-        ..loading = false;
+      this.state = state.clone()..broadcastProgress = BroadcastProgress.success;
       return true;
     } catch (e) {
-      this.state = state.clone()
-        ..broadcastFinished = false
-        ..loading = false;
+      this.state = state.clone()..broadcastProgress = BroadcastProgress.failed;
       throw e;
     }
+  }
+
+  resetBroadcastState() {
+    this.state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 }
 
