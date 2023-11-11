@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/locale.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
@@ -25,7 +26,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/locale.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -456,6 +456,9 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
 }
 
 String getTransactionDateAndTimeString(Transaction transaction) {
+  if (!transaction.isConfirmed) {
+    return "Pending"; // TODO: FIGMA
+  }
   final String transactionDateInfo =
       DateFormat.yMd(currentLocale).format(transaction.date) +
           " " +
