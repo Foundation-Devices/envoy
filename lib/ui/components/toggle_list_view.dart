@@ -36,7 +36,7 @@ class _EnvoyListToggleState extends State<EnvoyListToggle> {
     final widgetWidth = 2 +
         toggleWidth +
         EnvoySpacing.xs +
-        cardViewIcon.getSize() +
+        cardViewIcon.size.toDouble +
         EnvoySpacing.small;
     return GestureDetector(
       onTap: () {

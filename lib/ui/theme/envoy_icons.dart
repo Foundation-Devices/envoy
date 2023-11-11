@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum EnvoyIconSize { normal, small, big }
+enum EnvoyIconSize { normal, small, big, extraSmall }
 
 enum EnvoyIcons {
   chevron_down,
@@ -46,25 +46,12 @@ class EnvoyIcon extends StatelessWidget {
 
   EnvoyIcon(this.icon, {this.color, this.size = EnvoyIconSize.normal});
 
-  double getSize() {
-    switch (size) {
-      case EnvoyIconSize.normal:
-        return 24.0; // Default
-      case EnvoyIconSize.small:
-        return 18.0;
-      case EnvoyIconSize.big:
-        return 64;
-      default:
-        return 24.0;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       "assets/components/icons/${this.icon.name}.svg",
-      width: getSize(),
-      height: getSize(),
+      width: size.toDouble,
+      height: size.toDouble,
       color: this.color,
     );
   }
@@ -73,34 +60,47 @@ class EnvoyIcon extends StatelessWidget {
 /// Testnet icons have a coloured 'T' badge
 class TestnetIcon extends StatelessWidget {
   final EnvoyIcons icon;
-  final double? size;
+  final EnvoyIconSize size;
   final Color? color;
 
-  TestnetIcon(this.icon, {this.color, this.size = 24});
-
-  double? getSize() {
-    return size;
-  }
+  TestnetIcon(this.icon, {this.color, this.size = EnvoyIconSize.normal});
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       SvgPicture.asset(
         "assets/components/icons/testnet_badge.svg",
-        width: getSize()! / 2,
-        height: getSize()! / 2,
+        width: size.toDouble / 2,
+        height: size.toDouble / 2,
         color: this.color,
       ),
       Padding(
         padding: EdgeInsets.only(
-          left: getSize()! / 5,
+          left: size.toDouble / 5,
         ),
         child: SvgPicture.asset(
           "assets/components/icons/${this.icon.name}.svg",
-          width: getSize(),
-          height: getSize(),
+          width: size.toDouble,
+          height: size.toDouble,
         ),
       ),
     ]);
+  }
+}
+
+extension FloatSize on EnvoyIconSize {
+  double get toDouble {
+    switch (this) {
+      case EnvoyIconSize.extraSmall:
+        return 16.0;
+      case EnvoyIconSize.small:
+        return 18.0;
+      case EnvoyIconSize.normal:
+        return 24.0; // Default
+      case EnvoyIconSize.big:
+        return 64.0;
+      default:
+        return 24.0;
+    }
   }
 }
