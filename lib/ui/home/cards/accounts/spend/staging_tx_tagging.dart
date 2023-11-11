@@ -9,7 +9,6 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +17,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChooseTagForStagingTx extends ConsumerStatefulWidget {
   final String accountId;
   final Function onTagUpdate;
-
+  final hasMultipleTagsInput;
   const ChooseTagForStagingTx(
-      {super.key, required this.onTagUpdate, required this.accountId});
+      {super.key,
+      required this.onTagUpdate,
+      required this.accountId,
+      this.hasMultipleTagsInput = false});
 
   @override
   ConsumerState<ChooseTagForStagingTx> createState() =>
@@ -37,7 +39,17 @@ List<String> tagSuggestions = [
 ];
 
 class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
-  bool showTagForm = false;
+  late bool showTagForm = widget.hasMultipleTagsInput;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        showTagForm = !widget.hasMultipleTagsInput;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +125,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
         builder: (context, ref, child) {
           final tags = ref.watch(coinsTagProvider(widget.accountId)).toList()
             ..sort((a, b) => b.coins.length.compareTo(a.coins.length))
+            ..removeWhere((element) => element.untagged)
             ..take(5);
-
           List<String> suggestions =
               tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
           return Column(
@@ -228,7 +240,6 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                     account: widget.accountId,
                     untagged: false,
                   );
-                  await CoinRepository().addCoinTag(tag);
                   ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
                       tag;
                 }
