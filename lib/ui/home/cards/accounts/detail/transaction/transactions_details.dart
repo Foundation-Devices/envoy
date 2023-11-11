@@ -14,6 +14,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -333,8 +334,11 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                             WidgetSpan(
                                               alignment:
                                                   PlaceholderAlignment.middle,
-                                              child: getUnitIcon(widget.account,
-                                                  size: 16),
+                                              child: getUnitIcon(
+                                                widget.account,
+                                                iconSize:
+                                                    EnvoyIconSize.extraSmall,
+                                              ),
                                             ),
                                             TextSpan(
                                               text: "${getFormattedAmount(
