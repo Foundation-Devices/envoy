@@ -457,7 +457,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
 
 String getTransactionDateAndTimeString(Transaction transaction) {
   if (!transaction.isConfirmed) {
-    return "Pending";
+    return "Pending"; // TODO: FIGMA
   }
   final String transactionDateInfo =
       DateFormat.yMd(currentLocale).format(transaction.date) +
