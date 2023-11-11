@@ -14,16 +14,41 @@ final learnVideosProvider =
   final learnSortState = ref.watch(learnSortStateProvider);
   List<Video> allVideos = FeedManager().videos;
 
+  List<Video> videosWithTag = [];
+  List<Video> videosWithoutTag = [];
+
+  for (var video in allVideos) {
+    if (video.order != null) {
+      videosWithTag.add(video);
+    } else {
+      videosWithoutTag.add(video);
+    }
+  }
+
   switch (learnSortState) {
     case LearnSortTypes.newestFirst:
-      allVideos.sort((v1, v2) {
-        return v2.publicationDate.compareTo(v1.publicationDate);
+      videosWithTag.sort((v1, v2) {
+        return v2.order! - v1.order!;
       });
-      break;
-    case LearnSortTypes.oldestFirst:
-      allVideos.sort((v1, v2) {
+
+      videosWithoutTag.sort((v1, v2) {
         return v1.publicationDate.compareTo(v2.publicationDate);
       });
+
+      allVideos = [...videosWithoutTag, ...videosWithTag];
+
+      break;
+    case LearnSortTypes.oldestFirst:
+      videosWithTag.sort((v1, v2) {
+        return v1.order! - v2.order!;
+      });
+
+      videosWithoutTag.sort((v1, v2) {
+        return v2.publicationDate.compareTo(v1.publicationDate);
+      });
+
+      allVideos = [...videosWithTag, ...videosWithoutTag];
+
       break;
   }
   if (learnFilterState.contains(LearnFilters.All) ||

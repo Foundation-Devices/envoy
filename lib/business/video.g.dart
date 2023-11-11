@@ -17,6 +17,8 @@ Video _$VideoFromJson(Map<String, dynamic> json) => Video(
       json['url'] as String,
       json['id'] as String,
       json['watched'] as bool?,
+      json['order'] as int?,
+      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       thumbnailUrl: json['thumbnailUrl'] as String?,
     );
 
@@ -31,4 +33,6 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
       'resolutionLinkMap':
           instance.resolutionLinkMap.map((k, e) => MapEntry(k.toString(), e)),
       'watched': instance.watched,
+      'order': instance.order,
+      'tags': instance.tags,
     };
