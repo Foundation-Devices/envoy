@@ -13,6 +13,8 @@ class Video extends Media {
   final int duration;
   final Map<int, String> resolutionLinkMap;
   bool? watched;
+  final int? order;
+  final List<String>? tags;
 
   Video(
       String title,
@@ -23,8 +25,10 @@ class Video extends Media {
       String url,
       String id,
       this.watched,
+      this.order,
+      this.tags,
       {String? thumbnailUrl})
-      : super(title, description, thumbnailUrl, publicationDate, url, id) {}
+      : super(title, description, thumbnailUrl, publicationDate, url, id);
 
   // Generated
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
