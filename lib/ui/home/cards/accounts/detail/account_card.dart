@@ -88,7 +88,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
         .animate(CurvedAnimation(
             parent: animationController, curve: Curves.easeInOut));
 
-    Future.delayed(Duration(milliseconds: 100)).then((value) {
+    Future.delayed(Duration()).then((value) {
       account =
           ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state =
