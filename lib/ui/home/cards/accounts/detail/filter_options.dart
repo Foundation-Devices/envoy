@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -38,7 +39,14 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
             children: [
               Container(
                 child: SlidingToggle(
-                  onChange: (value) {
+                  onChange: (value) async {
+                    if (value == "Tx") {
+                      if (ref.read(coinSelectionStateProvider).isNotEmpty) {
+                        ref.read(coinSelectionStateProvider.notifier).reset();
+                        //wait for coin selection bottom-sheet to close
+                        await Future.delayed(Duration(milliseconds: 240));
+                      }
+                    }
                     ref.read(accountToggleStateProvider.notifier).state =
                         toggleState == AccountToggleState.Tx
                             ? AccountToggleState.Coins
