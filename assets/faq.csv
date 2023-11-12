@@ -8,7 +8,7 @@ Passport users can connect their devices to Envoy for easy setup, firmware updat
 What can Envoy do?,"Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.
 
 Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.",,
-What is Envoy Magic Backup?,"Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Android Auto Backup. All app data is encrypted by your seed and stored on Foundation Servers. 
+What is Envoy Magic Backup?,"Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Google Drive Backup. All app data is encrypted by your seed and stored on Foundation Servers. 
 
 Set up your wallet in 60 seconds, and automatically restore if you lose your phone!",,
 Do I have to use Envoy Magic Backups?,"Magic Backups are completely optional for users that want to leverage Envoy as a mobile wallet. If you prefer to manage your own mobile wallet seed words and backup file, choose 'Manually Configure Seed Words' at the wallet set up stage.",,
