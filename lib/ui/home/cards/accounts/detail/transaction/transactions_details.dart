@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:ui';
+
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/locale.dart';
@@ -11,7 +13,6 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -19,6 +20,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,8 @@ class TransactionsDetailsWidget extends ConsumerStatefulWidget {
 }
 
 class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
-  bool showExpanded = false;
+  bool showTxIdExpanded = false;
+  bool showAddressExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +70,9 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
           fontSize: 11,
           fontWeight: FontWeight.w400,
         );
+
+    double containerHeight = showAddressExpanded ? 284 : 280;
+    containerHeight = showTxIdExpanded ? 294 : containerHeight;
 
     return Scaffold(
       appBar: AppBar(
@@ -98,320 +104,323 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
-          child: AnimatedContainer(
-            height: 300,
-            duration: Duration(milliseconds: 250),
+      body: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
+        child: AnimatedContainer(
+          height: containerHeight,
+          duration: Duration(milliseconds: 160),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+            border: Border.all(
+                color: Colors.black, width: 2, style: BorderStyle.solid),
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  accountAccentColor,
+                  Colors.black,
+                ]),
+          ),
+          child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(24)),
-              border: Border.all(
-                  color: Colors.black, width: 2, style: BorderStyle.solid),
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    accountAccentColor,
-                    Colors.black,
-                  ]),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(24)),
-                  border: Border.all(
-                      color: accountAccentColor,
-                      width: 2,
-                      style: BorderStyle.solid)),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(24)),
-                  child: StripesBackground(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          height: 36,
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          margin:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
-                            color: Colors.white,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    alignment: Alignment(0, 0),
-                                    child: SizedBox.square(
-                                        dimension: 12,
-                                        child: SvgPicture.asset(
-                                          Settings().displayUnit ==
-                                                  DisplayUnit.btc
-                                              ? "assets/icons/ic_bitcoin_straight.svg"
-                                              : "assets/icons/ic_sats.svg",
-                                          color: Color(0xff808080),
-                                        )),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.only(
-                                        left: Settings().displayUnit ==
-                                                DisplayUnit.btc
-                                            ? 4
-                                            : 0,
-                                        right: Settings().displayUnit ==
-                                                DisplayUnit.btc
-                                            ? 0
-                                            : 8),
-                                    child: hideBalance
-                                        ? LoaderGhost(
-                                            width: 110,
-                                            height: 20,
-                                            animate: false,
-                                          )
-                                        : Text(
-                                            "${getFormattedAmount(tx.amount, trailingZeroes: true)}",
-                                            textAlign: Settings().displayUnit ==
-                                                    DisplayUnit.btc
-                                                ? TextAlign.start
-                                                : TextAlign.end,
-                                            style: _textStyleAmountSatBtc,
-                                          ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                constraints: BoxConstraints(minWidth: 80),
-                                alignment: Alignment.centerRight,
-                                child: hideBalance
-                                    ? LoaderGhost(
-                                        width: 64,
-                                        height: 20,
-                                        animate: false,
-                                      )
-                                    : Text(
-                                        ExchangeRate().getFormattedAmount(
-                                            tx.amount,
-                                            wallet: widget.account.wallet),
-                                        style: _textStyleFiat,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                      ),
-                              ),
-                            ],
-                          ),
+                borderRadius: BorderRadius.all(Radius.circular(24)),
+                border: Border.all(
+                    color: accountAccentColor,
+                    width: 2,
+                    style: BorderStyle.solid)),
+            child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(24)),
+                child: StripesBackground(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 36,
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        margin:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(EnvoySpacing.medium2)),
+                          color: Colors.white,
                         ),
-                        Expanded(
-                            child: Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
-                            color: Colors.white,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CoinTagListItem(
-                                title: "Address", // TODO: FIGMA
-                                icon: SvgPicture.asset(
-                                  "assets/icons/ic_spend.svg",
-                                  color: Colors.black,
-                                  height: 14,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment(0, 0),
+                                  child: SizedBox.square(
+                                      dimension: 12,
+                                      child: SvgPicture.asset(
+                                        Settings().displayUnit ==
+                                                DisplayUnit.btc
+                                            ? "assets/icons/ic_bitcoin_straight.svg"
+                                            : "assets/icons/ic_sats.svg",
+                                        color: Color(0xff808080),
+                                      )),
                                 ),
-                                trailing: GestureDetector(
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(
+                                      left: Settings().displayUnit ==
+                                              DisplayUnit.btc
+                                          ? 4
+                                          : 0,
+                                      right: Settings().displayUnit ==
+                                              DisplayUnit.btc
+                                          ? 0
+                                          : 8),
+                                  child: hideBalance
+                                      ? LoaderGhost(
+                                          width: 110,
+                                          height: 20,
+                                          animate: false,
+                                        )
+                                      : Text(
+                                          "${getFormattedAmount(tx.amount, trailingZeroes: true)}",
+                                          textAlign: Settings().displayUnit ==
+                                                  DisplayUnit.btc
+                                              ? TextAlign.start
+                                              : TextAlign.end,
+                                          style: _textStyleAmountSatBtc,
+                                        ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              constraints: BoxConstraints(minWidth: 80),
+                              alignment: Alignment.centerRight,
+                              child: hideBalance
+                                  ? LoaderGhost(
+                                      width: 64,
+                                      height: 20,
+                                      animate: false,
+                                    )
+                                  : Text(
+                                      ExchangeRate().getFormattedAmount(
+                                          tx.amount,
+                                          wallet: widget.account.wallet),
+                                      style: _textStyleFiat,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.end,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                          child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(18)),
+                          color: Colors.white,
+                        ),
+                        child: Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          runAlignment: WrapAlignment.spaceBetween,
+                          children: [
+                            CoinTagListItem(
+                              title: "Address", // TODO: FIGMA
+                              icon: SvgPicture.asset(
+                                "assets/icons/ic_spend.svg",
+                                color: Colors.black,
+                                height: 14,
+                              ),
+                              trailing: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      showExpanded = !showExpanded;
+                                      showAddressExpanded =
+                                          !showAddressExpanded;
+                                      showTxIdExpanded = false;
                                     });
                                   },
-                                  child: SelectableText(
-                                    "${truncateWithEllipsisInCenter(address, showExpanded ? address.length : 20)}",
-                                    style: trailingTextStyle?.copyWith(
-                                        color: EnvoyColors.accentPrimary),
-                                    textAlign: TextAlign.end,
-                                    onTap: () {
-                                      setState(() {
-                                        showExpanded = !showExpanded;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                  child: SingleChildScrollView(
+                                    child: TweenAnimationBuilder(
+                                      tween: Tween<double>(
+                                          begin: 0,
+                                          end: showAddressExpanded ? 1 : 0),
+                                      curve: EnvoyEasing.easeInOut,
+                                      duration: Duration(milliseconds: 300),
+                                      builder: (context, value, child) {
+                                        return SelectableText(
+                                          "${truncateWithEllipsisInCenter(address, lerpDouble(20, address.length, value)!.toInt())}",
+                                          style: trailingTextStyle?.copyWith(
+                                              color: EnvoyColors.accentPrimary),
+                                          textAlign: TextAlign.end,
+                                          onTap: () {
+                                            setState(() {
+                                              showAddressExpanded =
+                                                  !showAddressExpanded;
+                                              showTxIdExpanded = false;
+                                            });
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  )),
+                            ),
+                            CoinTagListItem(
+                              title: "Transaction ID", // TODO: FIGMA
+                              icon: Icon(
+                                CupertinoIcons.compass,
+                                size: 16,
+                                color: Colors.black,
                               ),
-                              CoinTagListItem(
-                                title: "Transaction ID", // TODO: FIGMA
-                                icon: Icon(
-                                  CupertinoIcons.compass,
-                                  size: 16,
-                                  color: Colors.black,
-                                ),
-                                trailing: LinkText(
-                                    text:
-                                        "${truncateWithEllipsisInCenter("${tx.txId}", 16)}",
-                                    onTap: () {},
-                                    textStyle: trailingTextStyle?.copyWith(
-                                        color: EnvoyColors.accentPrimary)),
-                              ),
-                              CoinTagListItem(
-                                title: "Date", // TODO: FIGMA
-                                icon: Icon(
-                                  Icons.calendar_today_outlined,
-                                  size: 16,
-                                  color: Colors.black,
-                                ),
-                                trailing: Text(
-                                    getTransactionDateAndTimeString(tx),
-                                    style: trailingTextStyle),
-                              ),
-                              // CoinTagListItem(
-                              //   title: "Tags", // TODO: FIGMA
-                              //   icon: SvgPicture.asset(
-                              //     "assets/icons/ic_tag.svg",
-                              //     color: Colors.black,
-                              //     height: 16,
-                              //   ),
-                              //   trailing: RichText(
-                              //       text: TextSpan(
-                              //           children: tags.map((e) {
-                              //     return TextSpan(
-                              //         mouseCursor: SystemMouseCursors.click,
-                              //         recognizer: TapGestureRecognizer()
-                              //           ..onTap = () {
-                              //             Navigator.of(context)
-                              //                 .push(BlurDialogRoute(
-                              //               cardColor: Colors.transparent,
-                              //               builder: Builder(
-                              //                 builder: (context) =>
-                              //                     CoinTagDetailsScreen(
-                              //                   coinTag: e,
-                              //                   showCoins: true,
-                              //                 ),
-                              //               ),
-                              //             ));
-                              //           },
-                              //         text:
-                              //             "${e.name}${tags.length > 1 ? ", " : ""}",
-                              //         style: trailingTextStyle?.copyWith(
-                              //             color: EnvoyColors.accentPrimary));
-                              //   }).toList())),
-                              // ),
-                              CoinTagListItem(
-                                title: "Status", // TODO: FIGMA
-                                icon: SvgPicture.asset(
-                                  "assets/icons/ic_status_icon.svg",
-                                  color: Colors.black,
-                                  height: 14,
-                                ),
-                                trailing: Text(
-                                    "${tx.type == TransactionType.normal ? "Confirmed" : "Pending"}", // TODO: FIGMA
-                                    style: trailingTextStyle),
-                              ),
-                              CoinTagListItem(
-                                title: "Fee", // TODO: FIGMA
-                                icon: SvgPicture.asset(
-                                  "assets/icons/ic_bitcoin_straight_circle.svg",
-                                  color: Colors.black,
-                                  height: 14,
-                                ),
-                                trailing: hideBalance
-                                    ? LoaderGhost(
-                                        width: 74, animate: false, height: 16)
-                                    : RichText(
-                                        text: TextSpan(
-                                            style: trailingTextStyle?.copyWith(
-                                              color: EnvoyColors.textPrimary,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            children: [
-                                            WidgetSpan(
-                                              alignment:
-                                                  PlaceholderAlignment.middle,
-                                              child: getUnitIcon(
-                                                widget.account,
-                                                iconSize:
-                                                    EnvoyIconSize.extraSmall,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: "${getFormattedAmount(
-                                                tx.fee,
-                                              )}",
-                                            ),
-                                            TextSpan(
-                                                text:
-                                                    "${widget.account.wallet.network == Network.Testnet ? '' : (Settings().selectedFiat != null ? "  " : '')}${ExchangeRate().getFormattedAmount(tx.fee, wallet: widget.account.wallet)}",
-                                                style:
-                                                    trailingTextStyle?.copyWith(
-                                                  fontWeight: FontWeight.w300,
-                                                )),
-                                          ])),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  showEnvoyDialog(
-                                      context: context,
-                                      dialog: TxNoteDialog(
-                                        txId: tx.txId,
-                                        noteTitle: S().add_note_modal_heading,
-                                        noteHintText:
-                                            S().add_note_modal_ie_text_field,
-                                        noteSubTitle:
-                                            S().add_note_modal_subheading,
-                                        onAdd: (note) {
-                                          EnvoyStorage()
-                                              .addTxNote(note, tx.txId);
-                                          Navigator.pop(context);
+                              trailing: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      showTxIdExpanded = !showTxIdExpanded;
+                                      showAddressExpanded = false;
+                                    });
+                                  },
+                                  child: TweenAnimationBuilder(
+                                    curve: EnvoyEasing.easeInOut,
+                                    tween: Tween<double>(
+                                        begin: 0,
+                                        end: showTxIdExpanded ? 1 : 0),
+                                    duration: Duration(milliseconds: 300),
+                                    builder: (context, value, child) {
+                                      return SelectableText(
+                                        "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
+                                        style: trailingTextStyle?.copyWith(
+                                            color: EnvoyColors.accentPrimary),
+                                        textAlign: TextAlign.end,
+                                        onTap: () {
+                                          setState(() {
+                                            showTxIdExpanded =
+                                                !showTxIdExpanded;
+                                            showAddressExpanded = false;
+                                          });
                                         },
-                                      ),
-                                      alignment: Alignment(0.0, -0.8));
-                                },
-                                child: CoinTagListItem(
-                                  title: "Notes", // TODO: FIGMA
-                                  icon: SvgPicture.asset(
-                                    "assets/icons/ic_notes.svg",
-                                    color: Colors.black,
-                                    height: 14,
-                                  ),
-                                  trailing: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        child: Text("$note",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: trailingTextStyle?.copyWith(
-                                                fontSize: 12),
-                                            textAlign: TextAlign.end),
-                                      ),
-                                      Padding(
-                                          padding:
-                                              EdgeInsets.all(EnvoySpacing.xs)),
-                                      SvgPicture.asset(
-                                        "assets/icons/ic_edit_note.svg",
-                                        color: EnvoyColors.accentPrimary,
-                                        height: 14,
-                                      ),
-                                    ],
-                                  ),
+                                      );
+                                    },
+                                  )),
+                            ),
+                            CoinTagListItem(
+                              title: "Date", // TODO: FIGMA
+                              icon: Icon(
+                                Icons.calendar_today_outlined,
+                                size: 16,
+                                color: Colors.black,
+                              ),
+                              trailing: Text(
+                                  getTransactionDateAndTimeString(tx),
+                                  style: trailingTextStyle),
+                            ),
+                            CoinTagListItem(
+                              title: "Status", // TODO: FIGMA
+                              icon: SvgPicture.asset(
+                                "assets/icons/ic_status_icon.svg",
+                                color: Colors.black,
+                                height: 14,
+                              ),
+                              trailing: Text(
+                                  "${tx.type == TransactionType.normal ? "Confirmed" : "Pending"}", // TODO: FIGMA
+                                  style: trailingTextStyle),
+                            ),
+                            CoinTagListItem(
+                              title: "Fee", // TODO: FIGMA
+                              icon: SvgPicture.asset(
+                                "assets/icons/ic_bitcoin_straight_circle.svg",
+                                color: Colors.black,
+                                height: 14,
+                              ),
+                              trailing: hideBalance
+                                  ? LoaderGhost(
+                                      width: 74, animate: false, height: 16)
+                                  : RichText(
+                                      text: TextSpan(
+                                          style: trailingTextStyle?.copyWith(
+                                            color: EnvoyColors.textPrimary,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          children: [
+                                          WidgetSpan(
+                                            alignment:
+                                                PlaceholderAlignment.middle,
+                                            child: getUnitIcon(
+                                              widget.account,
+                                              iconSize:
+                                                  EnvoyIconSize.extraSmall,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: "${getFormattedAmount(
+                                              tx.fee,
+                                            )}",
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  "${widget.account.wallet.network == Network.Testnet ? '' : (Settings().selectedFiat != null ? "  " : '')}${ExchangeRate().getFormattedAmount(tx.fee, wallet: widget.account.wallet)}",
+                                              style:
+                                                  trailingTextStyle?.copyWith(
+                                                fontWeight: FontWeight.w300,
+                                              )),
+                                        ])),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showEnvoyDialog(
+                                    context: context,
+                                    dialog: TxNoteDialog(
+                                      txId: tx.txId,
+                                      noteTitle: S().add_note_modal_heading,
+                                      noteHintText:
+                                          S().add_note_modal_ie_text_field,
+                                      noteSubTitle:
+                                          S().add_note_modal_subheading,
+                                      onAdd: (note) {
+                                        EnvoyStorage().addTxNote(note, tx.txId);
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    alignment: Alignment(0.0, -0.8));
+                              },
+                              child: CoinTagListItem(
+                                title: "Notes", // TODO: FIGMA
+                                icon: SvgPicture.asset(
+                                  "assets/icons/ic_notes.svg",
+                                  color: Colors.black,
+                                  height: 14,
+                                ),
+                                trailing: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: Text("$note",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: trailingTextStyle?.copyWith(
+                                              fontSize: 12),
+                                          textAlign: TextAlign.end),
+                                    ),
+                                    Padding(
+                                        padding:
+                                            EdgeInsets.all(EnvoySpacing.xs)),
+                                    SvgPicture.asset(
+                                      "assets/icons/ic_edit_note.svg",
+                                      color: EnvoyColors.accentPrimary,
+                                      height: 14,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        )),
-                      ],
-                    ),
-                  )),
-            ),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                )),
           ),
         ),
       ),
