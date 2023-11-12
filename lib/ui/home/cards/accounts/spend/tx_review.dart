@@ -937,8 +937,8 @@ class DiscardTransactionDialog extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
-        minHeight: 270,
-        maxWidth: MediaQuery.of(context).size.width * 0.80,
+        minHeight: 300,
+        maxWidth: 280,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
