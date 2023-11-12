@@ -20,6 +20,7 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -28,7 +29,6 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -46,6 +46,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   double _menuHeight = 80;
   Coin? _selectedCoin = null;
   ScrollController scrollController = ScrollController();
+  GlobalKey _detailWidgetKey = GlobalKey();
 
   @override
   void initState() {
@@ -88,89 +89,114 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             Colors.transparent,
           ],
         )),
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () {
-                if (_selectedCoin != null) {
-                  setState(() {
-                    _selectedCoin = null;
-                  });
-                } else
-                //if menu is active, close it
-                if (_menuVisible) {
-                  setState(() {
-                    _menuVisible = false;
-                  });
-                } else {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-            flexibleSpace: SafeArea(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    height: 100,
-                    child: IndicatorShield(),
-                  ),
-                  Text(
-                    _selectedCoin == null
-                        ? "TAG DETAILS"
-                        : "COIN DETAILS", // TODO: FIGMA
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ],
+        child: GestureDetector(
+          onTapUp: (details) {
+            if (_selectedCoin != null) {
+              setState(() {
+                _selectedCoin = null;
+              });
+              return;
+            }
+            try {
+              /// if the tap is outside of the coin details widget and menu is not active, pop the screen
+              final RenderBox box = _detailWidgetKey.currentContext
+                  ?.findRenderObject() as RenderBox;
+              final Offset localOffset =
+                  box.globalToLocal(details.globalPosition);
+              if (box.paintBounds.contains(localOffset) == false &&
+                  _menuVisible == false) {
+                Navigator.of(context).pop();
+              }
+            } catch (e) {
+              //no-op
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              leading: CupertinoNavigationBarBackButton(
+                color: Colors.white,
+                onPressed: () {
+                  if (_selectedCoin != null) {
+                    setState(() {
+                      _selectedCoin = null;
+                    });
+                  } else
+                  //if menu is active, close it
+                  if (_menuVisible) {
+                    setState(() {
+                      _menuVisible = false;
+                    });
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                },
               ),
+              flexibleSpace: SafeArea(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      height: 100,
+                      child: IndicatorShield(),
+                    ),
+                    Text(
+                      _selectedCoin == null
+                          ? "TAG DETAILS"
+                          : "COIN DETAILS", // TODO: FIGMA
+                      style:
+                          Theme.of(context).textTheme.displayMedium?.copyWith(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                !widget.coinTag.untagged && _selectedCoin == null
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _menuVisible = !_menuVisible;
+                          });
+                        },
+                        icon: Icon(_menuVisible
+                            ? Icons.close
+                            : CupertinoIcons.ellipsis))
+                    : SizedBox.shrink(),
+              ],
             ),
-            actions: [
-              !widget.coinTag.untagged && _selectedCoin == null
-                  ? IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _menuVisible = !_menuVisible;
-                        });
-                      },
-                      icon: Icon(
-                          _menuVisible ? Icons.close : CupertinoIcons.ellipsis))
-                  : SizedBox.shrink(),
-            ],
-          ),
-          body: PageTransitionSwitcher(
-            reverse: _selectedCoin == null,
-            transitionBuilder: (
-              Widget child,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-            ) {
-              return SharedAxisTransition(
-                animation: animation,
-                fillColor: Colors.transparent,
-                secondaryAnimation: secondaryAnimation,
-                transitionType: SharedAxisTransitionType.scaled,
-                child: child,
-              );
-            },
-            child: _selectedCoin != null
-                ? Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium2),
-                      child: CoinDetailsWidget(
-                        coin: _selectedCoin!,
-                        tag: widget.coinTag,
-                      ),
-                    ))
-                : CoinTagDetails(context),
+            body: PageTransitionSwitcher(
+              reverse: _selectedCoin == null,
+              transitionBuilder: (
+                Widget child,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+              ) {
+                return SharedAxisTransition(
+                  animation: animation,
+                  fillColor: Colors.transparent,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.scaled,
+                  child: child,
+                );
+              },
+              child: _selectedCoin != null
+                  ? Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.medium2),
+                        child: CoinDetailsWidget(
+                          coin: _selectedCoin!,
+                          tag: widget.coinTag,
+                        ),
+                      ))
+                  : CoinTagDetails(context),
+            ),
           ),
         ),
       ),
@@ -206,6 +232,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
       ///to show scroller outside of the main container widget
       padding: EdgeInsets.only(top: 200, right: 24, left: 2),
+
+      interactive: true,
 
       ///sets up top margin for scroller
       mainAxisMargin: -100,
@@ -278,6 +306,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     AnimatedContainer(
                       duration: Duration(milliseconds: 300),
                       height: totalTagHeight,
+                      key: _detailWidgetKey,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(24)),
                         border: Border.all(
