@@ -33,18 +33,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "Balance": MessageLookupByLibrary.simpleMessage("-TBD"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Button": MessageLookupByLibrary.simpleMessage("Done"),
-        "CoinInfo": MessageLookupByLibrary.simpleMessage("1 Locked"),
+        "CoinInfo": MessageLookupByLibrary.simpleMessage(
+            "1 of 2 Coins Selected  |  3 Locked"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
         "Coins": MessageLookupByLibrary.simpleMessage("Coins"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conference"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
+        "Currency": MessageLookupByLibrary.simpleMessage("\$"),
         "Default": MessageLookupByLibrary.simpleMessage("Apply filters"),
         "Exchange": MessageLookupByLibrary.simpleMessage("Exchange"),
         "FAQ": MessageLookupByLibrary.simpleMessage("Is Envoy Open Source?"),
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "Heading": MessageLookupByLibrary.simpleMessage("Secure "),
-        "Label": MessageLookupByLibrary.simpleMessage(" "),
+        "Label": MessageLookupByLibrary.simpleMessage("Discard Changes"),
         "Left": MessageLookupByLibrary.simpleMessage("Receive"),
         "Letter": MessageLookupByLibrary.simpleMessage("return"),
         "Menu": MessageLookupByLibrary.simpleMessage("SEND"),
@@ -69,11 +71,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify Your Passphrase"),
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
-        "TagName": MessageLookupByLibrary.simpleMessage("Conferences"),
+        "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Learn"),
+        "TagName": MessageLookupByLibrary.simpleMessage("Exchange"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Received 3 hours ago"),
+        "Title": MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Watched"),
         "_": MessageLookupByLibrary.simpleMessage("SOURCE"),
@@ -238,16 +242,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "coincontrol_edit_transaction_cta":
             MessageLookupByLibrary.simpleMessage("Continue"),
+        "coincontrol_edit_transaction_cta1":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "coincontrol_edit_transaction_cta2":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "coincontrol_edit_transaction_dialog_cta1":
+            MessageLookupByLibrary.simpleMessage("Yes"),
+        "coincontrol_edit_transaction_dialog_cta2":
+            MessageLookupByLibrary.simpleMessage("No"),
+        "coincontrol_edit_transaction_dialog_description":
+            MessageLookupByLibrary.simpleMessage(
+                "This will discard any coin selection changes. Do you want to proceed?"),
+        "coincontrol_edit_transaction_dialog_dontShowAgain":
+            MessageLookupByLibrary.simpleMessage("Don\'t remind me again"),
         "coincontrol_edit_transaction_insufficientFunds":
             MessageLookupByLibrary.simpleMessage("Insufficient funds"),
+        "coincontrol_edit_transaction_requiredAmount":
+            MessageLookupByLibrary.simpleMessage("Required Amount"),
         "coincontrol_edit_transaction_required_inputs":
             MessageLookupByLibrary.simpleMessage("Required amount"),
         "coincontrol_edit_transaction_required_inputs_sats":
             MessageLookupByLibrary.simpleMessage("1,500,000"),
+        "coincontrol_edit_transaction_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "coincontrol_edit_transaction_selected_inputs":
             MessageLookupByLibrary.simpleMessage("Selected amount"),
         "coincontrol_edit_transaction_selected_inputs_sats":
-            MessageLookupByLibrary.simpleMessage("0"),
+            MessageLookupByLibrary.simpleMessage("500,000"),
         "coincontrol_edit_transaction_sendSelected":
             MessageLookupByLibrary.simpleMessage("Send Selected"),
         "coincontrol_lock_coin_modal_cta1":
@@ -899,6 +920,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "manualToggleOnSeed_toastHeading_failedText":
             MessageLookupByLibrary.simpleMessage(
                 "Unable to backup. Please try again later."),
+        "manual_coin_preselection_cta1":
+            MessageLookupByLibrary.simpleMessage("Send Selected"),
+        "manual_coin_preselection_cta2":
+            MessageLookupByLibrary.simpleMessage("Discard Selection"),
+        "manual_coin_preselection_dialog_cta1":
+            MessageLookupByLibrary.simpleMessage("Yes"),
+        "manual_coin_preselection_dialog_cta2":
+            MessageLookupByLibrary.simpleMessage("No"),
+        "manual_coin_preselection_dialog_description":
+            MessageLookupByLibrary.simpleMessage(
+                "This will discard any coin selection changes. Do you want to proceed?"),
+        "manual_coin_preselection_dialog_dontShowAgain":
+            MessageLookupByLibrary.simpleMessage("Don\'t remind me again"),
+        "manual_coin_preselection_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Choose Destination"),
         "manual_setup_create_and_store_backup_heading":
@@ -1578,6 +1614,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This might a take few seconds"),
+        "tagged_coin_details_inputs_fails_cta1":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "tagged_coin_details_inputs_fails_cta2":
+            MessageLookupByLibrary.simpleMessage("Discard Changes"),
+        "tagged_coin_details_inputs_fails_requiredAmount":
+            MessageLookupByLibrary.simpleMessage("Required Amount"),
+        "tagged_coin_details_inputs_fails_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "tagged_coin_details_inputs_success_cta1":
+            MessageLookupByLibrary.simpleMessage("Continue"),
+        "tagged_coin_details_inputs_success_cta2":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "tagged_coin_details_inputs_success_requiredAmount":
+            MessageLookupByLibrary.simpleMessage("Required Amount"),
+        "tagged_coin_details_inputs_success_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "tagged_coin_details_menu_cta1":
             MessageLookupByLibrary.simpleMessage("EDIT TAG NAME"),
         "tagged_coin_details_menu_cta2":

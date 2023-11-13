@@ -156,10 +156,10 @@ class S {
 
   // skipped getter for the 'Click Here For More' key
 
-  /// `1 Locked`
+  /// `1 of 2 Coins Selected  |  3 Locked`
   String get CoinInfo {
     return Intl.message(
-      '1 Locked',
+      '1 of 2 Coins Selected  |  3 Locked',
       name: 'CoinInfo',
       desc: '',
       args: [],
@@ -201,6 +201,16 @@ class S {
     return Intl.message(
       'Continue',
       name: 'Continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$`
+  String get Currency {
+    return Intl.message(
+      '\$',
+      name: 'Currency',
       desc: '',
       args: [],
     );
@@ -286,10 +296,10 @@ class S {
 
   // skipped getter for the 'Improved Privacy' key
 
-  /// ` `
+  /// `Discard Changes`
   String get Label {
     return Intl.message(
-      ' ',
+      'Discard Changes',
       name: 'Label',
       desc: '',
       args: [],
@@ -544,10 +554,20 @@ class S {
     );
   }
 
-  /// `Conferences`
+  /// `Learn`
+  String get TabBarItemLabel {
+    return Intl.message(
+      'Learn',
+      name: 'TabBarItemLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exchange`
   String get TagName {
     return Intl.message(
-      'Conferences',
+      'Exchange',
       name: 'TagName',
       desc: '',
       args: [],
@@ -581,6 +601,16 @@ class S {
     return Intl.message(
       'Received 3 hours ago',
       name: 'Timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get Title {
+    return Intl.message(
+      'Selected Amount',
+      name: 'Title',
       desc: '',
       args: [],
     );
@@ -1410,11 +1440,81 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get coincontrol_edit_transaction_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'coincontrol_edit_transaction_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get coincontrol_edit_transaction_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'coincontrol_edit_transaction_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get coincontrol_edit_transaction_dialog_cta1 {
+    return Intl.message(
+      'Yes',
+      name: 'coincontrol_edit_transaction_dialog_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get coincontrol_edit_transaction_dialog_cta2 {
+    return Intl.message(
+      'No',
+      name: 'coincontrol_edit_transaction_dialog_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will discard any coin selection changes. Do you want to proceed?`
+  String get coincontrol_edit_transaction_dialog_description {
+    return Intl.message(
+      'This will discard any coin selection changes. Do you want to proceed?',
+      name: 'coincontrol_edit_transaction_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't remind me again`
+  String get coincontrol_edit_transaction_dialog_dontShowAgain {
+    return Intl.message(
+      'Don\'t remind me again',
+      name: 'coincontrol_edit_transaction_dialog_dontShowAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Insufficient funds`
   String get coincontrol_edit_transaction_insufficientFunds {
     return Intl.message(
       'Insufficient funds',
       name: 'coincontrol_edit_transaction_insufficientFunds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required Amount`
+  String get coincontrol_edit_transaction_requiredAmount {
+    return Intl.message(
+      'Required Amount',
+      name: 'coincontrol_edit_transaction_requiredAmount',
       desc: '',
       args: [],
     );
@@ -1440,6 +1540,16 @@ class S {
     );
   }
 
+  /// `Selected Amount`
+  String get coincontrol_edit_transaction_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'coincontrol_edit_transaction_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Selected amount`
   String get coincontrol_edit_transaction_selected_inputs {
     return Intl.message(
@@ -1450,10 +1560,10 @@ class S {
     );
   }
 
-  /// `0`
+  /// `500,000`
   String get coincontrol_edit_transaction_selected_inputs_sats {
     return Intl.message(
-      '0',
+      '500,000',
       name: 'coincontrol_edit_transaction_selected_inputs_sats',
       desc: '',
       args: [],
@@ -4533,6 +4643,76 @@ class S {
     return Intl.message(
       'Unable to backup. Please try again later.',
       name: 'manualToggleOnSeed_toastHeading_failedText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Selected`
+  String get manual_coin_preselection_cta1 {
+    return Intl.message(
+      'Send Selected',
+      name: 'manual_coin_preselection_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Selection`
+  String get manual_coin_preselection_cta2 {
+    return Intl.message(
+      'Discard Selection',
+      name: 'manual_coin_preselection_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get manual_coin_preselection_dialog_cta1 {
+    return Intl.message(
+      'Yes',
+      name: 'manual_coin_preselection_dialog_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get manual_coin_preselection_dialog_cta2 {
+    return Intl.message(
+      'No',
+      name: 'manual_coin_preselection_dialog_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will discard any coin selection changes. Do you want to proceed?`
+  String get manual_coin_preselection_dialog_description {
+    return Intl.message(
+      'This will discard any coin selection changes. Do you want to proceed?',
+      name: 'manual_coin_preselection_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't remind me again`
+  String get manual_coin_preselection_dialog_dontShowAgain {
+    return Intl.message(
+      'Don\'t remind me again',
+      name: 'manual_coin_preselection_dialog_dontShowAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get manual_coin_preselection_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'manual_coin_preselection_selectedAmount',
       desc: '',
       args: [],
     );
@@ -7697,6 +7877,86 @@ class S {
     return Intl.message(
       'This might a take few seconds',
       name: 'stalls_before_sending_tx_scanning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get tagged_coin_details_inputs_fails_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'tagged_coin_details_inputs_fails_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Changes`
+  String get tagged_coin_details_inputs_fails_cta2 {
+    return Intl.message(
+      'Discard Changes',
+      name: 'tagged_coin_details_inputs_fails_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required Amount`
+  String get tagged_coin_details_inputs_fails_requiredAmount {
+    return Intl.message(
+      'Required Amount',
+      name: 'tagged_coin_details_inputs_fails_requiredAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get tagged_coin_details_inputs_fails_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'tagged_coin_details_inputs_fails_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get tagged_coin_details_inputs_success_cta1 {
+    return Intl.message(
+      'Continue',
+      name: 'tagged_coin_details_inputs_success_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get tagged_coin_details_inputs_success_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'tagged_coin_details_inputs_success_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required Amount`
+  String get tagged_coin_details_inputs_success_requiredAmount {
+    return Intl.message(
+      'Required Amount',
+      name: 'tagged_coin_details_inputs_success_requiredAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get tagged_coin_details_inputs_success_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'tagged_coin_details_inputs_success_selectedAmount',
       desc: '',
       args: [],
     );
