@@ -29,27 +29,6 @@ class VideoCard extends ConsumerStatefulWidget {
 }
 
 class _VideoCardState extends ConsumerState<VideoCard> {
-  bool _isVideoWatched = false;
-  bool _isDisposed = false;
-
-  @override
-  void initState() {
-    super.initState();
-    EnvoyStorage().isVideoWatched(widget.video.id).listen((watched) {
-      if (!_isDisposed) {
-        setState(() {
-          _isVideoWatched = watched;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
-
   _playVimeoVideo(Video video) async {
     Navigator.of(context, rootNavigator: true).push(
         PageRouteBuilder(pageBuilder: (context, animation, secondAnimation) {
@@ -65,6 +44,8 @@ class _VideoCardState extends ConsumerState<VideoCard> {
 
   @override
   Widget build(BuildContext context) {
+    final bool _isVideoWatched =
+        ref.watch(watchedVideoStreamProvider(widget.video.id)).value ?? false;
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
       child: SizedBox(
