@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
@@ -456,6 +457,8 @@ final _spendValidationProviderFuture = FutureProvider<bool>((ref) async {
     ref.read(spendValidationErrorProvider.notifier).state = null;
   }
   bool validAmount = !(amount > spendableBalance);
+  EnvoyReport().log(
+      "QA", "Validation amount : ${amount} , Spendable : ${spendableBalance}");
   if (!validAmount) {
     ref.read(spendValidationErrorProvider.notifier).state =
         S().send_keyboard_amount_insufficient_funds_info;

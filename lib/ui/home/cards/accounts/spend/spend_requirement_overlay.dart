@@ -525,8 +525,7 @@ class _SpendSelectionCancelWarningState
             size: 68,
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-          Text(
-              S().manual_coin_preselection_dialog_description,
+          Text(S().manual_coin_preselection_dialog_description,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleSmall),
           Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
