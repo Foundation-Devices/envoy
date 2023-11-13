@@ -24,8 +24,8 @@ import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -95,12 +95,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
-                  Tuple<String, int>? changeOutPut =
-                      ref.read(changeOutputProvider);
                   List<Tuple<CoinTag, Coin>>? spendingTagSet =
                       ref.read(spendInputTagsProvider);
-                  CoinTag? changeOutPutTag =
-                      ref.read(stagingTxChangeOutPutTagProvider);
                   List<CoinTag> spendingTags = spendingTagSet
                           ?.map((e) => e.item1)
                           .toList()
@@ -108,28 +104,35 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           .toList() ??
                       [];
 
+                  ///if the user is spending from a single tag and the change output is needs to be tagged to the same tag
                   if (spendingTags.length == 1 &&
                       ref.read(stagingTxChangeOutPutTagProvider) == null) {
                     ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
                         spendingTags[0];
                   }
 
-                  if (!account.wallet.hot && transactionModel.isPSBTFinalized) {
-                    broadcastTx(context);
-                    return;
-                  }
+                  CoinTag? coinTag = ref.read(stagingTxChangeOutPutTagProvider);
 
                   ///if the the change output is not tagged and there are more input from different tags
+                  final tagInputs = ref.read(spendInputTagsProvider);
+
+                  /// if the change output is null or untagged we need to show the tag selection dialog
+                  final userChosenTag = coinTag?.untagged == false;
+
                   ///then show the tag selection dialog
-                  if (changeOutPut != null &&
-                      spendingTags.length >= 2 &&
-                      changeOutPutTag == null) {
+                  if (!userChosenTag &&
+                      tagInputs != null &&
+                      tagInputs.length >= 2) {
                     showEnvoyDialog(
                         useRootNavigator: true,
                         context: context,
                         builder: Builder(
                           builder: (context) => ChooseTagForStagingTx(
                             accountId: account.id!,
+                            onEditTransaction: () {
+                              Navigator.pop(context);
+                              editTransaction(context);
+                            },
                             hasMultipleTagsInput: true,
                             onTagUpdate: () async {
                               Navigator.pop(context);
@@ -291,6 +294,38 @@ class _TxReviewState extends ConsumerState<TxReview> {
         ),
       ],
     );
+  }
+
+  void editTransaction(BuildContext context) async {
+    final router = GoRouter.of(context);
+
+    ///indicating that we are in edit mode
+    ref.read(spendEditModeProvider.notifier).state = true;
+
+    /// The user has is in edit mode and if the psbt
+    /// has inputs then use them to populate the coin selection state
+    if (ref.read(rawTransactionProvider) != null) {
+      List<String> inputs = ref
+          .read(rawTransactionProvider)!
+          .inputs
+          .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
+          .toList();
+
+      if (ref.read(coinSelectionStateProvider).isEmpty) {
+        ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+      }
+    }
+
+    ///toggle to coins view for coin control
+    ref.read(accountToggleStateProvider.notifier).state =
+        AccountToggleState.Coins;
+
+    ///pop review
+    router.pop();
+    await Future.delayed(Duration(milliseconds: 100));
+
+    ///pop spend form
+    router.pop();
   }
 
   void broadcastTx(BuildContext context) async {
@@ -856,40 +891,7 @@ class _TransactionReviewScreenState
                   EnvoyButton(
                     S().coincontrol_tx_detail_cta2,
                     type: EnvoyButtonTypes.secondary,
-                    onTap: () async {
-                      final router = GoRouter.of(context);
-
-                      ///indicating that we are in edit mode
-                      ref.read(spendEditModeProvider.notifier).state = true;
-
-                      /// The user has is in edit mode and if the psbt
-                      /// has inputs then use them to populate the coin selection state
-                      if (ref.read(rawTransactionProvider) != null) {
-                        List<String> inputs = ref
-                            .read(rawTransactionProvider)!
-                            .inputs
-                            .map((e) =>
-                                "${e.previousOutputHash}:${e.previousOutputIndex}")
-                            .toList();
-
-                        if (ref.read(coinSelectionStateProvider).isEmpty) {
-                          ref
-                              .read(coinSelectionStateProvider.notifier)
-                              .addAll(inputs);
-                        }
-                      }
-
-                      ///toggle to coins view for coin control
-                      ref.read(accountToggleStateProvider.notifier).state =
-                          AccountToggleState.Coins;
-
-                      ///pop review
-                      router.pop();
-                      await Future.delayed(Duration(milliseconds: 100));
-
-                      ///pop spend form
-                      router.pop();
-                    },
+                    onTap: () => editTransaction(context),
                   ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
@@ -907,6 +909,38 @@ class _TransactionReviewScreenState
         ),
       ),
     );
+  }
+
+  void editTransaction(BuildContext context) async {
+    final router = GoRouter.of(context);
+
+    ///indicating that we are in edit mode
+    ref.read(spendEditModeProvider.notifier).state = true;
+
+    /// The user has is in edit mode and if the psbt
+    /// has inputs then use them to populate the coin selection state
+    if (ref.read(rawTransactionProvider) != null) {
+      List<String> inputs = ref
+          .read(rawTransactionProvider)!
+          .inputs
+          .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
+          .toList();
+
+      if (ref.read(coinSelectionStateProvider).isEmpty) {
+        ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+      }
+    }
+
+    ///toggle to coins view for coin control
+    ref.read(accountToggleStateProvider.notifier).state =
+        AccountToggleState.Coins;
+
+    ///pop review
+    router.pop();
+    await Future.delayed(Duration(milliseconds: 100));
+
+    ///pop spend form
+    router.pop();
   }
 
   Widget _whiteContainer({required Widget child}) {

@@ -17,11 +17,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChooseTagForStagingTx extends ConsumerStatefulWidget {
   final String accountId;
   final Function onTagUpdate;
+  final Function onEditTransaction;
   final hasMultipleTagsInput;
   const ChooseTagForStagingTx(
       {super.key,
       required this.onTagUpdate,
       required this.accountId,
+      required this.onEditTransaction,
       this.hasMultipleTagsInput = false});
 
   @override
@@ -55,7 +57,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-          width: (MediaQuery.of(context).size.width * 0.8).clamp(254, 540),
+          width: (MediaQuery.of(context).size.width * 0.8).clamp(260, 540),
           height: (MediaQuery.of(context).size.height * 0.56).clamp(400, 450),
           padding: EdgeInsets.all(24),
           child: Stack(
@@ -66,7 +68,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                 child: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(false);
                   },
                 ),
               ),
@@ -275,7 +277,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               EnvoyButton("Edit Transaction", // TODO: FIGMA
                   enabled: true,
                   type: EnvoyButtonTypes.tertiary, onTap: () async {
-                Navigator.of(context).pop();
+                widget.onEditTransaction();
               }),
               Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(S().change_output_from_multiple_tags_modal_cta1,

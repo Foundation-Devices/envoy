@@ -11,6 +11,8 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
@@ -24,6 +26,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   const StagingTxDetails({super.key});
@@ -460,6 +463,64 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               ChooseTagForStagingTx(
                                                             accountId:
                                                                 account.id!,
+                                                            onEditTransaction:
+                                                                () async {
+                                                              Navigator.pop(
+                                                                  context);
+
+                                                              final router =
+                                                                  GoRouter.of(
+                                                                      context);
+
+                                                              ///indicating that we are in edit mode
+                                                              ref
+                                                                  .read(spendEditModeProvider
+                                                                      .notifier)
+                                                                  .state = true;
+
+                                                              /// The user has is in edit mode and if the psbt
+                                                              /// has inputs then use them to populate the coin selection state
+                                                              if (ref.read(
+                                                                      rawTransactionProvider) !=
+                                                                  null) {
+                                                                List<String> inputs = ref
+                                                                    .read(
+                                                                        rawTransactionProvider)!
+                                                                    .inputs
+                                                                    .map((e) =>
+                                                                        "${e.previousOutputHash}:${e.previousOutputIndex}")
+                                                                    .toList();
+
+                                                                if (ref
+                                                                    .read(
+                                                                        coinSelectionStateProvider)
+                                                                    .isEmpty) {
+                                                                  ref
+                                                                      .read(coinSelectionStateProvider
+                                                                          .notifier)
+                                                                      .addAll(
+                                                                          inputs);
+                                                                }
+                                                              }
+
+                                                              ///toggle to coins view for coin control
+                                                              ref
+                                                                      .read(accountToggleStateProvider
+                                                                          .notifier)
+                                                                      .state =
+                                                                  AccountToggleState
+                                                                      .Coins;
+
+                                                              ///pop review
+                                                              router.pop();
+                                                              await Future.delayed(
+                                                                  Duration(
+                                                                      milliseconds:
+                                                                          100));
+
+                                                              ///pop spend form
+                                                              router.pop();
+                                                            },
                                                             onTagUpdate: () {
                                                               Navigator.pop(
                                                                   context);
