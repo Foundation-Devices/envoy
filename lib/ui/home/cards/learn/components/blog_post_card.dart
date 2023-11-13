@@ -35,29 +35,10 @@ class BlogPostWidget extends ConsumerStatefulWidget {
 }
 
 class _BlogPostState extends ConsumerState<BlogPostWidget> {
-  bool _isBlogRead = false;
-  bool _isDisposed = false;
-
-  @override
-  void initState() {
-    super.initState();
-    EnvoyStorage().isBlogRead(widget.blog.id).listen((read) {
-      if (!_isDisposed) {
-        setState(() {
-          _isBlogRead = read;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final bool _isBlogRead =
+        ref.watch(readBlogStreamProvider(widget.blog.id)).value ?? false;
     return Container(
       width: containerWidth,
       child: Column(

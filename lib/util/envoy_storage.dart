@@ -37,6 +37,12 @@ final pendingTxStreamProvider =
 final firmwareStreamProvider = StreamProvider.family<FirmwareInfo?, int>(
     (ref, deviceID) => EnvoyStorage().getfirmwareSteam(deviceID));
 
+final readBlogStreamProvider = StreamProvider.family<bool, String>(
+    (ref, url) => EnvoyStorage().isBlogRead(url));
+
+final watchedVideoStreamProvider = StreamProvider.family<bool, String>(
+    (ref, url) => EnvoyStorage().isVideoWatched(url));
+
 const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
