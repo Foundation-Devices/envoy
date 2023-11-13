@@ -522,15 +522,15 @@ class _SpendSelectionCancelWarningState
           Icon(
             Icons.warning_amber_rounded,
             color: EnvoyColors.accentSecondary,
-            size: 42,
+            size: 68,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
           //TODO: figma
           Text(
               "This will discard any coin selection changes. Do you want to proceed?",
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleSmall),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
           GestureDetector(
             onTap: () {
               setState(() {
@@ -578,7 +578,7 @@ class _SpendSelectionCancelWarningState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "yes",
+            "Yes",
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               if (dismissed) {
