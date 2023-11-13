@@ -122,9 +122,7 @@ class BalanceWidget extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: Settings().displayUnit == DisplayUnit.btc
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       alignment: Alignment(0, 0),
@@ -140,19 +138,12 @@ class BalanceWidget extends ConsumerWidget {
                     Container(
                       alignment: Alignment.centerRight,
                       padding: EdgeInsets.only(
-                          left:
-                              Settings().displayUnit == DisplayUnit.btc ? 4 : 0,
-                          right: Settings().displayUnit == DisplayUnit.btc
-                              ? 0
-                              : 8),
+                          left: EnvoySpacing.xs, right: EnvoySpacing.small),
                       child: hide
                           ? LoaderGhost(width: 100, height: 20)
                           : Text(
                               "${getFormattedAmount(amount, trailingZeroes: true)}",
-                              textAlign:
-                                  Settings().displayUnit == DisplayUnit.btc
-                                      ? TextAlign.start
-                                      : TextAlign.end,
+                              textAlign: TextAlign.start,
                               style: _textStyleAmountSatBtc,
                             ),
                     ),
