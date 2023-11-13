@@ -220,12 +220,13 @@ func getSdCardBookmark() -> URL {
 
     func setUpSecureScreen(window: UIWindow?){
         if let _window = window as? UIWindow {
-            _window.addSubview(secureTextField)
-            secureTextField.centerYAnchor.constraint(equalTo: _window.centerYAnchor).isActive = true
-            secureTextField.centerXAnchor.constraint(equalTo: _window.centerXAnchor).isActive = true
-            _window.layer.superlayer?.addSublayer(secureTextField.layer)
-            secureTextField.layer.sublayers?.first?.addSublayer(_window.layer)
+            let secureTextFieldView = UIView(frame: CGRect(x: 0, y: 0, width: secureTextField.frame.self.width, height: secureTextField.frame.self.height))
             secureTextField.isSecureTextEntry = false
+            _window.addSubview(secureTextField)
+            _window.layer.superlayer?.addSublayer(secureTextField.layer)
+            secureTextField.layer.sublayers?.last!.addSublayer(_window.layer)
+            secureTextField.leftView = secureTextFieldView
+            secureTextField.leftViewMode = .always
         }
 
     }
