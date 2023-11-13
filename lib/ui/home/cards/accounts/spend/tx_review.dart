@@ -11,6 +11,7 @@ import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -356,7 +357,12 @@ class _TransactionReviewScreenState
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
     final spendAmount = ref.watch(receiveAmountProvider);
-    final unit = ref.watch(sendScreenUnitProvider);
+    AmountDisplayUnit unit = ref.watch(sendScreenUnitProvider);
+    if (unit == AmountDisplayUnit.fiat) {
+      unit = Settings().displayUnit == DisplayUnit.btc
+          ? AmountDisplayUnit.btc
+          : AmountDisplayUnit.sat;
+    }
     if (account == null || transactionModel.psbt == null) {
       return Container(
           child: Center(
@@ -526,7 +532,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
+                                        unit == AmountDisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: EnvoyColors.textSecondary,
@@ -535,10 +541,13 @@ class _TransactionReviewScreenState
                                 Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(
-                                      left: unit == DisplayUnit.btc ? 4 : 0,
-                                      right: unit == DisplayUnit.btc ? 0 : 8),
+                                      left:
+                                          unit == AmountDisplayUnit.btc ? 4 : 0,
+                                      right: unit == AmountDisplayUnit.btc
+                                          ? 0
+                                          : 8),
                                   child: Text(
-                                    "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true)}",
+                                    "${getFormattedAmount(spendAmount.toInt(), unit: unit, trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -675,7 +684,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
+                                        unit == AmountDisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: EnvoyColors.textSecondary,
@@ -683,8 +692,14 @@ class _TransactionReviewScreenState
                                 ),
                                 Container(
                                   alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(
+                                      left:
+                                          unit == AmountDisplayUnit.sat ? 4 : 0,
+                                      right: unit == AmountDisplayUnit.btc
+                                          ? 0
+                                          : 8),
                                   child: Text(
-                                    getFormattedAmount(psbt.fee),
+                                    getFormattedAmount(psbt.fee, unit: unit),
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -770,7 +785,7 @@ class _TransactionReviewScreenState
                                   child: SizedBox.square(
                                       dimension: 12,
                                       child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
+                                        unit == AmountDisplayUnit.btc
                                             ? "assets/icons/ic_bitcoin_straight.svg"
                                             : "assets/icons/ic_sats.svg",
                                         color: EnvoyColors.textSecondary,
@@ -779,10 +794,13 @@ class _TransactionReviewScreenState
                                 Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(
-                                      left: unit == DisplayUnit.btc ? 4 : 0,
-                                      right: unit == DisplayUnit.btc ? 0 : 8),
+                                      left:
+                                          unit == AmountDisplayUnit.btc ? 4 : 0,
+                                      right: unit == AmountDisplayUnit.btc
+                                          ? 0
+                                          : 8),
                                   child: Text(
-                                    "${getFormattedAmount(totalSpendAmount, trailingZeroes: true)}",
+                                    "${getFormattedAmount(totalSpendAmount, unit: unit, trailingZeroes: true)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!

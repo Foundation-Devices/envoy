@@ -218,6 +218,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             onUnitToggled: (enteredAmount) {
               // SFT-2508: special rule for circling through is to pad fiat with last 0
               final unit = ref.watch(sendScreenUnitProvider);
+              print("object ${enteredAmount}}");
               if (unit == AmountDisplayUnit.fiat &&
                   enteredAmount.contains(fiatDecimalSeparator) &&
                   ((enteredAmount.length -

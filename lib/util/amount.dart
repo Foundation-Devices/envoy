@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:wallet/wallet.dart';
 
 // Always use comma to group thousands of BTC and dot to separate the sats
@@ -99,9 +99,16 @@ String getFormattedAmount(int amountSats,
     bool testnet = false,
     trailingZeroes = false,
     AmountDisplayUnit? unit}) {
-  String text = (unit ?? Settings().displayUnit) == DisplayUnit.btc
-      ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes)
-      : satsFormatter.format(amountSats);
+  String text = "";
+  if (unit != null) {
+    text = (unit) == AmountDisplayUnit.btc
+        ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes)
+        : satsFormatter.format(amountSats);
+  } else {
+    text = Settings().displayUnit == DisplayUnit.btc
+        ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes)
+        : satsFormatter.format(amountSats);
+  }
 
   return text;
 }
