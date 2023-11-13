@@ -152,9 +152,22 @@ final accountsRouter = StatefulShellBranch(
                               BroadcastProgress.success) {
                             return true;
                           } else {
-                            return await showEnvoyDialog(
+                            final exit = await showEnvoyDialog(
                                 context: context,
                                 dialog: DiscardTransactionDialog());
+                            if (exit) {
+                              providerContainer
+                                  .read(coinSelectionStateProvider.notifier)
+                                  .reset();
+                              providerContainer
+                                  .read(spendEditModeProvider.notifier)
+                                  .state = false;
+                              providerContainer
+                                  .read(hideBottomNavProvider.notifier)
+                                  .state = false;
+                              clearSpendState(providerContainer);
+                            }
+                            return exit;
                           }
                         },
                         path: _ACCOUNT_SEND_CONFIRM,

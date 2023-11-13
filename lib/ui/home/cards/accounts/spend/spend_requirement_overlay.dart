@@ -10,6 +10,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -453,6 +454,7 @@ class SpendRequirementOverlayState
   cancel() async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
+    ProviderContainer container = ProviderScope.containerOf(context);
     if (await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.txDiscardWarning)) {
       hideSpendRequirementOverlay();
@@ -472,12 +474,10 @@ class SpendRequirementOverlayState
       _hideOverlay = false;
     });
     if (discard) {
-      hideSpendRequirementOverlay();
       ref.read(coinSelectionStateProvider.notifier).reset();
+      ref.read(hideBottomNavProvider.notifier).state = false;
       ref.read(spendEditModeProvider.notifier).state = false;
-      if (ref.read(selectedAccountProvider) != null)
-        showSpendRequirementOverlay(
-            context, ref.read(selectedAccountProvider)!);
+      clearSpendState(container);
     }
   }
 }
