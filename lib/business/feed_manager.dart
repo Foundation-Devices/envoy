@@ -102,9 +102,13 @@ class FeedManager {
 
       List<String>? tags = [];
 
-      var tagsLength = video["tags"].length;
-      if (tagsLength >= 2) {
-        orderString = video["tags"][1]["tag"];
+      var vimeoTags = video["tags"];
+
+      if (vimeoTags.length >= 1) {
+        var orderTag = vimeoTags.singleWhere(
+            (element) => element["name"].toString().contains("Order"));
+
+        orderString = orderTag["tag"];
       }
 
       tags.add(orderString);
