@@ -7,6 +7,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
@@ -209,12 +210,14 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                 builder: Builder(
                   builder: (context) {
                     return CoinLockWarning(
-                      buttonTitle: "Lock Coins", // TODO: FIGMA
+                      buttonTitle: S().coincontrol_lock_coin_modal_cta1,
                       promptType: DismissiblePrompt.coinLockWarning,
                       warningMessage:
-                          "You’re about to lock coins.\nThis will prevent them from being used in transactions.", // TODO: FIGMA
-                      onContinue: () {
+                          S().coincontrol_lock_coin_modal_subheading,
+                      onContinue: () async {
                         Navigator.pop(context);
+                        //wait for dialog to close so that the lock icon animation is not interrupted
+                        await Future.delayed(Duration(milliseconds: 250));
                         _lockUnLockCoin(coin);
                       },
                     );
@@ -233,12 +236,14 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                 builder: Builder(
                   builder: (context) {
                     return CoinLockWarning(
-                      buttonTitle: "Unlock coins", // TODO: FIGMA
+                      buttonTitle: S().coincontrol_unlock_coin_modal_cta1,
                       promptType: DismissiblePrompt.coinUnlockWarning,
                       warningMessage:
-                          "Unlocking coins will make them available for use in transactions.", // TODO: FIGMA
-                      onContinue: () {
+                          S().coincontrol_unlock_coin_modal_subheading,
+                      onContinue: () async {
                         Navigator.pop(context);
+                        //wait for dialog to close so that the lock icon animation is not interrupted
+                        await Future.delayed(Duration(milliseconds: 250));
                         _lockUnLockCoin(coin);
                       },
                     );
@@ -314,12 +319,14 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   builder: Builder(
                     builder: (context) {
                       return CoinLockWarning(
-                        buttonTitle: "Lock Coins", // TODO: FIGMA
+                        buttonTitle: S().coincontrol_lock_coin_modal_cta1,
                         promptType: DismissiblePrompt.coinLockWarning,
                         warningMessage:
-                            "You’re about to lock coins.\nThis will prevent them from being used in transactions.", // TODO: FIGMA
-                        onContinue: () {
+                            S().coincontrol_lock_coin_modal_subheading,
+                        onContinue: () async {
                           Navigator.pop(context);
+                          //wait for dialog to close so that the lock icon animation is not interrupted
+                          await Future.delayed(Duration(milliseconds: 250));
                           coinTag.updateLockState(true);
                         },
                       );
@@ -339,12 +346,14 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   builder: Builder(
                     builder: (context) {
                       return CoinLockWarning(
-                        buttonTitle: "Unlock coins", // TODO: FIGMA
+                        buttonTitle: S().coincontrol_unlock_coin_modal_cta1,
                         promptType: DismissiblePrompt.coinUnlockWarning,
                         warningMessage:
-                            "Unlocking coins will make them available for use in transactions.", // TODO: FIGMA
-                        onContinue: () {
+                            S().coincontrol_unlock_coin_modal_subheading,
+                        onContinue: () async {
                           Navigator.pop(context);
+                          //wait for dialog to close so that the lock icon animation is not interrupted
+                          await Future.delayed(Duration(milliseconds: 250));
                           coinTag.updateLockState(false);
                         },
                       );

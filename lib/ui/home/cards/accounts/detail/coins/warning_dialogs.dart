@@ -33,7 +33,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
   Widget build(BuildContext context) {
     return Container(
         width: 280,
-        height: 420,
+        height: 400,
         padding: EdgeInsets.all(24),
         child: Stack(
           fit: StackFit.passthrough,
@@ -56,14 +56,6 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                   "assets/exclamation_triangle.png",
                   height: 68,
                   width: 68,
-                ),
-                Padding(padding: EdgeInsets.all(8)),
-                Text(
-                  "WARNING", // TODO: FIGMA
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 //TODO: updated copy & localization
