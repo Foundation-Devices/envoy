@@ -522,15 +522,13 @@ class _SpendSelectionCancelWarningState
           Icon(
             Icons.warning_amber_rounded,
             color: EnvoyColors.accentSecondary,
-            size: 42,
+            size: 68,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          //TODO: figma
-          Text(
-              "This will discard any coin selection changes. Do you want to proceed?",
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+          Text(S().manual_coin_preselection_dialog_description,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleSmall),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
           GestureDetector(
             onTap: () {
               setState(() {
@@ -553,7 +551,7 @@ class _SpendSelectionCancelWarningState
                   ),
                 ),
                 Text(
-                  "Do not remind me", // TODO: FIGMA
+                  S().manual_coin_preselection_dialog_dontShowAgain,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: dismissed ? Colors.black : Color(0xff808080),
                       ),
@@ -563,7 +561,7 @@ class _SpendSelectionCancelWarningState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
-            "No",
+            S().manual_coin_preselection_dialog_cta2,
             type: EnvoyButtonTypes.tertiary,
             onTap: () {
               if (dismissed) {
@@ -578,7 +576,7 @@ class _SpendSelectionCancelWarningState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "yes",
+            S().manual_coin_preselection_dialog_cta1,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               if (dismissed) {

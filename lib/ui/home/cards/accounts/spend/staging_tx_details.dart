@@ -8,6 +8,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
@@ -143,7 +144,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   child: Container(
                     padding: EdgeInsets.all(8),
                     child: AnimatedContainer(
-                      height: 240,
+                      height: 248,
                       duration: Duration(milliseconds: 250),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(24)),
@@ -495,19 +496,15 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                   txId: "UpcomingTx",
                                                   noteHintText:
                                                       "i.e. Bought P2P Bitcoin",
-
-                                                  ///TODO: figma
-                                                  noteSubTitle:
-                                                      "Save some details about your transaction.",
-
-                                                  ///TODO: figma
-                                                  noteTitle: "Add a Note",
-
+                                                  noteSubTitle: S()
+                                                      .coincontrol_tx_add_note_subheading,
+                                                  noteTitle: S()
+                                                      .coincontrol_tx_add_note_heading,
                                                   value: ref.read(
                                                       stagingTxNoteProvider),
                                                 ),
                                                 alignment:
-                                                    Alignment(0.0, -0.8));
+                                                    Alignment(0.0, -0.5));
                                           },
                                           child: Container(
                                             color: Colors.transparent,
