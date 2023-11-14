@@ -963,11 +963,20 @@ class _TransactionReviewScreenState
   }
 }
 
-class DiscardTransactionDialog extends StatelessWidget {
+class DiscardTransactionDialog extends ConsumerStatefulWidget {
   const DiscardTransactionDialog({super.key});
 
   @override
+  ConsumerState<DiscardTransactionDialog> createState() =>
+      _DiscardTransactionDialogState();
+}
+
+class _DiscardTransactionDialogState
+    extends ConsumerState<DiscardTransactionDialog> {
+  @override
   Widget build(BuildContext context) {
+    Account? account = ref.watch(selectedAccountProvider);
+
     return Container(
       padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
@@ -997,8 +1006,12 @@ class DiscardTransactionDialog extends StatelessWidget {
           EnvoyButton(
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
-            onTap: () {
-              Navigator.of(context).pop(true);
+            onTap: () async {
+              GoRouter.of(context).pop(true);
+              await Future.delayed(Duration(milliseconds: 50));
+
+              ref.read(selectedAccountProvider.notifier).state = account;
+              context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
             },
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
