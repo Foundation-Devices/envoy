@@ -25,7 +25,7 @@ class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
       _OnboardEnvoyWelcomeScreenState();
 }
 
-final _triedAutomaticRecovery = StateProvider((ref) => false);
+final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
@@ -152,7 +152,7 @@ class _OnboardEnvoyWelcomeScreenState
   void initState() {
     Future.delayed(Duration(milliseconds: 100)).then((value) async {
       ///while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
-      if (!ref.read(_triedAutomaticRecovery)) {
+      if (!ref.read(triedAutomaticRecovery)) {
         try {
           if (await EnvoySeed().get() != null) {
             Navigator.push(context,
@@ -161,7 +161,7 @@ class _OnboardEnvoyWelcomeScreenState
         } catch (e) {
           //no-op
         }
-        ref.read(_triedAutomaticRecovery.notifier).state = true;
+        ref.read(triedAutomaticRecovery.notifier).state = true;
       }
     });
     super.initState();
