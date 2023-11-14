@@ -501,5 +501,4 @@ void clearSpendState(ProviderContainer ref) {
   ref.read(spendFeeRateProvider.notifier).state =
       ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
           100000;
-  ref.read(spendTransactionProvider.notifier).reset();
 }

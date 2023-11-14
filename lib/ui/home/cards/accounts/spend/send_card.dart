@@ -189,6 +189,9 @@ class _SendCardState extends ConsumerState<SendCard>
                               onTap: () async {
                                 if (formValidation) {
                                   try {
+                                    ref
+                                        .read(spendTransactionProvider.notifier)
+                                        .reset();
                                     bool valid = await ref
                                         .read(spendTransactionProvider.notifier)
                                         .validate(
