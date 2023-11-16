@@ -234,7 +234,6 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
           account: widget.accountId,
           untagged: false,
         );
-        print("ADDING NEW TAG ${targetTag.name} ${targetTag.coins_id}}");
         await CoinRepository().addCoinTag(targetTag);
       }
 
@@ -249,7 +248,6 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
         if (tag.id != targetTag?.id) {
           selectedCoins.forEach((element) {
             if (tag.coins_id.contains(element.id)) {
-              print("Removing coin from  tag ${tag.name} ");
               tag.removeCoin(element);
               coinsRemovedTags.add(tag);
             }

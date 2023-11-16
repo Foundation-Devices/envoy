@@ -240,7 +240,6 @@ class SpendRequirementOverlayState
           final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
           final unitVelocity = unitsPerSecond.distance;
 
-          print("unitVelocity ${unitVelocity}");
           if (unitVelocity >= 1.8) {
             _runSpringSimulation(
                 details.velocity.pixelsPerSecond, _endAlignment, size);
@@ -492,7 +491,6 @@ class SpendRequirementOverlayState
         Set<String> walletSelection = ref.watch(coinSelectionFromWallet);
         Set<String> coinSelection = ref.watch(coinSelectionStateProvider);
         Set diff = coinSelection.difference(walletSelection);
-        print('"diff ${diff}"');
         bool selectionChanged = diff.isNotEmpty;
 
         return EnvoyButton(
