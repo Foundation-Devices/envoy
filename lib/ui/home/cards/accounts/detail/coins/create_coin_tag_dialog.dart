@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/coin_tag.dart';
+import 'package:envoy/business/coins.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -12,20 +14,13 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'coin_tag_details_screen.dart';
 
 class CreateCoinTag extends StatefulWidget {
   final String accountId;
-  final CoinTag tag;
   final Function onTagUpdate;
 
   const CreateCoinTag(
-      {super.key,
-      required this.onTagUpdate,
-      required this.accountId,
-      required this.tag});
+      {super.key, required this.onTagUpdate, required this.accountId});
 
   @override
   State<CreateCoinTag> createState() => _CreateCoinTagState();
@@ -184,112 +179,125 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
               ),
             ),
             Padding(padding: EdgeInsets.all(8)),
-            EnvoyButton(S().create_first_tag_modal_2_2_cta,
-                enabled: _tagController.text.isNotEmpty,
-                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _tagController.text.isNotEmpty
-                          ? Colors.white
-                          : EnvoyColors.grey,
-                    ),
-                type: _tagController.text.isNotEmpty
-                    ? EnvoyButtonTypes.primaryModal
-                    : EnvoyButtonTypes.tertiary, onTap: () async {
-              //get coins from current tag
-              final coins = widget.tag.coins;
-              final selections = ref.read(coinSelectionStateProvider);
-              //pick all the coins that are selected in current tag
-              final selectedCoins = coins
-                  .where((element) => selections.contains(element.id))
-                  .toList();
-
-              //user selected from suggestions
-              final existingTag = ref
-                  .read(coinsTagProvider(widget.accountId))
-                  .firstWhereOrNull((element) =>
-                      element.name.toLowerCase() ==
-                      _tagController.text.toLowerCase());
-
-              if (existingTag != null) {
-                //user is trying to remove coin from a tag
-                //the user selected "Untagged" tag which is the default tag,
-                //so we need to remove the coins from current tag
-                if (existingTag.untagged) {
-                  final tags = ref.read(coinsTagProvider(widget.accountId));
-                  for (var tag in tags) {
-                    if (!tag.untagged &&
-                        tag.coins_id.contains(selectedCoins.first.id)) {
-                      selectedCoins.forEach((selectedCoin) {
-                        tag.removeCoin(selectedCoin);
-                      });
-                      await CoinRepository().updateCoinTag(tag);
-                    }
-                  }
-                } else {
-                  selectedCoins.forEach((selectedCoin) {
-                    widget.tag.removeCoin(selectedCoin);
-                  });
-                  await CoinRepository().updateCoinTag(widget.tag);
-                  existingTag.addCoins(selectedCoins);
-                  await CoinRepository().updateCoinTag(existingTag);
-                }
-              } else {
-                selectedCoins.forEach((selectedCoin) {
-                  widget.tag.removeCoin(selectedCoin);
-                });
-                await CoinRepository().updateCoinTag(widget.tag);
-                CoinTag tag = CoinTag(
-                  id: CoinTag.generateNewId(),
-                  name: _tagController.text,
-                  account: widget.accountId,
-                  untagged: false,
-                )..addCoins(selectedCoins);
-                await CoinRepository().addCoinTag(tag);
-              }
-
-              final _ = ref.refresh(accountsProvider);
-              //Wait for the refresh to propagate
-              await Future.delayed(Duration(milliseconds: 180));
-              await CoinRepository().updateCoinTag(widget.tag);
-
-              //Reset the selection
-              Haptics.lightImpact();
-              if (widget.tag.coins.isEmpty && !widget.tag.untagged) {
-                Navigator.pop(context);
-                _emptyTag(context, widget.tag);
-                ref.read(coinSelectionStateProvider.notifier).reset();
-                return;
-              }
-
-              widget.onTagUpdate();
-            }),
+            EnvoyButton(
+              S().create_first_tag_modal_2_2_cta,
+              enabled: _tagController.text.isNotEmpty,
+              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: _tagController.text.isNotEmpty
+                        ? Colors.white
+                        : EnvoyColors.grey,
+                  ),
+              type: _tagController.text.isNotEmpty
+                  ? EnvoyButtonTypes.primaryModal
+                  : EnvoyButtonTypes.tertiary,
+              onTap: () => tagSelected(context, ref),
+            ),
           ],
         );
       },
     );
   }
+
+  Future tagSelected(BuildContext context, WidgetRef ref) async {
+    //get coins from the repository
+    try {
+      List<Coin> coins = [];
+      ref
+          .read(coinsTagProvider(widget.accountId))
+          .map((e) => e.coins)
+          .forEach((element) {
+        coins.addAll(element);
+      });
+      final selections = ref.read(coinSelectionStateProvider);
+      //pick all the coins that are selected in current tag
+      final selectedCoins =
+          coins.where((element) => selections.contains(element.id)).toList();
+
+      //user selected from suggestions
+      CoinTag? targetTag = ref
+          .read(coinsTagProvider(widget.accountId))
+          .firstWhereOrNull((element) =>
+              element.name.toLowerCase() == _tagController.text.toLowerCase());
+
+      final tags = ref.read(coinsTagProvider(widget.accountId));
+
+      if (targetTag?.coins_id.containsAll(selections) == true) {
+        widget.onTagUpdate();
+        return;
+      }
+
+      //if the tag is not found, create a new tag
+      if (targetTag == null) {
+        targetTag = CoinTag(
+          id: CoinTag.generateNewId(),
+          name: _tagController.text,
+          account: widget.accountId,
+          untagged: false,
+        );
+        print("ADDING NEW TAG ${targetTag.name} ${targetTag.coins_id}}");
+        await CoinRepository().addCoinTag(targetTag);
+      }
+
+      targetTag.addCoins(selectedCoins);
+
+      await CoinRepository().updateCoinTag(targetTag);
+
+      Set<CoinTag> coinsRemovedTags = Set();
+
+      tags.forEach((tag) {
+        /// no need to remove coins to the tag that we just added
+        if (tag.id != targetTag?.id) {
+          selectedCoins.forEach((element) {
+            if (tag.coins_id.contains(element.id)) {
+              print("Removing coin from  tag ${tag.name} ");
+              tag.removeCoin(element);
+              coinsRemovedTags.add(tag);
+            }
+          });
+        }
+      });
+
+      coinsRemovedTags.forEach((element) async {
+        if (!element.untagged) {
+          await Future.delayed(Duration(milliseconds: 10));
+          await CoinRepository().updateCoinTag(element);
+        }
+      });
+      final _ = ref.refresh(accountsProvider);
+      //Wait for the refresh to propagate
+      await Future.delayed(Duration(milliseconds: 180));
+
+      //Reset the selection
+      Haptics.lightImpact();
+    } catch (e) {
+      print(e);
+    }
+
+    widget.onTagUpdate();
+  }
 }
 
-_emptyTag(BuildContext context, CoinTag tag) {
-  showEnvoyDialog(
-    context: context,
-    useRootNavigator: true,
-    borderRadius: 20,
-    dialog: Builder(
-      builder: (context) {
-        return DeleteTagDialog(
-            dialogSubheading: S().empty_tag_modal_subheading(tag.name),
-            primaryButtonText: S().empty_tag_modal_cta1,
-            secondaryButtonText: S().empty_tag_modal_cta2,
-            onPrimaryButtonTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            onSecondaryButtonTap: () async {
-              await CoinRepository().deleteTag(tag);
-              Navigator.pop(context);
-              Navigator.pop(context);
-            });
-      },
-    ),
-  );
-}
+// _emptyTag(BuildContext context, CoinTag tag) {
+//   showEnvoyDialog(
+//     context: context,
+//     useRootNavigator: true,
+//     borderRadius: 20,
+//     dialog: Builder(
+//       builder: (context) {
+//         return DeleteTagDialog(
+//             dialogSubheading: S().empty_tag_modal_subheading(tag.name),
+//             primaryButtonText: S().empty_tag_modal_cta1,
+//             secondaryButtonText: S().empty_tag_modal_cta2,
+//             onPrimaryButtonTap: () {
+//               Navigator.pop(context);
+//               Navigator.pop(context);
+//             },
+//             onSecondaryButtonTap: () async {
+//               await CoinRepository().deleteTag(tag);
+//               Navigator.pop(context);
+//               Navigator.pop(context);
+//             });
+//       },
+//     ),
+//   );
+// }

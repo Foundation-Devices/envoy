@@ -265,8 +265,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
             S().stalls_before_sending_tx_scanning_broadcasting_success_cta,
             onTap: () async {
               final providerScope = ProviderScope.containerOf(context);
-              GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
               clearSpendState(providerScope);
+              providerScope.read(coinSelectionStateProvider.notifier).reset();
+              GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
             },
           ),
         ],
@@ -314,6 +315,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
       if (ref.read(coinSelectionStateProvider).isEmpty) {
         ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
       }
+
+      ///make a copy of wallet selected coins so that we can backtrack to it
+      ref.read(coinSelectionFromWallet.notifier).reset();
+      ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
     }
 
     ///toggle to coins view for coin control
@@ -925,10 +930,13 @@ class _TransactionReviewScreenState
           .inputs
           .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
           .toList();
+      ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
-      if (ref.read(coinSelectionStateProvider).isEmpty) {
-        ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
-      }
+      ///make a copy of wallet selected coins so that we can backtrack to it
+      ref.read(coinSelectionFromWallet.notifier).reset();
+      ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
+      print(
+          "SELECTED COINS: ${inputs} HASCODE ${coinSelectionStateProvider.hashCode}");
     }
 
     ///toggle to coins view for coin control
@@ -1009,7 +1017,6 @@ class _DiscardTransactionDialogState
             onTap: () async {
               GoRouter.of(context).pop(true);
               await Future.delayed(Duration(milliseconds: 50));
-
               ref.read(selectedAccountProvider.notifier).state = account;
               context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
             },
