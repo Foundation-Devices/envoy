@@ -191,8 +191,7 @@ class Notifications {
   }
 
   deleteFromAccount(Account account) {
-    notifications
-        .removeWhere((element) => account.wallet.name == element.accountId);
+    notifications.removeWhere((element) => account.id == element.accountId);
     _storeNotifications();
     sync();
   }
