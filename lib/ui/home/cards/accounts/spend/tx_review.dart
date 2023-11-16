@@ -24,6 +24,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -119,11 +120,31 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   /// if the change output is null or untagged we need to show the tag selection dialog
                   final userChosenTag = coinTag?.untagged == false;
 
+                  final userNote = ref.read(stagingTxNoteProvider);
+                  if (userNote == null || userNote.isEmpty) {
+                    await showEnvoyDialog(
+                        context: context,
+                        useRootNavigator: true,
+                        dialog: TxReviewNoteDialog(
+                          onAdd: (note) {
+                            Navigator.pop(context);
+                          },
+                          txId: "UpcomingTx",
+                          noteSubTitle: S().coincontrol_tx_add_note_subheading,
+                          noteTitle: S().coincontrol_tx_add_note_heading,
+                          value: ref.read(stagingTxNoteProvider),
+                        ),
+                        alignment: Alignment(0.0, -0.5));
+
+                    ///wait for the dialog to pop
+                    await Future.delayed(Duration(milliseconds: 200));
+                  }
+
                   ///then show the tag selection dialog
                   if (!userChosenTag &&
                       tagInputs != null &&
                       tagInputs.length >= 2) {
-                    showEnvoyDialog(
+                    await showEnvoyDialog(
                         useRootNavigator: true,
                         context: context,
                         builder: Builder(
@@ -143,6 +164,13 @@ class _TxReviewState extends ConsumerState<TxReview> {
                                     MaterialPageRoute(
                                         builder: (context) => PsbtCard(
                                             transactionModel.psbt!, account)));
+                                await Future.delayed(
+                                    Duration(milliseconds: 200));
+                                if (ref
+                                    .read(spendTransactionProvider)
+                                    .isPSBTFinalized) {
+                                  broadcastTx(context);
+                                }
                               }
                             },
                           ),
@@ -155,6 +183,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       await Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
                               PsbtCard(transactionModel.psbt!, account)));
+                      await Future.delayed(Duration(milliseconds: 200));
+                      if (ref.read(spendTransactionProvider).isPSBTFinalized) {
+                        broadcastTx(context);
+                      }
                     }
                   }
                 },
@@ -1021,6 +1053,116 @@ class _DiscardTransactionDialogState
             onTap: () {
               Navigator.of(context).pop(false);
             },
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class TxReviewNoteDialog extends ConsumerStatefulWidget {
+  final String txId;
+  final Function(String) onAdd;
+  final String noteTitle;
+  final String? value;
+  final String noteSubTitle;
+
+  const TxReviewNoteDialog(
+      {super.key,
+      required this.noteTitle,
+      this.value,
+      required this.onAdd,
+      required this.noteSubTitle,
+      required this.txId});
+
+  @override
+  ConsumerState<TxReviewNoteDialog> createState() => _TxNoteDialogState();
+}
+
+class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
+  TextEditingController _textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      /// if value is passed as param, use that
+      if (widget.value != null) {
+        _textEditingController.text = widget.value!;
+      } else {
+        _textEditingController.text =
+            ref.read(txNoteProvider(widget.txId)) ?? "";
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 280,
+      height: 340,
+      padding: EdgeInsets.all(EnvoySpacing.medium1),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          Text(widget.noteTitle, style: Theme.of(context).textTheme.titleLarge),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              widget.noteSubTitle,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: EnvoySpacing.medium1),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Color(0xffD9D9D9),
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small)),
+              child: TextFormField(
+                maxLines: 1,
+                maxLength: 34,
+                controller: _textEditingController,
+                textAlign: TextAlign.center,
+                textInputAction: TextInputAction.done,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontSize: 14),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(EnvoySpacing.small),
+                  border: InputBorder.none,
+                  counter: SizedBox.shrink(),
+                  fillColor: Colors.redAccent,
+                  focusedBorder: InputBorder.none,
+                  isDense: true,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
+              onTap: () {
+            Navigator.of(context).pop(false);
+          }, type: EnvoyButtonTypes.tertiary),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          EnvoyButton(
+            S().stalls_before_sending_tx_add_note_modal_cta1,
+            onTap: () {
+              ref.read(stagingTxNoteProvider.notifier).state =
+                  _textEditingController.text;
+              Navigator.of(context).pop(true);
+            },
+            type: EnvoyButtonTypes.primaryModal,
           )
         ],
       ),

@@ -151,6 +151,12 @@ final accountsRouter = StatefulShellBranch(
                                   .broadcastProgress ==
                               BroadcastProgress.success) {
                             return true;
+                          } else if (providerContainer
+                                  .read(spendTransactionProvider)
+                                  .broadcastProgress ==
+                              BroadcastProgress.inProgress) {
+                            /// if the broadcast is in progress, do not allow the user to go back
+                            return false;
                           } else {
                             final exit = await showEnvoyDialog(
                                 context: context,
