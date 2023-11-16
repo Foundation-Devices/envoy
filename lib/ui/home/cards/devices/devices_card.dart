@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/home/home_page.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
@@ -59,31 +60,17 @@ class DevicesCardState extends ConsumerState<DevicesCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    return DevicesList();
-    // final navigator = CardNavigator(push, pop, hideOptions);
-    //
-    // if (cardStack.isEmpty) {
-    //   navigator.push(DevicesList(
-    //     navigator,
-    //   ));
-    // }
-    //
-    // return IndexedTransitionSwitcher(
-    //   children: cardStack,
-    //   index: cardStack.length - 1,
-    //   transitionBuilder: (
-    //     Widget child,
-    //     Animation<double> primaryAnimation,
-    //     Animation<double> secondaryAnimation,
-    //   ) {
-    //     return FadeThroughTransition(
-    //       animation: primaryAnimation,
-    //       fillColor: Colors.transparent,
-    //       secondaryAnimation: secondaryAnimation,
-    //       child: child,
-    //     );
-    //   },
-    // );
+    return WillPopScope(
+      onWillPop: () async {
+        if (ref.watch(homePageOptionsVisibilityProvider)) {
+          HomePageState.of(context)?.toggleOptions();
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: DevicesList(),
+    );
   }
 
   @override

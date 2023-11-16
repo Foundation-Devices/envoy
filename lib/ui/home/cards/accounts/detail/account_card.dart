@@ -133,49 +133,63 @@ class _AccountCardState extends ConsumerState<AccountCard>
         ref.watch(transactionsProvider(account.id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
+    bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
     return Scaffold(
       extendBody: true,
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 20,
-            bottom: 0,
-            left: 20,
-            right: 20,
-          ),
-          child: AccountListTile(account, onTap: () {
-            Navigator.pop(context);
-            ref.read(homePageAccountsProvider.notifier).state =
-                HomePageAccountsState(HomePageAccountsNavigationState.list);
-          }),
-        ),
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
-          child: (transactions.isNotEmpty || txFiltersEnabled)
-              ? Container(
-                  padding: EdgeInsets.only(
-                      top: EnvoySpacing.medium2, bottom: EnvoySpacing.small),
-                  child: FilterOptions(),
-                )
-              : SizedBox.shrink(),
-        ),
-        Expanded(
-          child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: EnvoySpacing.medium1,
-                  vertical: EnvoySpacing.small),
-              child: account.dateSynced == null
-                  ? ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: 4,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GhostListTile();
-                      },
+      body: WillPopScope(
+        onWillPop: () async {
+          if (isMenuOpen) {
+            HomePageState.of(context)?.toggleOptions();
+            return false;
+          }
+          return true;
+        },
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                bottom: 0,
+                left: 20,
+                right: 20,
+              ),
+              child: AccountListTile(account, onTap: () {
+                Navigator.pop(context);
+                ref.read(homePageAccountsProvider.notifier).state =
+                    HomePageAccountsState(HomePageAccountsNavigationState.list);
+              }),
+            ),
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 200),
+              child: (transactions.isNotEmpty || txFiltersEnabled)
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          top: EnvoySpacing.medium2,
+                          bottom: EnvoySpacing.small),
+                      child: FilterOptions(),
                     )
-                  : _getMainWidget(context, transactions, txFiltersEnabled)),
+                  : SizedBox.shrink(),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1,
+                    vertical: EnvoySpacing.small),
+                child: account.dateSynced == null
+                    ? ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: 4,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GhostListTile();
+                        },
+                      )
+                    : _getMainWidget(context, transactions, txFiltersEnabled),
+              ),
+            ),
+          ],
         ),
-      ]),
+      ),
       bottomNavigationBar: Consumer(
         builder: (context, ref, child) {
           bool hide = ref.watch(showSpendRequirementOverlayProvider);
@@ -215,24 +229,24 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 ),
               ),
               QrShield(
-                  child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: Icon(
-                          oldIcons.EnvoyIcons.qr_scan,
-                          size: 30,
-                          color: EnvoyColors.darkTeal,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return MediaQuery.removePadding(
-                              context: context,
-                              child: ScannerPage(
-                                  [ScannerType.address, ScannerType.azteco],
-                                  account: account,
-                                  onAddressValidated: (address, amount) {
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      oldIcons.EnvoyIcons.qr_scan,
+                      size: 30,
+                      color: EnvoyColors.darkTeal,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(builder: (context) {
+                          return MediaQuery.removePadding(
+                            context: context,
+                            child: ScannerPage(
+                              [ScannerType.address, ScannerType.azteco],
+                              account: account,
+                              onAddressValidated: (address, amount) {
                                 // Navigator.pop(context);
                                 ref.read(spendAddressProvider.notifier).state =
                                     address;
@@ -243,11 +257,15 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                   "address": address,
                                   "amount": amount
                                 });
-                              }),
-                            );
-                          }));
-                        },
-                      ))),
+                              },
+                            ),
+                          );
+                        }),
+                      );
+                    },
+                  ),
+                ),
+              ),
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,

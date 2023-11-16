@@ -71,28 +71,38 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
-        child: DeviceListTile(widget.device, onTap: () {
-          GoRouter.of(context).pop();
-        }),
+    return WillPopScope(
+      onWillPop: () async {
+        if (ref.watch(homePageOptionsVisibilityProvider)) {
+          HomePageState.of(context)?.toggleOptions();
+          return false;
+        }
+        return true;
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
+            child: DeviceListTile(widget.device, onTap: () {
+              GoRouter.of(context).pop();
+            }),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 18.0, left: 35.0),
+            child: Text(S().manage_device_details_deviceSerial +
+                ": " +
+                widget.device.serial),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, left: 35.0),
+            child: Text(S().manage_device_details_devicePaired +
+                " " +
+                timeago.format(widget.device.datePaired)),
+          ),
+        ],
       ),
-      Padding(
-        padding: const EdgeInsets.only(top: 18.0, left: 35.0),
-        child: Text(S().manage_device_details_deviceSerial +
-            ": " +
-            widget.device.serial),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-        child: Text(S().manage_device_details_devicePaired +
-            " " +
-            timeago.format(widget.device.datePaired)),
-      ),
-    ]);
+    );
   }
 }
 
