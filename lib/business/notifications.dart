@@ -116,7 +116,8 @@ class Notifications {
           bool skip = false;
 
           for (var notification in notifications) {
-            if (notification.id == tx.txId) {
+            if (notification.id == tx.txId &&
+                notification.amount == tx.amount) {
               skip = true;
             }
           }
