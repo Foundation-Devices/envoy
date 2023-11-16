@@ -56,7 +56,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
 
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         );
 
     if (coinTag.untagged) {
