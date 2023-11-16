@@ -161,7 +161,6 @@ class _OnboardEnvoyWelcomeScreenState
         } catch (e) {
           //no-op
         }
-        ref.read(triedAutomaticRecovery.notifier).state = true;
       }
     });
     super.initState();
