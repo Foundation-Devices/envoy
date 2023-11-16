@@ -147,7 +147,7 @@ class _SendCardState extends ConsumerState<SendCard>
                             buttonText = S().send_keyboard_address_confirm;
                             if (spendAmount == 0) {
                               if (isCoinSelected) {
-                                buttonText = "Send Selected";
+                                buttonText = "Send Selected"; //TODO: Figma
                               } else {
                                 buttonText = S().send_keyboard_send_max;
                               }
@@ -161,7 +161,7 @@ class _SendCardState extends ConsumerState<SendCard>
                             if (addressEmpty) {
                               if (spendAmount == 0) {
                                 if (isCoinSelected) {
-                                  buttonText = "Send Selected";
+                                  buttonText = "Send Selected"; //TODO: Figma
                                 } else {
                                   buttonText = S().send_keyboard_send_max;
                                 }
@@ -182,7 +182,7 @@ class _SendCardState extends ConsumerState<SendCard>
                             }
                           }
                           if (tx.loading) {
-                            buttonText = "Loading...";
+                            buttonText = "Loading..."; //TODO: Figma
                           }
 
                           return EnvoyTextButton(
