@@ -40,6 +40,8 @@ enum MagicRecoveryWalletState {
   failure,
 }
 
+final successfulManualRecovery = StateProvider((ref) => false);
+
 class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   StateMachineController? _stateMachineController;
 
@@ -49,7 +51,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 100)).then((_) {
-      if (!ref.read(triedAutomaticRecovery)) {
+      if (!ref.read(triedAutomaticRecovery) &&
+          !ref.read(successfulManualRecovery)) {
         _tryAutomaticRecovery();
       }
     });
