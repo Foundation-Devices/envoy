@@ -516,268 +516,125 @@ class _TransactionReviewScreenState
                       EnvoyColors.textPrimary,
                     ]),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                child: CustomPaint(
-                  isComplex: true,
-                  willChange: false,
-                  painter: LinesPainter(
-                      color: EnvoyColors.textPrimary, opacity: 1.0),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.xs),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.xs,
-                              horizontal: EnvoySpacing.small),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Amount to send", //TODO: figma
-                                style: titleStyle,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  // Navigator.of(context,rootNavigator: true).push(MaterialTransparentRoute(builder: (context) {
-                                  //   return SpendTxDetails();
-                                  // },fullscreenDialog: true));
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(PageRouteBuilder(
-                                          pageBuilder: (context, animation,
-                                              secondaryAnimation) {
-                                            return StagingTxDetails();
-                                          },
-                                          transitionDuration:
-                                              Duration(milliseconds: 100),
-                                          transitionsBuilder: (context,
-                                              animation,
-                                              secondaryAnimation,
-                                              child) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            );
-                                          },
-                                          opaque: false,
-                                          fullscreenDialog: true));
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "Show details", //TODO: figma
-                                      style: trailingStyle,
-                                    ),
-                                    Icon(
-                                      Icons.chevron_right_outlined,
-                                      color: EnvoyColors.textPrimaryInverse,
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        _whiteContainer(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(22)),
+                    border: Border.all(
+                        color: account.color,
+                        width: 2,
+                        style: BorderStyle.solid)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(22)),
+                  child: CustomPaint(
+                    isComplex: true,
+                    willChange: false,
+                    painter: LinesPainter(
+                        color: EnvoyColors.textPrimary, opacity: 0.6),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small,
+                          horizontal: EnvoySpacing.xs),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.xs,
+                                horizontal: EnvoySpacing.small),
                             child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  alignment: Alignment(0, 0),
-                                  child: SizedBox.square(
-                                      dimension: 12,
-                                      child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
-                                            ? "assets/icons/ic_bitcoin_straight.svg"
-                                            : "assets/icons/ic_sats.svg",
-                                        color: EnvoyColors.textSecondary,
-                                      )),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.only(
-                                      left: unit == DisplayUnit.btc ? 4 : 0,
-                                      right: unit == DisplayUnit.btc ? 0 : 8),
-                                  child: Text(
-                                    "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true)}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall!
-                                        .copyWith(
-                                          color: EnvoyNewColors
-                                              .EnvoyColors.textPrimary,
-                                          fontSize: 15,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                                ExchangeRate().getFormattedAmount(
-                                    spendAmount.toInt(),
-                                    wallet: account.wallet),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                      color: EnvoyNewColors
-                                          .EnvoyColors.textPrimary,
-                                      fontSize: 15,
-                                    )),
-                          ],
-                        )),
-                        Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.xs,
-                              horizontal: EnvoySpacing.small),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Destination", //TODO: figma
-                                style: titleStyle,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _showFullAddress = !_showFullAddress;
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "Show address", //TODO: figma
-                                      style: trailingStyle,
-                                    ),
-                                    AnimatedRotation(
-                                      duration: Duration(milliseconds: 200),
-                                      turns: _showFullAddress ? -.25 : 0,
-                                      child: Icon(
-                                        Icons.chevron_right_outlined,
-                                        color: EnvoyColors.textPrimaryInverse,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 120),
-                          height: _showFullAddress ? 54 : 34,
-                          child: _whiteContainer(
-                              child: TweenAnimationBuilder(
-                            duration: Duration(milliseconds: 320),
-                            curve: Curves.easeInOut,
-                            tween: Tween<double>(
-                                begin: _truncatedAddressLength,
-                                end: _showFullAddress
-                                    ? address.length.toDouble()
-                                    : _truncatedAddressLength),
-                            builder: (context, value, child) {
-                              return Text(
-                                  "${truncateWithEllipsisInCenter(address, value.toInt())}");
-                            },
-                            // child: Text(
-                            //     "${truncateWithEllipsisInCenter(address, _showFullAddress ?  address.length : 12)}"),
-                          )),
-                        ),
-                        Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.xs,
-                              horizontal: EnvoySpacing.small),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Fee", //TODO: figma
-                                style: titleStyle,
-                              ),
-                              Row(
-                                children: [
-                                  Opacity(
-                                    opacity: transactionModel.loading ? 1 : 0,
-                                    child: SizedBox.square(
-                                      dimension: 8,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1,
-                                        color: EnvoyColors.textPrimaryInverse,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(padding: EdgeInsets.all(4)),
-                                  Opacity(
-                                    child: FeeChooser(),
-                                    opacity: transactionModel.isPSBTFinalized
-                                        ? 0.0
-                                        : 1,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        _whiteContainer(
-                            child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  alignment: Alignment(0, 0),
-                                  child: SizedBox.square(
-                                      dimension: 12,
-                                      child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
-                                            ? "assets/icons/ic_bitcoin_straight.svg"
-                                            : "assets/icons/ic_sats.svg",
-                                        color: EnvoyColors.textSecondary,
-                                      )),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    getFormattedAmount(psbt.fee),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall!
-                                        .copyWith(
-                                          color: EnvoyNewColors
-                                              .EnvoyColors.textPrimary,
-                                          fontSize: 15,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "${ExchangeRate().getFormattedAmount(psbt.fee, wallet: account.wallet)}",
-                                  textAlign: unit == DisplayUnit.btc
-                                      ? TextAlign.start
-                                      : TextAlign.end,
+                                  "Amount to send", //TODO: figma
+                                  style: titleStyle,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Navigator.of(context,rootNavigator: true).push(MaterialTransparentRoute(builder: (context) {
+                                    //   return SpendTxDetails();
+                                    // },fullscreenDialog: true));
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                secondaryAnimation) {
+                                              return StagingTxDetails();
+                                            },
+                                            transitionDuration:
+                                                Duration(milliseconds: 100),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                            opaque: false,
+                                            fullscreenDialog: true));
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Show details", //TODO: figma
+                                        style: trailingStyle,
+                                      ),
+                                      Icon(
+                                        Icons.chevron_right_outlined,
+                                        color: EnvoyColors.textPrimaryInverse,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          _whiteContainer(
+                              child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    alignment: Alignment(0, 0),
+                                    child: SizedBox.square(
+                                        dimension: 12,
+                                        child: SvgPicture.asset(
+                                          unit == DisplayUnit.btc
+                                              ? "assets/icons/ic_bitcoin_straight.svg"
+                                              : "assets/icons/ic_sats.svg",
+                                          color: EnvoyColors.textSecondary,
+                                        )),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.only(
+                                        left: unit == DisplayUnit.btc ? 4 : 0,
+                                        right: unit == DisplayUnit.btc ? 0 : 8),
+                                    child: Text(
+                                      "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true)}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                            color: EnvoyNewColors
+                                                .EnvoyColors.textPrimary,
+                                            fontSize: 15,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                  ExchangeRate().getFormattedAmount(
+                                      spendAmount.toInt(),
+                                      wallet: account.wallet),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall!
@@ -785,77 +642,149 @@ class _TransactionReviewScreenState
                                         color: EnvoyNewColors
                                             .EnvoyColors.textPrimary,
                                         fontSize: 15,
+                                      )),
+                            ],
+                          )),
+                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.xs,
+                                horizontal: EnvoySpacing.small),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Destination", //TODO: figma
+                                  style: titleStyle,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _showFullAddress = !_showFullAddress;
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Show address", //TODO: figma
+                                        style: trailingStyle,
                                       ),
+                                      AnimatedRotation(
+                                        duration: Duration(milliseconds: 200),
+                                        turns: _showFullAddress ? -.25 : 0,
+                                        child: Icon(
+                                          Icons.chevron_right_outlined,
+                                          color: EnvoyColors.textPrimaryInverse,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
-                          ],
-                        )),
-                        Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.small,
-                              horizontal: EnvoySpacing.small),
-                          child: Row(
+                          ),
+                          AnimatedContainer(
+                            duration: Duration(milliseconds: 120),
+                            height: _showFullAddress ? 54 : 34,
+                            child: _whiteContainer(
+                                child: TweenAnimationBuilder(
+                              duration: Duration(milliseconds: 320),
+                              curve: Curves.easeInOut,
+                              tween: Tween<double>(
+                                  begin: _truncatedAddressLength,
+                                  end: _showFullAddress
+                                      ? address.length.toDouble()
+                                      : _truncatedAddressLength),
+                              builder: (context, value, child) {
+                                return Text(
+                                    "${truncateWithEllipsisInCenter(address, value.toInt())}");
+                              },
+                              // child: Text(
+                              //     "${truncateWithEllipsisInCenter(address, _showFullAddress ?  address.length : 12)}"),
+                            )),
+                          ),
+                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.xs,
+                                horizontal: EnvoySpacing.small),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Fee", //TODO: figma
+                                  style: titleStyle,
+                                ),
+                                Row(
+                                  children: [
+                                    Opacity(
+                                      opacity: transactionModel.loading ? 1 : 0,
+                                      child: SizedBox.square(
+                                        dimension: 8,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 1,
+                                          color: EnvoyColors.textPrimaryInverse,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(4)),
+                                    Opacity(
+                                      child: FeeChooser(),
+                                      opacity: transactionModel.isPSBTFinalized
+                                          ? 0.0
+                                          : 1,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          _whiteContainer(
+                              child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Total", // TODO: figma
-                                style: titleStyle,
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.timer_outlined,
-                                      size: 14,
-                                      color: EnvoyColors.textPrimaryInverse,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    alignment: Alignment(0, 0),
+                                    child: SizedBox.square(
+                                        dimension: 12,
+                                        child: SvgPicture.asset(
+                                          unit == DisplayUnit.btc
+                                              ? "assets/icons/ic_bitcoin_straight.svg"
+                                              : "assets/icons/ic_sats.svg",
+                                          color: EnvoyColors.textSecondary,
+                                        )),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      getFormattedAmount(psbt.fee),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                            color: EnvoyNewColors
+                                                .EnvoyColors.textPrimary,
+                                            fontSize: 15,
+                                          ),
                                     ),
-                                    Consumer(builder: (context, ref, child) {
-                                      final spendTimeEstimationProvider =
-                                          ref.watch(
-                                              spendEstimatedBlockTimeProvider);
-                                      return Text(
-                                        " $spendTimeEstimationProvider min",
-                                        //TODO: figma
-                                        style: trailingStyle,
-                                      );
-                                    }),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        _whiteContainer(
-                            child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  alignment: Alignment(0, 0),
-                                  child: SizedBox.square(
-                                      dimension: 12,
-                                      child: SvgPicture.asset(
-                                        unit == DisplayUnit.btc
-                                            ? "assets/icons/ic_bitcoin_straight.svg"
-                                            : "assets/icons/ic_sats.svg",
-                                        color: EnvoyColors.textSecondary,
-                                      )),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.only(
-                                      left: unit == DisplayUnit.btc ? 4 : 0,
-                                      right: unit == DisplayUnit.btc ? 0 : 8),
-                                  child: Text(
-                                    "${getFormattedAmount(totalSpendAmount, trailingZeroes: true)}",
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${ExchangeRate().getFormattedAmount(psbt.fee, wallet: account.wallet)}",
+                                    textAlign: unit == DisplayUnit.btc
+                                        ? TextAlign.start
+                                        : TextAlign.end,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -864,25 +793,104 @@ class _TransactionReviewScreenState
                                               .EnvoyColors.textPrimary,
                                           fontSize: 15,
                                         ),
-                                  ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )),
+                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.small,
+                                horizontal: EnvoySpacing.small),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Total", // TODO: figma
+                                  style: titleStyle,
                                 ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.timer_outlined,
+                                        size: 14,
+                                        color: EnvoyColors.textPrimaryInverse,
+                                      ),
+                                      Consumer(builder: (context, ref, child) {
+                                        final spendTimeEstimationProvider =
+                                            ref.watch(
+                                                spendEstimatedBlockTimeProvider);
+                                        return Text(
+                                          " $spendTimeEstimationProvider min",
+                                          //TODO: figma
+                                          style: trailingStyle,
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
-                            Text(
-                                ExchangeRate().getFormattedAmount(
-                                    totalSpendAmount.toInt(),
-                                    wallet: account.wallet),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                      color: EnvoyNewColors
-                                          .EnvoyColors.textPrimary,
-                                      fontSize: 15,
-                                    )),
-                          ],
-                        )),
-                      ],
+                          ),
+                          _whiteContainer(
+                              child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    alignment: Alignment(0, 0),
+                                    child: SizedBox.square(
+                                        dimension: 12,
+                                        child: SvgPicture.asset(
+                                          unit == DisplayUnit.btc
+                                              ? "assets/icons/ic_bitcoin_straight.svg"
+                                              : "assets/icons/ic_sats.svg",
+                                          color: EnvoyColors.textSecondary,
+                                        )),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.only(
+                                        left: unit == DisplayUnit.btc ? 4 : 0,
+                                        right: unit == DisplayUnit.btc ? 0 : 8),
+                                    child: Text(
+                                      "${getFormattedAmount(totalSpendAmount, trailingZeroes: true)}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                            color: EnvoyNewColors
+                                                .EnvoyColors.textPrimary,
+                                            fontSize: 15,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                  ExchangeRate().getFormattedAmount(
+                                      totalSpendAmount.toInt(),
+                                      wallet: account.wallet),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall!
+                                      .copyWith(
+                                        color: EnvoyNewColors
+                                            .EnvoyColors.textPrimary,
+                                        fontSize: 15,
+                                      )),
+                            ],
+                          )),
+                        ],
+                      ),
                     ),
                   ),
                 ),
