@@ -209,12 +209,14 @@ class EnvoyStorage {
   }
 
   Future addPendingTx(String key, String accountId, DateTime timestamp,
-      wallet.TransactionType type, int amount) async {
+      wallet.TransactionType type, int amount, int fee, String address) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
       'timestamp': timestamp.millisecondsSinceEpoch,
       'type': type.toString(),
       'amount': amount,
+      'fee': fee,
+      'address': address,
     });
     return true;
   }
@@ -239,11 +241,11 @@ class EnvoyStorage {
               e.key as String,
               e.key as String,
               DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-              0,
+              e["fee"] as int,
               0,
               e["amount"] as int,
               0,
-              "",
+              e["address"] as String,
               type: e["type"] == wallet.TransactionType.azteco.toString()
                   ? wallet.TransactionType.azteco
                   : wallet.TransactionType.pending),

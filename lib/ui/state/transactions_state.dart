@@ -35,25 +35,7 @@ final transactionsProvider =
   List<Transaction> walletTransactions =
       ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 
-  List<Transaction> walletConfirmedTransactions =
-      walletTransactions.where((transaction) {
-    return transaction.isConfirmed;
-  }).toList();
-
-  List<Transaction> walletRecievedUnconfirmedTransactions =
-      walletTransactions.where((transaction) {
-    return !transaction.isConfirmed && transaction.amount > 0;
-  }).toList();
-
-  walletRecievedUnconfirmedTransactions.forEach((element) async {
-    final isTxIdExist =
-        pendingTransactions.any((tx) => tx.txId == element.txId);
-    if (!isTxIdExist)
-      await EnvoyStorage().addPendingTx(element.txId, accountId!,
-          DateTime.now(), TransactionType.pending, -(element.received));
-  });
-
-  transactions.addAll(walletConfirmedTransactions);
+  transactions.addAll(walletTransactions);
   transactions.addAll(pendingTransactions);
 
   if (txFilterState.contains(TransactionFilters.Sent) &&
@@ -72,40 +54,11 @@ final transactionsProvider =
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      transactions.sort((t1, t2) {
-        // Mempool transactions go on top
-        if (t1.date.isBefore(DateTime(2008)) &&
-            t2.date.isBefore(DateTime(2008))) {
-          return 0;
-        }
-
-        if (t2.date.isBefore(DateTime(2008))) {
-          return 1;
-        }
-
-        if (t1.date.isBefore(DateTime(2008))) {
-          return -1;
-        }
-        return t2.date.compareTo(t1.date);
-      });
+      transactions.ancestralSort();
+      transactions = transactions.reversed.toList();
       break;
     case TransactionSortTypes.oldestFirst:
-      transactions.sort((t1, t2) {
-        // Mempool transactions go on top
-        if (t2.date.isBefore(DateTime(2008)) &&
-            t1.date.isBefore(DateTime(2008))) {
-          return 0;
-        }
-
-        if (t1.date.isBefore(DateTime(2008))) {
-          return 1;
-        }
-
-        if (t1.date.isBefore(DateTime(2008))) {
-          return -1;
-        }
-        return t1.date.compareTo(t2.date);
-      });
+      transactions.ancestralSort();
       break;
     case TransactionSortTypes.amountLowToHigh:
       transactions.sort(

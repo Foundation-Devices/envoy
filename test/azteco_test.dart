@@ -50,7 +50,7 @@ void main() {
     await Future.delayed(Duration(seconds: 1));
 
     await EnvoyStorage().addPendingTx(
-        "address", "account", DateTime.now(), TransactionType.azteco, 0);
+        "address", "account", DateTime.now(), TransactionType.azteco, 0, 0, "");
     var txs =
         await EnvoyStorage().getPendingTxs("account", TransactionType.azteco);
 

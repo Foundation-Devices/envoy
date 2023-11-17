@@ -64,8 +64,11 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
               color: EnvoyColors.textPrimary,
               fontSize: 15,
             );
-    //TODO:temporary: fix with proper address
-    final address = tx.outputs?[0] ?? "";
+
+    final address = tx.type == TransactionType.pending
+        ? tx.address ?? ""
+        : (tx.outputs?[0] ?? ""); //TODO:temporary: fix with proper address
+
     TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.textPrimary,
           fontSize: 11,

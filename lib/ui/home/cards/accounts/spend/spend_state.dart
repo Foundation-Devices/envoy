@@ -205,8 +205,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           Tor.instance.port,
           psbt.rawTx);
 
-      await EnvoyStorage().addPendingTx(psbt.txid, account.id!, DateTime.now(),
-          TransactionType.pending, psbt.sent + psbt.fee);
+      await EnvoyStorage().addPendingTx(
+          psbt.txid,
+          account.id!,
+          DateTime.now(),
+          TransactionType.pending,
+          psbt.sent + psbt.fee,
+          psbt.fee,
+          state.sendTo);
 
       String? note = ref.read(stagingTxNoteProvider);
       CoinTag? changeOutPutTag = ref.read(stagingTxChangeOutPutTagProvider);
