@@ -118,16 +118,18 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               .where((element) => !utxos.map((e) => e.id).contains(element.id))
               .toList();
 
+      Psbt psbt = await getPsbt(
+          convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
+          dontSpend: dontSpend, mustSpend: mustSpend);
+
+      amount = psbt.sent;
+      container.read(spendAmountProvider.notifier).state = amount;
+
       ///get max fee rate that we can use on this transaction
       int maxFeeRate = await account.wallet.getMaxFeeRate(sendTo, amount,
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
-
-      ///Construct PSBT object from the given parameters
-      Psbt psbt = await account.wallet.createPsbt(
-          sendTo, amount, convertToFeeRate(feeRate.toInt()),
-          dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
       ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
@@ -507,4 +509,30 @@ void clearSpendState(ProviderContainer ref) {
   ref.read(spendFeeRateProvider.notifier).state =
       ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
           100000;
+}
+
+Future<Psbt> getPsbt(
+    double feeRate, Account account, String initialAddress, int amount,
+    {List<Utxo>? mustSpend, List<Utxo>? dontSpend}) async {
+  Psbt _returnPsbt = Psbt(0, 0, 0, "", "", "");
+
+  try {
+    _returnPsbt = await account.wallet.createPsbt(
+        initialAddress, amount, feeRate,
+        dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
+  } on InsufficientFunds catch (e) {
+    // Get another one with correct amount
+    var fee = e.needed - e.available;
+    try {
+      _returnPsbt = await account.wallet
+          .createPsbt(initialAddress, e.available - fee, feeRate);
+    } on InsufficientFunds catch (e) {
+      print("Something is seriously wrong! Available: " +
+          e.available.toString() +
+          " Needed: " +
+          e.needed.toString());
+    }
+  }
+
+  return _returnPsbt;
 }

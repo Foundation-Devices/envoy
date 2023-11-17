@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -63,10 +63,16 @@ class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
   }
 
   Future<void> _getPsbts() async {
-    final normalPsbt =
-        await _getPsbt(Fees().slowRate(widget.account.wallet.network));
-    final boostPsbt =
-        await _getPsbt(Fees().fastRate(widget.account.wallet.network));
+    final normalPsbt = await getPsbt(
+        Fees().slowRate(widget.account.wallet.network),
+        widget.account,
+        widget.initialAddress,
+        widget.amount);
+    final boostPsbt = await getPsbt(
+        Fees().fastRate(widget.account.wallet.network),
+        widget.account,
+        widget.initialAddress,
+        widget.amount);
 
     setState(() {
       // SFT-1949: if boost fee is smaller than normal switch 'em
@@ -82,29 +88,6 @@ class _ConfirmationCardState extends ConsumerState<ConfirmationCard> {
         _amount = _currentPsbt.amount.abs();
       }
     });
-  }
-
-  Future<Psbt> _getPsbt(double feeRate) async {
-    Psbt _returnPsbt = _emptyPtsb;
-
-    try {
-      _returnPsbt = await widget.account.wallet
-          .createPsbt(widget.initialAddress, widget.amount, feeRate);
-    } on InsufficientFunds catch (e) {
-      // Get another one with correct amount
-      var fee = e.needed - e.available;
-      try {
-        _returnPsbt = await widget.account.wallet
-            .createPsbt(widget.initialAddress, e.available - fee, feeRate);
-      } on InsufficientFunds catch (e) {
-        print("Something is seriously wrong! Available: " +
-            e.available.toString() +
-            " Needed: " +
-            e.needed.toString());
-      }
-    }
-
-    return _returnPsbt;
   }
 
   @override
