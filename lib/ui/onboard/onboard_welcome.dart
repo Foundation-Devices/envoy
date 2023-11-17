@@ -13,10 +13,20 @@ import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
 
+  @override
+  ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+final successfulSetupWallet = StateProvider((ref) => false);
+final successfulManualRecovery = StateProvider((ref) => false);
+final triedAutomaticRecovery = StateProvider((ref) => false);
+
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
