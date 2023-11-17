@@ -333,7 +333,8 @@ final receiveOutputProvider = Provider<Tuple<String, int>?>((ref) {
 
   ///output that is destination output
   List<RawTransactionOutput> outs = rawTx.outputs
-      .where((element) => element.address == spendAddress)
+      .where((element) =>
+          element.address.toLowerCase() == spendAddress.toLowerCase())
       .toList();
 
   if (outs.isEmpty) {
