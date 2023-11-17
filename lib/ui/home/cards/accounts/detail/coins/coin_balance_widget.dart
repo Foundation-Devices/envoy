@@ -83,7 +83,7 @@ class BalanceWidget extends ConsumerWidget {
               textAlign: TextAlign.end,
             ),
     ));
-    if (showLock ) {
+    if (showLock) {
       rowItems.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
         child: FittedBox(
