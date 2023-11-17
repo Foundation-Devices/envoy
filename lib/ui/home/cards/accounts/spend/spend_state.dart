@@ -125,7 +125,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: mustSpend);
 
-      amount = psbt.sent;
+      amount = psbt.sent == 0 ? psbt.received : psbt.sent;
       container.read(spendAmountProvider.notifier).state = amount;
 
       ///get max fee rate that we can use on this transaction
