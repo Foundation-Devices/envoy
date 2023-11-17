@@ -118,6 +118,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               .where((element) => !utxos.map((e) => e.id).contains(element.id))
               .toList();
 
+      EnvoyReport()
+          .log("QA", "L125: Validation :amount  ${amount} feerate ${feeRate}");
+
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: mustSpend);
@@ -142,6 +145,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..valid = true;
       return true;
     } on InsufficientFunds {
+      EnvoyReport().log("QA",
+          "L149: Validation  failed : ${amount}  ${feeRate} , Error : InsufficientFunds");
       state = state.clone()
         ..loading = false
         ..psbt = null
@@ -465,11 +470,11 @@ final _spendValidationProviderFuture = FutureProvider<bool>((ref) async {
     ref.read(spendValidationErrorProvider.notifier).state = null;
   }
   bool validAmount = !(amount > spendableBalance);
-  EnvoyReport().log(
-      "QA", "Validation amount : ${amount} , Spendable : ${spendableBalance}");
   if (!validAmount) {
     ref.read(spendValidationErrorProvider.notifier).state =
         S().send_keyboard_amount_insufficient_funds_info;
+    EnvoyReport().log("QA",
+        "L472: Validation  failed : ${amount} , Spendable : ${spendableBalance}");
     return false;
   } else {
     ref.read(spendValidationErrorProvider.notifier).state = null;
@@ -522,11 +527,17 @@ Future<Psbt> getPsbt(
         dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
   } on InsufficientFunds catch (e) {
     // Get another one with correct amount
+
     var fee = e.needed - e.available;
+
+    EnvoyReport().log(
+        "QA", "L529:Validation: InsufficientFunds : ${amount} ,Fee : ${fee}");
     try {
       _returnPsbt = await account.wallet
           .createPsbt(initialAddress, e.available - fee, feeRate);
     } on InsufficientFunds catch (e) {
+      EnvoyReport()
+          .log("QA", "L535: Validation  failed : ${amount} , Error : ${e}");
       print("Something is seriously wrong! Available: " +
           e.available.toString() +
           " Needed: " +

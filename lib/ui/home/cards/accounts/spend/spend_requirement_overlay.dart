@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
@@ -526,11 +528,17 @@ class SpendRequirementOverlayState
       BuildContext context, bool valid, bool inTagSelectionMode) {
     return Consumer(
       builder: (context, ref, child) {
+        CoinTag? selectedTag = ref.watch(currentActiveTag);
+        print("selectedTag  $inTagSelectionMode ${selectedTag?.untagged} ");
+        String buttonText = "Cancel";
+        if (inTagSelectionMode) {
+          buttonText = selectedTag?.untagged == true ? "Tag Selected" : "Retag";
+        }
         return EnvoyButton(
           enabled: valid,
           readOnly: !valid,
           type: EnvoyButtonTypes.secondary,
-          inTagSelectionMode ? "Retag" : "Cancel",
+          buttonText,
 
           ///TODO:figma
           onTap: () async {
