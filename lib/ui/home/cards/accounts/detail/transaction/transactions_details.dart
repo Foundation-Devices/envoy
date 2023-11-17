@@ -378,6 +378,10 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                             TextSpan(
                                               text: "${getFormattedAmount(
                                                 tx.fee,
+                                                trailingZeroes: true,
+                                                testnet: widget.account.wallet
+                                                        .network ==
+                                                    Network.Testnet,
                                               )}",
                                             ),
                                             TextSpan(
