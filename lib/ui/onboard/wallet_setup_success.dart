@@ -8,6 +8,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
   const WalletSetupSuccess({Key? key}) : super(key: key);
@@ -17,6 +18,15 @@ class WalletSetupSuccess extends ConsumerStatefulWidget {
 }
 
 class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
+  @override
+  void initState() {
+    Future.delayed(Duration(milliseconds: 100)).then((_) {
+      ref.read(successfulSetupWallet.notifier).state = true;
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

@@ -17,6 +17,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'onboard_welcome.dart';
+
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
 
@@ -24,8 +26,6 @@ class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardEnvoyWelcomeScreen> createState() =>
       _OnboardEnvoyWelcomeScreenState();
 }
-
-final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
@@ -150,19 +150,24 @@ class _OnboardEnvoyWelcomeScreenState
 
   @override
   void initState() {
-    Future.delayed(Duration(milliseconds: 100)).then((value) async {
-      ///while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
-      if (!ref.read(triedAutomaticRecovery)) {
-        try {
-          if (await EnvoySeed().get() != null) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MagicRecoverWallet()));
+    if (mounted) {
+      Future.delayed(Duration(milliseconds: 100)).then((value) async {
+        ///while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
+        if (!ref.read(triedAutomaticRecovery) &&
+            !ref.read(successfulSetupWallet)) {
+          try {
+            if (await EnvoySeed().get() != null) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MagicRecoverWallet()));
+            }
+          } catch (e) {
+            //no-op
           }
-        } catch (e) {
-          //no-op
         }
-      }
-    });
+      });
+    }
     super.initState();
   }
 }
