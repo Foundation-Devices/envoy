@@ -194,7 +194,10 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 10)).then((value) {
-      int maxFeeRate = ref.read(spendMaxFeeRateProvider);
+      int maxFeeRate = ref.read(spendMaxFeeRateProvider) - 2;
+      if (maxFeeRate < 1) {
+        maxFeeRate = 1;
+      }
       setState(() {
         list = List.generate(maxFeeRate, (index) => index + 1);
       });
