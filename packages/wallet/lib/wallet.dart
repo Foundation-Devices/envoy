@@ -23,8 +23,9 @@ enum Network { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending }
 
-extension HierarchicalSort on List<Transaction> {
-  void hierarchicalSort() {
+/// Sort transactions by time and ancestry
+extension AncestralSort on List<Transaction> {
+  void ancestralSort() {
     for (var end = this.length - 1; end > 0; end--) {
       var swapped = false;
       for (var current = 0; current < end; current++) {
