@@ -428,6 +428,7 @@ class _TransactionReviewScreenState
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
     final spendAmount = ref.watch(receiveAmountProvider);
+
     final unit = ref.watch(sendScreenUnitProvider);
     if (account == null || transactionModel.psbt == null) {
       return Container(

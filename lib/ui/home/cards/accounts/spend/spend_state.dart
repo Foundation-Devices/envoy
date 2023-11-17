@@ -119,7 +119,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               .toList();
 
       EnvoyReport()
-          .log("QA", "L125: Validation :amount  ${amount} feerate ${feeRate}");
+          .log("QA", "L122: Validation :amount  ${amount} feerate ${feeRate}");
 
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
@@ -133,8 +133,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
-
-      ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
+      EnvoyReport().log(
+          "QA",
+          "137: Validation pass :psbt.amount ${psbt.amount}, psbt.fee ${psbt.fee}, psbt.sent ${psbt.sent}, psbt.received ${psbt.received},"
+              " psbt.rawTx ${psbt.rawTx}");
+      //Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
       RawTransaction rawTransaction =
           await Wallet.decodeRawTx(psbt.rawTx, account.wallet.network);
@@ -146,7 +149,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       return true;
     } on InsufficientFunds {
       EnvoyReport().log("QA",
-          "L149: Validation  failed : ${amount}  ${feeRate} , Error : InsufficientFunds");
+          "L151: Validation  failed : ${amount}  ${feeRate} , Error : InsufficientFunds");
       state = state.clone()
         ..loading = false
         ..psbt = null
@@ -333,7 +336,8 @@ final receiveOutputProvider = Provider<Tuple<String, int>?>((ref) {
 
   ///output that is destination output
   List<RawTransactionOutput> outs = rawTx.outputs
-      .where((element) => element.address == spendAddress)
+      .where((element) =>
+          element.address.toLowerCase() == spendAddress.toLowerCase())
       .toList();
 
   if (outs.isEmpty) {
