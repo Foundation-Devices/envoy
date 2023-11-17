@@ -63,6 +63,11 @@ final coinSelectionStateProvider =
   (ref) => CoinStateNotifier(Set()),
 );
 
+final coinSelectionFromWallet =
+    StateNotifierProvider<CoinStateNotifier, Set<String>>(
+  (ref) => CoinStateNotifier(Set()),
+);
+
 final isCoinSelectedProvider = Provider.family<bool, String>(
     (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));
 

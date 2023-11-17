@@ -14,18 +14,14 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_details_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/easing.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -238,6 +234,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       ///sets up top margin for scroller
       mainAxisMargin: -100,
       thickness: 6,
+      controller: scrollController,
       trackRadius: Radius.circular(EnvoySpacing.medium1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
@@ -253,37 +250,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   height: _menuHeight,
                   padding: EdgeInsets.only(top: 8),
                   child: Column(
-                    children: [
-                      GestureDetector(
-                        //Padding added for better touch target
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 4),
-                          child: Text(
-                            S().tagged_coin_details_menu_cta1,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        onTap: () => _editTagName(context),
-                      ),
-                      InkWell(
-                        //Padding added for better touch target
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 4),
-                          child: Text(
-                            S().tagged_coin_details_menu_cta2,
-                            style: TextStyle(color: EnvoyColors.lightCopper),
-                          ),
-                        ),
-                        onTap: () {
-                          if (tag.coins.isEmpty)
-                            _deleteEmptyTag(context);
-                          else
-                            _deleteTag(context);
-                        },
-                      ),
-                    ],
+                    children: _getMenuItems(context, tag),
                   ),
                 ),
               ],
@@ -419,97 +386,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                             )),
                       ),
                     ),
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final selections =
-                            ref.watch(coinSelectionStateProvider);
-                        bool anythingSelected =
-                            widget.coinTag.getNumSelectedCoins(selections) != 0;
-                        return AnimatedOpacity(
-                          duration: Duration(milliseconds: 300),
-                          opacity: anythingSelected ? 1.0 : 0.0,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 24),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                EnvoyButton(
-                                    S().untagged_coin_details_spendable_cta2,
-                                    type: EnvoyButtonTypes.tertiary,
-                                    onTap: () async {
-                                  //Shows warning dialog
-                                  bool dismissed = await EnvoyStorage()
-                                      .checkPromptDismissed(DismissiblePrompt
-                                          .createCoinTagWarning);
-                                  if (dismissed) {
-                                    showEnvoyDialog(
-                                        context: context,
-                                        useRootNavigator: true,
-                                        builder: Builder(
-                                          builder: (context) => CreateCoinTag(
-                                            accountId: tag.account,
-                                            tag: tag,
-                                            onTagUpdate: () {
-                                              ref
-                                                  .read(
-                                                      coinSelectionStateProvider
-                                                          .notifier)
-                                                  .reset();
-                                              Navigator.pop(context);
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ),
-                                        alignment: Alignment(0.0, -.6));
-                                  } else {
-                                    showEnvoyDialog(
-                                        useRootNavigator: true,
-                                        context: context,
-                                        builder: Builder(builder: (context) {
-                                          return CreateCoinTagWarning(
-                                              onContinue: () {
-                                            //pop warning dialog
-                                            Navigator.pop(context);
-                                            //Shows Coin create dialog
-                                            showEnvoyDialog(
-                                                context: context,
-                                                useRootNavigator: true,
-                                                builder: Builder(
-                                                  builder: (context) =>
-                                                      CreateCoinTag(
-                                                    accountId: tag.account,
-                                                    onTagUpdate: () {
-                                                      ref
-                                                          .read(
-                                                              coinSelectionStateProvider
-                                                                  .notifier)
-                                                          .reset();
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    tag: tag,
-                                                  ),
-                                                ),
-                                                alignment: Alignment(0.0, -.6));
-                                          });
-                                        }),
-                                        alignment: Alignment(0.0, -.6));
-                                  }
-                                },
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(
-                                            color: EnvoyColors.white100,
-                                            fontWeight: FontWeight.w600)),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    )
                   ],
                 ),
               ),
@@ -518,6 +394,54 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         ],
       ),
     );
+  }
+
+  List<Widget> _getMenuItems(BuildContext context, CoinTag tag) {
+    if (!widget.coinTag.untagged) {
+      return [
+        GestureDetector(
+          //Padding added for better touch target
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(
+              S().tagged_coin_details_menu_cta1,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          onTap: () => _editTagName(context),
+        ),
+        InkWell(
+          //Padding added for better touch target
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(
+              S().tagged_coin_details_menu_cta2,
+              style: TextStyle(color: EnvoyColors.lightCopper),
+            ),
+          ),
+          onTap: () {
+            if (tag.coins.isEmpty)
+              _deleteEmptyTag(context);
+            else
+              _deleteTag(context);
+          },
+        ),
+      ];
+    } else {
+      return [
+        GestureDetector(
+          //Padding added for better touch target
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(
+              S().tagged_coin_details_menu_cta1,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          onTap: () {},
+        ),
+      ];
+    }
   }
 
   Widget _coinHeader(BuildContext context) {
