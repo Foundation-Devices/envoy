@@ -17,6 +17,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -215,11 +216,14 @@ class EnvoySeed {
 
     try {
       await removeSeedFromNonSecure();
+      EnvoyReport().log("QA", "Removed seed from non-secure storage!");
     } on Exception catch (e) {
-      print("Cannot delete seed: ${e.toString()}");
+      EnvoyReport().log("QA",
+          "Couldn't remove seed from non-secure storage: ${e.toString()}");
     }
 
     await removeSeedFromSecure();
+    EnvoyReport().log("QA", "Removed seed from secure storage!");
 
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
@@ -389,6 +393,8 @@ class EnvoySeed {
     String? nonSecure = await _getNonSecure();
 
     if (secure != null && nonSecure != null) {
+      EnvoyReport()
+          .log("QA", "Found seed in both secure and non-secure storage!");
       return secure;
 
       // TODO: show a warning to user
@@ -399,10 +405,12 @@ class EnvoySeed {
     }
 
     if (secure != null) {
+      EnvoyReport().log("QA", "Found seed in secure storage!");
       return secure;
     }
 
     if (nonSecure != null) {
+      EnvoyReport().log("QA", "Found seed in non-secure storage!");
       return nonSecure;
     }
 
