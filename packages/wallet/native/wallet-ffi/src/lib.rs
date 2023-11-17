@@ -18,7 +18,7 @@ use bdk::database::{ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, Balance, FeeRate, SignOptions, SyncOptions};
+use bdk::{electrum_client, miniscript, Balance, SignOptions, SyncOptions};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -658,25 +658,33 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let dont_spend = util::extract_utxo_list(dont_spend);
 
     let balance = get_total_balance(wallet.get_balance().unwrap());
+    let mut amount_to_try = balance - amount;
 
-    match util::build_tx(
-        amount.clone(),
-        0.0,
-        Some(balance - amount),
-        &wallet,
-        send_to.clone(),
-        &must_spend,
-        &dont_spend,
-    ) {
-        Ok((psbt, _)) => {
-            return match psbt.fee_rate() {
-                None => error_return,
-                Some(r) => r.as_sat_per_vb() as f64,
-            };
-        }
-        Err(e) => {
-            update_last_error(e);
-            return error_return;
+    loop {
+        match util::build_tx(
+            amount.clone(),
+            0.0,
+            Some(amount_to_try),
+            &wallet,
+            send_to.clone(),
+            &must_spend,
+            &dont_spend,
+        ) {
+            Ok((psbt, _)) => {
+                return match psbt.fee_rate() {
+                    None => error_return,
+                    Some(r) => r.as_sat_per_vb() as f64,
+                };
+            }
+            Err(e) => match e {
+                bdk::Error::InsufficientFunds { available, .. } => {
+                    amount_to_try = available - amount.clone();
+                }
+                _ => {
+                    update_last_error(e);
+                    return error_return;
+                }
+            },
         }
     }
 }
