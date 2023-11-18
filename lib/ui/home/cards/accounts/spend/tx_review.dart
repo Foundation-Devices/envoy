@@ -160,10 +160,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
                               if (account.wallet.hot) {
                                 broadcastTx(context);
                               } else {
-                                await Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) => PsbtCard(
-                                            transactionModel.psbt!, account)));
+                                await Navigator.of(context,
+                                        rootNavigator: false)
+                                    .push(MaterialPageRoute(
+                                        builder: (context) => Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: PsbtCard(
+                                                  transactionModel.psbt!,
+                                                  account),
+                                            )));
                                 await Future.delayed(
                                     Duration(milliseconds: 200));
                                 if (ref
@@ -180,9 +186,13 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     if (account.wallet.hot) {
                       broadcastTx(context);
                     } else {
-                      await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              PsbtCard(transactionModel.psbt!, account)));
+                      await Navigator.of(context, rootNavigator: false)
+                          .push(MaterialPageRoute(
+                              builder: (context) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: PsbtCard(
+                                        transactionModel.psbt!, account),
+                                  )));
                       await Future.delayed(Duration(milliseconds: 200));
                       if (ref.read(spendTransactionProvider).isPSBTFinalized) {
                         broadcastTx(context);
