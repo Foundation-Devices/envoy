@@ -289,6 +289,10 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     bool locked = ref.watch(coinTagLockStateProvider(coinTag));
 
+    /// hide switch if the tag is empty or all coins are locked
+    bool hideSwitch = (coinTag.isAllCoinsLocked && isListScreen) ||
+        (coinTag.totalAmount == 0);
+
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -297,7 +301,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
         locked: locked,
         amount: coinTag.totalAmount,
         accountId: coinTag.account,
-        showLock: true,
+        showLock: coinTag.totalAmount != 0,
         onLockTap: () async {
           if (!coinTag.isAllCoinsLocked) {
             bool dismissed = await EnvoyStorage()
@@ -355,7 +359,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
             }
           }
         },
-        switchWidget: (coinTag.isAllCoinsLocked && isListScreen)
+        switchWidget: hideSwitch
             ? null
             : Consumer(
                 builder: (context, ref, child) {

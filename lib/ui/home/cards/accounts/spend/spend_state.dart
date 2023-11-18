@@ -12,7 +12,6 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
@@ -118,9 +117,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               .where((element) => !utxos.map((e) => e.id).contains(element.id))
               .toList();
 
-      EnvoyReport()
-          .log("QA", "L122: Validation :amount  ${amount} feerate ${feeRate}");
-
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: mustSpend);
@@ -133,11 +129,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
-      EnvoyReport().log(
-          "QA",
-          "137: Validation pass :psbt.amount ${psbt.amount}, psbt.fee ${psbt.fee}, psbt.sent ${psbt.sent}, psbt.received ${psbt.received},"
-              " psbt.rawTx ${psbt.rawTx}");
-      //Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
+
+      ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
       RawTransaction rawTransaction =
           await Wallet.decodeRawTx(psbt.rawTx, account.wallet.network);
@@ -148,8 +141,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..valid = true;
       return true;
     } on InsufficientFunds {
-      EnvoyReport().log("QA",
-          "L151: Validation  failed : ${amount}  ${feeRate} , Error : InsufficientFunds");
       state = state.clone()
         ..loading = false
         ..psbt = null
@@ -477,8 +468,6 @@ final _spendValidationProviderFuture = FutureProvider<bool>((ref) async {
   if (!validAmount) {
     ref.read(spendValidationErrorProvider.notifier).state =
         S().send_keyboard_amount_insufficient_funds_info;
-    EnvoyReport().log("QA",
-        "L472: Validation  failed : ${amount} , Spendable : ${spendableBalance}");
     return false;
   } else {
     ref.read(spendValidationErrorProvider.notifier).state = null;
@@ -518,6 +507,8 @@ void clearSpendState(ProviderContainer ref) {
   ref.read(spendFeeRateProvider.notifier).state =
       ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
           100000;
+  ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
+  ref.read(stagingTxNoteProvider.notifier).state = null;
 }
 
 Future<Psbt> getPsbt(
@@ -534,14 +525,10 @@ Future<Psbt> getPsbt(
 
     var fee = e.needed - e.available;
 
-    EnvoyReport().log(
-        "QA", "L529:Validation: InsufficientFunds : ${amount} ,Fee : ${fee}");
     try {
       _returnPsbt = await account.wallet
           .createPsbt(initialAddress, e.available - fee, feeRate);
     } on InsufficientFunds catch (e) {
-      EnvoyReport()
-          .log("QA", "L535: Validation  failed : ${amount} , Error : ${e}");
       print("Something is seriously wrong! Available: " +
           e.available.toString() +
           " Needed: " +
