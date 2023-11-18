@@ -531,7 +531,8 @@ class SpendRequirementOverlayState
         CoinTag? selectedTag = ref.watch(currentActiveTag);
         String buttonText = "Cancel";
         if (inTagSelectionMode) {
-          buttonText = selectedTag?.untagged == true ? "Tag Selected" : "Retag";
+          buttonText =
+              selectedTag?.untagged == true ? "Tag Selected" : "Retag Selected";
         }
         return EnvoyButton(
           enabled: valid,
