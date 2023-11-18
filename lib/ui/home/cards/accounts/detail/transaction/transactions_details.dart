@@ -89,12 +89,10 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
         }
         //
         // if(details.globalPosition.dy > size.height){
-        //   print("tap down outside");
         //   return;
         //   Navigator.of(context).pop();
         // }
         // if(details.globalPosition.dy > size.height)
-        //  print("object ${}");
       },
       child: Scaffold(
         appBar: AppBar(

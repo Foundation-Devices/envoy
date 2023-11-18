@@ -21,7 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({Key? key}) : super(key: key);
@@ -40,8 +40,6 @@ enum MagicRecoveryWalletState {
   failure,
 }
 
-final successfulManualRecovery = StateProvider((ref) => false);
-
 class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   StateMachineController? _stateMachineController;
 
@@ -52,7 +50,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   void initState() {
     Future.delayed(Duration(milliseconds: 100)).then((_) {
       if (!ref.read(triedAutomaticRecovery) &&
-          !ref.read(successfulManualRecovery)) {
+          !ref.read(successfulManualRecovery) &&
+          !ref.read(successfulSetupWallet)) {
         _tryAutomaticRecovery();
       }
     });

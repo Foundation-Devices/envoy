@@ -529,10 +529,10 @@ class SpendRequirementOverlayState
     return Consumer(
       builder: (context, ref, child) {
         CoinTag? selectedTag = ref.watch(currentActiveTag);
-        print("selectedTag  $inTagSelectionMode ${selectedTag?.untagged} ");
         String buttonText = "Cancel";
         if (inTagSelectionMode) {
-          buttonText = selectedTag?.untagged == true ? "Tag Selected" : "Retag";
+          buttonText =
+              selectedTag?.untagged == true ? "Tag Selected" : "Retag Selected";
         }
         return EnvoyButton(
           enabled: valid,
