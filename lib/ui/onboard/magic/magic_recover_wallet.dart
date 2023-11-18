@@ -10,10 +10,10 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -358,11 +358,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         setState(() {
                           if (success) {
                             Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ManualSetupImportBackup()))
-                                .then((value) {
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        WalletSetupSuccess())).then((_) {
                               //Try automatic recovery if the user press back button
                               if (mounted) {
                                 _tryAutomaticRecovery();
