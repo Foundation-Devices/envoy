@@ -16,8 +16,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'onboard_welcome.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);

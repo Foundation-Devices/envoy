@@ -452,8 +452,8 @@ class EnvoySeed {
     });
   }
 
-  removeSeedFromNonSecure() {
-    LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+  removeSeedFromNonSecure() async {
+    await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
   }
 
   removeSeedFromSecure() {

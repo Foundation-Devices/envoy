@@ -88,7 +88,7 @@ class LocalStorage {
   }
 
   Future<void> deleteFile(String name) async {
-    File(appSupportDir.path + '/' + name).delete();
+    await File(appSupportDir.path + '/' + name).delete();
   }
 
   Future<File> saveFileBytes(String name, List<int> content) async {

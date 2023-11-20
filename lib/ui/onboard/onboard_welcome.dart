@@ -8,12 +8,25 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_privacy_setup.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/envoy_seed.dart';
+
+enum EscapeHatchTap { logo, text }
+
+const List<EscapeHatchTap> secretCombination = [
+  EscapeHatchTap.logo,
+  EscapeHatchTap.logo,
+  EscapeHatchTap.text,
+  EscapeHatchTap.text,
+  EscapeHatchTap.logo,
+  EscapeHatchTap.logo,
+];
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -27,6 +40,34 @@ final successfulManualRecovery = StateProvider((ref) => false);
 final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
+  List<EscapeHatchTap> escapeHatchTaps = [];
+
+  registerEscapeTap(EscapeHatchTap tap) async {
+    escapeHatchTaps.add(tap);
+
+    if (listEquals(
+        escapeHatchTaps,
+        secretCombination
+            .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
+            .toList())) {
+      if (escapeHatchTaps.length == secretCombination.length) {
+        escapeHatchTaps.clear();
+        try {
+          await EnvoySeed().removeSeedFromNonSecure();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Envoy Seed deleted!"), // TODO: FIGMA
+          ));
+        } on Exception catch (_) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
+          ));
+        }
+      }
+    } else {
+      escapeHatchTaps.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -37,10 +78,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
         ),
-        header: Container(
-          height: MediaQuery.of(context).size.height * 0.25,
-          child: Image.asset(
-            "assets/envoy_logo_with_title.png",
+        header: GestureDetector(
+          onTap: () {
+            registerEscapeTap(EscapeHatchTap.logo);
+          },
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: Image.asset(
+              "assets/envoy_logo_with_title.png",
+            ),
           ),
         ),
         shield: Container(
@@ -60,10 +106,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Padding(padding: EdgeInsets.all(6)),
-                    Text(
-                      S().welcome_screen_subheading,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
+                    GestureDetector(
+                      onTap: () {
+                        registerEscapeTap(EscapeHatchTap.text);
+                      },
+                      child: Text(
+                        S().welcome_screen_subheading,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
