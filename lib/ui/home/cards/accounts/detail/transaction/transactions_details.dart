@@ -344,7 +344,8 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                   height: 14,
                                 ),
                                 trailing: Text(
-                                    "${tx.type == TransactionType.normal ? "Confirmed" : "Pending"}", // TODO: FIGMA
+                                    getTransactionStatusString(
+                                        tx), // TODO: FIGMA
                                     style: trailingTextStyle),
                               ),
                               CoinTagListItem(
@@ -503,4 +504,11 @@ String getTransactionDateAndTimeString(Transaction transaction) {
           " " +
           DateFormat.Hm(currentLocale).format(transaction.date);
   return transactionDateInfo;
+}
+
+// TODO: figma
+String getTransactionStatusString(Transaction tx) {
+  return tx.type == TransactionType.normal && tx.isConfirmed
+      ? "Confirmed"
+      : "Pending";
 }

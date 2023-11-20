@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
   final Coin coin;
@@ -232,8 +232,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 color: Colors.black,
                                 height: 14,
                               ),
-                              trailing: Text(
-                                  "${tx.type == TransactionType.normal ? "Confirmed" : "Pending"} ", // TODO: FIGMA
+                              trailing: Text(getTransactionStatusString(tx),
                                   style: trailingTextStyle),
                             ),
                             GestureDetector(
