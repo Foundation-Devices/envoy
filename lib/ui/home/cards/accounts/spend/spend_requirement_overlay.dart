@@ -288,8 +288,9 @@ class SpendRequirementOverlayState
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.small,
-                          horizontal: EnvoySpacing.medium1),
+                        vertical: EnvoySpacing.small,
+                        // horizontal: EnvoySpacing.medium1
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -313,167 +314,179 @@ class SpendRequirementOverlayState
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.all(
-                                              !inTagSelectionMode
-                                                  ? EnvoySpacing.xs
-                                                  : 0)),
-                                      !inTagSelectionMode
-                                          ? Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          EnvoySpacing.xs),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                      "S().coincontrol_edit_transaction_required_inputs ${MediaQuery.of(context).viewPadding.bottom}"),
-                                                  Spacer(),
-                                                  SizedBox.square(
-                                                      dimension: 12,
-                                                      child: SvgPicture.asset(
-                                                        Settings().displayUnit ==
-                                                                DisplayUnit.btc
-                                                            ? "assets/icons/ic_bitcoin_straight.svg"
-                                                            : "assets/icons/ic_sats.svg",
-                                                        color:
-                                                            Color(0xff808080),
-                                                      )),
-                                                  Text(
-                                                    "${getFormattedAmount(requiredAmount, trailingZeroes: true)}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleSmall,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          : SizedBox(),
-                                      Padding(
-                                          padding:
-                                              EdgeInsets.all(EnvoySpacing.xs)),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.xs),
-                                        child: Builder(builder: (context) {
-                                          List<Widget> sheetOptions = [];
-                                          if (inTagSelectionMode) {
-                                            sheetOptions.add(GestureDetector(
-                                              onTap: () {
-                                                cancel();
-                                              },
-                                              child: Padding(
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.small,
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: EnvoySpacing.xs)),
+                                        !inTagSelectionMode
+                                            ? Padding(
                                                 padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: Container(
-                                                  height: 20,
-                                                  width: 20,
-                                                  margin: EdgeInsets.only(
-                                                      right: EnvoySpacing.xs),
-                                                  child: Icon(Icons.close,
-                                                      size: 14),
-                                                  decoration: BoxDecoration(
-                                                    color: EnvoyColors.surface2,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            EnvoySpacing
-                                                                .medium1),
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal:
+                                                            EnvoySpacing.small),
+                                                child: Row(
+                                                  children: [
+                                                    Text(S()
+                                                        .coincontrol_edit_transaction_required_inputs),
+                                                    Spacer(),
+                                                    SizedBox.square(
+                                                        dimension: 12,
+                                                        child: SvgPicture.asset(
+                                                          Settings().displayUnit ==
+                                                                  DisplayUnit
+                                                                      .btc
+                                                              ? "assets/icons/ic_bitcoin_straight.svg"
+                                                              : "assets/icons/ic_sats.svg",
+                                                          color:
+                                                              Color(0xff808080),
+                                                        )),
+                                                    Text(
+                                                      "${getFormattedAmount(requiredAmount, trailingZeroes: true)}",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleSmall,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                        Padding(
+                                            padding: EdgeInsets.all(
+                                                EnvoySpacing.xs)),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: EnvoySpacing.small),
+                                          child: Builder(builder: (context) {
+                                            List<Widget> sheetOptions = [];
+                                            if (inTagSelectionMode) {
+                                              sheetOptions.add(GestureDetector(
+                                                onTap: () {
+                                                  cancel();
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Container(
+                                                    height: 20,
+                                                    width: 20,
+                                                    margin: EdgeInsets.only(
+                                                        right: EnvoySpacing.xs),
+                                                    child: Icon(Icons.close,
+                                                        size: 14),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          EnvoyColors.surface2,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              EnvoySpacing
+                                                                  .medium1),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ));
-                                          }
+                                              ));
+                                            }
 
-                                          sheetOptions.addAll([
-                                            Text(
-                                              ///TODO: localize
-                                              "Selected amount",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall,
-                                            ),
-                                            Spacer(),
-                                            SizedBox.square(
-                                                dimension: 12,
-                                                child: SvgPicture.asset(
-                                                  Settings().displayUnit ==
-                                                          DisplayUnit.btc
-                                                      ? "assets/icons/ic_bitcoin_straight.svg"
-                                                      : "assets/icons/ic_sats.svg",
-                                                  color: Color(0xff808080),
-                                                )),
-                                            Text(
-                                              "${getFormattedAmount(totalSelectedAmount, trailingZeroes: true)}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall,
-                                            ),
-                                          ]);
-                                          return Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: sheetOptions,
-                                          );
-                                        }),
-                                      ),
-                                    ],
+                                            sheetOptions.addAll([
+                                              Text(
+                                                ///TODO: localize
+                                                "Selected amount",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall,
+                                              ),
+                                              Spacer(),
+                                              SizedBox.square(
+                                                  dimension: 12,
+                                                  child: SvgPicture.asset(
+                                                    Settings().displayUnit ==
+                                                            DisplayUnit.btc
+                                                        ? "assets/icons/ic_bitcoin_straight.svg"
+                                                        : "assets/icons/ic_sats.svg",
+                                                    color: Color(0xff808080),
+                                                  )),
+                                              Text(
+                                                "${getFormattedAmount(totalSelectedAmount, trailingZeroes: true)}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall,
+                                              ),
+                                            ]);
+                                            return Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: sheetOptions,
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      EnvoyButton(
-                                        enabled: valid,
-                                        readOnly: !valid,
-                                        type: EnvoyButtonTypes.primaryModal,
-                                        inTagSelectionMode
-                                            ? "Send Selected"
-                                            : S()
-                                                .coincontrol_edit_transaction_cta,
-                                        onTap: () async {
-                                          /// if the user is in utxo details screen we need to wait animations to finish
-                                          /// before we can pop back to home screen
-                                          if (Navigator.canPop(context)) {
-                                            Navigator.of(context)
-                                                .popUntil((route) {
-                                              return route.settings
-                                                  is MaterialPage;
-                                            });
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.medium1,
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        EnvoyButton(
+                                          enabled: valid,
+                                          readOnly: !valid,
+                                          type: EnvoyButtonTypes.primaryModal,
+                                          inTagSelectionMode
+                                              ? "Send Selected"
+                                              : S()
+                                                  .coincontrol_edit_transaction_cta,
+                                          onTap: () async {
+                                            /// if the user is in utxo details screen we need to wait animations to finish
+                                            /// before we can pop back to home screen
+                                            if (Navigator.canPop(context)) {
+                                              Navigator.of(context)
+                                                  .popUntil((route) {
+                                                return route.settings
+                                                    is MaterialPage;
+                                              });
+                                              await Future.delayed(
+                                                  Duration(milliseconds: 320));
+                                            }
+                                            hideSpendRequirementOverlay();
                                             await Future.delayed(
-                                                Duration(milliseconds: 320));
-                                          }
-                                          hideSpendRequirementOverlay();
-                                          await Future.delayed(
-                                              Duration(milliseconds: 120));
-                                          if (ref.read(spendEditModeProvider)) {
-                                            GoRouter.of(context)
-                                                .push(ROUTE_ACCOUNT_SEND);
-                                            GoRouter.of(context).push(
-                                                ROUTE_ACCOUNT_SEND_CONFIRM);
-                                          } else {
-                                            GoRouter.of(context)
-                                                .push(ROUTE_ACCOUNT_SEND);
-                                          }
-                                        },
-                                      ),
-                                      Padding(
-                                          padding:
-                                              EdgeInsets.all(EnvoySpacing.xs)),
-                                      inTagSelectionMode
-                                          ? coinSelectionButton(context, valid,
-                                              inTagSelectionMode)
-                                          : transactionEditButton(context),
-                                      Padding(
-                                          padding: EdgeInsets.all(
-                                              MediaQuery.of(context)
-                                                      .viewPadding
-                                                      .bottom /
-                                                  2)),
-                                    ],
+                                                Duration(milliseconds: 120));
+                                            if (ref
+                                                .read(spendEditModeProvider)) {
+                                              GoRouter.of(context)
+                                                  .push(ROUTE_ACCOUNT_SEND);
+                                              GoRouter.of(context).push(
+                                                  ROUTE_ACCOUNT_SEND_CONFIRM);
+                                            } else {
+                                              GoRouter.of(context)
+                                                  .push(ROUTE_ACCOUNT_SEND);
+                                            }
+                                          },
+                                        ),
+                                        Padding(
+                                            padding: EdgeInsets.all(
+                                                EnvoySpacing.xs)),
+                                        inTagSelectionMode
+                                            ? coinSelectionButton(context,
+                                                valid, inTagSelectionMode)
+                                            : transactionEditButton(context),
+                                        Padding(
+                                            padding: EdgeInsets.all(
+                                                MediaQuery.of(context)
+                                                        .viewPadding
+                                                        .bottom /
+                                                    2)),
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
