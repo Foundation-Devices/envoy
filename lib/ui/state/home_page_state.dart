@@ -41,6 +41,7 @@ enum DismissiblePrompt {
 
   ///warning for exiting manual coin selection
   txDiscardWarning,
+  addTxNoteWarning
 }
 
 final homePageTabProvider =
