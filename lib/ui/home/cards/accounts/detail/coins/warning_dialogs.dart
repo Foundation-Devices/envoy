@@ -5,6 +5,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -155,15 +156,16 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: (MediaQuery.of(context).size.width * 0.8).clamp(254, 540),
-        height: (MediaQuery.of(context).size.height * 0.54).clamp(430, 540),
-        padding: EdgeInsets.all(24),
+        width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+        height: (MediaQuery.of(context).size.height * 0.5).clamp(380, 540),
+        padding: EdgeInsets.all(EnvoySpacing.medium1),
         child: Stack(
           fit: StackFit.passthrough,
           children: [
             Align(
               alignment: Alignment(1.15, -1.1),
               child: IconButton(
+                padding: EdgeInsets.all(EnvoySpacing.small),
                 icon: Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -174,13 +176,13 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Image.asset(
                   "assets/exclamation_icon.png",
                   height: 68,
                   width: 68,
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Text(
                   "Create a tag", // TODO: FIGMA
                   style: Theme.of(context)
@@ -188,7 +190,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                       .titleMedium
                       ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 //TODO: updated copy & localization
                 Text(
                     "Tags are a useful way to categorize coins within an account.", // TODO: FIGMA
@@ -197,7 +199,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                         .bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
                     textAlign: TextAlign.center),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 GestureDetector(
                   onTap: () {
                     setState(() {
