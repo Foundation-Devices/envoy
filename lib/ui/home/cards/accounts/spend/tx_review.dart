@@ -12,6 +12,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -23,6 +24,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
@@ -30,6 +32,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
@@ -121,7 +124,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   final userChosenTag = coinTag?.untagged == false;
 
                   final userNote = ref.read(stagingTxNoteProvider);
-                  if (userNote == null || userNote.isEmpty) {
+                  final dismissedNoteDialog = await EnvoyStorage()
+                      .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
+                  if ((userNote == null || userNote.isEmpty) &&
+                      !dismissedNoteDialog) {
                     await showEnvoyDialog(
                         context: context,
                         useRootNavigator: true,
@@ -1107,7 +1113,7 @@ class TxReviewNoteDialog extends ConsumerStatefulWidget {
 
 class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
   TextEditingController _textEditingController = TextEditingController();
-
+  bool dismissed = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -1120,6 +1126,13 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
         _textEditingController.text =
             ref.read(txNoteProvider(widget.txId)) ?? "";
       }
+      EnvoyStorage()
+          .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning)
+          .then((value) {
+        setState(() {
+          dismissed = value;
+        });
+      });
     });
   }
 
@@ -1127,70 +1140,112 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
   Widget build(BuildContext context) {
     return Container(
       width: 280,
-      height: 340,
+      height: 360,
       padding: EdgeInsets.all(EnvoySpacing.medium1),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          Text(widget.noteTitle, style: Theme.of(context).textTheme.titleLarge),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.noteSubTitle,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: EnvoySpacing.medium1),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Color(0xffD9D9D9),
-                  borderRadius: BorderRadius.circular(EnvoySpacing.small)),
-              child: TextFormField(
-                maxLines: 1,
-                maxLength: 34,
-                controller: _textEditingController,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            Text(widget.noteTitle,
+                style: Theme.of(context).textTheme.titleLarge),
+            Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.noteSubTitle,
+                style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
-                textInputAction: TextInputAction.done,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(fontSize: 14),
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(EnvoySpacing.small),
-                  border: InputBorder.none,
-                  counter: SizedBox.shrink(),
-                  fillColor: Colors.redAccent,
-                  focusedBorder: InputBorder.none,
-                  isDense: true,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color(0xffD9D9D9),
+                    borderRadius: BorderRadius.circular(EnvoySpacing.small)),
+                child: TextFormField(
+                  maxLines: 1,
+                  maxLength: 34,
+                  controller: _textEditingController,
+                  textAlign: TextAlign.center,
+                  textInputAction: TextInputAction.done,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontSize: 14),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(EnvoySpacing.small),
+                    border: InputBorder.none,
+                    counter: SizedBox.shrink(),
+                    fillColor: Colors.redAccent,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
+            Padding(padding: EdgeInsets.all(8)),
+            GestureDetector(
               onTap: () {
-            Navigator.of(context).pop(false);
-          }, type: EnvoyButtonTypes.tertiary),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(
-            S().stalls_before_sending_tx_add_note_modal_cta1,
-            onTap: () {
-              ref.read(stagingTxNoteProvider.notifier).state =
-                  _textEditingController.text;
-              Navigator.of(context).pop(true);
-            },
-            type: EnvoyButtonTypes.primaryModal,
-          )
-        ],
+                setState(() {
+                  dismissed = !dismissed;
+                });
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    child: EnvoyCheckbox(
+                      value: dismissed,
+                      onChanged: (value) {
+                        if (value != null)
+                          setState(() {
+                            dismissed = value;
+                          });
+                      },
+                    ),
+                  ),
+                  Text(
+                    S().coincontrol_lock_coin_modal_dontShowAgain,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: dismissed ? Colors.black : Color(0xff808080),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(8)),
+            EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
+                onTap: () {
+              Navigator.of(context).pop(false);
+              if (dismissed) {
+                EnvoyStorage()
+                    .addPromptState(DismissiblePrompt.addTxNoteWarning);
+              }
+            }, type: EnvoyButtonTypes.tertiary),
+            Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            EnvoyButton(
+              S().stalls_before_sending_tx_add_note_modal_cta1,
+              onTap: () {
+                ref.read(stagingTxNoteProvider.notifier).state =
+                    _textEditingController.text;
+                Navigator.of(context).pop(true);
+                if (dismissed) {
+                  EnvoyStorage()
+                      .addPromptState(DismissiblePrompt.addTxNoteWarning);
+                }
+              },
+              type: EnvoyButtonTypes.primaryModal,
+            )
+          ],
+        ),
       ),
     );
   }
