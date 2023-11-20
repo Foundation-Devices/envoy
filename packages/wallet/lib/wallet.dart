@@ -652,14 +652,15 @@ class Wallet {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
-      final lib = rust.NativeLibrary(load(_libName));
+      final lib = load(_libName);
+      final native = rust.NativeLibrary(lib);
 
-      rust.Psbt psbt = lib.wallet_decode_psbt(
+      rust.Psbt psbt = native.wallet_decode_psbt(
           Pointer.fromAddress(walletAddress),
           base64Psbt.toNativeUtf8() as Pointer<Char>);
 
       if (psbt.base64 == nullptr) {
-        throwRustException(_lib);
+        throwRustException(lib);
       }
 
       return Psbt.fromNative(psbt);
@@ -815,7 +816,7 @@ class Wallet {
           .toDartString();
 
       if (txid.isEmpty) {
-        throwRustException(_lib);
+        throwRustException(lib);
       }
       return txid;
     }
