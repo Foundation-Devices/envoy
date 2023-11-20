@@ -225,7 +225,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     }
     //Listen to coin tag lock states
     ref.watch(coinTagLockStateProvider(widget.coinTag));
-
+    if (tag.coins.length == 1) {
+      ///only show header of the tag
+      totalTagHeight = 92;
+    }
     return RawScrollbar(
       thumbColor: Colors.white38,
       thumbVisibility: totalTagHeight >= maxContainerHeight,
