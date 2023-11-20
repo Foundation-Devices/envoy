@@ -126,6 +126,13 @@ final coinsTagProvider =
         untagged: true)
       ..addCoins(coins));
 
+  ///sort coins in each tag based on amount high to low
+  tags.forEach((tag) {
+    tag.coins.sort(
+      (a, b) => b.amount.compareTo(a.amount),
+    );
+  });
+
   switch (sortType) {
     case CoinTagSortTypes.sortByTagNameAsc:
       tags.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -135,6 +142,11 @@ final coinsTagProvider =
       break;
     case CoinTagSortTypes.amountLowToHigh:
       tags.sort((a, b) => a.totalAmount.compareTo(b.totalAmount));
+      tags.forEach((tag) {
+        tag.coins.sort(
+          (a, b) => a.amount.compareTo(b.amount),
+        );
+      });
       break;
     case CoinTagSortTypes.amountHighToLow:
       tags.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
