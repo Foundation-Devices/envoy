@@ -10,6 +10,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -40,16 +41,17 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-          width: (MediaQuery.of(context).size.width * 0.8).clamp(254, 540),
-          height: (MediaQuery.of(context).size.height * 0.56).clamp(450, 540),
-          padding: EdgeInsets.all(24),
+          width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+          height: (MediaQuery.of(context).size.height * 0.5).clamp(300, 540),
+          padding: EdgeInsets.all(EnvoySpacing.small),
           child: Stack(
             fit: StackFit.passthrough,
             children: [
               Align(
-                alignment: Alignment(1.15, -1.1),
+                alignment: Alignment(1.00, -1.02),
                 child: IconButton(
                   icon: Icon(Icons.close),
+                  padding: EdgeInsets.all(12),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -59,21 +61,21 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Image.asset(
                     "assets/exclamation_icon.png",
                     height: 68,
                     width: 68,
                   ),
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Text(
-                    "Create a tag",
+                    "Create a tag", //TODO: FIGMA
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
                         ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   _tagWidget(context),
                 ],
               ),
@@ -95,104 +97,108 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
 
         List<String> suggestions =
             tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Color(0xffD9D9D9),
-                  borderRadius: BorderRadius.circular(8)),
-              child: TextFormField(
-                  style: TextStyle(
-                      fontSize: 14,
-                      overflow: TextOverflow.fade,
-                      fontWeight: FontWeight.w500),
-                  onChanged: (value) {
-                    setState(() {
-                      value = value;
-                    });
-                  },
-                  controller: _tagController,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    // Disable the borders
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 16.0),
-                  )),
-            ),
-            Padding(padding: EdgeInsets.all(8)),
-            tags.length != 0
-                ? Text(S().create_second_tag_modal_2_2_mostUsed)
-                : Text(S().create_first_tag_modal_2_2_suggest),
-            Container(
-              constraints: BoxConstraints(maxHeight: 100),
-              margin: EdgeInsets.symmetric(vertical: 12),
-              child: Scrollbar(
-                child: Container(
-                  height: 100,
-                  margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Wrap(
-                    runSpacing: 8,
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    runAlignment: WrapAlignment.start,
-                    alignment: WrapAlignment.spaceEvenly,
-                    spacing: 12,
-                    children: [
-                      ...suggestions.where((element) {
-                        //Show only the tags that match the search, search will only be active
-                        // if there are existing tags, search wont be active for suggestions
-                        if (tags.isNotEmpty && _tagController.text.isNotEmpty) {
-                          return element
-                              .toLowerCase()
-                              .startsWith(_tagController.text.toLowerCase());
-                        }
-                        return true;
-                      }).map((e) => InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 4),
-                                    child: Text("${e}")),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                      color: EnvoyColors.teal, width: 1),
-                                ),
-                                height: 28),
-                            onTap: () {
-                              _tagController.text = e;
-                              setState(() {});
-                            },
-                          ))
-                    ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: Color(0xffD9D9D9),
+                    borderRadius: BorderRadius.circular(8)),
+                child: TextFormField(
+                    style: TextStyle(
+                        fontSize: 14,
+                        overflow: TextOverflow.fade,
+                        fontWeight: FontWeight.w500),
+                    onChanged: (value) {
+                      setState(() {
+                        value = value;
+                      });
+                    },
+                    controller: _tagController,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      // Disable the borders
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 16.0),
+                    )),
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              tags.length != 0
+                  ? Text(S().create_second_tag_modal_2_2_mostUsed)
+                  : Text(S().create_first_tag_modal_2_2_suggest),
+              Container(
+                constraints: BoxConstraints(maxHeight: 100),
+                child: Scrollbar(
+                  child: Container(
+                    height: 100,
+                    margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Wrap(
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      runAlignment: WrapAlignment.start,
+                      alignment: WrapAlignment.spaceEvenly,
+                      spacing: 12,
+                      children: [
+                        ...suggestions.where((element) {
+                          //Show only the tags that match the search, search will only be active
+                          // if there are existing tags, search wont be active for suggestions
+                          if (tags.isNotEmpty &&
+                              _tagController.text.isNotEmpty) {
+                            return element
+                                .toLowerCase()
+                                .startsWith(_tagController.text.toLowerCase());
+                          }
+                          return true;
+                        }).map((e) => InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                  child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 4),
+                                      child: Text("${e}")),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                        color: EnvoyColors.teal, width: 1),
+                                  ),
+                                  height: 28),
+                              onTap: () {
+                                _tagController.text = e;
+                                setState(() {});
+                              },
+                            ))
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(8)),
-            EnvoyButton(
-              S().create_first_tag_modal_2_2_cta,
-              enabled: _tagController.text.isNotEmpty,
-              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: _tagController.text.isNotEmpty
-                        ? Colors.white
-                        : EnvoyColors.grey,
-                  ),
-              type: _tagController.text.isNotEmpty
-                  ? EnvoyButtonTypes.primaryModal
-                  : EnvoyButtonTypes.tertiary,
-              onTap: () => tagSelected(context, ref),
-            ),
-          ],
+              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              EnvoyButton(
+                S().create_first_tag_modal_2_2_cta,
+                enabled: _tagController.text.isNotEmpty,
+                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: _tagController.text.isNotEmpty
+                          ? Colors.white
+                          : EnvoyColors.grey,
+                    ),
+                type: _tagController.text.isNotEmpty
+                    ? EnvoyButtonTypes.primaryModal
+                    : EnvoyButtonTypes.tertiary,
+                onTap: () => tagSelected(context, ref),
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            ],
+          ),
         );
       },
     );
