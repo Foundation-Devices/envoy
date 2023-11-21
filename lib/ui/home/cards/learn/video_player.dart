@@ -355,7 +355,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                 }
               },
             ),
-            if (_visibleTimeline)
+            if (_visibleTimeline || _playerProgress == 0)
               Positioned(
                   top: 20,
                   left: 20,
