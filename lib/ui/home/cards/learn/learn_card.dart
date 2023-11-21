@@ -58,12 +58,6 @@ class _LearnCardState extends ConsumerState<LearnCard> {
             SliverPadding(
                 padding: EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
             SliverToBoxAdapter(
-              child: LearnIntro(),
-            ),
-            SliverPadding(
-                padding:
-                    EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            SliverToBoxAdapter(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,35 +200,5 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         ),
       ),
     );
-  }
-}
-
-class LearnIntro extends StatelessWidget {
-  const LearnIntro({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
-        child: Container(
-          width: double.infinity,
-          color: Color(0xFF020202),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.medium3,
-                horizontal: EnvoySpacing.medium2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 50,
-                ),
-                Text("WELCOME TO THE\nLEARNING CENTER", // TODO: FIGMA
-                    style: EnvoyTypography.heading
-                        .copyWith(color: EnvoyColors.textPrimaryInverse)),
-              ],
-            ),
-          ),
-        ));
   }
 }
