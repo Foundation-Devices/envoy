@@ -394,7 +394,7 @@ class EnvoySeed {
 
     if (secure != null && nonSecure != null) {
       EnvoyReport()
-          .log("QA", "Found seed in both secure and non-secure storage!");
+          .log("QA", "Seed stored in both secure and regular storage");
       return secure;
 
       // TODO: show a warning to user
@@ -405,12 +405,12 @@ class EnvoySeed {
     }
 
     if (secure != null) {
-      EnvoyReport().log("QA", "Found seed in secure storage!");
+      EnvoyReport().log("QA", "Seed stored in secure storage");
       return secure;
     }
 
     if (nonSecure != null) {
-      EnvoyReport().log("QA", "Found seed in non-secure storage!");
+      EnvoyReport().log("QA", "Seed stored in regular storage");
       return nonSecure;
     }
 
