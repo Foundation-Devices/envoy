@@ -6,6 +6,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -179,13 +180,23 @@ class _SeedScreenState extends State<SeedScreen> {
                     }
                     List<String> section1 = seedList.sublist(0, 6);
                     List<String> section2 = seedList.sublist(6, 12);
+                    List<Tuple<int, String>> section1WithIndex = [];
+                    List<Tuple<int, String>> section2WithIndex = [];
+                    section1.asMap().forEach((index, element) {
+                      section1WithIndex.add(Tuple(index + 1, element));
+                    });
+                    section2.asMap().forEach((index, element) {
+                      section2WithIndex.add(Tuple(index + 6, element));
+                    });
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Flexible(child: _buildMnemonicColumn(section1)),
-                        Flexible(child: _buildMnemonicColumn(section2)),
+                        Flexible(
+                            child: _buildMnemonicColumn(section1WithIndex)),
+                        Flexible(
+                            child: _buildMnemonicColumn(section2WithIndex)),
                       ],
                     );
                   }),
@@ -207,7 +218,7 @@ class _SeedScreenState extends State<SeedScreen> {
     );
   }
 
-  Widget _buildMnemonicColumn(List<String> list) {
+  Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     final TextStyle textTheme = TextStyle(
         fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
@@ -221,8 +232,8 @@ class _SeedScreenState extends State<SeedScreen> {
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
             children: [
-              Text("${seedList.indexOf(word) + 1}. ", style: textTheme),
-              Expanded(child: Text("${word}", style: textTheme)),
+              Text("${word.item1}. ", style: textTheme),
+              Expanded(child: Text("${word.item2}", style: textTheme)),
             ],
           ),
         );

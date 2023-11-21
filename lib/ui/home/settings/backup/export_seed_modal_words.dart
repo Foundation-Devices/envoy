@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -59,17 +60,39 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                               height: 400,
                               child: PageView.builder(
                                 controller: _pageController,
-                                itemBuilder: (context, index) {
+                                itemBuilder: (context, pageIndex) {
                                   var seedList = widget.seed;
                                   List<String> section1 = [];
                                   List<String> section2 = [];
-                                  if (index == 1) {
+                                  if (pageIndex == 0) {
                                     section1 = seedList.sublist(0, 6);
                                     section2 = seedList.sublist(6, 12);
                                   } else {
-                                    section1 = seedList.sublist(0, 6);
-                                    section2 = seedList.sublist(6, 12);
+                                    if (seedList.length == 24) {
+                                      section1 = seedList.sublist(12, 18);
+                                      section2 = seedList.sublist(18, 24);
+                                    }
                                   }
+
+                                  List<Tuple<int, String>> section1WithIndex =
+                                      [];
+                                  List<Tuple<int, String>> section2WithIndex =
+                                      [];
+
+                                  section1.asMap().forEach((index, element) {
+                                    int value =
+                                        pageIndex == 0 ? index + 1 : index + 13;
+                                    section1WithIndex
+                                        .add(Tuple(value, element));
+                                  });
+
+                                  section2.asMap().forEach((index, element) {
+                                    int value =
+                                        pageIndex == 0 ? index + 7 : index + 19;
+                                    section2WithIndex
+                                        .add(Tuple(value, element));
+                                  });
+
                                   return Builder(builder: (context) {
                                     return Row(
                                       crossAxisAlignment:
@@ -80,10 +103,10 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                       children: [
                                         Flexible(
                                             child: _buildMnemonicColumn(
-                                                section1, seedList)),
+                                                section1WithIndex)),
                                         Flexible(
                                             child: _buildMnemonicColumn(
-                                                section2, seedList)),
+                                                section2WithIndex)),
                                       ],
                                     );
                                   });
@@ -94,9 +117,12 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                           ),
                         ),
                         SliverToBoxAdapter(
-                          child: DotsIndicator(
-                            pageController: _pageController,
-                            totalPages: widget.seed.length == 12 ? 1 : 2,
+                          child: Opacity(
+                            opacity: widget.seed.length == 12 ? 0 : 1,
+                            child: DotsIndicator(
+                              pageController: _pageController,
+                              totalPages: widget.seed.length == 12 ? 1 : 2,
+                            ),
                           ),
                         )
                       ],
@@ -150,7 +176,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
     );
   }
 
-  Widget _buildMnemonicColumn(List<String> list, List<String> seedList) {
+  Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     final TextStyle textTheme = TextStyle(
         overflow: TextOverflow.fade,
         fontSize: 15,
@@ -167,10 +193,10 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
             children: [
-              Text("${seedList.indexOf(word) + 1}. ", style: textTheme),
+              Text("${word.item1}.", style: textTheme),
               Flexible(
                   child: Text(
-                "${word}",
+                "${word.item2}",
                 style: textTheme,
                 maxLines: 1,
                 softWrap: false,
