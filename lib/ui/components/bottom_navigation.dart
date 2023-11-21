@@ -57,7 +57,10 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: labelStyle,
         unselectedLabelStyle: labelStyle,
+        unselectedIconTheme: IconThemeData(size: 20),
+        selectedIconTheme: IconThemeData(size: 40),
         backgroundColor: Colors.transparent,
+        enableFeedback: true,
         elevation: 0.0,
         onTap: (int index) {
           setState(
