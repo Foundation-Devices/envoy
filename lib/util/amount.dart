@@ -99,7 +99,7 @@ String getFormattedAmount(int amountSats,
     bool testnet = false,
     trailingZeroes = false,
     AmountDisplayUnit? unit}) {
-  String text = (unit ?? Settings().displayUnit) == DisplayUnit.btc
+  String text = (unit ?? Settings().displayUnit) == AmountDisplayUnit.btc
       ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes)
       : satsFormatter.format(amountSats);
 

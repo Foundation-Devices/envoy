@@ -457,9 +457,22 @@ class SpendRequirementOverlayState
                                               await Future.delayed(
                                                   Duration(milliseconds: 320));
                                             }
+
+                                            ///if the user changed the selection, validate the transaction
+                                            ref
+                                                .read(spendTransactionProvider
+                                                    .notifier)
+                                                .validate(
+                                                    ProviderScope.containerOf(
+                                                        context));
+                                            ref
+                                                .read(spendEditModeProvider
+                                                    .notifier)
+                                                .state = false;
                                             hideSpendRequirementOverlay();
                                             await Future.delayed(
                                                 Duration(milliseconds: 120));
+
                                             if (ref
                                                 .read(spendEditModeProvider)) {
                                               GoRouter.of(context)

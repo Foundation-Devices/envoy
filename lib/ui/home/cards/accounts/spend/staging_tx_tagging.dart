@@ -57,14 +57,14 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-          width: (MediaQuery.of(context).size.width * 0.8).clamp(260, 540),
-          height: (MediaQuery.of(context).size.height * 0.56).clamp(400, 450),
-          padding: EdgeInsets.all(24),
+          width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+          height: (MediaQuery.of(context).size.height * 0.46).clamp(270, 540),
+          padding: EdgeInsets.all(EnvoySpacing.small),
           child: Stack(
             fit: StackFit.passthrough,
             children: [
               Align(
-                alignment: Alignment(1.15, -1.1),
+                alignment: Alignment(1.0, -1.0),
                 child: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
@@ -76,13 +76,13 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                   Image.asset(
                     "assets/exclamation_icon.png",
                     height: 68,
                     width: 68,
                   ),
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Text(
                     S().change_output_from_multiple_tags_modal_heading,
                     style: Theme.of(context)
@@ -90,10 +90,9 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                         .titleMedium
                         ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Expanded(
                       child: Container(
-                    height: 400,
                     child: PageTransitionSwitcher(
                       duration: Duration(milliseconds: 300),
                       transitionBuilder:
@@ -128,15 +127,47 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           final tags = ref.watch(coinsTagProvider(widget.accountId)).toList()
             ..sort((a, b) => b.coins.length.compareTo(a.coins.length))
             ..removeWhere((element) => element.untagged)
-            ..take(5);
+            ..take(6);
+
           List<String> suggestions =
               tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
+
+          suggestions = suggestions.toSet().toList();
+          List<String> firstRowContent = List.generate(3, (index) => "");
+          List<String> secondRowContent = List.generate(3, (index) => "");
+
+          suggestions.forEach((element) {
+            int index = suggestions.indexOf(element);
+            if (index < 3) {
+              firstRowContent[index] = element;
+            } else {
+              secondRowContent[index - 3] = element;
+            }
+          });
+          firstRowContent =
+              firstRowContent.where((element) => element.isNotEmpty).toList();
+          secondRowContent =
+              secondRowContent.where((element) => element.isNotEmpty).toList();
+
+          List<Widget> firsRowWidget = firstRowContent.map(
+            (e) {
+              return _tagItem(context, e);
+            },
+          ).toList();
+
+          List<Widget> secondRowWidget = secondRowContent.map(
+            (e) {
+              return _tagItem(context, e);
+            },
+          ).toList();
+
           return Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
+                margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
                 decoration: BoxDecoration(
                     color: Color(0xffD9D9D9),
                     borderRadius: BorderRadius.circular(8)),
@@ -169,53 +200,29 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   ? Text("Most Used")
                   : Text("Suggestions"), // TODO: FIGMA
               Container(
-                constraints: BoxConstraints(maxHeight: 100),
-                margin: EdgeInsets.symmetric(vertical: 12),
-                child: Scrollbar(
-                  child: Container(
-                    height: 100,
-                    margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Wrap(
-                      runSpacing: 8,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      runAlignment: WrapAlignment.start,
-                      alignment: WrapAlignment.spaceEvenly,
-                      spacing: 12,
-                      children: [
-                        ...suggestions.where((element) {
-                          //Show only the tags that match the search, search will only be active
-                          // if there are existing tags, search wont be active for suggestions
-                          if (tags.isNotEmpty &&
-                              _tagController.text.isNotEmpty) {
-                            return element
-                                .toLowerCase()
-                                .startsWith(_tagController.text.toLowerCase());
-                          }
-                          return true;
-                        }).map((e) => InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                  child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 4),
-                                      child: Text("${e}")),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                        color: EnvoyColors.teal, width: 1),
-                                  ),
-                                  height: 28),
-                              onTap: () {
-                                _tagController.text = e;
-                                setState(() {});
-                              },
-                            ))
-                      ],
-                    ),
-                  ),
+                margin: EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+                constraints: BoxConstraints(maxHeight: 64),
+                child: Column(
+                  children: [
+                    Flexible(
+                        child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...firsRowWidget],
+                    )),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    Flexible(
+                        child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...secondRowWidget],
+                    )),
+                  ],
                 ),
               ),
-              Padding(padding: EdgeInsets.all(8)),
+              // Padding(padding: EdgeInsets.all(8)),
               EnvoyButton("Continue", // TODO: FIGMA
                   enabled: _tagController.text.isNotEmpty,
                   textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -254,6 +261,28 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
     );
   }
 
+  Widget _tagItem(context, String item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: Text("${item}")),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: EnvoyColors.teal, width: 1),
+            ),
+            height: 24),
+        onTap: () {
+          _tagController.text = item;
+          setState(() {});
+        },
+      ),
+    );
+  }
+
   _tagSubtitle(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
@@ -263,16 +292,20 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Spacer(),
-          Text(
-            S().change_output_from_multiple_tags_modal_subehading,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+            child: Text(
+              S().change_output_from_multiple_tags_modal_subehading,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
           ),
           Spacer(),
           Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               EnvoyButton("Edit Transaction", // TODO: FIGMA
                   enabled: true,
@@ -287,6 +320,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   showTagForm = !showTagForm;
                 });
               }),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             ],
           )
         ],

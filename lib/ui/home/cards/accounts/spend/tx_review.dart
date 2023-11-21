@@ -11,6 +11,7 @@ import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
@@ -445,7 +446,20 @@ class _TransactionReviewScreenState
     String address = ref.watch(spendAddressProvider);
     final spendAmount = ref.watch(receiveAmountProvider);
 
-    final unit = ref.watch(sendScreenUnitProvider);
+    final spendScreenUnit = ref.watch(sendScreenUnitProvider);
+
+    /// if user selected unit from the form screen then use that, otherwise use the default
+    DisplayUnit unit = spendScreenUnit == AmountDisplayUnit.btc
+        ? DisplayUnit.btc
+        : DisplayUnit.sat;
+    if (spendScreenUnit == AmountDisplayUnit.fiat) {
+      unit = Settings().displayUnit;
+    }
+    AmountDisplayUnit formatUnit =
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+
+    print("scnreen unit $unit formatUnit:  ${formatUnit}");
+
     if (account == null || transactionModel.psbt == null) {
       return Container(
           child: Center(
@@ -646,7 +660,7 @@ class _TransactionReviewScreenState
                                         left: unit == DisplayUnit.btc ? 4 : 0,
                                         right: unit == DisplayUnit.btc ? 0 : 8),
                                     child: Text(
-                                      "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true)}",
+                                      "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true, unit: formatUnit)}",
                                       style: contentLeadingStyle,
                                     ),
                                   ),
@@ -778,9 +792,13 @@ class _TransactionReviewScreenState
                                         )),
                                   ),
                                   Container(
+                                    padding: EdgeInsets.only(
+                                        left: unit == DisplayUnit.btc ? 4 : 0,
+                                        right: unit == DisplayUnit.btc ? 0 : 8),
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      getFormattedAmount(psbt.fee),
+                                      getFormattedAmount(psbt.fee,
+                                          unit: formatUnit),
                                       style: contentLeadingStyle,
                                     ),
                                   ),
@@ -790,7 +808,10 @@ class _TransactionReviewScreenState
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "${ExchangeRate().getFormattedAmount(psbt.fee, wallet: account.wallet)}",
+                                    "${ExchangeRate().getFormattedAmount(
+                                      psbt.fee,
+                                      wallet: account.wallet,
+                                    )}",
                                     textAlign: unit == DisplayUnit.btc
                                         ? TextAlign.start
                                         : TextAlign.end,
@@ -864,7 +885,7 @@ class _TransactionReviewScreenState
                                         left: unit == DisplayUnit.btc ? 4 : 0,
                                         right: unit == DisplayUnit.btc ? 0 : 8),
                                     child: Text(
-                                      "${getFormattedAmount(totalSpendAmount, trailingZeroes: true)}",
+                                      "${getFormattedAmount(totalSpendAmount, trailingZeroes: true, unit: formatUnit)}",
                                       style: contentLeadingStyle,
                                     ),
                                   ),
@@ -929,12 +950,15 @@ class _TransactionReviewScreenState
                   ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
+                    readOnly: transactionModel.loading,
                     (account.wallet.hot || transactionModel.isPSBTFinalized)
                         ? S().coincontrol_tx_detail_cta1
                         : S().coincontrol_txDetail_cta1_passport,
-                    onTap: () {
-                      widget.onBroadcast();
-                    },
+                    onTap: transactionModel.loading
+                        ? null
+                        : () {
+                            widget.onBroadcast();
+                          },
                   ),
                 ],
               ),
@@ -1086,6 +1110,7 @@ class TxReviewNoteDialog extends ConsumerStatefulWidget {
 class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
   TextEditingController _textEditingController = TextEditingController();
   bool dismissed = false;
+
   @override
   void initState() {
     // TODO: implement initState
