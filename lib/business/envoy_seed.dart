@@ -393,8 +393,7 @@ class EnvoySeed {
     String? nonSecure = await _getNonSecure();
 
     if (secure != null && nonSecure != null) {
-      EnvoyReport()
-          .log("QA", "Seed stored in both secure and regular storage");
+      EnvoyReport().log("QA", "Seed stored in both secure and regular storage");
       return secure;
 
       // TODO: show a warning to user
