@@ -27,7 +27,6 @@ import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as EnvoyNewColors;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
