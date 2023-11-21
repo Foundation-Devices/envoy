@@ -27,6 +27,11 @@ class FwMicrosdPage extends ConsumerWidget {
     final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
 
     return OnboardingPage(
+      rightFunction: (_) {
+        onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       key: Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
       text: [

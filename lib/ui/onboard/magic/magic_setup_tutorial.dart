@@ -122,7 +122,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                   .bodyMedium
                   ?.copyWith(color: Colors.black)),
           onPressed: () {
-            OnboardingPage.goHome(context);
+            OnboardingPage.popUntilHome(context);
           },
         ),
       ],

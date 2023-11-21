@@ -112,7 +112,7 @@ class _ManualSetupState extends State<ManualSetup> {
                   .bodyMedium
                   ?.copyWith(color: Colors.black)),
           onPressed: () {
-            OnboardingPage.goHome(context);
+            OnboardingPage.popUntilHome(context);
           },
         ),
       ],
@@ -147,7 +147,7 @@ class SeedIntroScreen extends StatelessWidget {
               color: Colors.black,
               icon: Icon(Icons.close),
               onPressed: () {
-                popBackToHome(context);
+                OnboardingPage.popUntilHome(context);
               },
             ),
           ]),

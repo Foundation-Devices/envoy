@@ -18,6 +18,11 @@ class FwPassportPage extends StatelessWidget {
     return OnboardingPage(
       key: Key("fw_passport"),
       clipArt: Image.asset("assets/fw_passport.png"),
+      rightFunction: (_) {
+        onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       text: [
         OnboardingText(
           header: S().envoy_fw_passport_heading,
@@ -33,7 +38,7 @@ class FwPassportPage extends StatelessWidget {
             label: S().envoy_fw_passport_cta,
             onTap: () {
               if (!onboarding) {
-                OnboardingPage.goHome(context);
+                OnboardingPage.popUntilGoRoute(context);
               } else {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {

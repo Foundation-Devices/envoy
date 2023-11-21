@@ -717,7 +717,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                         S().manage_account_remove_cta.toUpperCase(),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
-                          OnboardingPage.goHome(context);
+                          OnboardingPage.popUntilHome(context);
                           await Future.delayed(Duration(milliseconds: 50));
                           AccountManager().deleteAccount(widget.account);
                         },

@@ -6,7 +6,6 @@ import 'dart:math';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
@@ -134,7 +133,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     ?.copyWith(color: Colors.white),
                 type: EnvoyButtonTypes.tertiary,
                 onTap: () {
-                  popBackToHome(context);
+                  OnboardingPage.popUntilHome(context);
                 },
               ),
             )

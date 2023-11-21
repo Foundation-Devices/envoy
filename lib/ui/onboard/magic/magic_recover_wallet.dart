@@ -186,7 +186,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                         .state = HomePageBackgroundState.hidden;
                                     await Future.delayed(
                                         Duration(milliseconds: 200));
-                                    popBackToHome(context);
+                                    OnboardingPage.popUntilHome(context);
                                   },
                                   icon: Icon(Icons.close)),
                             );
@@ -262,7 +262,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 label: S().magic_setup_generate_wallet_modal_ios_cta,
                 onTap: () async {
                   await Future.delayed(Duration(milliseconds: 200));
-                  popBackToHome(context);
+                  OnboardingPage.popUntilHome(context);
                 },
               ));
         },
@@ -683,7 +683,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         onTap: () {
                           EnvoySeed().get().then((seed) async {
                             EnvoySeed().deriveAndAddWallets(seed!);
-                            popBackToHome(context);
+                            OnboardingPage.popUntilHome(context);
                           });
                         });
                   },

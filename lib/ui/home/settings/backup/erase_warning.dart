@@ -408,7 +408,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         //wait for pop animation to finish
         await Future.delayed(Duration(milliseconds: 300));
         // Show home page and navigate to accounts
-        OnboardingPage.goHome(context);
+        OnboardingPage.popUntilHome(context);
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;
         ref.read(homePageTabProvider.notifier).state =
@@ -486,7 +486,7 @@ class AndroidBackupWarning extends StatelessWidget {
                             label:
                                 S().delete_wallet_for_good_instant_android_cta2,
                             onTap: () async {
-                              OnboardingPage.goHome(context);
+                              OnboardingPage.popUntilHome(context);
                               ref
                                   .read(homePageBackgroundProvider.notifier)
                                   .state = HomePageBackgroundState.hidden;
