@@ -297,7 +297,7 @@ class EnvoyStorage {
       return null;
   }
 
-  Future<bool> deleteTxNote(String note, String txId) async {
+  Future<bool> deleteTxNote(String txId) async {
     if (await txNotesStore.record(txId).exists(_db)) {
       await txNotesStore.record(txId).delete(_db);
       return true;
