@@ -63,6 +63,11 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       leftFunction: (context) {
         Navigator.of(context).pop();
       },
+      rightFunction: (_) {
+        widget.onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       key: Key("fw_progress"),
       text: [
         Expanded(

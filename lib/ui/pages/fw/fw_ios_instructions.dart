@@ -26,6 +26,11 @@ class FwIosInstructionsPage extends ConsumerWidget {
     return OnboardingPage(
       key: Key("fw_ios_instructions"),
       clipArt: Image.asset("assets/fw_ios_instructions.png"),
+      rightFunction: (_) {
+        onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       text: [
         OnboardingText(
           header: S().envoy_fw_ios_instructions_heading,

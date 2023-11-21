@@ -20,6 +20,11 @@ class FwAndroidInstructionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("fw_android_instructions"),
+      rightFunction: (_) {
+        onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       text: [
         OnboardingText(
           header: "Allow phone to access the microSD card", // TODO: FIGMA

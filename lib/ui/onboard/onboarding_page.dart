@@ -14,6 +14,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rive/rive.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -37,9 +38,26 @@ class OnboardingPage extends StatelessWidget {
     Navigator.of(context).pop();
   }
 
-  static goHome(context) {
-    // Pop until we get to the home page (GoRouter Shell)
-    popBackToHome(context);
+  static popUntilGoRoute(context) {
+    Navigator.of(context).popUntil((route) {
+      return route.settings is MaterialPage;
+    });
+  }
+
+  static popUntilHome(BuildContext context,
+      {bool useRootNavigator = false}) async {
+    /// get the router and navigator instance from the context
+    /// if the parent widget of context get disposed,we wont be able to access goroouter and navigator.
+    GoRouter router = GoRouter.of(context);
+
+    /// push main route to make sure we are on the home page
+    router.go("/");
+
+    /// wait for the go router to push the route
+    await Future.delayed(Duration(milliseconds: 100));
+
+    /// Pop until we get to the home page (GoRouter Shell)
+    popUntilGoRoute(context);
   }
 
   OnboardingPage({
@@ -54,7 +72,7 @@ class OnboardingPage extends StatelessWidget {
     this.helperTextBelow,
     this.qrCodeUrBinary,
     this.qrCodeUrCryptoRequest,
-    this.rightFunction = goHome,
+    this.rightFunction = popUntilHome,
     this.leftFunction = goBack,
     this.right,
   }) : super(key: key);

@@ -31,7 +31,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        popBackToHome(context);
+        OnboardingPage.popUntilHome(context);
         return false;
       },
       child: OnboardPageBackground(
@@ -82,7 +82,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                         return OnboardingButton(
                             label: S().component_continue,
                             onTap: () async {
-                              popBackToHome(context);
+                              OnboardingPage.popUntilHome(context);
                             });
                       },
                     ),

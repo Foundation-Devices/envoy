@@ -19,6 +19,11 @@ class FwIosSuccessPage extends StatelessWidget {
       leftFunction: (context) {
         Navigator.of(context).pop();
       },
+      rightFunction: (_) {
+        onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       key: Key("fw_ios_success"),
       text: [
         OnboardingText(

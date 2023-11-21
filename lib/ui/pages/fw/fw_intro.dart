@@ -21,6 +21,11 @@ class FwIntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: Key("fw_intro"),
+      rightFunction: (_) {
+        onboarding
+            ? OnboardingPage.popUntilHome(context)
+            : OnboardingPage.popUntilGoRoute(context);
+      },
       clipArt: Image.asset("assets/fw_intro.png"),
       text: [
         OnboardingText(header: S().envoy_fw_intro_heading),
