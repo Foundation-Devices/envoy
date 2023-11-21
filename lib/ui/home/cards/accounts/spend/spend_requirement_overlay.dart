@@ -465,6 +465,10 @@ class SpendRequirementOverlayState
                                                 .validate(
                                                     ProviderScope.containerOf(
                                                         context));
+                                            ref
+                                                .read(spendEditModeProvider
+                                                    .notifier)
+                                                .state = false;
                                             hideSpendRequirementOverlay();
                                             await Future.delayed(
                                                 Duration(milliseconds: 120));

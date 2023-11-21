@@ -256,6 +256,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       } catch (e) {}
       ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
       ref.read(stagingTxNoteProvider.notifier).state = null;
+      ref.read(spendEditModeProvider.notifier).state = false;
 
       /// wait for bdk to update the transaction list and utxos list
       await Future.delayed(Duration(seconds: 2));
