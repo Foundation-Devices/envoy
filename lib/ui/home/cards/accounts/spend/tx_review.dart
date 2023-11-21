@@ -474,6 +474,18 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
+    TextStyle contentLeadingStyle =
+        Theme.of(context).textTheme.headlineSmall!.copyWith(
+              color: Color(0xFF808080),
+              fontWeight: FontWeight.w400,
+              fontSize: 18,
+            );
+    TextStyle contentTrailingStyle =
+        Theme.of(context).textTheme.headlineSmall!.copyWith(
+              color: Color(0xFF808080),
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            );
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -635,14 +647,7 @@ class _TransactionReviewScreenState
                                         right: unit == DisplayUnit.btc ? 0 : 8),
                                     child: Text(
                                       "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true)}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall!
-                                          .copyWith(
-                                            color: EnvoyNewColors
-                                                .EnvoyColors.textPrimary,
-                                            fontSize: 15,
-                                          ),
+                                      style: contentLeadingStyle,
                                     ),
                                   ),
                                 ],
@@ -651,14 +656,7 @@ class _TransactionReviewScreenState
                                   ExchangeRate().getFormattedAmount(
                                       spendAmount.toInt(),
                                       wallet: account.wallet),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .copyWith(
-                                        color: EnvoyNewColors
-                                            .EnvoyColors.textPrimary,
-                                        fontSize: 15,
-                                      )),
+                                  style: contentTrailingStyle),
                             ],
                           )),
                           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
@@ -703,7 +701,7 @@ class _TransactionReviewScreenState
                           ),
                           AnimatedContainer(
                             duration: Duration(milliseconds: 120),
-                            height: _showFullAddress ? 54 : 34,
+                            height: _showFullAddress ? 56 : 44,
                             child: _whiteContainer(
                                 child: TweenAnimationBuilder(
                               duration: Duration(milliseconds: 320),
@@ -715,7 +713,9 @@ class _TransactionReviewScreenState
                                       : _truncatedAddressLength),
                               builder: (context, value, child) {
                                 return Text(
-                                    "${truncateWithEllipsisInCenter(address, value.toInt())}");
+                                  "${truncateWithEllipsisInCenter(address, value.toInt())}",
+                                  style: contentLeadingStyle,
+                                );
                               },
                               // child: Text(
                               //     "${truncateWithEllipsisInCenter(address, _showFullAddress ?  address.length : 12)}"),
@@ -781,14 +781,7 @@ class _TransactionReviewScreenState
                                     alignment: Alignment.centerRight,
                                     child: Text(
                                       getFormattedAmount(psbt.fee),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall!
-                                          .copyWith(
-                                            color: EnvoyNewColors
-                                                .EnvoyColors.textPrimary,
-                                            fontSize: 15,
-                                          ),
+                                      style: contentLeadingStyle,
                                     ),
                                   ),
                                 ],
@@ -801,14 +794,7 @@ class _TransactionReviewScreenState
                                     textAlign: unit == DisplayUnit.btc
                                         ? TextAlign.start
                                         : TextAlign.end,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall!
-                                        .copyWith(
-                                          color: EnvoyNewColors
-                                              .EnvoyColors.textPrimary,
-                                          fontSize: 15,
-                                        ),
+                                    style: contentTrailingStyle,
                                   )
                                 ],
                               ),
@@ -879,14 +865,7 @@ class _TransactionReviewScreenState
                                         right: unit == DisplayUnit.btc ? 0 : 8),
                                     child: Text(
                                       "${getFormattedAmount(totalSpendAmount, trailingZeroes: true)}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall!
-                                          .copyWith(
-                                            color: EnvoyNewColors
-                                                .EnvoyColors.textPrimary,
-                                            fontSize: 15,
-                                          ),
+                                      style: contentLeadingStyle,
                                     ),
                                   ),
                                 ],
@@ -895,14 +874,7 @@ class _TransactionReviewScreenState
                                   ExchangeRate().getFormattedAmount(
                                       totalSpendAmount.toInt(),
                                       wallet: account.wallet),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .copyWith(
-                                        color: EnvoyNewColors
-                                            .EnvoyColors.textPrimary,
-                                        fontSize: 15,
-                                      )),
+                                  style: contentTrailingStyle),
                             ],
                           )),
                         ],
@@ -1012,7 +984,7 @@ class _TransactionReviewScreenState
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         constraints: BoxConstraints(
-          minHeight: 34,
+          minHeight: 44,
         ),
         alignment: Alignment.centerLeft,
         width: double.infinity,
