@@ -929,12 +929,15 @@ class _TransactionReviewScreenState
                   ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
+                    readOnly: transactionModel.loading,
                     (account.wallet.hot || transactionModel.isPSBTFinalized)
                         ? S().coincontrol_tx_detail_cta1
                         : S().coincontrol_txDetail_cta1_passport,
-                    onTap: () {
-                      widget.onBroadcast();
-                    },
+                    onTap: transactionModel.loading
+                        ? null
+                        : () {
+                            widget.onBroadcast();
+                          },
                   ),
                 ],
               ),
@@ -1086,6 +1089,7 @@ class TxReviewNoteDialog extends ConsumerStatefulWidget {
 class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
   TextEditingController _textEditingController = TextEditingController();
   bool dismissed = false;
+
   @override
   void initState() {
     // TODO: implement initState
