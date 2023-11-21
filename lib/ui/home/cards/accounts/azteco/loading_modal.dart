@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
+import 'package:wallet/wallet.dart';
 
 class AztecoLoadingModal extends StatefulWidget {
   final AztecoVoucher voucher;
@@ -36,7 +38,13 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
     AztecoVoucherRedeemResult result = await widget.voucher.redeem(address);
     switch (result) {
       case AztecoVoucherRedeemResult.Success:
-        widget.controller.jumpToPage(3);
+        {
+          EnvoyStorage().addPendingTx("azteco", widget.account.id ?? "",
+              DateTime.now(), TransactionType.azteco, 0, 0, "");
+          EnvoyStorage().addTxNote("Azteco voucher", "azteco"); // TODO: FIGMA
+          widget.controller.jumpToPage(3);
+        }
+
       case AztecoVoucherRedeemResult.Timeout:
         widget.controller.jumpToPage(4);
       case AztecoVoucherRedeemResult.VoucherInvalid:

@@ -97,11 +97,12 @@ aztecoSync(Account account) async {
 
   for (var pendingAztecoTx in pendingAztecoTxs) {
     account.wallet.transactions
-        .where((tx) => tx.outputs!.contains(pendingAztecoTx.memo))
+        .where((tx) => tx.outputs!.contains(pendingAztecoTx.txId))
         .forEach((actualAztecoTx) {
       EnvoyStorage()
           .addTxNote("Azteco voucher", actualAztecoTx.txId); // TODO: FIGMA
-      EnvoyStorage().deletePendingTx(pendingAztecoTx.memo);
+      EnvoyStorage().deleteTxNote(pendingAztecoTx.txId);
+      EnvoyStorage().deletePendingTx(pendingAztecoTx.txId);
     });
   }
 }
