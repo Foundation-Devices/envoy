@@ -242,6 +242,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().bottomNav_activity;
       case ROUTE_LEARN:
         return S().bottomNav_learn;
+      case ROUTE_LEARN_BLOG:
+        return S().bottomNav_learn;
       default:
         return S().menu_heading;
     }
