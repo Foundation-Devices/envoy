@@ -99,6 +99,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
+                  BuildContext _rootContext = context;
                   List<Tuple<CoinTag, Coin>>? spendingTagSet =
                       ref.read(spendInputTagsProvider);
                   List<CoinTag> spendingTags = spendingTagSet
@@ -166,7 +167,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                               if (account.wallet.hot) {
                                 broadcastTx(context);
                               } else {
-                                await Navigator.of(context,
+                                await Navigator.of(_rootContext,
                                         rootNavigator: false)
                                     .push(MaterialPageRoute(
                                         builder: (context) => Padding(
@@ -192,7 +193,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     if (account.wallet.hot) {
                       broadcastTx(context);
                     } else {
-                      await Navigator.of(context, rootNavigator: false)
+                      await Navigator.of(_rootContext, rootNavigator: false)
                           .push(MaterialPageRoute(
                               builder: (context) => Padding(
                                     padding: const EdgeInsets.all(8.0),
