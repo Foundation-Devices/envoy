@@ -99,9 +99,20 @@ String getFormattedAmount(int amountSats,
     bool testnet = false,
     trailingZeroes = false,
     AmountDisplayUnit? unit}) {
-  String text = (unit ?? Settings().displayUnit) == AmountDisplayUnit.btc
-      ? convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes)
-      : satsFormatter.format(amountSats);
+  String text = "";
+  if (unit == null) {
+    if (Settings().displayUnit == DisplayUnit.btc) {
+      text = convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes);
+    } else {
+      text = satsFormatter.format(amountSats);
+    }
+  } else {
+    if (unit == AmountDisplayUnit.btc) {
+      text = convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes);
+    } else if (unit == AmountDisplayUnit.sat) {
+      text = satsFormatter.format(amountSats);
+    }
+  }
 
   return text;
 }
