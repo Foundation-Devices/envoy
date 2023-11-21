@@ -460,45 +460,54 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               fontWeight: FontWeight.w600,
             );
 
-    return Consumer(
-      builder: (context, ref, child) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 12, top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${widget.coinTag.name}",
-                          style: _textStyleWallet,
-                        ),
-                        CoinSubTitleText(tag),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Consumer(
-              builder: (context, ref, child) {
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                  height: 44,
-                  child: CoinTagBalanceWidget(coinTag: tag),
-                );
-              },
-            ),
-          ],
-        );
+    return GestureDetector(
+      onTap: () {
+        if (tag.coins.length == 1) {
+          setState(() {
+            _selectedCoin = tag.coins.first;
+          });
+        }
       },
+      child: Consumer(
+        builder: (context, ref, child) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 12, top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${widget.coinTag.name}",
+                            style: _textStyleWallet,
+                          ),
+                          CoinSubTitleText(tag),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Consumer(
+                builder: (context, ref, child) {
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                    height: 44,
+                    child: CoinTagBalanceWidget(coinTag: tag),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 

@@ -157,7 +157,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
   Widget build(BuildContext context) {
     return Container(
         width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-        height: (MediaQuery.of(context).size.height * 0.5).clamp(380, 540),
+        height: (MediaQuery.of(context).size.height * 0.46).clamp(270, 540),
         padding: EdgeInsets.all(EnvoySpacing.medium1),
         child: Stack(
           fit: StackFit.passthrough,
@@ -192,13 +192,17 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 //TODO: updated copy & localization
-                Text(
-                    "Tags are a useful way to categorize coins within an account.", // TODO: FIGMA
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
-                    textAlign: TextAlign.center),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium1),
+                  child: Text(
+                      "Tags are a useful way to categorize coins within an account.", // TODO: FIGMA
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
+                      textAlign: TextAlign.center),
+                ),
                 Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 GestureDetector(
                   onTap: () {
