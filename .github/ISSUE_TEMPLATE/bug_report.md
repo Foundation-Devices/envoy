@@ -16,19 +16,19 @@ assignees: ''
 
 The app version can be found under the Settings>About menu.
 
-- Envoy Version: [e.g., 1.3.0]
+- Envoy Version: [e.g., 1.4.0]
 
 ### **Device Details:**
 
 **iOS:**
 
-- Device: [e.g., iPhone X, iPhone 11, iPad Pro]
-- iOS Version: [e.g., iOS 14.5]
+- Device: [e.g., iPhone X, iPhone 14, iPad Pro]
+- iOS Version: [e.g., iOS 17.1]
 
 **Android:**
 
-- Device: [e.g., Google Pixel 4, Samsung Galaxy S21]
-- Android Version: [e.g., Android 11]
+- Device: [e.g., Google Pixel 8, Samsung Galaxy S21]
+- Android Version: [e.g., Android 13]
 
 ### **Issue Description:**
 
@@ -48,6 +48,12 @@ The app version can be found under the Settings>About menu.
 ### **Screenshots/Screen Recordings:**
 
 [If applicable, add screenshots or screen recordings to help explain the issue.]
+
+### **Logs:**
+
+[If applicable, add logs to help us diagnose the issue.]
+
+To share your logs, head to Settings > Advanced > View Envoy Logs. From here you can save the logs as a file and add to the issue.
 
 ### **Additional Information:**
 
