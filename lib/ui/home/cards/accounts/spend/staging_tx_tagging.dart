@@ -222,7 +222,6 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   ],
                 ),
               ),
-              // Padding(padding: EdgeInsets.all(8)),
               EnvoyButton("Continue", // TODO: FIGMA
                   enabled: _tagController.text.isNotEmpty,
                   textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(

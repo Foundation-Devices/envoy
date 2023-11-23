@@ -78,7 +78,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
 
     return Container(
-      width: 160,
+      width: 180,
       height: 24,
       child: TabBar(
           controller: _tabController,
@@ -154,17 +154,17 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           tabs: [
             Tab(
               child: Text(
-                "Standard",
+                "Standard", // TODO: Figma
               ),
             ),
             Tab(
               child: Text(
-                "Faster",
+                "Faster", // TODO: Figma
               ),
             ),
             Tab(
               child: Text(
-                "Custom",
+                "Custom", // TODO: Figma
               ),
             ),
           ]),
