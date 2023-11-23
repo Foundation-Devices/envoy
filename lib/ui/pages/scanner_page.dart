@@ -293,6 +293,7 @@ class _ScannerPageState extends State<ScannerPage> {
         _validateScvData(_urDecoder.decoded);
       } else if (widget._acceptableTypes.contains(ScannerType.tx)) {
         widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
+        await Future.delayed(Duration(milliseconds: 1500));
         Navigator.of(context).pop();
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded) &&
