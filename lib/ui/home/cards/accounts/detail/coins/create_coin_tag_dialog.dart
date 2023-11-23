@@ -98,15 +98,15 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
         List<String> suggestions =
             tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
         suggestions = suggestions.toSet().toList();
-        List<String> firstRowContent = List.generate(3, (index) => "");
-        List<String> secondRowContent = List.generate(3, (index) => "");
+        List<String> firstRowContent = [];
+        List<String> secondRowContent = [];
 
-        suggestions.forEach((element) {
-          int index = suggestions.indexOf(element);
+        /// allocate the first 3 suggestions to the first row and the rest to the second row
+        suggestions.take(6).toList().asMap().forEach((index, element) {
           if (index < 3) {
-            firstRowContent[index] = element;
+            firstRowContent.add(element);
           } else {
-            secondRowContent[index - 3] = element;
+            secondRowContent.add(element);
           }
         });
         firstRowContent =
@@ -165,24 +165,31 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 ? Text(S().create_second_tag_modal_2_2_mostUsed)
                 : Text(S().create_first_tag_modal_2_2_suggest),
             Container(
-              margin: EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+              margin: EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.xs),
               constraints: BoxConstraints(maxHeight: 64),
               child: Column(
                 children: [
                   Flexible(
-                      child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...firsRowWidget],
+                      child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...firsRowWidget],
+                    ),
                   )),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Flexible(
-                      child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...secondRowWidget],
+                      child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...secondRowWidget],
+                    ),
                   )),
                 ],
               ),
