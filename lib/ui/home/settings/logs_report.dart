@@ -71,10 +71,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                   SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                     Map log = logs![index];
-                    String exception = log["exception"] ?? ""; // TODO: FIGMA
-                    String stackTrace = log["stackTrace"] ?? ""; // TODO: FIGMA
-                    String lib = log["lib"] ?? ""; // TODO: FIGMA
-                    String time = log["time"] ?? ""; // TODO: FIGMA
+                    String category = (log["category"] ?? "None") as String;
+                    String message = (log["message"] ?? "None") as String;
+                    String exception = log["exception"] ?? "None";
+                    String stackTrace = log["stackTrace"] ?? "None";
+                    String lib = log["lib"] ?? "None";
+                    String time = log["time"] ?? "";
                     return Column(
                       children: [
                         Column(
@@ -90,6 +92,32 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                     )),
                                 TextSpan(
                                     text: "${time}\n",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "Category : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "${category}\n",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "Message : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "${message}\n",
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,

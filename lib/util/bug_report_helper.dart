@@ -68,8 +68,8 @@ class EnvoyReport {
 
   log(String category, String message) {
     Map<String, String?> report = Map();
-    report["lib"] = category;
-    report["exception"] = message;
+    report["category"] = category;
+    report["message"] = message;
     report["time"] = DateTime.now().toIso8601String();
 
     if (_db != null) {
@@ -126,12 +126,16 @@ class EnvoyReport {
     allLogs.forEach((element) {
       String log = "";
       try {
-        String exception = (element["exception"] ?? "") as String;
-        String stackTrace = (element["stackTrace"] ?? "") as String;
-        String lib = (element["lib"] ?? "") as String;
+        String category = (element["category"] ?? "None") as String;
+        String message = (element["message"] ?? "None") as String;
+        String exception = (element["exception"] ?? "None") as String;
+        String stackTrace = (element["stackTrace"] ?? "None") as String;
+        String lib = (element["lib"] ?? "None") as String;
         String time = (element["time"] ?? "") as String;
 
         log = "\nTime       : ${time} \n"
+            "Category    : ${category} \n"
+            "Message     : ${message} \n"
             "Library     : ${lib} \n"
             "Exception   : ${exception} \n"
             ""
