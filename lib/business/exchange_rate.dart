@@ -124,48 +124,51 @@ class ExchangeRate extends ChangeNotifier {
     _getRate();
   }
 
-  _storeRate(double rate, String currencyCode) {
-    if (currencyCode == "USD") {
-      _usdRate = rate;
-    }
+  _storeRate(double selectedRate, String currencyCode, double usdRate) {
+    _usdRate = usdRate;
 
     if (Settings().selectedFiat == currencyCode) {
-      _selectedCurrencyRate = rate;
+      _selectedCurrencyRate = selectedRate;
     }
 
     notifyListeners();
 
     Map exchangeRateMap = {
       CURRENCY_KEY: currencyCode,
-      RATE_KEY: rate,
+      RATE_KEY: selectedRate,
       USD_RATE_KEY: _usdRate
     };
 
     EnvoyStorage().setExchangeRate(exchangeRateMap);
   }
 
-  _getRate() {
+  _getRate() async {
     String currencyCode = Settings().selectedFiat ?? "USD";
-    _getRateForCode("USD");
+    double usdRate = await _getRateForCode("USD");
+    double selectedRate = usdRate;
 
     if (Settings().selectedFiat != "USD") {
-      _getRateForCode(currencyCode);
+      selectedRate = await _getRateForCode(currencyCode);
     }
+    _storeRate(selectedRate, currencyCode, usdRate);
   }
 
-  void _getRateForCode(String currencyCode) {
-    _http.get(_serverAddress + '/price/' + currencyCode).then((response) {
+  Future<double> _getRateForCode(String currencyCode) async {
+    try {
+      final response =
+          await _http.get(_serverAddress + '/price/' + currencyCode);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         var rate = json['reply']['BTC' + currencyCode]["last"];
-        _storeRate(rate, currencyCode);
         ConnectivityManager().nguSuccess();
+        return rate.toDouble();
       } else {
         throw Exception("Couldn't get exchange rate");
       }
-    }).onError((e, s) {
+    } catch (e) {
       ConnectivityManager().nguFailure();
-    });
+      rethrow;
+    }
   }
 
   double getUsdValue(int amountSats) {
