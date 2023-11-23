@@ -230,13 +230,41 @@ class Notifications {
       lastUpdated = DateTime.parse(jsonMap["last_updated"]);
 
       for (var notification in jsonMap["notifications"]) {
-        notifications.add(EnvoyNotification.fromJson(notification));
+        EnvoyNotification notificationToRestore =
+            EnvoyNotification.fromJson(notification);
+
+        // Migration: tx notifications previously didn't have account data
+        notificationToRestore = addMissingAccountId(notificationToRestore);
+
+        notifications.add(notificationToRestore);
       }
       sync();
     }
 
     _checkForNotificationsToAdd();
     _startPeriodicSync();
+  }
+
+  EnvoyNotification addMissingAccountId(
+      EnvoyNotification notificationToRestore) {
+    if (notificationToRestore.accountId == null &&
+        notificationToRestore.type == EnvoyNotificationType.transaction) {
+      for (var account in AccountManager().accounts) {
+        for (var tx in account.wallet.transactions) {
+          if (tx.txId == notificationToRestore.id) {
+            notificationToRestore = EnvoyNotification(
+                "Transaction",
+                tx.isConfirmed ? tx.date : DateTime.now(),
+                EnvoyNotificationType.transaction,
+                tx.txId,
+                tx.txId,
+                amount: tx.amount,
+                accountId: account.id);
+          }
+        }
+      }
+    }
+    return notificationToRestore;
   }
 
   _startPeriodicSync() {
