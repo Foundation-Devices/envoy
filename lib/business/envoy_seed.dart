@@ -108,9 +108,6 @@ class EnvoySeed {
   Future<void> store(String seed) async {
     if (Settings().syncToCloud) {
       await _saveNonSecure(seed, LOCAL_SECRET_FILE_NAME);
-      if (!Platform.isLinux) {
-        _platform.invokeMethod('data_changed');
-      }
     }
 
     await LocalStorage().saveSecure(SEED_KEY, seed);
@@ -216,10 +213,10 @@ class EnvoySeed {
 
     try {
       await removeSeedFromNonSecure();
-      EnvoyReport().log("QA", "Removed seed from non-secure storage!");
+      EnvoyReport().log("QA", "Removed seed from regular storage!");
     } on Exception catch (e) {
-      EnvoyReport().log("QA",
-          "Couldn't remove seed from non-secure storage: ${e.toString()}");
+      EnvoyReport().log(
+          "QA", "Couldn't remove seed from regular storage: ${e.toString()}");
     }
 
     await removeSeedFromSecure();
@@ -431,7 +428,11 @@ class EnvoySeed {
   }
 
   Future<File> _saveNonSecure(String data, String name) async {
-    return LocalStorage().saveFile(name, data);
+    final file = await LocalStorage().saveFile(name, data);
+    if (!Platform.isLinux) {
+      _platform.invokeMethod('data_changed');
+    }
+    return file;
   }
 
   Future<String?> _restoreNonSecure(String name) async {
@@ -455,6 +456,9 @@ class EnvoySeed {
 
   removeSeedFromNonSecure() async {
     await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+    if (!Platform.isLinux) {
+      _platform.invokeMethod('data_changed');
+    }
   }
 
   removeSeedFromSecure() {
