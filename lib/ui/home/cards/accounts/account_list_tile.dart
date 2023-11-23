@@ -131,8 +131,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                   child: CustomPaint(
                     willChange: false,
                     isComplex: true,
-                    painter: LinesPainter(
-                        color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
+                    painter:
+                        LinesPainter(color: EnvoyColors.gray1000, opacity: 0.4),
                   ),
                 ),
                 Positioned.fill(

@@ -540,33 +540,37 @@ class _TransactionReviewScreenState
           SliverToBoxAdapter(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(22)),
+                borderRadius: BorderRadius.all(Radius.circular(24)),
+                color: account.color,
                 border: Border.all(
-                    color: EnvoyColors.textPrimary,
-                    width: 2,
-                    style: BorderStyle.solid),
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      account.color,
-                      EnvoyColors.textPrimary,
-                    ]),
+                    color: Colors.black, width: 2, style: BorderStyle.solid),
               ),
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(22)),
+                    gradient: LinearGradient(
+                      begin: Alignment(0.00, 1.00),
+                      end: Alignment(0, -1),
+                      stops: [0, .65, 1],
+                      colors: [
+                        Colors.black.withOpacity(0.65),
+                        Colors.black.withOpacity(0.13),
+                        Colors.black.withOpacity(0)
+                      ],
+                    ),
                     border: Border.all(
-                        color: account.color,
                         width: 2,
+                        color: account.color,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(22)),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                   child: CustomPaint(
                     isComplex: true,
                     willChange: false,
                     painter: LinesPainter(
-                        color: EnvoyColors.textPrimary, opacity: 0.6),
+                        lineDistance: 2.5,
+                        color: EnvoyColors.gray1000,
+                        opacity: 0.4),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: EnvoySpacing.small,

@@ -33,6 +33,7 @@ class EnvoyColors {
 
   static const Color transparent = Color(0x00FFFFFF);
 
+  static const Color gray1000 = Color(0xFF231F20);
   static const Color grey = Color(0xFF686868);
   static const Color grey15 = Color(0x26C0C0C0);
   static const Color grey22 = Color(0x38C0C0C0);
