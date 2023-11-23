@@ -151,46 +151,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   if (!userChosenTag &&
                       tagInputs != null &&
                       tagInputs.length >= 2) {
-                    await showEnvoyDialog(
-                        useRootNavigator: true,
-                        context: context,
-                        builder: Builder(
-                          builder: (context) => ChooseTagForStagingTx(
-                            accountId: account.id!,
-                            onEditTransaction: () {
-                              Navigator.pop(context);
-                              editTransaction(context);
-                            },
-                            hasMultipleTagsInput: true,
-                            onTagUpdate: () async {
-                              Navigator.pop(context);
-                              if (account.wallet.hot) {
-                                broadcastTx(context);
-                              } else {
-                                await Navigator.of(_rootContext,
-                                        rootNavigator: false)
-                                    .push(MaterialPageRoute(
-                                        builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: PsbtCard(
-                                                  transactionModel.psbt!,
-                                                  account),
-                                            )));
-                                await Future.delayed(
-                                    Duration(milliseconds: 200));
-                                if (ref
-                                    .read(spendTransactionProvider)
-                                    .isPSBTFinalized) {
-                                  broadcastTx(context);
-                                }
-                              }
-                            },
-                          ),
-                        ),
-                        alignment: Alignment(0.0, -.6));
+                    await showTagDialog(
+                        context, account, _rootContext, transactionModel);
                   } else {
-                    if (account.wallet.hot) {
+                    if (account.wallet.hot ||
+                        ref.read(spendTransactionProvider).isPSBTFinalized) {
                       broadcastTx(context);
                     } else {
                       await Navigator.of(_rootContext, rootNavigator: false)
@@ -201,9 +166,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
                                         transactionModel.psbt!, account),
                                   )));
                       await Future.delayed(Duration(milliseconds: 200));
-                      if (ref.read(spendTransactionProvider).isPSBTFinalized) {
-                        broadcastTx(context);
-                      }
                     }
                   }
                 },
@@ -211,6 +173,39 @@ class _TxReviewState extends ConsumerState<TxReview> {
             )
           : _buildBroadcastProgress(),
     );
+  }
+
+  Future<void> showTagDialog(BuildContext context, Account account,
+      BuildContext _rootContext, TransactionModel transactionModel) async {
+    await showEnvoyDialog(
+        useRootNavigator: true,
+        context: context,
+        builder: Builder(
+          builder: (context) => ChooseTagForStagingTx(
+            accountId: account.id!,
+            onEditTransaction: () {
+              Navigator.pop(context);
+              editTransaction(context);
+            },
+            hasMultipleTagsInput: true,
+            onTagUpdate: () async {
+              Navigator.pop(context);
+              if (account.wallet.hot ||
+                  ref.read(spendTransactionProvider).isPSBTFinalized) {
+                broadcastTx(context);
+              } else {
+                await Navigator.of(_rootContext, rootNavigator: false)
+                    .push(MaterialPageRoute(
+                        builder: (context) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: PsbtCard(transactionModel.psbt!, account),
+                            )));
+                await Future.delayed(Duration(milliseconds: 200));
+              }
+            },
+          ),
+        ),
+        alignment: Alignment(0.0, -.6));
   }
 
   Rive.StateMachineController? _stateMachineController;
