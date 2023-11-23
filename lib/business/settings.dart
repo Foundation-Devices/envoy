@@ -209,9 +209,12 @@ class Settings extends ChangeNotifier {
     return "USD";
   }
 
-  static restore() {
+  static restore({bool fromBackup = false}) {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
+      if (fromBackup) {
+        json["usingTor"] = Settings().usingTor;
+      }
       Settings.fromJson(json);
     }
     Settings.init();
