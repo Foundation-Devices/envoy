@@ -99,14 +99,14 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
             tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
         suggestions = suggestions.toSet().toList();
         List<String> firstRowContent = List.generate(3, (index) => "");
-        List<String> secondRowContent = List.generate(3, (index) => "");
+        List<String> secondRowContent = [];
 
-        suggestions.forEach((element) {
-          int index = suggestions.indexOf(element);
+        /// allocate the first 3 suggestions to the first row and the rest to the second row
+        suggestions.take(6).toList().asMap().forEach((index, element) {
           if (index < 3) {
             firstRowContent[index] = element;
           } else {
-            secondRowContent[index - 3] = element;
+            secondRowContent.add(element);
           }
         });
         firstRowContent =
