@@ -530,10 +530,12 @@ Future<Psbt> getPsbt(
       _returnPsbt = await account.wallet
           .createPsbt(initialAddress, e.available - fee, feeRate);
     } on InsufficientFunds catch (e) {
-      print("Something is seriously wrong! Available: " +
+      print("Insufficient funds! Available: " +
           e.available.toString() +
           " Needed: " +
           e.needed.toString());
+
+      throw e;
     }
   }
 
