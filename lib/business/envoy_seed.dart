@@ -361,7 +361,9 @@ class EnvoySeed {
   _restoreSingletons() {
     LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
 
-    Settings.restore();
+    Settings.restore(fromBackup: true);
+    Settings().store();
+
     Devices().restore();
     AccountManager().restore();
     ExchangeRate().restoreRate();
