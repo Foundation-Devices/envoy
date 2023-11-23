@@ -74,8 +74,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                     Positioned.fill(
                       child: CustomPaint(
                         painter: LinesPainter(
-                            color: EnvoyColors.tilesLineDarkColor,
-                            opacity: 1.0),
+                            color: EnvoyColors.gray1000, opacity: 0.4),
                       ),
                     ),
                     Column(

@@ -64,16 +64,16 @@ class LinesPainter extends CustomPainter {
   final Color color;
   final double angle;
   final double opacity;
+  final double lineDistance;
 
   LinesPainter(
       {this.angle = 160,
+      this.lineDistance = 2.5,
       this.color = EnvoyColors.whitePrint,
       this.opacity = 0.05});
 
   @override
   void paint(Canvas canvas, Size size) {
-    double lineDistance = 3.0;
-
     double degToRad(double deg) => deg * (pi / 180.0);
     double shieldCrestOffset = size.width * tan(degToRad(angle));
 
@@ -114,8 +114,7 @@ class StripesBackground extends StatelessWidget {
             isComplex: true,
             willChange: false,
             child: child,
-            painter: LinesPainter(
-                color: EnvoyColors.tilesLineDarkColor, opacity: 1.0),
+            painter: LinesPainter(color: EnvoyColors.gray1000, opacity: 0.4),
           ),
         );
       },
