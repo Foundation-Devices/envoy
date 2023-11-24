@@ -86,12 +86,16 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             switch (index) {
               case 0:
                 ref.read(spendFeeRateProvider.notifier).state = standardFee;
+                ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
+                    standardFee;
                 ref
                     .read(spendTransactionProvider.notifier)
                     .validate(ProviderScope.containerOf(context));
                 break;
               case 1:
                 ref.read(spendFeeRateProvider.notifier).state = fasterFee;
+                ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
+                    fasterFee;
                 ref
                     .read(spendTransactionProvider.notifier)
                     .validate(ProviderScope.containerOf(context));
