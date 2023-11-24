@@ -1139,6 +1139,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
       height: 360,
       padding: EdgeInsets.all(EnvoySpacing.small),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Container(
