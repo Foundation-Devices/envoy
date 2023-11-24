@@ -124,6 +124,13 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   /// if the change output is null or untagged we need to show the tag selection dialog
                   final userChosenTag = coinTag?.untagged == false;
 
+                  final hasManyTagsAsInput = (tagInputs ?? [])
+                          .map((e) => e.item1)
+                          .map((e) => e.id)
+                          .toSet()
+                          .length >
+                      1;
+
                   final userNote = ref.read(stagingTxNoteProvider);
                   final dismissedNoteDialog = await EnvoyStorage()
                       .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
@@ -150,7 +157,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   ///then show the tag selection dialog
                   if (!userChosenTag &&
                       tagInputs != null &&
-                      tagInputs.length >= 2) {
+                      hasManyTagsAsInput) {
                     await showTagDialog(
                         context, account, _rootContext, transactionModel);
                   } else {
@@ -451,8 +458,6 @@ class _TransactionReviewScreenState
     }
     AmountDisplayUnit formatUnit =
         unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
-
-    print("scnreen unit $unit formatUnit:  ${formatUnit}");
 
     if (account == null || transactionModel.psbt == null) {
       return Container(
