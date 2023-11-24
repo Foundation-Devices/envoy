@@ -156,10 +156,10 @@ class S {
 
   // skipped getter for the 'Click Here For More' key
 
-  /// `1 of 2 Coins Selected  |  3 Locked`
+  /// `1 Locked`
   String get CoinInfo {
     return Intl.message(
-      '1 of 2 Coins Selected  |  3 Locked',
+      '1 Locked',
       name: 'CoinInfo',
       desc: '',
       args: [],
@@ -564,10 +564,10 @@ class S {
     );
   }
 
-  /// `Exchange`
+  /// `Conferences`
   String get TagName {
     return Intl.message(
-      'Exchange',
+      'Conferences',
       name: 'TagName',
       desc: '',
       args: [],
@@ -1884,6 +1884,16 @@ class S {
     );
   }
 
+  /// `Confirm the transaction details are correct before signing with Passport.`
+  String get coincontrol_tx_detail_passport__subheading {
+    return Intl.message(
+      'Confirm the transaction details are correct before signing with Passport.',
+      name: 'coincontrol_tx_detail_passport__subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Review transaction`
   String get coincontrol_tx_detail_passport_cta {
     return Intl.message(
@@ -1919,6 +1929,36 @@ class S {
     return Intl.message(
       'Are you sure?',
       name: 'coincontrol_tx_detail_passport_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Transaction`
+  String get coincontrol_tx_detail_passport_send_cta1 {
+    return Intl.message(
+      'Send Transaction',
+      name: 'coincontrol_tx_detail_passport_send_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be sent`
+  String get coincontrol_tx_detail_passport_send_heading {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'coincontrol_tx_detail_passport_send_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details are correct before sending.`
+  String get coincontrol_tx_detail_passport_send_subheading {
+    return Intl.message(
+      'Confirm the transaction details are correct before sending.',
+      name: 'coincontrol_tx_detail_passport_send_subheading',
       desc: '',
       args: [],
     );
@@ -3246,10 +3286,10 @@ class S {
     );
   }
 
-  /// `How Would you like to Set Up your Passport?`
+  /// `How would you like to set up your Passport?`
   String get envoy_pp_setup_intro_heading {
     return Intl.message(
-      'How Would you like to Set Up your Passport?',
+      'How would you like to set up your Passport?',
       name: 'envoy_pp_setup_intro_heading',
       desc: '',
       args: [],
@@ -7622,10 +7662,10 @@ class S {
     );
   }
 
-  /// `Receive to Taproot`
+  /// `Taproot`
   String get settings_advanced_taproot {
     return Intl.message(
-      'Receive to Taproot',
+      'Taproot',
       name: 'settings_advanced_taproot',
       desc: '',
       args: [],

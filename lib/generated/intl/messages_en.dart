@@ -33,8 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Balance": MessageLookupByLibrary.simpleMessage("-TBD"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Button": MessageLookupByLibrary.simpleMessage("Done"),
-        "CoinInfo": MessageLookupByLibrary.simpleMessage(
-            "1 of 2 Coins Selected  |  3 Locked"),
+        "CoinInfo": MessageLookupByLibrary.simpleMessage("1 Locked"),
         "CoinText": MessageLookupByLibrary.simpleMessage("List"),
         "Coins": MessageLookupByLibrary.simpleMessage("Coins"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conference"),
@@ -72,7 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Learn"),
-        "TagName": MessageLookupByLibrary.simpleMessage("Exchange"),
+        "TagName": MessageLookupByLibrary.simpleMessage("Conferences"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
         "Timestamp":
@@ -335,6 +334,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Standard"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
+        "coincontrol_tx_detail_passport__subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Confirm the transaction details are correct before signing with Passport."),
         "coincontrol_tx_detail_passport_cta":
             MessageLookupByLibrary.simpleMessage("Review transaction"),
         "coincontrol_tx_detail_passport_cta1":
@@ -343,6 +345,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cancel transaction"),
         "coincontrol_tx_detail_passport_heading":
             MessageLookupByLibrary.simpleMessage("Are you sure?"),
+        "coincontrol_tx_detail_passport_send_cta1":
+            MessageLookupByLibrary.simpleMessage("Send Transaction"),
+        "coincontrol_tx_detail_passport_send_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction is ready \nto be sent"),
+        "coincontrol_tx_detail_passport_send_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Confirm the transaction details are correct before sending."),
         "coincontrol_tx_detail_passport_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "By canceling you will lose all transaction progress."),
@@ -624,7 +634,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_pp_setup_intro_cta3":
             MessageLookupByLibrary.simpleMessage("Restore Backup"),
         "envoy_pp_setup_intro_heading": MessageLookupByLibrary.simpleMessage(
-            "How Would you like to Set Up your Passport?"),
+            "How would you like to set up your Passport?"),
         "envoy_pp_setup_intro_subheading": MessageLookupByLibrary.simpleMessage(
             "As a new owner of a Passport you can create a new seed, restore a wallet using seed words, or restore a backup from an existing Passport."),
         "envoy_scv_intro_cta": MessageLookupByLibrary.simpleMessage("Next"),
@@ -1557,7 +1567,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
         "settings_advanced_taproot":
-            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
+            MessageLookupByLibrary.simpleMessage("Taproot"),
         "settings_advanced_taproot_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Activate"),
         "settings_advanced_taproot_modal_cta2":
