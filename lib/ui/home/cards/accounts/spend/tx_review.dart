@@ -941,11 +941,12 @@ class _TransactionReviewScreenState
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  EnvoyButton(
-                    S().coincontrol_tx_detail_cta2,
-                    type: EnvoyButtonTypes.secondary,
-                    onTap: () => editTransaction(context),
-                  ),
+                  if (!transactionModel.isPSBTFinalized)
+                    EnvoyButton(
+                      S().coincontrol_tx_detail_cta2,
+                      type: EnvoyButtonTypes.secondary,
+                      onTap: () => editTransaction(context),
+                    ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
                     readOnly: transactionModel.loading,
