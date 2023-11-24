@@ -166,7 +166,7 @@ class Backup {
   static Exception _getRustException(String rustError) {
     if (rustError.contains('unreachable') || rustError.contains('dns error')) {
       return ServerUnreachable();
-    } else if (rustError.contains('EOF')) {
+    } else if (rustError.contains('EOF') || rustError.contains('WrongMagic')) {
       return BackupNotFound();
     } else {
       return Exception(rustError);
