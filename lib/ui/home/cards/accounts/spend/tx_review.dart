@@ -435,11 +435,10 @@ class _TransactionReviewScreenState
 
   @override
   Widget build(BuildContext context) {
-    int amount = ref.watch(spendAmountProvider);
     Account? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
-    final spendAmount = ref.watch(receiveAmountProvider);
+    final amount = ref.watch(receiveAmountProvider);
 
     final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
@@ -659,7 +658,7 @@ class _TransactionReviewScreenState
                                         left: unit == DisplayUnit.btc ? 4 : 0,
                                         right: unit == DisplayUnit.btc ? 0 : 8),
                                     child: Text(
-                                      "${getFormattedAmount(spendAmount.toInt(), trailingZeroes: true, unit: formatUnit)}",
+                                      "${getFormattedAmount(amount.toInt(), trailingZeroes: true, unit: formatUnit)}",
                                       style: contentLeadingStyle,
                                     ),
                                   ),
@@ -667,7 +666,7 @@ class _TransactionReviewScreenState
                               ),
                               Text(
                                   ExchangeRate().getFormattedAmount(
-                                      spendAmount.toInt(),
+                                      amount.toInt(),
                                       wallet: account.wallet),
                                   style: contentTrailingStyle),
                             ],
