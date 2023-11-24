@@ -249,9 +249,9 @@ class EnvoySeed {
       }
     } else {
       try {
-        var data = Backup.restoreOffline(seed, filePath);
+        Map<String, String>? data = Backup.restoreOffline(seed, filePath);
         return _processRecoveryData(seed, data);
-      } on Exception {
+      } catch (e) {
         return false;
       }
     }
