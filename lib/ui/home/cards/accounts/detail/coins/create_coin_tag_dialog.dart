@@ -69,7 +69,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   ),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Text(
-                    "Create a tag", //TODO: FIGMA
+                    S().create_first_tag_modal_2_2_heading,
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
