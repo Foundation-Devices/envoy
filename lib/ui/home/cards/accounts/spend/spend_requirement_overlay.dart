@@ -9,7 +9,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
@@ -23,6 +22,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,16 +47,23 @@ Animation<Alignment>? _appearAnimation;
 
 Future showSpendRequirementOverlay(
     BuildContext context, Account account) async {
-  /// already visible
+  /// already visible, and exiting overlay. so we reverse the animation
   if (_spendOverlayAnimationController?.isAnimating == true) {
-    _spendOverlayAnimationController?.stop(canceled: true);
-    _runAnimation(
-        _currentOverlyAlignment ?? _endAlignment, Alignment(0.0, 1.0));
+    _spendOverlayAnimationController?.reverse();
     return;
   }
+
+  ///entry still exist if animation finished then remove or do leave it in open state
   if (overlayEntry != null) {
-    return;
+    if (_spendOverlayAnimationController?.status == AnimationStatus.completed) {
+      overlayEntry?.remove();
+      overlayEntry?.dispose();
+    } else {
+      return;
+    }
   }
+
+  ///wait for overlay get disposed
   await Future.delayed(Duration(milliseconds: 50));
   overlayEntry = OverlayEntry(builder: (context) {
     return SpendRequirementOverlay(account: account);
@@ -77,9 +84,13 @@ Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
       _runAnimation(_currentOverlyAlignment!, _startAlignment)
           .then((value) => Future.delayed(Duration(milliseconds: 250)))
           .then((value) {
-        overlayEntry?.remove();
-        overlayEntry?.dispose();
-        overlayEntry = null;
+        if (_spendOverlayAnimationController?.status ==
+            AnimationStatus.completed) {
+          overlayEntry?.remove();
+          overlayEntry?.dispose();
+          overlayEntry = null;
+          _spendOverlayAnimationController?.reset();
+        }
       }).catchError((ero) {
         overlayEntry?.remove();
         overlayEntry?.dispose();
@@ -558,11 +569,32 @@ class SpendRequirementOverlayState
       BuildContext context, bool valid, bool inTagSelectionMode) {
     return Consumer(
       builder: (context, ref, child) {
-        CoinTag? selectedTag = ref.watch(currentActiveTag);
+        Account? selectedAccount = ref.read(selectedAccountProvider);
+        Set<String> selection = ref.watch(coinSelectionStateProvider);
+
         String buttonText = "Cancel";
         if (inTagSelectionMode) {
+          List<CoinTag> tags =
+              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
+          bool isCoinsOnlyPartOfUntagged = false;
+          CoinTag? untagged =
+              tags.firstWhereOrNull((element) => element.untagged);
+          if (untagged == null) {
+            isCoinsOnlyPartOfUntagged = false;
+          } else {
+            isCoinsOnlyPartOfUntagged = true;
+
+            /// check if selected coins are only part of untagged coins
+            selection.toList().forEach((selectionId) {
+              if (!untagged.coins_id.contains(selectionId)) {
+                isCoinsOnlyPartOfUntagged = false;
+              }
+            });
+          }
+
+          ///Todo: FIGMA
           buttonText =
-              selectedTag?.untagged == true ? "Tag Selected" : "Retag Selected";
+              isCoinsOnlyPartOfUntagged ? "Tag Selected" : "Retag Selected";
         }
         return EnvoyButton(
           enabled: valid,

@@ -37,22 +37,12 @@ class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   ConsumerState<CoinTagDetailsScreen> createState() => _CoinTagWidgetState();
 }
 
-final currentActiveTag = StateProvider<CoinTag?>((ref) => null);
-
 class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   bool _menuVisible = false;
   double _menuHeight = 80;
   Coin? _selectedCoin = null;
   ScrollController scrollController = ScrollController();
   GlobalKey _detailWidgetKey = GlobalKey();
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(currentActiveTag.notifier).state = widget.coinTag;
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
