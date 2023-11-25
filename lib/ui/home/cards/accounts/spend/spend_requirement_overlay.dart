@@ -591,10 +591,10 @@ class SpendRequirementOverlayState
               }
             });
           }
-          buttonText =
-              isCoinsOnlyPartOfUntagged ? "Tag Selected" : "Retag Selected";
 
           ///Todo: FIGMA
+          buttonText =
+              isCoinsOnlyPartOfUntagged ? "Tag Selected" : "Retag Selected";
         }
         return EnvoyButton(
           enabled: valid,
