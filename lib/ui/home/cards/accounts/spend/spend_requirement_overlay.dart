@@ -558,11 +558,32 @@ class SpendRequirementOverlayState
       BuildContext context, bool valid, bool inTagSelectionMode) {
     return Consumer(
       builder: (context, ref, child) {
-        CoinTag? selectedTag = ref.watch(currentActiveTag);
+        Account? selectedAccount = ref.read(selectedAccountProvider);
+        Set<String> selection = ref.watch(coinSelectionStateProvider);
+
         String buttonText = "Cancel";
         if (inTagSelectionMode) {
+          List<CoinTag> tags =
+              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
+          bool isCoinsOnlyPartOfUntagged = false;
+          CoinTag? untagged =
+              tags.firstWhereOrNull((element) => element.untagged);
+          if (untagged == null) {
+            isCoinsOnlyPartOfUntagged = false;
+          } else {
+            isCoinsOnlyPartOfUntagged = true;
+
+            /// check if selected coins are only part of untagged coins
+            selection.toList().forEach((selectionId) {
+              if (!untagged.coins_id.contains(selectionId)) {
+                isCoinsOnlyPartOfUntagged = false;
+              }
+            });
+          }
           buttonText =
-              selectedTag?.untagged == true ? "Tag Selected" : "Retag Selected";
+              isCoinsOnlyPartOfUntagged ? "Tag Selected" : "Retag Selected";
+
+          ///Todo: FIGMA
         }
         return EnvoyButton(
           enabled: valid,
