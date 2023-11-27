@@ -144,7 +144,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                             Navigator.pop(context);
                           },
                           txId: "UpcomingTx",
-                          noteSubTitle: S().coincontrol_tx_add_note_subheading,
+                          noteSubTitle: S()
+                              .stalls_before_sending_tx_add_note_modal_subheading,
                           noteTitle: S().coincontrol_tx_add_note_heading,
                           value: ref.read(stagingTxNoteProvider),
                         ),
@@ -1156,10 +1157,13 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                 Text(widget.noteTitle,
                     style: Theme.of(context).textTheme.titleLarge),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
                     widget.noteSubTitle,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontSize: 12),
                     textAlign: TextAlign.center,
                   ),
                 ),
