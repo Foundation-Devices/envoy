@@ -42,7 +42,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
     return SingleChildScrollView(
       child: Container(
           width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-          height: (MediaQuery.of(context).size.height * 0.46).clamp(270, 540),
+          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 580),
           padding: EdgeInsets.all(EnvoySpacing.small),
           child: Stack(
             fit: StackFit.passthrough,
