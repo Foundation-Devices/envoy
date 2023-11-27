@@ -186,7 +186,7 @@ class _SeedScreenState extends State<SeedScreen> {
                       section1WithIndex.add(Tuple(index + 1, element));
                     });
                     section2.asMap().forEach((index, element) {
-                      section2WithIndex.add(Tuple(index + 6, element));
+                      section2WithIndex.add(Tuple(index + 7, element));
                     });
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
