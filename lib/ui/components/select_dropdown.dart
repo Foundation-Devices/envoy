@@ -91,7 +91,14 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                 ? (EnvoyDropdownOption? newValue) {
                     setState(() {
                       _selectedOption = newValue;
-                      _selectedIndex = widget.options.indexOf(newValue!);
+
+                      for (final (int index, EnvoyDropdownOption option)
+                          in widget.options.indexed) {
+                        if (option.type == newValue!.type) {
+                          _selectedIndex = index;
+                        }
+                      }
+
                       if (widget.onOptionChanged != null) {
                         widget.onOptionChanged!(newValue);
                       }
@@ -112,6 +119,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
               }).toList();
             },
             underline: Container(height: 0, width: 0),
+            // _selected index becomes -1 for some reason
             value: widget.options[_selectedIndex],
             isExpanded: true,
             items: widget.options.map<DropdownMenuItem<EnvoyDropdownOption>>(
