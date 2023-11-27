@@ -405,7 +405,7 @@ class SpendRequirementOverlayState
 
                                             sheetOptions.addAll([
                                               Text(
-                                                ///TODO: localize
+                                                ///TODO: Figma
                                                 "Selected amount",
                                                 style: Theme.of(context)
                                                     .textTheme
@@ -453,7 +453,7 @@ class SpendRequirementOverlayState
                                           readOnly: !valid,
                                           type: EnvoyButtonTypes.primaryModal,
                                           inTagSelectionMode
-                                              ? "Send Selected"
+                                              ? "Send Selected" // TODO: Figma
                                               : S()
                                                   .coincontrol_edit_transaction_cta,
                                           onTap: () async {
@@ -476,10 +476,6 @@ class SpendRequirementOverlayState
                                                 .validate(
                                                     ProviderScope.containerOf(
                                                         context));
-                                            ref
-                                                .read(spendEditModeProvider
-                                                    .notifier)
-                                                .state = false;
                                             hideSpendRequirementOverlay();
                                             await Future.delayed(
                                                 Duration(milliseconds: 120));
@@ -494,6 +490,10 @@ class SpendRequirementOverlayState
                                               GoRouter.of(context)
                                                   .push(ROUTE_ACCOUNT_SEND);
                                             }
+                                            ref
+                                                .read(spendEditModeProvider
+                                                    .notifier)
+                                                .state = false;
                                           },
                                         ),
                                         Padding(
@@ -537,28 +537,23 @@ class SpendRequirementOverlayState
         bool selectionChanged = diff.isNotEmpty;
 
         return EnvoyButton(
-          selectionChanged ? "Discard Changes" : "Cancel",
+          selectionChanged ? "Discard Changes" : "Cancel", // TODO: Figma
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
-            if (selectionChanged) {
-              ref
-                  .read(coinSelectionStateProvider.notifier)
-                  .addAll(walletSelection.toList());
+            ref
+                .read(coinSelectionStateProvider.notifier)
+                .addAll(walletSelection.toList());
 
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).popUntil((route) {
-                  return route.settings is MaterialPage;
-                });
-                await Future.delayed(Duration(milliseconds: 200));
-              }
-              hideSpendRequirementOverlay();
-              await Future.delayed(Duration(milliseconds: 120));
-              ref.read(spendEditModeProvider.notifier).state = false;
-              GoRouter.of(context).push(ROUTE_ACCOUNT_SEND);
-              GoRouter.of(context).push(ROUTE_ACCOUNT_SEND_CONFIRM);
-            } else {
-              cancel();
+            if (Navigator.canPop(context)) {
+              Navigator.of(context).popUntil((route) {
+                return route.settings is MaterialPage;
+              });
+              await Future.delayed(Duration(milliseconds: 200));
             }
+            hideSpendRequirementOverlay();
+            await Future.delayed(Duration(milliseconds: 120));
+            ref.read(spendEditModeProvider.notifier).state = false;
+            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND_CONFIRM);
           },
         );
       },
@@ -572,7 +567,7 @@ class SpendRequirementOverlayState
         Account? selectedAccount = ref.read(selectedAccountProvider);
         Set<String> selection = ref.watch(coinSelectionStateProvider);
 
-        String buttonText = "Cancel";
+        String buttonText = "Cancel"; // TODO: Figma
         if (inTagSelectionMode) {
           List<CoinTag> tags =
               ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
@@ -592,9 +587,9 @@ class SpendRequirementOverlayState
             });
           }
 
-          ///Todo: FIGMA
-          buttonText =
-              isCoinsOnlyPartOfUntagged ? "Tag Selected" : "Retag Selected";
+          buttonText = isCoinsOnlyPartOfUntagged
+              ? "Tag Selected"
+              : "Retag Selected"; // TODO: Figma
         }
         return EnvoyButton(
           enabled: valid,

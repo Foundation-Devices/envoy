@@ -11,13 +11,10 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -89,27 +86,11 @@ final accountsRouter = StatefulShellBranch(
                         .read(coinSelectionStateProvider)
                         .isNotEmpty ||
                     isInEdit) {
-                  if (isInEdit) {
-                    if (!(await EnvoyStorage().checkPromptDismissed(
-                        DismissiblePrompt.txDiscardWarning))) {
-                      bool discard = await showEnvoyDialog(
-                          context: context,
-                          useRootNavigator: true,
-                          dialog: SpendSelectionCancelWarning());
-                      if (discard == false) {
-                        return false;
-                      }
-                    }
-                  }
-                  providerContainer
-                      .read(coinSelectionStateProvider.notifier)
-                      .reset();
                   providerContainer.read(spendEditModeProvider.notifier).state =
                       false;
                   await Future.delayed(Duration(milliseconds: 50));
                   providerContainer.read(hideBottomNavProvider.notifier).state =
                       false;
-                  clearSpendState(providerContainer);
 
                   ///TODO: show a dialog to confirm the user wants to exit the selection mode;
                   return false;
