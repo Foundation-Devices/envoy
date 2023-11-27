@@ -147,6 +147,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                     });
                   },
                   controller: _tagController,
+                  maxLength: 30,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     // Disable the borders
@@ -227,7 +228,9 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
                 alignment: Alignment.center,
-                child: Text("${item}")),
+                child: Text(
+                  item.length > 10 ? item.substring(0, 10) + '...' : item,
+                )),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: EnvoyColors.teal, width: 1),
