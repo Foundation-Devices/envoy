@@ -130,7 +130,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
     List<Transaction> transactions =
-        ref.watch(transactionsProvider(account.id));
+        ref.watch(filteredTransactionsProvider(account.id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);

@@ -23,20 +23,12 @@ final pendingTransactionsProvider =
   return pendingTransactions;
 });
 
-final transactionsProvider =
+final filteredTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   final txFilterState = ref.watch(txFilterStateProvider);
   final txSortState = ref.watch(txSortStateProvider);
-  List<Transaction> pendingTransactions =
-      ref.watch(pendingTransactionsProvider(accountId));
-  //Creates new list for all type of transactions
-  List<Transaction> transactions = [];
 
-  List<Transaction> walletTransactions =
-      ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
-
-  transactions.addAll(walletTransactions);
-  transactions.addAll(pendingTransactions);
+  List<Transaction> transactions = ref.watch(transactionsProvider(accountId));
 
   if (txFilterState.contains(TransactionFilters.Sent) &&
       txFilterState.contains(TransactionFilters.Received)) {
@@ -82,10 +74,24 @@ final transactionsProvider =
   return transactions;
 });
 
+final transactionsProvider =
+    Provider.family<List<Transaction>, String?>((ref, String? accountId) {
+  List<Transaction> pendingTransactions =
+      ref.watch(pendingTransactionsProvider(accountId));
+  List<Transaction> transactions = [];
+  List<Transaction> walletTransactions =
+      ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+
+  transactions.addAll(walletTransactions);
+  transactions.addAll(pendingTransactions);
+
+  return transactions;
+});
+
 final isThereAnyTransactionsProvider = Provider<bool>((ref) {
   var accounts = ref.watch(accountsProvider);
   for (var account in accounts) {
-    if (ref.watch(transactionsProvider(account.id)).isNotEmpty) {
+    if (ref.watch(filteredTransactionsProvider(account.id)).isNotEmpty) {
       return true;
     }
   }
