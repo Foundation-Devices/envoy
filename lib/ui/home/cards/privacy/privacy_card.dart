@@ -20,6 +20,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
+import 'dart:io';
 
 //ignore: must_be_immutable
 class PrivacyCard extends StatefulWidget {
@@ -175,76 +176,77 @@ class PrivacyCardState extends State<PrivacyCard> {
                                   s.customElectrumAddress,
                                   s.setCustomElectrumAddress)),
                         ),
-                      FutureBuilder<bool>(
-                        future: _auth.isDeviceSupported(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return SizedBox();
-                          }
-                          if (snapshot.hasData && snapshot.data! == false) {
-                            return SizedBox();
-                          }
+                      if (!Platform.isLinux)
+                        FutureBuilder<bool>(
+                          future: _auth.isDeviceSupported(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return SizedBox();
+                            }
+                            if (snapshot.hasData && snapshot.data! == false) {
+                              return SizedBox();
+                            }
 
-                          return Column(
-                            children: [
-                              buildDivider(),
-                              Row(
-                                children: [
-                                  EnvoyIcon(EnvoyIcons.biometrics,
-                                      size: EnvoyIconSize.normal),
-                                  SizedBox(
-                                    width: EnvoySpacing.small,
-                                  ),
-                                  Text(
-                                    S().privacy_applicationLock_title,
-                                    style: EnvoyTypography.body.copyWith(
-                                        color: EnvoyColors.textPrimary),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: EnvoySpacing.medium2),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    S().privacy_applicationLock_unlock,
-                                    style: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.textPrimary,
+                            return Column(
+                              children: [
+                                buildDivider(),
+                                Row(
+                                  children: [
+                                    EnvoyIcon(EnvoyIcons.biometrics,
+                                        size: EnvoyIconSize.normal),
+                                    SizedBox(
+                                      width: EnvoySpacing.small,
                                     ),
-                                  ),
-                                  EnvoyToggle(
-                                    value: _useLocalAuth,
-                                    onChanged: (bool value) async {
-                                      try {
-                                        bool authSuccess =
-                                            await _auth.authenticate(
-                                          options: AuthenticationOptions(
-                                            biometricOnly: false,
-                                          ),
-                                          localizedReason:
-                                              "Authenticate to Enable Biometrics",
-                                        );
+                                    Text(
+                                      S().privacy_applicationLock_title,
+                                      style: EnvoyTypography.body.copyWith(
+                                          color: EnvoyColors.textPrimary),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: EnvoySpacing.medium2),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      S().privacy_applicationLock_unlock,
+                                      style: EnvoyTypography.body.copyWith(
+                                        color: EnvoyColors.textPrimary,
+                                      ),
+                                    ),
+                                    EnvoyToggle(
+                                      value: _useLocalAuth,
+                                      onChanged: (bool value) async {
+                                        try {
+                                          bool authSuccess =
+                                              await _auth.authenticate(
+                                            options: AuthenticationOptions(
+                                              biometricOnly: false,
+                                            ),
+                                            localizedReason:
+                                                "Authenticate to Enable Biometrics",
+                                          );
 
-                                        if (authSuccess) {
-                                          LocalStorage()
-                                              .prefs
-                                              .setBool("useLocalAuth", value);
-                                          setState(() {
-                                            _useLocalAuth = value;
-                                          });
+                                          if (authSuccess) {
+                                            LocalStorage()
+                                                .prefs
+                                                .setBool("useLocalAuth", value);
+                                            setState(() {
+                                              _useLocalAuth = value;
+                                            });
+                                          }
+                                        } catch (e) {
+                                          print(e);
                                         }
-                                      } catch (e) {
-                                        print(e);
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       if (keyboardHeight != 0.0 && bottomPadding > 0)
                         Padding(
                           padding: EdgeInsets.only(bottom: bottomPadding),

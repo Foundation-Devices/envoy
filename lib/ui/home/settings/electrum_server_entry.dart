@@ -91,7 +91,8 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
             },
             isError: _isError,
             onQrScan: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              Navigator.of(context, rootNavigator: true)
+                  .push(MaterialPageRoute(builder: (context) {
                 return ScannerPage.nodeUrl((result) {
                   var parsedUrl = parseNodeUrl(result);
                   _controller.text = parsedUrl;
@@ -125,14 +126,13 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
       ;
     }, onError: (e) {
       ConnectivityManager().electrumFailure();
-      if (e is InvalidPort) {
-        print("Your port is invalid");
-      }
       if (this.mounted) {
         setState(() {
           _state = ElectrumServerEntryState.invalid;
           _isError = true;
-          _textBelow = e.toString();
+          _textBelow = e is InvalidPort
+              ? "Invalid port."
+              : "Couldn't reach node."; // FIGMA
         });
       }
       ;

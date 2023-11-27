@@ -31,17 +31,6 @@ class InvalidNetwork implements Exception {}
 
 class InvalidMnemonic implements Exception {}
 
-// Work around for https://github.com/flutter/flutter/issues/90990
-Exception getIsolateException(String isolateError) {
-  if (isolateError.contains("InvalidPort")) {
-    return InvalidPort();
-  } else if (isolateError.contains("TimedOut")) {
-    return TimedOut();
-  } else {
-    return Exception(isolateError);
-  }
-}
-
 Exception _getRustException(String rustError) {
   if (rustError.startsWith('Insufficient')) {
     int available = int.parse(captureBetween(rustError, 'funds: ', ' sat'));

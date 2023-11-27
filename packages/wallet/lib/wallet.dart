@@ -712,7 +712,7 @@ class Wallet {
 
     return compute(_getServerFeatures, map).then((var features) => features,
         onError: (e) {
-      throw getIsolateException(e.message);
+      throw e;
     });
   }
 
