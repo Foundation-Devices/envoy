@@ -111,22 +111,32 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..feeRate = feeRate.toDouble()
         ..loading = true;
 
-      List<Utxo>? mustSpend = utxos.isEmpty ? null : utxos;
       List<Utxo>? dontSpend = utxos.isEmpty
           ? null
           : account.wallet.utxos
               .where((element) => !utxos.map((e) => e.id).contains(element.id))
               .toList();
 
+      List locked = await CoinRepository().getBlockedCoins();
+
+      account.wallet.utxos.forEach((utxo) async {
+        if (locked.contains(utxo.id)) {
+          if (dontSpend == null) {
+            dontSpend = [];
+          }
+          dontSpend?.add(utxo);
+        }
+      });
+
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
-          dontSpend: dontSpend, mustSpend: mustSpend);
+          dontSpend: dontSpend);
 
       container.read(spendAmountProvider.notifier).state = amount;
 
       ///get max fee rate that we can use on this transaction
-      int maxFeeRate = await account.wallet.getMaxFeeRate(sendTo, amount,
-          dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
+      int maxFeeRate = await account.wallet
+          .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
 
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
 
@@ -139,6 +149,16 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..loading = false
         ..rawTransaction = rawTransaction
         ..valid = true;
+
+      final utxoSet = utxos.map((e) => e.id).toSet();
+
+      ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
+      container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
+        if (element.coins_id.containsAll(utxoSet)) {
+          container.read(stagingTxChangeOutPutTagProvider.notifier).state =
+              element;
+        }
+      });
       return true;
     } on InsufficientFunds {
       state = state.clone()
@@ -371,7 +391,9 @@ final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
 
 ///returns the total spendable amount for selected account and selected coins
 ///if the user selected coins then it will return the sum of selected coins
-final totalSpendableAmountProvider = Provider<int>((ref) {
+///since total amount calculation rely on CoinRepository.getBlockedCoins which is a Future
+///
+final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
   final account = ref.watch(selectedAccountProvider);
   if (account == null) {
     return 0;
@@ -381,10 +403,24 @@ final totalSpendableAmountProvider = Provider<int>((ref) {
       .map((e) => e.utxo)
       .toList();
   if (selectedUtxos.isNotEmpty) {
-    return selectedUtxos.fold(
-        0, (previousValue, element) => previousValue + element.value);
+    int amount = 0;
+    selectedUtxos.forEach((element) {
+      amount = amount + element.value;
+    });
+    return amount;
   }
-  return account.wallet.balance;
+  final lockedCoinsIds = await CoinRepository().getBlockedCoins();
+  final lockedCoins = account.wallet.utxos
+      .where((element) => lockedCoinsIds.contains(element.id))
+      .toList();
+  final blockedAmount = lockedCoins.fold(
+      0, (previousValue, element) => previousValue + element.value);
+  return account.wallet.balance - blockedAmount;
+});
+
+///listens to _totalSpendableAmountProvider provider and updates the value
+final totalSpendableAmountProvider = Provider<int>((ref) {
+  return ref.watch(_totalSpendableAmountProvider).value ?? 0;
 });
 
 /// returns selected coins for a given account
@@ -518,13 +554,13 @@ void clearSpendState(ProviderContainer ref) {
 
 Future<Psbt> getPsbt(
     double feeRate, Account account, String initialAddress, int amount,
-    {List<Utxo>? mustSpend, List<Utxo>? dontSpend}) async {
+    {List<Utxo>? dontSpend}) async {
   Psbt _returnPsbt = Psbt(0, 0, 0, "", "", "");
 
   try {
     _returnPsbt = await account.wallet.createPsbt(
         initialAddress, amount, feeRate,
-        dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
+        dontSpendUtxos: dontSpend, mustSpendUtxos: null);
   } on InsufficientFunds catch (e) {
     // Get another one with correct amount
 

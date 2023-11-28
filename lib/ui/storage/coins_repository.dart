@@ -43,6 +43,16 @@ class CoinRepository {
     return true;
   }
 
+  Future<List<String>> getBlockedCoins() async {
+    return (await storage.utxoBlockState.find(db))
+        .map((e) => e)
+
+        ///return only locked ones
+        .where((element) => element.value)
+        .map((e) => e.key)
+        .toList();
+  }
+
   /// returns a stream of all coin tags that stored in the [storage.tagStore] database
   Stream<List<CoinTag>> getCoinTagStream({String? accountId}) {
     final finder = accountId != null
