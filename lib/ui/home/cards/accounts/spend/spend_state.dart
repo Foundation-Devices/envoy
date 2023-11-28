@@ -141,15 +141,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..valid = true;
       return true;
     } on InsufficientFunds {
-      state = state.clone()
-        ..loading = false
-        ..rawTransaction = null
-        ..canProceed = false;
-
       // FIXME: This is to avoid redraws while we search for a valid PSBT
       // FIXME: See setFee in fee_slider
-      if (!settingFee) state.psbt = null;
-
+      if (!settingFee)
+        state = state.clone()
+          ..loading = false
+          ..rawTransaction = null
+          ..psbt = null
+          ..canProceed = false;
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
     } on BelowDustLimit {
