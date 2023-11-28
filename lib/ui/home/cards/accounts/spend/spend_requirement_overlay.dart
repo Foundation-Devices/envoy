@@ -48,7 +48,8 @@ Animation<Alignment>? _appearAnimation;
 Future showSpendRequirementOverlay(
     BuildContext context, Account account) async {
   /// already visible, and exiting overlay. so we reverse the animation
-  if (_spendOverlayAnimationController?.isAnimating == true) {
+  if (_spendOverlayAnimationController?.isAnimating == true &&
+      _spendOverlayAnimationController?.status != null) {
     _spendOverlayAnimationController?.reverse();
     return;
   }
@@ -76,6 +77,7 @@ Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
   if (noAnimation) {
     overlayEntry?.remove();
     overlayEntry?.dispose();
+    _spendOverlayAnimationController = null;
     overlayEntry = null;
   } else {
     if (overlayEntry != null &&
@@ -90,11 +92,13 @@ Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
           overlayEntry?.dispose();
           overlayEntry = null;
           _spendOverlayAnimationController?.reset();
+          _spendOverlayAnimationController = null;
         }
       }).catchError((ero) {
         overlayEntry?.remove();
         overlayEntry?.dispose();
         overlayEntry = null;
+        _spendOverlayAnimationController = null;
       });
     }
   }
