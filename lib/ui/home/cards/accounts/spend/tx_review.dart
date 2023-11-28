@@ -993,8 +993,6 @@ class _TransactionReviewScreenState
       ///make a copy of wallet selected coins so that we can backtrack to it
       ref.read(coinSelectionFromWallet.notifier).reset();
       ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-      print(
-          "SELECTED COINS: ${inputs} HASCODE ${coinSelectionStateProvider.hashCode}");
     }
 
     ///toggle to coins view for coin control
