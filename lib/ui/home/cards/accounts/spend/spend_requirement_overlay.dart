@@ -687,6 +687,7 @@ class SpendRequirementOverlayState
       _hideOverlay = true;
     });
     bool discard = await showEnvoyDialog(
+        dismissible: false,
         context: context,
         useRootNavigator: true,
         dialog: SpendSelectionCancelWarning());
@@ -731,10 +732,10 @@ class _SpendSelectionCancelWarningState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      padding: EdgeInsets.all(24).add(EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
         minHeight: 300,
-        maxWidth: 280,
+        maxWidth: 300,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -786,13 +787,7 @@ class _SpendSelectionCancelWarningState
             S().manual_coin_preselection_dialog_cta2,
             type: EnvoyButtonTypes.tertiary,
             onTap: () {
-              if (dismissed) {
-                EnvoyStorage()
-                    .addPromptState(DismissiblePrompt.txDiscardWarning);
-              } else {
-                EnvoyStorage()
-                    .removePromptState(DismissiblePrompt.txDiscardWarning);
-              }
+              txWarningExit(context);
               Navigator.of(context).pop(false);
             },
           ),
@@ -801,18 +796,20 @@ class _SpendSelectionCancelWarningState
             S().manual_coin_preselection_dialog_cta1,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
-              if (dismissed) {
-                EnvoyStorage()
-                    .addPromptState(DismissiblePrompt.txDiscardWarning);
-              } else {
-                EnvoyStorage()
-                    .removePromptState(DismissiblePrompt.txDiscardWarning);
-              }
+              txWarningExit(context);
               Navigator.of(context).pop(true);
             },
           )
         ],
       ),
     );
+  }
+
+  void txWarningExit(BuildContext context) {
+    if (dismissed) {
+      EnvoyStorage().addPromptState(DismissiblePrompt.txDiscardWarning);
+    } else {
+      EnvoyStorage().removePromptState(DismissiblePrompt.txDiscardWarning);
+    }
   }
 }
