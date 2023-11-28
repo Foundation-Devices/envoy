@@ -13,12 +13,14 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
 
 class ChooseTagForStagingTx extends ConsumerStatefulWidget {
   final String accountId;
   final Function onTagUpdate;
   final Function onEditTransaction;
   final hasMultipleTagsInput;
+
   const ChooseTagForStagingTx(
       {super.key,
       required this.onTagUpdate,
@@ -58,7 +60,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
     return SingleChildScrollView(
       child: Container(
           width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-          height: (MediaQuery.of(context).size.height * 0.46).clamp(270, 540),
+          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 580),
           padding: EdgeInsets.all(EnvoySpacing.small),
           child: Stack(
             fit: StackFit.passthrough,
@@ -151,13 +153,19 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
 
           List<Widget> firsRowWidget = firstRowContent.map(
             (e) {
-              return _tagItem(context, e);
+              return tagItem(context, e, () {
+                _tagController.text = e;
+                setState(() {});
+              });
             },
           ).toList();
 
           List<Widget> secondRowWidget = secondRowContent.map(
             (e) {
-              return _tagItem(context, e);
+              return tagItem(context, e, () {
+                _tagController.text = e;
+                setState(() {});
+              });
             },
           ).toList();
 
@@ -255,28 +263,6 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               }),
             ],
           );
-        },
-      ),
-    );
-  }
-
-  Widget _tagItem(context, String item) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                child: Text("${item}")),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: EnvoyColors.teal, width: 1),
-            ),
-            height: 24),
-        onTap: () {
-          _tagController.text = item;
-          setState(() {});
         },
       ),
     );
