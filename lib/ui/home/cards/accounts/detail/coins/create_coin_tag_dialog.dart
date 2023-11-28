@@ -116,13 +116,19 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
 
         List<Widget> firsRowWidget = firstRowContent.map(
           (e) {
-            return _tagItem(context, e);
+            return tagItem(context, e, () {
+              _tagController.text = e;
+              setState(() {});
+            });
           },
         ).toList();
 
         List<Widget> secondRowWidget = secondRowContent.map(
           (e) {
-            return _tagItem(context, e);
+            return tagItem(context, e, () {
+              _tagController.text = e;
+              setState(() {});
+            });
           },
         ).toList();
 
@@ -219,31 +225,6 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
     );
   }
 
-  Widget _tagItem(context, String item) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-                alignment: Alignment.center,
-                child: Text(
-                  item.length > 10 ? item.substring(0, 10) + '...' : item,
-                )),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: EnvoyColors.teal, width: 1),
-            ),
-            height: 34),
-        onTap: () {
-          _tagController.text = item;
-          setState(() {});
-        },
-      ),
-    );
-  }
-
   Future tagSelected(BuildContext context, WidgetRef ref) async {
     //get coins from the repository
     try {
@@ -319,6 +300,27 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
 
     widget.onTagUpdate();
   }
+}
+
+Widget tagItem(context, String item, Function() onTap) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4),
+    child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+                alignment: Alignment.center,
+                child: Text(
+                  item.length > 10 ? item.substring(0, 10) + '...' : item,
+                )),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: EnvoyColors.teal, width: 1),
+            ),
+            height: 34),
+        onTap: onTap),
+  );
 }
 
 // _emptyTag(BuildContext context, CoinTag tag) {
