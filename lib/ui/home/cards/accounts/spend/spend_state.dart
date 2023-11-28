@@ -124,8 +124,17 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       container.read(spendAmountProvider.notifier).state = amount;
 
+      // Are we sending max?
+      bool sendMax = amount == psbt.sent + psbt.received + psbt.fee;
+
+      // In that case get the amount from the PSBT
+      if (sendMax) {
+        amount = psbt.sent == 0 ? psbt.received : psbt.sent;
+      }
+
       ///get max fee rate that we can use on this transaction
-      int maxFeeRate = await account.wallet.getMaxFeeRate(sendTo, amount,
+      int maxFeeRate = await account.wallet.getMaxFeeRate(
+          sendTo, sendMax ? dustAmount : amount,
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
 
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;

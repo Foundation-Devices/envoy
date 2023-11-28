@@ -19,6 +19,8 @@ part 'wallet.freezed.dart';
 
 part 'wallet.g.dart';
 
+const dustAmount = 546;
+
 enum Network { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending }
