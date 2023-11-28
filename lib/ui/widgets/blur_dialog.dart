@@ -34,6 +34,11 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   }) : super(settings: settings);
 
   @override
+  Future<RoutePopDisposition> willPop() async {
+    return dismissible ? RoutePopDisposition.pop : RoutePopDisposition.doNotPop;
+  }
+
+  @override
   Iterable<OverlayEntry> createOverlayEntries() {
     final overlays = <OverlayEntry>[];
 
