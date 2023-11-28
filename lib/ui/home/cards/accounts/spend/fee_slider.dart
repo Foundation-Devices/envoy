@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -35,10 +36,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final rate = ref.read(spendFeeRateProvider);
       final account = ref.read(selectedAccountProvider);
-      standardFee =
-          Fees().slowRate(account?.wallet.network ?? Network.Mainnet) * 100000;
-      fasterFee =
-          Fees().fastRate(account?.wallet.network ?? Network.Mainnet) * 100000;
+      setFees(account);
+
       if (rate == standardFee) {
         _tabController.animateTo(0);
       } else {
@@ -51,16 +50,20 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
   }
 
+  void setFees(Account? account) {
+    standardFee =
+        Fees().slowRate(account?.wallet.network ?? Network.Mainnet) * 100000;
+    fasterFee =
+        Fees().fastRate(account?.wallet.network ?? Network.Mainnet) * 100000;
+
+    if (standardFee == fasterFee) {
+      fasterFee = standardFee + 1;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Wallet? wallet = ref.read(selectedAccountProvider)?.wallet;
-    if (wallet != null) {
-      standardFee = Fees().slowRate(wallet.network) * 100000;
-      fasterFee = Fees().fastRate(wallet.network) * 100000;
-      if (standardFee == fasterFee) {
-        fasterFee = standardFee + 1;
-      }
-    }
+    setFees(ref.read(selectedAccountProvider));
 
     ref.listen(spendFeeRateProvider, (previous, next) {
       int index = 0;
@@ -86,16 +89,12 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             switch (index) {
               case 0:
                 ref.read(spendFeeRateProvider.notifier).state = standardFee;
-                ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
-                    standardFee;
                 ref
                     .read(spendTransactionProvider.notifier)
                     .validate(ProviderScope.containerOf(context));
                 break;
               case 1:
                 ref.read(spendFeeRateProvider.notifier).state = fasterFee;
-                ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
-                    fasterFee;
                 ref
                     .read(spendTransactionProvider.notifier)
                     .validate(ProviderScope.containerOf(context));
@@ -199,11 +198,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     super.initState();
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       int maxFeeRate = ref.read(spendMaxFeeRateProvider);
-
-      if (maxFeeRate > 15) {
-        maxFeeRate = maxFeeRate - 5;
-      }
-      ;
+      maxFeeRate = (maxFeeRate * 0.7).round();
 
       setState(() {
         list = List.generate(maxFeeRate, (index) => index + 1);

@@ -134,6 +134,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       container.read(spendAmountProvider.notifier).state = amount;
 
+      // Are we sending max?
+      bool sendMax = amount == psbt.sent + psbt.received + psbt.fee;
+
+      // In that case get the amount from the PSBT
+      if (sendMax) {
+        amount = psbt.sent == 0 ? psbt.received : psbt.sent;
+      }
+
       ///get max fee rate that we can use on this transaction
       int maxFeeRate = await account.wallet
           .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
@@ -161,15 +169,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       });
       return true;
     } on InsufficientFunds {
-      state = state.clone()
-        ..loading = false
-        ..rawTransaction = null
-        ..canProceed = false;
-
       // FIXME: This is to avoid redraws while we search for a valid PSBT
       // FIXME: See setFee in fee_slider
-      if (!settingFee) state.psbt = null;
-
+      if (!settingFee)
+        state = state.clone()
+          ..loading = false
+          ..rawTransaction = null
+          ..psbt = null
+          ..canProceed = false;
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
     } on BelowDustLimit {
