@@ -86,7 +86,8 @@ double convertToFeeRate(num feeRate) {
 class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   TransactionModeNotifier(super.state);
 
-  Future<bool> validate(ProviderContainer container) async {
+  Future<bool> validate(ProviderContainer container,
+      {bool settingFee = false}) async {
     String sendTo = container.read(spendAddressProvider);
     int amount = container.read(spendAmountProvider);
     num feeRate = container.read(spendFeeRateProvider);
@@ -121,7 +122,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: mustSpend);
 
-      amount = psbt.sent == 0 ? psbt.received : psbt.sent;
       container.read(spendAmountProvider.notifier).state = amount;
 
       ///get max fee rate that we can use on this transaction
@@ -143,9 +143,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } on InsufficientFunds {
       state = state.clone()
         ..loading = false
-        ..psbt = null
         ..rawTransaction = null
         ..canProceed = false;
+
+      // FIXME: This is to avoid redraws while we search for a valid PSBT
+      // FIXME: See setFee in fee_slider
+      if (!settingFee) state.psbt = null;
+
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
     } on BelowDustLimit {

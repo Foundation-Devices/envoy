@@ -198,10 +198,13 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 10)).then((value) {
-      int maxFeeRate = ref.read(spendMaxFeeRateProvider) - 2;
-      if (maxFeeRate < 1) {
-        maxFeeRate = 1;
+      int maxFeeRate = ref.read(spendMaxFeeRateProvider);
+
+      if (maxFeeRate > 15) {
+        maxFeeRate = maxFeeRate - 5;
       }
+      ;
+
       setState(() {
         list = List.generate(maxFeeRate, (index) => index + 1);
       });
@@ -380,11 +383,24 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
         ));
   }
 
-  void setFee(BuildContext context) {
-    ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
-    ref
-        .read(spendTransactionProvider.notifier)
-        .validate(ProviderScope.containerOf(context));
+  Future<void> setFee(BuildContext context) async {
+    // FIXME: we need a way to stop the coin selection randomness past the send screen
+    // Sometimes this results in a max fee calculation that is no longer correct
+    // As a workaround we decrement the fee rate here until we get a valid PSBT
+
+    while (true) {
+      ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
+      bool valid = await ref
+          .read(spendTransactionProvider.notifier)
+          .validate(ProviderScope.containerOf(context), settingFee: true);
+
+      if (valid) {
+        break;
+      }
+
+      selectedItem--;
+    }
+
     Navigator.pop(context);
   }
 
