@@ -49,7 +49,7 @@ Future showSpendRequirementOverlay(
     BuildContext context, Account account) async {
   /// already visible, and exiting overlay. so we reverse the animation
   if (_spendOverlayAnimationController?.isAnimating == true &&
-      _spendOverlayAnimationController?.status != null) {
+      (_spendOverlayAnimationController?.status == AnimationStatus.completed)) {
     _spendOverlayAnimationController?.reverse();
     return;
   }
@@ -59,13 +59,10 @@ Future showSpendRequirementOverlay(
     if (_spendOverlayAnimationController?.status == AnimationStatus.completed) {
       overlayEntry?.remove();
       overlayEntry?.dispose();
-    } else {
-      return;
+      await Future.delayed(Duration(milliseconds: 100));
     }
   }
 
-  ///wait for overlay get disposed
-  await Future.delayed(Duration(milliseconds: 50));
   overlayEntry = OverlayEntry(builder: (context) {
     return SpendRequirementOverlay(account: account);
   });
