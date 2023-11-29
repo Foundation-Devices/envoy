@@ -18,6 +18,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/business/notifications.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -364,6 +365,7 @@ class EnvoySeed {
     Devices().restore();
     AccountManager().restore();
     ExchangeRate().restoreRate();
+    Notifications().restoreNotifications();
   }
 
   DateTime? getLastBackupTime() {
