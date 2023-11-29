@@ -46,9 +46,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // if (_childKey.currentContext?.findRenderObject() != null)
-    //   print("_childKey ${(_childKey.currentContext?.findRenderObject() as RenderBox).size}");
-
     return WillPopScope(
       onWillPop: () async {
         if (_selectedCoin != null) {
@@ -217,7 +214,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     ref.watch(coinTagLockStateProvider(widget.coinTag));
     if (tag.coins.length == 1) {
       ///only show header of the tag
-      totalTagHeight = 96;
+      totalTagHeight = 92;
     }
     return RawScrollbar(
       thumbColor: Colors.white38,
