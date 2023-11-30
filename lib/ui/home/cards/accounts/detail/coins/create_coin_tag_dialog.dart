@@ -312,7 +312,7 @@ Widget tagItem(context, String item, Function() onTap) {
                 padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
                 alignment: Alignment.center,
                 child: Text(
-                  item.length > 10 ? item.substring(0, 10) + '...' : item,
+                  item.length > 9 ? item.substring(0, 7) + '...' : item,
                 )),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
