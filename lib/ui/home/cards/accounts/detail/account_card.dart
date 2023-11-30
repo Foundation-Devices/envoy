@@ -475,6 +475,8 @@ class TransactionListTile extends StatelessWidget {
               ));
             }
           },
+          onDoubleTap: () {},
+          // Avoids unintended behavior, prevents list item disappearance
           child: ListTile(
             title: FittedBox(
               fit: BoxFit.scaleDown,
