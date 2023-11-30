@@ -102,13 +102,15 @@ String getFormattedAmount(int amountSats,
   String text = "";
   if (unit == null) {
     if (Settings().displayUnit == DisplayUnit.btc) {
-      text = convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes);
+      text = convertSatsToBtcString(amountSats,
+          trailingZeroes: trailingZeroes = true);
     } else {
       text = satsFormatter.format(amountSats);
     }
   } else {
     if (unit == AmountDisplayUnit.btc) {
-      text = convertSatsToBtcString(amountSats, trailingZeroes: trailingZeroes);
+      text = convertSatsToBtcString(amountSats,
+          trailingZeroes: trailingZeroes = true);
     } else if (unit == AmountDisplayUnit.sat) {
       text = satsFormatter.format(amountSats);
     }
