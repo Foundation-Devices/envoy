@@ -9,6 +9,7 @@ import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/video.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
@@ -18,6 +19,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/notifications.dart';
 
 const String SEED_KEY = "seed";
@@ -271,7 +273,14 @@ class EnvoySeed {
 
       // Restore the database
       if (data.containsKey(EnvoyStorage.dbName)) {
+        // get videos and blogs from current database before restore
+        List<Video?> videos = await EnvoyStorage().getAllVideos() ?? [];
+        List<BlogPost?> blogs = await EnvoyStorage().getAllBlogPosts() ?? [];
+
         await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
+
+        await EnvoyStorage().insertMediaItems(videos);
+        await EnvoyStorage().insertMediaItems(blogs);
 
         // This always happens after onboarding
         await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
