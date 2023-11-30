@@ -53,6 +53,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     HomeShellOptions? _homeShellState = ref.watch(homeShellOptionsProvider);
     bool _modalShown = ref.watch(hideBottomNavProvider);
     bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
+    bool _inEditMode = ref.watch(spendEditModeProvider);
+
     Widget rightAction = _homeShellState?.rightAction ?? SizedBox.shrink();
     HomePageBackgroundState homePageDropState =
         ref.watch(homePageBackgroundProvider);
@@ -133,7 +135,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       backgroundColor: Colors.transparent,
       leading: AnimatedOpacity(
         duration: _animationsDuration,
-        opacity: _optionsShown ? 0.0 : 1.0,
+        opacity: (_optionsShown || _inEditMode) ? 0.0 : 1.0,
         child: HamburgerMenu(
           iconState: state,
           onPressed: () {
@@ -179,38 +181,40 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       ]),
       centerTitle: true,
       actions: [
-        // Right action
-        AnimatedSwitcher(
-            duration: _animationsDuration,
-            child: AbsorbPointer(
-                absorbing: backDropEnabled || _modalShown,
-                child: AnimatedOpacity(
-                    opacity: backDropEnabled || _modalShown ? 0.0 : 1.0,
-                    duration: _animationsDuration,
-                    child: AnimatedSwitcher(
-                        duration: _animationsDuration,
-                        child: backDropEnabled || _optionsShown
-                            ? IconButton(
-                                icon: Icon(
-                                  Icons.close,
-                                ),
-                                onPressed: () {
-                                  if (_optionsShown) {
-                                    ref
-                                        .read(homePageOptionsVisibilityProvider
-                                            .notifier)
-                                        .state = false;
-                                  } else {
-                                    if (backDropEnabled) {
+// Right action
+        if (!_inEditMode)
+          AnimatedSwitcher(
+              duration: _animationsDuration,
+              child: AbsorbPointer(
+                  absorbing: backDropEnabled || _modalShown,
+                  child: AnimatedOpacity(
+                      opacity: backDropEnabled || _modalShown ? 0.0 : 1.0,
+                      duration: _animationsDuration,
+                      child: AnimatedSwitcher(
+                          duration: _animationsDuration,
+                          child: backDropEnabled || _optionsShown
+                              ? IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                  ),
+                                  onPressed: () {
+                                    if (_optionsShown) {
                                       ref
-                                          .read(homePageBackdropModeProvider
-                                              .notifier)
+                                          .read(
+                                              homePageOptionsVisibilityProvider
+                                                  .notifier)
                                           .state = false;
+                                    } else {
+                                      if (backDropEnabled) {
+                                        ref
+                                            .read(homePageBackdropModeProvider
+                                                .notifier)
+                                            .state = false;
+                                      }
                                     }
-                                  }
-                                },
-                              )
-                            : rightAction))))
+                                  },
+                                )
+                              : rightAction))))
       ],
     );
   }
@@ -244,6 +248,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().bottomNav_learn;
       case ROUTE_LEARN_BLOG:
         return S().bottomNav_learn;
+      case ROUTE_ACCOUNT_SEND:
+        return "send"; //TODO: Figma
       default:
         return S().menu_heading;
     }

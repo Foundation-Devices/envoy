@@ -5,6 +5,7 @@
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -39,11 +40,11 @@ List<String> tagSuggestions = [
 class _CreateCoinTagState extends State<CreateCoinTag> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-          width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 580),
-          padding: EdgeInsets.all(EnvoySpacing.small),
+    return Container(
+      width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+      height: 428,
+      padding: EdgeInsets.all(EnvoySpacing.small),
+      child: EnvoyScaffold(
           child: Stack(
             fit: StackFit.passthrough,
             children: [
@@ -80,7 +81,9 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 ],
               ),
             ],
-          )),
+          ),
+          removeAppBarPadding: true,
+          extendBody: true),
     );
   }
 
@@ -312,7 +315,7 @@ Widget tagItem(context, String item, Function() onTap) {
                 padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
                 alignment: Alignment.center,
                 child: Text(
-                  item.length > 10 ? item.substring(0, 10) + '...' : item,
+                  item.length > 9 ? item.substring(0, 7) + '...' : item,
                 )),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),

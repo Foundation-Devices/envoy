@@ -483,8 +483,6 @@ class SpendRequirementOverlayState
 
                                             if (ref
                                                 .read(spendEditModeProvider)) {
-                                              GoRouter.of(context)
-                                                  .push(ROUTE_ACCOUNT_SEND);
                                               GoRouter.of(context).push(
                                                   ROUTE_ACCOUNT_SEND_CONFIRM);
                                             } else {
