@@ -328,6 +328,8 @@ class _BlurContainerTransformState<T>
       key: _hideableKey,
       child: GestureDetector(
         onTap: widget.tappable ? openContainer : null,
+        onDoubleTap: () {},
+        // Avoids unintended behavior, prevents list item disappearance
         child: Material(
           clipBehavior: widget.clipBehavior,
           color: Colors.transparent,
