@@ -554,7 +554,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   _editTagName(BuildContext context) {
     final textEntry = TextEntry(
-      maxLength: 20,
+      maxLength: 30,
       placeholder: widget.coinTag.name,
     );
     showEnvoyDialog(

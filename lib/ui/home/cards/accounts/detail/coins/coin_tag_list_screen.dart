@@ -127,6 +127,8 @@ class CoinItemWidget extends StatelessWidget {
                               Text(
                                 "${tag.name}",
                                 style: _textStyleWallet,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
                               CoinSubTitleText(tag),
                             ],
