@@ -1197,45 +1197,13 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                     ),
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      dismissed = !dismissed;
-                    });
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        child: EnvoyCheckbox(
-                          value: dismissed,
-                          onChanged: (value) {
-                            if (value != null)
-                              setState(() {
-                                dismissed = value;
-                              });
-                          },
-                        ),
-                      ),
-                      Text(
-                        S().coincontrol_lock_coin_modal_dontShowAgain,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color:
-                                  dismissed ? Colors.black : Color(0xff808080),
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
         ),
         bottomNavigationBar: Container(
-          height: 120,
-          alignment: Alignment.bottomCenter,
+          height: 180,
+          alignment: Alignment.center,
           padding: EdgeInsets.symmetric(
             horizontal: EnvoySpacing.medium1,
             vertical: EnvoySpacing.small,
@@ -1243,6 +1211,37 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    dismissed = !dismissed;
+                  });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: EnvoyCheckbox(
+                        value: dismissed,
+                        onChanged: (value) {
+                          if (value != null)
+                            setState(() {
+                              dismissed = value;
+                            });
+                        },
+                      ),
+                    ),
+                    Text(
+                      S().coincontrol_lock_coin_modal_dontShowAgain,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: dismissed ? Colors.black : Color(0xff808080),
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
                   onTap: () {
                 Navigator.of(context).pop(false);
