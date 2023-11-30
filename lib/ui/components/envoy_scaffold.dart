@@ -23,6 +23,7 @@ class EnvoyScaffold extends StatelessWidget {
   final Widget? child;
   final Color backgroundColor;
   final bool removeAppBarPadding;
+  final bool resizeToAvoidBottomInset;
   final bool extendBody;
   final Widget? bottom;
   final List<Widget> topBarActions;
@@ -44,7 +45,8 @@ class EnvoyScaffold extends StatelessWidget {
       this.topBarTitle,
       this.bottom,
       this.removeAppBarPadding = false,
-      this.appBar});
+      this.appBar,
+      this.resizeToAvoidBottomInset = true});
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,7 @@ class EnvoyScaffold extends StatelessWidget {
       context: context,
       child: Scaffold(
         extendBody: extendBody,
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         backgroundColor: backgroundColor,
         //use custom appbar if provided, otherwise use default
         appBar: appBar ??

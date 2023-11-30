@@ -45,6 +45,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
       height: 428,
       padding: EdgeInsets.all(EnvoySpacing.small),
       child: EnvoyScaffold(
+          resizeToAvoidBottomInset: false,
           child: Stack(
             fit: StackFit.passthrough,
             children: [
