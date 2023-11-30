@@ -86,8 +86,6 @@ final accountsRouter = StatefulShellBranch(
                         .read(coinSelectionStateProvider)
                         .isNotEmpty ||
                     isInEdit) {
-                  providerContainer.read(spendEditModeProvider.notifier).state =
-                      false;
                   await Future.delayed(Duration(milliseconds: 50));
                   providerContainer.read(hideBottomNavProvider.notifier).state =
                       false;
