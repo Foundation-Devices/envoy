@@ -96,7 +96,7 @@ class Notifications {
 
   Notifications._internal() {
     print("Instance of Notifications created!");
-    _restoreNotifications();
+    restoreNotifications();
   }
 
   add(EnvoyNotification notification) {
@@ -219,10 +219,12 @@ class Notifications {
     _ls.prefs.setString(NOTIFICATIONS_PREFS, json);
   }
 
-  _restoreNotifications() {
+  restoreNotifications() {
     if (_syncTimer != null) {
       _syncTimer!.cancel();
     }
+
+    notifications.clear();
 
     if (_ls.prefs.containsKey(NOTIFICATIONS_PREFS)) {
       var jsonMap = jsonDecode(_ls.prefs.getString(NOTIFICATIONS_PREFS)!);
@@ -236,9 +238,10 @@ class Notifications {
         // Migration: tx notifications previously didn't have account data
         notificationToRestore = addMissingAccountId(notificationToRestore);
 
-        notifications.add(notificationToRestore);
+        // Only add tx notifications that link to an account
+        if (!_shouldBeRemoved(notificationToRestore))
+          add(notificationToRestore);
       }
-      sync();
     }
 
     _checkForNotificationsToAdd();
@@ -265,6 +268,20 @@ class Notifications {
       }
     }
     return notificationToRestore;
+  }
+
+  bool _shouldBeRemoved(EnvoyNotification notifiaction) {
+    if (notifiaction.type != EnvoyNotificationType.transaction) {
+      return false;
+    }
+
+    if (notifiaction.accountId == null) {
+      return true;
+    }
+
+    return !AccountManager()
+        .accounts
+        .any((account) => account.id == notifiaction.accountId);
   }
 
   _startPeriodicSync() {
