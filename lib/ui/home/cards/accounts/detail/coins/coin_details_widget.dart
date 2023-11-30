@@ -278,11 +278,18 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     Padding(
                                         padding:
                                             EdgeInsets.all(EnvoySpacing.xs)),
-                                    SvgPicture.asset(
-                                      "assets/icons/ic_edit_note.svg",
-                                      color: EnvoyColors.accentPrimary,
-                                      height: 14,
-                                    ),
+                                    note.trim().isNotEmpty
+                                        ? SvgPicture.asset(
+                                            note.trim().isNotEmpty
+                                                ? "assets/icons/ic_edit_note.svg"
+                                                : "assets/icons/ic_notes.svg",
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            height: 14,
+                                          )
+                                        : Icon(Icons.add_circle_rounded,
+                                            color: EnvoyColors.accentPrimary,
+                                            size: 16),
                                   ],
                                 ),
                               ),
