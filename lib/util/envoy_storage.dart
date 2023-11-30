@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
 import 'package:envoy/business/video.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/media.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -493,6 +494,15 @@ class EnvoyStorage {
       var blog = transformBlog(blogs[0]);
       return blog?.read ?? false;
     });
+  }
+
+  Future<void> insertMediaItems<T extends Media>(List<T?> items) async {
+    for (var item in items) {
+      if (item != null) {
+        if (item is BlogPost) insertBlogPost(item);
+        if (item is Video) insertVideo(item);
+      }
+    }
   }
 
   Database get db => _db;
