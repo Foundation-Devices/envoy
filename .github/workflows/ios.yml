@@ -71,7 +71,7 @@ jobs:
 
       - name: Build iOS App Store Package
         run: |
-          flutter build ipa --release
+          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
       - uses: actions/upload-artifact@v2
         with:

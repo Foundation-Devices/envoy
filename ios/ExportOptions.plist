@@ -11,7 +11,7 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>com.foundationdevices.envoy</key>
-		<string>EnvoyProvisioningV3</string>
+		<string>EnvoyAppStore</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>Apple Distribution</string>
