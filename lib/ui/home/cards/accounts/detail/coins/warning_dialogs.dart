@@ -184,19 +184,17 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Text(
-                  "Create a tag", // TODO: FIGMA
+                  S().create_first_tag_modal_1_2_heading,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
                       ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                //TODO: updated copy & localization
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: EnvoySpacing.medium1),
-                  child: Text(
-                      "Tags are a useful way to categorize coins within an account.", // TODO: FIGMA
+                  child: Text(S().create_first_tag_modal_1_2_subheading,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -226,7 +224,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                         ),
                       ),
                       Text(
-                        "Do not remind me", // TODO: FIGMA
+                        "Don’t show again",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color:
                                   dismissed ? Colors.black : Color(0xff808080),
