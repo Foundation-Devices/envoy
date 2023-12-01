@@ -214,7 +214,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     ref.watch(coinTagLockStateProvider(widget.coinTag));
     if (tag.coins.length == 1) {
       ///only show header of the tag
-      totalTagHeight = 92;
+      totalTagHeight = 95;
     }
     return RawScrollbar(
       thumbColor: Colors.white38,
@@ -473,6 +473,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           Text(
                             "${widget.coinTag.name}",
                             style: _textStyleWallet,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           CoinSubTitleText(tag),
                         ],
