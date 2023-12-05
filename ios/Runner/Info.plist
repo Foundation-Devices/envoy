@@ -60,5 +60,11 @@
     <string>$(PRODUCT_NAME) Authentication with TouchId or FaceID</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>es</string>
+        <string>ml</string>
+    </array>
 </dict>
 </plist>
