@@ -12,6 +12,7 @@ use std::ptr;
 use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::error::Error;
+use std::fmt::{Display, Formatter, Write};
 
 use bdk::bitcoin::{Address, Network, OutPoint, Txid};
 use bdk::database::{ConfigurableDatabase, MemoryDatabase};
@@ -70,6 +71,22 @@ impl Into<String> for NetworkType {
             NetworkType::Testnet => "testnet".to_string(),
             NetworkType::Signet => "signet".to_string(),
             NetworkType::Regtest => "regtest".to_string(),
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub enum WalletType {
+    WitnessPublicKeyHash,
+    Taproot,
+}
+
+impl Display for WalletType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            WalletType::WitnessPublicKeyHash => write!(f, "wpkh"),
+            WalletType::Taproot => write!(f, "tr"),
         }
     }
 }
@@ -256,6 +273,7 @@ pub unsafe extern "C" fn wallet_derive(
     init_wallet: bool,
     data_dir: *const c_char,
     private: bool, // Which BDK wallet to return
+    wallet_type: WalletType,
 ) -> Wallet {
     let error_return = Wallet {
         name: ptr::null(),
@@ -313,16 +331,16 @@ pub unsafe extern "C" fn wallet_derive(
         }),
     };
 
-    let external_pub_descriptor = format!("wpkh({descriptor_pub})").replace("/*", "/0/*");
+    let external_pub_descriptor = format!("{wallet_type}({descriptor_pub})").replace("/*", "/0/*");
     let internal_pub_descriptor = external_pub_descriptor.replace("/0/*", "/1/*");
 
-    let external_prv_descriptor = format!("wpkh({descriptor_prv})").replace("/*", "/0/*");
+    let external_prv_descriptor = format!("{wallet_type}({descriptor_prv})").replace("/*", "/0/*");
     let internal_prv_descriptor = external_prv_descriptor.replace("/0/*", "/1/*");
 
     let xfp = &descriptor_prv[1..9];
     let network_str: String = network.into();
 
-    let name = format!("{xfp}-{network_str}");
+    let name = format!("{xfp}-{network_str}-{wallet_type}");
 
     let data_dir = unwrap_or_return!(CStr::from_ptr(data_dir).to_str(), error_return);
     let wallet_dir = format!("{data_dir}{name}");

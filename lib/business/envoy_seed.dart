@@ -24,6 +24,8 @@ import 'package:envoy/business/notifications.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
+const String TAPROOT_WALLET_DERIVED_PREFS = "taproot_wallet_derived";
+
 const String LAST_BACKUP_PREFS = "last_backup";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
 const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
@@ -57,8 +59,21 @@ class EnvoySeed {
       "." +
       encryptedBackupFileExtension;
 
-  static String HOT_WALLET_MAINNET_PATH = "m/84'/0'/0'";
-  static String HOT_WALLET_TESTNET_PATH = "m/84'/1'/0'";
+  static Map<WalletType, String> hotWalletDerivedPrefsString = {
+    WalletType.witnessPublicKeyHash: WALLET_DERIVED_PREFS,
+    WalletType.taproot: TAPROOT_WALLET_DERIVED_PREFS,
+  };
+
+  static Map<WalletType, Map<Network, String>> hotWalletDerivationPaths = {
+    WalletType.witnessPublicKeyHash: {
+      Network.Mainnet: "m/84'/0'/0'",
+      Network.Testnet: "m/84'/1'/0'"
+    },
+    WalletType.taproot: {
+      Network.Mainnet: "m/86'/0'/0'",
+      Network.Testnet: "m/86'/1'/0'"
+    }
+  };
 
   StreamController<bool> backupCompletedStream = StreamController.broadcast();
 
@@ -72,26 +87,52 @@ class EnvoySeed {
     return await deriveAndAddWallets(seed, passphrase: passphrase);
   }
 
-  Future<bool> deriveAndAddWallets(String seed, {String? passphrase}) async {
-    if (AccountManager()
-        .checkIfWalletFromSeedExists(seed, passphrase: passphrase)) {
+  Future<bool> deriveAndAddWalletsFromCurrentSeed(
+      {String? passphrase,
+      WalletType type = WalletType.witnessPublicKeyHash}) async {
+    String? seed = await get();
+
+    if (seed == null) {
+      return false;
+    }
+
+    return deriveAndAddWallets(seed, passphrase: passphrase, type: type);
+  }
+
+  Future<bool> deriveAndAddWallets(String seed,
+      {String? passphrase,
+      WalletType type = WalletType.witnessPublicKeyHash}) async {
+    if (AccountManager().checkIfWalletFromSeedExists(seed,
+        passphrase: passphrase, type: type)) {
       return true;
     }
 
     await store(seed);
 
     try {
-      var mainnet = Wallet.deriveWallet(seed, HOT_WALLET_MAINNET_PATH,
-          AccountManager.walletsDirectory, Network.Mainnet,
-          privateKey: true, passphrase: passphrase);
-      var testnet = Wallet.deriveWallet(seed, HOT_WALLET_TESTNET_PATH,
-          AccountManager.walletsDirectory, Network.Testnet,
-          privateKey: true, passphrase: passphrase);
+      var mainnet = Wallet.deriveWallet(
+          seed,
+          hotWalletDerivationPaths[type]![Network.Mainnet]!,
+          AccountManager.walletsDirectory,
+          Network.Mainnet,
+          privateKey: true,
+          passphrase: passphrase,
+          type: type);
+
+      // Always derive a testnet wallet too
+      var testnet = Wallet.deriveWallet(
+          seed,
+          hotWalletDerivationPaths[type]![Network.Testnet]!,
+          AccountManager.walletsDirectory,
+          Network.Testnet,
+          privateKey: true,
+          passphrase: passphrase,
+          type: type);
 
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
 
-      LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
+      LocalStorage().prefs.setBool(hotWalletDerivedPrefsString[type]!, true);
 
       return true;
     } on Exception catch (_) {
@@ -99,13 +140,9 @@ class EnvoySeed {
     }
   }
 
-  bool walletDerived() {
-    final derived = LocalStorage().prefs.getBool(WALLET_DERIVED_PREFS);
-    if (derived == null) {
-      return false;
-    }
-
-    return derived;
+  bool walletDerived({WalletType type = WalletType.witnessPublicKeyHash}) {
+    return LocalStorage().prefs.getBool(hotWalletDerivedPrefsString[type]!) ??
+        false;
   }
 
   Future<void> store(String seed) async {
@@ -340,14 +377,13 @@ class EnvoySeed {
       if (wallet.hot) {
         var derived = Wallet.deriveWallet(
             seed,
-            wallet.network == Network.Mainnet
-                ? HOT_WALLET_MAINNET_PATH
-                : HOT_WALLET_TESTNET_PATH,
+            hotWalletDerivationPaths[wallet.type]![wallet.network]!,
             AccountManager.walletsDirectory,
             wallet.network,
             privateKey: true,
             passphrase: null,
-            initWallet: false);
+            initWallet: false,
+            type: wallet.type);
 
         wallet.internalDescriptor = derived.internalDescriptor;
         wallet.externalDescriptor = derived.externalDescriptor;

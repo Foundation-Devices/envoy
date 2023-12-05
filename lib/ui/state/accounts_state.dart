@@ -15,13 +15,19 @@ final accountManagerProvider =
 
 final accountsProvider = Provider<List<Account>>((ref) {
   var testnetEnabled = ref.watch(showTestnetAccountsProvider);
+  var taprootEnabled = ref.watch(showTaprootAccountsProvider);
   var accountManager = ref.watch(accountManagerProvider);
 
   return accountManager.accounts.where((account) {
-    if (testnetEnabled) {
-      return true;
+    if (!testnetEnabled && account.wallet.network == Network.Testnet) {
+      return false;
     }
-    return account.wallet.network != Network.Testnet;
+
+    if (!taprootEnabled && account.wallet.type == WalletType.taproot) {
+      return false;
+    }
+
+    return true;
   }).toList();
 });
 

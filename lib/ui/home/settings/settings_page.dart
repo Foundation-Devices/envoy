@@ -185,6 +185,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SettingText(S().settings_advanced_taproot),
+                  SettingToggle(s.taprootEnabled, s.setTaprootEnabled),
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(marginBetweenItems)),
               Container(
                 child: GestureDetector(
                   onTap: () {
