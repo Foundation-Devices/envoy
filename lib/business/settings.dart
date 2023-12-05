@@ -64,10 +64,7 @@ class Settings extends ChangeNotifier {
 
   setDisplayFiat(String? displayFiat) {
     selectedFiat = displayFiat;
-
-    if (selectedFiat != null) {
-      ExchangeRate().setCurrency(selectedFiat!);
-    }
+    ExchangeRate().setCurrency(selectedFiat);
 
     notifyListeners();
     store();

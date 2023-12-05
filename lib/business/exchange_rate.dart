@@ -86,11 +86,8 @@ class ExchangeRate extends ChangeNotifier {
   ExchangeRate._internal() {
     print("Instance of ExchangeRate created!");
 
-    // First get whatever we saved last
-    restoreRate();
-
-    // Double check that that's still the choice
-    setCurrency(Settings().selectedFiat ?? "USD");
+    // Get rate from storage and set currency from Settings
+    restore();
 
     // Refresh from time to time
     Timer.periodic(Duration(seconds: 30), (_) {
@@ -98,25 +95,39 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  restoreRate() async {
+  restore() {
+    // First get whatever we saved last
+    _restoreRate();
+
+    // Double check that that's still the choice
+    setCurrency(Settings().selectedFiat);
+  }
+
+  _restoreRate() async {
     final storedExchangeRate = await EnvoyStorage().getExchangeRate();
 
     if (storedExchangeRate != null) {
       _selectedCurrencyRate = storedExchangeRate[RATE_KEY] ?? 0;
       _usdRate = storedExchangeRate[USD_RATE_KEY];
-      setCurrency(storedExchangeRate[CURRENCY_KEY] ?? "USD");
     }
   }
 
-  void setCurrency(String currencyCode) {
+  void setCurrency(String? currencyCode) {
     if (_currency == null || currencyCode != _currency?.code) {
       _selectedCurrencyRate = null;
     }
 
-    // If code is wrong (for whatever reason) go with default
+    if (currencyCode == null) {
+      _currency = null;
+      notifyListeners();
+      return;
+    }
+
     _currency = supportedFiat.firstWhere(
-        (element) => element.code == currencyCode,
-        orElse: () => supportedFiat[0]);
+      (element) => element.code == currencyCode,
+      // If code is wrong (for whatever reason) go with default
+      orElse: () => supportedFiat[0],
+    );
 
     notifyListeners();
 
@@ -127,7 +138,7 @@ class ExchangeRate extends ChangeNotifier {
   _storeRate(double selectedRate, String currencyCode, double usdRate) {
     _usdRate = usdRate;
 
-    if (Settings().selectedFiat == currencyCode) {
+    if (_currency != null && _currency!.code == currencyCode) {
       _selectedCurrencyRate = selectedRate;
     }
 
@@ -143,14 +154,15 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   _getRate() async {
-    String currencyCode = Settings().selectedFiat ?? "USD";
+    String selectedCurrencyCode = _currency?.code ?? ("USD");
     double usdRate = await _getRateForCode("USD");
     double selectedRate = usdRate;
 
-    if (Settings().selectedFiat != "USD") {
-      selectedRate = await _getRateForCode(currencyCode);
+    if (selectedCurrencyCode != "USD") {
+      selectedRate = await _getRateForCode(selectedCurrencyCode);
     }
-    _storeRate(selectedRate, currencyCode, usdRate);
+
+    _storeRate(selectedRate, selectedCurrencyCode, usdRate);
   }
 
   Future<double> _getRateForCode(String currencyCode) async {
@@ -178,8 +190,8 @@ class ExchangeRate extends ChangeNotifier {
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
       {bool includeSymbol = true, Wallet? wallet}) {
-    if (Settings().selectedFiat == null ||
-        wallet?.network == Network.Testnet ||
+    if (wallet?.network == Network.Testnet ||
+        _currency == null ||
         _selectedCurrencyRate == null) {
       return "";
     }
@@ -194,7 +206,7 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   String getSymbol() {
-    if (Settings().selectedFiat == null) {
+    if (_currency == null) {
       return "";
     }
 
@@ -208,7 +220,7 @@ class ExchangeRate extends ChangeNotifier {
 
     amountFiat = amountFiat.replaceAll(fiatDecimalSeparator, ".");
 
-    if (Settings().selectedFiat == null) {
+    if (_currency == null) {
       return 0;
     }
 
