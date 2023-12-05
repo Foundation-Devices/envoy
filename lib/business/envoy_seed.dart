@@ -409,7 +409,7 @@ class EnvoySeed {
 
     Devices().restore();
     AccountManager().restore();
-    ExchangeRate().restoreRate();
+    ExchangeRate().restore();
     Notifications().restoreNotifications();
   }
 
