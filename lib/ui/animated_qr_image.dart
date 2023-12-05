@@ -6,8 +6,8 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import 'package:ur/ur.dart';
 
@@ -85,12 +85,10 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
 
   @override
   Widget build(BuildContext context) {
-    return QrImage(
-      data: widget.urEncoder != null
-          ? widget.urEncoder!.nextPart().toUpperCase()
-          : widget.cryptoRequest!.nextPart().toUpperCase(),
-      size: widget.size,
-      backgroundColor: Colors.transparent,
-    );
+    return EnvoyQR(
+        data: widget.urEncoder != null
+            ? widget.urEncoder!.nextPart().toUpperCase()
+            : widget.cryptoRequest!.nextPart().toUpperCase(),
+        qrSize: widget.size);
   }
 }

@@ -9,11 +9,11 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 //ignore: must_be_immutable
@@ -60,10 +60,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                 subtitle:
                                     S().manage_account_address_card_subheading,
                                 account: widget.account,
-                                qr: QrImage(
-                                  data: snapshot.data!,
-                                  backgroundColor: Colors.white,
-                                )),
+                                qr: EnvoyQR(data: snapshot.data!)),
                           ),
                         ),
                         Padding(
