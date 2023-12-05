@@ -98,23 +98,25 @@ class FeedManager {
         contentMap[content['height']] = content["link"];
       }
 
-      var orderString = "";
+      String orderString = "";
 
       List<String>? tags = [];
 
       var vimeoTags = video["tags"];
 
       if (vimeoTags.length >= 1) {
-        var orderTag = vimeoTags.singleWhere(
-            (element) => element["name"].toString().contains("Order"));
+        Map<String, dynamic>? orderTag = vimeoTags.singleWhere(
+            (element) => element["name"].toString().contains("Order"),
+            orElse: () => null);
 
-        orderString = orderTag["tag"];
+        orderString = orderTag?["tag"] ?? "";
       }
 
       tags.add(orderString);
 
-      var order =
-          orderString != "" ? int.tryParse(orderString.split('-').last) : null;
+      int? order = orderString.isEmpty
+          ? null
+          : int.tryParse(orderString.split('-').last);
 
       currentVideos.add(Video(
         video["name"],
