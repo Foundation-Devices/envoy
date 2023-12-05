@@ -59,7 +59,7 @@ dependencies:
       ref: set-position
       path: flutter_vlc_player
 
-  qr_flutter: ^4.0.0
+  qr_flutter: ^4.1.0
   dots_indicator: ^2.0.0
   flutter_secure_storage: ^5.0.2
   shared_preferences: ^2.0.11

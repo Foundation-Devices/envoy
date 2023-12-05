@@ -10,9 +10,9 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
 
@@ -89,12 +89,9 @@ class OnboardingPage extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox.square(
+                          EnvoyQR(
                             dimension: 230,
-                            child: QrImage(
-                              data: snapshot.data!,
-                              backgroundColor: Colors.transparent,
-                            ),
+                            data: snapshot.data!,
                           ),
                           Text(
                             "${snapshot.data ?? ""}",

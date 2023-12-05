@@ -6,10 +6,10 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import 'export_seed_modal_words.dart';
 
@@ -75,7 +75,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                           seed = seed + (" passphrase"); // TODO: FIGMA
                         }
 
-                        return QrImage(data: seed);
+                        return EnvoyQR(data: seed);
                       } else {
                         return SizedBox.shrink();
                       }
