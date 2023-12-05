@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ enum DisplayUnit { btc, sat }
 final settingsProvider = ChangeNotifierProvider((ref) => Settings());
 final showTestnetAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).showTestnetAccounts();
+});
+
+final showTaprootAccountsProvider = Provider((ref) {
+  return ref.watch(settingsProvider).taprootEnabled();
 });
 
 @JsonSerializable()
@@ -174,6 +179,28 @@ class Settings extends ChangeNotifier {
 
   setShowTestnetAccounts(bool showTestnetAccounts) {
     showTestnetAccountsSetting = showTestnetAccounts;
+    notifyListeners();
+    store();
+  }
+
+  @JsonKey(defaultValue: false)
+  bool enableTaprootSetting = false;
+
+  bool taprootEnabled() {
+    return enableTaprootSetting;
+  }
+
+  setTaprootEnabled(bool taprootEnabled) async {
+    enableTaprootSetting = taprootEnabled;
+
+    // If wpkh is derived but no taproot then do it
+    if (taprootEnabled &&
+        EnvoySeed().walletDerived(type: WalletType.witnessPublicKeyHash) &&
+        !EnvoySeed().walletDerived(type: WalletType.taproot)) {
+      await EnvoySeed()
+          .deriveAndAddWalletsFromCurrentSeed(type: WalletType.taproot);
+    }
+
     notifyListeners();
     store();
   }

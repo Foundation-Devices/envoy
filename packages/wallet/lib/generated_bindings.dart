@@ -82,6 +82,7 @@ class NativeLibrary {
     bool init_wallet,
     ffi.Pointer<ffi.Char> data_dir,
     bool private_,
+    int wallet_type,
   ) {
     return _wallet_derive(
       seed_words,
@@ -91,6 +92,7 @@ class NativeLibrary {
       init_wallet,
       data_dir,
       private_,
+      wallet_type,
     );
   }
 
@@ -103,10 +105,18 @@ class NativeLibrary {
               ffi.Int32,
               ffi.Bool,
               ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('wallet_derive');
+              ffi.Bool,
+              ffi.Int32)>>('wallet_derive');
   late final _wallet_derive = _wallet_derivePtr.asFunction<
-      Wallet Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>, int, bool, ffi.Pointer<ffi.Char>, bool)>();
+      Wallet Function(
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          int,
+          bool,
+          ffi.Pointer<ffi.Char>,
+          bool,
+          int)>();
 
   ffi.Pointer<ffi.Char> wallet_get_address(
     ffi.Pointer<ffi.Char> wallet,
@@ -497,6 +507,11 @@ abstract class NetworkType {
   static const int Testnet = 1;
   static const int Signet = 2;
   static const int Regtest = 3;
+}
+
+abstract class WalletType {
+  static const int WitnessPublicKeyHash = 0;
+  static const int Taproot = 1;
 }
 
 class Wallet extends ffi.Struct {

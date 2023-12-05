@@ -293,6 +293,8 @@ Wallet getWallet(Directory dir) {
       dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
   var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
-      privateKey: false, initWallet: true);
+      privateKey: false,
+      initWallet: true,
+      type: WalletType.witnessPublicKeyHash);
   return wallet;
 }

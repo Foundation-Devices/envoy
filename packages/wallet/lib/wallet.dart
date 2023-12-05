@@ -25,6 +25,8 @@ enum Network { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending }
 
+enum WalletType { witnessPublicKeyHash, taproot, superWallet }
+
 /// Sort transactions by time and ancestry
 extension AncestralSort on List<Transaction> {
   void ancestralSort() {
@@ -377,6 +379,11 @@ class Wallet {
   String? publicInternalDescriptor;
 
   @JsonKey(
+      defaultValue: WalletType
+          .witnessPublicKeyHash) // Migration from time when all the Wallets were wpkh
+  final WalletType type;
+
+  @JsonKey(
       defaultValue:
           Network.Mainnet) // Migration from binary main/testnet approach
   final Network network;
@@ -470,7 +477,8 @@ class Wallet {
       {this.hot = false,
       this.hasPassphrase = false,
       this.publicExternalDescriptor = null,
-      this.publicInternalDescriptor = null});
+      this.publicInternalDescriptor = null,
+      this.type = WalletType.witnessPublicKeyHash});
 
   init(String walletsDirectory) {
     _lib = load(_libName);
@@ -497,6 +505,7 @@ class Wallet {
       this.hasPassphrase = false,
       this.publicExternalDescriptor = null,
       this.publicInternalDescriptor = null,
+      this.type = WalletType.witnessPublicKeyHash,
       required DynamicLibrary lib}) {
     _lib = lib;
   }
@@ -880,7 +889,10 @@ class Wallet {
 
   static Wallet deriveWallet(
       String seed, String path, String directory, Network network,
-      {String? passphrase, bool privateKey = false, bool initWallet = true}) {
+      {String? passphrase,
+      bool privateKey = false,
+      bool initWallet = true,
+      required WalletType type}) {
     final lib = load(_libName);
     final native = rust.NativeLibrary(lib);
     var wallet = native.wallet_derive(
@@ -890,7 +902,8 @@ class Wallet {
         network.index,
         initWallet,
         directory.toNativeUtf8().cast(),
-        privateKey);
+        privateKey,
+        type.index);
 
     if (wallet.name == nullptr) {
       throwRustException(lib);
@@ -919,7 +932,8 @@ class Wallet {
         hasPassphrase: passphrase != null,
         publicExternalDescriptor: publicExternalDescriptor,
         publicInternalDescriptor: publicInternalDescriptor,
-        lib: lib);
+        lib: lib,
+        type: type);
   }
 
   static String getSeedWords(List<int> binarySeed) {

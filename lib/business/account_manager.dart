@@ -185,11 +185,18 @@ class AccountManager extends ChangeNotifier {
     return account;
   }
 
-  bool checkIfWalletFromSeedExists(String seed, {String? passphrase}) {
+  bool checkIfWalletFromSeedExists(String seed,
+      {String? passphrase, WalletType type = WalletType.witnessPublicKeyHash}) {
     try {
-      var mainnet = Wallet.deriveWallet(seed, EnvoySeed.HOT_WALLET_MAINNET_PATH,
-          AccountManager.walletsDirectory, Network.Mainnet,
-          privateKey: true, passphrase: passphrase, initWallet: false);
+      var mainnet = Wallet.deriveWallet(
+          seed,
+          EnvoySeed.hotWalletDerivationPaths[type]![Network.Mainnet]!,
+          AccountManager.walletsDirectory,
+          Network.Mainnet,
+          privateKey: true,
+          passphrase: passphrase,
+          initWallet: false,
+          type: type);
       for (final account in accounts) {
         if (account.wallet.externalDescriptor == mainnet.externalDescriptor) {
           return true;

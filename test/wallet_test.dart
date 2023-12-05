@@ -148,16 +148,40 @@ void main() async {
         dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
-        privateKey: true);
+        privateKey: true, type: WalletType.witnessPublicKeyHash);
 
     var address1 = await wallet1.getAddress();
-    expect(address1.contains("bc1"), true);
+    expect(address1.contains("bc1q"), true);
 
     var wallet2 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
-        privateKey: true, passphrase: "yolo");
+        privateKey: true,
+        passphrase: "yolo",
+        type: WalletType.witnessPublicKeyHash);
 
     var address2 = await wallet2.getAddress();
-    expect(address2.contains("bc1"), true);
+    expect(address2.contains("bc1q"), true);
+    expect(address1 == address2, false);
+  });
+
+  test('Get derived taproot wallet address', () async {
+    final seed =
+        "copper december enlist body dove discover cross help evidence fall rich clean";
+    final path = "m/86'/0'/0'";
+
+    var walletsDir =
+        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+
+    var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
+        privateKey: true, type: WalletType.taproot);
+
+    var address1 = await wallet1.getAddress();
+    expect(address1.contains("bc1p"), true);
+
+    var wallet2 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
+        privateKey: true, passphrase: "yolo", type: WalletType.taproot);
+
+    var address2 = await wallet2.getAddress();
+    expect(address2.contains("bc1p"), true);
     expect(address1 == address2, false);
   });
 
@@ -170,7 +194,7 @@ void main() async {
         dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet,
-        privateKey: true);
+        privateKey: true, type: WalletType.witnessPublicKeyHash);
 
     var address = await wallet.getAddress();
 
@@ -186,7 +210,7 @@ void main() async {
         dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
-        privateKey: false);
+        privateKey: false, type: WalletType.witnessPublicKeyHash);
     expect(wallet.internalDescriptor!.contains("xpub"), true);
   });
 
@@ -199,7 +223,7 @@ void main() async {
         dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
-        privateKey: true);
+        privateKey: true, type: WalletType.witnessPublicKeyHash);
     expect(wallet.internalDescriptor!.contains("xprv"), true);
   });
 
