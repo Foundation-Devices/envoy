@@ -153,6 +153,12 @@ class EnvoyStorage {
         //return null;
       });
     }
+    removeOutstandingAztecoPendingTxs();
+  }
+
+  Future<void> removeOutstandingAztecoPendingTxs() async {
+    const String key = "azteco";
+    deletePendingTx(key);
   }
 
   void _possiblyBackUp() {
