@@ -52,7 +52,7 @@ class _BigTabState extends State<BigTab> {
             borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
           ),
           child: Padding(
-            padding: EdgeInsets.all(EnvoySpacing.medium1),
+            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -63,17 +63,24 @@ class _BigTabState extends State<BigTab> {
                 SizedBox(
                   width: EnvoySpacing.small,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.label,
-                      style: EnvoyTypography.button.copyWith(
-                        color: textColor,
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: 100.0, // Set your desired maximum width here
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.label,
+                        style: EnvoyTypography.button.copyWith(
+                          color: textColor,
+                          fontSize: 12.0,
+                        ),
+                        maxLines: 2,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

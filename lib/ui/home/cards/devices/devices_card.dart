@@ -253,30 +253,32 @@ class GhostDevice extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                S().devices_empty_text_explainer,
-                style: _explainerTextStyle,
-              ),
-              SizedBox(width: EnvoySpacing.small),
-              GestureDetector(
-                child: Text(S().devices_empty_learn_more,
-                    style: EnvoyTypography.button
-                        .copyWith(color: EnvoyColors.accentPrimary)),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                          child: DeviceEmptyVideo());
-                    },
-                  );
-                },
-              ),
-            ],
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                Text(
+                  S().devices_empty_text_explainer,
+                  style: _explainerTextStyle,
+                ),
+                SizedBox(width: EnvoySpacing.small),
+                GestureDetector(
+                  child: Text(S().devices_empty_learn_more,
+                      style: EnvoyTypography.button
+                          .copyWith(color: EnvoyColors.accentPrimary)),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                            child: DeviceEmptyVideo());
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         )
       ],

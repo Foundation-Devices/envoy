@@ -50,48 +50,54 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
   }
 
   void selectPage(HomePageBackgroundState state, BuildContext context) {
-    switch (state) {
-      case HomePageBackgroundState.menu:
-        setState(() {
-          _currentPage = SettingsMenuWidget();
-          HomePageNotification(
-              leftFunction: null, title: S().menu_heading.toUpperCase())
-            ..dispatch(context);
-          ref.read(homePageTitleProvider.notifier).state =
-              S().menu_heading.toUpperCase();
-        });
-        break;
-      case HomePageBackgroundState.settings:
-        setState(() {
-          _currentPage = SettingsPage();
-          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
-          ref.read(homePageTitleProvider.notifier).state = S().menu_settings;
-        });
-        break;
-      case HomePageBackgroundState.backups:
-        setState(() {
-          _currentPage = BackupPage();
-          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
-          ref.read(homePageTitleProvider.notifier).state = S().menu_backups;
-        });
-        break;
-      case HomePageBackgroundState.support:
-        setState(() {
-          _currentPage = SupportPage();
-          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
-          ref.read(homePageTitleProvider.notifier).state = S().menu_support;
-        });
-        break;
-      case HomePageBackgroundState.about:
-        setState(() {
-          _currentPage = AboutPage();
-          HomePageNotification(leftFunction: _goBackToMenu)..dispatch(context);
-          ref.read(homePageTitleProvider.notifier).state = S().menu_about;
-        });
-        break;
-      default:
-        break;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      switch (state) {
+        case HomePageBackgroundState.menu:
+          setState(() {
+            _currentPage = SettingsMenuWidget();
+            HomePageNotification(
+                leftFunction: null, title: S().menu_heading.toUpperCase())
+              ..dispatch(context);
+            ref.read(homePageTitleProvider.notifier).state =
+                S().menu_heading.toUpperCase();
+          });
+          break;
+        case HomePageBackgroundState.settings:
+          setState(() {
+            _currentPage = SettingsPage();
+            HomePageNotification(leftFunction: _goBackToMenu)
+              ..dispatch(context);
+            ref.read(homePageTitleProvider.notifier).state = S().menu_settings;
+          });
+          break;
+        case HomePageBackgroundState.backups:
+          setState(() {
+            _currentPage = BackupPage();
+            HomePageNotification(leftFunction: _goBackToMenu)
+              ..dispatch(context);
+            ref.read(homePageTitleProvider.notifier).state = S().menu_backups;
+          });
+          break;
+        case HomePageBackgroundState.support:
+          setState(() {
+            _currentPage = SupportPage();
+            HomePageNotification(leftFunction: _goBackToMenu)
+              ..dispatch(context);
+            ref.read(homePageTitleProvider.notifier).state = S().menu_support;
+          });
+          break;
+        case HomePageBackgroundState.about:
+          setState(() {
+            _currentPage = AboutPage();
+            HomePageNotification(leftFunction: _goBackToMenu)
+              ..dispatch(context);
+            ref.read(homePageTitleProvider.notifier).state = S().menu_about;
+          });
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
 
