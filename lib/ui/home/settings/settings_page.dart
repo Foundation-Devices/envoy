@@ -195,18 +195,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       onEnabled: () {
                     showEnvoyPopUp(
                       context,
-                      title: "Taproot on Passport",
-                      //TODO: Figma
-                      "To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport.",
-                      //TODO: Figma
-                      "Reconnect Passport",
-                      //TODO: Figma
+                      title: S().taproot_passport_dialog_heading,
+                      S().taproot_passport_dialog_subheading,
+                      S().taproot_passport_dialog_reconnect,
                       () {
                         // on tap "Reconnect passport"
                       },
                       icon: EnvoyIcons.info,
-                      secondaryButtonLabel: "Do it later",
-                      //TODO: Figma
+                      secondaryButtonLabel: S().taproot_passport_dialog_later,
                       onSecondaryButtonTap: () {
                         Navigator.pop(context);
                       },
