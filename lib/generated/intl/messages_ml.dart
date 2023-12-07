@@ -76,6 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "TagName": MessageLookupByLibrary.simpleMessage("സമ്മേളനങ്ങൾ"),
         "Tags": MessageLookupByLibrary.simpleMessage("ടാഗുകൾ"),
         "Test": MessageLookupByLibrary.simpleMessage("ലഭിച്ചു"),
+        "Time": MessageLookupByLibrary.simpleMessage("9:41"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("3 മണിക്കൂർ മുമ്പ് ലഭിച്ചു"),
         "Title": MessageLookupByLibrary.simpleMessage("തിരഞ്ഞെടുത്ത തുക"),
@@ -88,6 +89,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "ഈ അക്കൗണ്ടിൽ ഇടപാടുകളൊന്നുമില്ല. നിങ്ങളുടെ ആദ്യ ഇടപാട് ചുവടെ സ്വീകരിക്കുക."),
+        "account_type_label_taproot":
+            MessageLookupByLibrary.simpleMessage("Taproot"),
+        "account_type_sublabel":
+            MessageLookupByLibrary.simpleMessage("Testnet"),
+        "account_type_sublabel_testnet":
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "മാജിക് ബാക്കപ്പുകൾ ഉപയോഗിച്ച് ഒരു മൊബൈൽ വാലറ്റ് സൃഷ്‌ടിക്കുക."),
         "accounts_empty_text_learn_more":
@@ -754,6 +761,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt":
             MessageLookupByLibrary.simpleMessage(
                 "ബിറ്റ്‌കോയിൻ ലഭിക്കാൻ മുകളിലെ കാർഡുകളിൽ ഏതെങ്കിലും ടാപ്പ് ചെയ്യുക."),
+        "label": MessageLookupByLibrary.simpleMessage("TAPROOT"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("വീണ്ടും ശ്രമിക്കുക"),
         "launch_screen_faceID_fail_heading":
@@ -1115,6 +1123,15 @@ class MessageLookup extends MessageLookupByLibrary {
                 "ഇനിപ്പറയുന്ന സ്‌ക്രീനുകളിലേക്ക് നിങ്ങളുടെ പാസ്‌പോർട്ട് വിത്ത് ഒരിക്കലും ഇറക്കുമതി ചെയ്യരുത്."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "നിലവിലുള്ള ഒരു വിത്ത് ഇറക്കുമതി ചെയ്യാൻ താഴെ തുടരുക. ഒരു എൻവോയ് ബാക്കപ്പ് ഫയൽ പിന്നീട് ഇറക്കുമതി ചെയ്യാനുള്ള ഓപ്‌ഷൻ നിങ്ങൾക്ക് ലഭിക്കും."),
+        "manual_setup_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Magic Backup Detected"),
+        "manual_setup_magicBackupDetected_ignore":
+            MessageLookupByLibrary.simpleMessage("Ignore"),
+        "manual_setup_magicBackupDetected_restore":
+            MessageLookupByLibrary.simpleMessage("Restore"),
+        "manual_setup_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "A Magic Backup was found on the server.  \nRestore your backup?"),
         "manual_setup_recovery_fail_cta1":
             MessageLookupByLibrary.simpleMessage("വീണ്ടും ശ്രമിക്കുക"),
         "manual_setup_recovery_fail_cta2": MessageLookupByLibrary.simpleMessage(
@@ -1719,6 +1736,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "നിങ്ങളുടെ അക്കൗണ്ടുകൾ വലിച്ചിടാനും പുനഃക്രമീകരിക്കാനും പിടിക്കുക."),
         "tap_and_drag_first_time_text_button":
             MessageLookupByLibrary.simpleMessage("പിരിച്ചുവിടുക"),
+        "taproot_passport_dialog_heading":
+            MessageLookupByLibrary.simpleMessage("Taproot on Passport"),
+        "taproot_passport_dialog_later":
+            MessageLookupByLibrary.simpleMessage("Do It Later"),
+        "taproot_passport_dialog_reconnect":
+            MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
+        "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
+            "To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
         "tb1q33xnrjena6apwnhx5t375":
             MessageLookupByLibrary.simpleMessage("tb1q33xnrjena6apwnhx5t375"),
         "torToast_learnMore_retryTorConnection":

@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Activity": MessageLookupByLibrary.simpleMessage("Activity"),
         "Aswer": MessageLookupByLibrary.simpleMessage(
             "Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler.\n\nEnvoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet."),
-        "Balance": MessageLookupByLibrary.simpleMessage("-TBD"),
+        "Balance": MessageLookupByLibrary.simpleMessage("200,000"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CoinInfo": MessageLookupByLibrary.simpleMessage("1 Locked"),
@@ -60,8 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "SEND": MessageLookupByLibrary.simpleMessage("SEND"),
         "Sats": MessageLookupByLibrary.simpleMessage("123,345,679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("account Details"),
-        "Secondary": MessageLookupByLibrary.simpleMessage("\$T.BD"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Receive"),
+        "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "Skip": MessageLookupByLibrary.simpleMessage("Skip"),
@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "TagName": MessageLookupByLibrary.simpleMessage("Conferences"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
+        "Time": MessageLookupByLibrary.simpleMessage("9:41"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Received 3 hours ago"),
         "Title": MessageLookupByLibrary.simpleMessage("Selected Amount"),
@@ -86,6 +87,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "There are no transactions in this account.\nReceive your first transaction below."),
+        "account_type_label_taproot":
+            MessageLookupByLibrary.simpleMessage("Taproot"),
+        "account_type_sublabel":
+            MessageLookupByLibrary.simpleMessage("Testnet"),
+        "account_type_sublabel_testnet":
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Create a mobile wallet with Magic Backups."),
         "accounts_empty_text_learn_more":
@@ -743,6 +750,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt":
             MessageLookupByLibrary.simpleMessage(
                 "Tap any of the above cards to receive Bitcoin."),
+        "label": MessageLookupByLibrary.simpleMessage("TAPROOT"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("Try Again"),
         "launch_screen_faceID_fail_heading":
@@ -1067,6 +1075,15 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Never import your Passport seed into the following screens."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later."),
+        "manual_setup_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Magic Backup Detected"),
+        "manual_setup_magicBackupDetected_ignore":
+            MessageLookupByLibrary.simpleMessage("Ignore"),
+        "manual_setup_magicBackupDetected_restore":
+            MessageLookupByLibrary.simpleMessage("Restore"),
+        "manual_setup_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "A Magic Backup was found on the server.  \nRestore your backup?"),
         "manual_setup_recovery_fail_cta1":
             MessageLookupByLibrary.simpleMessage("Retry"),
         "manual_setup_recovery_fail_cta2":
@@ -1480,7 +1497,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_privacy_tor_on": MessageLookupByLibrary.simpleMessage(
             "Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable."),
         "receive_QR_code_address": MessageLookupByLibrary.simpleMessage(
-            "tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),
+            "31q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_qr_code_card_heading":
@@ -1648,6 +1665,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Hold to drag and reorder your accounts."),
         "tap_and_drag_first_time_text_button":
             MessageLookupByLibrary.simpleMessage("Dismiss"),
+        "taproot_passport_dialog_heading":
+            MessageLookupByLibrary.simpleMessage("Taproot on Passport"),
+        "taproot_passport_dialog_later":
+            MessageLookupByLibrary.simpleMessage("Do It Later"),
+        "taproot_passport_dialog_reconnect":
+            MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
+        "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
+            "To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
         "tb1q33xnrjena6apwnhx5t375":
             MessageLookupByLibrary.simpleMessage("tb1q33xnrjena6apwnhx5t375"),
         "torToast_learnMore_retryTorConnection":

@@ -76,6 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "TagName": MessageLookupByLibrary.simpleMessage("Conferencias"),
         "Tags": MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "Test": MessageLookupByLibrary.simpleMessage("recibió"),
+        "Time": MessageLookupByLibrary.simpleMessage("9:41"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Recibido hace 3 horas"),
         "Title": MessageLookupByLibrary.simpleMessage("Importe seleccionado"),
@@ -88,6 +89,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "No hay transacciones en esta cuenta. Reciba su primera transacción a continuación."),
+        "account_type_label_taproot":
+            MessageLookupByLibrary.simpleMessage("Taproot"),
+        "account_type_sublabel":
+            MessageLookupByLibrary.simpleMessage("Testnet"),
+        "account_type_sublabel_testnet":
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Crea una billetera móvil con Magic Backups."),
         "accounts_empty_text_learn_more":
@@ -751,6 +758,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt":
             MessageLookupByLibrary.simpleMessage(
                 "Toque cualquiera de las tarjetas anteriores para recibir Bitcoin."),
+        "label": MessageLookupByLibrary.simpleMessage("TAPROOT"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("volver a intentarlo"),
         "launch_screen_faceID_fail_heading":
@@ -1098,6 +1106,15 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Nunca importe su semilla de Passport a las siguientes pantallas."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Continúe a continuación para importar una semilla existente. Tendrás la opción de importar un archivo de copia de seguridad de Envoy más adelante."),
+        "manual_setup_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Magic Backup Detected"),
+        "manual_setup_magicBackupDetected_ignore":
+            MessageLookupByLibrary.simpleMessage("Ignore"),
+        "manual_setup_magicBackupDetected_restore":
+            MessageLookupByLibrary.simpleMessage("Restore"),
+        "manual_setup_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "A Magic Backup was found on the server.  \nRestore your backup?"),
         "manual_setup_recovery_fail_cta1":
             MessageLookupByLibrary.simpleMessage("vuelve a intentarlo"),
         "manual_setup_recovery_fail_cta2":
@@ -1708,6 +1725,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Mantén presionado para arrastrar y reordenar tus cuentas."),
         "tap_and_drag_first_time_text_button":
             MessageLookupByLibrary.simpleMessage("Despedir"),
+        "taproot_passport_dialog_heading":
+            MessageLookupByLibrary.simpleMessage("Taproot on Passport"),
+        "taproot_passport_dialog_later":
+            MessageLookupByLibrary.simpleMessage("Do It Later"),
+        "taproot_passport_dialog_reconnect":
+            MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
+        "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
+            "To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
         "tb1q33xnrjena6apwnhx5t375":
             MessageLookupByLibrary.simpleMessage("tb1q33xnrjena6apwnhx5t375"),
         "torToast_learnMore_retryTorConnection":
