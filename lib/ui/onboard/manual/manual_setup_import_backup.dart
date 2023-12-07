@@ -131,18 +131,14 @@ class _RecoverViaQR extends State<RecoverViaQR> {
         if (data != null)
           showEnvoyPopUp(
               context,
-              title: "Magic Backup Detected",
-              //TODO: Figma
-              "A Magic Backup was found on the server.\nRestore your backup?",
-              //TODO: Figma
-              "Restore",
-              //TODO: Figma
+              title: S().manual_setup_magicBackupDetected_heading,
+              S().manual_setup_magicBackupDetected_subheading,
+              S().manual_setup_magicBackupDetected_restore,
               () async {
                 await tryMagicRecover(seedList, seed, data, context);
               },
               icon: EnvoyIcons.info,
-              secondaryButtonLabel: "Ignore",
-              //TODO: Figma
+              secondaryButtonLabel: S().manual_setup_magicBackupDetected_ignore,
               onSecondaryButtonTap: () {
                 manualRecover(seedList, context);
                 Navigator.pop(context);
