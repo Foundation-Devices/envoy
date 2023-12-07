@@ -282,7 +282,7 @@ class EnvoySeed {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) {
-          return _processRecoveryData(seed!, data);
+          return processRecoveryData(seed!, data);
         });
       } catch (e) {
         throw e;
@@ -290,14 +290,14 @@ class EnvoySeed {
     } else {
       try {
         Map<String, String>? data = Backup.restoreOffline(seed, filePath);
-        return _processRecoveryData(seed, data);
+        return processRecoveryData(seed, data);
       } catch (e) {
         return false;
       }
     }
   }
 
-  Future<bool> _processRecoveryData(
+  Future<bool> processRecoveryData(
       String seed, Map<String, String>? data) async {
     bool success = data != null;
     if (success) {
