@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/amount_entry.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   const StagingTxDetails({super.key});
@@ -49,7 +50,19 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         ref.watch(stagingTxChangeOutPutTagProvider);
     final totalReceiveAmount = ref.watch(receiveAmountProvider);
     final totalChangeAmount = ref.watch(changeAmountProvider);
-    final unit = ref.watch(sendScreenUnitProvider);
+
+    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+
+    /// if user selected unit from the form screen then use that, otherwise use the default
+    DisplayUnit unit = sendScreenUnit == AmountDisplayUnit.btc
+        ? DisplayUnit.btc
+        : DisplayUnit.sat;
+    if (sendScreenUnit == AmountDisplayUnit.fiat) {
+      unit = Settings().displayUnit;
+    }
+    AmountDisplayUnit formatUnit =
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+
     final inputTags = inputs?.map((e) => e.item1).toList().unique(
               (element) => element.id,
             ) ??
@@ -216,7 +229,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       ? 0
                                                       : 8),
                                               child: Text(
-                                                "${getFormattedAmount(totalReceiveAmount, trailingZeroes: true)}",
+                                                "${getFormattedAmount(totalReceiveAmount, trailingZeroes: true, unit: formatUnit)}",
                                                 textAlign:
                                                     unit == DisplayUnit.btc
                                                         ? TextAlign.start
@@ -311,7 +324,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       alignment:
                                                           Alignment.centerRight,
                                                       child: Text(
-                                                        "${getFormattedAmount(totalInputAmount, trailingZeroes: true)}",
+                                                        "${getFormattedAmount(totalInputAmount, trailingZeroes: true, unit: formatUnit)}",
                                                         textAlign: unit ==
                                                                 DisplayUnit.btc
                                                             ? TextAlign.start
@@ -409,7 +422,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                         alignment: Alignment
                                                             .centerRight,
                                                         child: Text(
-                                                          "${getFormattedAmount(totalChangeAmount, trailingZeroes: true)}",
+                                                          "${getFormattedAmount(totalChangeAmount, trailingZeroes: true, unit: formatUnit)}",
                                                           textAlign: unit ==
                                                                   DisplayUnit
                                                                       .btc
