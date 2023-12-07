@@ -138,10 +138,10 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
               ),
             if (widget.title != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                 child: Text(
                   widget.title!,
-                  style: EnvoyTypography.heading,
+                  style: EnvoyTypography.subheading,
                 ),
               ),
             Padding(
@@ -167,18 +167,9 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   },
                 ),
               ),
-            EnvoyButton(
-                label: widget.primaryButtonLabel,
-                type: ButtonType.primary,
-                state: ButtonState.default_state,
-                // icon: EnvoyIcons.info,
-                onTap: () {
-                  widget.onPrimaryButtonTap();
-                  Navigator.pop(context);
-                }),
             if (widget.secondaryButtonLabel != null)
               Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                 child: EnvoyButton(
                     label: widget.secondaryButtonLabel,
                     type: ButtonType.secondary,
@@ -189,6 +180,14 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                       }
                     }),
               ),
+            EnvoyButton(
+                label: widget.primaryButtonLabel,
+                type: ButtonType.primary,
+                state: ButtonState.default_state,
+                onTap: () {
+                  widget.onPrimaryButtonTap();
+                  Navigator.pop(context);
+                }),
           ],
         ),
       ),

@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class AddressCard extends ConsumerStatefulWidget {
@@ -39,6 +40,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
   @override
   Widget build(BuildContext context) {
+    bool isTaproot = widget.account.wallet.type == WalletType.taproot;
     // ignore: unused_local_variable
     return FutureBuilder<String>(
         future: widget.account.wallet.getAddress(),
@@ -60,11 +62,41 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                 subtitle:
                                     S().manage_account_address_card_subheading,
                                 account: widget.account,
-                                qr: EnvoyQR(data: snapshot.data!)),
+                                qr: Stack(
+                                  children: <Widget>[
+                                    EnvoyQR(
+                                      data: snapshot.data!,
+                                      embeddedImage: isTaproot
+                                          ? Image.asset(
+                                              'assets/taproot_qr.png',
+                                            ).image
+                                          : null,
+                                      embeddedImageSize: Size(128, 66),
+                                    ),
+                                    if (isTaproot) // This code is for testing purposes; a new image may be required.
+                                      Center(
+                                        child: Container(
+                                          width: 102,
+                                          // This is set through the visual interface.
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            border: Border.all(
+                                                color: widget.account.color,
+                                                width: 3),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(6.0) //
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                )),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20),
                           child: GestureDetector(
                             onTap: () {
                               _copyAddressToClipboard(context, snapshot.data!);

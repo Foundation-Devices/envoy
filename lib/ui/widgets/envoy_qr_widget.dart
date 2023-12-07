@@ -41,6 +41,7 @@ class _EnvoyQRState extends State<EnvoyQR> {
         embeddedImageStyle:
             QrEmbeddedImageStyle(size: widget.embeddedImageSize),
         backgroundColor: Colors.transparent,
+        errorCorrectionLevel: QrErrorCorrectLevel.H,
         size: widget.qrSize);
     return widget.dimension == null
         ? SizedBox.expand(

@@ -86,8 +86,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             child: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium3,
-                    vertical: EnvoySpacing.small),
+                    horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

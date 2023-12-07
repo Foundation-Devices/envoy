@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +25,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   @override
@@ -189,7 +191,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SettingText(S().settings_advanced_taproot),
-                  SettingToggle(s.taprootEnabled, s.setTaprootEnabled),
+                  SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
+                      onEnabled: () {
+                    showEnvoyPopUp(
+                      context,
+                      title: "Taproot on Passport",
+                      //TODO: Figma
+                      "To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport.",
+                      //TODO: Figma
+                      "Reconnect Passport",
+                      //TODO: Figma
+                      () {
+                        // on tap "Reconnect passport"
+                      },
+                      icon: EnvoyIcons.info,
+                      secondaryButtonLabel: "Do it later",
+                      //TODO: Figma
+                      onSecondaryButtonTap: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  }),
                 ],
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),

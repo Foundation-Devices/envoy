@@ -6,6 +6,8 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:flutter/material.dart';
@@ -164,47 +166,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 12),
-                              child: Container(
-                                  width:
-                                      account.wallet.network == Network.Testnet
-                                          ? null
-                                          : containerHeight / 2.2,
-                                  height: containerHeight / 2.2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.6),
-                                      borderRadius: BorderRadius.circular(
-                                          containerHeight / 2),
-                                      border: Border.all(
-                                          color: account.color,
-                                          width: 3,
-                                          style: BorderStyle.solid)),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(9.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          if (account.wallet.network ==
-                                              Network.Testnet)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 7.0),
-                                              child: Text(
-                                                "Testnet", // TODO: FIGMA
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall!
-                                                    .copyWith(
-                                                        fontSize: 12,
-                                                        color: Colors.white),
-                                              ),
-                                            ),
-                                          getAccountIcon(account),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
+                              child: AccountBadge(account: account),
                             ),
                           ],
                         ),
@@ -331,21 +293,93 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
       ),
     );
   }
+}
 
-  Widget getAccountIcon(Account account) {
+class AccountBadge extends StatelessWidget {
+  const AccountBadge({
+    super.key,
+    required this.account,
+  });
+
+  final Account? account;
+  final double containerHeight = 100;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isTaproot = account?.wallet.type == WalletType.taproot;
+    bool isTestnet = account?.wallet.network == Network.Testnet;
+    return Container(
+        width: (isTestnet || isTaproot) ? null : containerHeight / 2,
+        height: containerHeight / 2.0,
+        decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(containerHeight / 2),
+            border: Border.all(
+                color: account!.color, width: 3, style: BorderStyle.solid)),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isTestnet)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.xs),
+                        child: Text("Testnet", // TODO: FIGMA
+                            style: isTaproot
+                                ? EnvoyTypography.label
+                                    .copyWith(color: Colors.white)
+                                : EnvoyTypography.info
+                                    .copyWith(color: Colors.white)),
+                      ),
+                    if (isTaproot)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.xs),
+                        child: Text(
+                          "Taproot", // TODO: FIGMA
+                          style: EnvoyTypography.info
+                              .copyWith(color: Colors.white),
+                        ),
+                      ),
+                  ],
+                ),
+                BadgeIcon(
+                  account: account!,
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+class BadgeIcon extends StatelessWidget {
+  const BadgeIcon({super.key, required this.account});
+
+  final Account account;
+
+  @override
+  Widget build(BuildContext context) {
     if (account.wallet.hot) {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
-        height: 20,
-        width: 20,
+        height: 24,
+        width: 24,
         color: Colors.white,
       );
     }
     if (!account.wallet.hot) {
       return SvgPicture.asset(
         "assets/icons/ic_passport_account.svg",
-        height: 26,
-        width: 26,
+        height: 24,
+        width: 24,
         color: Colors.white,
       );
     }
