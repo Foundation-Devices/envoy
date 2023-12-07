@@ -50,9 +50,15 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  // skipped getter for the '\$' key
+
   // skipped getter for the '\$31,056.79' key
 
   // skipped getter for the '-' key
+
+  // skipped getter for the '//' key
+
+  // skipped getter for the '0.12 345 678' key
 
   // skipped getter for the '03:37' key
 
@@ -63,6 +69,8 @@ class S {
   // skipped getter for the '123,456,789' key
 
   // skipped getter for the '2m' key
+
+  // skipped getter for the '30,493.93' key
 
   // skipped getter for the '48:58' key
 
@@ -122,10 +130,10 @@ class S {
 
   // skipped getter for the 'August 15, 2023' key
 
-  /// `-TBD`
+  /// `200,000`
   String get Balance {
     return Intl.message(
-      '-TBD',
+      '200,000',
       name: 'Balance',
       desc: '',
       args: [],
@@ -228,6 +236,8 @@ class S {
 
   // skipped getter for the 'Do not remind me' key
 
+  // skipped getter for the 'Do not remind me again' key
+
   // skipped getter for the 'Don’t show again' key
 
   // skipped getter for the 'EP #10 - Make Bitcoin P2P again w/ Peach Bitcoin' key
@@ -305,6 +315,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Learn more' key
 
   /// `Receive`
   String get Left {
@@ -406,6 +418,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'Replace me Shield medium' key
+
   // skipped getter for the 'Requirements Check formatting + layout Address icon (think we already have one) Status icon TxID icon (think we already have one) Date icon' key
 
   // skipped getter for the 'Requirements Remix icon' key
@@ -454,10 +468,10 @@ class S {
     );
   }
 
-  /// `account Details`
+  /// `Receive`
   String get ScreenTitle {
     return Intl.message(
-      'account Details',
+      'Receive',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -470,10 +484,10 @@ class S {
 
   // skipped getter for the 'Second Value' key
 
-  /// `$T.BD`
+  /// `$50.31`
   String get Secondary {
     return Intl.message(
-      '\$T.BD',
+      '\$50.31',
       name: 'Secondary',
       desc: '',
       args: [],
@@ -596,6 +610,16 @@ class S {
 
   // skipped getter for the 'Text-right-1' key
 
+  /// `9:41`
+  String get Time {
+    return Intl.message(
+      '9:41',
+      name: 'Time',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Received 3 hours ago`
   String get Timestamp {
     return Intl.message(
@@ -665,6 +689,36 @@ class S {
     return Intl.message(
       'There are no transactions in this account.\nReceive your first transaction below.',
       name: 'account_empty_tx_history_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taproot`
+  String get account_type_label_taproot {
+    return Intl.message(
+      'Taproot',
+      name: 'account_type_label_taproot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Testnet`
+  String get account_type_sublabel {
+    return Intl.message(
+      'Testnet',
+      name: 'account_type_sublabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Testnet`
+  String get account_type_sublabel_testnet {
+    return Intl.message(
+      'Testnet',
+      name: 'account_type_sublabel_testnet',
       desc: '',
       args: [],
     );
@@ -3828,6 +3882,16 @@ class S {
     );
   }
 
+  /// `TAPROOT`
+  String get label {
+    return Intl.message(
+      'TAPROOT',
+      name: 'label',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Try Again`
   String get launch_screen_faceID_fail_CTA {
     return Intl.message(
@@ -5311,6 +5375,46 @@ class S {
     return Intl.message(
       'Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later.',
       name: 'manual_setup_import_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backup Detected`
+  String get manual_setup_magicBackupDetected_heading {
+    return Intl.message(
+      'Magic Backup Detected',
+      name: 'manual_setup_magicBackupDetected_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ignore`
+  String get manual_setup_magicBackupDetected_ignore {
+    return Intl.message(
+      'Ignore',
+      name: 'manual_setup_magicBackupDetected_ignore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore`
+  String get manual_setup_magicBackupDetected_restore {
+    return Intl.message(
+      'Restore',
+      name: 'manual_setup_magicBackupDetected_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A Magic Backup was found on the server.  \nRestore your backup?`
+  String get manual_setup_magicBackupDetected_subheading {
+    return Intl.message(
+      'A Magic Backup was found on the server.  \nRestore your backup?',
+      name: 'manual_setup_magicBackupDetected_subheading',
       desc: '',
       args: [],
     );
@@ -7242,10 +7346,10 @@ class S {
     );
   }
 
-  /// `tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7`
+  /// `31q33xnrjena6apwnhx5t375djmdn7y6602prrgn7`
   String get receive_QR_code_address {
     return Intl.message(
-      'tb1q33xnrjena6apwnhx5t375djmdn7y6602prrgn7',
+      '31q33xnrjena6apwnhx5t375djmdn7y6602prrgn7',
       name: 'receive_QR_code_address',
       desc: '',
       args: [],
@@ -8037,6 +8141,46 @@ class S {
     return Intl.message(
       'Dismiss',
       name: 'tap_and_drag_first_time_text_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taproot on Passport`
+  String get taproot_passport_dialog_heading {
+    return Intl.message(
+      'Taproot on Passport',
+      name: 'taproot_passport_dialog_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do It Later`
+  String get taproot_passport_dialog_later {
+    return Intl.message(
+      'Do It Later',
+      name: 'taproot_passport_dialog_later',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnect Passport`
+  String get taproot_passport_dialog_reconnect {
+    return Intl.message(
+      'Reconnect Passport',
+      name: 'taproot_passport_dialog_reconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport.`
+  String get taproot_passport_dialog_subheading {
+    return Intl.message(
+      'To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport.',
+      name: 'taproot_passport_dialog_subheading',
       desc: '',
       args: [],
     );

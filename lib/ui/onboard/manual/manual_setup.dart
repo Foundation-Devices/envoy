@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
+import 'manual_setup_import_backup.dart';
 
 class ManualSetup extends StatefulWidget {
   const ManualSetup({Key? key}) : super(key: key);
@@ -276,10 +276,9 @@ class SeedIntroScreen extends StatelessWidget {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return ScannerPage([ScannerType.seed],
-                                        onSeedValidated: (result) {
+                                        onSeedValidated: (result) async {
                                       List<String> seedWords =
                                           result.split(" ");
-                                      String passPhrase = "";
                                       bool isValid = seedWords
                                           .map((e) => seed_en.contains(e))
                                           .reduce((value, element) =>
@@ -295,25 +294,16 @@ class SeedIntroScreen extends StatelessWidget {
                                         print(
                                             "isValid ${isValid} ${seedWords}");
                                       }
-
                                       //TODO: Passphrase
-                                      EnvoySeed()
-                                          .create(seedWords,
-                                              passphrase: passPhrase.isEmpty
-                                                  ? null
-                                                  : passPhrase)
-                                          .then((success) {
-                                        if (success) {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MagicRecoverWallet()));
-                                        } else {
-                                          showInvalidSeedDialog(
-                                            context: context,
-                                          );
-                                        }
+
+                                      Future.delayed(Duration.zero, () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RecoverViaQR(
+                                                      seed: result,
+                                                    )));
                                       });
                                     });
                                   }));

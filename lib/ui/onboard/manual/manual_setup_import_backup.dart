@@ -2,13 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:backup/backup.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
+import 'package:tor/tor.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
   const ManualSetupImportBackup({Key? key}) : super(key: key);
@@ -98,4 +108,106 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
       ],
     ));
   }
+}
+
+class RecoverViaQR extends StatefulWidget {
+  RecoverViaQR({Key? key, required this.seed}) : super(key: key);
+
+  final String seed;
+
+  @override
+  State<RecoverViaQR> createState() => _RecoverViaQR();
+}
+
+class _RecoverViaQR extends State<RecoverViaQR> {
+  Map<String, String>? data;
+
+  checkForMagicRecover(String seed) async {
+    List<String> seedList = widget.seed.split(" ");
+    try {
+      data = await Backup.restore(
+          seed, Settings().envoyServerAddress, Tor.instance);
+      setState(() {
+        if (data != null)
+          showEnvoyPopUp(
+              context,
+              title: S().manual_setup_magicBackupDetected_heading,
+              S().manual_setup_magicBackupDetected_subheading,
+              S().manual_setup_magicBackupDetected_restore,
+              () async {
+                await tryMagicRecover(seedList, seed, data, context);
+              },
+              icon: EnvoyIcons.info,
+              secondaryButtonLabel: S().manual_setup_magicBackupDetected_ignore,
+              onSecondaryButtonTap: () {
+                manualRecover(seedList, context);
+                Navigator.pop(context);
+              },
+              dismissible: false);
+        else
+          manualRecover(seedList, context);
+      });
+    } catch (e) {
+      manualRecover(seedList, context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkForMagicRecover(widget.seed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OnboardPageBackground(
+        child: Column(
+      children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Center(
+              child: SizedBox(
+                height: 60,
+                width: 60,
+                child: CircularProgressIndicator(
+                  color: EnvoyColors.teal,
+                  backgroundColor: EnvoyColors.greyLoadingSpinner,
+                  strokeWidth: 4.71,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
+}
+
+Future<void> tryMagicRecover(List<String> seedList, String seed,
+    Map<String, String>? data, BuildContext context) async {
+  await EnvoySeed().create(seedList);
+  bool success = await EnvoySeed().processRecoveryData(seed, data);
+
+  if (success) {
+    Settings().syncToCloud = true;
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return WalletSetupSuccess();
+    }));
+  } else
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return ManualSetup();
+    }));
+}
+
+Future<void> manualRecover(List<String> seedList, BuildContext context) async {
+  bool success = await EnvoySeed().create(seedList);
+
+  if (success) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ManualSetupImportBackup()));
+  } else
+    showInvalidSeedDialog(
+      context: context,
+    );
 }

@@ -8,7 +8,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -16,6 +16,7 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
   const MagicSetupGenerate({Key? key}) : super(key: key);
@@ -305,7 +306,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 leading: Container(
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: EnvoyColors.teal,
+                    color: EnvoyColors.accentPrimary,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -332,7 +333,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 leading: Container(
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: EnvoyColors.teal,
+                    color: EnvoyColors.accentPrimary,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -360,7 +361,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 leading: Container(
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: EnvoyColors.teal,
+                    color: EnvoyColors.accentPrimary,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text("3",
@@ -447,11 +448,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                             onTap: () {
                               openAndroidSettings();
                             },
-                            linkStyle: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    fontSize: 14, color: EnvoyColors.blue),
+                            linkStyle: EnvoyTypography.button
+                                .copyWith(color: EnvoyColors.accentPrimary),
                             textStyle: Theme.of(context)
                                 .textTheme
                                 .bodySmall
