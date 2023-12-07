@@ -18,15 +18,20 @@ enum PopUpState {
 }
 
 void showEnvoyPopUp(
-    BuildContext context, content, primaryButtonLabel, onPrimaryButtonTap,
-    {icon,
-    title,
-    secondaryButtonLabel,
-    onSecondaryButtonTap,
-    typeOfMessage,
-    checkBoxText,
-    onCheckBoxChanged,
-    checkedValue}) {
+  BuildContext context,
+  content,
+  primaryButtonLabel,
+  onPrimaryButtonTap, {
+  icon,
+  title,
+  secondaryButtonLabel,
+  onSecondaryButtonTap,
+  typeOfMessage,
+  checkBoxText,
+  onCheckBoxChanged,
+  checkedValue,
+  bool dismissible = true,
+}) {
   showEnvoyDialog(
       context: context,
       dialog: EnvoyPopUp(
@@ -40,7 +45,8 @@ void showEnvoyPopUp(
           typeOfMessage: typeOfMessage,
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
-          checkedValue: checkedValue));
+          checkedValue: checkedValue),
+      dismissible: dismissible);
 }
 
 //ignore: must_be_immutable

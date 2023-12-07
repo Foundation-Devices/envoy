@@ -75,7 +75,10 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                           seed = seed + (" passphrase"); // TODO: FIGMA
                         }
 
-                        return EnvoyQR(data: seed);
+                        return EnvoyQR(
+                          data: seed,
+                          dimension: 150,
+                        );
                       } else {
                         return SizedBox.shrink();
                       }
