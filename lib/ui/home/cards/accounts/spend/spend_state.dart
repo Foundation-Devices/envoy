@@ -134,7 +134,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       container.read(spendAmountProvider.notifier).state = amount;
 
-      // Are we sending max?
+      // Are we STILL sending max?
       bool sendMax = amount == psbt.sent + psbt.received + psbt.fee;
 
       // In that case get the amount from the PSBT
@@ -143,8 +143,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
 
       ///get max fee rate that we can use on this transaction
-      int maxFeeRate = await account.wallet
-          .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
+      ///when we are sending max this is basically infinte
+      int maxFeeRate = sendMax
+          ? 100000
+          : await account.wallet
+              .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
 
       container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
 
@@ -574,8 +577,9 @@ Future<Psbt> getPsbt(
     var fee = e.needed - e.available;
 
     try {
-      _returnPsbt = await account.wallet
-          .createPsbt(initialAddress, e.available - fee, feeRate);
+      _returnPsbt = await account.wallet.createPsbt(
+          initialAddress, amount - fee, feeRate,
+          dontSpendUtxos: dontSpend, mustSpendUtxos: null);
     } on InsufficientFunds catch (e) {
       print("Insufficient funds! Available: " +
           e.available.toString() +

@@ -628,7 +628,8 @@ class Wallet {
   }
 
   Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
-      {List<Utxo>? mustSpendUtxos, List<Utxo>? dontSpendUtxos}) async {
+      {required List<Utxo>? mustSpendUtxos,
+      required List<Utxo>? dontSpendUtxos}) async {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
