@@ -27,6 +27,12 @@ enum BroadcastProgress {
   staging,
 }
 
+enum SpendMode {
+  normal,
+  sendMax, // this is the maximum amount we can send (possibly excluding some coins)
+  sweep, // this is all coins but less money sent (excluding the fee)
+}
+
 /// This model is used to track the state of the transaction composition
 class TransactionModel {
   String sendTo;
@@ -42,6 +48,7 @@ class TransactionModel {
   BroadcastProgress broadcastProgress = BroadcastProgress.staging;
   bool isPSBTFinalized = false;
   String? error;
+  SpendMode mode = SpendMode.normal;
 
   TransactionModel(
       {required this.sendTo,
@@ -128,9 +135,20 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         }
       });
 
+
+      //bool sendMax =
+
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
-          dontSpend: dontSpend);
+          dontSpend: dontSpend, mustSpend: null);
+
+      // SENDMAX
+      // if psbt.send != amount -> BDK telling us that some spends are uneconomic
+
+      // --> decide whether to sendMax or sweep --> show dialog
+
+      // The gist of sweep mode
+      //List<Utxo>? mustSpend = account.wallet.utxos;
 
       container.read(spendAmountProvider.notifier).state = amount;
 
@@ -564,22 +582,21 @@ void clearSpendState(ProviderContainer ref) {
 
 Future<Psbt> getPsbt(
     double feeRate, Account account, String initialAddress, int amount,
-    {List<Utxo>? dontSpend}) async {
+    {List<Utxo>? dontSpend, List<Utxo>? mustSpend}) async {
   Psbt _returnPsbt = Psbt(0, 0, 0, "", "", "");
 
   try {
     _returnPsbt = await account.wallet.createPsbt(
         initialAddress, amount, feeRate,
-        dontSpendUtxos: dontSpend, mustSpendUtxos: null);
+        dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
   } on InsufficientFunds catch (e) {
     // Get another one with correct amount
-
     var fee = e.needed - e.available;
 
     try {
       _returnPsbt = await account.wallet.createPsbt(
           initialAddress, amount - fee, feeRate,
-          dontSpendUtxos: dontSpend, mustSpendUtxos: null);
+          dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
     } on InsufficientFunds catch (e) {
       print("Insufficient funds! Available: " +
           e.available.toString() +
