@@ -65,14 +65,14 @@ RUN mkdir -p Android/sdk
 ENV ANDROID_SDK_ROOT /root/Android/sdk
 RUN mkdir -p .android && touch .android/repositories.cfg && wget -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip && unzip sdk-tools.zip && rm sdk-tools.zip
 RUN mv tools Android/sdk/tools
-RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses && ./sdkmanager "build-tools;30.0.2" "patcher;v4" "platform-tools" "cmdline-tools;latest" "ndk;24.0.8215888"
+RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses && ./sdkmanager "build-tools;30.0.2" "platform-tools" "cmdline-tools;latest" "ndk;24.0.8215888"
 ENV PATH "$PATH:/root/Android/sdk/platform-tools"
 
 # Install Flutter SDK
 RUN update-java-alternatives --set /usr/lib/jvm/java-1.11.0-openjdk-amd64
 RUN git clone https://github.com/flutter/flutter.git
 ENV PATH "$PATH:/root/flutter/bin"
-RUN flutter channel stable && cd flutter && git checkout 3.13.2 && flutter config --enable-linux-desktop
+RUN flutter channel stable && cd flutter && git checkout 3.16.3 && flutter config --enable-linux-desktop
 
 # Install Rust
 RUN curl https://sh.rustup.rs -sSf | \

@@ -200,8 +200,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (_) async {
         _controller?.stop();
 
         setState(() {
@@ -213,7 +213,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         setPortraitMode();
 
         await Future.delayed(Duration(milliseconds: 300));
-        return true;
       },
       child: Material(
           color: Colors.black,

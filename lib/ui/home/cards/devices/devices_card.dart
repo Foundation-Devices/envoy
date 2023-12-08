@@ -60,13 +60,11 @@ class DevicesCardState extends ConsumerState<DevicesCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (ref.watch(homePageOptionsVisibilityProvider)) {
+    return PopScope(
+      canPop: !ref.watch(homePageOptionsVisibilityProvider),
+      onPopInvoked: (bool didPop) async {
+        if (!didPop) {
           HomePageState.of(context)?.toggleOptions();
-          return false;
-        } else {
-          return true;
         }
       },
       child: DevicesList(),

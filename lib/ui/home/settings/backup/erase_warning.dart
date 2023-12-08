@@ -426,12 +426,11 @@ class AndroidBackupWarning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool _iphoneSE = MediaQuery.of(context).size.height < 700;
-    return WillPopScope(
-      onWillPop: () {
+    return PopScope(
+      onPopInvoked: (_) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return WalletSetupSuccess();
         }));
-        return Future.value(false);
       },
       child: OnboardPageBackground(
         child: Material(

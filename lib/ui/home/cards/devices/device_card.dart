@@ -71,13 +71,12 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (ref.watch(homePageOptionsVisibilityProvider)) {
+    return PopScope(
+      canPop: !ref.watch(homePageOptionsVisibilityProvider),
+      onPopInvoked: (bool didPop) async {
+        if (!didPop) {
           HomePageState.of(context)?.toggleOptions();
-          return false;
         }
-        return true;
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +196,8 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                         height: EnvoySpacing.medium1,
                       ),
                       Text(
-                        "Are you sure you want to disconnect Passport? This will remove the device from Envoy alongside any connected accounts.", // TODO: FIGMA
+                        "Are you sure you want to disconnect Passport? This will remove the device from Envoy alongside any connected accounts.",
+                        // TODO: FIGMA
                         style: EnvoyTypography.info,
                         textAlign: TextAlign.center,
                       ),

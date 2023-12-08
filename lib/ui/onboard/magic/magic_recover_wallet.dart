@@ -145,8 +145,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _handleBackPress,
+    return PopScope(
+      onPopInvoked: (_) {
+        _handleBackPress();
+      },
       child: Material(
         color: Colors.transparent,
         child: Builder(builder: (context) {

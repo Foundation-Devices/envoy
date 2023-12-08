@@ -29,10 +29,9 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (_) async {
         OnboardingPage.popUntilHome(context);
-        return false;
       },
       child: OnboardPageBackground(
         child: Material(
