@@ -111,8 +111,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
+    return PopScope(
       child: OnboardPageBackground(
         child: Material(
             child: CustomScrollView(
@@ -223,17 +222,16 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
   Widget build(BuildContext context) {
     bool isAndroid = Platform.isAndroid;
     bool _iphoneSE = MediaQuery.of(context).size.height < 700;
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) async {
         if (_androidBackupInfoPage != 0) {
           setState(() {
             _androidBackupInfoPage = 0;
           });
-          return false;
         }
         if (widget.onContinue != null) {
           widget.onContinue!.call();
-          return false;
         }
         if (widget.skipSuccessScreen) {
           Navigator.pop(context);
@@ -242,7 +240,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
             return WalletSetupSuccess();
           }));
         }
-        return false;
       },
       child: OnboardPageBackground(
         child: Material(

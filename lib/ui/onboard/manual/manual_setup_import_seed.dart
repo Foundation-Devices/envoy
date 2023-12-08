@@ -41,9 +41,9 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return handleBackPress(context);
+    return PopScope(
+      onPopInvoked: (_) async {
+        handleBackPress(context);
       },
       child: OnboardPageBackground(
         child: Material(

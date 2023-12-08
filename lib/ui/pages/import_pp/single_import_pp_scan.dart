@@ -10,11 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 class SingleImportPpScanPage extends OnboardingPage {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        Navigator.pop(context);
-        return Future.value(false);
-      },
+    return PopScope(
       child: OnboardingPage(
         key: Key("single_import_pp_scan"),
         clipArt: Image.asset("assets/pair_new_device_scan.png"),

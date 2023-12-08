@@ -673,7 +673,7 @@ class _SlidingToggleState extends State<SlidingToggle>
                             _text,
                             key: ValueKey(_text),
                             //prevent unnecessary overflows, container size is fixed
-                            textScaleFactor: 1.0,
+                            textScaler: TextScaler.linear(1),
                             textAlign: TextAlign.start,
                             style: textTheme,
                           ),

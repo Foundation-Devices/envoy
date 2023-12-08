@@ -136,13 +136,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
     return Scaffold(
       extendBody: true,
-      body: WillPopScope(
-        onWillPop: () async {
-          if (isMenuOpen) {
+      body: PopScope(
+        canPop: !isMenuOpen,
+        onPopInvoked: (bool didPop) async {
+          if (!didPop) {
             HomePageState.of(context)?.toggleOptions();
-            return false;
           }
-          return true;
         },
         child: Column(
           children: [

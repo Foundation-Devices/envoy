@@ -70,8 +70,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
+    return PopScope(
       child: EnvoyPatternScaffold(
         appBar: AppBar(
           elevation: 0,
