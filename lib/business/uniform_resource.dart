@@ -273,11 +273,15 @@ class UniformResourceReader {
     // More than one forward slash means is multipart
     bool multipart = "/".allMatches(data).length > 1;
 
-    Uint8List payload;
+    Uint8List payload = Uint8List(0);
     if (!multipart) {
       payload = Ur.decodeSinglePart(data);
     } else {
-      payload = urDecoder.receive(data);
+      try {
+        payload = urDecoder.receive(data);
+      } on Exception catch (_) {
+        print("Couldn't decode UR!");
+      }
     }
 
     if (payload.isNotEmpty) {
