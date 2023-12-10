@@ -17,7 +17,8 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false
   ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false
   ..showTestnetAccountsSetting =
-      json['showTestnetAccountsSetting'] as bool? ?? false;
+      json['showTestnetAccountsSetting'] as bool? ?? false
+  ..enableTaprootSetting = json['enableTaprootSetting'] as bool? ?? false;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
@@ -29,6 +30,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'syncToCloudSetting': instance.syncToCloudSetting,
       'allowScreenshotsSetting': instance.allowScreenshotsSetting,
       'showTestnetAccountsSetting': instance.showTestnetAccountsSetting,
+      'enableTaprootSetting': instance.enableTaprootSetting,
     };
 
 const _$DisplayUnitEnumMap = {
