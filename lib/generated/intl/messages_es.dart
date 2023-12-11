@@ -691,7 +691,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Documentación"),
         "envoy_support_email": MessageLookupByLibrary.simpleMessage("Email"),
         "envoy_support_telegram":
-            MessageLookupByLibrary.simpleMessage("Telegrama"),
+            MessageLookupByLibrary.simpleMessage("TELEGRAM"),
         "envoy_welcome_screen_cta1": MessageLookupByLibrary.simpleMessage(
             "Habilitar copias de seguridad mágicas"),
         "envoy_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
@@ -1362,10 +1362,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_pending_iOS_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Semilla de enviado"),
         "menu_about": MessageLookupByLibrary.simpleMessage("Acerca de"),
-        "menu_backups": MessageLookupByLibrary.simpleMessage("Backups"),
-        "menu_heading": MessageLookupByLibrary.simpleMessage("Enviado"),
-        "menu_settings": MessageLookupByLibrary.simpleMessage("Configuración"),
-        "menu_support": MessageLookupByLibrary.simpleMessage("Support"),
+        "menu_backups":
+            MessageLookupByLibrary.simpleMessage("COPIA DE SEGURIDAD"),
+        "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
+        "menu_settings": MessageLookupByLibrary.simpleMessage("CONFIGURACIÓN"),
+        "menu_support": MessageLookupByLibrary.simpleMessage("AYUDA"),
         "pair_existing_device_intro_cta":
             MessageLookupByLibrary.simpleMessage("Comenzar"),
         "pair_existing_device_intro_heading":
@@ -1659,7 +1660,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Taproot es una función avanzada y el soporte de billetera aún es limitado.\n\nProceda con precaución."),
         "settings_advanced_testnet":
-            MessageLookupByLibrary.simpleMessage("Habilitar la red de prueba"),
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "settings_amount":
             MessageLookupByLibrary.simpleMessage("Ver cantidad en Sats"),
         "settings_biometric": MessageLookupByLibrary.simpleMessage(
@@ -1668,7 +1669,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_electrum":
             MessageLookupByLibrary.simpleMessage("Conectar mi nodo"),
         "settings_show_fiat":
-            MessageLookupByLibrary.simpleMessage("Mostrar valores fiduciarios"),
+            MessageLookupByLibrary.simpleMessage("Mostrar Valores Fiat"),
         "settings_tor":
             MessageLookupByLibrary.simpleMessage("Conéctate con Tor"),
         "stalls_before_sending_tx_add_note_modal_cta1":
