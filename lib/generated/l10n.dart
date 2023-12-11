@@ -664,10 +664,10 @@ class S {
     );
   }
 
-  /// `SOURCE`
+  /// `2 minutes ago`
   String get _ {
     return Intl.message(
-      'SOURCE',
+      '2 minutes ago',
       name: '_',
       desc: '',
       args: [],
@@ -4707,6 +4707,26 @@ class S {
     return Intl.message(
       'Device DETAILS',
       name: 'manage_device_details_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get manage_device_details_menu_Delete {
+    return Intl.message(
+      'DELETE',
+      name: 'manage_device_details_menu_Delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `EDIT DEVICE NAME`
+  String get manage_device_details_menu_editDevice {
+    return Intl.message(
+      'EDIT DEVICE NAME',
+      name: 'manage_device_details_menu_editDevice',
       desc: '',
       args: [],
     );

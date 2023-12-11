@@ -80,7 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Title": MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Watched"),
-        "_": MessageLookupByLibrary.simpleMessage("SOURCE"),
+        "_": MessageLookupByLibrary.simpleMessage("2 minutes ago"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
                 "Applied filters are hiding all transactions.\nUpdate or reset filters to view transactions."),
@@ -929,6 +929,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Serial: "),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("Device DETAILS"),
+        "manage_device_details_menu_Delete":
+            MessageLookupByLibrary.simpleMessage("DELETE"),
+        "manage_device_details_menu_editDevice":
+            MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
         "manage_device_disconnect_modal":
             MessageLookupByLibrary.simpleMessage("Delete"),
         "manage_device_disconnect_modal_cta":
