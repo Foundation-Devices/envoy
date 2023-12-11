@@ -103,7 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accounts_screen_walletType_defaultName":
             MessageLookupByLibrary.simpleMessage("Billetera móvil"),
         "accounts_screen_walletType_mobile":
-            MessageLookupByLibrary.simpleMessage("Enviado"),
+            MessageLookupByLibrary.simpleMessage("Envoy"),
         "activity_": MessageLookupByLibrary.simpleMessage(
             "Tutorial de Pasaporte - Bloquear..."),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
