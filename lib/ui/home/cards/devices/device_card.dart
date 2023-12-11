@@ -134,7 +134,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         ),
         GestureDetector(
           child: Text(
-            "Edit Device Name".toUpperCase(), // TODO: Figma
+           S().manage_device_details_menu_editDevice, // TODO: Figma
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
@@ -177,7 +177,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().manage_device_disconnect_modal.toUpperCase(),
+          child: Text(S().manage_device_details_menu_Delete,
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
