@@ -72,7 +72,19 @@ class AccountManager extends ChangeNotifier {
 
       if (!ConnectivityManager().torEnabled ||
           ConnectivityManager().torCircuitEstablished) {
-        accounts.forEach((account) {
+        accounts.where((account) {
+          if (!Settings().showTestnetAccounts() &&
+              account.wallet.network == Network.Testnet) {
+            return false;
+          }
+
+          if (!Settings().taprootEnabled() &&
+              account.wallet.type == WalletType.taproot) {
+            return false;
+          }
+
+          return true;
+        }).forEach((account) {
           _syncScheduler.run(() async {
             final syncedAccount = await _syncAccount(account);
 
@@ -209,11 +221,80 @@ class AccountManager extends ChangeNotifier {
     return false;
   }
 
-  Future<Account?> addEnvoyAccountFromJson(Binary binary) async {
+  // Returned account is the one used for address verification
+  Future<Account?> addPassportAccounts(Binary binary) async {
     var jsonIndex = binary.decoded.indexOf("{");
     var decoded = binary.decoded.substring(jsonIndex);
     var json = jsonDecode(decoded);
 
+    bool oldJsonFormat = json['xpub'] != null;
+
+    if (oldJsonFormat) {
+      // Old format with single WPKH account
+      Account newAccount = await getPassportAccountJson(json);
+      addAccount(newAccount);
+      return newAccount;
+    } else {
+      // New format can handle multiple accounts
+      List<Account> newAccounts = await getPassportAccountsFromJson(json);
+      int alreadyPairedAccountsCount = 0;
+
+      newAccounts.forEach((newAccount) {
+        // Check if account already paired
+        for (var account in accounts) {
+          if (account.wallet.name == newAccount.wallet.name) {
+            alreadyPairedAccountsCount++;
+            break;
+          }
+        }
+
+        addAccount(newAccount);
+      });
+
+      if (newAccounts.length == alreadyPairedAccountsCount) {
+        throw AccountAlreadyPaired();
+      } else {
+        // We will verify the address on WPKH account only
+        return newAccounts[0];
+      }
+    }
+  }
+
+  static Future<List<Account>> getPassportAccountsFromJson(dynamic json) async {
+    List<Wallet> wallets = [];
+
+    final bip84 = json["bip84"];
+    if (bip84 != null) {
+      // TODO: try here
+      wallets.add(await getWalletFromJson(bip84));
+    }
+
+    final bip86 = json["bip86"];
+    if (bip86 != null) {
+      wallets.add(await getWalletFromJson(bip86));
+    }
+
+    Device device = getDeviceFromJson(json);
+    Devices().add(device);
+
+    int accountNumber = json["acct_num"];
+
+    List<Account> accounts = [];
+    wallets.forEach((wallet) {
+      accounts.add(Account(
+          wallet: wallet,
+          name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+          deviceSerial: device.serial,
+          dateAdded: DateTime.now(),
+          number: accountNumber,
+          id: Account.generateNewId(),
+          dateSynced: null));
+    });
+
+    return accounts;
+  }
+
+  Future<Account> getPassportAccountJson(dynamic json) async {
     // Check if account already present
     for (var account in accounts) {
       if (account.wallet.name == json["xpub"].toString()) {
@@ -221,19 +302,26 @@ class AccountManager extends ChangeNotifier {
       }
     }
 
-    var partialDescriptor = "wpkh([" +
-        reverseXfpStringEndianness(json["xfp"].toRadixString(16)) +
-        json["derivation"].toString().replaceAll("'", "h").replaceAll("m", "") +
-        "]" +
-        json["xpub"];
+    Wallet wallet = await getWalletFromJson(json);
 
-    var externalDescriptor = partialDescriptor + "/0/*)";
-    var internalDescriptor = partialDescriptor + "/1/*)";
+    Device device = getDeviceFromJson(json);
+    Devices().add(device);
 
-    var wallet = await _initWallet(
-        json["xpub"].toString(), externalDescriptor, internalDescriptor);
+    int accountNumber = json["acct_num"];
 
-    // Add a device
+    // Create an account & store
+    Account account = Account(
+        wallet: wallet,
+        name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+        deviceSerial: device.serial,
+        dateAdded: DateTime.now(),
+        number: accountNumber,
+        id: Account.generateNewId(),
+        dateSynced: null);
+    return account;
+  }
+
+  static Device getDeviceFromJson(json) {
     var fwVersion = json["fw_version"].toString();
     var serial = json["serial"].toString();
 
@@ -250,24 +338,24 @@ class AccountManager extends ChangeNotifier {
         DateTime.now(),
         fwVersion,
         EnvoyColors.listAccountTileColors[colorIndex]);
+    return device;
+  }
 
-    Devices().add(device);
+  static Future<Wallet> getWalletFromJson(json) async {
+    String scriptType = json["derivation"].contains("86") ? "tr" : "wpkh";
+    String xfp = reverseXfpStringEndianness(json["xfp"].toRadixString(16));
+    String derivation =
+        json["derivation"].toString().replaceAll("'", "h").replaceAll("m", "");
+    String xpub = json["xpub"];
 
-    int accountNumber = json["acct_num"];
+    var partialDescriptor = "$scriptType([$xfp$derivation]$xpub";
 
-    // Create an account & store
-    colorIndex = accountNumber % (EnvoyColors.listAccountTileColors.length);
-    Account account = Account(
-        wallet: wallet,
-        name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
-        deviceSerial: device.serial,
-        dateAdded: DateTime.now(),
-        number: accountNumber,
-        id: Account.generateNewId(),
-        dateSynced: null);
+    var externalDescriptor = partialDescriptor + "/0/*)";
+    var internalDescriptor = partialDescriptor + "/1/*)";
 
-    addAccount(account);
-    return account;
+    var wallet =
+        await _initWallet(xpub, externalDescriptor, internalDescriptor);
+    return wallet;
   }
 
   _dropAccounts() {
@@ -303,21 +391,26 @@ class AccountManager extends ChangeNotifier {
     });
   }
 
-  Future<Wallet> _initWallet(String fingerprint, String externalDescriptor,
-      String internalDescriptor) async {
+  static Future<Wallet> _initWallet(String fingerprint,
+      String externalDescriptor, String internalDescriptor) async {
     int publicKeyIndex = externalDescriptor.indexOf("]") + 1;
     String publicKeyType =
         externalDescriptor.substring(publicKeyIndex, publicKeyIndex + 4);
 
-    var network;
+    Network network;
     if (publicKeyType == "tpub") {
       network = Network.Testnet;
     } else {
       network = Network.Mainnet;
     }
 
-    Wallet wallet =
-        Wallet(fingerprint, network, externalDescriptor, internalDescriptor);
+    WalletType type = externalDescriptor.startsWith("wpkh")
+        ? WalletType.witnessPublicKeyHash
+        : WalletType.taproot;
+
+    Wallet wallet = Wallet(
+        fingerprint, network, externalDescriptor, internalDescriptor,
+        type: type);
     wallet.init(walletsDirectory);
 
     return wallet;
@@ -328,13 +421,16 @@ class AccountManager extends ChangeNotifier {
     await _ls.prefs.setString(ACCOUNTS_PREFS, json);
   }
 
+  void addAccounts(List<Account> accounts) {
+    accounts.forEach((Account account) => addAccount(account));
+  }
+
   void addAccount(Account account) {
     accounts.add(account);
     storeAccounts();
     notifyListeners();
 
     EnvoySeed().backupData();
-
     syncAll();
   }
 

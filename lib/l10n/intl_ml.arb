@@ -509,6 +509,8 @@
   "manage_device_details_devicePaired": "ജോടിയാക്കിയത്",
   "manage_device_details_deviceSerial": "സീരിയൽ:",
   "manage_device_details_heading": "ഉപകരണത്തിന്റെ വിശദാംശങ്ങൾ",
+  "manage_device_details_menu_Delete": "DELETE",
+  "manage_device_details_menu_editDevice": "EDIT DEVICE NAME",
   "manage_device_disconnect_modal": "ഇല്ലാതാക്കുക",
   "manage_device_disconnect_modal_cta": "രക്ഷിക്കും",
   "manage_device_rename_modal_heading": "നിങ്ങളുടെ പാസ്‌പോർട്ടിന്റെ പേര് മാറ്റുക",

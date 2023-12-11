@@ -19,35 +19,34 @@ enum PopUpState {
 
 void showEnvoyPopUp(
   BuildContext context,
-  content,
+  String content,
   primaryButtonLabel,
   onPrimaryButtonTap, {
-  icon,
-  title,
-  secondaryButtonLabel,
+  EnvoyIcons? icon,
+  String? title,
+  String? secondaryButtonLabel,
   onSecondaryButtonTap,
-  typeOfMessage,
-  checkBoxText,
+  PopUpState? typeOfMessage,
+  String? checkBoxText,
   onCheckBoxChanged,
-  checkedValue,
+  bool? checkedValue,
   bool dismissible = true,
-}) {
-  showEnvoyDialog(
-      context: context,
-      dialog: EnvoyPopUp(
-          title: title,
-          content: content,
-          icon: icon,
-          primaryButtonLabel: primaryButtonLabel,
-          onPrimaryButtonTap: onPrimaryButtonTap,
-          secondaryButtonLabel: secondaryButtonLabel,
-          onSecondaryButtonTap: onSecondaryButtonTap,
-          typeOfMessage: typeOfMessage,
-          checkBoxText: checkBoxText,
-          onCheckBoxChanged: onCheckBoxChanged,
-          checkedValue: checkedValue),
-      dismissible: dismissible);
-}
+}) =>
+    showEnvoyDialog(
+        context: context,
+        dialog: EnvoyPopUp(
+            title: title,
+            content: content,
+            icon: icon,
+            primaryButtonLabel: primaryButtonLabel,
+            onPrimaryButtonTap: onPrimaryButtonTap,
+            secondaryButtonLabel: secondaryButtonLabel,
+            onSecondaryButtonTap: onSecondaryButtonTap,
+            typeOfMessage: typeOfMessage,
+            checkBoxText: checkBoxText,
+            onCheckBoxChanged: onCheckBoxChanged,
+            checkedValue: checkedValue),
+        dismissible: dismissible);
 
 //ignore: must_be_immutable
 class EnvoyPopUp extends StatefulWidget {
@@ -68,13 +67,13 @@ class EnvoyPopUp extends StatefulWidget {
 
   final String? title;
   final String content;
-  final icon;
+  final EnvoyIcons? icon;
   final String primaryButtonLabel;
-  final secondaryButtonLabel;
+  final String? secondaryButtonLabel;
   final onPrimaryButtonTap;
   final onSecondaryButtonTap;
   final PopUpState? typeOfMessage;
-  final checkBoxText;
+  final String? checkBoxText;
   final onCheckBoxChanged;
   bool? checkedValue;
 
@@ -137,7 +136,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
               Padding(
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                 child: EnvoyIcon(
-                  widget.icon,
+                  widget.icon!,
                   size: EnvoyIconSize.big,
                   color: _color,
                 ),
@@ -162,7 +161,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
               Padding(
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                 child: DialogCheckBox(
-                  label: widget.checkBoxText,
+                  label: widget.checkBoxText!,
                   isChecked:
                       widget.checkedValue == null ? true : widget.checkedValue!,
                   onChanged: (isChecked) {
@@ -177,7 +176,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
               Padding(
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                 child: EnvoyButton(
-                    label: widget.secondaryButtonLabel,
+                    label: widget.secondaryButtonLabel!,
                     type: ButtonType.secondary,
                     state: ButtonState.default_state,
                     onTap: () {
@@ -192,7 +191,6 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 state: ButtonState.default_state,
                 onTap: () {
                   widget.onPrimaryButtonTap();
-                  Navigator.pop(context);
                 }),
           ],
         ),

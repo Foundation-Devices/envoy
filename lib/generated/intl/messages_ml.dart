@@ -952,6 +952,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("സീരിയൽ:"),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("ഉപകരണത്തിന്റെ വിശദാംശങ്ങൾ"),
+        "manage_device_details_menu_Delete":
+            MessageLookupByLibrary.simpleMessage("DELETE"),
+        "manage_device_details_menu_editDevice":
+            MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
         "manage_device_disconnect_modal":
             MessageLookupByLibrary.simpleMessage("ഇല്ലാതാക്കുക"),
         "manage_device_disconnect_modal_cta":

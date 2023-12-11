@@ -369,7 +369,7 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void _binaryValidated(Binary binary) {
-    AccountManager().addEnvoyAccountFromJson(binary).catchError((_) {
+    AccountManager().addPassportAccounts(binary).catchError((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
       ));
