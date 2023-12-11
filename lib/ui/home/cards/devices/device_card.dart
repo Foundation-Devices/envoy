@@ -71,6 +71,8 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
   @override
   Widget build(BuildContext context) {
+    final Locale activeLocale = Localizations.localeOf(context);
+
     return PopScope(
       canPop: !ref.watch(homePageOptionsVisibilityProvider),
       onPopInvoked: (bool didPop) async {
@@ -97,7 +99,8 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
             padding: const EdgeInsets.only(top: 10.0, left: 35.0),
             child: Text(S().manage_device_details_devicePaired +
                 " " +
-                timeago.format(widget.device.datePaired)),
+                timeago.format(widget.device.datePaired,
+                    locale: activeLocale.languageCode)),
           ),
         ],
       ),
@@ -134,7 +137,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         ),
         GestureDetector(
           child: Text(
-           S().manage_device_details_menu_editDevice, // TODO: Figma
+            S().manage_device_details_menu_editDevice,
             style: TextStyle(color: Colors.white),
           ),
           onTap: () {
