@@ -54,7 +54,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
   Widget build(BuildContext context) {
     return Container(
       width: 280,
-      height: 360,
+      height: 380,
       padding: EdgeInsets.all(EnvoySpacing.medium1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

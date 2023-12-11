@@ -170,8 +170,14 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SettingText(S()
-                                    .manual_toggle_on_seed_backedup_android_wallet_data),
+                                Expanded(
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 150),
+                                    child: SettingText(
+                                      S().manual_toggle_on_seed_backedup_android_wallet_data,
+                                    ),
+                                  ),
+                                ),
                                 Builder(
                                   builder: (_) {
                                     if (_isBackupInProgress) {
@@ -184,12 +190,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                         ),
                                       );
                                     } else {
-                                      return SettingText(
-                                        S().manual_toggle_on_seed_backedup_iOS_backup_now,
-                                        color: EnvoyColors.teal,
-                                        onTap: () {
-                                          showBackupDialog(context);
-                                        },
+                                      return Container(
+                                        constraints:
+                                            BoxConstraints(maxWidth: 150),
+                                        child: SettingText(
+                                          S().manual_toggle_on_seed_backedup_iOS_backup_now,
+                                          color: EnvoyColors.teal,
+                                          onTap: () {
+                                            showBackupDialog(context);
+                                          },
+                                        ),
                                       );
                                     }
                                   },
@@ -206,6 +216,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                       : "${timeago.format(lastEnvoyServerBackup)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup).substring(1).toLowerCase()} to Foundation server",
                               // TODO: FIGMA
                               color: EnvoyColors.grey,
+                              maxLines: 2,
                             ),
                           ],
                         ),
@@ -229,29 +240,42 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SettingText(S()
-                                    .manual_toggle_on_seed_backedup_android_wallet_seed),
+                                Expanded(
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 100),
+                                    child: SettingText(
+                                      S().manual_toggle_on_seed_backedup_android_wallet_seed,
+                                    ),
+                                  ),
+                                ),
                                 if (Platform.isAndroid)
-                                  SettingText(
+                                  Container(
+                                    constraints: BoxConstraints(maxWidth: 190),
+                                    child: SettingText(
                                       S().manual_toggle_on_seed_not_backedup_android_open_settings,
-                                      color: EnvoyColors.teal, onTap: () {
-                                    EnvoySeed().showSettingsMenu();
-                                  })
+                                      color: EnvoyColors.teal,
+                                      onTap: () {
+                                        EnvoySeed().showSettingsMenu();
+                                      },
+                                    ),
+                                  ),
                               ],
                             ),
                             FutureBuilder<DateTime?>(
                                 future: lastCloudBackup,
                                 builder: (context, snapshot) {
                                   return SettingText(
-                                      Platform.isIOS
-                                          ? S()
-                                              .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
-                                          : snapshot.hasData
-                                              ? S()
-                                                  .manual_toggle_on_seed_backedup_android_stored
-                                              : S()
-                                                  .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
-                                      color: EnvoyColors.grey);
+                                    Platform.isIOS
+                                        ? S()
+                                            .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                        : snapshot.hasData
+                                            ? S()
+                                                .manual_toggle_on_seed_backedup_android_stored
+                                            : S()
+                                                .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
+                                    color: EnvoyColors.grey,
+                                    maxLines: 2,
+                                  );
                                 }),
                           ],
                         ),
@@ -265,6 +289,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                     showEnvoyDialog(
                         context: context, dialog: ExportBackupModal());
                   },
+                  maxLines: 2,
                 ),
                 Divider(),
                 SettingText(

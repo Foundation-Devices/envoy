@@ -8,12 +8,14 @@ class SettingText extends StatelessWidget {
   final String label;
   final Function? onTap;
   final Color color;
+  final int maxLines;
 
   const SettingText(
     this.label, {
     Key? key,
     this.onTap,
     this.color = Colors.white,
+    this.maxLines = 1,
   }) : super(key: key);
 
   @override
@@ -26,12 +28,16 @@ class SettingText extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-        child: Text(label,
-            style: TextStyle(
-              color: color,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            )),
+        child: Text(
+          label,
+          overflow: TextOverflow.ellipsis,
+          maxLines: maxLines,
+          style: TextStyle(
+            color: color,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
