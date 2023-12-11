@@ -45,13 +45,9 @@ class _EnvoyQRState extends State<EnvoyQR> {
             ? QrErrorCorrectLevel.L
             : QrErrorCorrectLevel.M,
         size: widget.qrSize);
-    return widget.dimension == null
-        ? SizedBox.expand(
-            child: qrWidget,
-          )
-        : SizedBox.square(
-            dimension: widget.dimension,
-            child: qrWidget,
-          );
+    return SizedBox.square(
+      dimension: widget.dimension,
+      child: qrWidget,
+    );
   }
 }
