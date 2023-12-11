@@ -214,6 +214,16 @@ class S {
     );
   }
 
+  /// `Confirm the transaction details  are correct before sending.`
+  String get Copy {
+    return Intl.message(
+      'Confirm the transaction details  are correct before sending.',
+      name: 'Copy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `$`
   String get Currency {
     return Intl.message(
@@ -229,6 +239,16 @@ class S {
     return Intl.message(
       'Apply filters',
       name: 'Default',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `|`
+  String get Divider {
+    return Intl.message(
+      '|',
+      name: 'Divider',
       desc: '',
       args: [],
     );
@@ -300,16 +320,26 @@ class S {
     );
   }
 
+  /// `Your transaction is ready \nto be sent`
+  String get Headline {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'Headline',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'Hide balance' key
 
   // skipped getter for the 'If magic backup is found, Envoy should restore automatically at this point. If not, we prompt the import backup screen above.' key
 
   // skipped getter for the 'Improved Privacy' key
 
-  /// `Discard Changes`
+  /// `Activity`
   String get Label {
     return Intl.message(
-      'Discard Changes',
+      'Activity',
       name: 'Label',
       desc: '',
       args: [],
@@ -468,10 +498,10 @@ class S {
     );
   }
 
-  /// `Receive`
+  /// `Transaction Details`
   String get ScreenTitle {
     return Intl.message(
-      'Receive',
+      'Transaction Details',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -515,6 +545,10 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'Show address' key
+
+  // skipped getter for the 'Show details' key
 
   /// `Skip`
   String get Skip {
@@ -573,6 +607,16 @@ class S {
     return Intl.message(
       'Learn',
       name: 'TabBarItemLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag`
+  String get Tag {
+    return Intl.message(
+      'Tag',
+      name: 'Tag',
       desc: '',
       args: [],
     );
@@ -642,10 +686,10 @@ class S {
 
   // skipped getter for the 'Unboxing Passport Pt.1' key
 
-  /// `5,000,000`
+  /// `1,000,000`
   String get Value {
     return Intl.message(
-      '5,000,000',
+      '1,000,000',
       name: 'Value',
       desc: '',
       args: [],
@@ -664,11 +708,51 @@ class S {
     );
   }
 
-  /// `2 minutes ago`
+  /// `1`
+  String get X {
+    return Intl.message(
+      '1',
+      name: 'X',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `5`
+  String get Y {
+    return Intl.message(
+      '5',
+      name: 'Y',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1`
+  String get Z {
+    return Intl.message(
+      '1',
+      name: 'Z',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untagged`
   String get _ {
     return Intl.message(
-      '2 minutes ago',
+      'Untagged',
       name: '_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untagged`
+  String get account_details_untagged_card {
+    return Intl.message(
+      'Untagged',
+      name: 'account_details_untagged_card',
       desc: '',
       args: [],
     );
@@ -684,10 +768,10 @@ class S {
     );
   }
 
-  /// `There are no transactions in this account.\nReceive your first transaction below.`
+  /// `There are no coins assigned to this tag.`
   String get account_empty_tx_history_text_explainer {
     return Intl.message(
-      'There are no transactions in this account.\nReceive your first transaction below.',
+      'There are no coins assigned to this tag.',
       name: 'account_empty_tx_history_text_explainer',
       desc: '',
       args: [],
@@ -1374,6 +1458,76 @@ class S {
     );
   }
 
+  /// `Coin Locked`
+  String get card_coin_locked {
+    return Intl.message(
+      'Coin Locked',
+      name: 'card_coin_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coin Selected`
+  String get card_coin_selected {
+    return Intl.message(
+      'Coin Selected',
+      name: 'card_coin_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coin`
+  String get card_coin_unselected {
+    return Intl.message(
+      'Coin',
+      name: 'card_coin_unselected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins Locked`
+  String get card_coins_locked {
+    return Intl.message(
+      'Coins Locked',
+      name: 'card_coins_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins Selected`
+  String get card_coins_selected {
+    return Intl.message(
+      'Coins Selected',
+      name: 'card_coins_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins`
+  String get card_coins_unselected {
+    return Intl.message(
+      'Coins',
+      name: 'card_coins_unselected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `of`
+  String get card_label_of {
+    return Intl.message(
+      'of',
+      name: 'card_label_of',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get change_output_from_multiple_tags_modal_cta1 {
     return Intl.message(
@@ -1933,6 +2087,26 @@ class S {
     return Intl.message(
       'Your transaction is ready \nto be sent',
       name: 'coincontrol_tx_detail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn more`
+  String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
+    return Intl.message(
+      'Learn more',
+      name: 'coincontrol_tx_detail_high_fee_info_overlay_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth.`
+  String get coincontrol_tx_detail_high_fee_info_overlay_subheading {
+    return Intl.message(
+      'Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth.',
+      name: 'coincontrol_tx_detail_high_fee_info_overlay_subheading',
       desc: '',
       args: [],
     );
@@ -3887,6 +4061,26 @@ class S {
     return Intl.message(
       'TAPROOT',
       name: 'label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get labeled_switch_activity {
+    return Intl.message(
+      'Activity',
+      name: 'labeled_switch_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags`
+  String get labeled_switch_tags {
+    return Intl.message(
+      'Tags',
+      name: 'labeled_switch_tags',
       desc: '',
       args: [],
     );
@@ -8126,6 +8320,16 @@ class S {
     );
   }
 
+  /// `TAG Details`
+  String get tagged_coin_details_locked_heading {
+    return Intl.message(
+      'TAG Details',
+      name: 'tagged_coin_details_locked_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `EDIT TAG NAME`
   String get tagged_coin_details_menu_cta1 {
     return Intl.message(
@@ -8316,10 +8520,10 @@ class S {
     );
   }
 
-  /// `4 of 4 Coins Selected`
+  /// `0 of 4 Coins Selected`
   String get untagged_coin_details_unlocked_coins_selected {
     return Intl.message(
-      '4 of 4 Coins Selected',
+      '0 of 4 Coins Selected',
       name: 'untagged_coin_details_unlocked_coins_selected',
       desc: '',
       args: [],

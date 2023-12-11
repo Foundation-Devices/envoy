@@ -38,15 +38,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "Coins": MessageLookupByLibrary.simpleMessage("നാണയങ്ങൾ"),
         "Conference": MessageLookupByLibrary.simpleMessage("സമ്മേളനം"),
         "Continue": MessageLookupByLibrary.simpleMessage("തുടരുക"),
+        "Copy": MessageLookupByLibrary.simpleMessage(
+            "Confirm the transaction details  are correct before sending."),
         "Currency": MessageLookupByLibrary.simpleMessage("\$"),
         "Default":
             MessageLookupByLibrary.simpleMessage("ഫിൽട്ടറുകൾ പ്രയോഗിക്കുക"),
+        "Divider": MessageLookupByLibrary.simpleMessage("|"),
         "Exchange": MessageLookupByLibrary.simpleMessage("എക്സ്ചേഞ്ച്"),
         "FAQ": MessageLookupByLibrary.simpleMessage("ദൂതൻ ഓപ്പൺ സോഴ്സ് ആണോ?"),
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Filter": MessageLookupByLibrary.simpleMessage("ഫിൽട്ടർ ചെയ്യുക"),
         "Heading": MessageLookupByLibrary.simpleMessage("സുരക്ഷിത"),
-        "Label": MessageLookupByLibrary.simpleMessage("Discard Changes"),
+        "Headline": MessageLookupByLibrary.simpleMessage(
+            "Your transaction is ready \nto be sent"),
+        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("സ്വീകരിക്കുക"),
         "Letter": MessageLookupByLibrary.simpleMessage("മടങ്ങുക"),
         "Menu": MessageLookupByLibrary.simpleMessage("അയക്കുക"),
@@ -73,6 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("ക്യു"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("പഠിക്കുക"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("പഠിക്കുക"),
+        "Tag": MessageLookupByLibrary.simpleMessage("Tag"),
         "TagName": MessageLookupByLibrary.simpleMessage("സമ്മേളനങ്ങൾ"),
         "Tags": MessageLookupByLibrary.simpleMessage("ടാഗുകൾ"),
         "Test": MessageLookupByLibrary.simpleMessage("ലഭിച്ചു"),
@@ -82,7 +88,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "Title": MessageLookupByLibrary.simpleMessage("തിരഞ്ഞെടുത്ത തുക"),
         "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("നിരീക്ഷിച്ചു"),
+        "X": MessageLookupByLibrary.simpleMessage("1"),
+        "Y": MessageLookupByLibrary.simpleMessage("5"),
+        "Z": MessageLookupByLibrary.simpleMessage("1"),
         "_": MessageLookupByLibrary.simpleMessage("ഉറവിടം"),
+        "account_details_untagged_card":
+            MessageLookupByLibrary.simpleMessage("Untagged"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
                 "പ്രയോഗിച്ച ഫിൽട്ടറുകൾ എല്ലാ ഇടപാടുകളും മറയ്ക്കുന്നു. ഇടപാടുകൾ കാണുന്നതിന് ഫിൽട്ടറുകൾ അപ്ഡേറ്റ് ചെയ്യുക അല്ലെങ്കിൽ റീസെറ്റ് ചെയ്യുക."),
@@ -230,6 +241,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("ഉപകരണങ്ങൾ"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("പഠിക്കുക"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("സ്വകാര്യത"),
+        "card_coin_locked": MessageLookupByLibrary.simpleMessage("Coin Locked"),
+        "card_coin_selected":
+            MessageLookupByLibrary.simpleMessage("Coin Selected"),
+        "card_coin_unselected": MessageLookupByLibrary.simpleMessage("Coin"),
+        "card_coins_locked":
+            MessageLookupByLibrary.simpleMessage("Coins Locked"),
+        "card_coins_selected":
+            MessageLookupByLibrary.simpleMessage("Coins Selected"),
+        "card_coins_unselected": MessageLookupByLibrary.simpleMessage("Coins"),
+        "card_label_of": MessageLookupByLibrary.simpleMessage("of"),
         "change_output_from_multiple_tags_modal_cta1":
             MessageLookupByLibrary.simpleMessage("തുടരുക"),
         "change_output_from_multiple_tags_modal_cta2":
@@ -352,6 +373,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("സ്റ്റാൻഡേർഡ്"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "നിങ്ങളുടെ ഇടപാട് അയയ്ക്കാൻ തയ്യാറാണ്"),
+        "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
+            MessageLookupByLibrary.simpleMessage("Learn more"),
+        "coincontrol_tx_detail_high_fee_info_overlay_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
         "coincontrol_tx_detail_passport__subheading":
             MessageLookupByLibrary.simpleMessage(
                 "പാസ്‌പോർട്ട് ഉപയോഗിച്ച് ഒപ്പിടുന്നതിന് മുമ്പ് ഇടപാടിന്റെ വിശദാംശങ്ങൾ ശരിയാണെന്ന് സ്ഥിരീകരിക്കുക."),
@@ -762,6 +788,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "ബിറ്റ്‌കോയിൻ ലഭിക്കാൻ മുകളിലെ കാർഡുകളിൽ ഏതെങ്കിലും ടാപ്പ് ചെയ്യുക."),
         "label": MessageLookupByLibrary.simpleMessage("TAPROOT"),
+        "labeled_switch_activity":
+            MessageLookupByLibrary.simpleMessage("Activity"),
+        "labeled_switch_tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("വീണ്ടും ശ്രമിക്കുക"),
         "launch_screen_faceID_fail_heading":
@@ -1732,6 +1761,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ആവശ്യമായ തുക"),
         "tagged_coin_details_inputs_success_selectedAmount":
             MessageLookupByLibrary.simpleMessage("തിരഞ്ഞെടുത്ത തുക"),
+        "tagged_coin_details_locked_heading":
+            MessageLookupByLibrary.simpleMessage("TAG Details"),
         "tagged_coin_details_menu_cta1":
             MessageLookupByLibrary.simpleMessage("ടാഗ് നാമം എഡിറ്റ് ചെയ്യുക"),
         "tagged_coin_details_menu_cta2":

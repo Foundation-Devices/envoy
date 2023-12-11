@@ -38,15 +38,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "Coins": MessageLookupByLibrary.simpleMessage("Monedas"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conferencia"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continuar"),
+        "Copy": MessageLookupByLibrary.simpleMessage(
+            "Confirma que los detalles de la transacción son correctos antes de enviar."),
         "Currency": MessageLookupByLibrary.simpleMessage("\$"),
         "Default": MessageLookupByLibrary.simpleMessage("Aplicar filtros"),
+        "Divider": MessageLookupByLibrary.simpleMessage("|"),
         "Exchange": MessageLookupByLibrary.simpleMessage("Intercambiar"),
         "FAQ": MessageLookupByLibrary.simpleMessage(
             "¿Envoy es de código abierto?"),
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
         "Heading": MessageLookupByLibrary.simpleMessage("Seguro"),
-        "Label": MessageLookupByLibrary.simpleMessage("Discard Changes"),
+        "Headline": MessageLookupByLibrary.simpleMessage(
+            "Tu transacción está lista para ser enviada"),
+        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Letter": MessageLookupByLibrary.simpleMessage("devolución"),
         "Menu": MessageLookupByLibrary.simpleMessage("Enviar"),
@@ -61,7 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "SEND": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sats": MessageLookupByLibrary.simpleMessage("123.345.679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Recibir"),
+        "ScreenTitle":
+            MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -72,6 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Aprender"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Aprender"),
+        "Tag": MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "TagName": MessageLookupByLibrary.simpleMessage("Conferencias"),
         "Tags": MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "Test": MessageLookupByLibrary.simpleMessage("Recibido"),
@@ -79,21 +86,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Recibido hace 3 horas"),
         "Title": MessageLookupByLibrary.simpleMessage("Cantidad seleccionada"),
-        "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
+        "Value": MessageLookupByLibrary.simpleMessage("1,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Visto"),
-        "_": MessageLookupByLibrary.simpleMessage("hace 2 minutos"),
+        "X": MessageLookupByLibrary.simpleMessage("1"),
+        "Y": MessageLookupByLibrary.simpleMessage("5"),
+        "Z": MessageLookupByLibrary.simpleMessage("1"),
+        "_": MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
+        "account_details_untagged_card":
+            MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
                 "Los filtros aplicados ocultan todas las transacciones.\nActualice o restablezca los filtros para ver las transacciones."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
-                "No hay transacciones en esta cuenta.\nRecibe tu primera transacción a continuación."),
+                "No hay monedas asignadas a esta etiqueta."),
         "account_type_label_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "account_type_sublabel":
-            MessageLookupByLibrary.simpleMessage("Red de prueba"),
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "account_type_sublabel_testnet":
-            MessageLookupByLibrary.simpleMessage("Red de prueba"),
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Crea una billetera móvil con Magic Backups."),
         "accounts_empty_text_learn_more":
@@ -140,7 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "android_backup_info_heading": MessageLookupByLibrary.simpleMessage(
             "Android realiza copias de seguridad cada 24 horas"),
         "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
-            "Android realiza automáticamente una copia de seguridad de sus datos de Envoy cada 24 horas.\n\nPara asegurarte de que tu primera copia de seguridad mágica esté completa, te recomendamos que realices una copia de seguridad manual en tu dispositivo [[Ajustes.]]"),
+            "Android realiza automáticamente una copia de seguridad de tus datos de Envoy cada 24 horas.\n\nPara asegurarte de que tu primera copia de seguridad mágica esté completa, te recomendamos que realices una copia de seguridad manual en los [[Ajustes]] de tu dispositivo."),
         "azteco_account_tx_history_pending_voucher":
             MessageLookupByLibrary.simpleMessage("Bono Azteco pendiente"),
         "azteco_account_tx_history_receive":
@@ -159,7 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Redimir"),
         "azteco_redeem_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "azteco_redeem_modal_fail_cta":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "azteco_redeem_modal_fail_heading":
@@ -184,7 +196,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Descargar el archivo de copia de seguridad de Envoy"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
-                "Borrar carteras y copias de seguridad"),
+                "Eliminar carteras y copias de seguridad"),
         "backups_erase_wallets_and_backups_modal_1_2_android_cta":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "backups_erase_wallets_and_backups_modal_1_2_android_cta1":
@@ -224,7 +236,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_devices":
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
-        "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Intimidad"),
+        "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
+        "card_coin_locked":
+            MessageLookupByLibrary.simpleMessage("Moneda Bloqueada"),
+        "card_coin_selected":
+            MessageLookupByLibrary.simpleMessage("Moneda Seleccionada"),
+        "card_coin_unselected": MessageLookupByLibrary.simpleMessage("Moneda"),
+        "card_coins_locked":
+            MessageLookupByLibrary.simpleMessage("Monedas Bloqueadas"),
+        "card_coins_selected":
+            MessageLookupByLibrary.simpleMessage("Monedas Seleccionadas"),
+        "card_coins_unselected":
+            MessageLookupByLibrary.simpleMessage("Monedas"),
+        "card_label_of": MessageLookupByLibrary.simpleMessage("de"),
         "change_output_from_multiple_tags_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "change_output_from_multiple_tags_modal_cta2":
@@ -235,7 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Esta transacción gasta monedas de múltiples etiquetas. ¿Cómo te gustaría etiquetar tu cambio?"),
         "coincontrol_coin_change_spendable_state_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "coincontrol_coin_change_spendable_state_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Cancelar"),
         "coincontrol_coin_change_spendable_state_modal_heading":
@@ -284,7 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Cerradura"),
         "coincontrol_lock_coin_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "coincontrol_lock_coin_modal_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No vuelvas a mostrar"),
         "coincontrol_lock_coin_modal_subheading":
@@ -345,6 +369,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Estándar"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "Tu transacción está lista \nA enviar"),
+        "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
+            MessageLookupByLibrary.simpleMessage("Más información"),
+        "coincontrol_tx_detail_high_fee_info_overlay_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Algunas de las monedas más pequeñas han sido excluidas de esta transacción. Con el coste de envío seleccionado, cuestan más incluirlas de lo que valen."),
         "coincontrol_tx_detail_passport__subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Confirme que los detalles de la transacción son correctos antes de firmar con Passport."),
@@ -372,7 +401,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_history_filter_off_LabeledSwitch_activity":
             MessageLookupByLibrary.simpleMessage("Actividad"),
         "coincontrol_tx_history_filter_off_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles de la cuenta"),
+            MessageLookupByLibrary.simpleMessage("Detalles de cuenta"),
         "coincontrol_tx_history_filter_off_receive":
             MessageLookupByLibrary.simpleMessage("Recibir"),
         "coincontrol_tx_history_filter_off_send":
@@ -397,7 +426,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_unlock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Abrir"),
         "coincontrol_unlock_coin_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "coincontrol_unlock_coin_modal_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No vuelvas a mostrar"),
         "coincontrol_unlock_coin_modal_subheading":
@@ -409,7 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_first_tag_modal_1_2_cta1":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "create_first_tag_modal_1_2_cta2":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "create_first_tag_modal_1_2_heading":
             MessageLookupByLibrary.simpleMessage("Elija una etiqueta"),
         "create_first_tag_modal_1_2_subheading":
@@ -424,7 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_second_tag_modal_1_2_cta1":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "create_second_tag_modal_1_2_cta2":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "create_second_tag_modal_1_2_heading":
             MessageLookupByLibrary.simpleMessage("Elija una etiqueta"),
         "create_second_tag_modal_1_2_subheading":
@@ -447,13 +476,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_second_tag_modal_2_2_mostUsed":
             MessageLookupByLibrary.simpleMessage("Lo más utilizado"),
         "delete_emptyTag_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "delete_emptyTag_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Eliminar etiqueta"),
         "delete_emptyTag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "ADVERTENCIA\n\n¿Estás seguro de que quieres eliminar esta etiqueta?"),
-        "delete_tag_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+        "delete_tag_modal_cta1": MessageLookupByLibrary.simpleMessage("Atrás"),
         "delete_tag_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Eliminar etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
@@ -467,7 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Android realiza copias de seguridad cada 24 horas"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Android realiza automáticamente una copia de seguridad de sus datos de Envoy cada 24 horas.\n\nPara eliminar inmediatamente tu Envoy Seed de las copias de seguridad de Android Auto, puedes realizar una copia de seguridad manual en tu dispositivo [[Settings.]]"),
+                "Android realiza automáticamente una copia de seguridad de tus datos de Envoy cada 24 horas.\n\nPara eliminar tu semilla Envoy de las copias de seguridad de Android de manera inmediata, puedes realizar una copia de seguridad manual en los [[Ajustes]] de tu dispositivo."),
         "delete_wallet_for_good_loading_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Eliminación de la cartera de Envoy"),
@@ -486,7 +514,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "devices_empty_add_menu": MessageLookupByLibrary.simpleMessage(
             "CONECTAR UN PASAPORTE EXISTENTE\n\nCONFIGURAR UN NUEVO PASAPORTE"),
         "devices_empty_learn_more":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "devices_empty_modal_video_cta1":
             MessageLookupByLibrary.simpleMessage("Comprar Pasaporte"),
         "devices_empty_modal_video_cta2":
@@ -497,10 +525,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Asegure su Bitcoin con Passport."),
         "devices_heading": MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "devices_learn_more":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "devices_text_explainer":
             MessageLookupByLibrary.simpleMessage("¿No tienes pasaporte?"),
-        "empty_tag_modal_cta1": MessageLookupByLibrary.simpleMessage("Espalda"),
+        "empty_tag_modal_cta1": MessageLookupByLibrary.simpleMessage("Atrás"),
         "empty_tag_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Eliminar etiqueta"),
         "empty_tag_modal_subheading": m0,
@@ -514,13 +542,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_fail_heading": MessageLookupByLibrary.simpleMessage(
             "Envoy no pudo copiar el firmware en la tarjeta microSD."),
         "envoy_fw_fail_subheading": MessageLookupByLibrary.simpleMessage(
-            "Asegúrese de que la tarjeta microSD esté insertada correctamente en su teléfono e inténtelo de nuevo. Si esto no funciona, el firmware se puede descargar desde nuestro [[GitHub]]."),
+            "Asegúrate de que la tarjeta microSD esté insertada correctamente en el teléfono e inténtalo de nuevo. Si esto no funciona, el firmware puede descargarse desde nuestro [[GitHub]]."),
         "envoy_fw_intro_cta":
             MessageLookupByLibrary.simpleMessage("Descargar firmware"),
         "envoy_fw_intro_heading": MessageLookupByLibrary.simpleMessage(
             "A continuación, actualicemos el firmware de Passport"),
         "envoy_fw_intro_subheading": MessageLookupByLibrary.simpleMessage(
-            "Envoy te permite actualizar tu Passport desde tu teléfono utilizando el adaptador microSD incluido.\n\nLos usuarios avanzados pueden [[toque aquí]] para descargar y verificar su propio firmware en una computadora."),
+            "Envoy te permite actualizar Passport desde tu teléfono utilizando el adaptador microSD incluido.\n\nLos usuarios avanzados pueden descargar su propio firmware [[desde aquí]] y verificarlo en un ordenador."),
         "envoy_fw_ios_instructions_cta":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "envoy_fw_ios_instructions_heading":
@@ -701,7 +729,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_screen_skip":
             MessageLookupByLibrary.simpleMessage("Saltarse"),
         "envoy_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
-            "Para una configuración perfecta, recomendamos habilitar [[Magic Backups]].\n\nLos usuarios avanzados pueden crear o restaurar manualmente una semilla de billetera."),
+            "Para una configuración fluída, recomendamos habilitar la [[Copia de Seguridad Mágica]].\n\nLos usuarios avanzados pueden crear o restaurar manualmente una semilla."),
         "erase_wallet_with_balance_modal_CTA1":
             MessageLookupByLibrary.simpleMessage("Volver a mis cuentas"),
         "erase_wallet_with_balance_modal_CTA2":
@@ -711,7 +739,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Advertencia"),
         "erase_wallet_with_balance_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Antes de eliminar su billetera Envoy, vacíe sus cuentas. \nVe a Copias de seguridad > Borrar carteras y copias de seguridad una vez que hayas terminado."),
+                "Por favor, vacía tus cuentas antes de eliminar la cartera Envoy. \nVe a Copias de seguridad > Eliminar carteras y copias de seguridad una vez que lo hayas hecho."),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Este archivo encriptado contiene datos útiles de la billetera, como etiquetas, cuentas y configuraciones.\n\nEste archivo está encriptado con su Envoy Seed. Asegúrese de que su semilla esté respaldada de forma segura. "),
         "export_backup_send_CTA1": MessageLookupByLibrary.simpleMessage(
@@ -758,6 +786,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Toque cualquiera de las tarjetas anteriores para recibir Bitcoin."),
         "label": MessageLookupByLibrary.simpleMessage("Taproot"),
+        "labeled_switch_activity":
+            MessageLookupByLibrary.simpleMessage("Actividad"),
+        "labeled_switch_tags":
+            MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("Intentar de nuevo"),
         "launch_screen_faceID_fail_heading":
@@ -905,7 +937,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Copias de seguridad mágicas"),
         "magic_setup_tutorial_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "La forma más fácil de crear una nueva billetera Bitcoin mientras mantiene su soberanía.\n\nMagic Backups realiza automáticamente una copia de seguridad de su billetera y configuración con Android Auto Backup, 100% encriptado de extremo a extremo. \n\n[[Más información]]."),
+                "La forma más fácil de crear una cartera nueva de Bitcoin manteniendo tu soberanía.\n\nLa Copia de Seguridad Mágica realiza automáticamente una copia de seguridad de tu cartera y su configuración con Android Auto Backup, 100% encriptado de extremo a extremo. \n\n[[Más información]]."),
         "magic_setup_tutorial_ios_CTA1": MessageLookupByLibrary.simpleMessage(
             "Crear una copia de seguridad mágica"),
         "magic_setup_tutorial_ios_CTA2": MessageLookupByLibrary.simpleMessage(
@@ -922,16 +954,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Por motivos de privacidad, creamos una nueva dirección cada vez que visita esta pantalla."),
         "manage_account_address_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles de la cuenta"),
+            MessageLookupByLibrary.simpleMessage("Detalles de cuenta"),
         "manage_account_menu_delete":
-            MessageLookupByLibrary.simpleMessage("Borrar"),
+            MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "manage_account_menu_editAccountName":
-            MessageLookupByLibrary.simpleMessage(
-                "EDITAR EL NOMBRE DE LA CUENTA"),
+            MessageLookupByLibrary.simpleMessage("EDITAR NOMBRE DE CUENTA"),
         "manage_account_menu_showDescriptor":
             MessageLookupByLibrary.simpleMessage("MOSTRAR DESCRIPTOR"),
         "manage_account_remove_cta":
-            MessageLookupByLibrary.simpleMessage("Borrar"),
+            MessageLookupByLibrary.simpleMessage("Eliminar"),
         "manage_account_remove_heading":
             MessageLookupByLibrary.simpleMessage("¿Estas seguro?"),
         "manage_account_remove_subheading":
@@ -953,7 +984,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "EDITAR NOMBRE DE DISPOSITIVO"),
         "manage_device_disconnect_modal":
-            MessageLookupByLibrary.simpleMessage("Borrar"),
+            MessageLookupByLibrary.simpleMessage("Eliminar"),
         "manage_device_disconnect_modal_cta":
             MessageLookupByLibrary.simpleMessage("Guardar"),
         "manage_device_rename_modal_heading":
@@ -1035,7 +1066,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "¿Cuál es tu palabra semilla #2?"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA":
-            MessageLookupByLibrary.simpleMessage("Volver"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_heading":
             MessageLookupByLibrary.simpleMessage("Verifica tu semilla"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_infotext":
@@ -1091,7 +1122,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Mi semilla tiene una frase de contraseña"),
         "manual_setup_import_seed_12_words_fail_modal_CTA":
-            MessageLookupByLibrary.simpleMessage("Volver"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "manual_setup_import_seed_12_words_fail_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Esa semilla parece no ser válida. Compruebe las palabras introducidas, incluido el orden en el que se encuentran, e inténtelo de nuevo."),
@@ -1136,7 +1167,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_recovery_import_backup_modal_fail_connectivity_cta1":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "manual_setup_recovery_import_backup_modal_fail_connectivity_cta2":
-            MessageLookupByLibrary.simpleMessage("Volver"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "manual_setup_recovery_import_backup_modal_fail_connectivity_heading":
             MessageLookupByLibrary.simpleMessage("Advertencia"),
         "manual_setup_recovery_import_backup_modal_fail_connectivity_subheading":
@@ -1445,7 +1476,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "passport_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
             "Conectar un pasaporte existente"),
         "passport_welcome_screen_cta3": MessageLookupByLibrary.simpleMessage(
-            "No tengo pasaporte. [[Más información.]]"),
+            "No tengo un Passport. [[Más información.]]"),
         "passport_welcome_screen_heading":
             MessageLookupByLibrary.simpleMessage("Bienvenidos a Passport"),
         "passport_welcome_screen_skip":
@@ -1453,7 +1484,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "passport_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy ofrece una configuración segura de Passport, actualizaciones de firmware sencillas y una experiencia de billetera Bitcoin similar a la zen."),
         "privacy_applicationLock_learnMore":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "privacy_applicationLock_title":
             MessageLookupByLibrary.simpleMessage("Bloqueo de aplicaciones"),
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
@@ -1461,7 +1492,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Mejore su privacidad ejecutando su propio nodo. Toca Más información arriba. "),
         "privacy_node_learnMore":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "privacy_node_nodeAddress": MessageLookupByLibrary.simpleMessage(
             "Introduzca la dirección de su nodo"),
         "privacy_node_nodeType_foundation":
@@ -1474,13 +1505,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_improvedPrivacy":
             MessageLookupByLibrary.simpleMessage("Mejorado\nPrivacidad"),
         "privacy_privacyMode_learnMore":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Modo de privacidad"),
         "privacy_privacyMode_torSuggestion": MessageLookupByLibrary.simpleMessage(
-            "La conexión de Envoy será fiable con Tor convertido [[OFF]]. Sugerido para nuevos usuarios."),
+            "La conexión de Envoy será estable con Tor [[DESACTIVADO]]. Recomendado para nuevos usuarios."),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
-            "Tor se convertirá [[ON]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea confiable."),
+            "Tor se [[ACTIVARÁ]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea del todo estable."),
         "privacy_setting_add_node_modal_cta":
             MessageLookupByLibrary.simpleMessage("Conectar"),
         "privacy_setting_add_node_modal_heading":
@@ -1501,7 +1532,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Su nodo está conectado a través de Clearnet."),
         "privacy_setting_clearnet_node_tor_off":
             MessageLookupByLibrary.simpleMessage(
-                "La conexión de Envoy será rápida y fiable con Tor convertido en [[OFF]]. Sugerido para nuevos usuarios."),
+                "La conexión de Envoy será estable con Tor [[DESACTIVADO]]. Recomendado para nuevos usuarios."),
         "privacy_setting_connecting_node_fails_modal_cta":
             MessageLookupByLibrary.simpleMessage("Reintentar"),
         "privacy_setting_connecting_node_fails_modal_failed":
@@ -1528,12 +1559,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_onion_node_heading":
             MessageLookupByLibrary.simpleMessage("Nodo conectado"),
         "privacy_setting_onion_node_improved_privacy":
-            MessageLookupByLibrary.simpleMessage("Privacidad mejorada"),
+            MessageLookupByLibrary.simpleMessage("Mejor Privacidad"),
         "privacy_setting_onion_node_sbheading":
             MessageLookupByLibrary.simpleMessage(
                 "Tu nodo está conectado a través de Tor."),
         "privacy_setting_onion_node_tor_on": MessageLookupByLibrary.simpleMessage(
-            "Tor se convertirá [[ON]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea confiable."),
+            "Tor se [[ACTIVARÁ]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea del todo estable."),
         "privacy_setting_perfomance_add_node":
             MessageLookupByLibrary.simpleMessage("Agregar nodo"),
         "privacy_setting_perfomance_better_performance":
@@ -1543,16 +1574,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_heading":
             MessageLookupByLibrary.simpleMessage("Elige tu privacidad"),
         "privacy_setting_perfomance_improved_privacy":
-            MessageLookupByLibrary.simpleMessage("Privacidad mejorada"),
+            MessageLookupByLibrary.simpleMessage("Mejor Privacidad"),
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "¿Cómo le gustaría que Envoy se conectara a Internet?"),
         "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "La conexión de Envoy será fiable con Tor convertido [[OFF]]. Sugerido para nuevos usuarios."),
+            "La conexión de Envoy será estable con Tor [[DESACTIVADO]]. Recomendado para nuevos usuarios."),
         "privacy_setting_privacy_better_performance":
             MessageLookupByLibrary.simpleMessage("Mejor \nRendimiento"),
         "privacy_setting_privacy_better_privacy":
-            MessageLookupByLibrary.simpleMessage("Privacidad mejorada"),
+            MessageLookupByLibrary.simpleMessage("Mejor Privacidad"),
         "privacy_setting_privacy_cta":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "privacy_setting_privacy_heading":
@@ -1561,7 +1592,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "¿Cómo le gustaría que Envoy se conectara a Internet?"),
         "privacy_setting_privacy_tor_on": MessageLookupByLibrary.simpleMessage(
-            "Tor se convertirá [[ON]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea confiable."),
+            "Tor se [[ACTIVARÁ]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea del todo estable."),
         "receive_QR_code_address": MessageLookupByLibrary.simpleMessage(
             "31q33xnrjena6apwnhx5t375djmdn7y6602prrgn7"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
@@ -1605,7 +1636,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "screenTitle_activity":
             MessageLookupByLibrary.simpleMessage("Aprender"),
         "screenTitle_privacy":
-            MessageLookupByLibrary.simpleMessage("Intimidad"),
+            MessageLookupByLibrary.simpleMessage("PRIVACIDAD"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_amount_enter_valid_address":
@@ -1722,8 +1753,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cantidad requerida"),
         "tagged_coin_details_inputs_success_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Cantidad seleccionada"),
-        "tagged_coin_details_menu_cta1": MessageLookupByLibrary.simpleMessage(
-            "EDITAR EL NOMBRE DE LA ETIQUETA"),
+        "tagged_coin_details_locked_heading":
+            MessageLookupByLibrary.simpleMessage("DETALLES DE ETIQUETA"),
+        "tagged_coin_details_menu_cta1":
+            MessageLookupByLibrary.simpleMessage("EDITAR NOMBRE DE ETIQUETA"),
         "tagged_coin_details_menu_cta2":
             MessageLookupByLibrary.simpleMessage("Eliminar etiqueta"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
@@ -1746,11 +1779,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Desactivar Tor temporalmente"),
         "torToast_learnMore_warningBody": MessageLookupByLibrary.simpleMessage(
-            "Es posible que experimente un rendimiento degradado de la aplicación hasta que Envoy pueda restablecer una conexión con Tor.\n\nLa desactivación de Tor establecerá una conexión directa con el servidor de Envoy, pero viene con privacidad [[tradeoffs]]."),
+            "Es posible que experimentes un rendimiento degradado de la aplicación hasta que Envoy pueda restablecer una conexión con Tor.\n\nDesactivando Tor se establecerá una conexión directa con el servidor de Envoy, [[a cambio]] de reducir la privacidad."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Problema al establecer la conectividad de Tor"),
         "tor_connectivity_toast_warning_learn_more":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "untagged_coin_details_half_spendable_cta2":
             MessageLookupByLibrary.simpleMessage("Cambiar etiqueta"),
         "untagged_coin_details_locked_heading":
@@ -1763,7 +1796,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("1 Bloqueado"),
         "untagged_coin_details_unlocked_coins_selected":
             MessageLookupByLibrary.simpleMessage(
-                "4 de 4 monedas seleccionadas"),
+                "0 de 4 Monedas Seleccionadas"),
         "untagged_coin_details_unlocked_divider":
             MessageLookupByLibrary.simpleMessage(" | "),
         "untagged_coin_details_unlocked_heading":
@@ -1818,9 +1851,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_security_modal__heading":
             MessageLookupByLibrary.simpleMessage("Consejo de seguridad"),
         "wallet_security_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Aprende más"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "wallet_security_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Espalda"),
+            MessageLookupByLibrary.simpleMessage("Atrás"),
         "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy está almacenando más de la cantidad recomendada de Bitcoin para una billetera móvil conectada a Internet.\n\nPara un almacenamiento ultraseguro y fuera de línea, Foundation sugiere la billetera de hardware Passport."),
         "wallet_setup_success_heading":
