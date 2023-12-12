@@ -426,6 +426,8 @@ class TransactionListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Locale activeLocale = Localizations.localeOf(context);
+
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
@@ -491,7 +493,8 @@ class TransactionListTile extends StatelessWidget {
                   ? Text(S().azteco_account_tx_history_pending_voucher)
                   : transaction.type == TransactionType.normal &&
                           transaction.isConfirmed
-                      ? Text(timeago.format(transaction.date))
+                      ? Text(timeago.format(transaction.date,
+                          locale: activeLocale.languageCode))
                       : Text(S().receive_tx_list_awaitingConfirmation),
             ),
             leading: transaction.amount < 0

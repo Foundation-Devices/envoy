@@ -170,6 +170,7 @@ class ActivityListTile extends StatelessWidget {
     EnvoyIcons? rightIcon;
     Color? iconColor;
     Widget? unitIcon;
+    final Locale activeLocale = Localizations.localeOf(context);
 
     if (notification.type == EnvoyNotificationType.transaction) {
       leftIcon = notification.amount! >= 0
@@ -177,7 +178,8 @@ class ActivityListTile extends StatelessWidget {
           : EnvoyIcons.arrow_up_right;
       textLeft1 =
           notification.amount! >= 0 ? S().activity_received : S().activity_sent;
-      textLeft2 = timeago.format(notification.date);
+      textLeft2 =
+          timeago.format(notification.date, locale: activeLocale.languageCode);
       textRight1 = getFormattedAmount(notification.amount!);
       textRight2 = Settings().selectedFiat == null
           ? null
@@ -191,7 +193,8 @@ class ActivityListTile extends StatelessWidget {
     if (notification.type == EnvoyNotificationType.firmware) {
       leftIcon = EnvoyIcons.tool;
       textLeft1 = S().activity_firmwareUpdate;
-      textLeft2 = timeago.format(notification.date);
+      textLeft2 =
+          timeago.format(notification.date, locale: activeLocale.languageCode);
       textRight1 = notification.body;
       //textRight2 = notification.id; //should be the type of passport in the notification? e.g. passportGen1 or Foundation Passport
       iconColor = EnvoyColors.textTertiary;
@@ -200,7 +203,8 @@ class ActivityListTile extends StatelessWidget {
     if (notification.type == EnvoyNotificationType.envoyUpdate) {
       leftIcon = EnvoyIcons.tool;
       textLeft1 = S().activity_envoyUpdate;
-      textLeft2 = timeago.format(notification.date);
+      textLeft2 =
+          timeago.format(notification.date, locale: activeLocale.languageCode);
       textRight1 = notification.body;
       iconColor = EnvoyColors.textTertiary;
     }
