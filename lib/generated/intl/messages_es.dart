@@ -85,13 +85,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "Time": MessageLookupByLibrary.simpleMessage("9:41"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Recibido hace 3 horas"),
-        "Title": MessageLookupByLibrary.simpleMessage("Cantidad seleccionada"),
+        "Title": MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "Value": MessageLookupByLibrary.simpleMessage("1,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Visto"),
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
+        "_": MessageLookupByLibrary.simpleMessage("\$53.60"),
         "account_details_untagged_card":
             MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
@@ -1753,6 +1753,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("EDITAR NOMBRE DE ETIQUETA"),
         "tagged_coin_details_menu_cta2":
             MessageLookupByLibrary.simpleMessage("Eliminar etiqueta"),
+        "tagged_tagDetails_menu_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
+        "tagged_tagDetails_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
+        "tagged_tagDetails_sheet_cta1":
+            MessageLookupByLibrary.simpleMessage("Enviar selección"),
+        "tagged_tagDetails_sheet_cta2":
+            MessageLookupByLibrary.simpleMessage("Reetiquetar Seleccionado"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Mantén pulsado y arrastra para reordenar tus cuentas."),
         "tap_and_drag_first_time_text_button":
@@ -1797,6 +1805,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Detalles de la etiqueta"),
         "untagged_coin_details_unlocked_tag_name":
             MessageLookupByLibrary.simpleMessage("Conferencias"),
+        "untagged_tagDetails_selected_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
+        "untagged_tagDetails_spendable_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
         "wallet_security_modal_1_4_android_CTA":
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "wallet_security_modal_1_4_android_heading":

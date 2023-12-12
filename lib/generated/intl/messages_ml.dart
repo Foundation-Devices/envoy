@@ -1767,6 +1767,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ടാഗ് നാമം എഡിറ്റ് ചെയ്യുക"),
         "tagged_coin_details_menu_cta2":
             MessageLookupByLibrary.simpleMessage("ടാഗ് ഇല്ലാതാക്കുക"),
+        "tagged_tagDetails_menu_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "tagged_tagDetails_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "tagged_tagDetails_sheet_cta1":
+            MessageLookupByLibrary.simpleMessage("Send Selected"),
+        "tagged_tagDetails_sheet_cta2":
+            MessageLookupByLibrary.simpleMessage("Retag Selected"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
             "നിങ്ങളുടെ അക്കൗണ്ടുകൾ വലിച്ചിടാനും പുനഃക്രമീകരിക്കാനും പിടിക്കുക."),
         "tap_and_drag_first_time_text_button":
@@ -1812,6 +1820,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ടാഗ് വിശദാംശങ്ങൾ"),
         "untagged_coin_details_unlocked_tag_name":
             MessageLookupByLibrary.simpleMessage("സമ്മേളനങ്ങൾ"),
+        "untagged_tagDetails_selected_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "untagged_tagDetails_spendable_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "wallet_security_modal_1_4_android_CTA":
             MessageLookupByLibrary.simpleMessage("തുടരുക"),
         "wallet_security_modal_1_4_android_heading":

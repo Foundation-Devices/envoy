@@ -674,10 +674,10 @@ class S {
     );
   }
 
-  /// `Selected Amount`
+  /// `Label`
   String get Title {
     return Intl.message(
-      'Selected Amount',
+      'Label',
       name: 'Title',
       desc: '',
       args: [],
@@ -738,10 +738,10 @@ class S {
     );
   }
 
-  /// `Untagged`
+  /// `$53.60`
   String get _ {
     return Intl.message(
-      'Untagged',
+      '\$53.60',
       name: '_',
       desc: '',
       args: [],
@@ -8350,6 +8350,46 @@ class S {
     );
   }
 
+  /// `Selected Amount`
+  String get tagged_tagDetails_menu_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'tagged_tagDetails_menu_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get tagged_tagDetails_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'tagged_tagDetails_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Selected`
+  String get tagged_tagDetails_sheet_cta1 {
+    return Intl.message(
+      'Send Selected',
+      name: 'tagged_tagDetails_sheet_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retag Selected`
+  String get tagged_tagDetails_sheet_cta2 {
+    return Intl.message(
+      'Retag Selected',
+      name: 'tagged_tagDetails_sheet_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hold to drag and reorder your accounts.`
   String get tap_and_drag_first_time_text {
     return Intl.message(
@@ -8555,6 +8595,26 @@ class S {
     return Intl.message(
       'Conferences',
       name: 'untagged_coin_details_unlocked_tag_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get untagged_tagDetails_selected_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'untagged_tagDetails_selected_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get untagged_tagDetails_spendable_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'untagged_tagDetails_spendable_selectedAmount',
       desc: '',
       args: [],
     );

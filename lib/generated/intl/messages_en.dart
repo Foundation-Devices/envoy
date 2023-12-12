@@ -84,13 +84,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "Time": MessageLookupByLibrary.simpleMessage("9:41"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Received 3 hours ago"),
-        "Title": MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "Title": MessageLookupByLibrary.simpleMessage("Label"),
         "Value": MessageLookupByLibrary.simpleMessage("1,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Watched"),
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("Untagged"),
+        "_": MessageLookupByLibrary.simpleMessage("\$53.60"),
         "account_details_untagged_card":
             MessageLookupByLibrary.simpleMessage("Untagged"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
@@ -1697,6 +1697,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("EDIT TAG NAME"),
         "tagged_coin_details_menu_cta2":
             MessageLookupByLibrary.simpleMessage("DELETE TAG"),
+        "tagged_tagDetails_menu_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "tagged_tagDetails_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "tagged_tagDetails_sheet_cta1":
+            MessageLookupByLibrary.simpleMessage("Send Selected"),
+        "tagged_tagDetails_sheet_cta2":
+            MessageLookupByLibrary.simpleMessage("Retag Selected"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Hold to drag and reorder your accounts."),
         "tap_and_drag_first_time_text_button":
@@ -1739,6 +1747,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("TAG Details"),
         "untagged_coin_details_unlocked_tag_name":
             MessageLookupByLibrary.simpleMessage("Conferences"),
+        "untagged_tagDetails_selected_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "untagged_tagDetails_spendable_selectedAmount":
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "wallet_security_modal_1_4_android_CTA":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "wallet_security_modal_1_4_android_heading":
