@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.5.0+845
+version: 1.5.0+846
 
 environment:
   sdk: ">=3.0.0"
@@ -35,7 +35,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/foundation-devices/tor.git
-      ref: 09ba92cb11d4e3cacf97256e57863b805f79f2e5
+      ref: c63b3c6cf628ee40e865e91ffbc200c4fff5a75b
   ur:
     path: packages/ur
   http_tor:
