@@ -55,6 +55,8 @@ Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
           json['publicExternalDescriptor'] as String? ?? null,
       publicInternalDescriptor:
           json['publicInternalDescriptor'] as String? ?? null,
+      type: $enumDecodeNullable(_$WalletTypeEnumMap, json['type']) ??
+          WalletType.witnessPublicKeyHash,
     )
       ..transactions = (json['transactions'] as List<dynamic>)
           .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
@@ -73,6 +75,7 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
       'internalDescriptor': instance.internalDescriptor,
       'publicExternalDescriptor': instance.publicExternalDescriptor,
       'publicInternalDescriptor': instance.publicInternalDescriptor,
+      'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkEnumMap[instance.network]!,
       'hot': instance.hot,
       'hasPassphrase': instance.hasPassphrase,
@@ -90,13 +93,20 @@ const _$NetworkEnumMap = {
   Network.Regtest: 'Regtest',
 };
 
-_$_Utxo _$$_UtxoFromJson(Map<String, dynamic> json) => _$_Utxo(
+const _$WalletTypeEnumMap = {
+  WalletType.witnessPublicKeyHash: 'witnessPublicKeyHash',
+  WalletType.taproot: 'taproot',
+  WalletType.superWallet: 'superWallet',
+};
+
+_$UtxoImpl _$$UtxoImplFromJson(Map<String, dynamic> json) => _$UtxoImpl(
       txid: json['txid'] as String,
       vout: json['vout'] as int,
       value: json['value'] as int,
     );
 
-Map<String, dynamic> _$$_UtxoToJson(_$_Utxo instance) => <String, dynamic>{
+Map<String, dynamic> _$$UtxoImplToJson(_$UtxoImpl instance) =>
+    <String, dynamic>{
       'txid': instance.txid,
       'vout': instance.vout,
       'value': instance.value,

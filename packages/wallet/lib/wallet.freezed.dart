@@ -72,18 +72,20 @@ class _$UtxoCopyWithImpl<$Res, $Val extends Utxo>
 }
 
 /// @nodoc
-abstract class _$$_UtxoCopyWith<$Res> implements $UtxoCopyWith<$Res> {
-  factory _$$_UtxoCopyWith(_$_Utxo value, $Res Function(_$_Utxo) then) =
-      __$$_UtxoCopyWithImpl<$Res>;
+abstract class _$$UtxoImplCopyWith<$Res> implements $UtxoCopyWith<$Res> {
+  factory _$$UtxoImplCopyWith(
+          _$UtxoImpl value, $Res Function(_$UtxoImpl) then) =
+      __$$UtxoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String txid, int vout, int value});
 }
 
 /// @nodoc
-class __$$_UtxoCopyWithImpl<$Res> extends _$UtxoCopyWithImpl<$Res, _$_Utxo>
-    implements _$$_UtxoCopyWith<$Res> {
-  __$$_UtxoCopyWithImpl(_$_Utxo _value, $Res Function(_$_Utxo) _then)
+class __$$UtxoImplCopyWithImpl<$Res>
+    extends _$UtxoCopyWithImpl<$Res, _$UtxoImpl>
+    implements _$$UtxoImplCopyWith<$Res> {
+  __$$UtxoImplCopyWithImpl(_$UtxoImpl _value, $Res Function(_$UtxoImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -93,7 +95,7 @@ class __$$_UtxoCopyWithImpl<$Res> extends _$UtxoCopyWithImpl<$Res, _$_Utxo>
     Object? vout = null,
     Object? value = null,
   }) {
-    return _then(_$_Utxo(
+    return _then(_$UtxoImpl(
       txid: null == txid
           ? _value.txid
           : txid // ignore: cast_nullable_to_non_nullable
@@ -112,10 +114,12 @@ class __$$_UtxoCopyWithImpl<$Res> extends _$UtxoCopyWithImpl<$Res, _$_Utxo>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Utxo with DiagnosticableTreeMixin implements _Utxo {
-  const _$_Utxo({required this.txid, required this.vout, required this.value});
+class _$UtxoImpl with DiagnosticableTreeMixin implements _Utxo {
+  const _$UtxoImpl(
+      {required this.txid, required this.vout, required this.value});
 
-  factory _$_Utxo.fromJson(Map<String, dynamic> json) => _$$_UtxoFromJson(json);
+  factory _$UtxoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UtxoImplFromJson(json);
 
   @override
   final String txid;
@@ -143,7 +147,7 @@ class _$_Utxo with DiagnosticableTreeMixin implements _Utxo {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Utxo &&
+            other is _$UtxoImpl &&
             (identical(other.txid, txid) || other.txid == txid) &&
             (identical(other.vout, vout) || other.vout == vout) &&
             (identical(other.value, value) || other.value == value));
@@ -156,12 +160,12 @@ class _$_Utxo with DiagnosticableTreeMixin implements _Utxo {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_UtxoCopyWith<_$_Utxo> get copyWith =>
-      __$$_UtxoCopyWithImpl<_$_Utxo>(this, _$identity);
+  _$$UtxoImplCopyWith<_$UtxoImpl> get copyWith =>
+      __$$UtxoImplCopyWithImpl<_$UtxoImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_UtxoToJson(
+    return _$$UtxoImplToJson(
       this,
     );
   }
@@ -171,9 +175,9 @@ abstract class _Utxo implements Utxo {
   const factory _Utxo(
       {required final String txid,
       required final int vout,
-      required final int value}) = _$_Utxo;
+      required final int value}) = _$UtxoImpl;
 
-  factory _Utxo.fromJson(Map<String, dynamic> json) = _$_Utxo.fromJson;
+  factory _Utxo.fromJson(Map<String, dynamic> json) = _$UtxoImpl.fromJson;
 
   @override
   String get txid;
@@ -183,5 +187,6 @@ abstract class _Utxo implements Utxo {
   int get value;
   @override
   @JsonKey(ignore: true)
-  _$$_UtxoCopyWith<_$_Utxo> get copyWith => throw _privateConstructorUsedError;
+  _$$UtxoImplCopyWith<_$UtxoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
