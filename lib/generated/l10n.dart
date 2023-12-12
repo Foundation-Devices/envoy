@@ -118,6 +118,16 @@ class S {
 
   // skipped getter for the 'Add note' key
 
+  /// `Answer`
+  String get Answer {
+    return Intl.message(
+      'Answer',
+      name: 'Answer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler.\n\nEnvoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet.`
   String get Aswer {
     return Intl.message(
@@ -368,6 +378,16 @@ class S {
     );
   }
 
+  /// `Links`
+  String get Links {
+    return Intl.message(
+      'Links',
+      name: 'Links',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'List header' key
 
   /// `SEND`
@@ -421,6 +441,16 @@ class S {
     return Intl.message(
       '17,210',
       name: 'Primary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Question`
+  String get Question {
+    return Intl.message(
+      'Question',
+      name: 'Question',
       desc: '',
       args: [],
     );
@@ -498,10 +528,10 @@ class S {
     );
   }
 
-  /// `Transaction Details`
+  /// `Receive`
   String get ScreenTitle {
     return Intl.message(
-      'Transaction Details',
+      'Receive',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -686,10 +716,10 @@ class S {
 
   // skipped getter for the 'Unboxing Passport Pt.1' key
 
-  /// `1,000,000`
+  /// `5,000,000`
   String get Value {
     return Intl.message(
-      '1,000,000',
+      '5,000,000',
       name: 'Value',
       desc: '',
       args: [],
@@ -707,6 +737,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'What is Envoy?' key
 
   /// `1`
   String get X {
@@ -738,10 +770,10 @@ class S {
     );
   }
 
-  /// `Untagged`
+  /// `SOURCE`
   String get _ {
     return Intl.message(
-      'Untagged',
+      'SOURCE',
       name: '_',
       desc: '',
       args: [],
@@ -768,10 +800,10 @@ class S {
     );
   }
 
-  /// `There are no coins assigned to this tag.`
+  /// `There are no transactions in this account.\nReceive your first transaction below.`
   String get account_empty_tx_history_text_explainer {
     return Intl.message(
-      'There are no coins assigned to this tag.',
+      'There are no transactions in this account.\nReceive your first transaction below.',
       name: 'account_empty_tx_history_text_explainer',
       desc: '',
       args: [],
@@ -2904,6 +2936,506 @@ class S {
     );
   }
 
+  /// `Envoy is a Bitcoin mobile wallet and Passport companion app, available on iOS and Android.`
+  String get envoy_faq_answer_1 {
+    return Intl.message(
+      'Envoy is a Bitcoin mobile wallet and Passport companion app, available on iOS and Android.',
+      name: 'envoy_faq_answer_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No, anyone is still free to manually download, verify and install new firmware. See {here} for more information.`
+  String envoy_faq_answer_10(Object here) {
+    return Intl.message(
+      'No, anyone is still free to manually download, verify and install new firmware. See $here for more information.',
+      name: 'envoy_faq_answer_10',
+      desc: '',
+      args: [here],
+    );
+  }
+
+  /// `Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy.`
+  String get envoy_faq_answer_11 {
+    return Intl.message(
+      'Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy.',
+      name: 'envoy_faq_answer_11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, Envoy makes multi-account management simple.`
+  String get envoy_faq_answer_12 {
+    return Intl.message(
+      'Yes, Envoy makes multi-account management simple.',
+      name: 'envoy_faq_answer_12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy communicates predominantly via QR codes, however firmware updates are passed from your phone via a microSD card. Passport includes microSD adapters for your phone.`
+  String get envoy_faq_answer_13 {
+    return Intl.message(
+      'Envoy communicates predominantly via QR codes, however firmware updates are passed from your phone via a microSD card. Passport includes microSD adapters for your phone.',
+      name: 'envoy_faq_answer_13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, just be aware that any wallet-specific information, such as address or UTXO labeling, will not be copied to or from Envoy.`
+  String get envoy_faq_answer_14 {
+    return Intl.message(
+      'Yes, just be aware that any wallet-specific information, such as address or UTXO labeling, will not be copied to or from Envoy.',
+      name: 'envoy_faq_answer_14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This may be possible as most QR enabled hardware wallets communicate in very similar ways, however this is not explicitly supported. As Envoy is open source, we welcome other QR-based hardware wallets to add support!`
+  String get envoy_faq_answer_15 {
+    return Intl.message(
+      'This may be possible as most QR enabled hardware wallets communicate in very similar ways, however this is not explicitly supported. As Envoy is open source, we welcome other QR-based hardware wallets to add support!',
+      name: 'envoy_faq_answer_15',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At this time Envoy only works with ‘on-chain’ Bitcoin. We plan to support Lightning in the future.`
+  String get envoy_faq_answer_16 {
+    return Intl.message(
+      'At this time Envoy only works with ‘on-chain’ Bitcoin. We plan to support Lightning in the future.',
+      name: 'envoy_faq_answer_16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Anyone finding your phone would first need to get past your phones operating system PIN or biometric authentication to access Envoy. In the unlikely event they achieve this, the attacker could send funds from your Envoy Mobile Wallet and see the amount of Bitcoin stored within any connected Passport accounts. These Passport funds are not at risk because any transactions must be authorized by the paired Passport device.`
+  String get envoy_faq_answer_17 {
+    return Intl.message(
+      'Anyone finding your phone would first need to get past your phones operating system PIN or biometric authentication to access Envoy. In the unlikely event they achieve this, the attacker could send funds from your Envoy Mobile Wallet and see the amount of Bitcoin stored within any connected Passport accounts. These Passport funds are not at risk because any transactions must be authorized by the paired Passport device.',
+      name: 'envoy_faq_answer_17',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If used with a Passport, Envoy acts as a ‘watch-only’ wallet connected to your hardware wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide. Passport is the 'cold storage' and Envoy is simply the internet connected interface!If you use Envoy to create a mobile wallet, where the keys are stored securely on your phone, that mobile wallet would not be considered cold storage. This has zero effect on the security of any Passport connected accounts.`
+  String get envoy_faq_answer_18 {
+    return Intl.message(
+      'If used with a Passport, Envoy acts as a ‘watch-only’ wallet connected to your hardware wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide. Passport is the \'cold storage\' and Envoy is simply the internet connected interface!If you use Envoy to create a mobile wallet, where the keys are stored securely on your phone, that mobile wallet would not be considered cold storage. This has zero effect on the security of any Passport connected accounts.',
+      name: 'envoy_faq_answer_18',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.`
+  String get envoy_faq_answer_19 {
+    return Intl.message(
+      'Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.',
+      name: 'envoy_faq_answer_19',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.`
+  String get envoy_faq_answer_2 {
+    return Intl.message(
+      'Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.',
+      name: 'envoy_faq_answer_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Downloading and installing Envoy requires zero personal information and Envoy can connect to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely.`
+  String get envoy_faq_answer_20 {
+    return Intl.message(
+      'Downloading and installing Envoy requires zero personal information and Envoy can connect to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely.',
+      name: 'envoy_faq_answer_20',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes. From version 1.4.0, Envoy now support full coin selection as well as coin 'tagging'.`
+  String get envoy_faq_answer_21 {
+    return Intl.message(
+      'Yes. From version 1.4.0, Envoy now support full coin selection as well as coin \'tagging\'.',
+      name: 'envoy_faq_answer_21',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At this time Envoy does not support batch spending.`
+  String get envoy_faq_answer_22 {
+    return Intl.message(
+      'At this time Envoy does not support batch spending.',
+      name: 'envoy_faq_answer_22',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. 'Standard' aims to get your transaction finalized within 60 minutes and 'Faster' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction.`
+  String get envoy_faq_answer_23 {
+    return Intl.message(
+      'Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. \'Standard\' aims to get your transaction finalized within 60 minutes and \'Faster\' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction.',
+      name: 'envoy_faq_answer_23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.`
+  String get envoy_faq_answer_3 {
+    return Intl.message(
+      'Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.',
+      name: 'envoy_faq_answer_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Android Auto Backup. All app data is encrypted by your seed and stored on Foundation Servers. Set up your wallet in 60 seconds, and automatically restore if you lose your phone!`
+  String get envoy_faq_answer_4 {
+    return Intl.message(
+      'Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Android Auto Backup. All app data is encrypted by your seed and stored on Foundation Servers. Set up your wallet in 60 seconds, and automatically restore if you lose your phone!',
+      name: 'envoy_faq_answer_4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups are completely optional for users that want to leverage Envoy as a mobile wallet. If you prefer to manage your own mobile wallet seed words and backup file, choose 'Manually Configure Seed Words' at the wallet set up stage.`
+  String get envoy_faq_answer_5 {
+    return Intl.message(
+      'Magic Backups are completely optional for users that want to leverage Envoy as a mobile wallet. If you prefer to manage your own mobile wallet seed words and backup file, choose \'Manually Configure Seed Words\' at the wallet set up stage.',
+      name: 'envoy_faq_answer_5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Envoy backup file contains app settings, account info and transaction labels. The file is encrypted with your mobile wallet seed words. For Magic Backup users, this is stored fully encrypted on the Foundation server. Manual backup Envoy users can download and store their backup file anywhere they like. This could be any combination of your phone, a personal cloud server, or on something physical like a microSD card or USB drive.`
+  String get envoy_faq_answer_6 {
+    return Intl.message(
+      'The Envoy backup file contains app settings, account info and transaction labels. The file is encrypted with your mobile wallet seed words. For Magic Backup users, this is stored fully encrypted on the Foundation server. Manual backup Envoy users can download and store their backup file anywhere they like. This could be any combination of your phone, a personal cloud server, or on something physical like a microSD card or USB drive.',
+      name: 'envoy_faq_answer_6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No, Envoy’s core features will always be free to use. In the future we may introduce optional paid services or subscriptions.`
+  String get envoy_faq_answer_7 {
+    return Intl.message(
+      'No, Envoy’s core features will always be free to use. In the future we may introduce optional paid services or subscriptions.',
+      name: 'envoy_faq_answer_7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same {GPLv3} license as our Passport Firmware. For those wanting to check our source code, click {here}.`
+  String envoy_faq_answer_8(Object GPLv3, Object here) {
+    return Intl.message(
+      'Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same $GPLv3 license as our Passport Firmware. For those wanting to check our source code, click $here.',
+      name: 'envoy_faq_answer_8',
+      desc: '',
+      args: [GPLv3, here],
+    );
+  }
+
+  /// `No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials {here}.`
+  String envoy_faq_answer_9(Object here) {
+    return Intl.message(
+      'No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials $here.',
+      name: 'envoy_faq_answer_9',
+      desc: '',
+      args: [here],
+    );
+  }
+
+  /// `https://docs.foundationdevices.com/en/firmware-update`
+  String get envoy_faq_link_10 {
+    return Intl.message(
+      'https://docs.foundationdevices.com/en/firmware-update',
+      name: 'envoy_faq_link_10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://www.gnu.org/licenses/gpl-3.0.en.html`
+  String get envoy_faq_link_8_1 {
+    return Intl.message(
+      'https://www.gnu.org/licenses/gpl-3.0.en.html',
+      name: 'envoy_faq_link_8_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://github.com/Foundation-Devices/envoy`
+  String get envoy_faq_link_8_2 {
+    return Intl.message(
+      'https://github.com/Foundation-Devices/envoy',
+      name: 'envoy_faq_link_8_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://docs.foundationdevices.com/connect`
+  String get envoy_faq_link_9 {
+    return Intl.message(
+      'https://docs.foundationdevices.com/connect',
+      name: 'envoy_faq_link_9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is Envoy?`
+  String get envoy_faq_question_1 {
+    return Intl.message(
+      'What is Envoy?',
+      name: 'envoy_faq_question_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I have to use Envoy to update the firmware on Passport?`
+  String get envoy_faq_question_10 {
+    return Intl.message(
+      'Do I have to use Envoy to update the firmware on Passport?',
+      name: 'envoy_faq_question_10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I manage more than one Passport with Envoy?`
+  String get envoy_faq_question_11 {
+    return Intl.message(
+      'Can I manage more than one Passport with Envoy?',
+      name: 'envoy_faq_question_11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I manage multiple accounts from the same Passport?`
+  String get envoy_faq_question_12 {
+    return Intl.message(
+      'Can I manage multiple accounts from the same Passport?',
+      name: 'envoy_faq_question_12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How does Envoy communicate with Passport?`
+  String get envoy_faq_question_13 {
+    return Intl.message(
+      'How does Envoy communicate with Passport?',
+      name: 'envoy_faq_question_13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I use Envoy in parallel to another piece of software like Sparrow Wallet?`
+  String get envoy_faq_question_14 {
+    return Intl.message(
+      'Can I use Envoy in parallel to another piece of software like Sparrow Wallet?',
+      name: 'envoy_faq_question_14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I manage other hardware wallets with Envoy?`
+  String get envoy_faq_question_15 {
+    return Intl.message(
+      'Can I manage other hardware wallets with Envoy?',
+      name: 'envoy_faq_question_15',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is Envoy compatible with the Lightning Network?`
+  String get envoy_faq_question_16 {
+    return Intl.message(
+      'Is Envoy compatible with the Lightning Network?',
+      name: 'envoy_faq_question_16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What happens if I lose my phone with Envoy installed?`
+  String get envoy_faq_question_17 {
+    return Intl.message(
+      'What happens if I lose my phone with Envoy installed?',
+      name: 'envoy_faq_question_17',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is Envoy considered ‘Cold Storage’?`
+  String get envoy_faq_question_18 {
+    return Intl.message(
+      'Is Envoy considered ‘Cold Storage’?',
+      name: 'envoy_faq_question_18',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I connect Envoy to my own Bitcoin node?`
+  String get envoy_faq_question_19 {
+    return Intl.message(
+      'Can I connect Envoy to my own Bitcoin node?',
+      name: 'envoy_faq_question_19',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Why should I use Envoy?`
+  String get envoy_faq_question_2 {
+    return Intl.message(
+      'Why should I use Envoy?',
+      name: 'envoy_faq_question_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How does Envoy protect my privacy?`
+  String get envoy_faq_question_20 {
+    return Intl.message(
+      'How does Envoy protect my privacy?',
+      name: 'envoy_faq_question_20',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does Envoy offer coin control?`
+  String get envoy_faq_question_21 {
+    return Intl.message(
+      'Does Envoy offer coin control?',
+      name: 'envoy_faq_question_21',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does Envoy support Batch spends?`
+  String get envoy_faq_question_22 {
+    return Intl.message(
+      'Does Envoy support Batch spends?',
+      name: 'envoy_faq_question_22',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does Envoy allow custom miner fee selection?`
+  String get envoy_faq_question_23 {
+    return Intl.message(
+      'Does Envoy allow custom miner fee selection?',
+      name: 'envoy_faq_question_23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What can Envoy do?`
+  String get envoy_faq_question_3 {
+    return Intl.message(
+      'What can Envoy do?',
+      name: 'envoy_faq_question_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is Envoy Magic Backup?`
+  String get envoy_faq_question_4 {
+    return Intl.message(
+      'What is Envoy Magic Backup?',
+      name: 'envoy_faq_question_4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I have to use Envoy Magic Backups?`
+  String get envoy_faq_question_5 {
+    return Intl.message(
+      'Do I have to use Envoy Magic Backups?',
+      name: 'envoy_faq_question_5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is the Envoy Backup File?`
+  String get envoy_faq_question_6 {
+    return Intl.message(
+      'What is the Envoy Backup File?',
+      name: 'envoy_faq_question_6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I need to pay for Envoy?`
+  String get envoy_faq_question_7 {
+    return Intl.message(
+      'Do I need to pay for Envoy?',
+      name: 'envoy_faq_question_7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is Envoy Open Source?`
+  String get envoy_faq_question_8 {
+    return Intl.message(
+      'Is Envoy Open Source?',
+      name: 'envoy_faq_question_8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I have to use Envoy to transact with Passport?`
+  String get envoy_faq_question_9 {
+    return Intl.message(
+      'Do I have to use Envoy to transact with Passport?',
+      name: 'envoy_faq_question_9',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Try again`
   String get envoy_fw_fail_cta {
     return Intl.message(
@@ -4346,10 +4878,10 @@ class S {
     );
   }
 
-  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.`
+  /// `Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as tags, notes, accounts, and settings.`
   String get magic_setup_generate_backup_subheading {
     return Intl.message(
-      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as labels, accounts, and settings.',
+      'Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as tags, notes, accounts, and settings.',
       name: 'magic_setup_generate_backup_subheading',
       desc: '',
       args: [],
@@ -4796,6 +5328,36 @@ class S {
     );
   }
 
+  /// `Mobile Wallet`
+  String get manage_account_descriptor_heading {
+    return Intl.message(
+      'Mobile Wallet',
+      name: 'manage_account_descriptor_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `account details`
+  String get manage_account_descriptor_menu {
+    return Intl.message(
+      'account details',
+      name: 'manage_account_descriptor_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make sure not to share this descriptor unless you are comfortable with your transactions being public.`
+  String get manage_account_descriptor_subheading {
+    return Intl.message(
+      'Make sure not to share this descriptor unless you are comfortable with your transactions being public.',
+      name: 'manage_account_descriptor_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `DELETE`
   String get manage_account_menu_delete {
     return Intl.message(
@@ -5076,10 +5638,10 @@ class S {
     );
   }
 
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as tags, notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
   String get manual_setup_create_and_store_backup_subheading {
     return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as tags, notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
       name: 'manual_setup_create_and_store_backup_subheading',
       desc: '',
       args: [],
@@ -5266,11 +5828,11 @@ class S {
     );
   }
 
-  /// `Go back`
+  /// `Back`
   String
       get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA {
     return Intl.message(
-      'Go back',
+      'Back',
       name:
           'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA',
       desc: '',
@@ -5494,10 +6056,10 @@ class S {
     );
   }
 
-  /// `Go back`
+  /// `Back`
   String get manual_setup_import_seed_12_words_fail_modal_CTA {
     return Intl.message(
-      'Go back',
+      'Back',
       name: 'manual_setup_import_seed_12_words_fail_modal_CTA',
       desc: '',
       args: [],
@@ -5684,10 +6246,10 @@ class S {
     );
   }
 
-  /// `Go Back`
+  /// `Back`
   String get manual_setup_recovery_import_backup_modal_fail_connectivity_cta2 {
     return Intl.message(
-      'Go Back',
+      'Back',
       name: 'manual_setup_recovery_import_backup_modal_fail_connectivity_cta2',
       desc: '',
       args: [],
@@ -5706,11 +6268,11 @@ class S {
     );
   }
 
-  /// `If you continue without a backup file, your wallet settings, additional accounts, and Tags & Labels will not be restored.`
+  /// `If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.`
   String
       get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
     return Intl.message(
-      'If you continue without a backup file, your wallet settings, additional accounts, and Tags & Labels will not be restored.',
+      'If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.',
       name:
           'manual_setup_recovery_import_backup_modal_fail_connectivity_subheading',
       desc: '',
@@ -7210,10 +7772,10 @@ class S {
     );
   }
 
-  /// `Enter your node address here`
+  /// `Enter your node address`
   String get privacy_setting_add_node_modal_text_field {
     return Intl.message(
-      'Enter your node address here',
+      'Enter your node address',
       name: 'privacy_setting_add_node_modal_text_field',
       desc: '',
       args: [],
@@ -7270,10 +7832,10 @@ class S {
     );
   }
 
-  /// `Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.`
+  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
   String get privacy_setting_clearnet_node_tor_off {
     return Intl.message(
-      'Envoy’s connection will be fast and reliable with Tor turned [[OFF]]. Suggested for new users.',
+      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
       name: 'privacy_setting_clearnet_node_tor_off',
       desc: '',
       args: [],
@@ -8350,6 +8912,66 @@ class S {
     );
   }
 
+  /// `There are no coins assigned to this tag.`
+  String get tagged_tagDetails_emptyState_explainer {
+    return Intl.message(
+      'There are no coins assigned to this tag.',
+      name: 'tagged_tagDetails_emptyState_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get tagged_tagDetails_menu_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'tagged_tagDetails_menu_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get tagged_tagDetails_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'tagged_tagDetails_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Selected`
+  String get tagged_tagDetails_sheet_cta1 {
+    return Intl.message(
+      'Send Selected',
+      name: 'tagged_tagDetails_sheet_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag Selected`
+  String get tagged_tagDetails_sheet_cta2 {
+    return Intl.message(
+      'Tag Selected',
+      name: 'tagged_tagDetails_sheet_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retag Selected`
+  String get tagged_tagDetails_sheet_retag_cta2 {
+    return Intl.message(
+      'Retag Selected',
+      name: 'tagged_tagDetails_sheet_retag_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hold to drag and reorder your accounts.`
   String get tap_and_drag_first_time_text {
     return Intl.message(
@@ -8520,10 +9142,10 @@ class S {
     );
   }
 
-  /// `0 of 4 Coins Selected`
+  /// `4 of 4 Coins Selected`
   String get untagged_coin_details_unlocked_coins_selected {
     return Intl.message(
-      '0 of 4 Coins Selected',
+      '4 of 4 Coins Selected',
       name: 'untagged_coin_details_unlocked_coins_selected',
       desc: '',
       args: [],
@@ -8555,6 +9177,26 @@ class S {
     return Intl.message(
       'Conferences',
       name: 'untagged_coin_details_unlocked_tag_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get untagged_tagDetails_selected_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'untagged_tagDetails_selected_selectedAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Amount`
+  String get untagged_tagDetails_spendable_selectedAmount {
+    return Intl.message(
+      'Selected Amount',
+      name: 'untagged_tagDetails_spendable_selectedAmount',
       desc: '',
       args: [],
     );
@@ -8652,10 +9294,10 @@ class S {
     );
   }
 
-  /// `Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data.`
+  /// `Your wallet data – including tags, notes, accounts and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data.`
   String get wallet_security_modal_2_4_subheading {
     return Intl.message(
-      'Your wallet data – including labels, accounts, and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data.',
+      'Your wallet data – including tags, notes, accounts and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data.',
       name: 'wallet_security_modal_2_4_subheading',
       desc: '',
       args: [],
