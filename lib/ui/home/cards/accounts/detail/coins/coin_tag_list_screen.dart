@@ -141,7 +141,7 @@ class CoinItemWidget extends StatelessWidget {
                     builder: (context, ref, child) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 4),
+                            vertical: 3, horizontal: 4),
                         child: Container(
                           height: 40,
                           child: CoinTagBalanceWidget(

@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
@@ -113,7 +114,8 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 16.0),
+                                    padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.small),
                                     child: Text(
                                       widget.device.name,
                                       style: Theme.of(context)

@@ -86,7 +86,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: EnvoySpacing.medium1,
-                vertical: EnvoySpacing.small,
+                vertical: EnvoySpacing.xs,
               ),
               child: Align(
                 alignment: Alignment.bottomLeft,
