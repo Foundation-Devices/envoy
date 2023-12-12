@@ -714,7 +714,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     content: Text(S().manage_account_remove_subheading),
                     actions: [
                       EnvoyButton(
-                        S().manage_account_remove_cta.toUpperCase(),
+                        S().manage_account_remove_cta,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
                           GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);

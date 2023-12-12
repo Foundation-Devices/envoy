@@ -83,7 +83,8 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
             _currentPage = SupportPage();
             HomePageNotification(leftFunction: _goBackToMenu)
               ..dispatch(context);
-            ref.read(homePageTitleProvider.notifier).state = S().menu_support;
+            ref.read(homePageTitleProvider.notifier).state =
+                S().menu_support.toUpperCase();
           });
           break;
         case HomePageBackgroundState.about:
@@ -218,7 +219,7 @@ class MenuOption extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 142,
+                constraints: BoxConstraints(minWidth: 142),
                 child: Text(
                   label.toUpperCase(),
                   textAlign: TextAlign.center,

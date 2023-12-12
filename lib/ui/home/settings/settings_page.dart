@@ -84,7 +84,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: nestedMargin),
-                      child: SettingText("Currency"), //TODO: FIGMA
+                      child: SettingText(S().settings_currency),
                     ),
                     SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
                   ],
@@ -156,7 +156,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Advanced", // TODO: FIGMA
+                Text(S().settings_advanced,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,

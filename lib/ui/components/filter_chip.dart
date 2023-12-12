@@ -30,7 +30,8 @@ class EnvoyFilterChip extends StatelessWidget {
       mouseCursor: SystemMouseCursors.click,
       onTap: onTap,
       child: AnimatedContainer(
-        constraints: BoxConstraints(),
+        constraints: BoxConstraints(minWidth: 48),
+        alignment: Alignment.center,
         padding: EdgeInsets.all(EnvoySpacing.xs),
         decoration: BoxDecoration(
             color: selected
