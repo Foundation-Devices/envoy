@@ -30,7 +30,7 @@ enum BroadcastProgress {
 enum SpendMode {
   normal,
   sendMax, // this is the maximum amount we can send (possibly excluding some coins)
-  sweep, // this is all coins but less money sent (excluding the fee)
+  sweep, // this is all coins but (possibly) less money sent
 }
 
 /// This model is used to track the state of the transaction composition
@@ -49,6 +49,7 @@ class TransactionModel {
   bool isPSBTFinalized = false;
   String? error;
   SpendMode mode = SpendMode.normal;
+  bool uneconomicSpends = false;
 
   TransactionModel(
       {required this.sendTo,
@@ -62,23 +63,26 @@ class TransactionModel {
       this.belowDustLimit = false,
       this.canProceed = false,
       this.broadcastProgress = BroadcastProgress.staging,
-      this.error = null});
+      this.error = null,
+      this.mode = SpendMode.normal,
+      this.uneconomicSpends = false});
 
   static TransactionModel copy(TransactionModel mode) {
     return TransactionModel(
-      sendTo: mode.sendTo,
-      amount: mode.amount,
-      feeRate: mode.feeRate,
-      error: mode.error,
-      utxos: mode.utxos,
-      psbt: mode.psbt,
-      rawTransaction: mode.rawTransaction,
-      valid: mode.valid,
-      loading: mode.loading,
-      canProceed: mode.canProceed,
-      belowDustLimit: mode.belowDustLimit,
-      broadcastProgress: mode.broadcastProgress,
-    );
+        sendTo: mode.sendTo,
+        amount: mode.amount,
+        feeRate: mode.feeRate,
+        error: mode.error,
+        utxos: mode.utxos,
+        psbt: mode.psbt,
+        rawTransaction: mode.rawTransaction,
+        valid: mode.valid,
+        loading: mode.loading,
+        canProceed: mode.canProceed,
+        belowDustLimit: mode.belowDustLimit,
+        broadcastProgress: mode.broadcastProgress,
+        mode: mode.mode,
+        uneconomicSpends: mode.uneconomicSpends);
   }
 
   TransactionModel clone() {
@@ -97,8 +101,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       {bool settingFee = false}) async {
     String sendTo = container.read(spendAddressProvider);
     int amount = container.read(spendAmountProvider);
+    int spendableBalance = container.read(totalSpendableAmountProvider);
     num feeRate = container.read(spendFeeRateProvider);
     Account? account = container.read(selectedAccountProvider);
+
     if (sendTo.isEmpty ||
         amount == 0 ||
         account == null ||
@@ -135,33 +141,20 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         }
       });
 
-
-      //bool sendMax =
+      bool sendMax = spendableBalance == amount;
 
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: null);
 
-      // SENDMAX
-      // if psbt.send != amount -> BDK telling us that some spends are uneconomic
-
-      // --> decide whether to sendMax or sweep --> show dialog
-
-      // The gist of sweep mode
-      //List<Utxo>? mustSpend = account.wallet.utxos;
-
-      container.read(spendAmountProvider.notifier).state = amount;
-
-      // Are we STILL sending max?
-      bool sendMax = amount == psbt.sent + psbt.received + psbt.fee;
-
-      // In that case get the amount from the PSBT
       if (sendMax) {
-        amount = psbt.sent == 0 ? psbt.received : psbt.sent;
+        state = state.clone()
+          ..mode = SpendMode.sendMax
+          ..uneconomicSpends = (psbt.sent + psbt.fee) != amount;
       }
 
       ///get max fee rate that we can use on this transaction
-      ///when we are sending max this is basically infinte
+      ///when we are sending max, this is basically infinite
       int maxFeeRate = sendMax
           ? 100000
           : await account.wallet
@@ -348,6 +341,9 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
 
 final rawTransactionProvider = Provider<RawTransaction?>(
     (ref) => ref.watch(spendTransactionProvider).rawTransaction);
+
+final uneconomicSpendsProvider = Provider<bool>(
+    (ref) => ref.watch(spendTransactionProvider).uneconomicSpends);
 
 /// these providers will extract change-output Address and Amount from the staging transaction
 final changeOutputProvider = Provider<Tuple<String, int>?>((ref) {

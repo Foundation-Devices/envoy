@@ -692,10 +692,10 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
                 match psbt.fee_rate() {
                     None => {
                         return error_return;
-                    },
+                    }
                     Some(r) => {
                         return r.as_sat_per_vb() as f64;
-                    },
+                    }
                 };
             }
             Err(e) => match e {

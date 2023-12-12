@@ -103,7 +103,8 @@ class UpdatesManager {
   }
 
   Future<bool> shouldUpdate(String version, DeviceType type) async {
-    Version deviceFwVersion = Version.parse(version.replaceAll("v", ""));
+    version = version.replaceAll("v", "").substring(0, 5);
+    Version deviceFwVersion = Version.parse(version);
     final fw = await getStoredFwVersion(type.index);
     Version currentFwVersion = Version.parse(fw!.replaceAll("v", ""));
 
