@@ -38,14 +38,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "Coins": MessageLookupByLibrary.simpleMessage("Coins"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conference"),
         "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
+        "Copy": MessageLookupByLibrary.simpleMessage(
+            "Confirm the transaction details  are correct before sending."),
         "Currency": MessageLookupByLibrary.simpleMessage("\$"),
         "Default": MessageLookupByLibrary.simpleMessage("Apply filters"),
+        "Divider": MessageLookupByLibrary.simpleMessage("|"),
         "Exchange": MessageLookupByLibrary.simpleMessage("Exchange"),
         "FAQ": MessageLookupByLibrary.simpleMessage("Is Envoy Open Source?"),
         "Fiat": MessageLookupByLibrary.simpleMessage("\$25,721.00"),
         "Filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "Heading": MessageLookupByLibrary.simpleMessage("Secure "),
-        "Label": MessageLookupByLibrary.simpleMessage("Discard Changes"),
+        "Headline": MessageLookupByLibrary.simpleMessage(
+            "Your transaction is ready \nto be sent"),
+        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("Receive"),
         "Letter": MessageLookupByLibrary.simpleMessage("return"),
         "Menu": MessageLookupByLibrary.simpleMessage("SEND"),
@@ -60,7 +65,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "SEND": MessageLookupByLibrary.simpleMessage("SEND"),
         "Sats": MessageLookupByLibrary.simpleMessage("123,345,679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Receive"),
+        "ScreenTitle":
+            MessageLookupByLibrary.simpleMessage("Transaction Details"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Sent": MessageLookupByLibrary.simpleMessage("Sent"),
@@ -71,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Learn"),
+        "Tag": MessageLookupByLibrary.simpleMessage("Tag"),
         "TagName": MessageLookupByLibrary.simpleMessage("Conferences"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
@@ -78,15 +85,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Received 3 hours ago"),
         "Title": MessageLookupByLibrary.simpleMessage("Selected Amount"),
-        "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
+        "Value": MessageLookupByLibrary.simpleMessage("1,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Watched"),
-        "_": MessageLookupByLibrary.simpleMessage("SOURCE"),
+        "X": MessageLookupByLibrary.simpleMessage("1"),
+        "Y": MessageLookupByLibrary.simpleMessage("5"),
+        "Z": MessageLookupByLibrary.simpleMessage("1"),
+        "_": MessageLookupByLibrary.simpleMessage("Untagged"),
+        "account_details_untagged_card":
+            MessageLookupByLibrary.simpleMessage("Untagged"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
                 "Applied filters are hiding all transactions.\nUpdate or reset filters to view transactions."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
-                "There are no transactions in this account.\nReceive your first transaction below."),
+                "There are no coins assigned to this tag."),
         "account_type_label_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "account_type_sublabel":
@@ -221,6 +233,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Learn"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
+        "card_coin_locked": MessageLookupByLibrary.simpleMessage("Coin Locked"),
+        "card_coin_selected":
+            MessageLookupByLibrary.simpleMessage("Coin Selected"),
+        "card_coin_unselected": MessageLookupByLibrary.simpleMessage("Coin"),
+        "card_coins_locked":
+            MessageLookupByLibrary.simpleMessage("Coins Locked"),
+        "card_coins_selected":
+            MessageLookupByLibrary.simpleMessage("Coins Selected"),
+        "card_coins_unselected": MessageLookupByLibrary.simpleMessage("Coins"),
+        "card_label_of": MessageLookupByLibrary.simpleMessage("of"),
         "change_output_from_multiple_tags_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Continue"),
         "change_output_from_multiple_tags_modal_cta2":
@@ -341,6 +363,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Standard"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
+        "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
+            MessageLookupByLibrary.simpleMessage("Learn more"),
+        "coincontrol_tx_detail_high_fee_info_overlay_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
         "coincontrol_tx_detail_passport__subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Confirm the transaction details are correct before signing with Passport."),
@@ -751,6 +778,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Tap any of the above cards to receive Bitcoin."),
         "label": MessageLookupByLibrary.simpleMessage("TAPROOT"),
+        "labeled_switch_activity":
+            MessageLookupByLibrary.simpleMessage("Activity"),
+        "labeled_switch_tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "launch_screen_faceID_fail_CTA":
             MessageLookupByLibrary.simpleMessage("Try Again"),
         "launch_screen_faceID_fail_heading":
@@ -929,6 +959,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Serial: "),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("Device DETAILS"),
+        "manage_device_details_menu_Delete":
+            MessageLookupByLibrary.simpleMessage("DELETE"),
+        "manage_device_details_menu_editDevice":
+            MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
         "manage_device_disconnect_modal":
             MessageLookupByLibrary.simpleMessage("Delete"),
         "manage_device_disconnect_modal_cta":
@@ -1657,6 +1691,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Required Amount"),
         "tagged_coin_details_inputs_success_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Selected Amount"),
+        "tagged_coin_details_locked_heading":
+            MessageLookupByLibrary.simpleMessage("TAG Details"),
         "tagged_coin_details_menu_cta1":
             MessageLookupByLibrary.simpleMessage("EDIT TAG NAME"),
         "tagged_coin_details_menu_cta2":
@@ -1696,7 +1732,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "untagged_coin_details_unlocked_coins_locked":
             MessageLookupByLibrary.simpleMessage("1 Locked"),
         "untagged_coin_details_unlocked_coins_selected":
-            MessageLookupByLibrary.simpleMessage("4 of 4 Coins Selected"),
+            MessageLookupByLibrary.simpleMessage("0 of 4 Coins Selected"),
         "untagged_coin_details_unlocked_divider":
             MessageLookupByLibrary.simpleMessage("|"),
         "untagged_coin_details_unlocked_heading":

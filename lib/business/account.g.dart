@@ -6,7 +6,8 @@ part of 'account.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Account _$$_AccountFromJson(Map<String, dynamic> json) => _$_Account(
+_$AccountImpl _$$AccountImplFromJson(Map<String, dynamic> json) =>
+    _$AccountImpl(
       wallet: Wallet.fromJson(json['wallet'] as Map<String, dynamic>),
       name: json['name'] as String? ?? 'Account',
       deviceSerial: json['deviceSerial'] as String,
@@ -18,7 +19,7 @@ _$_Account _$$_AccountFromJson(Map<String, dynamic> json) => _$_Account(
           : DateTime.parse(json['dateSynced'] as String),
     );
 
-Map<String, dynamic> _$$_AccountToJson(_$_Account instance) =>
+Map<String, dynamic> _$$AccountImplToJson(_$AccountImpl instance) =>
     <String, dynamic>{
       'wallet': instance.wallet,
       'name': instance.name,

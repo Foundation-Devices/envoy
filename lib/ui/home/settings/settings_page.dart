@@ -26,6 +26,7 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   @override
@@ -83,7 +84,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: nestedMargin),
-                      child: SettingText("Currency"), //TODO: FIGMA
+                      child: SettingText(S().settings_currency),
                     ),
                     SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
                   ],
@@ -155,7 +156,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Advanced", // TODO: FIGMA
+                Text(S().settings_advanced,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -199,7 +200,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       S().taproot_passport_dialog_subheading,
                       S().taproot_passport_dialog_reconnect,
                       () {
-                        // on tap "Reconnect passport"
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SingleImportPpIntroPage()));
                       },
                       icon: EnvoyIcons.info,
                       secondaryButtonLabel: S().taproot_passport_dialog_later,
@@ -212,27 +218,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
               Container(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EnvoyLogsScreen(),
-                        ));
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SettingText("View Envoy Logs", onTap: () {
-                        // TODO: FIGMA
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EnvoyLogsScreen(),
-                            ));
-                      }),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SettingText("View Envoy Logs", onTap: () {
+                      // TODO: FIGMA
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EnvoyLogsScreen(),
+                          ));
+                    }),
+                  ],
                 ),
               ),
             ],

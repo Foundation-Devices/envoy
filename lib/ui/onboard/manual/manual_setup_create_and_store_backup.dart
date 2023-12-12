@@ -47,8 +47,7 @@ class _ManualSetupCreateAndStoreBackupState
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Image.asset("assets/onboarding_lock_icon.png"),
                 )),
-                Flexible(
-                    child: Container(
+                Container(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +69,7 @@ class _ManualSetupCreateAndStoreBackupState
                       ),
                     ],
                   ),
-                )),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: SizedBox.shrink(),

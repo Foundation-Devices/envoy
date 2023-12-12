@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/learn/filter_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -54,7 +55,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Filter", // TODO: FIGMA
+                S().learning_center_filter_heading,
                 style: EnvoyTypography.subheading
                     .copyWith(color: EnvoyColors.textPrimary),
               ),
@@ -65,7 +66,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   });
                 },
                 child: Text(
-                  "Reset filter", // TODO: FIGMA
+                  S().learning_center_filter_reset_filter_cta,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -76,104 +77,109 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             ],
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          Row(
-            children: [
-              EnvoyFilterChip(
-                text: "All", // TODO: FIGMA
-                selected: _filterState?.contains(LearnFilters.All) ?? false,
-                onTap: () {
-                  final Set<LearnFilters> newState = Set()
-                    ..addAll(_filterState!);
-                  if (_filterState!.contains(LearnFilters.All)) {
-                    newState.remove(LearnFilters.All);
-                    newState.remove(LearnFilters.Videos);
-                    newState.remove(LearnFilters.Blogs);
-                    newState.remove(LearnFilters.FAQs);
-                  } else {
-                    newState.add(LearnFilters.All);
-                    newState.add(LearnFilters.Videos);
-                    newState.add(LearnFilters.Blogs);
-                    newState.add(LearnFilters.FAQs);
-                  }
-                  setState(() {
-                    _filterState = newState;
-                  });
-                },
-              ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyFilterChip(
-                selected:
-                    ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
-                        !(_filterState?.contains(LearnFilters.All) ?? true)),
-                text: "Videos", // TODO: FIGMA
-                onTap: () {
-                  final Set<LearnFilters> newState = Set()
-                    ..addAll(_filterState!);
-                  if (_filterState!.contains(LearnFilters.All)) {
-                    newState.removeAll(_filterState!);
-                  }
-                  if (newState.contains(LearnFilters.Videos)) {
-                    newState.remove(LearnFilters.Videos);
-                  } else {
-                    newState.add(LearnFilters.Videos);
-                  }
-                  setState(() {
-                    _filterState = newState;
-                  });
-                },
-              ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyFilterChip(
-                selected:
-                    ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
-                        !(_filterState?.contains(LearnFilters.All) ?? true)),
-                text: "FAQs", // TODO: FIGMA
-                onTap: () {
-                  final Set<LearnFilters> newState = Set()
-                    ..addAll(_filterState!);
-                  if (_filterState!.contains(LearnFilters.All)) {
-                    newState.removeAll(_filterState!);
-                  }
-                  if (newState.contains(LearnFilters.FAQs)) {
-                    newState.remove(LearnFilters.FAQs);
-                  } else {
-                    newState.add(LearnFilters.FAQs);
-                  }
-                  setState(() {
-                    _filterState = newState;
-                  });
-                },
-              ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyFilterChip(
-                selected:
-                    ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
-                        !(_filterState?.contains(LearnFilters.All) ?? true)),
-                text: "Blog posts", // TODO: FIGMA
-                onTap: () {
-                  final Set<LearnFilters> newState = Set()
-                    ..addAll(_filterState!);
-                  if (_filterState!.contains(LearnFilters.All)) {
-                    newState.removeAll(_filterState!);
-                  }
-                  if (newState.contains(LearnFilters.Blogs)) {
-                    newState.remove(LearnFilters.Blogs);
-                  } else {
-                    newState.add(LearnFilters.Blogs);
-                  }
-                  setState(() {
-                    _filterState = newState;
-                  });
-                },
-              )
-            ],
+          Container(
+            height: 34,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                EnvoyFilterChip(
+                  text: S().learning_center_filter_all,
+                  selected: _filterState?.contains(LearnFilters.All) ?? false,
+                  onTap: () {
+                    final Set<LearnFilters> newState = Set()
+                      ..addAll(_filterState!);
+                    if (_filterState!.contains(LearnFilters.All)) {
+                      newState.remove(LearnFilters.All);
+                      newState.remove(LearnFilters.Videos);
+                      newState.remove(LearnFilters.Blogs);
+                      newState.remove(LearnFilters.FAQs);
+                    } else {
+                      newState.add(LearnFilters.All);
+                      newState.add(LearnFilters.Videos);
+                      newState.add(LearnFilters.Blogs);
+                      newState.add(LearnFilters.FAQs);
+                    }
+                    setState(() {
+                      _filterState = newState;
+                    });
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                EnvoyFilterChip(
+                  selected:
+                      ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                  text: S().learning_center_filter_videos,
+                  onTap: () {
+                    final Set<LearnFilters> newState = Set()
+                      ..addAll(_filterState!);
+                    if (_filterState!.contains(LearnFilters.All)) {
+                      newState.removeAll(_filterState!);
+                    }
+                    if (newState.contains(LearnFilters.Videos)) {
+                      newState.remove(LearnFilters.Videos);
+                    } else {
+                      newState.add(LearnFilters.Videos);
+                    }
+                    setState(() {
+                      _filterState = newState;
+                    });
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                EnvoyFilterChip(
+                  selected:
+                      ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                  text: S().learning_center_filter_faqs,
+                  onTap: () {
+                    final Set<LearnFilters> newState = Set()
+                      ..addAll(_filterState!);
+                    if (_filterState!.contains(LearnFilters.All)) {
+                      newState.removeAll(_filterState!);
+                    }
+                    if (newState.contains(LearnFilters.FAQs)) {
+                      newState.remove(LearnFilters.FAQs);
+                    } else {
+                      newState.add(LearnFilters.FAQs);
+                    }
+                    setState(() {
+                      _filterState = newState;
+                    });
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                EnvoyFilterChip(
+                  selected:
+                      ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                  text: S().learning_center_filter_blog,
+                  onTap: () {
+                    final Set<LearnFilters> newState = Set()
+                      ..addAll(_filterState!);
+                    if (_filterState!.contains(LearnFilters.All)) {
+                      newState.removeAll(_filterState!);
+                    }
+                    if (newState.contains(LearnFilters.Blogs)) {
+                      newState.remove(LearnFilters.Blogs);
+                    } else {
+                      newState.add(LearnFilters.Blogs);
+                    }
+                    setState(() {
+                      _filterState = newState;
+                    });
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              ],
+            ),
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text("Sort by", // TODO: FIGMA
+          Text(S().learning_center_sort_heading,
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(
-            text: "Newest first", // TODO: FIGMA
+            text: S().learning_center_sort_newest,
             checked: _sortState == LearnSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -183,7 +189,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Oldest first", // TODO: FIGMA
+            text: S().learning_center_sort_oldest,
             checked: _sortState == LearnSortTypes.oldestFirst,
             onTap: () {
               setState(() {
@@ -193,7 +199,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "Apply filters", // TODO: FIGMA
+            S().learning_center_main_cta,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();

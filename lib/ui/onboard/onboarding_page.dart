@@ -159,90 +159,89 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async => false,
+    return PopScope(
         child: OnboardPageBackground(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Flexible(
-                child: Column(children: <Widget>[
-                  Align(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            child: Column(children: <Widget>[
+              Align(
+                alignment: Alignment.topCenter,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      leftFunction != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    leftFunction!(context);
+                                  },
+                                  child: Icon(Icons.arrow_back_ios_rounded,
+                                      size: 20)),
+                            )
+                          : SizedBox.shrink(),
+                      rightFunction != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    rightFunction!(context);
+                                  },
+                                  child: this.right == null
+                                      ? Icon(Icons.close_rounded)
+                                      : this.right),
+                            )
+                          : SizedBox.shrink()
+                    ]),
+              ),
+              if (clipArt != null || _determineQr() != null)
+                Flexible(
+                  child: Align(
                     alignment: Alignment.topCenter,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          leftFunction != null
-                              ? Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: GestureDetector(
-                                      onTap: () {
-                                        leftFunction!(context);
-                                      },
-                                      child: Icon(Icons.arrow_back_ios_rounded,
-                                          size: 20)),
-                                )
-                              : SizedBox.shrink(),
-                          rightFunction != null
-                              ? Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: GestureDetector(
-                                      onTap: () {
-                                        rightFunction!(context);
-                                      },
-                                      child: this.right == null
-                                          ? Icon(Icons.close_rounded)
-                                          : this.right),
-                                )
-                              : SizedBox.shrink()
-                        ]),
+                    child: clipArt != null ? clipArt! : _determineQr(),
                   ),
-                  if (clipArt != null || _determineQr() != null)
-                    Flexible(
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: clipArt != null ? clipArt! : _determineQr(),
-                      ),
-                    ),
-                  Flexible(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [...?text]),
-                  ),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    navigationDots != 0
-                        ? Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: DotsIndicator(
-                              decorator: DotsDecorator(
-                                  size: Size.square(5.0),
-                                  activeSize: Size.square(5.0),
-                                  spacing: EdgeInsets.symmetric(horizontal: 5)),
-                              dotsCount: navigationDots,
-                              position: navigationDotsIndex.toDouble(),
-                            ),
-                          )
-                        : SizedBox.shrink(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: helperTextAbove ?? SizedBox.shrink(),
-                    ),
-                    ...?buttons,
-                    helperTextBelow ?? SizedBox.shrink()
-                  ],
                 ),
+              Flexible(
+                child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [...?text]),
               ),
-            ],
+            ]),
           ),
-        ));
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                navigationDots != 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: DotsIndicator(
+                          decorator: DotsDecorator(
+                              size: Size.square(5.0),
+                              activeSize: Size.square(5.0),
+                              spacing: EdgeInsets.symmetric(horizontal: 5)),
+                          dotsCount: navigationDots,
+                          position: navigationDotsIndex.toDouble(),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: helperTextAbove ?? SizedBox.shrink(),
+                ),
+                ...?buttons,
+                helperTextBelow ?? SizedBox.shrink()
+              ],
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }
 

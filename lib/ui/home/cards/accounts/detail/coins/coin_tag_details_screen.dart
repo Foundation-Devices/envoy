@@ -46,22 +46,20 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: !_menuVisible,
+      onPopInvoked: (bool didPop) async {
         if (_selectedCoin != null) {
           setState(() {
             _selectedCoin = null;
           });
-          return false;
         }
         //if menu is active, close it
         if (_menuVisible) {
           setState(() {
             _menuVisible = false;
           });
-          return false;
         }
-        return true;
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),

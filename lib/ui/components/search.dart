@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -69,7 +70,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
         focusNode: _focus,
         cursorColor: EnvoyColors.accentPrimary,
         decoration: InputDecoration(
-            labelText: "Search...", // TODO: FIGMA
+            labelText: S().learning_center_search_input,
             labelStyle: EnvoyTypography.body.copyWith(
               color: EnvoyColors.textTertiary,
             ),
