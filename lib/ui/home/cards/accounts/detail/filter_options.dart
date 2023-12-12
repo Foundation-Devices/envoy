@@ -83,24 +83,53 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                   toggleState == AccountToggleState.Tx
                                       ? txFiltersEnabled
                                       : coinFiltersEnabled;
-
-                              return Container(
-                                width: 32,
-                                height: 32,
-                                padding: EdgeInsets.all(EnvoySpacing.small),
-                                decoration: BoxDecoration(
+                              return GestureDetector(
+                                onTap: () {
+                                  if (!isCoinSelectionActive)
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isDismissible: true,
+                                        useRootNavigator: true,
+                                        barrierColor:
+                                            Colors.black.withOpacity(0.2),
+                                        enableDrag: true,
+                                        isScrollControlled: true,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(
+                                                EnvoySpacing.medium1),
+                                            topRight: Radius.circular(
+                                                EnvoySpacing.medium1),
+                                          ),
+                                        ),
+                                        showDragHandle: true,
+                                        builder: (context) {
+                                          return toggleState ==
+                                                  AccountToggleState.Tx
+                                              ? TxFilterWidget()
+                                              : CoinTagsFilterWidget();
+                                        });
+                                },
+                                child: Container(
+                                  width: 32,
+                                  height: 32,
+                                  padding: EdgeInsets.all(EnvoySpacing.small),
+                                  decoration: BoxDecoration(
+                                      color: enabled
+                                          ? Theme.of(context).primaryColor
+                                          : newColorScheme
+                                              .EnvoyColors.solidWhite,
+                                      borderRadius: BorderRadius.circular(
+                                          EnvoySpacing.medium3)),
+                                  child: SvgPicture.asset(
+                                    "assets/icons/ic_filter.svg",
                                     color: enabled
-                                        ? Theme.of(context).primaryColor
-                                        : newColorScheme.EnvoyColors.solidWhite,
-                                    borderRadius: BorderRadius.circular(
-                                        EnvoySpacing.medium3)),
-                                child: SvgPicture.asset(
-                                  "assets/icons/ic_filter.svg",
-                                  color: enabled
-                                      ? newColorScheme.EnvoyColors.solidWhite
-                                      : newColorScheme.EnvoyColors.textTertiary,
-                                  width: 18,
-                                  height: 18,
+                                        ? newColorScheme.EnvoyColors.solidWhite
+                                        : newColorScheme
+                                            .EnvoyColors.textTertiary,
+                                    width: 18,
+                                    height: 18,
+                                  ),
                                 ),
                               );
                             },
