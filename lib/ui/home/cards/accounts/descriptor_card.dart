@@ -48,8 +48,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
               padding: const EdgeInsets.all(15.0),
               child: QrTab(
                 title: widget.account.name,
-                subtitle:
-                    "Make sure not to share this descriptor unless you are comfortable with your transactions being public.", //TODO: FIGMA
+                subtitle: S().manage_account_descriptor_subheading,
                 account: widget.account,
                 qr: EnvoyQR(
                   data: descriptor,
