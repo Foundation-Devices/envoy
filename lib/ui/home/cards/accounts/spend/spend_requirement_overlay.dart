@@ -29,24 +29,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+bool _overlayIsInViewTree = false;
 AnimationController? _spendOverlayAnimationController;
 
 ///overlay is visible in the viewport
-Alignment _endAlignment = Alignment(0.0, 1.0);
+Alignment _endAlignment = Alignment(0.0, 1.01);
 
 ///overlay is minimized
 Alignment _minimizedAlignment = Alignment(0.0, 1.5);
 
 ///hidden from the viewport
-Alignment _startAlignment = Alignment(0.0, 1.90);
+Alignment _startAlignment = Alignment(0.0, 1.99);
 
-Alignment? _currentOverlyAlignment = Alignment(0.0, 1.90);
+Alignment? _currentOverlyAlignment = Alignment(0.0, 1.99);
 
 OverlayEntry? overlayEntry = null;
 Animation<Alignment>? _appearAnimation;
 
 Future showSpendRequirementOverlay(
     BuildContext context, Account account) async {
+  if (_overlayIsInViewTree) {
+    /// if the view is in progress of hiding the overlay. wait and check if the view is disposed
+    /// this is useful when user is moving really fast through the screens
+    await Future.delayed(Duration(milliseconds: 300));
+    if (_overlayIsInViewTree) {
+      /// if the view still in the view tree return.
+      return;
+    }
+  }
+
   /// already visible, and exiting overlay. so we reverse the animation
   if (_spendOverlayAnimationController?.isAnimating == true &&
       (_spendOverlayAnimationController?.status == AnimationStatus.completed)) {
@@ -135,6 +146,7 @@ class SpendRequirementOverlayState
 
   @override
   void initState() {
+    _overlayIsInViewTree = true;
     if (_spendOverlayAnimationController != null) {
       _spendOverlayAnimationController?.dispose();
       _spendOverlayAnimationController = null;
@@ -199,6 +211,7 @@ class SpendRequirementOverlayState
     // _spendOverlayAnimationController?.dispose();
     _spendOverlayAnimationController = null;
     super.dispose();
+    _overlayIsInViewTree = false;
   }
 
   @override
