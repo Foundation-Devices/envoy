@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/home/home_state.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({Key? key}) : super(key: key);
@@ -413,6 +414,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
             HomePageBackgroundState.hidden;
         ref.read(homePageTabProvider.notifier).state =
             HomePageTabState.accounts;
+        ref.read(homePageTitleProvider.notifier).state = "";
       }
     } catch (e) {}
   }

@@ -134,7 +134,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: EnvoySpacing.medium1,
-                  vertical: EnvoySpacing.small,
+                  vertical: EnvoySpacing.xs,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
