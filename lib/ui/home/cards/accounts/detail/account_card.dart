@@ -582,24 +582,15 @@ class TransactionListTile extends StatelessWidget {
                         return child ?? Container();
                       }
                     },
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                      child: Text(
-                          transaction.type == TransactionType.azteco
-                              ? ""
-                              : ExchangeRate().getFormattedAmount(
-                                  transaction.amount,
-                                  wallet: account.wallet),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .color)),
-                    ),
+                    child: Text(
+                        transaction.type == TransactionType.azteco
+                            ? ""
+                            : ExchangeRate().getFormattedAmount(
+                                transaction.amount,
+                                wallet: account.wallet),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color:
+                                Theme.of(context).textTheme.bodySmall!.color)),
                   ),
               ],
             ),
