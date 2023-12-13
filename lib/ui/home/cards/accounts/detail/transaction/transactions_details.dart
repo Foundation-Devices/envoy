@@ -113,7 +113,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                   child: IndicatorShield(),
                 ),
                 Text(
-                  "Transaction Details".toUpperCase(), // TODO: FIGMA
+                  S().coincontrol_tx_detail_expand_heading.toUpperCase(),
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
                         color: Colors.white,
                         fontSize: 18,

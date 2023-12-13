@@ -8,6 +8,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
@@ -259,7 +260,9 @@ class SpendableAmountWidget extends ConsumerWidget {
     return Row(
       children: [
         Text(
-          isCoinsSelected ? "Selected amount" : "Available balance",
+          isCoinsSelected
+              ? "Selected amount"
+              : S().coincontrol_edit_transaction_selected_inputs,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: EnvoyColors.textSecondary,
                 fontSize: 13,

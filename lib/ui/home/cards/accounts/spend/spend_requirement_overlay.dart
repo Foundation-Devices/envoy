@@ -539,7 +539,9 @@ class SpendRequirementOverlayState
         bool selectionChanged = diff.isNotEmpty;
 
         return EnvoyButton(
-          selectionChanged ? "Discard Changes" : "Cancel", // TODO: Figma
+          selectionChanged
+              ? S().tagged_coin_details_inputs_fails_cta2
+              : S().coincontrol_edit_transaction_cta2,
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
             ref

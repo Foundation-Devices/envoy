@@ -5,6 +5,7 @@
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
@@ -86,8 +87,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                   disabledBorder: InputBorder.none,
                   prefixIcon: Container(
                       margin: EdgeInsets.symmetric(horizontal: 4),
-                      child: Text("To:")),
-                  // TODO: FIGMA
+                      child: Text(S().send_keyboard_to)),
                   isDense: true,
                   prefixIconConstraints: BoxConstraints(
                     minWidth: 18,

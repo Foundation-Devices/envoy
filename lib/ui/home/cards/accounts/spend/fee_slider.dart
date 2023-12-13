@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -81,8 +82,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
 
     return Container(
-      width: 180,
-      height: 24,
+      constraints: BoxConstraints(
+        maxWidth: 230,
+        maxHeight: 24,
+      ),
       child: TabBar(
           controller: _tabController,
           onTap: (index) {
@@ -157,17 +160,17 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           tabs: [
             Tab(
               child: Text(
-                "Standard", // TODO: Figma
+                S().coincontrol_tx_detail_fee_standard,
               ),
             ),
             Tab(
               child: Text(
-                "Faster", // TODO: Figma
+                S().coincontrol_tx_detail_fee_faster,
               ),
             ),
             Tab(
               child: Text(
-                "Custom", // TODO: Figma
+                S().coincontrol_tx_detail_fee_custom,
               ),
             ),
           ]),

@@ -593,7 +593,7 @@ class _TransactionReviewScreenState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Amount to send", //TODO: figma
+                                  S().coincontrol_tx_detail_amount_to_sent,
                                   style: titleStyle,
                                 ),
                                 GestureDetector(
@@ -632,7 +632,7 @@ class _TransactionReviewScreenState
                                               color: EnvoyColors.solidWhite),
                                         ),
                                       Text(
-                                        "Show details", //TODO: figma
+                                        S().coincontrol_tx_detail_amount_details,
                                         style: trailingStyle,
                                       ),
                                       Icon(
@@ -693,7 +693,7 @@ class _TransactionReviewScreenState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Destination", //TODO: figma
+                                  S().coincontrol_tx_detail_destination,
                                   style: titleStyle,
                                 ),
                                 GestureDetector(
@@ -706,7 +706,7 @@ class _TransactionReviewScreenState
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        "Show address", //TODO: figma
+                                        S().coincontrol_tx_detail_destination_details,
                                         style: trailingStyle,
                                       ),
                                       AnimatedRotation(
@@ -752,32 +752,39 @@ class _TransactionReviewScreenState
                                 horizontal: EnvoySpacing.small),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  "Fee", //TODO: figma
+                                  S().coincontrol_tx_detail_fee,
                                   style: titleStyle,
                                 ),
-                                Row(
-                                  children: [
-                                    Opacity(
-                                      opacity: transactionModel.loading ? 1 : 0,
-                                      child: SizedBox.square(
-                                        dimension: 8,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 1,
-                                          color: EnvoyColors.textPrimaryInverse,
+                                Padding(padding: EdgeInsets.all(12)),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Opacity(
+                                        opacity:
+                                            transactionModel.loading ? 1 : 0,
+                                        child: SizedBox.square(
+                                          dimension: 8,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 1,
+                                            color:
+                                                EnvoyColors.textPrimaryInverse,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Padding(padding: EdgeInsets.all(4)),
-                                    Opacity(
-                                      child: FeeChooser(),
-                                      opacity: transactionModel.isPSBTFinalized
-                                          ? 0.0
-                                          : 1,
-                                    ),
-                                  ],
+                                      Padding(padding: EdgeInsets.all(4)),
+                                      Opacity(
+                                        child: FeeChooser(),
+                                        opacity:
+                                            transactionModel.isPSBTFinalized
+                                                ? 0.0
+                                                : 1,
+                                      ),
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -841,7 +848,7 @@ class _TransactionReviewScreenState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Total", // TODO: figma
+                                  S().coincontrol_tx_detail_total,
                                   style: titleStyle,
                                 ),
                                 GestureDetector(
