@@ -51,7 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Copy": MessageLookupByLibrary.simpleMessage(
             "Confirm the transaction details  are correct before sending."),
         "Currency": MessageLookupByLibrary.simpleMessage("\$"),
-        "Default": MessageLookupByLibrary.simpleMessage("Apply filters"),
+        "Default": MessageLookupByLibrary.simpleMessage("Show"),
         "Divider": MessageLookupByLibrary.simpleMessage("|"),
         "Exchange": MessageLookupByLibrary.simpleMessage("Exchange"),
         "FAQ": MessageLookupByLibrary.simpleMessage("Is Envoy Open Source?"),
@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Heading": MessageLookupByLibrary.simpleMessage("Secure "),
         "Headline": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
-        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
+        "Label": MessageLookupByLibrary.simpleMessage("Custom"),
         "Left": MessageLookupByLibrary.simpleMessage("Receive"),
         "Letter": MessageLookupByLibrary.simpleMessage("return"),
         "Links": MessageLookupByLibrary.simpleMessage("Links"),
@@ -77,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SEND": MessageLookupByLibrary.simpleMessage("SEND"),
         "Sats": MessageLookupByLibrary.simpleMessage("123,345,679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Receive"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Label"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Send"),
         "Sent": MessageLookupByLibrary.simpleMessage("Sent"),
@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Learn"),
-        "Tag": MessageLookupByLibrary.simpleMessage("Tag"),
+        "Tag": MessageLookupByLibrary.simpleMessage("Total"),
         "TagName": MessageLookupByLibrary.simpleMessage("Conferences"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
@@ -101,7 +101,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("SOURCE"),
+        "_": MessageLookupByLibrary.simpleMessage("~60 mins"),
+        "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
+        "about_heading": MessageLookupByLibrary.simpleMessage("About"),
+        "about_openSourceLicences":
+            MessageLookupByLibrary.simpleMessage("Open Source Licences"),
+        "about_privacyPolicy":
+            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "about_termsOfUse":
+            MessageLookupByLibrary.simpleMessage("Terms of Use"),
+        "about_version": MessageLookupByLibrary.simpleMessage("1.4.0"),
         "account_details_untagged_card":
             MessageLookupByLibrary.simpleMessage("Untagged"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
@@ -366,6 +375,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("BBQ"),
         "coincontrol_tx_detail_fee":
             MessageLookupByLibrary.simpleMessage("Fee"),
+        "coincontrol_tx_detail_feeChange_editTransaction":
+            MessageLookupByLibrary.simpleMessage("Edit Transaction"),
+        "coincontrol_tx_detail_feeChange_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction is ready \nto be sent"),
+        "coincontrol_tx_detail_feeChange_information":
+            MessageLookupByLibrary.simpleMessage(
+                "Updating your fee may have changed\nyour coin selection. Please review."),
+        "coincontrol_tx_detail_feeChange_sendTransaction":
+            MessageLookupByLibrary.simpleMessage("Send Transaction"),
+        "coincontrol_tx_detail_feeChange_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Confirm the transaction details  are correct before sending."),
         "coincontrol_tx_detail_fee_custom":
             MessageLookupByLibrary.simpleMessage("Custom"),
         "coincontrol_tx_detail_fee_faster":
@@ -374,11 +396,39 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Standard"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
+        "coincontrol_tx_detail_high_fee_info_amountToSend":
+            MessageLookupByLibrary.simpleMessage("Amount to send"),
+        "coincontrol_tx_detail_high_fee_info_destination":
+            MessageLookupByLibrary.simpleMessage("Destination"),
+        "coincontrol_tx_detail_high_fee_info_editTransaction":
+            MessageLookupByLibrary.simpleMessage("Edit Transaction"),
+        "coincontrol_tx_detail_high_fee_info_fee":
+            MessageLookupByLibrary.simpleMessage("Fee"),
+        "coincontrol_tx_detail_high_fee_info_feeCustom":
+            MessageLookupByLibrary.simpleMessage("Custom"),
+        "coincontrol_tx_detail_high_fee_info_feeFaster":
+            MessageLookupByLibrary.simpleMessage("Faster"),
+        "coincontrol_tx_detail_high_fee_info_feeStandard":
+            MessageLookupByLibrary.simpleMessage("Standard"),
+        "coincontrol_tx_detail_high_fee_info_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction\nis ready to be sent"),
+        "coincontrol_tx_detail_high_fee_info_overlay_heading":
+            MessageLookupByLibrary.simpleMessage("Transaction Details"),
         "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
+        "coincontrol_tx_detail_high_fee_info_sendTransaction":
+            MessageLookupByLibrary.simpleMessage("Send Transaction"),
+        "coincontrol_tx_detail_high_fee_info_showDetails":
+            MessageLookupByLibrary.simpleMessage("Show details"),
+        "coincontrol_tx_detail_high_fee_info_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Confirm the transaction details  are correct before sending."),
+        "coincontrol_tx_detail_high_fee_info_total":
+            MessageLookupByLibrary.simpleMessage("Total"),
         "coincontrol_tx_detail_passport__subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Confirm the transaction details are correct before signing with Passport."),

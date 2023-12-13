@@ -73,7 +73,6 @@ dependencies:
   animations: ^2.0.2
   share_plus: ^7.0.0
   timeago: ^3.2.2
-  csv: ^5.0.1
   webfeed:
     git:
       url: https://github.com/icota/webfeed.git

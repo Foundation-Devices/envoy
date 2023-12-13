@@ -64,6 +64,8 @@ class S {
 
   // skipped getter for the '1' key
 
+  // skipped getter for the '1.4.0' key
+
   // skipped getter for the '10:21' key
 
   // skipped getter for the '123,456,789' key
@@ -244,10 +246,10 @@ class S {
     );
   }
 
-  /// `Apply filters`
+  /// `Show`
   String get Default {
     return Intl.message(
-      'Apply filters',
+      'Show',
       name: 'Default',
       desc: '',
       args: [],
@@ -346,10 +348,10 @@ class S {
 
   // skipped getter for the 'Improved Privacy' key
 
-  /// `Activity`
+  /// `Custom`
   String get Label {
     return Intl.message(
-      'Activity',
+      'Custom',
       name: 'Label',
       desc: '',
       args: [],
@@ -480,6 +482,8 @@ class S {
 
   // skipped getter for the 'Replace me Shield medium' key
 
+  // skipped getter for the 'Replace me Splash' key
+
   // skipped getter for the 'Requirements Check formatting + layout Address icon (think we already have one) Status icon TxID icon (think we already have one) Date icon' key
 
   // skipped getter for the 'Requirements Remix icon' key
@@ -528,10 +532,10 @@ class S {
     );
   }
 
-  /// `Receive`
+  /// `Label`
   String get ScreenTitle {
     return Intl.message(
-      'Receive',
+      'Label',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -642,10 +646,10 @@ class S {
     );
   }
 
-  /// `Tag`
+  /// `Total`
   String get Tag {
     return Intl.message(
-      'Tag',
+      'Total',
       name: 'Tag',
       desc: '',
       args: [],
@@ -770,11 +774,71 @@ class S {
     );
   }
 
-  /// `SOURCE`
+  /// `~60 mins`
   String get _ {
     return Intl.message(
-      'SOURCE',
+      '~60 mins',
       name: '_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App Version`
+  String get about_appVersion {
+    return Intl.message(
+      'App Version',
+      name: 'about_appVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About`
+  String get about_heading {
+    return Intl.message(
+      'About',
+      name: 'about_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Source Licences`
+  String get about_openSourceLicences {
+    return Intl.message(
+      'Open Source Licences',
+      name: 'about_openSourceLicences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get about_privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'about_privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms of Use`
+  String get about_termsOfUse {
+    return Intl.message(
+      'Terms of Use',
+      name: 'about_termsOfUse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1.4.0`
+  String get about_version {
+    return Intl.message(
+      '1.4.0',
+      name: 'about_version',
       desc: '',
       args: [],
     );
@@ -2084,6 +2148,56 @@ class S {
     );
   }
 
+  /// `Edit Transaction`
+  String get coincontrol_tx_detail_feeChange_editTransaction {
+    return Intl.message(
+      'Edit Transaction',
+      name: 'coincontrol_tx_detail_feeChange_editTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be sent`
+  String get coincontrol_tx_detail_feeChange_heading {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'coincontrol_tx_detail_feeChange_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Updating your fee may have changed\nyour coin selection. Please review.`
+  String get coincontrol_tx_detail_feeChange_information {
+    return Intl.message(
+      'Updating your fee may have changed\nyour coin selection. Please review.',
+      name: 'coincontrol_tx_detail_feeChange_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Transaction`
+  String get coincontrol_tx_detail_feeChange_sendTransaction {
+    return Intl.message(
+      'Send Transaction',
+      name: 'coincontrol_tx_detail_feeChange_sendTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details  are correct before sending.`
+  String get coincontrol_tx_detail_feeChange_subheading {
+    return Intl.message(
+      'Confirm the transaction details  are correct before sending.',
+      name: 'coincontrol_tx_detail_feeChange_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Custom`
   String get coincontrol_tx_detail_fee_custom {
     return Intl.message(
@@ -2124,6 +2238,96 @@ class S {
     );
   }
 
+  /// `Amount to send`
+  String get coincontrol_tx_detail_high_fee_info_amountToSend {
+    return Intl.message(
+      'Amount to send',
+      name: 'coincontrol_tx_detail_high_fee_info_amountToSend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destination`
+  String get coincontrol_tx_detail_high_fee_info_destination {
+    return Intl.message(
+      'Destination',
+      name: 'coincontrol_tx_detail_high_fee_info_destination',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Transaction`
+  String get coincontrol_tx_detail_high_fee_info_editTransaction {
+    return Intl.message(
+      'Edit Transaction',
+      name: 'coincontrol_tx_detail_high_fee_info_editTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee`
+  String get coincontrol_tx_detail_high_fee_info_fee {
+    return Intl.message(
+      'Fee',
+      name: 'coincontrol_tx_detail_high_fee_info_fee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get coincontrol_tx_detail_high_fee_info_feeCustom {
+    return Intl.message(
+      'Custom',
+      name: 'coincontrol_tx_detail_high_fee_info_feeCustom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Faster`
+  String get coincontrol_tx_detail_high_fee_info_feeFaster {
+    return Intl.message(
+      'Faster',
+      name: 'coincontrol_tx_detail_high_fee_info_feeFaster',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Standard`
+  String get coincontrol_tx_detail_high_fee_info_feeStandard {
+    return Intl.message(
+      'Standard',
+      name: 'coincontrol_tx_detail_high_fee_info_feeStandard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction\nis ready to be sent`
+  String get coincontrol_tx_detail_high_fee_info_heading {
+    return Intl.message(
+      'Your transaction\nis ready to be sent',
+      name: 'coincontrol_tx_detail_high_fee_info_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction Details`
+  String get coincontrol_tx_detail_high_fee_info_overlay_heading {
+    return Intl.message(
+      'Transaction Details',
+      name: 'coincontrol_tx_detail_high_fee_info_overlay_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Learn more`
   String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
     return Intl.message(
@@ -2139,6 +2343,46 @@ class S {
     return Intl.message(
       'Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth.',
       name: 'coincontrol_tx_detail_high_fee_info_overlay_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Transaction`
+  String get coincontrol_tx_detail_high_fee_info_sendTransaction {
+    return Intl.message(
+      'Send Transaction',
+      name: 'coincontrol_tx_detail_high_fee_info_sendTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show details`
+  String get coincontrol_tx_detail_high_fee_info_showDetails {
+    return Intl.message(
+      'Show details',
+      name: 'coincontrol_tx_detail_high_fee_info_showDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details  are correct before sending.`
+  String get coincontrol_tx_detail_high_fee_info_subheading {
+    return Intl.message(
+      'Confirm the transaction details  are correct before sending.',
+      name: 'coincontrol_tx_detail_high_fee_info_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get coincontrol_tx_detail_high_fee_info_total {
+    return Intl.message(
+      'Total',
+      name: 'coincontrol_tx_detail_high_fee_info_total',
       desc: '',
       args: [],
     );
