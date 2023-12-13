@@ -23,17 +23,28 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(tagName) =>
       "ATENCIÓN\n\nTu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
+  static String m1(here) =>
+      "No, cualquiera puede descargar, verificar e instalar manualmente firmware nuevo. Ver {aquí} para más información.";
+
+  static String m2(GPLv3, here) =>
+      "Sí, al igual que todo lo que hacemos en Foundation, Envoy es completamente de código abierto. Envoy tiene la misma licencia ${GPLv3} que nuestro Firmware de Passport. Para aquellos que deseen verificar nuestro código fuente, pueden hacer clic {aquí}.";
+
+  static String m3(here) =>
+      "No, nos enorgullecemos de garantizar que Passport sea compatible con tantas carteras de software diferentes como sea posible. Puedes ver nuestra lista completa, incluidos los tutoriales, {aquí} .";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "A": MessageLookupByLibrary.simpleMessage("0"),
         "Action": MessageLookupByLibrary.simpleMessage("¿excluir?"),
         "Activity": MessageLookupByLibrary.simpleMessage("Actividad"),
+        "Answer": MessageLookupByLibrary.simpleMessage("Respuesta"),
         "Aswer": MessageLookupByLibrary.simpleMessage(
             "Envoy es nuestra aplicación complementaria multiplataforma de Passport, diseñada para simplificar todo lo que haces con Passport.\n\nEnvoy es nuestra aplicación móvil complementaria para Passport, disponible en Android e iOS. Envoy ofrece un proceso de configuración de Passport simplificado y una cartera simple y de solo lectura de Bitcoin que preserva la privacidad."),
         "Balance": MessageLookupByLibrary.simpleMessage("200,000"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("ENTRADA NO VÁLIDA"),
         "Button": MessageLookupByLibrary.simpleMessage("Listo"),
-        "CoinInfo": MessageLookupByLibrary.simpleMessage("1 Bloqueado"),
+        "CoinInfo": MessageLookupByLibrary.simpleMessage(
+            "1 de 2 Monedas Seleccionadas  |  3 Bloqueadas"),
         "CoinText": MessageLookupByLibrary.simpleMessage("Lista"),
         "Coins": MessageLookupByLibrary.simpleMessage("Monedas"),
         "Conference": MessageLookupByLibrary.simpleMessage("Conferencia"),
@@ -54,20 +65,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Letter": MessageLookupByLibrary.simpleMessage("devolución"),
+        "Links": MessageLookupByLibrary.simpleMessage("Enlaces"),
         "Menu": MessageLookupByLibrary.simpleMessage("Enviar"),
         "OK": MessageLookupByLibrary.simpleMessage("Ok"),
         "Option": MessageLookupByLibrary.simpleMessage("Opción"),
         "PermissionDetails":
             MessageLookupByLibrary.simpleMessage("Mejor \nRendimiento"),
         "Primary": MessageLookupByLibrary.simpleMessage("17,210"),
+        "Question": MessageLookupByLibrary.simpleMessage("Pregunta"),
         "Read": MessageLookupByLibrary.simpleMessage("Leer"),
         "Receive": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Right": MessageLookupByLibrary.simpleMessage("Enviar"),
         "SEND": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sats": MessageLookupByLibrary.simpleMessage("123.345.679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle":
-            MessageLookupByLibrary.simpleMessage("Detalles de Transacción"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -85,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "Time": MessageLookupByLibrary.simpleMessage("9:41"),
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Recibido hace 3 horas"),
-        "Title": MessageLookupByLibrary.simpleMessage("Etiqueta"),
-        "Value": MessageLookupByLibrary.simpleMessage("1,000,000"),
+        "Title": MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
+        "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
         "Watched": MessageLookupByLibrary.simpleMessage("Visto"),
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("\$53.60"),
+        "_": MessageLookupByLibrary.simpleMessage("\$0"),
         "account_details_untagged_card":
             MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
@@ -99,7 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Los filtros aplicados ocultan todas las transacciones.\nActualice o restablezca los filtros para ver las transacciones."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
-                "No hay monedas asignadas a esta etiqueta."),
+                "No hay transacciones en esta cuenta.\nRecibe tu primera transacción debajo."),
         "account_type_label_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "account_type_sublabel":
@@ -402,7 +414,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_history_filter_off_LabeledSwitch_activity":
             MessageLookupByLibrary.simpleMessage("Actividad"),
         "coincontrol_tx_history_filter_off_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles de cuenta"),
+            MessageLookupByLibrary.simpleMessage("DETALLES DE CUENTA"),
         "coincontrol_tx_history_filter_off_receive":
             MessageLookupByLibrary.simpleMessage("Recibir"),
         "coincontrol_tx_history_filter_off_send":
@@ -538,6 +550,103 @@ class MessageLookup extends MessageLookupByLibrary {
             "Por favor, revise y acepte los Términos de Uso de Passport"),
         "envoy_account_tos_subheading":
             MessageLookupByLibrary.simpleMessage(""),
+        "envoy_faq_answer_1": MessageLookupByLibrary.simpleMessage(
+            "Envoy es una cartera móvil de Bitcoin y una aplicación complementaria a Passport, disponible en iOS y Android."),
+        "envoy_faq_answer_10": m1,
+        "envoy_faq_answer_11": MessageLookupByLibrary.simpleMessage(
+            "Por supuesto, no hay límite a la cantidad de Passports que puedes gestionar o con las que interactuar utilizando Envoy."),
+        "envoy_faq_answer_12": MessageLookupByLibrary.simpleMessage(
+            "Sí, Envoy facilita la gestión de múltiples cuentas."),
+        "envoy_faq_answer_13": MessageLookupByLibrary.simpleMessage(
+            "Envoy se comunica principalmente a través de códigos QR, pero las actualizaciones de firmware se transmiten desde tu teléfono utilizando una tarjeta microSD. Passport incluye adaptadores de microSD para tu teléfono."),
+        "envoy_faq_answer_14": MessageLookupByLibrary.simpleMessage(
+            "Sí, simplemente ten en cuenta que cualquier información específica de la cartera, como las etiquetas de dirección o notas de transacciones, no se copiarán hacia o desde Envoy."),
+        "envoy_faq_answer_15": MessageLookupByLibrary.simpleMessage(
+            "Es posible, ya que la mayoría de las carteras hardware que utilizan códigos de QR se comunican de manera muy similar. Sin embargo, no es algo que esté explícitamente soportado. Como Envoy es de código abierto, ¡invitamos a otras carteras hardware basadas en QR que añadan el soporte!"),
+        "envoy_faq_answer_16": MessageLookupByLibrary.simpleMessage(
+            "De momento, Envoy solo funciona con Bitcoin \'onchain\'. Planeamos soportar Lightning en el futuro."),
+        "envoy_faq_answer_17": MessageLookupByLibrary.simpleMessage(
+            "Cualquier persona que encuentre tu teléfono, primero tendría que superar el código PIN del sistema operativo de tu teléfono o la autenticación biométrica para acceder a Envoy. En el improbable caso de que logren esto, el atacante podría enviar fondos desde tu Cartera Móvil de Envoy y ver la cantidad de Bitcoin almacenada en cualquier cuenta de Passport conectada. Sin embargo, estos fondos de Passport no estrían en peligro ya que cualquier transacción debe ser autorizada por el dispositivo Passport emparejado."),
+        "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
+            "Si se utiliza con un Passport, Envoy actúa como una cartera de \'solo lectura\' conectada a tu cartera hardware. Esto significa que Envoy puede preparar transacciones, pero son inútiles sin la autorización relevante, que solo Passport puede proporcionar. Passport es el \'almacenamiento en frío\', ¡y Envoy es simplemente la interfaz conectada a Internet! Si utilizas Envoy para crear una cartera móvil, donde la semilla se almacena de forma segura en tu teléfono, esa cartera móvil no se consideraría almacenamiento en frío. Esto no tiene ningún efecto en la seguridad de las cuentas conectadas a Passport."),
+        "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
+            "Sí, Envoy se conecta utilizando el protocolo del servidor Electrum. Para conectarte a tu propio servidor Electrum, escanea el código QR o escribe la URL proporcionada en la configuración de red en Envoy."),
+        "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
+            "Envoy está diseñada para ser la cartera de Bitcoin más fácil de utilizar, sin comprometer tu privacidad. Con las Copias de Seguridad Mágicas de Envoy, puedes configurar una cartera móvil de Bitcoin en 60 segundos, ¡sin palabras de semilla y custodiada por ti! Los usuarios de Passport pueden conectar sus dispositivos a Envoy para una configuración fácil, actualizaciones de firmware y una experiencia sencilla de cartera de Bitcoin."),
+        "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
+            "Descargar e instalar Envoy no requiere ningún dato personal y Envoy puede conectarse a Internet a través de Tor, un protocolo que preserva la privacidad. Esto significa que Foundation no tiene forma de saber quién eres. Envoy también brinda a los usuarios más avanzados la capacidad de conectarse a su propio nodo de Bitcoin para eliminar cualquier dependencia de los servidores de Foundation por completo."),
+        "envoy_faq_answer_21": MessageLookupByLibrary.simpleMessage(
+            "Sí. A partir de la versión 1.4.0, Envoy permite hacer una selección completa de monedas, así como el \'etiquetado\' de monedas."),
+        "envoy_faq_answer_22": MessageLookupByLibrary.simpleMessage(
+            "En este momento Envoy no admite gastos por lotes."),
+        "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
+            "Sí. A partir de la versión 1.4.0, Envoy permite personalizar la tarifa de transacción totalmente, y mantiene dos opciones rápidas de selección de tarifa: \'Estándar\' y \'Más rápido\'. \'Estándar\' tiene como objetivo finalizar tu transacción en un plazo de 60 minutos y \'Más rápido\' en unos 10 minutos. Estas son estimaciones basadas en la congestión de la red en el momento en que se construye la transacción y siempre se te mostrará el coste de cada una de las opciones antes de finalizar la transacción."),
+        "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy es una cartera de Bitcoin simple con funciones potentes de gestión de cuentas y privacidad, incluyendo Copias de Seguridad Mágicas. Usa Envoy junto con tu Passport para configuración, actualizaciones de firmware y más."),
+        "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
+            "La Copia de Seguridad Mágica es la forma más fácil de configurar y hacer una copia de seguridad de una cartera móvil de Bitcoin. La Copia de Seguridad Mágica almacena la semilla de tu cartera móvil cifrada de extremo a extremo en tu llavero iCloud o copia de seguridad de Android. Todos los datos de la aplicación están cifrados por tu semilla y se almacenan en los servidores de Foundation. ¡Configura tu billetera en 60 segundos y restáurala automáticamente si pierdes tu teléfono!"),
+        "envoy_faq_answer_5": MessageLookupByLibrary.simpleMessage(
+            "Las Copias de Seguridad Mágicas son completamente opcionales para los usuarios que deseen utilizar Envoy como cartera móvil. Si prefieres gestionar tus propias palabras semilla y copias de seguridad de la cartera móvil, elige \'Configurar Manualmente Palabras Semilla\' en la etapa de configuración de la cartera."),
+        "envoy_faq_answer_6": MessageLookupByLibrary.simpleMessage(
+            "La Copia de Seguridad de Envoy contiene la configuración de la aplicación, información sobre la cuenta, etiquetas y notas de las transacciones. El archivo está encriptado con las palabras de semilla de tu cartera móvil. Para los usuarios que habiliten la Copia de Seguridad Mágica, toda esta información se almacena completamente encriptada en el servidor de Foundation. Los usuarios de Envoy que hayan decidido gestionar las palabras semilla de forma manual, pueden descargar y almacenar su copia de seguridad donde deseen. Esto podría ser cualquiera, o múltiples, de las siguientes opciones: un teléfono, un servidor de nube personal, o algún dispositivo físico como una tarjeta microSD o un dispositivo de almacenamiento USB."),
+        "envoy_faq_answer_7": MessageLookupByLibrary.simpleMessage(
+            "No, las características principales de Envoy siempre serán gratuitas. En el futuro es posible que introduzcamos servicios o suscripciones opcionales de pago."),
+        "envoy_faq_answer_8": m2,
+        "envoy_faq_answer_9": m3,
+        "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/en/firmware-update"),
+        "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
+            "https://www.gnu.org/licenses/gpl-3.0.en.html"),
+        "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
+        "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/connect"),
+        "envoy_faq_question_1":
+            MessageLookupByLibrary.simpleMessage("¿Qué es Envoy?"),
+        "envoy_faq_question_10": MessageLookupByLibrary.simpleMessage(
+            "¿Tengo que usar Envoy para actualizar el firmware de Passport?"),
+        "envoy_faq_question_11": MessageLookupByLibrary.simpleMessage(
+            "¿Puedo gestionar más de un Passport con Envoy?"),
+        "envoy_faq_question_12": MessageLookupByLibrary.simpleMessage(
+            "¿Puedo gestionar varias cuentas desde un único Passport?"),
+        "envoy_faq_question_13": MessageLookupByLibrary.simpleMessage(
+            "¿Cómo se comunica Envoy con Passport?"),
+        "envoy_faq_question_14": MessageLookupByLibrary.simpleMessage(
+            "¿Puedo usar Envoy en paralelo con otro software como Sparrow Wallet?"),
+        "envoy_faq_question_15": MessageLookupByLibrary.simpleMessage(
+            "¿Puedo gestionar otras carteras físicas con Envoy?"),
+        "envoy_faq_question_16": MessageLookupByLibrary.simpleMessage(
+            "¿Es Envoy compatible con la Lightning Network?"),
+        "envoy_faq_question_17": MessageLookupByLibrary.simpleMessage(
+            "¿Qué pasa si pierdo mi teléfono con Envoy instalado?"),
+        "envoy_faq_question_18": MessageLookupByLibrary.simpleMessage(
+            "¿Se considera Envoy \"Almacenamiento en Frío\"?"),
+        "envoy_faq_question_19": MessageLookupByLibrary.simpleMessage(
+            "¿Puedo conectar Envoy a mi propio nodo Bitcoin?"),
+        "envoy_faq_question_2": MessageLookupByLibrary.simpleMessage(
+            "¿Por qué debería utilizar Envoy?"),
+        "envoy_faq_question_20": MessageLookupByLibrary.simpleMessage(
+            "¿Cómo protege Envoy mi privacidad?"),
+        "envoy_faq_question_21": MessageLookupByLibrary.simpleMessage(
+            "¿Ofrece Envoy un control de monedas?"),
+        "envoy_faq_question_22": MessageLookupByLibrary.simpleMessage(
+            "¿Admite Envoy el envío por lotes?"),
+        "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
+            "¿Permite Envoy la selección de tasas de envío personalizadas?"),
+        "envoy_faq_question_3":
+            MessageLookupByLibrary.simpleMessage("¿Qué puede hacer Envoy?"),
+        "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(
+            "¿Qué es una Copia de Seguridad Mágica de Envoy?"),
+        "envoy_faq_question_5": MessageLookupByLibrary.simpleMessage(
+            "¿Tengo que utilizar una Copia de Seguridad Mágica de Envoy?"),
+        "envoy_faq_question_6": MessageLookupByLibrary.simpleMessage(
+            "¿Qué es la Copia de Seguridad de Envoy?"),
+        "envoy_faq_question_7":
+            MessageLookupByLibrary.simpleMessage("¿Tengo que pagar por Envoy?"),
+        "envoy_faq_question_8": MessageLookupByLibrary.simpleMessage(
+            "¿Es Envoy de código abierto?"),
+        "envoy_faq_question_9": MessageLookupByLibrary.simpleMessage(
+            "¿Tengo que utilizar Envoy para realizar transacciones con Passport?"),
         "envoy_fw_fail_cta":
             MessageLookupByLibrary.simpleMessage("Intentar de nuevo"),
         "envoy_fw_fail_heading": MessageLookupByLibrary.simpleMessage(
@@ -847,7 +956,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Encriptación de la copia de seguridad"),
         "magic_setup_generate_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy está encriptando la copia de seguridad de tu cartera.\n\nEsta copia de seguridad contiene datos útiles de la cartera, como etiquetas, notas, cuentas y configuración."),
+                "Envoy está encriptando tu copia de seguridad.\n\nEsta copia de seguridad contiene datos útiles de la cartera como etiquetas, notas, cuentas y configuración."),
         "magic_setup_generate_envoy_key_android_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Creación de la Semilla Envoy"),
@@ -955,7 +1064,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Por motivos de privacidad, creamos una nueva dirección cada vez que visita esta pantalla."),
         "manage_account_address_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles de cuenta"),
+            MessageLookupByLibrary.simpleMessage("DETALLES DE CUENTA"),
+        "manage_account_descriptor_heading":
+            MessageLookupByLibrary.simpleMessage("Cartera Móvil"),
+        "manage_account_descriptor_menu":
+            MessageLookupByLibrary.simpleMessage("DETALLES DE CUENTA"),
+        "manage_account_descriptor_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Asegúrate de no compartir este descriptor a menos que quieras que tus transacciones sean públicas."),
         "manage_account_menu_delete":
             MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "manage_account_menu_editAccountName":
@@ -1173,7 +1289,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ATENCIÓN"),
         "manual_setup_recovery_import_backup_modal_fail_connectivity_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Si continúas sin una copia de seguridad, la configuración de tu cartera, las cuentas adicionales y las notas y etiquetas no se restaurarán."),
+                "Si continúas sin una copia de seguridad, la configuración de tu cartera, las cuentas, notas y etiquetas no se restaurarán."),
         "manual_setup_recovery_import_backup_modal_fail_cta1":
             MessageLookupByLibrary.simpleMessage(
                 "Volver a escribir la Passphrase"),
@@ -1753,6 +1869,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("EDITAR NOMBRE DE ETIQUETA"),
         "tagged_coin_details_menu_cta2":
             MessageLookupByLibrary.simpleMessage("Eliminar etiqueta"),
+        "tagged_tagDetails_emptyState_explainer":
+            MessageLookupByLibrary.simpleMessage(
+                "No hay monedas asignadas a esta etiqueta."),
         "tagged_tagDetails_menu_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
         "tagged_tagDetails_selectedAmount":
@@ -1760,7 +1879,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "tagged_tagDetails_sheet_cta1":
             MessageLookupByLibrary.simpleMessage("Enviar selección"),
         "tagged_tagDetails_sheet_cta2":
-            MessageLookupByLibrary.simpleMessage("Reetiquetar Seleccionado"),
+            MessageLookupByLibrary.simpleMessage("Etiquetar selección"),
+        "tagged_tagDetails_sheet_retag_cta2":
+            MessageLookupByLibrary.simpleMessage("Reetiquetar selección"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Mantén pulsado y arrastra para reordenar tus cuentas."),
         "tap_and_drag_first_time_text_button":
@@ -1795,10 +1916,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "untagged_coin_details_spendable_heading":
             MessageLookupByLibrary.simpleMessage("Detalles de la etiqueta"),
         "untagged_coin_details_unlocked_coins_locked":
-            MessageLookupByLibrary.simpleMessage("1 Bloqueado"),
+            MessageLookupByLibrary.simpleMessage(""),
         "untagged_coin_details_unlocked_coins_selected":
-            MessageLookupByLibrary.simpleMessage(
-                "0 de 4 Monedas Seleccionadas"),
+            MessageLookupByLibrary.simpleMessage("0 Monedas Seleccionadas"),
         "untagged_coin_details_unlocked_divider":
             MessageLookupByLibrary.simpleMessage(" | "),
         "untagged_coin_details_unlocked_heading":

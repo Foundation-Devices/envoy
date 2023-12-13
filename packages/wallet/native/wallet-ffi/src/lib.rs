@@ -676,27 +676,31 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let dont_spend = util::extract_utxo_list(dont_spend);
 
     let balance = get_total_balance(wallet.get_balance().unwrap());
-    let mut amount_to_try = balance - amount;
+    let mut max_fee = balance - amount;
 
     loop {
         match util::build_tx(
-            amount.clone(),
+            amount,
             0.0,
-            Some(amount_to_try),
+            Some(max_fee),
             &wallet,
             send_to.clone(),
             &must_spend,
             &dont_spend,
         ) {
             Ok((psbt, _)) => {
-                return match psbt.fee_rate() {
-                    None => error_return,
-                    Some(r) => r.as_sat_per_vb() as f64,
+                match psbt.fee_rate() {
+                    None => {
+                        return error_return;
+                    }
+                    Some(r) => {
+                        return r.as_sat_per_vb() as f64;
+                    }
                 };
             }
             Err(e) => match e {
                 bdk::Error::InsufficientFunds { available, .. } => {
-                    amount_to_try = available - amount.clone();
+                    max_fee = available - amount;
                 }
                 _ => {
                     update_last_error(e);

@@ -250,6 +250,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().bottomNav_learn;
       case ROUTE_ACCOUNT_SEND:
         return "send"; //TODO: Figma
+      case ROUTE_ACCOUNT_DETAIL:
+        return "account details"; //TODO: Figma
       default:
         return S().menu_heading;
     }

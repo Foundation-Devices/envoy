@@ -23,11 +23,21 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(tagName) =>
       "മുന്നറിയിപ്പ് നിങ്ങളുടെ${tagName} ടാഗ് ഇപ്പോൾ ശൂന്യമാണ്. നിങ്ങൾക്ക് അത് ഇല്ലാതാക്കാൻ താൽപ്പര്യമുണ്ടോ?";
 
+  static String m1(here) =>
+      "No, anyone is still free to manually download, verify and install new firmware. See ${here} for more information.";
+
+  static String m2(GPLv3, here) =>
+      "Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same ${GPLv3} license as our Passport Firmware. For those wanting to check our source code, click ${here}.";
+
+  static String m3(here) =>
+      "No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials ${here}.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "A": MessageLookupByLibrary.simpleMessage("0"),
         "Action": MessageLookupByLibrary.simpleMessage("പെടുത്തിയിട്ടില്ല?"),
         "Activity": MessageLookupByLibrary.simpleMessage("പ്രവർത്തനം"),
+        "Answer": MessageLookupByLibrary.simpleMessage("Answer"),
         "Aswer": MessageLookupByLibrary.simpleMessage(
             "പാസ്‌പോർട്ട് ഉപയോഗിച്ച് നിങ്ങൾ ചെയ്യുന്നതെല്ലാം ലളിതമാക്കാൻ രൂപകൽപ്പന ചെയ്‌തിരിക്കുന്ന ഞങ്ങളുടെ ക്രോസ് പ്ലാറ്റ്‌ഫോം പാസ്‌പോർട്ട് കമ്പാനിയൻ ആപ്പാണ് എൻവോയ്. പാസ്‌പോർട്ടിനായുള്ള ഞങ്ങളുടെ മൊബൈൽ കമ്പാനിയൻ ആപ്പാണ് എൻവോയ്, Android-ലും iOS-ലും ലഭ്യമാണ്. എൻവോയ് ഒരു കാര്യക്ഷമമായ പാസ്‌പോർട്ട് സജ്ജീകരണ പ്രക്രിയയും ലളിതവും സ്വകാര്യത സംരക്ഷിക്കുന്നതുമായ ബിറ്റ്‌കോയിൻ വാച്ച്-ഒൺലി വാലറ്റും വാഗ്ദാനം ചെയ്യുന്നു."),
         "Balance": MessageLookupByLibrary.simpleMessage("-ടി.ബി.ഡി"),
@@ -54,12 +64,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("സ്വീകരിക്കുക"),
         "Letter": MessageLookupByLibrary.simpleMessage("മടങ്ങുക"),
+        "Links": MessageLookupByLibrary.simpleMessage("Links"),
         "Menu": MessageLookupByLibrary.simpleMessage("അയക്കുക"),
         "OK": MessageLookupByLibrary.simpleMessage("ശരി"),
         "Option": MessageLookupByLibrary.simpleMessage("ഓപ്ഷൻ"),
         "PermissionDetails":
             MessageLookupByLibrary.simpleMessage("മെച്ചപ്പെട്ട പ്രകടനം"),
         "Primary": MessageLookupByLibrary.simpleMessage("17,210"),
+        "Question": MessageLookupByLibrary.simpleMessage("Question"),
         "Read": MessageLookupByLibrary.simpleMessage("വായിക്കുക"),
         "Receive": MessageLookupByLibrary.simpleMessage("സ്വീകരിക്കുക"),
         "Right": MessageLookupByLibrary.simpleMessage("അയക്കുക"),
@@ -543,6 +555,103 @@ class MessageLookup extends MessageLookupByLibrary {
             "പാസ്‌പോർട്ട് ഉപയോഗ നിബന്ധനകൾ അവലോകനം ചെയ്ത് അംഗീകരിക്കുക"),
         "envoy_account_tos_subheading":
             MessageLookupByLibrary.simpleMessage(""),
+        "envoy_faq_answer_1": MessageLookupByLibrary.simpleMessage(
+            "Envoy is a Bitcoin mobile wallet and Passport companion app, available on iOS and Android."),
+        "envoy_faq_answer_10": m1,
+        "envoy_faq_answer_11": MessageLookupByLibrary.simpleMessage(
+            "Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy."),
+        "envoy_faq_answer_12": MessageLookupByLibrary.simpleMessage(
+            "Yes, Envoy makes multi-account management simple."),
+        "envoy_faq_answer_13": MessageLookupByLibrary.simpleMessage(
+            "Envoy communicates predominantly via QR codes, however firmware updates are passed from your phone via a microSD card. Passport includes microSD adapters for your phone."),
+        "envoy_faq_answer_14": MessageLookupByLibrary.simpleMessage(
+            "Yes, just be aware that any wallet-specific information, such as address or UTXO labeling, will not be copied to or from Envoy."),
+        "envoy_faq_answer_15": MessageLookupByLibrary.simpleMessage(
+            "This may be possible as most QR enabled hardware wallets communicate in very similar ways, however this is not explicitly supported. As Envoy is open source, we welcome other QR-based hardware wallets to add support!"),
+        "envoy_faq_answer_16": MessageLookupByLibrary.simpleMessage(
+            "At this time Envoy only works with ‘on-chain’ Bitcoin. We plan to support Lightning in the future."),
+        "envoy_faq_answer_17": MessageLookupByLibrary.simpleMessage(
+            "Anyone finding your phone would first need to get past your phones operating system PIN or biometric authentication to access Envoy. In the unlikely event they achieve this, the attacker could send funds from your Envoy Mobile Wallet and see the amount of Bitcoin stored within any connected Passport accounts. These Passport funds are not at risk because any transactions must be authorized by the paired Passport device."),
+        "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
+            "If used with a Passport, Envoy acts as a ‘watch-only’ wallet connected to your hardware wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide. Passport is the \'cold storage\' and Envoy is simply the internet connected interface!If you use Envoy to create a mobile wallet, where the keys are stored securely on your phone, that mobile wallet would not be considered cold storage. This has zero effect on the security of any Passport connected accounts."),
+        "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
+            "Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy."),
+        "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
+            "Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience."),
+        "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
+            "Downloading and installing Envoy requires zero personal information and Envoy can connect to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely."),
+        "envoy_faq_answer_21": MessageLookupByLibrary.simpleMessage(
+            "Yes. From version 1.4.0, Envoy now support full coin selection as well as coin \'tagging\'."),
+        "envoy_faq_answer_22": MessageLookupByLibrary.simpleMessage(
+            "At this time Envoy does not support batch spending."),
+        "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
+            "Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. \'Standard\' aims to get your transaction finalized within 60 minutes and \'Faster\' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction."),
+        "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
+            "Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more."),
+        "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
+            "Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Android Auto Backup. All app data is encrypted by your seed and stored on Foundation Servers. Set up your wallet in 60 seconds, and automatically restore if you lose your phone!"),
+        "envoy_faq_answer_5": MessageLookupByLibrary.simpleMessage(
+            "Magic Backups are completely optional for users that want to leverage Envoy as a mobile wallet. If you prefer to manage your own mobile wallet seed words and backup file, choose \'Manually Configure Seed Words\' at the wallet set up stage."),
+        "envoy_faq_answer_6": MessageLookupByLibrary.simpleMessage(
+            "The Envoy backup file contains app settings, account info and transaction labels. The file is encrypted with your mobile wallet seed words. For Magic Backup users, this is stored fully encrypted on the Foundation server. Manual backup Envoy users can download and store their backup file anywhere they like. This could be any combination of your phone, a personal cloud server, or on something physical like a microSD card or USB drive."),
+        "envoy_faq_answer_7": MessageLookupByLibrary.simpleMessage(
+            "No, Envoy’s core features will always be free to use. In the future we may introduce optional paid services or subscriptions."),
+        "envoy_faq_answer_8": m2,
+        "envoy_faq_answer_9": m3,
+        "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/en/firmware-update"),
+        "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
+            "https://www.gnu.org/licenses/gpl-3.0.en.html"),
+        "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
+        "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/connect"),
+        "envoy_faq_question_1":
+            MessageLookupByLibrary.simpleMessage("What is Envoy?"),
+        "envoy_faq_question_10": MessageLookupByLibrary.simpleMessage(
+            "Do I have to use Envoy to update the firmware on Passport?"),
+        "envoy_faq_question_11": MessageLookupByLibrary.simpleMessage(
+            "Can I manage more than one Passport with Envoy?"),
+        "envoy_faq_question_12": MessageLookupByLibrary.simpleMessage(
+            "Can I manage multiple accounts from the same Passport?"),
+        "envoy_faq_question_13": MessageLookupByLibrary.simpleMessage(
+            "How does Envoy communicate with Passport?"),
+        "envoy_faq_question_14": MessageLookupByLibrary.simpleMessage(
+            "Can I use Envoy in parallel to another piece of software like Sparrow Wallet?"),
+        "envoy_faq_question_15": MessageLookupByLibrary.simpleMessage(
+            "Can I manage other hardware wallets with Envoy?"),
+        "envoy_faq_question_16": MessageLookupByLibrary.simpleMessage(
+            "Is Envoy compatible with the Lightning Network?"),
+        "envoy_faq_question_17": MessageLookupByLibrary.simpleMessage(
+            "What happens if I lose my phone with Envoy installed?"),
+        "envoy_faq_question_18": MessageLookupByLibrary.simpleMessage(
+            "Is Envoy considered ‘Cold Storage’?"),
+        "envoy_faq_question_19": MessageLookupByLibrary.simpleMessage(
+            "Can I connect Envoy to my own Bitcoin node?"),
+        "envoy_faq_question_2":
+            MessageLookupByLibrary.simpleMessage("Why should I use Envoy?"),
+        "envoy_faq_question_20": MessageLookupByLibrary.simpleMessage(
+            "How does Envoy protect my privacy?"),
+        "envoy_faq_question_21": MessageLookupByLibrary.simpleMessage(
+            "Does Envoy offer coin control?"),
+        "envoy_faq_question_22": MessageLookupByLibrary.simpleMessage(
+            "Does Envoy support Batch spends?"),
+        "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
+            "Does Envoy allow custom miner fee selection?"),
+        "envoy_faq_question_3":
+            MessageLookupByLibrary.simpleMessage("What can Envoy do?"),
+        "envoy_faq_question_4":
+            MessageLookupByLibrary.simpleMessage("What is Envoy Magic Backup?"),
+        "envoy_faq_question_5": MessageLookupByLibrary.simpleMessage(
+            "Do I have to use Envoy Magic Backups?"),
+        "envoy_faq_question_6": MessageLookupByLibrary.simpleMessage(
+            "What is the Envoy Backup File?"),
+        "envoy_faq_question_7":
+            MessageLookupByLibrary.simpleMessage("Do I need to pay for Envoy?"),
+        "envoy_faq_question_8":
+            MessageLookupByLibrary.simpleMessage("Is Envoy Open Source?"),
+        "envoy_faq_question_9": MessageLookupByLibrary.simpleMessage(
+            "Do I have to use Envoy to transact with Passport?"),
         "envoy_fw_fail_cta":
             MessageLookupByLibrary.simpleMessage("വീണ്ടും ശ്രമിക്കുക"),
         "envoy_fw_fail_heading": MessageLookupByLibrary.simpleMessage(
@@ -958,6 +1067,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "സ്വകാര്യതയ്ക്കായി, നിങ്ങൾ ഈ സ്ക്രീൻ സന്ദർശിക്കുമ്പോഴെല്ലാം ഞങ്ങൾ ഒരു പുതിയ വിലാസം സൃഷ്ടിക്കുന്നു."),
         "manage_account_address_heading":
             MessageLookupByLibrary.simpleMessage("അക്കൗണ്ട് വിശദാംശങ്ങൾ"),
+        "manage_account_descriptor_heading":
+            MessageLookupByLibrary.simpleMessage("Mobile Wallet"),
+        "manage_account_descriptor_menu":
+            MessageLookupByLibrary.simpleMessage("account details"),
+        "manage_account_descriptor_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Make sure not to share this descriptor unless you are comfortable with your transactions being public."),
         "manage_account_menu_delete":
             MessageLookupByLibrary.simpleMessage("ഇല്ലാതാക്കുക"),
         "manage_account_menu_editAccountName":
@@ -1767,6 +1883,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ടാഗ് നാമം എഡിറ്റ് ചെയ്യുക"),
         "tagged_coin_details_menu_cta2":
             MessageLookupByLibrary.simpleMessage("ടാഗ് ഇല്ലാതാക്കുക"),
+        "tagged_tagDetails_emptyState_explainer":
+            MessageLookupByLibrary.simpleMessage(
+                "There are no coins assigned to this tag."),
         "tagged_tagDetails_menu_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "tagged_tagDetails_selectedAmount":
@@ -1774,6 +1893,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tagged_tagDetails_sheet_cta1":
             MessageLookupByLibrary.simpleMessage("Send Selected"),
         "tagged_tagDetails_sheet_cta2":
+            MessageLookupByLibrary.simpleMessage("Tag Selected"),
+        "tagged_tagDetails_sheet_retag_cta2":
             MessageLookupByLibrary.simpleMessage("Retag Selected"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
             "നിങ്ങളുടെ അക്കൗണ്ടുകൾ വലിച്ചിടാനും പുനഃക്രമീകരിക്കാനും പിടിക്കുക."),

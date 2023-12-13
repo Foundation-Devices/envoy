@@ -29,7 +29,9 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -447,6 +449,7 @@ class _TransactionReviewScreenState
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
     final amount = ref.watch(receiveAmountProvider);
+    final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
@@ -504,10 +507,11 @@ class _TransactionReviewScreenState
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
       extendBody: true,
+      extendBodyBehindAppBar: true,
       removeAppBarPadding: true,
       topBarLeading: IconButton(
-        icon: Icon(
-          Icons.close,
+        icon: EnvoyIcon(
+          EnvoyIcons.chevron_left,
           color: EnvoyColors.textPrimary,
         ),
         onPressed: () {
@@ -520,14 +524,9 @@ class _TransactionReviewScreenState
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               child: ListTile(
-                title: Text(
-                  header,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontSize: 20),
-                ),
+                title: Text(header.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading),
                 subtitle: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
@@ -625,6 +624,13 @@ class _TransactionReviewScreenState
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      if (uneconomicSpends)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: EnvoySpacing.xs),
+                                          child: EnvoyIcon(EnvoyIcons.info,
+                                              color: EnvoyColors.solidWhite),
+                                        ),
                                       Text(
                                         "Show details", //TODO: figma
                                         style: trailingStyle,

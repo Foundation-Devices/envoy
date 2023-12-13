@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 enum EnvoyIconSize { normal, small, big, extraSmall }
 
 enum EnvoyIcons {
+  chevron_left,
   chevron_down,
   biometrics,
   node,

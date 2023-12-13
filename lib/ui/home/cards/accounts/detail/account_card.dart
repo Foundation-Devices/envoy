@@ -90,8 +90,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
     Future.delayed(Duration()).then((value) {
       account =
           ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
-      ref.read(homePageTitleProvider.notifier).state =
-          S().manage_account_address_heading;
+      ref.read(homePageTitleProvider.notifier).state = "";
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
           optionsWidget: AccountOptions(account),
@@ -720,7 +719,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                         S().manage_account_remove_cta,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
-                          GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                          Navigator.pop(context);
                           GoRouter.of(context).pop();
                           await Future.delayed(Duration(milliseconds: 50));
                           AccountManager().deleteAccount(widget.account);
