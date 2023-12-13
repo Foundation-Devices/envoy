@@ -190,10 +190,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
       bottomNavigationBar: Consumer(
         builder: (context, ref, child) {
           bool hide = ref.watch(showSpendRequirementOverlayProvider);
-          return AnimatedOpacity(
-              duration: Duration(milliseconds: 200),
-              opacity: hide ? 0 : 1,
-              child: child);
+          bool isInEditMode = ref.watch(spendEditModeProvider);
+          return IgnorePointer(
+            ignoring: (hide || isInEditMode),
+            child: AnimatedOpacity(
+                duration: Duration(milliseconds: 200),
+                opacity: (hide || isInEditMode) ? 0 : 1,
+                child: child),
+          );
         },
         child: Container(
           height: 100,
