@@ -301,7 +301,7 @@ class SeedIntroScreen extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    RecoverViaQR(
+                                                    RecoverFromSeedLoader(
                                                       seed: result,
                                                     )));
                                       });

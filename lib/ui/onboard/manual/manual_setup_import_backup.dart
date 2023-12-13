@@ -110,19 +110,19 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   }
 }
 
-class RecoverViaQR extends StatefulWidget {
-  RecoverViaQR({Key? key, required this.seed}) : super(key: key);
+class RecoverFromSeedLoader extends StatefulWidget {
+  RecoverFromSeedLoader({Key? key, required this.seed}) : super(key: key);
 
   final String seed;
 
   @override
-  State<RecoverViaQR> createState() => _RecoverViaQR();
+  State<RecoverFromSeedLoader> createState() => _RecoverFromSeedLoaderState();
 }
 
-class _RecoverViaQR extends State<RecoverViaQR> {
+class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
   Map<String, String>? data;
 
-  checkForMagicRecover(String seed) async {
+  checkForCloudBackup(String seed) async {
     List<String> seedList = widget.seed.split(" ");
     try {
       data = await Backup.restore(
@@ -140,22 +140,22 @@ class _RecoverViaQR extends State<RecoverViaQR> {
               icon: EnvoyIcons.info,
               secondaryButtonLabel: S().manual_setup_magicBackupDetected_ignore,
               onSecondaryButtonTap: () {
-                manualRecover(seedList, context);
+                recoverManually(seedList, context);
                 Navigator.pop(context);
               },
               dismissible: false);
         else
-          manualRecover(seedList, context);
+          recoverManually(seedList, context);
       });
     } catch (e) {
-      manualRecover(seedList, context);
+      recoverManually(seedList, context);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    checkForMagicRecover(widget.seed);
+    checkForCloudBackup(widget.seed);
   }
 
   @override
@@ -200,7 +200,7 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
     }));
 }
 
-Future<void> manualRecover(List<String> seedList, BuildContext context) async {
+Future<void> recoverManually(List<String> seedList, BuildContext context) async {
   bool success = await EnvoySeed().create(seedList);
 
   if (success) {
