@@ -16,6 +16,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
@@ -33,8 +36,9 @@ class _OnboardEnvoyWelcomeScreenState
       gradientHeight: 1.8,
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
-        margin: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-        padding: EdgeInsets.only(top: 44),
+        margin: EdgeInsets.symmetric(
+            vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
+        padding: EdgeInsets.only(top: EnvoySpacing.large1),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -46,7 +50,8 @@ class _OnboardEnvoyWelcomeScreenState
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               child: EnvoyButton(
                 S().envoy_welcome_screen_skip,
                 textStyle: Theme.of(context)
@@ -65,27 +70,34 @@ class _OnboardEnvoyWelcomeScreenState
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: Offset(-8, 54),
+          offset: Offset(-8, 70),
           child: Image.asset(
             "assets/envoy_on_device.png",
             alignment: Alignment.bottomCenter,
-            width: MediaQuery.of(context).size.width / 2.4,
-            height: MediaQuery.of(context).size.height / 2.4,
+            width: MediaQuery.of(context).size.width * 0.55,
+            height: MediaQuery.of(context).size.height * 0.55,
           ),
         ),
         bottomNavigationBar: EnvoyScaffoldShieldScrollView(
           context,
           Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15, top: 16),
+              padding: const EdgeInsets.only(
+                  right: EnvoySpacing.medium1,
+                  left: EnvoySpacing.medium1,
+                  top: EnvoySpacing.medium1),
               child: SizedBox.expand(
                   child: Container(
                 height: max(MediaQuery.of(context).size.height * 0.38, 800),
-                margin: EdgeInsets.symmetric(vertical: 4 * 10, horizontal: 18),
+                margin: EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.large1,
+                    horizontal: EnvoySpacing.medium1),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(height: EnvoySpacing.small),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
                       child: Container(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -94,27 +106,32 @@ class _OnboardEnvoyWelcomeScreenState
                             Text(
                               S().envoy_welcome_screen_heading,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              style: EnvoyTypography.body.copyWith(
+                                fontSize: 20,
+                                color: EnvoyColors.gray1000,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
-                            Padding(padding: EdgeInsets.all(6)),
+                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                             LinkText(
                               text: S().envoy_welcome_screen_subheading,
-                              textStyle: Theme.of(context).textTheme.bodySmall,
-                              linkStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                              textStyle: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.inactiveDark,
+                              ),
+                              linkStyle: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.inactiveDark,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 15, left: 28, right: 28),
+                      padding: const EdgeInsets.all(EnvoySpacing.medium2),
                       child: Column(
                         children: [
-                          Padding(padding: EdgeInsets.all(4)),
+                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                           EnvoyButton(
                             S().envoy_welcome_screen_cta2,
                             type: EnvoyButtonTypes.secondary,
@@ -125,7 +142,7 @@ class _OnboardEnvoyWelcomeScreenState
                               }));
                             },
                           ),
-                          Padding(padding: EdgeInsets.all(6)),
+                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                           EnvoyButton(
                             S().envoy_welcome_screen_cta1,
                             onTap: () {

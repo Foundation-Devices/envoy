@@ -10,11 +10,14 @@ import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -263,20 +266,23 @@ class OnboardingText extends StatelessWidget {
                   child: Text(
                     header!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: EnvoyTypography.body.copyWith(
+                        fontSize: 20,
+                        color: EnvoyColors.gray1000,
+                        decoration: TextDecoration.none),
                   ),
                 )
               : SizedBox.shrink(),
           text != null
               ? Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
                   child: Text(
                     text!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(fontSize: 13),
+                    style: EnvoyTypography.info.copyWith(
+                      color: newColorScheme.EnvoyColors.inactiveDark,
+                      decoration: TextDecoration.none,
+                    ),
                   ),
                 )
               : SizedBox.shrink()

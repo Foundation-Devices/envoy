@@ -11,7 +11,7 @@ Widget EnvoyScaffoldShieldScrollView(BuildContext context, Widget child) {
   return SingleChildScrollView(
       child: Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.6,
+          height: MediaQuery.of(context).size.height * 0.53,
           child: Container(
               padding: EdgeInsets.only(bottom: _shieldBottom),
               decoration: BoxDecoration(
