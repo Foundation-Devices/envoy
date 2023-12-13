@@ -209,10 +209,14 @@ class PrivacyCardState extends State<PrivacyCard> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      S().privacy_applicationLock_unlock,
-                                      style: EnvoyTypography.body.copyWith(
-                                        color: EnvoyColors.textPrimary,
+                                    Container(
+                                      width: 275,
+                                      child: Text(
+                                        S().privacy_applicationLock_unlock,
+                                        style: EnvoyTypography.body.copyWith(
+                                          color: EnvoyColors.textPrimary,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
                                     EnvoyToggle(
@@ -225,7 +229,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                               biometricOnly: false,
                                             ),
                                             localizedReason:
-                                                "Authenticate to Enable Biometrics",
+                                                "Authenticate to Enable Biometrics", // TODO: Figma
                                           );
 
                                           if (authSuccess) {

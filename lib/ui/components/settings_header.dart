@@ -33,20 +33,28 @@ class SettingsHeader extends StatelessWidget {
             SizedBox(
               width: EnvoySpacing.small,
             ),
-            Text(
-              title,
-              style: EnvoyTypography.body,
+            Container(
+              width: 160,
+              child: Text(
+                title,
+                style: EnvoyTypography.body,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+              ),
             ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
-          child: GestureDetector(
-            onTap: onTap,
+        SizedBox(),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 140,
             child: Text(
               linkText,
               style: EnvoyTypography.button
                   .copyWith(color: EnvoyColors.accentPrimary),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
             ),
           ),
         ),

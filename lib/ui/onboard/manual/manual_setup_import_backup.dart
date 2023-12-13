@@ -50,8 +50,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Image.asset("assets/fw_intro.png"),
                 )),
-                Flexible(
-                    child: Container(
+                Container(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +72,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                       ),
                     ],
                   ),
-                )),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox.shrink(),

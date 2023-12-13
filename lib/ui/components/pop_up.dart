@@ -147,6 +147,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 child: Text(
                   widget.title!,
                   style: EnvoyTypography.subheading,
+                  textAlign: TextAlign.center,
                 ),
               ),
             Padding(
