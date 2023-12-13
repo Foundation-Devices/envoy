@@ -23,15 +23,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(tagName) =>
       "ATENCIÓN\n\nTu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
-  static String m1(here) =>
-      "No, cualquiera puede descargar, verificar e instalar manualmente firmware nuevo. Ver {aquí} para más información.";
-
-  static String m2(GPLv3, here) =>
-      "Sí, al igual que todo lo que hacemos en Foundation, Envoy es completamente de código abierto. Envoy tiene la misma licencia ${GPLv3} que nuestro Firmware de Passport. Para aquellos que deseen verificar nuestro código fuente, pueden hacer clic {aquí}.";
-
-  static String m3(here) =>
-      "No, nos enorgullecemos de garantizar que Passport sea compatible con tantas carteras de software diferentes como sea posible. Puedes ver nuestra lista completa, incluidos los tutoriales, {aquí} .";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "A": MessageLookupByLibrary.simpleMessage("0"),
@@ -61,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Heading": MessageLookupByLibrary.simpleMessage("Seguro"),
         "Headline": MessageLookupByLibrary.simpleMessage(
             "Tu transacción está lista para ser enviada"),
-        "Label": MessageLookupByLibrary.simpleMessage("Custom"),
+        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Letter": MessageLookupByLibrary.simpleMessage("devolución"),
         "Links": MessageLookupByLibrary.simpleMessage("Enlaces"),
@@ -102,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("~60 minutos"),
+        "_": MessageLookupByLibrary.simpleMessage("\$107.33"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versión de Aplicación"),
         "about_heading": MessageLookupByLibrary.simpleMessage("ACERCA DE"),
@@ -161,7 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("3/255"),
         "add_note_modal_filled_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Registre algunos detalles sobre esta transacción."),
+                "Añade información sobre esta transacción."),
         "add_note_modal_heading":
             MessageLookupByLibrary.simpleMessage("Agregar una nota"),
         "add_note_modal_ie_text_field":
@@ -184,13 +175,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No se puede conectar"),
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy no puede conectarse con Azteco.\n\nPóngase en contacto con support@azte.co o inténtelo de nuevo más tarde."),
+                "Envoy no puede conectarse con Azteco.\n\nPor favor contacta con support@azte.co o inténtalo de nuevo más tarde."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DE CUPÓN"),
         "azteco_redeem_modal__voucher_code_data":
             MessageLookupByLibrary.simpleMessage("5464 9508 3092 1015"),
         "azteco_redeem_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Redimir"),
+            MessageLookupByLibrary.simpleMessage("Canjear"),
         "azteco_redeem_modal_cta2":
             MessageLookupByLibrary.simpleMessage("Atrás"),
         "azteco_redeem_modal_fail_cta":
@@ -212,7 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Copia de Seguridad Mágica"),
         "backups_automatic_backups_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Deshabilitado para la configuración manual de semillas "),
+                "Deshabilitado para la configuración manual"),
         "backups_download_wallet_data": MessageLookupByLibrary.simpleMessage(
             "Descargar Copia de Seguridad de Envoy"),
         "backups_erase_wallets_and_backups":
@@ -347,7 +338,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Tu transacción está lista para ser firmada"),
         "coincontrol_txDetail_subheading_passport":
             MessageLookupByLibrary.simpleMessage(
-                "Confirme que los detalles de la transacción son correctos antes de firmar con Passport."),
+                "Confirma que los detalles de la transacción son correctos antes de firmar con Passport."),
         "coincontrol_tx_add_note_heading":
             MessageLookupByLibrary.simpleMessage("Agregar una nota"),
         "coincontrol_tx_add_note_subheading":
@@ -382,7 +373,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_expand_note_note":
             MessageLookupByLibrary.simpleMessage("Barbacoa"),
         "coincontrol_tx_detail_fee":
-            MessageLookupByLibrary.simpleMessage("Honorario"),
+            MessageLookupByLibrary.simpleMessage("Tasa"),
         "coincontrol_tx_detail_feeChange_editTransaction":
             MessageLookupByLibrary.simpleMessage("Editar Transacción"),
         "coincontrol_tx_detail_feeChange_heading":
@@ -397,7 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Confirma que los detalles de la transacción son correctos antes de enviar."),
         "coincontrol_tx_detail_fee_custom":
-            MessageLookupByLibrary.simpleMessage("Personalizado"),
+            MessageLookupByLibrary.simpleMessage("Personalizar"),
         "coincontrol_tx_detail_fee_faster":
             MessageLookupByLibrary.simpleMessage("Rápido"),
         "coincontrol_tx_detail_fee_standard":
@@ -413,7 +404,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_fee":
             MessageLookupByLibrary.simpleMessage("Tasa"),
         "coincontrol_tx_detail_high_fee_info_feeCustom":
-            MessageLookupByLibrary.simpleMessage("Personalizado"),
+            MessageLookupByLibrary.simpleMessage("Personalizar"),
         "coincontrol_tx_detail_high_fee_info_feeFaster":
             MessageLookupByLibrary.simpleMessage("Rápido"),
         "coincontrol_tx_detail_high_fee_info_feeStandard":
@@ -439,7 +430,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Total"),
         "coincontrol_tx_detail_passport__subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Confirme que los detalles de la transacción son correctos antes de firmar con Passport."),
+                "Confirma que los detalles de la transacción son correctos antes de firmar con Passport."),
         "coincontrol_tx_detail_passport_cta":
             MessageLookupByLibrary.simpleMessage("Revisar transacción"),
         "coincontrol_tx_detail_passport_cta1":
@@ -447,7 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_passport_cta2":
             MessageLookupByLibrary.simpleMessage("Cancelar transacción"),
         "coincontrol_tx_detail_passport_heading":
-            MessageLookupByLibrary.simpleMessage("¿Estas seguro?"),
+            MessageLookupByLibrary.simpleMessage("¿Estás seguro?"),
         "coincontrol_tx_detail_passport_send_cta1":
             MessageLookupByLibrary.simpleMessage("Enviar transacción"),
         "coincontrol_tx_detail_passport_send_heading":
@@ -455,12 +446,14 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Tu transacción está lista para ser enviada"),
         "coincontrol_tx_detail_passport_send_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Confirme que los detalles de la transacción son correctos antes de enviarla."),
+                "Confirma que los detalles de la transacción son correctos antes de enviarla."),
         "coincontrol_tx_detail_passport_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Al cancelar, perderá todo el progreso de la transacción."),
+                "Al cancelar, perderás todo el progreso de la transacción."),
         "coincontrol_tx_detail_subheading": MessageLookupByLibrary.simpleMessage(
-            "Confirme que los detalles de la transacción son correctos antes de enviarla."),
+            "Confirma que los detalles de la transacción son correctos antes de enviarla."),
+        "coincontrol_tx_detail_total":
+            MessageLookupByLibrary.simpleMessage("Total"),
         "coincontrol_tx_history_filter_off_LabeledSwitch_activity":
             MessageLookupByLibrary.simpleMessage("Actividad"),
         "coincontrol_tx_history_filter_off_heading":
@@ -475,7 +468,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "TB1Q33XNRJENA6APWNHX5T375GJH..."),
         "coincontrol_tx_history_tx_details_fee":
-            MessageLookupByLibrary.simpleMessage("Honorario"),
+            MessageLookupByLibrary.simpleMessage("Tasa"),
         "coincontrol_tx_history_tx_details_fee_details":
             MessageLookupByLibrary.simpleMessage("500 SATS \$0.13"),
         "coincontrol_tx_history_tx_details_heading":
@@ -602,7 +595,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(""),
         "envoy_faq_answer_1": MessageLookupByLibrary.simpleMessage(
             "Envoy es una cartera móvil de Bitcoin y una aplicación complementaria a Passport, disponible en iOS y Android."),
-        "envoy_faq_answer_10": m1,
+        "envoy_faq_answer_10": MessageLookupByLibrary.simpleMessage(
+            "No, cualquiera puede descargar, verificar e instalar manualmente firmware nuevo. Ver [[aquí]] para más información."),
         "envoy_faq_answer_11": MessageLookupByLibrary.simpleMessage(
             "Por supuesto, no hay límite a la cantidad de Passports que puedes gestionar o con las que interactuar utilizando Envoy."),
         "envoy_faq_answer_12": MessageLookupByLibrary.simpleMessage(
@@ -641,15 +635,21 @@ class MessageLookup extends MessageLookupByLibrary {
             "La Copia de Seguridad de Envoy contiene la configuración de la aplicación, información sobre la cuenta, etiquetas y notas de las transacciones. El archivo está encriptado con las palabras de semilla de tu cartera móvil. Para los usuarios que habiliten la Copia de Seguridad Mágica, toda esta información se almacena completamente encriptada en el servidor de Foundation. Los usuarios de Envoy que hayan decidido gestionar las palabras semilla de forma manual, pueden descargar y almacenar su copia de seguridad donde deseen. Esto podría ser cualquiera, o múltiples, de las siguientes opciones: un teléfono, un servidor de nube personal, o algún dispositivo físico como una tarjeta microSD o un dispositivo de almacenamiento USB."),
         "envoy_faq_answer_7": MessageLookupByLibrary.simpleMessage(
             "No, las características principales de Envoy siempre serán gratuitas. En el futuro es posible que introduzcamos servicios o suscripciones opcionales de pago."),
-        "envoy_faq_answer_8": m2,
-        "envoy_faq_answer_9": m3,
+        "envoy_faq_answer_8": MessageLookupByLibrary.simpleMessage(
+            "Sí, al igual que todo lo que hacemos en Foundation, Envoy es completamente de código abierto. Envoy tiene la misma licencia [[GPLv3]] que nuestro Firmware de Passport. Para aquellos que deseen verificar nuestro código fuente, pueden hacer clic [[aquí]]."),
+        "envoy_faq_answer_9": MessageLookupByLibrary.simpleMessage(
+            "No, nos enorgullecemos de garantizar que Passport sea compatible con tantas carteras de software diferentes como sea posible. Puedes ver nuestra lista completa, incluidos los tutoriales, [[aquí]]."),
         "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/en/firmware-update"),
+        "envoy_faq_link_10_1": MessageLookupByLibrary.simpleMessage(
             "https://docs.foundationdevices.com/en/firmware-update"),
         "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
             "https://www.gnu.org/licenses/gpl-3.0.en.html"),
         "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
             "https://github.com/Foundation-Devices/envoy"),
         "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/connect"),
+        "envoy_faq_link_9_1": MessageLookupByLibrary.simpleMessage(
             "https://docs.foundationdevices.com/connect"),
         "envoy_faq_question_1":
             MessageLookupByLibrary.simpleMessage("¿Qué es Envoy?"),
@@ -1132,7 +1132,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_account_remove_cta":
             MessageLookupByLibrary.simpleMessage("Eliminar"),
         "manage_account_remove_heading":
-            MessageLookupByLibrary.simpleMessage("¿Estas seguro?"),
+            MessageLookupByLibrary.simpleMessage("¿Estás seguro?"),
         "manage_account_remove_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Esto solo elimina la cuenta de Envoy."),
@@ -1145,7 +1145,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_device_details_deviceSerial":
             MessageLookupByLibrary.simpleMessage("Número de serie:"),
         "manage_device_details_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles del dispositivo"),
+            MessageLookupByLibrary.simpleMessage("DETALLES DE DISPOSITIVO"),
         "manage_device_details_menu_Delete":
             MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "manage_device_details_menu_editDevice":
@@ -1159,7 +1159,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Renombrar Passport"),
         "manualToggleOnSeed_toastHeading_failedText":
             MessageLookupByLibrary.simpleMessage(
-                "No se puede hacer una copia de seguridad. Por favor, inténtelo de nuevo más tarde."),
+                "Error al hacer copia de seguridad. Inténtalo de nuevo más tarde."),
         "manual_coin_preselection_cta1":
             MessageLookupByLibrary.simpleMessage("Enviar seleccionado"),
         "manual_coin_preselection_cta2":
@@ -1660,7 +1660,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Mejor \nRendimiento"),
         "privacy_privacyMode_improvedPrivacy":
-            MessageLookupByLibrary.simpleMessage("Mejorado\nPrivacidad"),
+            MessageLookupByLibrary.simpleMessage("Mejor Privacidad"),
         "privacy_privacyMode_learnMore":
             MessageLookupByLibrary.simpleMessage("Más información"),
         "privacy_privacyMode_title":
@@ -1818,7 +1818,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("60 minutos"),
         "send_keyboard_send_max":
             MessageLookupByLibrary.simpleMessage("Enviar máximo"),
-        "send_keyboard_to": MessageLookupByLibrary.simpleMessage("Vox"),
+        "send_keyboard_to": MessageLookupByLibrary.simpleMessage("A:"),
         "send_qr_code_card_heading": MessageLookupByLibrary.simpleMessage(
             "Escanea el QR con tu Passport"),
         "send_qr_code_card_subheading": MessageLookupByLibrary.simpleMessage(
