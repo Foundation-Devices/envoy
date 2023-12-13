@@ -128,7 +128,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     ),
                     Text(
                       _selectedCoin == null
-                          ? "TAG DETAILS"
+                          ? S()
+                              .untagged_coin_details_locked_heading
+                              .toUpperCase()
                           : "COIN DETAILS", // TODO: FIGMA
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
@@ -212,7 +214,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     ref.watch(coinTagLockStateProvider(widget.coinTag));
     if (tag.coins.length == 1) {
       ///only show header of the tag
-      totalTagHeight = 95;
+      totalTagHeight = 100;
     }
     return RawScrollbar(
       thumbColor: Colors.white38,
