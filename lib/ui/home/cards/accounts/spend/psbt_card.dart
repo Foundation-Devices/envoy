@@ -60,7 +60,7 @@ class PsbtCard extends StatelessWidget {
                     ),
                     child: QrTab(
                       title: S().send_qr_code_card_heading,
-                      subtitle: S().send_qr_code_card_heading,
+                      subtitle: S().send_qr_code_card_subheading,
                       account: account,
                       qr: AnimatedQrImage(
                         base64Decode(psbt.base64),

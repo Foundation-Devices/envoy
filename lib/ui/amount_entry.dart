@@ -144,14 +144,12 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               break;
             }
 
-            print(_enteredAmount + "D");
             // No more than two decimal digits for fiat
             if (unit == AmountDisplayUnit.fiat &&
                 _enteredAmount.contains(fiatDecimalSeparator) &&
                 ((_enteredAmount.length -
                         _enteredAmount.indexOf(fiatDecimalSeparator)) >
                     2)) {
-              print(_enteredAmount + "D");
               break;
             }
 
