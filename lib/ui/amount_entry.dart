@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/locale.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
@@ -136,17 +137,21 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           {
             // No more than eight decimal digits for BTC
             if (unit == AmountDisplayUnit.btc &&
-                _enteredAmount.contains(".") &&
-                ((_enteredAmount.length - _enteredAmount.indexOf(".")) > 8)) {
+                _enteredAmount.contains(fiatDecimalSeparator) &&
+                ((_enteredAmount.length -
+                        _enteredAmount.indexOf(fiatDecimalSeparator)) >
+                    8)) {
               break;
             }
 
+            print(_enteredAmount + "D");
             // No more than two decimal digits for fiat
             if (unit == AmountDisplayUnit.fiat &&
                 _enteredAmount.contains(fiatDecimalSeparator) &&
                 ((_enteredAmount.length -
                         _enteredAmount.indexOf(fiatDecimalSeparator)) >
                     2)) {
+              print(_enteredAmount + "D");
               break;
             }
 
@@ -176,7 +181,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       bool addDot = (event == NumpadEvents.dot) &&
           (unit == AmountDisplayUnit.fiat &&
                   !_enteredAmount.contains(fiatDecimalSeparator) ||
-              unit == AmountDisplayUnit.btc && !_enteredAmount.contains("."));
+              unit == AmountDisplayUnit.btc &&
+                  !_enteredAmount.contains(fiatDecimalSeparator));
 
       bool removeZero = (event == NumpadEvents.backspace) &&
           (unit != AmountDisplayUnit.sat) &&
@@ -186,12 +192,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         setState(() {
           _enteredAmount = _enteredAmount == "" && addDot
               ? "0"
-              : (_enteredAmount) +
-                  (addDot
-                      ? (unit == AmountDisplayUnit.fiat
-                          ? fiatDecimalSeparator
-                          : ".")
-                      : "");
+              : (_enteredAmount) + (addDot ? (fiatDecimalSeparator) : "");
         });
       } else {
         // Format it nicely
@@ -349,9 +350,7 @@ class _NumpadState extends State<Numpad> {
         widget.amountDisplayUnit != AmountDisplayUnit.sat
             ? NumpadButton(
                 NumpadButtonType.text,
-                text: widget.amountDisplayUnit == AmountDisplayUnit.fiat
-                    ? fiatDecimalSeparator
-                    : ".",
+                text: fiatDecimalSeparator,
                 onTap: () {
                   Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.dot);

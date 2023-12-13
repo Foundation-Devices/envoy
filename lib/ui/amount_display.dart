@@ -12,6 +12,7 @@ import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/locale.dart';
 
 //ignore: must_be_immutable
 class AmountDisplay extends ConsumerStatefulWidget {

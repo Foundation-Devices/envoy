@@ -5,7 +5,8 @@
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:wallet/wallet.dart';
-import 'bip21.dart';
+import 'package:envoy/business/bip21.dart';
+import 'package:envoy/business/locale.dart';
 
 class ParseResult {
   String? address;
@@ -80,8 +81,9 @@ class BitcoinParser {
     } else {
       var copiedStringParsed = double.parse(data);
       String numberAsString = copiedStringParsed.toString();
-      int decimalPlaces =
-          numberAsString.length - numberAsString.indexOf('.') - 1;
+      int decimalPlaces = numberAsString.length -
+          numberAsString.indexOf(fiatDecimalSeparator) -
+          1;
 
       if (copiedStringParsed >= 21000000) {
         if ((copiedStringParsed % 1) == 0) {
