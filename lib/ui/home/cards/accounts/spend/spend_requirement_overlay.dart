@@ -413,8 +413,7 @@ class SpendRequirementOverlayState
 
                                           sheetOptions.addAll([
                                             Text(
-                                              ///TODO: Figma
-                                              "Selected amount",
+                                              S().untagged_tagDetails_spendable_selectedAmount,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleSmall,
@@ -460,7 +459,7 @@ class SpendRequirementOverlayState
                                         readOnly: !valid,
                                         type: EnvoyButtonTypes.primaryModal,
                                         inTagSelectionMode
-                                            ? "Send Selected" // TODO: Figma
+                                            ? S().tagged_tagDetails_sheet_cta1
                                             : S()
                                                 .coincontrol_edit_transaction_cta,
                                         onTap: () async {
@@ -591,8 +590,8 @@ class SpendRequirementOverlayState
           }
 
           buttonText = isCoinsOnlyPartOfUntagged
-              ? "Tag Selected"
-              : "Retag Selected"; // TODO: Figma
+              ? S().tagged_tagDetails_sheet_cta2
+              : S().tagged_tagDetails_sheet_retag_cta2;
         }
         return EnvoyButton(
           enabled: valid,

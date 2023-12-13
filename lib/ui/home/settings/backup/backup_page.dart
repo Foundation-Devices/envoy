@@ -85,6 +85,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
 
     final _bottomOffset = MediaQuery.of(context).padding.bottom;
+    final Locale activeLocale = Localizations.localeOf(context);
 
     return Container(
         color: Colors.black,
@@ -213,7 +214,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                   : lastEnvoyServerBackup == null
                                       ? S()
                                           .manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup
-                                      : "${timeago.format(lastEnvoyServerBackup)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup).substring(1).toLowerCase()} to Foundation server",
+                                      : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).substring(1).toLowerCase()} to Foundation server",
                               // TODO: FIGMA
                               color: EnvoyColors.grey,
                               maxLines: 2,

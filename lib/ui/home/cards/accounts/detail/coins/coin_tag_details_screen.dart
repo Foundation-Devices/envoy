@@ -360,10 +360,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                 GhostListTile(
                                                   animate: false,
                                                 ),
-                                                //TODO: localize
                                                 Text(
-                                                  "There are no coins assigned to this tag.",
-                                                  // TODO: FIGMA
+                                                  S().tagged_tagDetails_emptyState_explainer,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall,
