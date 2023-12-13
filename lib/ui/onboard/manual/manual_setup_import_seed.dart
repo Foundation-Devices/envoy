@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class ManualSetupImportSeed extends ConsumerStatefulWidget {
   final SeedLength seedLength;
@@ -141,28 +139,15 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                                 label: S()
                                     .manual_setup_import_seed_12_words_CTA_inactive,
                                 onTap: () {
-                                  EnvoySeed()
-                                      .create(currentWords,
-                                          passphrase: passPhrase.isEmpty
-                                              ? null
-                                              : passPhrase)
-                                      .then((success) {
-                                    if (success) {
-                                      ref
-                                          .read(
-                                              successfulManualRecovery.notifier)
-                                          .state = true;
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ManualSetupImportBackup()));
-                                    } else {
-                                      showInvalidSeedDialog(
-                                        context: context,
-                                      );
-                                    }
-                                  });
+                                  String result = currentWords.join(' ');
+
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RecoverFromSeedLoader(
+                                                seed: result,
+                                              )));
                                 }),
                           ),
                         ))
