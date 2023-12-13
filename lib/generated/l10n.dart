@@ -78,6 +78,8 @@ class S {
 
   // skipped getter for the '99' key
 
+  // skipped getter for the ':' key
+
   // skipped getter for the '?' key
 
   /// `0`
@@ -246,10 +248,10 @@ class S {
     );
   }
 
-  /// `Show`
+  /// `Apply filters`
   String get Default {
     return Intl.message(
-      'Show',
+      'Apply filters',
       name: 'Default',
       desc: '',
       args: [],
@@ -348,10 +350,10 @@ class S {
 
   // skipped getter for the 'Improved Privacy' key
 
-  /// `Custom`
+  /// `Activity`
   String get Label {
     return Intl.message(
-      'Custom',
+      'Activity',
       name: 'Label',
       desc: '',
       args: [],
@@ -532,10 +534,10 @@ class S {
     );
   }
 
-  /// `Label`
+  /// `Receive`
   String get ScreenTitle {
     return Intl.message(
-      'Label',
+      'Receive',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -774,10 +776,10 @@ class S {
     );
   }
 
-  /// `~60 mins`
+  /// `Passport Name`
   String get _ {
     return Intl.message(
-      '~60 mins',
+      'Passport Name',
       name: '_',
       desc: '',
       args: [],
@@ -2488,6 +2490,16 @@ class S {
     );
   }
 
+  /// `Total`
+  String get coincontrol_tx_detail_total {
+    return Intl.message(
+      'Total',
+      name: 'coincontrol_tx_detail_total',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Activity`
   String get coincontrol_tx_history_filter_off_LabeledSwitch_activity {
     return Intl.message(
@@ -3190,13 +3202,13 @@ class S {
     );
   }
 
-  /// `No, anyone is still free to manually download, verify and install new firmware. See {here} for more information.`
-  String envoy_faq_answer_10(Object here) {
+  /// `No, anyone is still free to manually download, verify and install new firmware. See [[here]] for more information.`
+  String get envoy_faq_answer_10 {
     return Intl.message(
-      'No, anyone is still free to manually download, verify and install new firmware. See $here for more information.',
+      'No, anyone is still free to manually download, verify and install new firmware. See [[here]] for more information.',
       name: 'envoy_faq_answer_10',
       desc: '',
-      args: [here],
+      args: [],
     );
   }
 
@@ -3390,23 +3402,23 @@ class S {
     );
   }
 
-  /// `Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same {GPLv3} license as our Passport Firmware. For those wanting to check our source code, click {here}.`
-  String envoy_faq_answer_8(Object GPLv3, Object here) {
+  /// `Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same [[GPLv3]] license as our Passport Firmware. For those wanting to check our source code, click [[here]].`
+  String get envoy_faq_answer_8 {
     return Intl.message(
-      'Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same $GPLv3 license as our Passport Firmware. For those wanting to check our source code, click $here.',
+      'Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same [[GPLv3]] license as our Passport Firmware. For those wanting to check our source code, click [[here]].',
       name: 'envoy_faq_answer_8',
       desc: '',
-      args: [GPLv3, here],
+      args: [],
     );
   }
 
-  /// `No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials {here}.`
-  String envoy_faq_answer_9(Object here) {
+  /// `No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials [[here]].`
+  String get envoy_faq_answer_9 {
     return Intl.message(
-      'No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials $here.',
+      'No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials [[here]].',
       name: 'envoy_faq_answer_9',
       desc: '',
-      args: [here],
+      args: [],
     );
   }
 
@@ -3415,6 +3427,16 @@ class S {
     return Intl.message(
       'https://docs.foundationdevices.com/en/firmware-update',
       name: 'envoy_faq_link_10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://docs.foundationdevices.com/en/firmware-update`
+  String get envoy_faq_link_10_1 {
+    return Intl.message(
+      'https://docs.foundationdevices.com/en/firmware-update',
+      name: 'envoy_faq_link_10_1',
       desc: '',
       args: [],
     );
@@ -3445,6 +3467,16 @@ class S {
     return Intl.message(
       'https://docs.foundationdevices.com/connect',
       name: 'envoy_faq_link_9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://docs.foundationdevices.com/connect`
+  String get envoy_faq_link_9_1 {
+    return Intl.message(
+      'https://docs.foundationdevices.com/connect',
+      name: 'envoy_faq_link_9_1',
       desc: '',
       args: [],
     );
@@ -5692,10 +5724,10 @@ class S {
     );
   }
 
-  /// `Serial: `
+  /// `Serial `
   String get manage_device_details_deviceSerial {
     return Intl.message(
-      'Serial: ',
+      'Serial ',
       name: 'manage_device_details_deviceSerial',
       desc: '',
       args: [],

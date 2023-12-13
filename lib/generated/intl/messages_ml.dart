@@ -23,15 +23,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(tagName) =>
       "മുന്നറിയിപ്പ് നിങ്ങളുടെ${tagName} ടാഗ് ഇപ്പോൾ ശൂന്യമാണ്. നിങ്ങൾക്ക് അത് ഇല്ലാതാക്കാൻ താൽപ്പര്യമുണ്ടോ?";
 
-  static String m1(here) =>
-      "No, anyone is still free to manually download, verify and install new firmware. See ${here} for more information.";
-
-  static String m2(GPLv3, here) =>
-      "Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same ${GPLv3} license as our Passport Firmware. For those wanting to check our source code, click ${here}.";
-
-  static String m3(here) =>
-      "No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials ${here}.";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "A": MessageLookupByLibrary.simpleMessage("0"),
@@ -61,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Heading": MessageLookupByLibrary.simpleMessage("സുരക്ഷിത"),
         "Headline": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
-        "Label": MessageLookupByLibrary.simpleMessage("Custom"),
+        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
         "Left": MessageLookupByLibrary.simpleMessage("സ്വീകരിക്കുക"),
         "Letter": MessageLookupByLibrary.simpleMessage("മടങ്ങുക"),
         "Links": MessageLookupByLibrary.simpleMessage("Links"),
@@ -464,6 +455,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "റദ്ദാക്കുന്നതിലൂടെ നിങ്ങൾക്ക് എല്ലാ ഇടപാട് പുരോഗതിയും നഷ്‌ടമാകും."),
         "coincontrol_tx_detail_subheading": MessageLookupByLibrary.simpleMessage(
             "അയയ്ക്കുന്നതിന് മുമ്പ് ഇടപാട് വിശദാംശങ്ങൾ ശരിയാണെന്ന് സ്ഥിരീകരിക്കുക."),
+        "coincontrol_tx_detail_total":
+            MessageLookupByLibrary.simpleMessage("Total"),
         "coincontrol_tx_history_filter_off_LabeledSwitch_activity":
             MessageLookupByLibrary.simpleMessage("പ്രവർത്തനം"),
         "coincontrol_tx_history_filter_off_heading":
@@ -607,7 +600,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(""),
         "envoy_faq_answer_1": MessageLookupByLibrary.simpleMessage(
             "Envoy is a Bitcoin mobile wallet and Passport companion app, available on iOS and Android."),
-        "envoy_faq_answer_10": m1,
+        "envoy_faq_answer_10": MessageLookupByLibrary.simpleMessage(
+            "No, anyone is still free to manually download, verify and install new firmware. See [[here]] for more information."),
         "envoy_faq_answer_11": MessageLookupByLibrary.simpleMessage(
             "Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy."),
         "envoy_faq_answer_12": MessageLookupByLibrary.simpleMessage(
@@ -646,15 +640,21 @@ class MessageLookup extends MessageLookupByLibrary {
             "The Envoy backup file contains app settings, account info and transaction labels. The file is encrypted with your mobile wallet seed words. For Magic Backup users, this is stored fully encrypted on the Foundation server. Manual backup Envoy users can download and store their backup file anywhere they like. This could be any combination of your phone, a personal cloud server, or on something physical like a microSD card or USB drive."),
         "envoy_faq_answer_7": MessageLookupByLibrary.simpleMessage(
             "No, Envoy’s core features will always be free to use. In the future we may introduce optional paid services or subscriptions."),
-        "envoy_faq_answer_8": m2,
-        "envoy_faq_answer_9": m3,
+        "envoy_faq_answer_8": MessageLookupByLibrary.simpleMessage(
+            "Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same [[GPLv3]] license as our Passport Firmware. For those wanting to check our source code, click [[here]]."),
+        "envoy_faq_answer_9": MessageLookupByLibrary.simpleMessage(
+            "No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials [[here]]."),
         "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/en/firmware-update"),
+        "envoy_faq_link_10_1": MessageLookupByLibrary.simpleMessage(
             "https://docs.foundationdevices.com/en/firmware-update"),
         "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
             "https://www.gnu.org/licenses/gpl-3.0.en.html"),
         "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
             "https://github.com/Foundation-Devices/envoy"),
         "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundationdevices.com/connect"),
+        "envoy_faq_link_9_1": MessageLookupByLibrary.simpleMessage(
             "https://docs.foundationdevices.com/connect"),
         "envoy_faq_question_1":
             MessageLookupByLibrary.simpleMessage("What is Envoy?"),
