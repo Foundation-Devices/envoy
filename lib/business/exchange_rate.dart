@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -14,18 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/scheduler.dart';
-
-final String userLocale = Platform.localeName;
-NumberFormat numberFormat = NumberFormat.simpleCurrency(locale: userLocale);
-
-String get fiatDecimalSeparator {
-  return numberFormat.symbols.DECIMAL_SEP;
-}
-
-// Usually this is a thousands separator
-String get fiatGroupSeparator {
-  return numberFormat.symbols.GROUP_SEP;
-}
+import 'package:envoy/business/locale.dart';
 
 class FiatCurrency {
   final String code;
@@ -197,10 +185,15 @@ class ExchangeRate extends ChangeNotifier {
     }
 
     NumberFormat currencyFormatter =
-        NumberFormat.currency(name: _currency!.code, symbol: "");
+        NumberFormat.currency(locale: currentLocale, symbol: "");
 
     String formattedAmount = currencyFormatter
         .format(_selectedCurrencyRate! * amountSats / 100000000);
+
+    // NumberFormat still adds a non-breaking space if symbol is empty
+    const int nonBreakingSpace = 0x00A0;
+    formattedAmount =
+        formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
 
     return (includeSymbol ? _currency!.symbol : "") + formattedAmount;
   }

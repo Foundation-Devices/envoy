@@ -11,11 +11,13 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/locale.dart';
 
 // Always use comma to group thousands of BTC and dot to separate the sats
+String btcSatoshiSeparator = fiatDecimalSeparator;
+String thousandSatSeparator = fiatGroupSeparator;
+
 NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
-String btcSatoshiSeparator = ".";
-String thousandSatSeparator = ",";
 
 String getDisplayAmount(
   int amountSats,
@@ -79,18 +81,20 @@ int convertBtcStringToSats(String amountBtc) {
 
   // There are 8 digits after the decimal point
   String sanitized = amountBtc;
-  int dotIndex = sanitized.indexOf(btcSatoshiSeparator);
-  int missingZeros = dotIndex < 0 ? 8 : 8 - (sanitized.length - dotIndex - 1);
+  int separatorIndex = sanitized.indexOf(btcSatoshiSeparator);
+  int missingZeros =
+      separatorIndex < 0 ? 8 : 8 - (sanitized.length - separatorIndex - 1);
 
-  String dotRemoved = sanitized.replaceAll(btcSatoshiSeparator, "");
+  String separatorRemoved = sanitized.replaceAll(btcSatoshiSeparator, "");
 
   if (missingZeros < 0) {
-    dotRemoved = dotRemoved.substring(0, dotRemoved.length + missingZeros);
+    separatorRemoved =
+        separatorRemoved.substring(0, separatorRemoved.length + missingZeros);
     missingZeros = 0;
   }
 
   String satsString =
-      dotRemoved.padRight(missingZeros + dotRemoved.length, "0");
+      separatorRemoved.padRight(missingZeros + separatorRemoved.length, "0");
   return convertSatsStringToSats(satsString);
 }
 
