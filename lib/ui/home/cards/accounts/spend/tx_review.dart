@@ -994,6 +994,8 @@ class _TransactionReviewScreenState
           .inputs
           .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
           .toList();
+
+      ref.read(coinSelectionStateProvider.notifier).reset();
       ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
       ///make a copy of wallet selected coins so that we can backtrack to it
