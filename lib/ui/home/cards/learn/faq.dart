@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -9,10 +10,52 @@ import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'expansion_panel.dart' as envoy;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:csv/csv.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'dart:math' as math;
+
+class FaqEntry {
+  final String question;
+  final String answer;
+  final List<String> links;
+
+  FaqEntry(this.question, this.answer, this.links);
+}
+
+List<FaqEntry> extractFaqs() {
+  List<FaqEntry> faqs = [];
+  int index = 1;
+
+  for (;;) {
+    String? question =
+        getTranslationByKey("envoy_faq_question_${index.toString()}");
+    if (question == null) {
+      break;
+    }
+
+    String? answer =
+        getTranslationByKey("envoy_faq_answer_${index.toString()}");
+    if (answer == null) {
+      break;
+    }
+
+    List<String> links = [];
+    int linkIndex = 1;
+    for (;;) {
+      String? link = getTranslationByKey(
+          "envoy_faq_link_${index.toString()}_${linkIndex.toString()}");
+      if (link == null) {
+        break;
+      }
+      links.add(link);
+      linkIndex++;
+    }
+
+    faqs.add(FaqEntry(question, answer, links));
+    index++;
+  }
+
+  return faqs;
+}
 
 class Faq extends StatelessWidget {
   final String? searchText;
@@ -24,67 +67,54 @@ class Faq extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: rootBundle.loadString("assets/faq.csv"),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var faq = CsvToListConverter().convert(snapshot.data);
-            faq.removeAt(0);
-            if (searchText != null || searchText != "")
-              faq = faq
-                  .where((element) => element[0]
-                      .toString()
-                      .toLowerCase()
-                      .contains(searchText!.toLowerCase()))
-                  .toList();
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (faq.isNotEmpty)
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                    child: Text(
-                      "FAQs", // TODO: FIGMA
-                      style: EnvoyTypography.body
-                          .copyWith(color: EnvoyColors.textPrimary),
-                    ),
-                  ),
-                Material(
-                  color: Colors.transparent,
-                  child: envoy.ExpansionPanelList.radio(
-                    elevation: 0,
-                    dividerColor: Colors.transparent,
-                    expandedHeaderPadding: EdgeInsets.zero,
-                    children: faq
-                        .map((e) => envoy.ExpansionPanelRadio(
-                              hasIcon: false,
-                              canTapOnHeader: true,
-                              backgroundColor: Colors.transparent,
-                              headerBuilder:
-                                  (BuildContext context, bool isExpanded) {
-                                return FaqItem(
-                                  title: e[0],
-                                  isExpanded: isExpanded,
-                                  text: e[1],
-                                  links: e.sublist(2),
-                                );
-                              },
-                              body: Container(
-                                height: 0,
-                                width: 0,
-                              ),
-                              value: e[0],
-                            ))
-                        .toList(),
-                  ),
-                ),
-              ],
-            );
-          } else {
-            return SizedBox.shrink();
-          }
-        });
+    var faqs = extractFaqs();
+    if (searchText != null || searchText != "")
+      faqs = faqs
+          .where((entry) =>
+              entry.question.toLowerCase().contains(searchText!.toLowerCase()))
+          .toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (faqs.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+            child: Text(
+              "FAQs", // TODO: FIGMA
+              style:
+                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
+            ),
+          ),
+        Material(
+          color: Colors.transparent,
+          child: envoy.ExpansionPanelList.radio(
+            elevation: 0,
+            dividerColor: Colors.transparent,
+            expandedHeaderPadding: EdgeInsets.zero,
+            children: faqs
+                .map((e) => envoy.ExpansionPanelRadio(
+                      hasIcon: false,
+                      canTapOnHeader: true,
+                      backgroundColor: Colors.transparent,
+                      headerBuilder: (BuildContext context, bool isExpanded) {
+                        return FaqItemWidget(
+                          title: e.question,
+                          isExpanded: isExpanded,
+                          text: e.answer,
+                          links: e.links,
+                        );
+                      },
+                      body: Container(
+                        height: 0,
+                        width: 0,
+                      ),
+                      value: e.question,
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -134,13 +164,13 @@ class FaqBodyText extends StatelessWidget {
   }
 }
 
-class FaqItem extends StatelessWidget {
+class FaqItemWidget extends StatelessWidget {
   final String title;
   final bool isExpanded;
   final String text;
   final List<dynamic> links;
 
-  const FaqItem(
+  const FaqItemWidget(
       {super.key,
       required this.title,
       required this.isExpanded,

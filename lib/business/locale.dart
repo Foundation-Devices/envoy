@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
-
 import 'package:intl/intl.dart';
+import 'package:envoy/generated/intl/messages_en.dart' as messages_en;
+import 'package:envoy/generated/intl/messages_es.dart' as messages_es;
+import 'package:envoy/generated/intl/messages_ml.dart' as messages_ml;
 
 final String currentLocale = Platform.localeName;
 NumberFormat numberFormat = NumberFormat.simpleCurrency(locale: currentLocale);
@@ -16,4 +18,22 @@ String get fiatDecimalSeparator {
 // Usually this is a thousands separator
 String get fiatGroupSeparator {
   return numberFormat.symbols.GROUP_SEP;
+}
+
+String? getTranslationByKey(String key) {
+  final lookup = () {
+    if (currentLocale.startsWith("es")) {
+      return messages_es.MessageLookup();
+    }
+    if (currentLocale.startsWith("ml")) {
+      return messages_ml.MessageLookup();
+    }
+    return messages_en.MessageLookup();
+  }();
+
+  try {
+    return lookup[key]();
+  } catch (_) {
+    return null;
+  }
 }
