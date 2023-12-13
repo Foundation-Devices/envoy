@@ -590,8 +590,8 @@ class SpendRequirementOverlayState
           }
 
           buttonText = isCoinsOnlyPartOfUntagged
-              ? "Tag Selected"
-              : "Retag Selected"; // TODO: Figma
+              ? S().tagged_tagDetails_sheet_cta2
+              : S().tagged_tagDetails_sheet_retag_cta2;
         }
         return EnvoyButton(
           enabled: valid,

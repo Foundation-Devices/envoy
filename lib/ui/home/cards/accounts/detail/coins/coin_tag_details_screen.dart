@@ -361,7 +361,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   animate: false,
                                                 ),
                                                 Text(
-                                                  S().account_empty_tx_history_text_explainer,
+                                                  S().tagged_tagDetails_emptyState_explainer,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall,
