@@ -200,7 +200,8 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
     }));
 }
 
-Future<void> recoverManually(List<String> seedList, BuildContext context) async {
+Future<void> recoverManually(
+    List<String> seedList, BuildContext context) async {
   bool success = await EnvoySeed().create(seedList);
 
   if (success) {

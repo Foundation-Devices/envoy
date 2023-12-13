@@ -144,7 +144,8 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => RecoverFromSeedLoader(
+                                          builder: (context) =>
+                                              RecoverFromSeedLoader(
                                                 seed: result,
                                               )));
                                 }),
