@@ -351,11 +351,13 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
+  // TODO: refactor similar function to just one
   void editTransaction(BuildContext context) async {
     final router = GoRouter.of(context);
 
     ///indicating that we are in edit mode
     ref.read(spendEditModeProvider.notifier).state = true;
+    ref.read(userHasEnteredEditModeProvider.notifier).state = true;
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
@@ -453,6 +455,9 @@ class _TransactionReviewScreenState
 
     final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
+    final feeChangeNotice = ref.watch(userHasEnteredEditModeProvider) &&
+        ref.watch(psbtInputsChangedProvider);
+
     /// if user selected unit from the form screen then use that, otherwise use the default
     DisplayUnit unit = spendScreenUnit == AmountDisplayUnit.btc
         ? DisplayUnit.btc
@@ -515,6 +520,7 @@ class _TransactionReviewScreenState
           color: EnvoyColors.textPrimary,
         ),
         onPressed: () {
+          ref.read(userHasEnteredEditModeProvider.notifier).state = false;
           GoRouter.of(context).pop();
         },
       ),
@@ -923,8 +929,8 @@ class _TransactionReviewScreenState
               ),
             ),
           ),
-          // Special warning if we are sending the whole balance
-          if (account.wallet.balance == (amount + psbt.fee))
+          // Special warning if we are sending max or the fee changed the TX
+          if (transactionModel.mode == SpendMode.sendMax || feeChangeNotice)
             SliverToBoxAdapter(
               child: ListTile(
                 subtitle: Padding(
@@ -933,7 +939,9 @@ class _TransactionReviewScreenState
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        S().send_reviewScreen_sendMaxWarning,
+                        feeChangeNotice
+                            ? S().coincontrol_tx_detail_feeChange_information
+                            : S().send_reviewScreen_sendMaxWarning,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontSize: 13, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
@@ -992,6 +1000,7 @@ class _TransactionReviewScreenState
 
     ///indicating that we are in edit mode
     ref.read(spendEditModeProvider.notifier).state = true;
+    ref.read(userHasEnteredEditModeProvider.notifier).state = true;
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
