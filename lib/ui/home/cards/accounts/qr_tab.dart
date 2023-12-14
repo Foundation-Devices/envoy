@@ -4,6 +4,9 @@
 
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as DesignSystem;
+
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:flutter_svg/svg.dart';
@@ -84,16 +87,12 @@ class QrTab extends StatelessWidget {
                           children: [
                             Text(
                               title,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(color: Colors.white),
+                              style: EnvoyTypography.body.copyWith(
+                                  color: DesignSystem.EnvoyColors.solidWhite),
                             ),
                             Text(
                               subtitle,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
+                              style: EnvoyTypography.label
                                   .copyWith(color: Colors.white),
                             )
                           ],
