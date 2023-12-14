@@ -194,25 +194,25 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SettingText(S().settings_advanced_taproot),
                   SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
                       onEnabled: () {
-                    showEnvoyPopUp(
-                      context,
-                      title: S().taproot_passport_dialog_heading,
-                      S().taproot_passport_dialog_subheading,
-                      S().taproot_passport_dialog_reconnect,
-                      () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SingleImportPpIntroPage()));
-                      },
-                      icon: EnvoyIcons.info,
-                      secondaryButtonLabel: S().taproot_passport_dialog_later,
-                      onSecondaryButtonTap: () {
-                        Navigator.pop(context);
-                      },
-                    );
+                    // showEnvoyPopUp(
+                    //   context,
+                    //   title: S().taproot_passport_dialog_heading,
+                    //   S().taproot_passport_dialog_subheading,
+                    //   S().taproot_passport_dialog_reconnect,
+                    //   () {
+                    //     Navigator.pop(context);
+                    //     Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) =>
+                    //                 SingleImportPpIntroPage()));
+                    //   },
+                    //   icon: EnvoyIcons.info,
+                    //   secondaryButtonLabel: S().taproot_passport_dialog_later,
+                    //   onSecondaryButtonTap: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    // );
                   }),
                 ],
               ),
