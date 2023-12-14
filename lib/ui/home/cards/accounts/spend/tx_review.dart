@@ -157,10 +157,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     await Future.delayed(Duration(milliseconds: 200));
                   }
 
+                  Tuple<String, int>? changeOutPut =
+                      ref.read(changeOutputProvider);
+                  bool hasChangeOutPutPresent =
+                      changeOutPut != null && changeOutPut.item2 != 0;
+
                   ///then show the tag selection dialog
                   if (!userChosenTag &&
                       tagInputs != null &&
-                      hasManyTagsAsInput) {
+                      hasManyTagsAsInput &&
+                      hasChangeOutPutPresent) {
                     await showTagDialog(
                         context, account, _rootContext, transactionModel);
                   } else {
