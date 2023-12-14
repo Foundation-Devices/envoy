@@ -386,19 +386,29 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                     onChanged: (value) {
                       final selectionState =
                           ref.read(coinSelectionStateProvider.notifier);
-                      if (value == CoinTagSwitchState.on ||
-                          value == CoinTagSwitchState.partial) {
-                        final ids = coinTag.coins
-                            .where((element) => !element.locked)
-                            .map((e) => e.id)
-                            .toList();
-                        selectionState.addAll(ids);
-                      } else {
+
+                      bool hasLockedItems = coinTag.numOfLockedCoins != 0;
+                      if (hasLockedItems && value == CoinTagSwitchState.on) {
                         final ids = coinTag.coins
                             .where((element) => !element.locked)
                             .map((e) => e.id)
                             .toList();
                         selectionState.removeAll(ids);
+                      } else {
+                        if (value == CoinTagSwitchState.on ||
+                            value == CoinTagSwitchState.partial) {
+                          final ids = coinTag.coins
+                              .where((element) => !element.locked)
+                              .map((e) => e.id)
+                              .toList();
+                          selectionState.addAll(ids);
+                        } else {
+                          final ids = coinTag.coins
+                              .where((element) => !element.locked)
+                              .map((e) => e.id)
+                              .toList();
+                          selectionState.removeAll(ids);
+                        }
                       }
                     },
                   );
