@@ -30,6 +30,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/amount_entry.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   const StagingTxDetails({super.key});
@@ -765,12 +766,18 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                 .copyWith(color: EnvoyColors.solidWhite),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                          child: Text(
-                            S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                            style: EnvoyTypography.button
-                                .copyWith(color: EnvoyColors.solidWhite),
+                        GestureDetector(
+                          onTap: () {
+                            launchUrlString(
+                                "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                            child: Text(
+                              S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                              style: EnvoyTypography.button
+                                  .copyWith(color: EnvoyColors.solidWhite),
+                            ),
                           ),
                         )
                       ]
