@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:envoy/generated/intl/messages_en.dart' as messages_en;
 import 'package:envoy/generated/intl/messages_es.dart' as messages_es;
-import 'package:envoy/generated/intl/messages_ml.dart' as messages_ml;
 
 final String currentLocale = Platform.localeName;
 NumberFormat numberFormat = NumberFormat.simpleCurrency(locale: currentLocale);
@@ -24,9 +23,6 @@ String? getTranslationByKey(String key) {
   final lookup = () {
     if (currentLocale.startsWith("es")) {
       return messages_es.MessageLookup();
-    }
-    if (currentLocale.startsWith("ml")) {
-      return messages_ml.MessageLookup();
     }
     return messages_en.MessageLookup();
   }();
