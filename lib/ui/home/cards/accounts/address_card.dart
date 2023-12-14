@@ -62,35 +62,14 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                 subtitle:
                                     S().manage_account_address_card_subheading,
                                 account: widget.account,
-                                qr: Stack(
-                                  children: <Widget>[
-                                    EnvoyQR(
-                                      data: snapshot.data!,
-                                      embeddedImage: isTaproot
-                                          ? Image.asset(
-                                              'assets/taproot_qr.png',
-                                            ).image
-                                          : null,
-                                      embeddedImageSize: Size(128, 66),
-                                    ),
-                                    if (isTaproot) // This code is for testing purposes; a new image may be required.
-                                      Center(
-                                        child: Container(
-                                          width: 102,
-                                          // This is set through the visual interface.
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            border: Border.all(
-                                                color: widget.account.color,
-                                                width: 3),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(6.0) //
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
+                                qr: EnvoyQR(
+                                  data: snapshot.data!,
+                                  embeddedImage: isTaproot
+                                      ? Image.asset(
+                                          'assets/taproot_qr.png',
+                                        ).image
+                                      : null,
+                                  embeddedImageSize: Size(128, 66),
                                 )),
                           ),
                         ),
