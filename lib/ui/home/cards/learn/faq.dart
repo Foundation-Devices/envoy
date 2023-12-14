@@ -7,11 +7,14 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'expansion_panel.dart' as envoy;
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'dart:math' as math;
+
+final faqsProvider = Provider((ref) => extractFaqs());
 
 class FaqEntry {
   final String question;
@@ -57,7 +60,7 @@ List<FaqEntry> extractFaqs() {
   return faqs;
 }
 
-class Faq extends StatelessWidget {
+class Faq extends ConsumerWidget {
   final String? searchText;
 
   const Faq({
@@ -66,8 +69,8 @@ class Faq extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var faqs = extractFaqs();
+  Widget build(context, ref) {
+    var faqs = ref.watch(faqsProvider);
     if (searchText != null || searchText != "")
       faqs = faqs
           .where((entry) =>
@@ -133,23 +136,23 @@ class FaqBodyText extends StatelessWidget {
 
     List<TextSpan> spans = [];
 
-    var firstPass = text.split("{");
+    var firstPass = text.split("[[");
 
     int linkIndex = 0;
     for (var span in firstPass) {
-      if (!span.contains("}")) {
+      if (!span.contains("]]")) {
         spans.add(TextSpan(text: span));
       } else {
         int index = linkIndex;
         spans.add(TextSpan(
-            text: span.split("}")[0],
+            text: span.split("]]")[0],
             style: linkStyle,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 launchUrl(Uri.parse(links[index]));
               }));
 
-        spans.add(TextSpan(text: span.split("}")[1]));
+        spans.add(TextSpan(text: span.split("]]")[1]));
         linkIndex++;
       }
     }

@@ -42,7 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Copy": MessageLookupByLibrary.simpleMessage(
             "Confirma que los detalles de la transacción son correctos antes de enviar."),
         "Currency": MessageLookupByLibrary.simpleMessage("\$"),
-        "Default": MessageLookupByLibrary.simpleMessage("Mostrar"),
+        "Default": MessageLookupByLibrary.simpleMessage("Aplicar filtros"),
         "Divider": MessageLookupByLibrary.simpleMessage("|"),
         "Exchange": MessageLookupByLibrary.simpleMessage("Intercambiar"),
         "FAQ": MessageLookupByLibrary.simpleMessage(
@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SEND": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sats": MessageLookupByLibrary.simpleMessage("123.345.679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Etiqueta"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -93,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("\$107.33"),
+        "_": MessageLookupByLibrary.simpleMessage("Nombre del Passport"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versión de Aplicación"),
         "about_heading": MessageLookupByLibrary.simpleMessage("ACERCA DE"),
@@ -1143,7 +1143,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage("Emparejado"),
         "manage_device_details_deviceSerial":
-            MessageLookupByLibrary.simpleMessage("Número de serie:"),
+            MessageLookupByLibrary.simpleMessage("Número de serie"),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("DETALLES DE DISPOSITIVO"),
         "manage_device_details_menu_Delete":
