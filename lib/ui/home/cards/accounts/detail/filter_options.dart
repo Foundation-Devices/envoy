@@ -64,79 +64,74 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                     builder: (context, ref, child) {
                       bool isCoinSelectionActive =
                           ref.watch(isCoinsSelectedProvider);
+                      bool isInEditMode = ref.watch(spendEditModeProvider);
+                      bool hide = isCoinSelectionActive || isInEditMode;
                       return AnimatedOpacity(
                         duration: Duration(milliseconds: 100),
-                        opacity: isCoinSelectionActive ? 0 : 1,
+                        opacity: hide ? 0 : 1,
                         child: AnimatedSlide(
                           duration: Duration(milliseconds: 200),
-                          offset: isCoinSelectionActive
-                              ? Offset(0, 1.2)
-                              : Offset.zero,
-                          child: Consumer(
-                            builder: (context, ref, child) {
-                              bool txFiltersEnabled =
-                                  ref.watch(isTransactionFiltersEnabled);
-                              bool coinFiltersEnabled =
-                                  ref.watch(coinTagSortStateProvider) !=
-                                      CoinTagSortTypes.sortByTagNameAsc;
-                              bool enabled =
-                                  toggleState == AccountToggleState.Tx
-                                      ? txFiltersEnabled
-                                      : coinFiltersEnabled;
-                              return GestureDetector(
-                                onTap: () {
-                                  if (!isCoinSelectionActive)
-                                    showModalBottomSheet(
-                                        context: context,
-                                        isDismissible: true,
-                                        useRootNavigator: true,
-                                        barrierColor:
-                                            Colors.black.withOpacity(0.2),
-                                        enableDrag: true,
-                                        isScrollControlled: true,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(
-                                                EnvoySpacing.medium1),
-                                            topRight: Radius.circular(
-                                                EnvoySpacing.medium1),
-                                          ),
-                                        ),
-                                        showDragHandle: true,
-                                        builder: (context) {
-                                          return toggleState ==
-                                                  AccountToggleState.Tx
-                                              ? TxFilterWidget()
-                                              : CoinTagsFilterWidget();
-                                        });
-                                },
-                                child: Container(
-                                  width: 32,
-                                  height: 32,
-                                  padding: EdgeInsets.all(EnvoySpacing.small),
-                                  decoration: BoxDecoration(
-                                      color: enabled
-                                          ? Theme.of(context).primaryColor
-                                          : newColorScheme
-                                              .EnvoyColors.solidWhite,
-                                      borderRadius: BorderRadius.circular(
-                                          EnvoySpacing.medium3)),
-                                  child: SvgPicture.asset(
-                                    "assets/icons/ic_filter.svg",
-                                    color: enabled
-                                        ? newColorScheme.EnvoyColors.solidWhite
-                                        : newColorScheme
-                                            .EnvoyColors.textTertiary,
-                                    width: 18,
-                                    height: 18,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          offset: hide ? Offset(0, 1.2) : Offset.zero,
+                          child: child,
                         ),
                       );
                     },
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        bool txFiltersEnabled =
+                            ref.watch(isTransactionFiltersEnabled);
+                        bool coinFiltersEnabled =
+                            ref.watch(coinTagSortStateProvider) !=
+                                CoinTagSortTypes.sortByTagNameAsc;
+                        bool enabled = toggleState == AccountToggleState.Tx
+                            ? txFiltersEnabled
+                            : coinFiltersEnabled;
+                        return GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                isDismissible: true,
+                                useRootNavigator: true,
+                                barrierColor: Colors.black.withOpacity(0.2),
+                                enableDrag: true,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft:
+                                        Radius.circular(EnvoySpacing.medium1),
+                                    topRight:
+                                        Radius.circular(EnvoySpacing.medium1),
+                                  ),
+                                ),
+                                showDragHandle: true,
+                                builder: (context) {
+                                  return toggleState == AccountToggleState.Tx
+                                      ? TxFilterWidget()
+                                      : CoinTagsFilterWidget();
+                                });
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            padding: EdgeInsets.all(EnvoySpacing.small),
+                            decoration: BoxDecoration(
+                                color: enabled
+                                    ? Theme.of(context).primaryColor
+                                    : newColorScheme.EnvoyColors.solidWhite,
+                                borderRadius: BorderRadius.circular(
+                                    EnvoySpacing.medium3)),
+                            child: SvgPicture.asset(
+                              "assets/icons/ic_filter.svg",
+                              color: enabled
+                                  ? newColorScheme.EnvoyColors.solidWhite
+                                  : newColorScheme.EnvoyColors.textTertiary,
+                              width: 18,
+                              height: 18,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ))
             ],
           ),
