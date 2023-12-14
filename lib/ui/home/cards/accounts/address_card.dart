@@ -69,7 +69,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                           'assets/taproot_qr.png',
                                         ).image
                                       : null,
-                                  embeddedImageSize: Size(128, 66),
+                                  embeddedImageSize: Size(64, 33),
                                 )),
                           ),
                         ),
