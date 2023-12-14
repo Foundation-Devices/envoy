@@ -14,7 +14,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/tuple.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
@@ -111,6 +111,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         state.broadcastProgress == BroadcastProgress.inProgress) {
       return false;
     }
+
+    // Warning flag
+    container.read(psbtInputsChangedProvider.notifier).state = false;
+
     List<Utxo> utxos = container
         .read(getSelectedCoinsProvider(account.id!))
         .map((e) => e.utxo)
@@ -140,6 +144,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           dontSpend?.add(utxo);
         }
       });
+
+      container.read(dontSpendCoinsProvider.notifier).state = dontSpend ?? [];
 
       bool sendMax = spendableBalance == amount;
 
@@ -326,6 +332,27 @@ final spendTransactionProvider =
     StateNotifierProvider<TransactionModeNotifier, TransactionModel>(
         (ref) => TransactionModeNotifier(emptyTransactionModel));
 
+final dontSpendCoinsProvider = StateProvider<List<Utxo>>((ref) {
+  ref.listenSelf((previous, next) {
+    if (previous == null) {
+      return;
+    }
+
+    final previousIds = previous.map((e) => e.id).toList();
+    final nextIds = next.map((e) => e.id).toList();
+
+    if (!listEquals(previousIds, nextIds)) {
+      ref.read(userHasSelectedCoinsProvider.notifier).state = true;
+    }
+  });
+  return [];
+});
+
+// Providers needed to show the fee/inputs warning
+final userHasSelectedCoinsProvider = StateProvider<bool>((ref) => false);
+final userHasEnteredEditModeProvider = StateProvider<bool>((ref) => false);
+final psbtInputsChangedProvider = StateProvider<bool>((ref) => false);
+
 final spendEditModeProvider = StateProvider((ref) => false);
 final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
@@ -339,8 +366,29 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
   return Fees().slowRate(account.wallet.network) * 100000;
 });
 
-final rawTransactionProvider = Provider<RawTransaction?>(
-    (ref) => ref.watch(spendTransactionProvider).rawTransaction);
+final rawTransactionProvider = Provider<RawTransaction?>((ref) {
+  ref.listenSelf((previous, next) {
+    if (previous == null || next == null) {
+      return;
+    }
+
+    print(
+        "previous inputs ${previous.inputs.map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}").toList()}, "
+        "next inputs ${next.inputs.map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}").toList()}");
+
+    final previousIds = previous.inputs
+        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
+        .toList();
+    final nextIds = next.inputs
+        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
+        .toList();
+
+    if (!listEquals(previousIds, nextIds)) {
+      ref.read(psbtInputsChangedProvider.notifier).state = true;
+    }
+  });
+  return ref.watch(spendTransactionProvider).rawTransaction;
+});
 
 final uneconomicSpendsProvider = Provider<bool>(
     (ref) => ref.watch(spendTransactionProvider).uneconomicSpends);

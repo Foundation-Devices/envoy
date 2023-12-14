@@ -11,7 +11,6 @@ import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -25,8 +24,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   @override
