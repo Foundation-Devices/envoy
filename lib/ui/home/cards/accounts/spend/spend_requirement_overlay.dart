@@ -353,7 +353,7 @@ class SpendRequirementOverlayState
                                             child: Row(
                                               children: [
                                                 Text(S()
-                                                    .coincontrol_edit_transaction_required_inputs),
+                                                    .coincontrol_edit_transaction_requiredAmount),
                                                 Spacer(),
                                                 SizedBox.square(
                                                     dimension: 12,
@@ -410,7 +410,7 @@ class SpendRequirementOverlayState
 
                                         sheetOptions.addAll([
                                           Text(
-                                            S().untagged_tagDetails_spendable_selectedAmount,
+                                            S().coincontrol_edit_transaction_selectedAmount,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleSmall,
