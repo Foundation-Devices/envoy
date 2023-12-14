@@ -83,7 +83,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
 
     return Container(
       constraints: BoxConstraints(
-        maxWidth: 230,
+        maxWidth: 180,
+        minWidth: 180,
         maxHeight: 24,
       ),
       child: TabBar(

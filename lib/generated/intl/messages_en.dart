@@ -1396,8 +1396,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_android_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Envoy Seed"),
         "manual_toggle_on_seed_backedup_iOS_2_hours_ago":
-            MessageLookupByLibrary.simpleMessage(
-                "2 hours ago to Foundation Servers"),
+            MessageLookupByLibrary.simpleMessage("2 hours ago"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
             MessageLookupByLibrary.simpleMessage("Back Up Now"),
         "manual_toggle_on_seed_backedup_iOS_backups":
@@ -1406,6 +1405,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Download Envoy Backup File"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
             MessageLookupByLibrary.simpleMessage("Stored in iCloud Keychain"),
+        "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
+            MessageLookupByLibrary.simpleMessage("to Foundation Servers"),
         "manual_toggle_on_seed_backedup_iOS_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("View Envoy Seed"),
         "manual_toggle_on_seed_backedup_iOS_wallet_data":

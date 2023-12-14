@@ -6978,10 +6978,10 @@ class S {
     );
   }
 
-  /// `2 hours ago to Foundation Servers`
+  /// `2 hours ago`
   String get manual_toggle_on_seed_backedup_iOS_2_hours_ago {
     return Intl.message(
-      '2 hours ago to Foundation Servers',
+      '2 hours ago',
       name: 'manual_toggle_on_seed_backedup_iOS_2_hours_ago',
       desc: '',
       args: [],
@@ -7023,6 +7023,16 @@ class S {
     return Intl.message(
       'Stored in iCloud Keychain',
       name: 'manual_toggle_on_seed_backedup_iOS_stored_in_cloud',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `to Foundation Servers`
+  String get manual_toggle_on_seed_backedup_iOS_toFoundationServers {
+    return Intl.message(
+      'to Foundation Servers',
+      name: 'manual_toggle_on_seed_backedup_iOS_toFoundationServers',
       desc: '',
       args: [],
     );
