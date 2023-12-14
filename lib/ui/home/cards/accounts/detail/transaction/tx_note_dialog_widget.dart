@@ -62,13 +62,11 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Text(widget.noteTitle, style: Theme.of(context).textTheme.titleLarge),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.noteSubTitle,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
+          Text(
+            widget.noteSubTitle,
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+            //maxLines: 2,
           ),
           Container(
             margin: EdgeInsets.only(top: EnvoySpacing.medium1),
@@ -76,7 +74,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
               decoration: BoxDecoration(
                   color: EnvoyColors.gray200,
                   borderRadius: BorderRadius.circular(15)),
-              padding: EdgeInsets.all(4),
+              padding: EdgeInsets.all(EnvoySpacing.xs),
               child: TextFormField(
                 maxLines: 2,
                 maxLength: 34,
@@ -106,7 +104,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
           EnvoyButton(S().add_note_modal_cta2, onTap: () {
             widget.onAdd(_textEditingController.text);
           }, type: EnvoyButtonTypes.tertiary),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
             S().add_note_modal_cta,
             onTap: () {
