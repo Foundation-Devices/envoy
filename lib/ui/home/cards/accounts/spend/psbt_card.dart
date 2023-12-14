@@ -51,22 +51,14 @@ class PsbtCard extends StatelessWidget {
             Flexible(
               child: Container(
                   padding: const EdgeInsets.all(8.0),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minHeight: 250,
-                      minWidth: 200,
-                      maxHeight: 400,
-                      maxWidth: 350,
-                    ),
-                    child: QrTab(
-                      title: S().send_qr_code_card_heading,
-                      subtitle: S().send_qr_code_card_subheading,
-                      account: account,
-                      qr: AnimatedQrImage(
-                        base64Decode(psbt.base64),
-                        urType: "crypto-psbt",
-                        binaryCborTag: true,
-                      ),
+                  child: QrTab(
+                    title: S().send_qr_code_card_heading,
+                    subtitle: S().send_qr_code_card_subheading,
+                    account: account,
+                    qr: AnimatedQrImage(
+                      base64Decode(psbt.base64),
+                      urType: "crypto-psbt",
+                      binaryCborTag: true,
                     ),
                   )),
             ),
