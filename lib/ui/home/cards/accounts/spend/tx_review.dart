@@ -1170,14 +1170,17 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
   Widget build(BuildContext context) {
     return Container(
       width: 280,
-      height: 360,
+      height: 380,
       padding: EdgeInsets.all(EnvoySpacing.small),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Container(
-            padding: EdgeInsets.all(EnvoySpacing.medium1),
+            padding: EdgeInsets.only(
+                left: EnvoySpacing.medium1,
+                right: EnvoySpacing.medium1,
+                top: EnvoySpacing.medium1),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1196,7 +1199,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: EnvoySpacing.medium1),
+                  margin: EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Container(
                     decoration: BoxDecoration(
                         color: Color(0xffD9D9D9),
