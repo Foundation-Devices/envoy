@@ -63,13 +63,15 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
           ),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(18)),
+                borderRadius:
+                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
                 border: Border.all(
                     color: widget.device.color,
                     width: 2,
                     style: BorderStyle.solid)),
             child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
+                borderRadius:
+                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
                 child: Stack(
                   children: [
                     Positioned.fill(
@@ -91,8 +93,8 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                       EnvoyColors.deviceBackgroundGradientGrey,
                                       Colors.white,
                                     ]),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16))),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(EnvoySpacing.medium1))),
                             child: Padding(
                               padding: const EdgeInsets.only(top: 20.0),
                               child: Image.asset(
@@ -107,141 +109,153 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                         Container(
                             height: 75,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: EnvoySpacing.small),
-                                    child: Text(
-                                      widget.device.name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                            color: Colors.white,
-                                          ),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        widget.device.type ==
-                                                DeviceType.passportGen12
-                                            ? "Passport" // TODO: FIGMA
-                                            : "Founder's Edition", // TODO: FIGMA
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall!
-                                            .copyWith(color: Colors.white),
-                                      ),
-                                      widget.ghostDevice
-                                          ? Text(
-                                              "FW 2.1.1", // TODO: FIGMA
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            )
-                                          : GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context,
-                                                        rootNavigator: true)
-                                                    .push(MaterialPageRoute(
-                                                        builder: (context) {
-                                                  return FwIntroPage(
-                                                    onboarding: false,
-                                                    deviceId: widget
-                                                        .device.type.index,
-                                                  );
-                                                }));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10)),
-                                                  color: Colors.black
-                                                      .withOpacity(0.6),
-                                                  border: Border.all(
-                                                      color:
-                                                          widget.device.color,
-                                                      width: 2,
-                                                      style: BorderStyle.solid),
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Row(
-                                                    children: [
-                                                      if (fwShouldUpdate
-                                                              .hasValue &&
-                                                          fwShouldUpdate
-                                                                  .value !=
-                                                              null &&
-                                                          fwShouldUpdate.value!)
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      4.0),
-                                                          child: Container(
-                                                            height: 8.0,
-                                                            width: 8.0,
-                                                            decoration: BoxDecoration(
-                                                                color:
-                                                                    Colors.red,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10)),
-                                                          ),
-                                                        ),
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal:
-                                                                    3.0),
-                                                        child: SvgPicture.asset(
-                                                            "assets/fw.svg"),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: 2.0),
-                                                        child: Text(
-                                                          fwInfo.hasValue &&
-                                                                  fwInfo.value !=
-                                                                      null
-                                                              ? ("FW " + // TODO: FIGMA
-                                                                  fwInfo.value!
-                                                                      .storedVersion)
-                                                              : "Loading", // TODO: FIGMA
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .bodySmall!
-                                                              .copyWith(
-                                                                  color: Colors
-                                                                      .white),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 14),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.device.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge!
+                                              .copyWith(
+                                                color: Colors.white,
                                               ),
-                                            )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            )),
+                                        ),
+                                        SizedBox(),
+                                        Text(
+                                          widget.device.type ==
+                                                  DeviceType.passportGen12
+                                              ? "Passport" // TODO: FIGMA
+                                              : "Founder's Edition",
+                                          // TODO: FIGMA
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(),
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          widget.ghostDevice
+                                              ? Text(
+                                                  "FW 2.1.1", // TODO: FIGMA
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                          color: Colors.white),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .push(MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return FwIntroPage(
+                                                        onboarding: false,
+                                                        deviceId: widget
+                                                            .device.type.index,
+                                                      );
+                                                    }));
+                                                  },
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                      color: Colors.black
+                                                          .withOpacity(0.6),
+                                                      border: Border.all(
+                                                          color: widget
+                                                              .device.color,
+                                                          width: 2,
+                                                          style: BorderStyle
+                                                              .solid),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              EnvoySpacing.xs),
+                                                      child: Row(
+                                                        children: [
+                                                          if (fwShouldUpdate.hasValue &&
+                                                              fwShouldUpdate
+                                                                      .value !=
+                                                                  null &&
+                                                              fwShouldUpdate
+                                                                  .value!)
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          EnvoySpacing
+                                                                              .xs),
+                                                              child: Container(
+                                                                height: 8.0,
+                                                                width: 8.0,
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10)),
+                                                              ),
+                                                            ),
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        3.0),
+                                                            child: SvgPicture.asset(
+                                                                "assets/fw.svg"),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    right: 2.0),
+                                                            child: Text(
+                                                              fwInfo.hasValue &&
+                                                                      fwInfo.value !=
+                                                                          null
+                                                                  ? ("FW " + // TODO: FIGMA
+                                                                      fwInfo
+                                                                          .value!
+                                                                          .storedVersion)
+                                                                  : "Loading",
+                                                              // TODO: FIGMA
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall!
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .white),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                        ])
+                                  ],
+                                ))),
                       ],
                     ),
                   ],
