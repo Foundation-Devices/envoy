@@ -35,6 +35,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/blur_container_transform.dart';
@@ -46,6 +47,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -418,7 +420,7 @@ class GhostListTile extends StatelessWidget {
 }
 
 class TransactionListTile extends StatelessWidget {
-  const TransactionListTile({
+  TransactionListTile({
     Key? key,
     required this.transaction,
     required this.account,
@@ -427,10 +429,13 @@ class TransactionListTile extends StatelessWidget {
   final Transaction transaction;
   final Account account;
 
+  final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
+    fontWeight: FontWeight.w400,
+    color: newColorScheme.EnvoyColors.txInfo,
+  );
+
   @override
   Widget build(BuildContext context) {
-    final Locale activeLocale = Localizations.localeOf(context);
-
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
@@ -493,12 +498,20 @@ class TransactionListTile extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: transaction.type == TransactionType.azteco
-                  ? Text(S().azteco_account_tx_history_pending_voucher)
+                  ? Text(
+                      S().azteco_account_tx_history_pending_voucher,
+                      style: _transactionTextStyleInfo,
+                    )
                   : transaction.type == TransactionType.normal &&
                           transaction.isConfirmed
-                      ? Text(timeago.format(transaction.date,
-                          locale: activeLocale.languageCode))
-                      : Text(S().receive_tx_list_awaitingConfirmation),
+                      ? Text(
+                          timeago.format(transaction.date),
+                          style: _transactionTextStyleInfo,
+                        )
+                      : Text(
+                          S().receive_tx_list_awaitingConfirmation,
+                          style: _transactionTextStyleInfo,
+                        ),
             ),
             leading: transaction.amount < 0
                 ? Icon(Icons.call_made)
@@ -562,40 +575,38 @@ class TransactionListTile extends StatelessWidget {
                 ),
                 if (Settings().selectedFiat != null)
                   Consumer(
-                    builder: (context, ref, child) {
-                      bool hide =
-                          ref.watch(balanceHideStateStatusProvider(account.id));
-                      if (hide) {
-                        return Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: SizedBox(
-                            width: 64,
-                            height: 15,
-                            child: Container(
-                              width: double.infinity,
-                              height: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Color(0xffEEEEEE),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
+                      builder: (context, ref, child) {
+                        bool hide = ref
+                            .watch(balanceHideStateStatusProvider(account.id));
+                        if (hide) {
+                          return Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: SizedBox(
+                              width: 64,
+                              height: 15,
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffEEEEEE),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return child ?? Container();
-                      }
-                    },
-                    child: Text(
+                          );
+                        } else {
+                          return child ?? Container();
+                        }
+                      },
+                      child: Text(
                         transaction.type == TransactionType.azteco
                             ? ""
                             : ExchangeRate().getFormattedAmount(
                                 transaction.amount,
                                 wallet: account.wallet),
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color:
-                                Theme.of(context).textTheme.bodySmall!.color)),
-                  ),
+                        style: _transactionTextStyleInfo,
+                      )),
               ],
             ),
           ),

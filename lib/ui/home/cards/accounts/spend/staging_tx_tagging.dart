@@ -6,10 +6,11 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,12 +88,11 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Text(
                     S().change_output_from_multiple_tags_modal_heading,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: EnvoyTypography.body.copyWith(
+                      fontSize: 20,
+                    ),
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                   Expanded(
                       child: Container(
                     child: PageTransitionSwitcher(
@@ -235,7 +235,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: _tagController.text.isNotEmpty
                             ? Colors.white
-                            : EnvoyColors.grey,
+                            : EnvoyColors.textTertiary,
                       ),
                   type: _tagController.text.isNotEmpty
                       ? EnvoyButtonTypes.primaryModal
@@ -276,19 +276,14 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
             child: Text(
               S().change_output_from_multiple_tags_modal_subehading,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+              style: EnvoyTypography.info,
               textAlign: TextAlign.center,
             ),
           ),
-          Spacer(),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -300,6 +295,10 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(S().change_output_from_multiple_tags_modal_cta1,
                   enabled: true,
+                  borderRadius: BorderRadius.circular(6),
+                  textStyle: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.solidWhite,
+                      fontWeight: FontWeight.w500),
                   type: EnvoyButtonTypes.primaryModal, onTap: () async {
                 setState(() {
                   showTagForm = !showTagForm;
