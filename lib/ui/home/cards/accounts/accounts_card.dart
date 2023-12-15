@@ -238,11 +238,9 @@ class AccountPrompts extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    TextStyle _explainerTextStyle = TextStyle(
-        fontFamily: 'Montserrat',
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.w400,
-        color: EnvoyColors.textTertiary);
+    TextStyle explainerTextStyle =
+        EnvoyTypography.button.copyWith(color: EnvoyColors.textTertiary);
+
     var isHideAmountDismissed =
         ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
 
@@ -263,13 +261,13 @@ class AccountPrompts extends ConsumerWidget {
           child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
         Text(
           S().hot_wallet_accounts_creation_done_text_explainer,
-          style: _explainerTextStyle,
+          style: explainerTextStyle,
         ),
         GestureDetector(
           child: Text(
             S().hot_wallet_accounts_creation_done_button,
             style:
-                _explainerTextStyle.copyWith(color: EnvoyColors.accentPrimary),
+                explainerTextStyle.copyWith(color: EnvoyColors.accentPrimary),
           ),
           onTap: () {
             EnvoyStorage()
@@ -290,7 +288,7 @@ class AccountPrompts extends ConsumerWidget {
             children: [
               Text(
                 S().hide_amount_first_time_text,
-                style: _explainerTextStyle,
+                style: explainerTextStyle,
               ),
               GestureDetector(
                 child: Text(S().hide_amount_first_time_text_button,
@@ -317,7 +315,7 @@ class AccountPrompts extends ConsumerWidget {
             children: [
               Text(
                 S().tap_and_drag_first_time_text,
-                style: _explainerTextStyle,
+                style: explainerTextStyle,
               ),
               GestureDetector(
                 child: Text(
