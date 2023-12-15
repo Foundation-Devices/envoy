@@ -463,6 +463,13 @@ class SpendRequirementOverlayState
                                             : S()
                                                 .coincontrol_edit_transaction_cta,
                                         onTap: () async {
+                                          if (!inTagSelectionMode) {
+                                            ref
+                                                .read(userSelectedCoinsProvider
+                                                    .notifier)
+                                                .state = true;
+                                          }
+
                                           /// if the user is in utxo details screen we need to wait animations to finish
                                           /// before we can pop back to home screen
                                           if (Navigator.canPop(context)) {

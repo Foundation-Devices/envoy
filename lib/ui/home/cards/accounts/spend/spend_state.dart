@@ -339,15 +339,15 @@ final dontSpendCoinsProvider = StateProvider<List<Utxo>>((ref) {
     final nextIds = next.map((e) => e.id).toList();
 
     if (!listEquals(previousIds, nextIds)) {
-      ref.read(userHasSelectedCoinsProvider.notifier).state = true;
+      ref.read(coinSelectionChangedProvider.notifier).state = true;
     }
   });
   return [];
 });
 
 // Providers needed to show the fee/inputs warning
-final userHasSelectedCoinsProvider = StateProvider<bool>((ref) => false);
-final userHasEnteredEditModeProvider = StateProvider<bool>((ref) => false);
+final coinSelectionChangedProvider = StateProvider<bool>((ref) => false);
+final userSelectedCoinsProvider = StateProvider<bool>((ref) => false);
 final userHasChangedFeesProvider = StateProvider<bool>((ref) => false);
 final transactionInputsChangedProvider = StateProvider<bool>((ref) => false);
 

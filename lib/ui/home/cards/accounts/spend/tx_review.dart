@@ -363,7 +363,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
     ///indicating that we are in edit mode
     ref.read(spendEditModeProvider.notifier).state = true;
-    ref.read(userHasEnteredEditModeProvider.notifier).state = true;
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
@@ -461,14 +460,14 @@ class _TransactionReviewScreenState
 
     final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
-    final userHasSelectedCoins = ref.watch(userHasSelectedCoinsProvider);
-    final userHasEnteredEditMode = ref.watch(userHasEnteredEditModeProvider);
+    final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
+    final userSelectedCoins = ref.watch(userSelectedCoinsProvider);
     final transactionInputsChanged =
         ref.watch(transactionInputsChangedProvider);
     final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
 
-    final feeChangeNotice = userHasEnteredEditMode &&
-        userHasSelectedCoins &&
+    final showFeeChangeNotice = userSelectedCoins &&
+        coinSelectionChanged &&
         transactionInputsChanged &&
         userHasChangedFees;
 
@@ -945,7 +944,7 @@ class _TransactionReviewScreenState
             ),
           ),
           // Special warning if we are sending max or the fee changed the TX
-          if (transactionModel.mode == SpendMode.sendMax || feeChangeNotice)
+          if (transactionModel.mode == SpendMode.sendMax || showFeeChangeNotice)
             SliverToBoxAdapter(
               child: ListTile(
                 subtitle: Padding(
@@ -954,7 +953,7 @@ class _TransactionReviewScreenState
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        feeChangeNotice
+                        showFeeChangeNotice
                             ? S().coincontrol_tx_detail_feeChange_information
                             : S().send_reviewScreen_sendMaxWarning,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -1015,7 +1014,6 @@ class _TransactionReviewScreenState
 
     ///indicating that we are in edit mode
     ref.read(spendEditModeProvider.notifier).state = true;
-    ref.read(userHasEnteredEditModeProvider.notifier).state = true;
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
@@ -1131,10 +1129,10 @@ class _DiscardTransactionDialogState
   }
 
   void resetUserInteractionProviders() {
-    ref.read(userHasEnteredEditModeProvider.notifier).state = false;
+    ref.read(userSelectedCoinsProvider.notifier).state = false;
     ref.read(userHasChangedFeesProvider.notifier).state = false;
     ref.read(transactionInputsChangedProvider.notifier).state = false;
-    ref.read(userHasSelectedCoinsProvider.notifier).state = false;
+    ref.read(coinSelectionChangedProvider.notifier).state = false;
   }
 }
 
