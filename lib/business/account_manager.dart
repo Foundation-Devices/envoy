@@ -545,6 +545,26 @@ class AccountManager extends ChangeNotifier {
     return true;
   }
 
+  bool passportAccountsExist() {
+    for (var account in accounts) {
+      if (!account.wallet.hot) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool passportTaprootAccountsExist() {
+    for (var account in accounts) {
+      if (!account.wallet.hot && account.wallet.type == WalletType.taproot) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   deleteHotWalletAccounts() {
     List<Account> accountsToDelete = [];
     for (var account in accounts) {

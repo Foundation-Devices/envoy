@@ -84,28 +84,37 @@ class UpdatesManager {
     if (!file.path.endsWith("-passport.bin") ||
         file.path.endsWith("0-passport.bin") ||
         file.path.endsWith("1-passport.bin")) {
-      final fileName = (getStoredFwVersion(deviceId) as String) +
+      final fileName = (getStoredFwVersionString(deviceId) as String) +
           (deviceId == 0 ? "-founders" : "") +
           "-passport.bin";
       var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
       es.addNewFirmware(
-          deviceId, getStoredFwVersion(deviceId) as String, fileName);
+          deviceId, getStoredFwVersionString(deviceId) as String, fileName);
       return newFile;
     }
 
     return file;
   }
 
-  Future<String?> getStoredFwVersion(int deviceId) async {
+  Future<String?> getStoredFwVersionString(int deviceId) async {
     var StoredInfo = await es.getStoredFirmware(deviceId);
     String? storedVersion = StoredInfo?.storedVersion;
     return storedVersion;
   }
 
+  Future<Version?> getStoredFwVersion(int deviceId) async {
+    String? storedVersion = await getStoredFwVersionString(deviceId);
+    if (storedVersion == null) {
+      return null;
+    }
+
+    return Version.parse(storedVersion.replaceAll("v", ""));
+  }
+
   Future<bool> shouldUpdate(String version, DeviceType type) async {
     version = version.replaceAll("v", "").substring(0, 5);
     Version deviceFwVersion = Version.parse(version);
-    final fw = await getStoredFwVersion(type.index);
+    final fw = await getStoredFwVersionString(type.index);
     Version currentFwVersion = Version.parse(fw!.replaceAll("v", ""));
 
     if (currentFwVersion > deviceFwVersion) {

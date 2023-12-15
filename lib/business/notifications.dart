@@ -142,7 +142,7 @@ class Notifications {
       bool _fwUpdateAvailable =
           await UpdatesManager().shouldUpdate(version, device.type);
       final newVersion =
-          await UpdatesManager().getStoredFwVersion(device.type.index);
+          await UpdatesManager().getStoredFwVersionString(device.type.index);
       for (var notification in notifications) {
         if (notification.id == device.type.toString().split('.').last) {
           if (notification.body == newVersion!) {
