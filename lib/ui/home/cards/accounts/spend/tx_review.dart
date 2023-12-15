@@ -526,7 +526,6 @@ class _TransactionReviewScreenState
           color: EnvoyColors.textPrimary,
         ),
         onPressed: () {
-          ref.read(userHasEnteredEditModeProvider.notifier).state = false;
           GoRouter.of(context).pop();
         },
       ),
@@ -534,7 +533,9 @@ class _TransactionReviewScreenState
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.small,
+                  horizontal: EnvoySpacing.medium1),
               child: ListTile(
                 title: Text(header.toUpperCase(),
                     textAlign: TextAlign.center,
@@ -1101,6 +1102,7 @@ class _DiscardTransactionDialogState
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
+              ref.read(userHasEnteredEditModeProvider.notifier).state = false;
               GoRouter.of(context).pop(true);
               await Future.delayed(Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;

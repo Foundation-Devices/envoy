@@ -372,10 +372,6 @@ final rawTransactionProvider = Provider<RawTransaction?>((ref) {
       return;
     }
 
-    print(
-        "previous inputs ${previous.inputs.map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}").toList()}, "
-        "next inputs ${next.inputs.map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}").toList()}");
-
     final previousIds = previous.inputs
         .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
         .toList();
