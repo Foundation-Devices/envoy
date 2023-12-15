@@ -381,7 +381,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
               child: EnvoyButton(
-                  label: "Continue", //TODO: figma label
+                  label: S().coincontrol_tx_detail_custom_fee_cta,
                   onTap: () => setFee(context),
                   type: ButtonType.primary,
                   state: ButtonState.default_state),

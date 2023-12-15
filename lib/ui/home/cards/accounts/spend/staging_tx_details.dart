@@ -9,6 +9,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -29,7 +30,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/amount_entry.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
@@ -305,7 +305,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                             EdgeInsets.only(
                                                                 left: 8)),
                                                     Text(
-                                                        "Spent from ${tags.length} coins")
+                                                        "${S().coincontrol_tx_detail_expand_spentFrom} ${tags.length} ${tags.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}")
                                                   ],
                                                 ),
                                                 Row(
@@ -415,8 +415,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                           padding:
                                                               EdgeInsets.only(
                                                                   left: 8)),
-                                                      Text("Change Received")
-                                                      // TODO: Figma
+                                                      Text(S()
+                                                          .coincontrol_tx_detail_expand_changeReceived)
                                                     ],
                                                   ),
                                                   Row(
@@ -652,8 +652,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                   EdgeInsets
                                                                       .all(4)),
                                                           Text(
-                                                            "Notes",
-                                                            //TODO: figma
+                                                            S().coincontrol_tx_history_tx_detail_note,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme

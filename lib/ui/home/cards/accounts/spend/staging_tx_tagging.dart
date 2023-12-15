@@ -287,7 +287,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              EnvoyButton("Edit Transaction", // TODO: FIGMA
+              EnvoyButton(S().change_output_from_multiple_tags_modal_cta2,
                   enabled: true,
                   type: EnvoyButtonTypes.tertiary, onTap: () async {
                 widget.onEditTransaction();

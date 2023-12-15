@@ -214,8 +214,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                   : lastEnvoyServerBackup == null
                                       ? S()
                                           .manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup
-                                      : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).substring(1).toLowerCase()} to Foundation server",
-                              // TODO: FIGMA
+                                      : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).substring(1).toLowerCase()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
                               color: EnvoyColors.grey,
                               maxLines: 2,
                             ),
