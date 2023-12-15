@@ -412,7 +412,8 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                       alignment: Alignment(0.0, -0.8));
                                 },
                                 child: CoinTagListItem(
-                                  title: "Notes", // TODO: FIGMA
+                                  title:
+                                      S().coincontrol_tx_history_tx_detail_note,
                                   icon: SvgPicture.asset(
                                     "assets/icons/ic_notes.svg",
                                     color: Colors.black,

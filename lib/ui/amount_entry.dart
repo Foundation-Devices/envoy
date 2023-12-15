@@ -261,8 +261,8 @@ class SpendableAmountWidget extends ConsumerWidget {
       children: [
         Text(
           isCoinsSelected
-              ? "Selected amount"
-              : S().coincontrol_edit_transaction_selected_inputs,
+              ? S().coincontrol_edit_transaction_selected_inputs
+              : S().coincontrol_edit_transaction_available_balance,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: EnvoyColors.textSecondary,
                 fontSize: 13,

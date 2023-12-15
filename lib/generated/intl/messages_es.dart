@@ -51,8 +51,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
         "Heading": MessageLookupByLibrary.simpleMessage("Seguro"),
         "Headline": MessageLookupByLibrary.simpleMessage(
-            "Tu transacción está lista para ser enviada"),
-        "Label": MessageLookupByLibrary.simpleMessage("Activity"),
+            "Transacción lista para ser enviada"),
+        "Label": MessageLookupByLibrary.simpleMessage("Address"),
         "Left": MessageLookupByLibrary.simpleMessage("Recibir"),
         "Letter": MessageLookupByLibrary.simpleMessage("devolución"),
         "Links": MessageLookupByLibrary.simpleMessage("Enlaces"),
@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SEND": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sats": MessageLookupByLibrary.simpleMessage("123.345.679 SATS"),
         "ScreenHeading": MessageLookupByLibrary.simpleMessage("9."),
-        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Recibir"),
+        "ScreenTitle": MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "Send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "Sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -80,7 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Aprender"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Aprender"),
-        "Tag": MessageLookupByLibrary.simpleMessage("Total"),
+        "Tag": MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "TagName": MessageLookupByLibrary.simpleMessage("Conferencias"),
         "Tags": MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "Test": MessageLookupByLibrary.simpleMessage("Recibido"),
@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Timestamp":
             MessageLookupByLibrary.simpleMessage("Recibido hace 3 horas"),
         "Title": MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
-        "Value": MessageLookupByLibrary.simpleMessage("5,000,000"),
+        "Value": MessageLookupByLibrary.simpleMessage("1.123456"),
         "Watched": MessageLookupByLibrary.simpleMessage("Visto"),
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
@@ -104,6 +104,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Condiciones de Uso"),
         "about_version": MessageLookupByLibrary.simpleMessage("1.4.0"),
+        "account_details_filter_tags_applyFilters":
+            MessageLookupByLibrary.simpleMessage("Aplicar filtros"),
+        "account_details_filter_tags_filter":
+            MessageLookupByLibrary.simpleMessage("Filtrar"),
+        "account_details_filter_tags_received":
+            MessageLookupByLibrary.simpleMessage("Recibidos"),
+        "account_details_filter_tags_resetFilter":
+            MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
+        "account_details_filter_tags_resetSorting":
+            MessageLookupByLibrary.simpleMessage("Restablecer orden"),
+        "account_details_filter_tags_sent":
+            MessageLookupByLibrary.simpleMessage("Enviados"),
+        "account_details_filter_tags_sortBy":
+            MessageLookupByLibrary.simpleMessage("Ordenar por"),
         "account_details_untagged_card":
             MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
@@ -285,6 +299,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "\nTu ID de transacción se copiará en el portapapeles y podrá ser visible para otras aplicaciones en tu teléfono."),
         "coincontrol_coin_filter_off_LabeledSwitch_tags":
             MessageLookupByLibrary.simpleMessage("Etiquetas"),
+        "coincontrol_edit_transaction_available_balance":
+            MessageLookupByLibrary.simpleMessage("Saldo disponible"),
         "coincontrol_edit_transaction_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "coincontrol_edit_transaction_cta":
@@ -305,9 +321,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_edit_transaction_insufficientFunds":
             MessageLookupByLibrary.simpleMessage("Fondos insuficientes"),
         "coincontrol_edit_transaction_requiredAmount":
-            MessageLookupByLibrary.simpleMessage("Cantidad requerida"),
+            MessageLookupByLibrary.simpleMessage("Cantidad Necesaria"),
         "coincontrol_edit_transaction_required_inputs":
-            MessageLookupByLibrary.simpleMessage("Cantidad requerida"),
+            MessageLookupByLibrary.simpleMessage("Cantidad Necesaria"),
         "coincontrol_edit_transaction_required_inputs_sats":
             MessageLookupByLibrary.simpleMessage("1,500,000"),
         "coincontrol_edit_transaction_selectedAmount":
@@ -315,7 +331,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_edit_transaction_selected_inputs":
             MessageLookupByLibrary.simpleMessage("Cantidad seleccionada"),
         "coincontrol_edit_transaction_selected_inputs_sats":
-            MessageLookupByLibrary.simpleMessage("500,000"),
+            MessageLookupByLibrary.simpleMessage("1,500,000"),
         "coincontrol_edit_transaction_sendSelected":
             MessageLookupByLibrary.simpleMessage("Enviar seleccionado"),
         "coincontrol_lock_coin_modal_cta1":
@@ -335,7 +351,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Firmar con Passport"),
         "coincontrol_txDetail_heading_passport":
             MessageLookupByLibrary.simpleMessage(
-                "Tu transacción está lista para ser firmada"),
+                "Transacción lista para ser firmada"),
         "coincontrol_txDetail_subheading_passport":
             MessageLookupByLibrary.simpleMessage(
                 "Confirma que los detalles de la transacción son correctos antes de firmar con Passport."),
@@ -369,7 +385,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_destination_details":
             MessageLookupByLibrary.simpleMessage("Mostrar dirección"),
         "coincontrol_tx_detail_expand_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles de la transacción"),
+            MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "coincontrol_tx_detail_expand_note_note":
             MessageLookupByLibrary.simpleMessage("Barbacoa"),
         "coincontrol_tx_detail_fee":
@@ -378,7 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Editar Transacción"),
         "coincontrol_tx_detail_feeChange_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Tu transacción está lista para ser enviada"),
+                "Transacción lista para ser enviada"),
         "coincontrol_tx_detail_feeChange_information":
             MessageLookupByLibrary.simpleMessage(
                 "Es posible que al actualizar la tasa su selección de monedas haya cambiado. Revísalo por favor."),
@@ -388,13 +404,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Confirma que los detalles de la transacción son correctos antes de enviar."),
         "coincontrol_tx_detail_fee_custom":
-            MessageLookupByLibrary.simpleMessage("Personalizar"),
+            MessageLookupByLibrary.simpleMessage("Otro"),
         "coincontrol_tx_detail_fee_faster":
             MessageLookupByLibrary.simpleMessage("Rápido"),
         "coincontrol_tx_detail_fee_standard":
             MessageLookupByLibrary.simpleMessage("Estándar"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
-            "Tu transacción está lista para ser enviada"),
+            "Transacción lista para ser enviada"),
         "coincontrol_tx_detail_high_fee_info_amountToSend":
             MessageLookupByLibrary.simpleMessage("Cantidad a enviar"),
         "coincontrol_tx_detail_high_fee_info_destination":
@@ -404,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_fee":
             MessageLookupByLibrary.simpleMessage("Tasa"),
         "coincontrol_tx_detail_high_fee_info_feeCustom":
-            MessageLookupByLibrary.simpleMessage("Personalizar"),
+            MessageLookupByLibrary.simpleMessage("Otro"),
         "coincontrol_tx_detail_high_fee_info_feeFaster":
             MessageLookupByLibrary.simpleMessage("Rápido"),
         "coincontrol_tx_detail_high_fee_info_feeStandard":
@@ -443,7 +459,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enviar transacción"),
         "coincontrol_tx_detail_passport_send_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Tu transacción está lista para ser enviada"),
+                "Transacción lista para ser enviada"),
         "coincontrol_tx_detail_passport_send_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Confirma que los detalles de la transacción son correctos antes de enviarla."),
@@ -462,6 +478,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recibir"),
         "coincontrol_tx_history_filter_off_send":
             MessageLookupByLibrary.simpleMessage("Enviar"),
+        "coincontrol_tx_history_tx_detail_note":
+            MessageLookupByLibrary.simpleMessage("Note"),
         "coincontrol_tx_history_tx_details_address":
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coincontrol_tx_history_tx_details_address_details":
@@ -472,7 +490,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_history_tx_details_fee_details":
             MessageLookupByLibrary.simpleMessage("500 SATS \$0.13"),
         "coincontrol_tx_history_tx_details_heading":
-            MessageLookupByLibrary.simpleMessage("Detalles de la transacción"),
+            MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "coincontrol_tx_history_tx_details_history":
             MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "coincontrol_tx_history_tx_details_history_details":
@@ -488,6 +506,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_unlock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "ATENCIÓN\n\nDesbloquear monedas hará que estén disponibles para su uso en transacciones."),
+        "coindetails_overlay_address":
+            MessageLookupByLibrary.simpleMessage("Dirección"),
+        "coindetails_overlay_at": MessageLookupByLibrary.simpleMessage("a las"),
+        "coindetails_overlay_date":
+            MessageLookupByLibrary.simpleMessage("Fecha"),
+        "coindetails_overlay_heading":
+            MessageLookupByLibrary.simpleMessage("DETALLES DE MONEDA"),
+        "coindetails_overlay_notes":
+            MessageLookupByLibrary.simpleMessage("Notas"),
+        "coindetails_overlay_status":
+            MessageLookupByLibrary.simpleMessage("Estado"),
+        "coindetails_overlay_tag":
+            MessageLookupByLibrary.simpleMessage("Etiqueta"),
+        "coindetails_overlay_transactionID":
+            MessageLookupByLibrary.simpleMessage("ID de transacción"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_done": MessageLookupByLibrary.simpleMessage("Listo"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Saltar"),
@@ -741,7 +774,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_passport_subheading": MessageLookupByLibrary.simpleMessage(
             "Mete la tarjeta microSD en Passport y luego sigue las instrucciones. \n\nAsegúrate de que Passport tenga una carga adecuada de la batería antes de realizar esta operación."),
         "envoy_fw_progress_heading": MessageLookupByLibrary.simpleMessage(
-            "Envoy ahora está copiando el firmware en el archivo \nTarjeta microSD"),
+            "Envoy está copiando el firmware en el archivo \nTarjeta microSD"),
         "envoy_fw_progress_subheading": MessageLookupByLibrary.simpleMessage(
             "Esto puede tardar unos segundos. Por favor, no extraiga la tarjeta microSD."),
         "envoy_fw_success_cta":
@@ -883,7 +916,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_screen_cta1": MessageLookupByLibrary.simpleMessage(
             "Habilitar Copia de Seguridad Mágica"),
         "envoy_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
-            "Configurar Manualmente Palabras Semilla"),
+            "Configurar Semilla Manualmente"),
         "envoy_welcome_screen_heading":
             MessageLookupByLibrary.simpleMessage("Crear Nueva Cartera"),
         "envoy_welcome_screen_skip":
@@ -930,8 +963,16 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Esta semilla está protegida por una Passphrase. Necesitas las palabras semilla y la Passphrase para recuperar tus fondos."),
         "export_seed_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "ATENCIÓN\nLa siguiente pantalla muestra información altamente confidencial.\n\nCualquier persona con acceso a estos datos puede robar tus Bitcoin. Procede con extrema precaución."),
+        "filter_sortBy_aToZ": MessageLookupByLibrary.simpleMessage("A a Z"),
+        "filter_sortBy_highest":
+            MessageLookupByLibrary.simpleMessage("Valor más alto"),
+        "filter_sortBy_lowest":
+            MessageLookupByLibrary.simpleMessage("Valor más bajo"),
         "filter_sortBy_newest":
             MessageLookupByLibrary.simpleMessage("Más recientes primero"),
+        "filter_sortBy_oldest":
+            MessageLookupByLibrary.simpleMessage("Más antiguos primero"),
+        "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("Z a A"),
         "heading": MessageLookupByLibrary.simpleMessage("Verifica tu semilla"),
         "hide_amount_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Desliza el dedo para mostrar y ocultar tu saldo."),
@@ -989,8 +1030,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "learning_center_sort_oldest":
             MessageLookupByLibrary.simpleMessage("Más antiguos primero"),
         "learning_center_sort_reset_sort_cta":
-            MessageLookupByLibrary.simpleMessage(
-                "Restablecer la clasificación"),
+            MessageLookupByLibrary.simpleMessage("Restablecer orden"),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -1441,8 +1481,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_android_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Semilla Envoy"),
         "manual_toggle_on_seed_backedup_iOS_2_hours_ago":
-            MessageLookupByLibrary.simpleMessage(
-                "hace 2 horas a los servidores de Foundation"),
+            MessageLookupByLibrary.simpleMessage("hace 2 horas"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
             MessageLookupByLibrary.simpleMessage("Copia de seguridad ahora"),
         "manual_toggle_on_seed_backedup_iOS_backups":
@@ -1454,7 +1493,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Almacenado en el llavero iCloud"),
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
-            MessageLookupByLibrary.simpleMessage("to Foundation Servers"),
+            MessageLookupByLibrary.simpleMessage(
+                "a los servidores de Foundation"),
         "manual_toggle_on_seed_backedup_iOS_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Ver Semilla Envoy"),
         "manual_toggle_on_seed_backedup_iOS_wallet_data":
@@ -1621,14 +1661,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_new_device_scan_subheading": MessageLookupByLibrary.simpleMessage(
             "El código QR contiene la información necesaria para que Envoy interactúe de forma segura con Passport."),
         "pair_new_device_success_cta1": MessageLookupByLibrary.simpleMessage(
-            "Validar la dirección de recepción"),
+            "Validar dirección de recepción"),
         "pair_new_device_success_cta2": MessageLookupByLibrary.simpleMessage(
             "Continuar a la pantalla de inicio"),
         "pair_new_device_success_heading":
-            MessageLookupByLibrary.simpleMessage("Conexión exitosa"),
+            MessageLookupByLibrary.simpleMessage("Conectado con Éxito"),
         "pair_new_device_success_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy ahora está conectado a tu Passport."),
+                "Envoy está conectado a tu Passport."),
         "passport_welcome_screen_cta1": MessageLookupByLibrary.simpleMessage(
             "Configurar un nuevo Passport"),
         "passport_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
@@ -1703,7 +1743,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_connecting_node_modal_heading":
             MessageLookupByLibrary.simpleMessage("Añadir nodo"),
         "privacy_setting_connecting_node_modal_loading":
-            MessageLookupByLibrary.simpleMessage("Conexión del nodo"),
+            MessageLookupByLibrary.simpleMessage("Conectando tu nodo"),
         "privacy_setting_connecting_node_success_modal_heading":
             MessageLookupByLibrary.simpleMessage("Añadir nodo"),
         "privacy_setting_connecting_node_success_modal_heading_cta":
@@ -1886,7 +1926,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continuar"),
         "stalls_before_sending_tx_scanning_broadcasting_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Tu transacción se ha enviado con éxito"),
+                "Transacción enviada con éxito"),
         "stalls_before_sending_tx_scanning_broadcasting_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Revisa los detalles tocando la transacción desde la pantalla de la cuenta."),
@@ -1900,7 +1940,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tagged_coin_details_inputs_fails_cta2":
             MessageLookupByLibrary.simpleMessage("Descartar cambios"),
         "tagged_coin_details_inputs_fails_requiredAmount":
-            MessageLookupByLibrary.simpleMessage("Cantidad requerida"),
+            MessageLookupByLibrary.simpleMessage("Cantidad Necesaria"),
         "tagged_coin_details_inputs_fails_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Cantidad seleccionada"),
         "tagged_coin_details_inputs_success_cta1":
@@ -1908,7 +1948,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tagged_coin_details_inputs_success_cta2":
             MessageLookupByLibrary.simpleMessage("Cancelar"),
         "tagged_coin_details_inputs_success_requiredAmount":
-            MessageLookupByLibrary.simpleMessage("Cantidad requerida"),
+            MessageLookupByLibrary.simpleMessage("Cantidad Necesaria"),
         "tagged_coin_details_inputs_success_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Cantidad seleccionada"),
         "tagged_coin_details_locked_heading":
@@ -1943,7 +1983,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "Para habilitar una cuenta de Taproot en Passport, asegúrate de que estás ejecutando el firmware 2.3.0 o posterior y vuelve a conectar tu Passport."),
         "tb1q33xnrjena6apwnhx5t375":
-            MessageLookupByLibrary.simpleMessage("TB1Q33XNRJENA6APWNHX5T375"),
+            MessageLookupByLibrary.simpleMessage("bc1cq313af51bh5k0lsmna21xp"),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Reintentar la conexión Tor"),
         "torToast_learnMore_temporarilyDisableTor":

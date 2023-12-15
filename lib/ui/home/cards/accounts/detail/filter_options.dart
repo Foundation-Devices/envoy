@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -141,8 +142,6 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
   }
 }
 
-///
-/// TODO: localise the strings
 class TxFilterWidget extends ConsumerStatefulWidget {
   @override
   ConsumerState<TxFilterWidget> createState() => _TxFilterWidgetState();
@@ -187,7 +186,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Filter", // TODO: FIGMA
+                S().account_details_filter_tags_filter,
                 style: titleStyle,
               ),
               TextButton(
@@ -197,7 +196,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                   });
                 },
                 child: Text(
-                  "Reset filter", // TODO: FIGMA
+                  S().account_details_filter_tags_resetFilter,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -212,7 +211,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             children: [
               EnvoyFilterChip(
                 icon: Icons.call_made,
-                text: "Sent", // TODO: FIGMA
+                text: S().account_details_filter_tags_sent,
                 selected:
                     _filterState?.contains(TransactionFilters.Sent) ?? false,
                 onTap: () {
@@ -233,7 +232,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                 icon: Icons.call_received,
                 selected: _filterState?.contains(TransactionFilters.Received) ??
                     false,
-                text: "Received", // TODO: FIGMA
+                text: S().account_details_filter_tags_received,
                 onTap: () {
                   final Set<TransactionFilters> newState = Set()
                     ..addAll(_filterState!);
@@ -253,7 +252,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Sort by", style: titleStyle), // TODO: FIGMA
+              Text(S().account_details_filter_tags_sortBy, style: titleStyle),
               TextButton(
                 onPressed: () {
                   ref.read(txSortStateProvider.notifier).state =
@@ -263,7 +262,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                   });
                 },
                 child: Text(
-                  "Reset sorting", // TODO: FIGMA
+                  S().account_details_filter_tags_resetSorting,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -274,7 +273,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             ],
           ),
           CheckBoxFilterItem(
-            text: "Newest First", // TODO: FIGMA
+            text: S().filter_sortBy_newest,
             checked: _sortState == TransactionSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -284,7 +283,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Oldest First", // TODO: FIGMA
+            text: S().filter_sortBy_oldest,
             checked: _sortState == TransactionSortTypes.oldestFirst,
             onTap: () {
               setState(() {
@@ -293,7 +292,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Highest Value", // TODO: FIGMA
+            text: S().filter_sortBy_highest,
             checked: _sortState == TransactionSortTypes.amountHighToLow,
             onTap: () {
               Haptics.selectionClick();
@@ -303,7 +302,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Lowest Value", // TODO: FIGMA
+            text: S().filter_sortBy_lowest,
             checked: _sortState == TransactionSortTypes.amountLowToHigh,
             onTap: () {
               Haptics.selectionClick();
@@ -314,7 +313,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "Apply filters", // TODO: FIGMA
+            S().account_details_filter_tags_applyFilters,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();
@@ -376,7 +375,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Sort by", // TODO: FIGMA
+                S().account_details_filter_tags_sortBy,
                 style: titleStyle,
               ),
               TextButton(
@@ -386,7 +385,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
                   });
                 },
                 child: Text(
-                  "Reset filter", // TODO: FIGMA
+                  S().account_details_filter_tags_resetSorting,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -398,7 +397,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           CheckBoxFilterItem(
-            text: "A to Z", // TODO: FIGMA
+            text: S().filter_sortBy_aToZ,
             checked: _sortState == CoinTagSortTypes.sortByTagNameAsc,
             onTap: () {
               Haptics.selectionClick();
@@ -408,7 +407,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Z to A", // TODO: FIGMA
+            text: S().filter_sortBy_zToA,
             checked: _sortState == CoinTagSortTypes.sortByTagNameDesc,
             onTap: () {
               setState(() {
@@ -417,7 +416,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Highest Value", // TODO: FIGMA
+            text: S().filter_sortBy_highest,
             checked: _sortState == CoinTagSortTypes.amountHighToLow,
             onTap: () {
               Haptics.selectionClick();
@@ -427,7 +426,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: "Lowest Value", // TODO: FIGMA
+            text: S().filter_sortBy_lowest,
             checked: _sortState == CoinTagSortTypes.amountLowToHigh,
             onTap: () {
               Haptics.selectionClick();
@@ -438,7 +437,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            "Apply filters", // TODO: FIGMA
+            S().account_details_filter_tags_applyFilters,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();

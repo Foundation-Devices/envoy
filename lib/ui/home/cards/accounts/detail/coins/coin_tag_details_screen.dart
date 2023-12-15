@@ -131,7 +131,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           ? S()
                               .untagged_coin_details_locked_heading
                               .toUpperCase()
-                          : "COIN DETAILS", // TODO: FIGMA
+                          : S().coindetails_overlay_heading.toUpperCase(),
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
                                 color: Colors.white,

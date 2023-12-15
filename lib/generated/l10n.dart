@@ -144,10 +144,10 @@ class S {
 
   // skipped getter for the 'August 15, 2023' key
 
-  /// `200,000`
+  /// `bc1q ar0s … wf5m dq`
   String get Balance {
     return Intl.message(
-      '200,000',
+      'bc1q ar0s … wf5m dq',
       name: 'Balance',
       desc: '',
       args: [],
@@ -178,10 +178,10 @@ class S {
 
   // skipped getter for the 'Click Here For More' key
 
-  /// `1 Locked`
+  /// `1 of 2 Coins Selected  |  3 Locked`
   String get CoinInfo {
     return Intl.message(
-      '1 Locked',
+      '1 of 2 Coins Selected  |  3 Locked',
       name: 'CoinInfo',
       desc: '',
       args: [],
@@ -350,10 +350,10 @@ class S {
 
   // skipped getter for the 'Improved Privacy' key
 
-  /// `Activity`
+  /// `Address`
   String get Label {
     return Intl.message(
-      'Activity',
+      'Address',
       name: 'Label',
       desc: '',
       args: [],
@@ -534,10 +534,10 @@ class S {
     );
   }
 
-  /// `Receive`
+  /// `Label`
   String get ScreenTitle {
     return Intl.message(
-      'Receive',
+      'Label',
       name: 'ScreenTitle',
       desc: '',
       args: [],
@@ -648,20 +648,20 @@ class S {
     );
   }
 
-  /// `Total`
+  /// `Tag`
   String get Tag {
     return Intl.message(
-      'Total',
+      'Tag',
       name: 'Tag',
       desc: '',
       args: [],
     );
   }
 
-  /// `Conferences`
+  /// `Exchange`
   String get TagName {
     return Intl.message(
-      'Conferences',
+      'Exchange',
       name: 'TagName',
       desc: '',
       args: [],
@@ -722,10 +722,10 @@ class S {
 
   // skipped getter for the 'Unboxing Passport Pt.1' key
 
-  /// `5,000,000`
+  /// `1.123456`
   String get Value {
     return Intl.message(
-      '5,000,000',
+      '1.123456',
       name: 'Value',
       desc: '',
       args: [],
@@ -776,10 +776,10 @@ class S {
     );
   }
 
-  /// `Passport Name`
+  /// `~60 mins`
   String get _ {
     return Intl.message(
-      'Passport Name',
+      '~60 mins',
       name: '_',
       desc: '',
       args: [],
@@ -841,6 +841,76 @@ class S {
     return Intl.message(
       '1.4.0',
       name: 'about_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply filters`
+  String get account_details_filter_tags_applyFilters {
+    return Intl.message(
+      'Apply filters',
+      name: 'account_details_filter_tags_applyFilters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter`
+  String get account_details_filter_tags_filter {
+    return Intl.message(
+      'Filter',
+      name: 'account_details_filter_tags_filter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received`
+  String get account_details_filter_tags_received {
+    return Intl.message(
+      'Received',
+      name: 'account_details_filter_tags_received',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset filter`
+  String get account_details_filter_tags_resetFilter {
+    return Intl.message(
+      'Reset filter',
+      name: 'account_details_filter_tags_resetFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset sorting`
+  String get account_details_filter_tags_resetSorting {
+    return Intl.message(
+      'Reset sorting',
+      name: 'account_details_filter_tags_resetSorting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sent`
+  String get account_details_filter_tags_sent {
+    return Intl.message(
+      'Sent',
+      name: 'account_details_filter_tags_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sort by`
+  String get account_details_filter_tags_sortBy {
+    return Intl.message(
+      'Sort by',
+      name: 'account_details_filter_tags_sortBy',
       desc: '',
       args: [],
     );
@@ -1726,6 +1796,16 @@ class S {
     );
   }
 
+  /// `Available balance`
+  String get coincontrol_edit_transaction_available_balance {
+    return Intl.message(
+      'Available balance',
+      name: 'coincontrol_edit_transaction_available_balance',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get coincontrol_edit_transaction_confirm {
     return Intl.message(
@@ -1866,10 +1946,10 @@ class S {
     );
   }
 
-  /// `500,000`
+  /// `1,500,000`
   String get coincontrol_edit_transaction_selected_inputs_sats {
     return Intl.message(
-      '500,000',
+      '1,500,000',
       name: 'coincontrol_edit_transaction_selected_inputs_sats',
       desc: '',
       args: [],
@@ -2330,10 +2410,10 @@ class S {
     );
   }
 
-  /// `Learn more`
+  /// `[[Learn more]]`
   String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
     return Intl.message(
-      'Learn more',
+      '[[Learn more]]',
       name: 'coincontrol_tx_detail_high_fee_info_overlay_learnMore',
       desc: '',
       args: [],
@@ -2541,6 +2621,16 @@ class S {
   }
 
   /// `Note`
+  String get coincontrol_tx_history_tx_detail_note {
+    return Intl.message(
+      'Note',
+      name: 'coincontrol_tx_history_tx_detail_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
   String get coincontrol_tx_history_tx_details_address {
     return Intl.message(
       'Note',
@@ -2655,6 +2745,86 @@ class S {
     return Intl.message(
       'WARNING\n\nUnlocking coins will make them available for use in transactions.',
       name: 'coincontrol_unlock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get coindetails_overlay_address {
+    return Intl.message(
+      'Address',
+      name: 'coindetails_overlay_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `at`
+  String get coindetails_overlay_at {
+    return Intl.message(
+      'at',
+      name: 'coindetails_overlay_at',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get coindetails_overlay_date {
+    return Intl.message(
+      'Date',
+      name: 'coindetails_overlay_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `coin details`
+  String get coindetails_overlay_heading {
+    return Intl.message(
+      'coin details',
+      name: 'coindetails_overlay_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get coindetails_overlay_notes {
+    return Intl.message(
+      'Notes',
+      name: 'coindetails_overlay_notes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status`
+  String get coindetails_overlay_status {
+    return Intl.message(
+      'Status',
+      name: 'coindetails_overlay_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag`
+  String get coindetails_overlay_tag {
+    return Intl.message(
+      'Tag',
+      name: 'coindetails_overlay_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction ID`
+  String get coindetails_overlay_transactionID {
+    return Intl.message(
+      'Transaction ID',
+      name: 'coindetails_overlay_transactionID',
       desc: '',
       args: [],
     );
@@ -4792,11 +4962,61 @@ class S {
     );
   }
 
+  /// `A to Z`
+  String get filter_sortBy_aToZ {
+    return Intl.message(
+      'A to Z',
+      name: 'filter_sortBy_aToZ',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Highest value`
+  String get filter_sortBy_highest {
+    return Intl.message(
+      'Highest value',
+      name: 'filter_sortBy_highest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lowest value`
+  String get filter_sortBy_lowest {
+    return Intl.message(
+      'Lowest value',
+      name: 'filter_sortBy_lowest',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Newest first`
   String get filter_sortBy_newest {
     return Intl.message(
       'Newest first',
       name: 'filter_sortBy_newest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oldest first`
+  String get filter_sortBy_oldest {
+    return Intl.message(
+      'Oldest first',
+      name: 'filter_sortBy_oldest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Z to A`
+  String get filter_sortBy_zToA {
+    return Intl.message(
+      'Z to A',
+      name: 'filter_sortBy_zToA',
       desc: '',
       args: [],
     );
@@ -9318,10 +9538,10 @@ class S {
     );
   }
 
-  /// `tb1q33xnrjena6apwnhx5t375`
+  /// `bc1cq313af51bh5k0lsmna21xp`
   String get tb1q33xnrjena6apwnhx5t375 {
     return Intl.message(
-      'tb1q33xnrjena6apwnhx5t375',
+      'bc1cq313af51bh5k0lsmna21xp',
       name: 'tb1q33xnrjena6apwnhx5t375',
       desc: '',
       args: [],
