@@ -15,9 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:wallet/wallet.dart';
 
-//ignore: must_be_immutable
 class AddressCard extends ConsumerStatefulWidget {
   final Account account;
 
@@ -40,8 +38,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTaproot = widget.account.wallet.type == WalletType.taproot;
-    // ignore: unused_local_variable
     return FutureBuilder<String>(
         future: widget.account.wallet.getAddress(),
         builder: (context, snapshot) {
@@ -64,12 +60,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                 account: widget.account,
                                 qr: EnvoyQR(
                                   data: snapshot.data!,
-                                  embeddedImage: isTaproot
-                                      ? Image.asset(
-                                          'assets/taproot_qr.png',
-                                        ).image
-                                      : null,
-                                  embeddedImageSize: Size(64, 33),
                                 )),
                           ),
                         ),
