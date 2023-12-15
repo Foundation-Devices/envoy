@@ -112,9 +112,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       return false;
     }
 
-    // Warning flag
-    container.read(psbtInputsChangedProvider.notifier).state = false;
-
     List<Utxo> utxos = container
         .read(getSelectedCoinsProvider(account.id!))
         .map((e) => e.utxo)
@@ -351,7 +348,8 @@ final dontSpendCoinsProvider = StateProvider<List<Utxo>>((ref) {
 // Providers needed to show the fee/inputs warning
 final userHasSelectedCoinsProvider = StateProvider<bool>((ref) => false);
 final userHasEnteredEditModeProvider = StateProvider<bool>((ref) => false);
-final psbtInputsChangedProvider = StateProvider<bool>((ref) => false);
+final userHasChangedFeesProvider = StateProvider<bool>((ref) => false);
+final transactionInputsChangedProvider = StateProvider<bool>((ref) => false);
 
 final spendEditModeProvider = StateProvider((ref) => false);
 final spendAddressProvider = StateProvider((ref) => "");
@@ -380,7 +378,7 @@ final rawTransactionProvider = Provider<RawTransaction?>((ref) {
         .toList();
 
     if (!listEquals(previousIds, nextIds)) {
-      ref.read(psbtInputsChangedProvider.notifier).state = true;
+      ref.read(transactionInputsChangedProvider.notifier).state = true;
     }
   });
   return ref.watch(spendTransactionProvider).rawTransaction;

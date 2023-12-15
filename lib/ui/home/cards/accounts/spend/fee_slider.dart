@@ -92,12 +92,14 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           onTap: (index) {
             switch (index) {
               case 0:
+                ref.read(userHasChangedFeesProvider.notifier).state = true;
                 ref.read(spendFeeRateProvider.notifier).state = standardFee;
                 ref
                     .read(spendTransactionProvider.notifier)
                     .validate(ProviderScope.containerOf(context));
                 break;
               case 1:
+                ref.read(userHasChangedFeesProvider.notifier).state = true;
                 ref.read(spendFeeRateProvider.notifier).state = fasterFee;
                 ref
                     .read(spendTransactionProvider.notifier)
@@ -142,6 +144,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   /// otherwise set the fee rate to selected value
                   ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
                       ref.read(spendFeeRateProvider);
+                  ref.read(userHasChangedFeesProvider.notifier).state = true;
                 });
                 break;
             }
