@@ -162,16 +162,22 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             Tab(
               child: Text(
                 S().coincontrol_tx_detail_fee_standard,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Tab(
               child: Text(
                 S().coincontrol_tx_detail_fee_faster,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Tab(
               child: Text(
                 S().coincontrol_tx_detail_fee_custom,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ]),
