@@ -245,7 +245,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     });
 
     return Container(
-        height: (MediaQuery.of(context).size.height * 0.27).clamp(220, 250),
+        constraints: BoxConstraints(minHeight: 190, maxHeight: 210),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
