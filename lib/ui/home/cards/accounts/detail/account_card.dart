@@ -436,6 +436,8 @@ class TransactionListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Locale activeLocale = Localizations.localeOf(context);
+
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
@@ -505,7 +507,8 @@ class TransactionListTile extends StatelessWidget {
                   : transaction.type == TransactionType.normal &&
                           transaction.isConfirmed
                       ? Text(
-                          timeago.format(transaction.date),
+                          timeago.format(transaction.date,
+                              locale: activeLocale.languageCode),
                           style: _transactionTextStyleInfo,
                         )
                       : Text(

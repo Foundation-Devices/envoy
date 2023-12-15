@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.foundationdevices.envoy">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -11,8 +12,10 @@
         android:backupAgent="EnvoyBackupAgent"
         android:icon="@mipmap/ic_launcher"
         android:label="Envoy"
+        android:localeConfig="@xml/locales_config"
         android:requestLegacyExternalStorage="true"
-        android:restoreAnyVersion="true">
+        android:restoreAnyVersion="true"
+        tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
