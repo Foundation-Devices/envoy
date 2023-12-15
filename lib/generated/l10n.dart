@@ -776,10 +776,10 @@ class S {
     );
   }
 
-  /// `~60 mins`
+  /// `Conference`
   String get _ {
     return Intl.message(
-      '~60 mins',
+      'Conference',
       name: '_',
       desc: '',
       args: [],
@@ -2200,6 +2200,36 @@ class S {
     );
   }
 
+  /// `Change received`
+  String get coincontrol_tx_detail_expand_changeReceived {
+    return Intl.message(
+      'Change received',
+      name: 'coincontrol_tx_detail_expand_changeReceived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `coin`
+  String get coincontrol_tx_detail_expand_coin {
+    return Intl.message(
+      'coin',
+      name: 'coincontrol_tx_detail_expand_coin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `coins`
+  String get coincontrol_tx_detail_expand_coins {
+    return Intl.message(
+      'coins',
+      name: 'coincontrol_tx_detail_expand_coins',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `TRANSACTION Details`
   String get coincontrol_tx_detail_expand_heading {
     return Intl.message(
@@ -2215,6 +2245,16 @@ class S {
     return Intl.message(
       'BBQ',
       name: 'coincontrol_tx_detail_expand_note_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spent from`
+  String get coincontrol_tx_detail_expand_spentFrom {
+    return Intl.message(
+      'Spent from',
+      name: 'coincontrol_tx_detail_expand_spentFrom',
       desc: '',
       args: [],
     );

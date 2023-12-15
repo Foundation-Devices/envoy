@@ -93,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("~60 mins"),
+        "_": MessageLookupByLibrary.simpleMessage("Conference"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_heading": MessageLookupByLibrary.simpleMessage("About"),
         "about_openSourceLicences":
@@ -377,10 +377,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Destination"),
         "coincontrol_tx_detail_destination_details":
             MessageLookupByLibrary.simpleMessage("Show address"),
+        "coincontrol_tx_detail_expand_changeReceived":
+            MessageLookupByLibrary.simpleMessage("Change received"),
+        "coincontrol_tx_detail_expand_coin":
+            MessageLookupByLibrary.simpleMessage("coin"),
+        "coincontrol_tx_detail_expand_coins":
+            MessageLookupByLibrary.simpleMessage("coins"),
         "coincontrol_tx_detail_expand_heading":
             MessageLookupByLibrary.simpleMessage("TRANSACTION Details"),
         "coincontrol_tx_detail_expand_note_note":
             MessageLookupByLibrary.simpleMessage("BBQ"),
+        "coincontrol_tx_detail_expand_spentFrom":
+            MessageLookupByLibrary.simpleMessage("Spent from"),
         "coincontrol_tx_detail_fee":
             MessageLookupByLibrary.simpleMessage("Fee"),
         "coincontrol_tx_detail_feeChange_editTransaction":

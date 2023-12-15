@@ -384,10 +384,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Destino"),
         "coincontrol_tx_detail_destination_details":
             MessageLookupByLibrary.simpleMessage("Mostrar dirección"),
+        "coincontrol_tx_detail_expand_changeReceived":
+            MessageLookupByLibrary.simpleMessage("Cambio recibido"),
+        "coincontrol_tx_detail_expand_coin":
+            MessageLookupByLibrary.simpleMessage("moneda"),
+        "coincontrol_tx_detail_expand_coins":
+            MessageLookupByLibrary.simpleMessage("monedas"),
         "coincontrol_tx_detail_expand_heading":
             MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "coincontrol_tx_detail_expand_note_note":
             MessageLookupByLibrary.simpleMessage("Barbacoa"),
+        "coincontrol_tx_detail_expand_spentFrom":
+            MessageLookupByLibrary.simpleMessage("Enviar de"),
         "coincontrol_tx_detail_fee":
             MessageLookupByLibrary.simpleMessage("Tasa"),
         "coincontrol_tx_detail_feeChange_editTransaction":
@@ -479,7 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_history_filter_off_send":
             MessageLookupByLibrary.simpleMessage("Enviar"),
         "coincontrol_tx_history_tx_detail_note":
-            MessageLookupByLibrary.simpleMessage("Note"),
+            MessageLookupByLibrary.simpleMessage("Notas"),
         "coincontrol_tx_history_tx_details_address":
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coincontrol_tx_history_tx_details_address_details":
