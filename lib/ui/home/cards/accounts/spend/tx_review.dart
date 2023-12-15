@@ -461,8 +461,16 @@ class _TransactionReviewScreenState
 
     final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
-    final feeChangeNotice = ref.watch(userHasEnteredEditModeProvider) &&
-        ref.watch(psbtInputsChangedProvider);
+    final userHasSelectedCoins = ref.watch(userHasSelectedCoinsProvider);
+    final userHasEnteredEditMode = ref.watch(userHasEnteredEditModeProvider);
+    final transactionInputsChanged =
+        ref.watch(transactionInputsChangedProvider);
+    final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
+
+    final feeChangeNotice = userHasEnteredEditMode &&
+        userHasSelectedCoins &&
+        transactionInputsChanged &&
+        userHasChangedFees;
 
     /// if user selected unit from the form screen then use that, otherwise use the default
     DisplayUnit unit = spendScreenUnit == AmountDisplayUnit.btc
@@ -1102,7 +1110,7 @@ class _DiscardTransactionDialogState
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
-              ref.read(userHasEnteredEditModeProvider.notifier).state = false;
+              resetUserInteractionProviders();
               GoRouter.of(context).pop(true);
               await Future.delayed(Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
@@ -1120,6 +1128,13 @@ class _DiscardTransactionDialogState
         ],
       ),
     );
+  }
+
+  void resetUserInteractionProviders() {
+    ref.read(userHasEnteredEditModeProvider.notifier).state = false;
+    ref.read(userHasChangedFeesProvider.notifier).state = false;
+    ref.read(transactionInputsChangedProvider.notifier).state = false;
+    ref.read(userHasSelectedCoinsProvider.notifier).state = false;
   }
 }
 
