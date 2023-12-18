@@ -544,11 +544,12 @@ class _TransactionReviewScreenState
                   vertical: EnvoySpacing.small,
                   horizontal: EnvoySpacing.medium1),
               child: ListTile(
-                title: Text(header.toUpperCase(),
+                title: Text(header,
                     textAlign: TextAlign.center,
                     style: EnvoyTypography.heading),
                 subtitle: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
                   child: Text(
                     subHeading,
                     textAlign: TextAlign.center,
