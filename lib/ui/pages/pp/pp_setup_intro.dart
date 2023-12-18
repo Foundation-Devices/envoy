@@ -10,6 +10,7 @@ import 'package:envoy/ui/pages/pp/pp_restore_seed.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class PpSetupIntroPage extends StatelessWidget {
   @override
@@ -36,7 +37,7 @@ class PpSetupIntroPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                    OnboardingPage.popUntilHome(context);
                   },
                   child: Icon(Icons.close_rounded)),
             )

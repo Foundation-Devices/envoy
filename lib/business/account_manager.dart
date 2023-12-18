@@ -239,17 +239,21 @@ class AccountManager extends ChangeNotifier {
       List<Account> newAccounts = await getPassportAccountsFromJson(json);
       int alreadyPairedAccountsCount = 0;
 
-      newAccounts.forEach((newAccount) {
+      newAccountsLoop:
+      for (var newAccount in newAccounts) {
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {
+            // Don't add this one
             alreadyPairedAccountsCount++;
-            break;
+            continue newAccountsLoop;
           }
         }
 
+        _initWallet(newAccount.wallet);
         addAccount(newAccount);
-      });
+      }
+      ;
 
       if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
@@ -303,6 +307,7 @@ class AccountManager extends ChangeNotifier {
     }
 
     Wallet wallet = await getWalletFromJson(json);
+    _initWallet(wallet);
 
     Device device = getDeviceFromJson(json);
     Devices().add(device);
@@ -353,8 +358,7 @@ class AccountManager extends ChangeNotifier {
     var externalDescriptor = partialDescriptor + "/0/*)";
     var internalDescriptor = partialDescriptor + "/1/*)";
 
-    var wallet =
-        await _initWallet(xpub, externalDescriptor, internalDescriptor);
+    var wallet = await _getWallet(xpub, externalDescriptor, internalDescriptor);
     return wallet;
   }
 
@@ -391,7 +395,7 @@ class AccountManager extends ChangeNotifier {
     });
   }
 
-  static Future<Wallet> _initWallet(String fingerprint,
+  static Future<Wallet> _getWallet(String fingerprint,
       String externalDescriptor, String internalDescriptor) async {
     int publicKeyIndex = externalDescriptor.indexOf("]") + 1;
     String publicKeyType =
@@ -411,9 +415,12 @@ class AccountManager extends ChangeNotifier {
     Wallet wallet = Wallet(
         fingerprint, network, externalDescriptor, internalDescriptor,
         type: type);
-    wallet.init(walletsDirectory);
 
     return wallet;
+  }
+
+  static void _initWallet(Wallet wallet) {
+    wallet.init(walletsDirectory);
   }
 
   Future storeAccounts() async {

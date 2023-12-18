@@ -9,6 +9,7 @@ import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
@@ -376,7 +377,7 @@ class _ScannerPageState extends State<ScannerPage> {
       return null;
     }, test: (e) => e is AccountAlreadyPaired).then((account) {
       if (account == null) {
-        Navigator.of(context).popUntil(ModalRoute.withName("/"));
+        OnboardingPage.popUntilHome(context);
       } else {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {

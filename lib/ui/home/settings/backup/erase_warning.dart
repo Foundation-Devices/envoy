@@ -291,7 +291,7 @@ class _EraseWalletsConfirmationState
                 type: EnvoyButtonTypes.primaryModal,
                 label: S().delete_wallet_for_good_modal_cta1,
                 onTap: () {
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  OnboardingPage.popUntilHome(context);
                 }),
             Padding(padding: EdgeInsets.all(12)),
           ],
