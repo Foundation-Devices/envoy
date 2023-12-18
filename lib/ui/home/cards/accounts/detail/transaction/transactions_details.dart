@@ -63,7 +63,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
               fontSize: 15,
             );
 
-    final address =  tx.address ??  tx.outputs?[0] ?? "";
+    final address = tx.address ?? tx.outputs?[0] ?? "";
 
     TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.textPrimary,
