@@ -52,8 +52,6 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
-    // final List<CoinTag> tags = ref.watch(tagsFilteredByTxIdProvider(
-    //     FilterTagPayload(widget.account.id, tx.txId)));
     final accountAccentColor = widget.account.color;
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
@@ -65,9 +63,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
               fontSize: 15,
             );
 
-    final address = tx.type == TransactionType.pending
-        ? tx.address ?? ""
-        : (tx.outputs?[0] ?? ""); //TODO:temporary: fix with proper address
+    final address =  tx.address ??  tx.outputs?[0] ?? "";
 
     TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.textPrimary,
