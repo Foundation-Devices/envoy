@@ -144,10 +144,10 @@ class S {
 
   // skipped getter for the 'August 15, 2023' key
 
-  /// `bc1q ar0s … wf5m dq`
+  /// `200,000`
   String get Balance {
     return Intl.message(
-      'bc1q ar0s … wf5m dq',
+      '200,000',
       name: 'Balance',
       desc: '',
       args: [],
@@ -324,6 +324,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'Fulcrum 1.9.7' key
+
   /// `Secure `
   String get Heading {
     return Intl.message(
@@ -350,10 +352,10 @@ class S {
 
   // skipped getter for the 'Improved Privacy' key
 
-  /// `Address`
+  /// `Custom`
   String get Label {
     return Intl.message(
-      'Address',
+      'Custom',
       name: 'Label',
       desc: '',
       args: [],
@@ -648,10 +650,10 @@ class S {
     );
   }
 
-  /// `Tag`
+  /// `Total`
   String get Tag {
     return Intl.message(
-      'Tag',
+      'Total',
       name: 'Tag',
       desc: '',
       args: [],
@@ -776,10 +778,10 @@ class S {
     );
   }
 
-  /// `Conference`
+  /// `USD`
   String get _ {
     return Intl.message(
-      'Conference',
+      'USD',
       name: '_',
       desc: '',
       args: [],
@@ -1221,6 +1223,16 @@ class S {
     return Intl.message(
       'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings.]]',
       name: 'android_backup_info_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is a simple Bitcoin wallet with powerful account management and privacy features.\n\nUse Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.\n\nEnvoy offers the following features:\n\n1. Magic Backups. Get up and running with self-custody in only 60 seconds with automatic encrypted backups. Seed words optional.\n\n2. Manage your mobile wallet and Passport hardware wallet accounts in the same app.\n\n3. Send and receive Bitcoin in a zen-like interface.\n\n4. Connect your Passport hardware wallet for setup, firmware updates, and support videos. Use Envoy as your software wallet connected to your Passport.\n\n5. Fully open source and privacy preserving. Envoy optionally connects to the Internet with Tor for maximum privacy.\n\n6. Optionally connect your own Bitcoin node.`
+  String get appstore_description {
+    return Intl.message(
+      'Envoy is a simple Bitcoin wallet with powerful account management and privacy features.\n\nUse Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.\n\nEnvoy offers the following features:\n\n1. Magic Backups. Get up and running with self-custody in only 60 seconds with automatic encrypted backups. Seed words optional.\n\n2. Manage your mobile wallet and Passport hardware wallet accounts in the same app.\n\n3. Send and receive Bitcoin in a zen-like interface.\n\n4. Connect your Passport hardware wallet for setup, firmware updates, and support videos. Use Envoy as your software wallet connected to your Passport.\n\n5. Fully open source and privacy preserving. Envoy optionally connects to the Internet with Tor for maximum privacy.\n\n6. Optionally connect your own Bitcoin node.',
+      name: 'appstore_description',
       desc: '',
       args: [],
     );
@@ -2430,10 +2442,10 @@ class S {
     );
   }
 
-  /// `Your transaction\nis ready to be sent`
+  /// `Your transaction is ready to be sent`
   String get coincontrol_tx_detail_high_fee_info_heading {
     return Intl.message(
-      'Your transaction\nis ready to be sent',
+      'Your transaction is ready to be sent',
       name: 'coincontrol_tx_detail_high_fee_info_heading',
       desc: '',
       args: [],
@@ -7544,10 +7556,10 @@ class S {
     );
   }
 
-  /// `Backup Now`
+  /// `Back Up Now`
   String get manual_toggle_on_seed_not_backedup_android_backup_now {
     return Intl.message(
-      'Backup Now',
+      'Back Up Now',
       name: 'manual_toggle_on_seed_not_backedup_android_backup_now',
       desc: '',
       args: [],
@@ -8183,6 +8195,26 @@ class S {
     return Intl.message(
       'Improve your privacy by running your own node. Tap learn more above. ',
       name: 'privacy_node_configure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connected to`
+  String get privacy_node_connectedTo {
+    return Intl.message(
+      'Connected to',
+      name: 'privacy_node_connectedTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't reach node.`
+  String get privacy_node_connection_couldNotReach {
+    return Intl.message(
+      'Couldn\'t reach node.',
+      name: 'privacy_node_connection_couldNotReach',
       desc: '',
       args: [],
     );
@@ -9138,10 +9170,10 @@ class S {
     );
   }
 
-  /// `Enable Testnet`
+  /// `Testnet`
   String get settings_advanced_testnet {
     return Intl.message(
-      'Enable Testnet',
+      'Testnet',
       name: 'settings_advanced_testnet',
       desc: '',
       args: [],
@@ -9203,6 +9235,16 @@ class S {
     return Intl.message(
       'Connect with Tor',
       name: 'settings_tor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Envoy Logs`
+  String get settings_viewEnvoyLogs {
+    return Intl.message(
+      'View Envoy Logs',
+      name: 'settings_viewEnvoyLogs',
       desc: '',
       args: [],
     );

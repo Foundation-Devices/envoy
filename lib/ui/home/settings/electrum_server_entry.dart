@@ -120,7 +120,8 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
         setState(() {
           _state = ElectrumServerEntryState.valid;
           _isError = false;
-          _textBelow = "Connected to " + features.serverVersion; // TODO: FIGMA
+          _textBelow =
+              "${S().privacy_node_connectedTo} " + features.serverVersion;
         });
       }
       ;
@@ -132,7 +133,7 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
           _isError = true;
           _textBelow = e is InvalidPort
               ? "Invalid port."
-              : "Couldn't reach node."; // FIGMA
+              : S().privacy_node_connection_couldNotReach;
         });
       }
       ;
