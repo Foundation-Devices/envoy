@@ -67,12 +67,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
   late AnimationController animationController;
   late Account account;
   late Animation<Alignment> animation;
-  TextStyle _explainerTextStyleWallet = TextStyle(
-      height: 2.0,
-      fontFamily: 'Montserrat',
-      fontStyle: FontStyle.normal,
-      fontWeight: FontWeight.w400,
-      color: EnvoyColors.grey);
 
   _redraw() {
     setState(() {});
@@ -331,7 +325,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   txFiltersEnabled
                       ? S().account_emptyTxHistoryTextExplainer_FilteredView
                       : S().account_empty_tx_history_text_explainer,
-                  style: _explainerTextStyleWallet.copyWith(),
+                  style: EnvoyTypography.explainer,
                   textAlign: TextAlign.center,
                 ),
               ),

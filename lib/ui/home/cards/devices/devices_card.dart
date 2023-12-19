@@ -228,11 +228,6 @@ class GhostDevice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle _explainerTextStyle = TextStyle(
-        fontFamily: 'Montserrat',
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.w400,
-        color: EnvoyColors.textTertiary);
     return Column(
       children: [
         ClipRRect(
@@ -257,12 +252,12 @@ class GhostDevice extends StatelessWidget {
               children: [
                 Text(
                   S().devices_empty_text_explainer,
-                  style: _explainerTextStyle,
+                  style: EnvoyTypography.explainer,
                 ),
                 SizedBox(width: EnvoySpacing.small),
                 GestureDetector(
                   child: Text(S().devices_empty_learn_more,
-                      style: EnvoyTypography.button
+                      style: EnvoyTypography.explainer
                           .copyWith(color: EnvoyColors.accentPrimary)),
                   onTap: () {
                     showDialog(
