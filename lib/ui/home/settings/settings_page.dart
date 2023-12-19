@@ -244,8 +244,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SettingText("View Envoy Logs", onTap: () {
-                      // TODO: FIGMA
+                    SettingText(S().settings_viewEnvoyLogs, onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(

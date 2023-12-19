@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Answer": MessageLookupByLibrary.simpleMessage("Answer"),
         "Aswer": MessageLookupByLibrary.simpleMessage(
             "Envoy is our cross platform Passport companion app, designed to make everything you do with Passport simpler.\n\nEnvoy is our mobile companion app for Passport, available on Android and iOS. Envoy offers a streamlined Passport setup process and simple, privacy-preserving Bitcoin watch-only wallet."),
-        "Balance": MessageLookupByLibrary.simpleMessage("bc1q ar0s … wf5m dq"),
+        "Balance": MessageLookupByLibrary.simpleMessage("200,000"),
         "BodyCopy": MessageLookupByLibrary.simpleMessage("Invalid Entry"),
         "Button": MessageLookupByLibrary.simpleMessage("Done"),
         "CoinInfo": MessageLookupByLibrary.simpleMessage(
@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Heading": MessageLookupByLibrary.simpleMessage("Secure "),
         "Headline": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be sent"),
-        "Label": MessageLookupByLibrary.simpleMessage("Address"),
+        "Label": MessageLookupByLibrary.simpleMessage("Custom"),
         "Left": MessageLookupByLibrary.simpleMessage("Receive"),
         "Letter": MessageLookupByLibrary.simpleMessage("return"),
         "Links": MessageLookupByLibrary.simpleMessage("Links"),
@@ -80,7 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Symbol": MessageLookupByLibrary.simpleMessage("Q"),
         "TabBarItemHeading": MessageLookupByLibrary.simpleMessage("Learn"),
         "TabBarItemLabel": MessageLookupByLibrary.simpleMessage("Learn"),
-        "Tag": MessageLookupByLibrary.simpleMessage("Tag"),
+        "Tag": MessageLookupByLibrary.simpleMessage("Total"),
         "TagName": MessageLookupByLibrary.simpleMessage("Exchange"),
         "Tags": MessageLookupByLibrary.simpleMessage("Tags"),
         "Test": MessageLookupByLibrary.simpleMessage("Received"),
@@ -93,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "X": MessageLookupByLibrary.simpleMessage("1"),
         "Y": MessageLookupByLibrary.simpleMessage("5"),
         "Z": MessageLookupByLibrary.simpleMessage("1"),
-        "_": MessageLookupByLibrary.simpleMessage("Conference"),
+        "_": MessageLookupByLibrary.simpleMessage("USD"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_heading": MessageLookupByLibrary.simpleMessage("About"),
         "about_openSourceLicences":
@@ -178,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
             "Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings.]]"),
+        "appstore_description": MessageLookupByLibrary.simpleMessage(
+            "Envoy is a simple Bitcoin wallet with powerful account management and privacy features.\n\nUse Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.\n\nEnvoy offers the following features:\n\n1. Magic Backups. Get up and running with self-custody in only 60 seconds with automatic encrypted backups. Seed words optional.\n\n2. Manage your mobile wallet and Passport hardware wallet accounts in the same app.\n\n3. Send and receive Bitcoin in a zen-like interface.\n\n4. Connect your Passport hardware wallet for setup, firmware updates, and support videos. Use Envoy as your software wallet connected to your Passport.\n\n5. Fully open source and privacy preserving. Envoy optionally connects to the Internet with Tor for maximum privacy.\n\n6. Optionally connect your own Bitcoin node."),
         "azteco_account_tx_history_pending_voucher":
             MessageLookupByLibrary.simpleMessage("Pending Azteco voucher"),
         "azteco_account_tx_history_receive":
@@ -428,7 +430,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Standard"),
         "coincontrol_tx_detail_high_fee_info_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your transaction\nis ready to be sent"),
+                "Your transaction is ready to be sent"),
         "coincontrol_tx_detail_high_fee_info_overlay_heading":
             MessageLookupByLibrary.simpleMessage("Transaction Details"),
         "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
@@ -1508,7 +1510,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "This backup contains connected devices and accounts, labels and app settings. It contains no private key information.\n\nEnvoy backups are end-to-end encrypted, Foundation has no access or knowledge of their contents. \n\nEnvoy will notify you when the upload is complete."),
         "manual_toggle_on_seed_not_backedup_android_backup_now":
-            MessageLookupByLibrary.simpleMessage("Backup Now"),
+            MessageLookupByLibrary.simpleMessage("Back Up Now"),
         "manual_toggle_on_seed_not_backedup_android_backups":
             MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
@@ -1643,6 +1645,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Unlock with biometrics or PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Improve your privacy by running your own node. Tap learn more above. "),
+        "privacy_node_connectedTo":
+            MessageLookupByLibrary.simpleMessage("Connected to"),
+        "privacy_node_connection_couldNotReach":
+            MessageLookupByLibrary.simpleMessage("Couldn\'t reach node."),
         "privacy_node_learnMore":
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "privacy_node_nodeAddress":
@@ -1843,7 +1849,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution."),
         "settings_advanced_testnet":
-            MessageLookupByLibrary.simpleMessage("Enable Testnet"),
+            MessageLookupByLibrary.simpleMessage("Testnet"),
         "settings_amount":
             MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
         "settings_biometric": MessageLookupByLibrary.simpleMessage(
@@ -1855,6 +1861,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
         "settings_tor":
             MessageLookupByLibrary.simpleMessage("Connect with Tor"),
+        "settings_viewEnvoyLogs":
+            MessageLookupByLibrary.simpleMessage("View Envoy Logs"),
         "stalls_before_sending_tx_add_note_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Save"),
         "stalls_before_sending_tx_add_note_modal_cta2":
