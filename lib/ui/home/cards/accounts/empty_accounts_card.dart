@@ -16,9 +16,6 @@ class EmptyAccountsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle explainerTextStyle =
-        EnvoyTypography.button.copyWith(color: EnvoyColors.textTertiary);
-
     return Column(
       children: [
         ClipRRect(
@@ -55,12 +52,12 @@ class EmptyAccountsCard extends StatelessWidget {
               children: [
                 Text(
                   S().accounts_empty_text_explainer,
-                  style: explainerTextStyle,
+                  style: EnvoyTypography.explainer,
                 ),
                 GestureDetector(
                   child: Text(
                     S().accounts_empty_text_learn_more,
-                    style: EnvoyTypography.button
+                    style: EnvoyTypography.explainer
                         .copyWith(color: EnvoyColors.accentPrimary),
                   ),
                   onTap: () {

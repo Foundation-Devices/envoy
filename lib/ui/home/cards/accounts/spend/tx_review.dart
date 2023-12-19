@@ -987,7 +987,12 @@ class _TransactionReviewScreenState
                     EnvoyButton(
                       S().coincontrol_tx_detail_cta2,
                       type: EnvoyButtonTypes.secondary,
-                      onTap: () => editTransaction(context),
+                      onTap: () {
+                        if (showFeeChangeNotice) {
+                          resetFeeChangeNoticeUserInteractionProviders(ref);
+                        }
+                        editTransaction(context);
+                      },
                     ),
                   Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
@@ -1109,7 +1114,7 @@ class _DiscardTransactionDialogState
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
-              resetUserInteractionProviders();
+              resetFeeChangeNoticeUserInteractionProviders(ref);
               GoRouter.of(context).pop(true);
               await Future.delayed(Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
@@ -1128,13 +1133,13 @@ class _DiscardTransactionDialogState
       ),
     );
   }
+}
 
-  void resetUserInteractionProviders() {
-    ref.read(userSelectedCoinsProvider.notifier).state = false;
-    ref.read(userHasChangedFeesProvider.notifier).state = false;
-    ref.read(transactionInputsChangedProvider.notifier).state = false;
-    ref.read(coinSelectionChangedProvider.notifier).state = false;
-  }
+void resetFeeChangeNoticeUserInteractionProviders(WidgetRef ref) {
+  ref.read(userSelectedCoinsProvider.notifier).state = false;
+  ref.read(userHasChangedFeesProvider.notifier).state = false;
+  ref.read(transactionInputsChangedProvider.notifier).state = false;
+  ref.read(coinSelectionChangedProvider.notifier).state = false;
 }
 
 class TxReviewNoteDialog extends ConsumerStatefulWidget {
