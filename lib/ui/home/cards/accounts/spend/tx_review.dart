@@ -461,12 +461,13 @@ class _TransactionReviewScreenState
     final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
-    final userSelectedCoins = ref.watch(userSelectedCoinsProvider);
+    final userSelectedCoinsThisSession =
+        ref.watch(userSelectedCoinsThisSessionProvider);
     final transactionInputsChanged =
         ref.watch(transactionInputsChangedProvider);
     final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
 
-    final showFeeChangeNotice = userSelectedCoins &&
+    final showFeeChangeNotice = userSelectedCoinsThisSession &&
         coinSelectionChanged &&
         transactionInputsChanged &&
         userHasChangedFees;
@@ -988,9 +989,8 @@ class _TransactionReviewScreenState
                       S().coincontrol_tx_detail_cta2,
                       type: EnvoyButtonTypes.secondary,
                       onTap: () {
-                        if (showFeeChangeNotice) {
-                          resetFeeChangeNoticeUserInteractionProviders(ref);
-                        }
+                        ref.read(userHasChangedFeesProvider.notifier).state =
+                            false;
                         editTransaction(context);
                       },
                     ),
@@ -1136,7 +1136,7 @@ class _DiscardTransactionDialogState
 }
 
 void resetFeeChangeNoticeUserInteractionProviders(WidgetRef ref) {
-  ref.read(userSelectedCoinsProvider.notifier).state = false;
+  ref.read(userSelectedCoinsThisSessionProvider.notifier).state = false;
   ref.read(userHasChangedFeesProvider.notifier).state = false;
   ref.read(transactionInputsChangedProvider.notifier).state = false;
   ref.read(coinSelectionChangedProvider.notifier).state = false;

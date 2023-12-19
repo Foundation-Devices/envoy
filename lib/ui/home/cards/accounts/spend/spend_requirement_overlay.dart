@@ -23,6 +23,7 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -218,6 +219,12 @@ class SpendRequirementOverlayState
   Widget build(BuildContext context) {
     final totalSelectedAmount =
         ref.watch(getTotalSelectedAmount(widget.account.id!));
+
+    ref.listen(coinSelectionStateProvider, (previous, next) {
+      if (!setEquals(previous, next)) {
+        ref.read(userSelectedCoinsThisSessionProvider.notifier).state = true;
+      }
+    });
 
     final requiredAmount = ref.watch(spendAmountProvider);
 
@@ -463,13 +470,6 @@ class SpendRequirementOverlayState
                                             : S()
                                                 .coincontrol_edit_transaction_cta,
                                         onTap: () async {
-                                          if (!inTagSelectionMode) {
-                                            ref
-                                                .read(userSelectedCoinsProvider
-                                                    .notifier)
-                                                .state = true;
-                                          }
-
                                           /// if the user is in utxo details screen we need to wait animations to finish
                                           /// before we can pop back to home screen
                                           if (Navigator.canPop(context)) {
@@ -483,12 +483,15 @@ class SpendRequirementOverlayState
                                           }
 
                                           ///if the user changed the selection, validate the transaction
-                                          ref
-                                              .read(spendTransactionProvider
-                                                  .notifier)
-                                              .validate(
-                                                  ProviderScope.containerOf(
-                                                      context));
+                                          if (ref.read(
+                                              userSelectedCoinsThisSessionProvider)) {
+                                            ref
+                                                .read(spendTransactionProvider
+                                                    .notifier)
+                                                .validate(
+                                                    ProviderScope.containerOf(
+                                                        context));
+                                          }
                                           hideSpendRequirementOverlay();
                                           await Future.delayed(
                                               Duration(milliseconds: 120));

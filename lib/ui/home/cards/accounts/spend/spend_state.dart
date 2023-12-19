@@ -347,7 +347,10 @@ final dontSpendCoinsProvider = StateProvider<List<Utxo>>((ref) {
 
 // Providers needed to show the fee/inputs warning
 final coinSelectionChangedProvider = StateProvider<bool>((ref) => false);
-final userSelectedCoinsProvider = StateProvider<bool>((ref) => false);
+
+// We reset this once user exit tx_review and it is set, to true, once, for the session
+final userSelectedCoinsThisSessionProvider =
+    StateProvider<bool>((ref) => false);
 final userHasChangedFeesProvider = StateProvider<bool>((ref) => false);
 final transactionInputsChangedProvider = StateProvider<bool>((ref) => false);
 
