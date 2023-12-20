@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -214,7 +215,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                   : lastEnvoyServerBackup == null
                                       ? S()
                                           .manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup
-                                      : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode)[0].toUpperCase()}${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).substring(1).toLowerCase()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
+                                      : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
                               color: EnvoyColors.grey,
                               maxLines: 2,
                             ),
