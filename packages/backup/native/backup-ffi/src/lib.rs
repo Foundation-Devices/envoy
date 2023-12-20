@@ -10,6 +10,7 @@ extern crate log;
 use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::FromHex;
 use bdk::bitcoin::hashes::hex::ToHex;
+use bdk::keys::bip39;
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::io::Read;
@@ -101,7 +102,7 @@ pub unsafe extern "C" fn backup_perform(
 
     let server_url = CStr::from_ptr(server_url).to_str().unwrap();
 
-    let password = get_static_secret(seed_words);
+    let password = unwrap_or_return!(get_static_secret(seed_words), false);
     let encrypted = encrypt_backup(backup_data, &password);
 
     let rt = RUNTIME.as_ref().unwrap();
@@ -148,10 +149,10 @@ pub unsafe extern "C" fn backup_perform_offline(
     payload: BackupPayload,
     seed_words: *const c_char,
     path: *const c_char,
-) {
+) -> bool {
     let backup_data = extract_backup_data(payload);
-    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
-    let password = get_static_secret(seed_words);
+    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), false);
+    let password = unwrap_or_return!(get_static_secret(seed_words), false);
     let encrypted = encrypt_backup(backup_data, &password);
 
     let rt = RUNTIME.as_ref().unwrap();
@@ -159,14 +160,14 @@ pub unsafe extern "C" fn backup_perform_offline(
     // We are doing an offline backup, store the data at path
     let path = CStr::from_ptr(path).to_str().unwrap();
     rt.block_on(async move { tokio::fs::write(path, encrypted).await.unwrap() });
+    true
 }
 
-fn get_static_secret(seed_words: &str) -> StaticSecret {
-    let mnemonic = Mnemonic::parse(seed_words).unwrap();
+fn get_static_secret(seed_words: &str) -> Result<StaticSecret, bip39::Error> {
+    let mnemonic = Mnemonic::parse(seed_words)?;
     let entropy = mnemonic.to_entropy_array().0;
     let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
-    let password = StaticSecret::from(entropy_32);
-    password
+    Ok(StaticSecret::from(entropy_32))
 }
 
 #[no_mangle]
@@ -183,7 +184,7 @@ pub unsafe extern "C" fn backup_get(
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
 
-    let password = get_static_secret(seed_words);
+    let password = unwrap_or_return!(get_static_secret(seed_words), err_ret);
 
     let server_url = CStr::from_ptr(server_url).to_str().unwrap();
 
@@ -226,7 +227,7 @@ pub unsafe extern "C" fn backup_get_offline(
     };
 
     let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
-    let password = get_static_secret(seed_words);
+    let password = unwrap_or_return!(get_static_secret(seed_words), err_ret);
 
     let file_path = CStr::from_ptr(file_path).to_str().unwrap();
     let file_data = fs::read(file_path).unwrap();

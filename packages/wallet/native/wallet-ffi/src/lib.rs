@@ -12,7 +12,7 @@ use std::ptr;
 use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::error::Error;
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 
 use bdk::bitcoin::{Address, Network, OutPoint, Txid};
 use bdk::database::{ConfigurableDatabase, MemoryDatabase};

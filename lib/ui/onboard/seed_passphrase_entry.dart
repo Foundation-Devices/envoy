@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -176,7 +177,7 @@ void showInvalidSeedDialog({required BuildContext context}) {
                   child: Text(
                     S().manual_setup_import_seed_12_words_fail_modal_subheading,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: EnvoyTypography.body,
                   ),
                 ),
               ],

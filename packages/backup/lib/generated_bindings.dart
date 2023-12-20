@@ -50,7 +50,7 @@ class NativeLibrary {
       bool Function(
           BackupPayload, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
-  void backup_perform_offline(
+  bool backup_perform_offline(
     BackupPayload payload,
     ffi.Pointer<ffi.Char> seed_words,
     ffi.Pointer<ffi.Char> path,
@@ -64,10 +64,10 @@ class NativeLibrary {
 
   late final _backup_perform_offlinePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(BackupPayload, ffi.Pointer<ffi.Char>,
+          ffi.Bool Function(BackupPayload, ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Char>)>>('backup_perform_offline');
   late final _backup_perform_offline = _backup_perform_offlinePtr.asFunction<
-      void Function(
+      bool Function(
           BackupPayload, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   BackupPayload backup_get(
