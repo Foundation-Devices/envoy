@@ -6,6 +6,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
@@ -140,14 +141,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                                     .manual_setup_import_seed_12_words_CTA_inactive,
                                 onTap: () {
                                   String result = currentWords.join(' ');
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RecoverFromSeedLoader(
-                                                seed: result,
-                                              )));
+                                  checkSeed(context, result);
                                 }),
                           ),
                         ))

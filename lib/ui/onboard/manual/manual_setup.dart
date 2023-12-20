@@ -297,13 +297,7 @@ class SeedIntroScreen extends StatelessWidget {
                                       //TODO: Passphrase
 
                                       Future.delayed(Duration.zero, () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    RecoverFromSeedLoader(
-                                                      seed: result,
-                                                    )));
+                                        checkSeed(context, result);
                                       });
                                     });
                                   }));
@@ -317,5 +311,20 @@ class SeedIntroScreen extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+Future<void> checkSeed(BuildContext context, String seed) async {
+  if (!await EnvoySeed().create(seed.split(" "))) {
+    showInvalidSeedDialog(
+      context: context,
+    );
+  } else {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RecoverFromSeedLoader(
+                  seed: seed,
+                )));
   }
 }
