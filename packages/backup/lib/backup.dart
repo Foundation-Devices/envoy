@@ -49,11 +49,14 @@ class Backup {
     var lib = NativeLibrary(load("backup_ffi"));
 
     // Always do offline backup
-    lib.backup_perform_offline(
+    if (!lib.backup_perform_offline(
       payload.ref,
       seedWords.toNativeUtf8().cast<Char>(),
       path.toNativeUtf8().cast(),
-    );
+    )) {
+      // Something has gone terribly wrong if we can't even do offline
+      return false;
+    }
 
     if (!cloud) {
       return true;
