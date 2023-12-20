@@ -63,8 +63,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
       accountAccentColor = Color(0xff808080);
     }
 
-    double height = showExpandedAddress ? 286 : 288;
-    height = showExpandedTxId ? 300 : height;
+    double height = showExpandedAddress ? 294 : 280;
+    height = showExpandedTxId ? 310 : height;
 
     return Container(
       padding: EdgeInsets.all(8),
@@ -155,6 +155,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                         style: trailingTextStyle?.copyWith(
                                             color: EnvoyColors.accentPrimary),
                                         textAlign: TextAlign.end,
+                                        maxLines: 3,
+                                        minLines: 1,
                                         enableInteractiveSelection:
                                             showExpandedAddress,
                                         onTap: () {
@@ -193,6 +195,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                         style: trailingTextStyle?.copyWith(
                                             color: EnvoyColors.accentPrimary),
                                         textAlign: TextAlign.end,
+                                        maxLines: 4,
+                                        minLines: 1,
                                         onTap: () {
                                           setState(() {
                                             showExpandedTxId =
