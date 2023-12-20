@@ -41,6 +41,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -501,12 +502,10 @@ class TransactionListTile extends StatelessWidget {
                   : transaction.type == TransactionType.normal &&
                           transaction.isConfirmed
                       ? Builder(builder: (context) {
-                          String time = timeago.format(transaction.date,
-                              locale: activeLocale.languageCode);
-
-                          ///Capitalize first letter in the time
-                          time = time.replaceRange(
-                              0, 1, time.substring(0, 1).toUpperCase());
+                          String time = timeago
+                              .format(transaction.date,
+                                  locale: activeLocale.languageCode)
+                              .capitalize();
                           return Text(
                             time,
                             style: _transactionTextStyleInfo,
