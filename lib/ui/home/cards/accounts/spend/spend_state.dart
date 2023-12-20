@@ -175,10 +175,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..rawTransaction = rawTransaction
         ..valid = true;
 
-      final utxoSet = utxos.map((e) => e.id).toSet();
+      ///get all input that selected for the current PSBT
+      final utxoSet = rawTransaction.inputs
+          .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}");
 
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
       container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
+        ///if current inputs are part of a single tag, use that tag as change output tag
         if (element.coins_id.containsAll(utxoSet)) {
           container.read(stagingTxChangeOutPutTagProvider.notifier).state =
               element;
