@@ -33,6 +33,7 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -40,6 +41,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +49,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -500,11 +501,16 @@ class TransactionListTile extends StatelessWidget {
                     )
                   : transaction.type == TransactionType.normal &&
                           transaction.isConfirmed
-                      ? Text(
-                          timeago.format(transaction.date,
-                              locale: activeLocale.languageCode),
-                          style: _transactionTextStyleInfo,
-                        )
+                      ? Builder(builder: (context) {
+                          String time = timeago
+                              .format(transaction.date,
+                                  locale: activeLocale.languageCode)
+                              .capitalize();
+                          return Text(
+                            time,
+                            style: _transactionTextStyleInfo,
+                          );
+                        })
                       : Text(
                           S().receive_tx_list_awaitingConfirmation,
                           style: _transactionTextStyleInfo,
