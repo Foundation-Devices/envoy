@@ -216,7 +216,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 color: Colors.black,
                               ),
                               trailing: Text(
-                                  "${DateFormat.yMd(localizationTag).format(tx.date)} at ${DateFormat.Hm(localizationTag).format(tx.date)}",
+                                  getTransactionDateAndTimeString(tx),
                                   style: trailingTextStyle),
                             ),
                             CoinTagListItem(
