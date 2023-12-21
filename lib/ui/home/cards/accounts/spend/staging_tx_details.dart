@@ -18,6 +18,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_w
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/indicator_shield.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -765,18 +766,18 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                 .copyWith(color: EnvoyColors.solidWhite),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            launchUrlString(
-                                "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                            child: Text(
-                              S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                              style: EnvoyTypography.button
-                                  .copyWith(color: EnvoyColors.solidWhite),
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                          child: LinkText(
+                            text: S()
+                                .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                            textAlign: TextAlign.center,
+                            linkStyle: EnvoyTypography.button
+                                .copyWith(color: EnvoyColors.solidWhite),
+                            onTap: () {
+                              launchUrlString(
+                                  "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
+                            },
                           ),
                         )
                       ]
