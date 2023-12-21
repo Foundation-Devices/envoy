@@ -60,8 +60,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
       accountAccentColor = Color(0xff808080);
     }
 
-    double height = showExpandedAddress ? 294 : 280;
-    height = showExpandedTxId ? 310 : height;
+    double height = showExpandedAddress ? 324 : 280;
+    height = showExpandedTxId ? 324 : height;
 
     return Container(
       padding: EdgeInsets.all(8),
@@ -145,7 +145,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     tween: Tween<double>(
                                         begin: 0,
                                         end: showExpandedAddress ? 1 : 0),
-                                    duration: Duration(milliseconds: 300),
+                                    duration: Duration(milliseconds: 200),
                                     builder: (context, value, child) {
                                       return SelectableText(
                                         "${truncateWithEllipsisInCenter(utxoAddress, lerpDouble(20, utxoAddress.length, value)!.toInt())}",
@@ -185,7 +185,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     tween: Tween<double>(
                                         begin: 0,
                                         end: showExpandedTxId ? 1 : 0),
-                                    duration: Duration(milliseconds: 300),
+                                    duration: Duration(milliseconds: 200),
                                     builder: (context, value, child) {
                                       return SelectableText(
                                         "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
