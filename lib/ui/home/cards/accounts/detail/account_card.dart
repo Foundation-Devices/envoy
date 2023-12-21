@@ -131,7 +131,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
     return Scaffold(
-      extendBody: true,
       body: PopScope(
         canPop: !isMenuOpen,
         onPopInvoked: (bool didPop) async {
@@ -167,9 +166,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1,
-                    vertical: EnvoySpacing.small),
+                padding: const EdgeInsets.only(
+                    left: EnvoySpacing.medium1,
+                    right: EnvoySpacing.medium1,
+                    top: EnvoySpacing.small),
                 child: account.dateSynced == null
                     ? ListView.builder(
                         padding: EdgeInsets.zero,
@@ -320,15 +320,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
           GhostListTile(animate: false),
           Expanded(
             child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 128),
-                child: Text(
-                  txFiltersEnabled
-                      ? S().account_emptyTxHistoryTextExplainer_FilteredView
-                      : S().account_empty_tx_history_text_explainer,
-                  style: EnvoyTypography.explainer,
-                  textAlign: TextAlign.center,
-                ),
+              child: Text(
+                txFiltersEnabled
+                    ? S().account_emptyTxHistoryTextExplainer_FilteredView
+                    : S().account_empty_tx_history_text_explainer,
+                style: EnvoyTypography.body,
+                textAlign: TextAlign.center,
               ),
             ),
           ),
