@@ -22,7 +22,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
@@ -47,8 +46,6 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         ref.read(transactionsProvider(widget.tag.account));
     final tx = accountTransactions
         .firstWhere((element) => element.txId == widget.coin.utxo.txid);
-    final localizationTag =
-        Localizations.maybeLocaleOf(context)?.toLanguageTag();
     final utxoAddress = tx.outputs?[widget.coin.utxo.vout] ?? "";
     final coinTag = widget.tag;
     final coin = widget.coin;
