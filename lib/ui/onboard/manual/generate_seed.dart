@@ -277,7 +277,7 @@ class _SeedScreenState extends State<SeedScreen> {
                     label: S()
                         .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA,
                     onTap: () async {
-                      await Navigator.maybePop(context);
+                      Navigator.pop(context);
                       _pageController.animateToPage(1,
                           duration: Duration(milliseconds: 320),
                           curve: Curves.ease);
