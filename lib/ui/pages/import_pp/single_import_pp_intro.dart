@@ -70,7 +70,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                   child: Container(
                 height: max(MediaQuery.of(context).size.height * 0.38, 300),
                 margin: EdgeInsets.symmetric(horizontal: 18),
-                padding: EdgeInsets.only(top: 44),
+                padding: EdgeInsets.only(top: 25),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -78,25 +78,12 @@ class SingleImportPpIntroPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Container(
                         width: 380,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              S().pair_existing_device_intro_heading,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Padding(padding: EdgeInsets.all(6)),
-                            Text(
-                              isExistingDevice
-                                  ? S().pair_existing_device_intro_subheading
-                                  : S()
-                                      .pair_new_device_intro_connect_envoy_subheading,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                        child: OnboardingText(
+                          header: S().pair_existing_device_intro_heading,
+                          text: isExistingDevice
+                              ? S().pair_existing_device_intro_subheading
+                              : S()
+                                  .pair_new_device_intro_connect_envoy_subheading,
                         ),
                       ),
                     ),

@@ -267,6 +267,7 @@ class OnboardingText extends StatelessWidget {
                     header!,
                     textAlign: TextAlign.center,
                     style: EnvoyTypography.body.copyWith(
+                        height: 1.2,
                         fontSize: 20,
                         color: EnvoyColors.gray1000,
                         decoration: TextDecoration.none),
@@ -280,6 +281,7 @@ class OnboardingText extends StatelessWidget {
                     text!,
                     textAlign: TextAlign.center,
                     style: EnvoyTypography.info.copyWith(
+                      height: 1.2,
                       color: newColorScheme.EnvoyColors.inactiveDark,
                       decoration: TextDecoration.none,
                     ),
