@@ -63,21 +63,13 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
         Timer.periodic(Duration(milliseconds: 100), _calculateContainerHeight);
   }
 
-  @override
-  void didUpdateWidget(covariant TransactionsDetailsWidget oldWidget) {
-    setState(() {
-      containerHeight = 44 + (_scrollController.position.extentTotal);
-    });
-    super.didUpdateWidget(oldWidget);
-  }
-
   void _calculateContainerHeight(timeStamp) {
     if (mounted) {
       ///ensures we only set of the height changes
       double nextHeight = 44 + (_scrollController.position.extentTotal);
       if (nextHeight != containerHeight)
         setState(() {
-          containerHeight = 44 + (_scrollController.position.extentTotal);
+          containerHeight = nextHeight;
         });
     }
   }
