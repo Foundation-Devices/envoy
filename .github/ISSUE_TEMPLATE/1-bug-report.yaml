@@ -65,16 +65,16 @@ body:
       label: Anything else?
       placeholder: Add any other relevant information here, such as if Tor was in use, network conditions, etc.
 
-- type: dropdown
-  id: impact
-  attributes:
-    label: Impact of the issue
-    description: Please select only one.
-    options:
-      - label: "Low: Minor issue with minimal impact on usability."
-      - label: "Medium: Moderate issue affecting usability."
-      - label: "High: Major issue severely impacting usability or app stability."
-    multiple: false
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact of the issue
+      description: Please select only one.
+      options:
+        - label: "Low: Minor issue with minimal impact on usability."
+        - label: "Medium: Moderate issue affecting usability."
+        - label: "High: Major issue severely impacting usability or app stability."
+      multiple: false
 
   - type: input
     id: related-issues
