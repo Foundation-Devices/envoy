@@ -38,7 +38,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: reproduction
     attributes:
       label: Please provide the steps that you've used to reproduce the issue
