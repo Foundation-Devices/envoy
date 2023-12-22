@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Security issue disclosure
+    url: https://foundationdevices.com/security/
+    about: Report a security issue with Envoy
+  - name: Support Request
+    url: https://github.com/angular/angular/blob/main/CONTRIBUTING.md#question
+    about: Questions and requests for support
