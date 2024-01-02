@@ -162,7 +162,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().manage_device_disconnect_modal_cta.toUpperCase(),
+                        S().manage_device_disconnect_modal_cta,
                         type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           Devices().renameDevice(
