@@ -149,12 +149,12 @@ void showInvalidSeedDialog({required BuildContext context}) {
     dismissible: true,
     builder: Builder(builder: (context) {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: 300,
+        width: 300,
+        height: 344,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: [
             Column(
               children: [
