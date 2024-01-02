@@ -692,7 +692,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     content: textEntry,
                     actions: [
                       EnvoyButton(
-                        S().manage_account_rename_cta.toUpperCase(),
+                        S().manage_account_rename_cta,
                         onTap: () {
                           AccountManager().renameAccount(
                               widget.account, textEntry.enteredText);
