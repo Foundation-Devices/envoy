@@ -49,6 +49,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -644,6 +645,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 
   @override
   Widget build(context) {
+    final account = ref.watch(accountStateProvider(widget.account.id!));
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -675,7 +677,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             textEntry = TextEntry(
               focusNode: focusNode,
               maxLength: 20,
-              placeholder: widget.account.name,
+              placeholder: account?.name ?? "",
             );
             showEnvoyDialog(
               context: context,
