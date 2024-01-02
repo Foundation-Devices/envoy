@@ -11,6 +11,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -36,6 +37,13 @@ class AuthenticateApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
         theme: ThemeData(
           textTheme: envoyTextTheme,
           primaryColor: envoyAccentColor,
