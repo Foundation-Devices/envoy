@@ -115,34 +115,42 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          widget.device.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge!
-                                              .copyWith(
-                                                color: Colors.white,
-                                              ),
-                                        ),
-                                        SizedBox(),
-                                        Text(
-                                          widget.device.type ==
-                                                  DeviceType.passportGen12
-                                              ? "Passport" // TODO: FIGMA
-                                              : "Founder's Edition",
-                                          // TODO: FIGMA
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(color: Colors.white),
-                                        ),
-                                      ],
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            widget.device.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                          ),
+                                          // SizedBox(),
+                                          Text(
+                                            widget.device.type ==
+                                                    DeviceType.passportGen12
+                                                ? "Passport" // TODO: FIGMA
+                                                : "Founder's Edition",
+                                            // TODO: FIGMA
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(),
                                     Column(
