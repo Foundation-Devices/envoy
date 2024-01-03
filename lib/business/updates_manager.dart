@@ -12,6 +12,7 @@ import 'package:crypto/crypto.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:path/path.dart';
 
 class UpdatesManager {
   HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
@@ -82,15 +83,18 @@ class UpdatesManager {
 
     // Migration
     if (!file.path.endsWith("-passport.bin") ||
-        file.path.endsWith("0-passport.bin") ||
-        file.path.endsWith("1-passport.bin")) {
-      final fileName = (getStoredFwVersionString(deviceId) as String) +
-          (deviceId == 0 ? "-founders" : "") +
-          "-passport.bin";
-      var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
-      es.addNewFirmware(
-          deviceId, getStoredFwVersionString(deviceId) as String, fileName);
-      return newFile;
+        basename(file.path) == "0-passport.bin" ||
+        basename(file.path) == "1-passport.bin") {
+      String? storedFwVersion = await getStoredFwVersionString(deviceId);
+
+      if (storedFwVersion != null) {
+        final fileName = storedFwVersion +
+            (deviceId == 0 ? "-founders" : "") +
+            "-passport.bin";
+        var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
+        es.addNewFirmware(deviceId, storedFwVersion, fileName);
+        return newFile;
+      }
     }
 
     return file;
