@@ -13,7 +13,7 @@ if (flutterRoot == null) {
 
 int generateVersionCode(String versionName, int versionCode) {
     def parts = versionName.split("\\.").collect { it.toInteger() }
-    return parts[0] * 10000 + parts[1] * 1000 + parts[2] * 100 + versionCode
+    return parts[0] * 100000 + parts[1] * 10000 + parts[2] * 1000 + versionCode
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
