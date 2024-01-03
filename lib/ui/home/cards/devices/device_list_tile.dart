@@ -143,9 +143,11 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall!
-                                                .copyWith(color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 12,),
+                                                .copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                ),
                                           ),
                                         ],
                                       ),
