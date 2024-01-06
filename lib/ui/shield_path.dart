@@ -16,8 +16,8 @@ class ShieldClipper extends CustomClipper<Path> {
     double degToRad(double deg) => deg * (pi / 180.0);
 
     var path = Path();
-    double arcSize = size.width / 5;
-    double padding = 0;
+    double arcSize = size.width / 4.8;
+    double padding = 1.2;
 
     double shieldCrestAngle = 164;
     double arcAngle = (180 - shieldCrestAngle) / 2;
