@@ -2,8 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -11,13 +16,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/ui/loader_ghost.dart';
 import 'package:wallet/wallet.dart';
 
 class AccountListTile extends ConsumerStatefulWidget {
@@ -102,13 +102,15 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         ? 0
         : ref.watch(accountBalanceProvider(account.id));
 
+    double cardRadius = 26;
+
     return CardSwipeWrapper(
       height: containerHeight,
       account: account,
       child: Container(
         height: containerHeight,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(22)),
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
           border: Border.all(
               color: Colors.black, width: 2, style: BorderStyle.solid),
           gradient: LinearGradient(
@@ -121,11 +123,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         ),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(22)),
+              borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
               border: Border.all(
-                  color: account.color, width: 2, style: BorderStyle.solid)),
+                  color: EnvoyColors.listAccountTileColors[2],
+                  width: 2,
+                  style: BorderStyle.solid)),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
             child: GestureDetector(
               onTap: widget.onTap,
               child: Stack(children: [
@@ -139,11 +143,18 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                 ),
                 Positioned.fill(
                     child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 13),
+                        padding: const EdgeInsets.only(
+                          left: EnvoySpacing.medium1,
+                          right: EnvoySpacing.xs,
+                          top: EnvoySpacing.xs,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -164,124 +175,150 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: AccountBadge(account: account),
-                            ),
+                            AccountBadge(account: account),
                           ],
                         ),
                       ),
                     ),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Expanded(
                       flex: 2,
-                      child: Consumer(
-                        builder: (context, ref, child) {
-                          final hide = ref.watch(
-                              balanceHideStateStatusProvider(account.id));
-                          if (hide) {
-                            return Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(22))),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 13.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(
-                                        width: 200,
-                                        height: 20,
-                                        child: Container(
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xffEEEEEE),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(22)))),
-                                      ),
-                                      SizedBox(
-                                          width: 50,
-                                          height: 15,
-                                          child: Container(
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: Color(0xffEEEEEE),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              22)))))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.all(6.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: 34,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.xs + 2,
+                                vertical: EnvoySpacing.xs),
                             child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(17))),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 13.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                            height: 20,
-                                            child: getUnitIcon(widget.account)),
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 2.0)),
-                                        FittedBox(
-                                          fit: BoxFit.fitWidth,
-                                          child: account.dateSynced == null ||
-                                                  hide
-                                              ? LoaderGhost(
-                                                  width: 200,
-                                                  height: 20,
-                                                )
-                                              : Text(
-                                                  getFormattedAmount(balance,
-                                                      testnet: account
-                                                              .wallet.network ==
-                                                          Network.Testnet),
-                                                  style: _textStyleAmountSatBtc,
-                                                ),
+                              child: Consumer(
+                                builder: (context, ref, child) {
+                                  final hide = ref.watch(
+                                      balanceHideStateStatusProvider(
+                                          account.id));
+                                  if (hide) {
+                                    return Container(
+                                      decoration: ShapeDecoration(
+                                        color: Color(0xFFF8F8F8),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              cardRadius + 8),
                                         ),
-                                      ],
-                                    ),
-                                    account.dateSynced == null || hide
-                                        ? LoaderGhost(
-                                            width: 50,
-                                            height: 15,
-                                          )
-                                        : Flexible(
-                                            child: Text(
-                                              ExchangeRate().getFormattedAmount(
-                                                  balance,
-                                                  wallet:
-                                                      widget.account.wallet),
-                                              style: _textStyleFiat,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: 200,
+                                              height: 20,
+                                              child: Container(
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xffEEEEEE),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  22)))),
                                             ),
-                                          )
-                                  ],
-                                ),
+                                            SizedBox(
+                                                width: 50,
+                                                height: 15,
+                                                child: Container(
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xffEEEEEE),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    22)))))
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return Container(
+                                    decoration: ShapeDecoration(
+                                      color: Color(0xFFF8F8F8),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            cardRadius + 8),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                  height: 20,
+                                                  child: getUnitIcon(
+                                                      widget.account)),
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 2.0)),
+                                              FittedBox(
+                                                fit: BoxFit.fitWidth,
+                                                child: account.dateSynced ==
+                                                            null ||
+                                                        hide
+                                                    ? LoaderGhost(
+                                                        width: 200,
+                                                        height: 20,
+                                                      )
+                                                    : Text(
+                                                        getFormattedAmount(
+                                                            balance,
+                                                            testnet: account
+                                                                    .wallet
+                                                                    .network ==
+                                                                Network
+                                                                    .Testnet),
+                                                        style:
+                                                            _textStyleAmountSatBtc,
+                                                      ),
+                                              ),
+                                            ],
+                                          ),
+                                          account.dateSynced == null || hide
+                                              ? LoaderGhost(
+                                                  width: 50,
+                                                  height: 15,
+                                                )
+                                              : Flexible(
+                                                  child: Text(
+                                                    ExchangeRate()
+                                                        .getFormattedAmount(
+                                                            balance,
+                                                            wallet: widget
+                                                                .account
+                                                                .wallet),
+                                                    style: _textStyleFiat,
+                                                  ),
+                                                )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     )
                   ],

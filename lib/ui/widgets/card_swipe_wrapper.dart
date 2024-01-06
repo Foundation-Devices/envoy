@@ -123,7 +123,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
                     colors: thresholdReached ? activeColors : disabledColors),
                 width: 1,
               ),
-              borderRadius: BorderRadius.circular(20)),
+              borderRadius: BorderRadius.circular(26)),
           child: Consumer(
             builder: (context, ref, child) {
               return Container(
