@@ -16,9 +16,34 @@ class Shield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: ShieldClipper(),
-      child: Container(color: EnvoyColors.surface1, child: child),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ClipPath(
+            clipper: ShieldClipper(),
+            child: Container(
+                color: EnvoyColors.solidWhite, child: SizedBox.expand()),
+          ),
+        ),
+        Positioned.fill(
+          child: Container(
+            margin: EdgeInsets.all(1.5),
+            child: ClipPath(
+              clipper: ShieldClipper(),
+              child: Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                        EnvoyColors.surface2,
+                        EnvoyColors.surface1
+                      ])),
+                  child: child),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
