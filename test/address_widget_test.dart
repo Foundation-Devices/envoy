@@ -11,24 +11,42 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AddressWidget(
-                address: '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',
-                short: false,
-              ),
-              AddressWidget(
-                address: '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',
-                short: true,
-              ),
-            ],
+          body: Container(
+            height: 600,
+            width: 400,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: AddressWidget(
+                    address: '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',
+                    short: false,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: AddressWidget(
+                    address: '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',
+                    short: true,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: AddressWidget(
+                    address:
+                        '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',
+                    short: false,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
 
     await expectLater(
-        find.byType(Column), matchesGoldenFile('address_widget.png'));
+        find.byType(Container), matchesGoldenFile('address_widget.png'));
   });
 }
