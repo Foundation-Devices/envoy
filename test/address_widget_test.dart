@@ -12,6 +12,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AddressWidget(
                 address: '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',

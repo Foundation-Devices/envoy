@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class AddressWidget extends StatelessWidget {
   final String address;
   final TextStyle textStyleBold = EnvoyTypography.body
-      .copyWith(color: EnvoyColors.textSecondary, fontWeight: FontWeight.bold);
+      .copyWith(color: EnvoyColors.textPrimary, fontWeight: FontWeight.bold);
   final TextStyle textStyleNormal = EnvoyTypography.body
       .copyWith(color: EnvoyColors.textTertiary, fontWeight: FontWeight.normal);
   final bool short;
@@ -45,10 +45,7 @@ class AddressWidget extends StatelessWidget {
     shortTextSpans.add(
       TextSpan(
         text: '...',
-        style: textStyleNormal.copyWith(
-          color: EnvoyColors.textTertiary,
-          fontWeight: FontWeight.normal,
-        ),
+        style: textStyleNormal,
       ),
     );
 
@@ -72,9 +69,9 @@ class AddressWidget extends StatelessWidget {
           (address.length >= (i + chunkSize)) ? chunkSize : address.length - i;
       String chunk = address.substring(i, i + currentChunkSize);
 
-      if (i > 0) {
+      if (i != 0) {
         // Add a space before each chunk (except the first one)
-        textSpans.add(const TextSpan(text: ' '));
+        textSpans.add(TextSpan(text: ' ', style: textStyleNormal));
       }
 
       textSpans.add(
