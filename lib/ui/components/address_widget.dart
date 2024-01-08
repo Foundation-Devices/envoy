@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 
 class AddressWidget extends StatelessWidget {
   final String address;
-  final TextStyle textStyleBold = EnvoyTypography.body
-      .copyWith(color: EnvoyColors.textPrimary, fontWeight: FontWeight.bold);
-  final TextStyle textStyleNormal = EnvoyTypography.body
-      .copyWith(color: EnvoyColors.textTertiary, fontWeight: FontWeight.normal);
+  final TextStyle textStyleBold =
+      EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
+  final TextStyle textStyleNormal =
+      EnvoyTypography.body.copyWith(color: EnvoyColors.textTertiary);
   final bool short;
 
   AddressWidget({
