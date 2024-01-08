@@ -75,9 +75,8 @@ class SingleImportPpIntroPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Container(
-                        width: 380,
                         child: OnboardingText(
                           header: S().pair_existing_device_intro_heading,
                           text: isExistingDevice
