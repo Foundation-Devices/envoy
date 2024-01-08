@@ -82,3 +82,7 @@ License: GPL-3.0-or-later
 Files: packages/wallet/lib/*.freezed.*
 Copyright: 2022 Foundation Devices Inc.
 License: GPL-3.0-or-later
+
+Files: test/*.png
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
