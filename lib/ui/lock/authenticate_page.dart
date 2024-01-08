@@ -87,6 +87,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               biometricOnly: true,
               stickyAuth: true,
             ),
+
+            ///TODO: localize this
             localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
           if (Platform.isIOS) {
@@ -98,6 +100,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           showAuthLockedOutDialog(
             ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
             ctaTapCallback: () {
+              Navigator.pop(context);
               initiateAuth();
             },
             title: S().launch_screen_faceID_fail_heading,
@@ -111,29 +114,51 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         if (e.code == auth_error.lockedOut ||
             e.code == auth_error.permanentlyLockedOut) {
           showAuthLockedOutDialog(
-            ctaButtonTitle: "Exit",
-            ctaTapCallback: () {
-              SystemNavigator.pop();
-            },
+            ctaButtonTitle: "",
+            ctaTapCallback: null,
+
+            ///TODO: localize this
             title: "Locked Out",
             subtitle: Platform.isIOS
+
+                ///TODO: localize this
                 ? "Biometric authentication is disabled. Please lock and unlock your screen to enable it."
                 : "Biometric authentication is disabled. Please wait 30 seconds before trying again.",
             icon: Icons.timer,
           );
-        } else {
+        } else if (e.code == auth_error.notAvailable) {
+          /// use dismissed the biometric prompt
           showAuthLockedOutDialog(
-            ctaButtonTitle: "Exit",
+            ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
             ctaTapCallback: () {
-              SystemNavigator.pop();
+              Navigator.pop(context);
+              initiateAuth();
             },
             title: S().launch_screen_faceID_fail_heading,
             subtitle: S().launch_screen_faceID_fail_subheading,
-            icon: Icons.timer,
+            icon: Icons.error_outline,
+          );
+        } else {
+          showAuthLockedOutDialog(
+            ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+            ctaTapCallback: null,
+            title: S().launch_screen_faceID_fail_heading,
+            subtitle: S().launch_screen_faceID_fail_subheading,
+            icon: Icons.error_outline,
           );
         }
-      } on Exception {}
+      } on Exception {
+        /// display the dialogue without a 'Try Again' button, as the authentication failed due to an exception."
+        showAuthLockedOutDialog(
+          ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+          ctaTapCallback: null,
+          title: S().launch_screen_faceID_fail_heading,
+          subtitle: S().launch_screen_faceID_fail_subheading,
+          icon: Icons.error_outline,
+        );
+      }
     } else {
+      ///Authenticate without biometrics
       final bool didAuthenticate = await auth.authenticate(
           options: AuthenticationOptions(
             biometricOnly: false,
@@ -147,6 +172,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         showAuthLockedOutDialog(
           ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
           ctaTapCallback: () {
+            Navigator.pop(context);
             initiateAuth();
           },
           title: S().launch_screen_faceID_fail_heading,
@@ -162,7 +188,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       {required String title,
       required String subtitle,
       required String ctaButtonTitle,
-      required GestureTapCallback ctaTapCallback,
+      GestureTapCallback? ctaTapCallback = null,
       required IconData icon}) {
     showEnvoyDialog(
         dismissible: false,
@@ -214,12 +240,14 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                         ),
                       ],
                     )),
-                    EnvoyButton(
-                      ctaButtonTitle,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      type: EnvoyButtonTypes.primaryModal,
-                      onTap: ctaTapCallback,
-                    ),
+                    ctaTapCallback != null
+                        ? EnvoyButton(
+                            ctaButtonTitle,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            type: EnvoyButtonTypes.primaryModal,
+                            onTap: ctaTapCallback,
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
