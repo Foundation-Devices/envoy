@@ -5,16 +5,17 @@
 import 'dart:io';
 
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
-import 'package:envoy/generated/l10n.dart';
 
 class AuthenticateApp extends StatelessWidget {
   const AuthenticateApp({Key? key}) : super(key: key);
@@ -86,6 +87,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               biometricOnly: true,
               stickyAuth: true,
             ),
+
+            ///TODO: localize this
             localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
           if (Platform.isIOS) {
@@ -94,14 +97,68 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           runApp(EnvoyApp());
           return;
         } else {
-          showAuthFailed();
+          showAuthLockedOutDialog(
+            ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+            ctaTapCallback: () {
+              Navigator.pop(context);
+              initiateAuth();
+            },
+            title: S().launch_screen_faceID_fail_heading,
+            subtitle: S().launch_screen_faceID_fail_subheading,
+            icon: Icons.error_outline,
+          );
+          return;
         }
-      } on PlatformException {
-        showAuthFailed();
-      } on Exception catch (e) {
-        print("$e");
+      } on PlatformException catch (e) {
+        ///if the user is locked out due to too many attempts, show exit dialog
+        if (e.code == auth_error.lockedOut ||
+            e.code == auth_error.permanentlyLockedOut) {
+          showAuthLockedOutDialog(
+            ctaButtonTitle: "",
+            ctaTapCallback: null,
+
+            ///TODO: localize this
+            title: "Locked Out",
+            subtitle: Platform.isIOS
+
+                ///TODO: localize this
+                ? "Biometric authentication is disabled. Please lock and unlock your screen to enable it."
+                : "Biometric authentication is disabled. Please wait 30 seconds before trying again.",
+            icon: Icons.timer,
+          );
+        } else if (e.code == auth_error.notAvailable) {
+          /// use dismissed the biometric prompt
+          showAuthLockedOutDialog(
+            ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+            ctaTapCallback: () {
+              Navigator.pop(context);
+              initiateAuth();
+            },
+            title: S().launch_screen_faceID_fail_heading,
+            subtitle: S().launch_screen_faceID_fail_subheading,
+            icon: Icons.error_outline,
+          );
+        } else {
+          showAuthLockedOutDialog(
+            ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+            ctaTapCallback: null,
+            title: S().launch_screen_faceID_fail_heading,
+            subtitle: S().launch_screen_faceID_fail_subheading,
+            icon: Icons.error_outline,
+          );
+        }
+      } on Exception {
+        /// display the dialogue without a 'Try Again' button, as the authentication failed due to an exception."
+        showAuthLockedOutDialog(
+          ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+          ctaTapCallback: null,
+          title: S().launch_screen_faceID_fail_heading,
+          subtitle: S().launch_screen_faceID_fail_subheading,
+          icon: Icons.error_outline,
+        );
       }
     } else {
+      ///Authenticate without biometrics
       final bool didAuthenticate = await auth.authenticate(
           options: AuthenticationOptions(
             biometricOnly: false,
@@ -112,13 +169,27 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         runApp(EnvoyApp());
         return;
       } else {
-        showAuthFailed();
+        showAuthLockedOutDialog(
+          ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
+          ctaTapCallback: () {
+            Navigator.pop(context);
+            initiateAuth();
+          },
+          title: S().launch_screen_faceID_fail_heading,
+          subtitle: S().launch_screen_faceID_fail_subheading,
+          icon: Icons.error_outline,
+        );
       }
       return;
     }
   }
 
-  void showAuthFailed() {
+  void showAuthLockedOutDialog(
+      {required String title,
+      required String subtitle,
+      required String ctaButtonTitle,
+      GestureTapCallback? ctaTapCallback = null,
+      required IconData icon}) {
     showEnvoyDialog(
         dismissible: false,
         context: context,
@@ -128,7 +199,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             return Theme(
               data: ThemeData.light(),
               child: Container(
-                height: 320,
+                height: 310,
                 width: MediaQuery.of(context).size.width * .8,
                 padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
                 constraints: BoxConstraints(
@@ -136,39 +207,47 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: EnvoyColors.darkTeal,
-                      size: 84,
-                    ),
-                    ListTile(
-                      title: Text(S().launch_screen_faceID_fail_heading,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(color: Colors.black87),
-                          textAlign: TextAlign.center),
-                      subtitle: Text(S().launch_screen_faceID_fail_subheading,
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium
-                              ?.copyWith(color: Colors.black87),
-                          textAlign: TextAlign.center),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: EnvoyButton(
-                        S().launch_screen_faceID_fail_CTA,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        type: EnvoyButtonTypes.primaryModal,
-                        onTap: () async {
-                          Navigator.pop(context);
-                          initiateAuth();
-                        },
-                      ),
-                    ),
+                    Expanded(
+                        child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          icon,
+                          color: EnvoyColors.darkTeal,
+                          size: 68,
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          title: Text(title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: Colors.black87),
+                              textAlign: TextAlign.center),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(subtitle,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium
+                                    ?.copyWith(color: Colors.black87),
+                                textAlign: TextAlign.center),
+                          ),
+                        ),
+                      ],
+                    )),
+                    ctaTapCallback != null
+                        ? EnvoyButton(
+                            ctaButtonTitle,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            type: EnvoyButtonTypes.primaryModal,
+                            onTap: ctaTapCallback,
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
