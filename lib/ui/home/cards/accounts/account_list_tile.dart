@@ -125,7 +125,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
               border: Border.all(
-                  color: EnvoyColors.listAccountTileColors[2],
+                  color: account.color,
                   width: 2,
                   style: BorderStyle.solid)),
           child: ClipRRect(
