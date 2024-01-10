@@ -125,11 +125,9 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
               border: Border.all(
-                  color: account.color,
-                  width: 2,
-                  style: BorderStyle.solid)),
+                  color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
             child: GestureDetector(
               onTap: widget.onTap,
               child: Stack(children: [
