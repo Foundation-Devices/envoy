@@ -1328,8 +1328,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c63b3c6cf628ee40e865e91ffbc200c4fff5a75b
-      resolved-ref: c63b3c6cf628ee40e865e91ffbc200c4fff5a75b
+      ref: "2dbeef1717c9078333c6e57752eec5ee21024e39"
+      resolved-ref: "2dbeef1717c9078333c6e57752eec5ee21024e39"
       url: "https://github.com/foundation-devices/tor.git"
     source: git
     version: "0.0.1"

@@ -19,7 +19,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/foundation-devices/tor.git
-      ref: c63b3c6cf628ee40e865e91ffbc200c4fff5a75b
+      ref: 2dbeef1717c9078333c6e57752eec5ee21024e39
 
 
 dev_dependencies:
