@@ -788,7 +788,16 @@ pub unsafe extern "C" fn wallet_decode_psbt(
     match deserialize::<PartiallySignedTransaction>(&data) {
         Ok(psbt) => {
             let secp = Secp256k1::verification_only();
-            let finalized_psbt = PsbtExt::finalize(psbt, &secp).unwrap();
+            let finalized_psbt = match PsbtExt::finalize(psbt, &secp) {
+                Ok(x) => x,
+                Err(e) => {
+                    let (psbt, errors) = e;
+                    for error in errors {
+                        update_last_error(error);
+                    }
+                    return error_return;
+                }
+            };
             util::psbt_extract_details(&wallet, &finalized_psbt)
         }
         Err(e) => {
