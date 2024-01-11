@@ -304,6 +304,25 @@ class NativeLibrary {
       Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, double,
           ffi.Pointer<UtxoList>, ffi.Pointer<UtxoList>)>();
 
+  Psbt wallet_get_bumped_psbt(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+    double fee_rate,
+  ) {
+    return _wallet_get_bumped_psbt(
+      wallet,
+      txid,
+      fee_rate,
+    );
+  }
+
+  late final _wallet_get_bumped_psbtPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Double)>>('wallet_get_bumped_psbt');
+  late final _wallet_get_bumped_psbt = _wallet_get_bumped_psbtPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double)>();
+
   Psbt wallet_decode_psbt(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> psbt,

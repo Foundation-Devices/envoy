@@ -4,14 +4,15 @@
 
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 import 'dart:isolate';
+
+import 'package:collection/collection.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'dart:io';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
-import 'package:collection/collection.dart';
 import 'package:wallet/generated_bindings.dart';
 
 // Generated
@@ -670,6 +671,26 @@ class Wallet {
       rust.Psbt psbt = native.wallet_decode_psbt(
           Pointer.fromAddress(walletAddress),
           base64Psbt.toNativeUtf8() as Pointer<Char>);
+
+      if (psbt.base64 == nullptr) {
+        throwRustException(lib);
+      }
+
+      return Psbt.fromNative(psbt);
+    });
+  }
+
+  Future<Psbt> getBumpedPSBT(String txId, double feeRate) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = load(_libName);
+      final native = rust.NativeLibrary(lib);
+
+      rust.Psbt psbt = native.wallet_get_bumped_psbt(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>,
+          feeRate);
 
       if (psbt.base64 == nullptr) {
         throwRustException(lib);

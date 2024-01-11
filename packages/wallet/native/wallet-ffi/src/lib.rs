@@ -19,7 +19,7 @@ use bdk::database::{ConfigurableDatabase, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, Balance, SignOptions, SyncOptions};
+use bdk::{electrum_client, miniscript, Balance, FeeRate, SignOptions, SyncOptions};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -744,6 +744,51 @@ pub unsafe extern "C" fn wallet_create_psbt(
         &dont_spend,
     );
     match tx {
+        Ok((mut psbt, _)) => {
+            let sign_options = SignOptions {
+                trust_witness_utxo: true,
+                ..Default::default()
+            };
+
+            // Always try signing
+            let _finalized = match wallet.sign(&mut psbt, sign_options) {
+                Ok(f) => f,
+                Err(_) => false,
+            };
+
+            util::psbt_extract_details(&wallet, &psbt)
+        }
+        Err(e) => {
+            update_last_error(e);
+            return error_return;
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn wallet_get_bumped_psbt(
+    wallet: *mut Mutex<bdk::Wallet<Tree>>,
+    txid: *const c_char,
+    fee_rate: f64,
+) -> Psbt {
+    let error_return = Psbt {
+        sent: 0,
+        received: 0,
+        fee: 0,
+        base64: ptr::null(),
+        txid: ptr::null(),
+        raw_tx: ptr::null(),
+    };
+
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
+    let txid = CStr::from_ptr(txid).to_str().unwrap();
+    let txid = unwrap_or_return!(Txid::from_str(txid), error_return);
+    let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(txid), error_return);
+
+    tx_builder.fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
+
+    let psbt = tx_builder.finish();
+    match psbt {
         Ok((mut psbt, _)) => {
             let sign_options = SignOptions {
                 trust_witness_utxo: true,
