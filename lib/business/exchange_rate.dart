@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/settings.dart';
@@ -126,12 +127,6 @@ class ExchangeRate extends ChangeNotifier {
   _storeRate(double selectedRate, String currencyCode, double usdRate) {
     _usdRate = usdRate;
 
-    if (_currency != null && _currency!.code == currencyCode) {
-      _selectedCurrencyRate = selectedRate;
-    }
-
-    notifyListeners();
-
     Map exchangeRateMap = {
       CURRENCY_KEY: currencyCode,
       RATE_KEY: selectedRate,
@@ -143,11 +138,26 @@ class ExchangeRate extends ChangeNotifier {
 
   _getRate() async {
     String selectedCurrencyCode = _currency?.code ?? ("USD");
-    double usdRate = await _getRateForCode("USD");
-    double selectedRate = usdRate;
+    double? selectedRate = null;
+    double? usdRate = null;
 
-    if (selectedCurrencyCode != "USD") {
-      selectedRate = await _getRateForCode(selectedCurrencyCode);
+    try {
+      if (selectedCurrencyCode != "USD") {
+        selectedRate = await _getRateForCode(selectedCurrencyCode);
+        _selectedCurrencyRate = selectedRate;
+        notifyListeners();
+      }
+
+      usdRate = await _getRateForCode("USD");
+      _usdRate = selectedRate;
+      notifyListeners();
+    } on Exception catch (e) {
+      EnvoyReport().log("connectivity", e.toString());
+      return;
+    }
+
+    if (selectedRate == null) {
+      selectedRate = usdRate;
     }
 
     _storeRate(selectedRate, selectedCurrencyCode, usdRate);
