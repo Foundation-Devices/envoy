@@ -22,6 +22,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tor/tor.dart';
+import 'package:tor/util.dart';
 
 import 'business/fees.dart';
 import 'business/scv_server.dart';
@@ -42,6 +43,9 @@ Future<void> main() async {
 }
 
 Future<void> initSingletons() async {
+  print("Process nofile_limit: " + getNofileLimit().toString());
+  print("Process nofile_limit set to: " + setNofileLimit(256).toString());
+
   await EnvoyStorage().init();
   await LocalStorage.init();
   EnvoyScheduler.init();
