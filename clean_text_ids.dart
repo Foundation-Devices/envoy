@@ -1,20 +1,29 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'dart:convert';
 import 'dart:io';
 
-Directory libDirectory = Directory(Directory.current.path + Platform.pathSeparator + "lib");
+Directory libDirectory =
+    Directory(Directory.current.path + Platform.pathSeparator + "lib");
 
 List excludedDirs = [
   "${libDirectory.path}${Platform.pathSeparator}l10n",
   "${libDirectory.path}${Platform.pathSeparator}generated",
 ];
 
-Directory arbDirectory =
-    Directory(Directory.current.path + Platform.pathSeparator + "lib" + Platform.pathSeparator + "l10n");
+Directory arbDirectory = Directory(Directory.current.path +
+    Platform.pathSeparator +
+    "lib" +
+    Platform.pathSeparator +
+    "l10n");
 
 main(args) async {
-  File arbFile = File(arbDirectory.path + Platform.pathSeparator + "intl_en.arb");
+  File baseArbFile =
+      File(arbDirectory.path + Platform.pathSeparator + "intl_en.arb");
 
-  String arbContent = await arbFile.readAsString();
+  String arbContent = await baseArbFile.readAsString();
   Map<String, dynamic> textKeys = jsonDecode(arbContent);
   print("Total Keys: ${textKeys.keys.length}");
 
@@ -29,6 +38,7 @@ main(args) async {
             return;
           }
         }
+        // Already found usage; no need to check other files.
         if (foundUsage) {
           return;
         }
@@ -55,7 +65,8 @@ main(args) async {
       file.writeAsStringSync(jsonEncode(textKeys));
     }
   });
-  print("Excluded ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
+  print(
+      "Excluded ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
 
   await Process.run("flutter", ["pub", "global", "run", "intl_utils:generate"]);
 
