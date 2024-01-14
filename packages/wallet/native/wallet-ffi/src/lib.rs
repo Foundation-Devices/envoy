@@ -183,6 +183,12 @@ pub struct Wallet {
     bkd_wallet_ptr: *mut usize,
 }
 
+#[repr(C)]
+pub struct RBFfeeRates {
+    min_fee_rate: f64,
+    max_fee_rate: f64,
+}
+
 thread_local! {
     static LAST_ERROR: RefCell<Option<Box<dyn Error>>> = RefCell::new(None);
 }
@@ -806,6 +812,106 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
         Err(e) => {
             update_last_error(e);
             return error_return;
+        }
+    }
+}
+/// Returns max fee rate for the transaction, fee amount will be deducted from change output
+/// if the return max_fee_rate is negative,then RBF with current output is not possible
+#[no_mangle]
+pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
+    wallet: *mut Mutex<bdk::Wallet<Tree>>,
+    txid: *const c_char,
+) -> RBFfeeRates {
+    let error_return = RBFfeeRates {
+        min_fee_rate: 0.0,
+        max_fee_rate: 0.0,
+    };
+
+    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
+    let tx_id = CStr::from_ptr(txid).to_str().unwrap();
+    let tx_id = unwrap_or_return!(Txid::from_str(tx_id), error_return);
+
+    match unwrap_or_return!(wallet.get_tx(&tx_id, true), error_return) {
+        //tx not found in the database
+        None => RBFfeeRates {
+            min_fee_rate: -1.0,
+            max_fee_rate: 0.404,
+        },
+        Some(raw_transaction) => {
+            let transaction = raw_transaction.transaction.unwrap();
+
+            let current_fee = raw_transaction.fee.unwrap();
+            let current_fee_rate = FeeRate::from_wu(current_fee, transaction.weight());
+
+            let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(tx_id), error_return);
+
+            // get current fee rate and bump 1 sat/vb
+            tx_builder.fee_rate(FeeRate::from_sat_per_vb(
+                current_fee_rate.as_sat_per_vb() + 1.0,
+            ));
+
+            let mut min_fee_rate = 0.0;
+
+            match tx_builder.finish() {
+                Ok((psbt, _)) => {
+                    match psbt.fee_rate() {
+                        Some(r) => {
+                            min_fee_rate = r.as_sat_per_vb() as f64;
+                        }
+                        None => {
+                            min_fee_rate = 0.0;
+                        }
+                    };
+                }
+                Err(e) => {
+                    update_last_error(e);
+                    return RBFfeeRates {
+                        min_fee_rate: -1.,
+                        max_fee_rate: 0.0,
+                    };
+                }
+            };
+
+            let error_return = RBFfeeRates {
+                min_fee_rate: 0.0,
+                max_fee_rate: 0.0,
+            };
+
+            let mut total_change_output: u64 = 0;
+            // let mut total_receive_output: u64 = 0;
+
+            //iterate and find total change output
+            for out in transaction.output {
+                //if output pub key belongs to wallet
+                if wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) {
+                    total_change_output += out.value
+                }
+            }
+
+            let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(tx_id), error_return);
+            //set maxiumum availble change output as fee to find max fee rate
+            tx_builder.fee_absolute(total_change_output);
+
+            let psbt = tx_builder.finish();
+            match psbt {
+                Ok((psbt, _)) => {
+                    match psbt.fee_rate() {
+                        None => {
+                            return error_return;
+                        }
+                        Some(r) => {
+                            return RBFfeeRates {
+                                max_fee_rate: r.as_sat_per_vb() as f64,
+                                min_fee_rate: min_fee_rate,
+                            };
+                        }
+                    };
+                }
+                Err(e) => {
+                    update_last_error(e);
+                    return error_return;
+                }
+            }
         }
     }
 }

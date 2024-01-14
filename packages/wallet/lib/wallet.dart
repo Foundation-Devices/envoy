@@ -700,6 +700,23 @@ class Wallet {
     });
   }
 
+  Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(String txId) async {
+    final walletAddress = _self.address;
+    return Isolate.run(() {
+      final lib = load(_libName);
+      final native = rust.NativeLibrary(lib);
+
+      RBFfeeRates feeRates = native.wallet_get_max_bumped_fee_rate(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>);
+
+      if (feeRates.min_fee_rate <= 1) {
+        throwRustException(lib);
+      }
+      return feeRates;
+    });
+  }
+
   static Future<RawTransaction> decodeRawTx(
       String rawTransaction, Network network) async {
     return Isolate.run(() {

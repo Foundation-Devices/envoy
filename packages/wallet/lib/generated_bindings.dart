@@ -323,6 +323,26 @@ class NativeLibrary {
   late final _wallet_get_bumped_psbt = _wallet_get_bumped_psbtPtr.asFunction<
       Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double)>();
 
+  /// Returns max fee rate for the current transaction, fee amount will be deducted from change output
+  /// if return value is negative RBF with current output is not possible
+  RBFfeeRates wallet_get_max_bumped_fee_rate(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+  ) {
+    return _wallet_get_max_bumped_fee_rate(
+      wallet,
+      txid,
+    );
+  }
+
+  late final _wallet_get_max_bumped_fee_ratePtr = _lookup<
+      ffi.NativeFunction<
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_get_max_bumped_fee_rate');
+  late final _wallet_get_max_bumped_fee_rate =
+      _wallet_get_max_bumped_fee_ratePtr.asFunction<
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
   Psbt wallet_decode_psbt(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> psbt,
@@ -635,6 +655,14 @@ class Psbt extends ffi.Struct {
   external ffi.Pointer<ffi.Char> txid;
 
   external ffi.Pointer<ffi.Char> raw_tx;
+}
+
+class RBFfeeRates extends ffi.Struct {
+  @ffi.Double()
+  external double min_fee_rate;
+
+  @ffi.Double()
+  external double max_fee_rate;
 }
 
 class RawTransactionOutput extends ffi.Struct {
