@@ -55,22 +55,8 @@ main(args) async {
     }
   });
 
-  arbDirectory.listSync().forEach((file) {
-    if (file is File && file.path.endsWith(".arb")) {
-      String content = file.readAsStringSync();
-      Map<dynamic, dynamic> textKeys = jsonDecode(content);
-      excludedKeys.forEach((element) {
-        textKeys.remove(element);
-      });
-      file.writeAsStringSync(jsonEncode(textKeys));
-    }
-  });
   print(
-      "Excluded ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
+      "Excluded: ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
 
-  await Process.run("flutter", ["pub", "global", "run", "intl_utils:generate"]);
-
-  if (args.contains("--print-excludedKeys")) {
-    print("Excluded keys:\n ${excludedKeys.join("\n")}");
-  }
+  print("Excluded keys:\n ${excludedKeys.join("\n")}");
 }
