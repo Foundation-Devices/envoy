@@ -58,8 +58,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   ];
 
   List<String> stepHeadings = [
-    S().wallet_security_modal_1_4_ios_heading,
-    S().wallet_security_modal_2_4_heading,
+    S().wallet_security_modal_HowYourWalletIsSecured,
+    S().wallet_security_modal_HowYourWalletIsSecured,
     S().wallet_security_modal_3_4_ios_heading,
     S().wallet_security_modal_4_4_heading,
   ];
