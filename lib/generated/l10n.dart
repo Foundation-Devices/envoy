@@ -92,6 +92,46 @@ class S {
     );
   }
 
+  /// `App Version`
+  String get about_appVersion {
+    return Intl.message(
+      'App Version',
+      name: 'about_appVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Source Licences`
+  String get about_openSourceLicences {
+    return Intl.message(
+      'Open Source Licences',
+      name: 'about_openSourceLicences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get about_privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'about_privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms of Use`
+  String get about_termsOfUse {
+    return Intl.message(
+      'Terms of Use',
+      name: 'about_termsOfUse',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Apply`
   String get account_details_filter_tags_applyFilters {
     return Intl.message(
@@ -162,6 +202,16 @@ class S {
     );
   }
 
+  /// `Untagged`
+  String get account_details_untagged_card {
+    return Intl.message(
+      'Untagged',
+      name: 'account_details_untagged_card',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Applied filters are hiding all transactions.\nUpdate or reset filters to view transactions.`
   String get account_emptyTxHistoryTextExplainer_FilteredView {
     return Intl.message(
@@ -182,6 +232,26 @@ class S {
     );
   }
 
+  /// `Taproot`
+  String get account_type_label_taproot {
+    return Intl.message(
+      'Taproot',
+      name: 'account_type_label_taproot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Testnet`
+  String get account_type_sublabel_testnet {
+    return Intl.message(
+      'Testnet',
+      name: 'account_type_sublabel_testnet',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create a mobile wallet with Magic Backups.`
   String get accounts_empty_text_explainer {
     return Intl.message(
@@ -197,6 +267,16 @@ class S {
     return Intl.message(
       'Get Started',
       name: 'accounts_empty_text_learn_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accounts`
+  String get accounts_screen_heading {
+    return Intl.message(
+      'Accounts',
+      name: 'accounts_screen_heading',
       desc: '',
       args: [],
     );
@@ -302,6 +382,16 @@ class S {
     );
   }
 
+  /// `Cancel`
+  String get add_note_modal_filled_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'add_note_modal_filled_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add a Note`
   String get add_note_modal_heading {
     return Intl.message(
@@ -347,6 +437,16 @@ class S {
     return Intl.message(
       'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings.]]',
       name: 'android_backup_info_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is a simple Bitcoin wallet with powerful account management and privacy features.\n\nUse Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.\n\nEnvoy offers the following features:\n\n1. Magic Backups. Get up and running with self-custody in only 60 seconds with automatic encrypted backups. Seed words optional.\n\n2. Manage your mobile wallet and Passport hardware wallet accounts in the same app.\n\n3. Send and receive Bitcoin in a zen-like interface.\n\n4. Connect your Passport hardware wallet for setup, firmware updates, and support videos. Use Envoy as your software wallet connected to your Passport.\n\n5. Fully open source and privacy preserving. Envoy optionally connects to the Internet with Tor for maximum privacy.\n\n6. Optionally connect your own Bitcoin node.`
+  String get appstore_description {
+    return Intl.message(
+      'Envoy is a simple Bitcoin wallet with powerful account management and privacy features.\n\nUse Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.\n\nEnvoy offers the following features:\n\n1. Magic Backups. Get up and running with self-custody in only 60 seconds with automatic encrypted backups. Seed words optional.\n\n2. Manage your mobile wallet and Passport hardware wallet accounts in the same app.\n\n3. Send and receive Bitcoin in a zen-like interface.\n\n4. Connect your Passport hardware wallet for setup, firmware updates, and support videos. Use Envoy as your software wallet connected to your Passport.\n\n5. Fully open source and privacy preserving. Envoy optionally connects to the Internet with Tor for maximum privacy.\n\n6. Optionally connect your own Bitcoin node.',
+      name: 'appstore_description',
       desc: '',
       args: [],
     );
@@ -492,6 +592,16 @@ class S {
     );
   }
 
+  /// `Cancel`
+  String get backups_erase_wallets_and_backups_modal_1_2_android_cta1 {
+    return Intl.message(
+      'Cancel',
+      name: 'backups_erase_wallets_and_backups_modal_1_2_android_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. `
   String get backups_erase_wallets_and_backups_modal_1_2_android_subheading {
     return Intl.message(
@@ -542,6 +652,16 @@ class S {
     );
   }
 
+  /// `WARNING`
+  String get backups_erase_wallets_and_backups_modal_2_2_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'backups_erase_wallets_and_backups_modal_2_2_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n`
   String get backups_erase_wallets_and_backups_modal_2_2_subheading {
     return Intl.message(
@@ -557,6 +677,16 @@ class S {
     return Intl.message(
       'Show Seed',
       name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!`
+  String get backups_erase_wallets_and_backups_show_seed_subheading {
+    return Intl.message(
+      'Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!',
+      name: 'backups_erase_wallets_and_backups_show_seed_subheading',
       desc: '',
       args: [],
     );
@@ -612,6 +742,76 @@ class S {
     );
   }
 
+  /// `Coin Locked`
+  String get card_coin_locked {
+    return Intl.message(
+      'Coin Locked',
+      name: 'card_coin_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coin Selected`
+  String get card_coin_selected {
+    return Intl.message(
+      'Coin Selected',
+      name: 'card_coin_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coin`
+  String get card_coin_unselected {
+    return Intl.message(
+      'Coin',
+      name: 'card_coin_unselected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins Locked`
+  String get card_coins_locked {
+    return Intl.message(
+      'Coins Locked',
+      name: 'card_coins_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins Selected`
+  String get card_coins_selected {
+    return Intl.message(
+      'Coins Selected',
+      name: 'card_coins_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coins`
+  String get card_coins_unselected {
+    return Intl.message(
+      'Coins',
+      name: 'card_coins_unselected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `of`
+  String get card_label_of {
+    return Intl.message(
+      'of',
+      name: 'card_label_of',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get change_output_from_multiple_tags_modal_cta1 {
     return Intl.message(
@@ -662,6 +862,16 @@ class S {
     );
   }
 
+  /// `WARNING\n\nThis action will override your coin selection.`
+  String get coincontrol_coin_change_spendable_state_modal_heading {
+    return Intl.message(
+      'WARNING\n\nThis action will override your coin selection.',
+      name: 'coincontrol_coin_change_spendable_state_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get coincontrol_coin_change_spendable_tate_modal_cta1 {
     return Intl.message(
@@ -692,6 +902,16 @@ class S {
     );
   }
 
+  /// `Confirm`
+  String get coincontrol_edit_transaction_confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'coincontrol_edit_transaction_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get coincontrol_edit_transaction_cta {
     return Intl.message(
@@ -707,6 +927,16 @@ class S {
     return Intl.message(
       'Cancel',
       name: 'coincontrol_edit_transaction_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get coincontrol_edit_transaction_dialog_cta1 {
+    return Intl.message(
+      'Yes',
+      name: 'coincontrol_edit_transaction_dialog_cta1',
       desc: '',
       args: [],
     );
@@ -882,6 +1112,48 @@ class S {
     );
   }
 
+  // skipped getter for the 'coincontrol_tx_detail_custom_fee_insufficients_funds_-_25_prompt' key
+
+  /// `Over 25%`
+  String get coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta {
+    return Intl.message(
+      'Over 25%',
+      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Over 25%`
+  String get coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt {
+    return Intl.message(
+      'Over 25%',
+      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Fee`
+  String get coincontrol_tx_detail_custom_fee_insufficients_funds_cta {
+    return Intl.message(
+      'Confirm Fee',
+      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `sats/vb`
+  String get coincontrol_tx_detail_custom_fee_sats_vb {
+    return Intl.message(
+      'sats/vb',
+      name: 'coincontrol_tx_detail_custom_fee_sats_vb',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Destination`
   String get coincontrol_tx_detail_destination {
     return Intl.message(
@@ -942,6 +1214,16 @@ class S {
     );
   }
 
+  /// `BBQ`
+  String get coincontrol_tx_detail_expand_note_note {
+    return Intl.message(
+      'BBQ',
+      name: 'coincontrol_tx_detail_expand_note_note',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Spent from`
   String get coincontrol_tx_detail_expand_spentFrom {
     return Intl.message(
@@ -957,6 +1239,16 @@ class S {
     return Intl.message(
       'Fee',
       name: 'coincontrol_tx_detail_fee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be sent`
+  String get coincontrol_tx_detail_feeChange_heading {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'coincontrol_tx_detail_feeChange_heading',
       desc: '',
       args: [],
     );
@@ -1012,6 +1304,26 @@ class S {
     );
   }
 
+  /// `Destination`
+  String get coincontrol_tx_detail_high_fee_info_destination {
+    return Intl.message(
+      'Destination',
+      name: 'coincontrol_tx_detail_high_fee_info_destination',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready to be sent`
+  String get coincontrol_tx_detail_high_fee_info_heading {
+    return Intl.message(
+      'Your transaction is ready to be sent',
+      name: 'coincontrol_tx_detail_high_fee_info_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `[[Learn more]]`
   String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
     return Intl.message(
@@ -1057,6 +1369,16 @@ class S {
     return Intl.message(
       'Are you sure?',
       name: 'coincontrol_tx_detail_passport_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction is ready \nto be sent`
+  String get coincontrol_tx_detail_passport_send_heading {
+    return Intl.message(
+      'Your transaction is ready \nto be sent',
+      name: 'coincontrol_tx_detail_passport_send_heading',
       desc: '',
       args: [],
     );
@@ -1112,11 +1434,41 @@ class S {
     );
   }
 
+  /// `Tags`
+  String get coincontrol_tx_history_tx_details_history {
+    return Intl.message(
+      'Tags',
+      name: 'coincontrol_tx_history_tx_details_history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TX ID`
+  String get coincontrol_tx_history_tx_details_tx_id {
+    return Intl.message(
+      'TX ID',
+      name: 'coincontrol_tx_history_tx_details_tx_id',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unlock`
   String get coincontrol_unlock_coin_modal_cta1 {
     return Intl.message(
       'Unlock',
       name: 'coincontrol_unlock_coin_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don’t show again`
+  String get coincontrol_unlock_coin_modal_dontShowAgain {
+    return Intl.message(
+      'Don’t show again',
+      name: 'coincontrol_unlock_coin_modal_dontShowAgain',
       desc: '',
       args: [],
     );
@@ -1132,11 +1484,81 @@ class S {
     );
   }
 
+  /// `Address`
+  String get coindetails_overlay_address {
+    return Intl.message(
+      'Address',
+      name: 'coindetails_overlay_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `at`
+  String get coindetails_overlay_at {
+    return Intl.message(
+      'at',
+      name: 'coindetails_overlay_at',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get coindetails_overlay_date {
+    return Intl.message(
+      'Date',
+      name: 'coindetails_overlay_date',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `coin details`
   String get coindetails_overlay_heading {
     return Intl.message(
       'coin details',
       name: 'coindetails_overlay_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get coindetails_overlay_notes {
+    return Intl.message(
+      'Notes',
+      name: 'coindetails_overlay_notes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status`
+  String get coindetails_overlay_status {
+    return Intl.message(
+      'Status',
+      name: 'coindetails_overlay_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag`
+  String get coindetails_overlay_tag {
+    return Intl.message(
+      'Tag',
+      name: 'coindetails_overlay_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction ID`
+  String get coindetails_overlay_transactionID {
+    return Intl.message(
+      'Transaction ID',
+      name: 'coindetails_overlay_transactionID',
       desc: '',
       args: [],
     );
@@ -1157,6 +1579,16 @@ class S {
     return Intl.message(
       'Done',
       name: 'component_done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get component_retry {
+    return Intl.message(
+      'Retry',
+      name: 'component_retry',
       desc: '',
       args: [],
     );
@@ -1212,11 +1644,63 @@ class S {
     );
   }
 
+  // skipped getter for the 'create_first_tag_modal_2_2_ie_text-field' key
+
   /// `Suggestions`
   String get create_first_tag_modal_2_2_suggest {
     return Intl.message(
       'Suggestions',
       name: 'create_first_tag_modal_2_2_suggest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Donations`
+  String get create_second_tag_modal_2_2_exampleTag_donations {
+    return Intl.message(
+      'Donations',
+      name: 'create_second_tag_modal_2_2_exampleTag_donations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exchange`
+  String get create_second_tag_modal_2_2_exampleTag_exchange {
+    return Intl.message(
+      'Exchange',
+      name: 'create_second_tag_modal_2_2_exampleTag_exchange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal`
+  String get create_second_tag_modal_2_2_exampleTag_personal {
+    return Intl.message(
+      'Personal',
+      name: 'create_second_tag_modal_2_2_exampleTag_personal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Savings`
+  String get create_second_tag_modal_2_2_exampleTag_savings {
+    return Intl.message(
+      'Savings',
+      name: 'create_second_tag_modal_2_2_exampleTag_savings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Travel`
+  String get create_second_tag_modal_2_2_exampleTag_travel {
+    return Intl.message(
+      'Travel',
+      name: 'create_second_tag_modal_2_2_exampleTag_travel',
       desc: '',
       args: [],
     );
@@ -1382,6 +1866,26 @@ class S {
     );
   }
 
+  /// `CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT`
+  String get devices_add_menu {
+    return Intl.message(
+      'CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT',
+      name: 'devices_add_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT`
+  String get devices_empty_add_menu {
+    return Intl.message(
+      'CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT',
+      name: 'devices_empty_add_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Learn More`
   String get devices_empty_learn_more {
     return Intl.message(
@@ -1432,6 +1936,16 @@ class S {
     );
   }
 
+  /// `Don’t have a Passport?`
+  String get devices_text_explainer {
+    return Intl.message(
+      'Don’t have a Passport?',
+      name: 'devices_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Delete Tag`
   String get empty_tag_modal_cta2 {
     return Intl.message(
@@ -1467,6 +1981,476 @@ class S {
     return Intl.message(
       'Please review and accept the Passport Terms of Use',
       name: 'envoy_account_tos_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last updated: May 16, 2021.\r\n\r\nBy purchasing, using or continuing to use a Passport hardware wallet (“Passport“), you, the purchaser of Passport, agree to be bound by these terms of and use (the “Passport Terms of Use” or “Terms”).\r\n\r\n1. Use of Passport\n\nPassport includes functionality to store and facilitate the transfer of bitcoin (“Bitcoin”) and which may be used to facilitate various types of transactions and other activities (“Transactions”). You understand and agree that Foundation Devices (“Foundation”, “We”, or “Us“) is not responsible for, and has no obligation or liability to you or others in respect of any Transactions. You agree to comply with all applicable laws in your use of Products (including all Transactions), including without limitation any anti-money laundering laws or regulations.\r\n\r\n2. Security\n\r\nYou understand and agree that control and access to Bitcoin stored on any Product is based upon physical possession and control of such Product and that any person given physical possession of the Product may remove or transfer any or all Bitcoin stored on such Product.\r\n\r\n3. BACKUPS\r\nYou are solely responsible for generating and making backups of your recovery phrase and for preserving and maintaining the security and confidentiality of your recovery phrase and your PIN. You acknowledge and agree that failure to do so may result in the complete loss of all Bitcoin stored on Passport and that we have no obligation to liability whatsoever for any such loss.\r\n\r\n4. MODIFICATIONS\r\nYou acknowledge and agree that any modifications to Passport, the installation of any additional software or firmware on a Passport or the use of Passport in connection with any other software or equipment are at your sole risk, and that we have no obligation or liability in respect thereof or in respect of any resulting loss of Bitcoin, damage to Passport, failure of the Passport or errors in storing Bitcoin or processing Transactions;\r\n\r\n5. OPEN SOURCE LICENSES\r\nPassport includes software licensed under the GNU General Public License v3 and other open source licenses, as identified in documentation provided with Passport. Your use of such software is subject to the applicable open source licenses and, to the extent such open source licenses conflicts with this Agreement, the terms of such licenses will prevail.\r\n\r\n6. ACKNOWLEDGEMENT AND ASSUMPTION OF RISK\r\nYou understand and agree that:\r\n\r\n(a) there are risks associated with the use and holding of Bitcoin and you represent and warrant that you are knowledgeable and/or experienced in matters relating to the use of Bitcoin and are capable of evaluating the benefits and risks of using and holding Bitcoin and fully understand the nature of Bitcoin, the limitations and restrictions on its liquidity and transferability and are capable of bearing the economic risk of holding and transacting using Bitcoin;\r\n\r\n(b) the continued ability to use Bitcoin is dependent on many elements beyond our control, including without limitation the publication of blocks, network connectivity, hacking or changes in the technical and other standards, policies and procedures applicable to Bitcoin;\r\n\r\n(c) no regulatory authority has reviewed or passed on the merits, legality or fungibility of Bitcoin;\r\n\r\n(d) there is no government or other insurance covering Bitcoin, the loss or theft of Bitcoin, or any loss in the value of Bitcoin;\r\n\r\n(e) the use of Bitcoin or the Products may become subject to regulatory controls that limit, restrict, prohibit or otherwise impose conditions on your use of same;\r\n\r\n(f) Bitcoin do not constitute a currency, asset, security, negotiable instrument, or other form of property and do not have any intrinsic or inherent value;\r\n\r\n(g) the value of and/or exchange rates for Bitcoin may fluctuate significantly and may result in you incurring significant losses;\r\n\r\n(h) Transactions may have tax consequences (including obligations to report, collect or remit taxes) and you are solely responsible for understanding and complying with all applicable tax laws and regulations; and\r\n\r\n(i) the use of Bitcoin or Products may be illegal or subject to regulation in certain jurisdictions, and it is your responsibility to ensure that you comply with the laws of any jurisdiction in which you use Bitcoin or Products.\r\n\r\n7. TRANSFER OF PASSPORT\r\nYou may transfer or sell Passport to others on the condition that you ensure that the transferee or purchaser agrees to be bound by the then-current form of these Terms available on our website at the time of transfer.\r\n\r\n8. RESTRICTIONS\r\nYou shall not:\r\n\r\n(a) use Passport in a manner or for a purpose that: (i) is illegal or otherwise contravenes applicable law (including the facilitation or furtherance of any criminal or fraudulent activity or the violation of any anti-money laundering legislation); or (ii) infringes upon the lawful rights of others;\r\n\r\n(b) interfere with the security or integrity of Passport;\r\n\r\n(c) remove, destroy, cover, obfuscate or alter in any manner any notices, legends, trademarks, branding or logos appearing on or contained in Passport; or\r\n\r\n(d) attempt, or cause, permit or encourage any other person, to do any of the foregoing.\r\n\r\nNotwithstanding the foregoing, you may investigate security and other vulnerabilities, provided you do so in a reasonable and responsible manner in compliance with applicable law and our responsible disclosure policy and otherwise use good faith efforts to minimize or avoid contravention of any of the foregoing.\r\n\r\n9. REPRESENTATIONS AND WARRANTIES\r\nYou represent, warrant and covenant that:\r\n\r\n(a) you have the capacity to, and are and will be free to, enter into and to fully perform your obligations under these Terms and that no agreement or understanding with any other person exists or will exist which would interfere with such obligations; and\r\n\r\n(b) these Terms constitute a legal, valid and binding obligation upon you.\r\n\r\n10. OWNERSHIP\r\nExcept for the limited rights of use expressly granted to you under these Terms, all right, title and interest (including all copyrights, trademarks, service marks, patents, inventions, trade secrets, intellectual property rights and other proprietary rights) in and to Passport are and shall remain exclusively owned by us and our licensors. All trade names, company names, trademarks, service marks and other names and logos are the proprietary marks of us or our licensors, and are protected by law and may not be copied, imitated or used, in whole or in part, without the consent of their respective owners. These Terms do not grant you any rights in respect of any such marks. You understand and agree that any feedback, input, suggestions, recommendations, improvements, changes, specifications, test results, or other data or information that you provide or make available to us arising from or related to your use of the Products or Software shall become our exclusive property and may be used by us to modify, enhance, maintain and improve Passport without any obligation or payment to you whatsoever.\r\n\r\n11. THIRD PARTY PRODUCTS\r\nYou acknowledge and agree that you will require certain third party equipment, products, software and services in order to use the Products and may also use optional third party equipment, products, software and services that enhance or complement such use (collectively, “Third Party Products”). You acknowledge and agree that failure to use or procure Third Party Products that meet the minimum requirements for Products, or failure to properly configure or setup Third Party Products may result in the inability to use the Products and/or processing failures or errors. Third Party Products include, without limitation, computers, mobile devices, networking equipment, operating system software, web browsers and internet connectivity. We may also identify, recommend, reference or link to optional Third Party Products on our website. You acknowledge and agree that: (a) Third Party Products are be governed by separate licenses, agreements or terms and conditions and we have no obligation or liability to you in respect thereof; and (b) you are solely responsible for procuring any Third Party Products at your cost and expense, and are solely responsible for compliance with any applicable licenses, agreements or terms and conditions governing same. \r\n\r\n12. INDEMNITY\r\nYou agree to indemnify and hold Foundation Devices (and our officers, employees, and agents) harmless, including costs and attorneys’ fees, from any claim or demand due to or arising out of (a) your use of Passport, (b) your violation of this Agreement or (c) your violation of applicable laws or regulations. We reserve the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us and you agree to cooperate with our defense of these claims. You agree not to settle any matter without our prior written consent. We will use reasonable efforts to notify you of any such claim, action or proceeding upon becoming aware of it.\r\n\r\n13. DISCLAIMERS\r\nPASSPORT IS PROVIDED “AS-IS” AND “AS AVAILABLE” AND WE (AND OUR SUPPLIERS) EXPRESSLY DISCLAIM ANY WARRANTIES AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, OR NON-INFRINGEMENT. WE (AND OUR SUPPLIERS) MAKE NO WARRANTY THAT PASSPORT: (A) WILL MEET YOUR REQUIREMENTS; (B) WILL BE AVAILABLE ON AN UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE BASIS; OR (C) WILL BE ACCURATE, RELIABLE, FREE OF VIRUSES OR OTHER HARMFUL CODE, COMPLETE, LEGAL, OR SAFE.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n14. LIMITATION ON LIABILITY\r\nYOU AGREE THAT, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, OUR AGGREGATE LIABILITY ARISING FROM OR RELATED TO THESE TERMS OR PASSPORT IN ANY MANNER WILL BE LIMITED TO DIRECT DAMAGES NOT TO EXCEED THE PURCHASE PRICE YOU HAVE PAID TO US FOR PASSPORT (EXCLUDING SHIPPING CHARGES AND TAXES). TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL WE (AND OUR SUPPLIERS) BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, PUNITIVE, OR OTHER DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF REVENUE, PROFITS, OR EXPECTED SAVINGS, BUSINESS INTERRUPTION, PERSONAL INJURY, LOSS OF PRIVACY, LOSS OF DATA OR INFORMATION OR OTHER PECUNIARY OR INTANGIBLE LOSS) ARISING OUT OF THESE TERMS OR THE USE OF OR INABILITY TO USE PASSPORT, EVEN IF WE FORESEE OR HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OF CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n15. RELEASE\r\nYou hereby release and forever discharge us (and our officers, employees, agents, successors, and assigns) from, and hereby waive and relinquish, each and every past, present and future dispute, claim, controversy, demand, right, obligation, liability, action and cause of action of every kind and nature (including personal injuries, death, and property damage), that has arisen or arises directly or indirectly out of, or relates directly or indirectly to, use of Passport. IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE CALIFORNIA CIVIL CODE SECTION 1542 IN CONNECTION WITH THE FOREGOING, WHICH STATES: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”\r\n\r\n16. SURVIVAL\r\nNeither the expiration nor the earlier termination of your account will release you from any obligation or liability that accrued prior to such expiration or termination. The provisions of these Terms requiring performance or fulfilment after the expiration or earlier termination of your account and any other provisions hereof, the nature and intent of which is to survive termination or expiration, will survive.\r\n\r\n17. PRIVACY POLICY\r\nPlease review our Privacy Policy, located at https://foundationdevices.com/privacy, which governs the use of personal information.\r\n\r\n18. DISPUTE RESOLUTION\r\nPlease read the following arbitration agreement in this section (“Arbitration Agreement”) carefully. It requires U.S. users to arbitrate disputes with Foundation Devices and limits the manner in which you can seek relief from us.\r\n\r\n(a) Applicability of Arbitration Agreement. You agree that any dispute, claim, or request for relief relating in any way to your use of Passport will be resolved by binding arbitration, rather than in court, except that (a) you may assert claims or seek relief in small claims court if your claims qualify; and (b) you or we may seek equitable relief in court for infringement or other misuse of intellectual property rights (such as trademarks, trade dress, domain names, trade secrets, copyrights, and patents). This Arbitration Agreement shall apply, without limitation, to all disputes or claims and requests for relief that arose or were asserted before the effective date of this Agreement or any prior version of this Agreement.\r\n\r\n(b) Arbitration Rules and Forum. The Federal Arbitration Act governs the interpretation and enforcement of this Arbitration Agreement. To begin an arbitration proceeding, you must send a letter requesting arbitration and describing your dispute or claim or request for relief to our registered agent. The arbitration will be conducted by JAMS, an established alternative dispute resolution provider. Disputes involving claims, counterclaims, or request for relief under $250,000, not inclusive of attorneys’ fees and interest, shall be subject to JAMS’s most current version of the Streamlined Arbitration Rules and procedures available at https://jamsadr.com/rules-streamlined-arbitration/; all other disputes shall be subject to JAMS’s most current version of the Comprehensive Arbitration Rules and Procedures, available at https://jamsadr.com/rules-comprehensive-arbitration/. JAMS’s rules are also available at https://jamsadr.com or by calling JAMS at 800-352-5267. If JAMS is not available to arbitrate, the parties will select an alternative arbitral forum. If the arbitrator finds that you cannot afford to pay JAMS’s filing, administrative, hearing and/or other fees and cannot obtain a waiver from JAMS, Company will pay them for you. In addition, Company will reimburse all such JAMS’s filing, administrative, hearing and/or other fees for disputes, claims, or requests for relief totaling less than $10,000 unless the arbitrator determines the claims are frivolous.\r\n\r\nYou may choose to have the arbitration conducted by telephone, based on written submissions, or in person in the country where you live or at another mutually agreed location. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction.\r\n\r\n(c) Authority of Arbitrator. The arbitrator shall have exclusive authority to (a) determine the scope and enforceability of this Arbitration Agreement and (b) resolve any dispute related to the interpretation, applicability, enforceability or formation of this Arbitration Agreement including, but not limited to, any assertion that all or any part of this Arbitration Agreement is void or voidable. The arbitration will decide the rights and liabilities, if any, of you and Company. The arbitration proceeding will not be consolidated with any other matters or joined with any other cases or parties. The arbitrator shall have the authority to grant motions dispositive of all or part of any claim. The arbitrator shall have the authority to award monetary damages and to grant any non-monetary remedy or relief available to an individual under applicable law, the arbitral forum’s rules, and the Agreement (including the Arbitration Agreement). The arbitrator shall issue a written award and statement of decision describing the essential findings and conclusions on which the award is based, including the calculation of any damages awarded. The arbitrator has the same authority to award relief on an individual basis that a judge in a court of law would have. The award of the arbitrator is final and binding upon you and us.\r\n\r\n(d) Waiver of Jury Trial. YOU AND COMPANY HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. You and Company are instead electing that all disputes, claims, or requests for relief shall be resolved by arbitration under this Arbitration Agreement, except as specified in Section 10(a) (Application of Arbitration Agreement) above. An arbitrator can award on an individual basis the same damages and relief as a court and must follow this Agreement as a court would. However, there is no judge or jury in arbitration, and court review of an arbitration award is subject to very limited review.\r\n\r\n(e) Waiver of Class or Other Non-Individualized Relief. ALL DISPUTES, CLAIMS, AND REQUESTS FOR RELIEF WITHIN THE SCOPE OF THIS ARBITRATION AGREEMENT MUST BE ARBITRATED ON AN INDIVIDUAL BASIS AND NOT ON A CLASS OR COLLECTIVE BASIS, ONLY INDIVIDUAL RELIEF IS AVAILABLE, AND CLAIMS OF MORE THAN ONE CUSTOMER OR USER CANNOT BE ARBITRATED OR CONSOLIDATED WITH THOSE OF ANY OTHER CUSTOMER OR USER. If a decision is issued stating that applicable law precludes enforcement of any of this section’s limitations as to a given dispute, claim, or request for relief, then such aspect must be severed from the arbitration and brought into the State or Federal Courts located in the Commonwealth of Massachusetts. All other disputes, claims, or requests for relief shall be arbitrated.\r\n\r\n(f) 30-Day Right to Opt Out. You have the right to opt out of the provisions of this Arbitration Agreement by sending written notice of your decision to opt out to: hello@foundationdevices.com, within thirty (30) days after first becoming subject to this Arbitration Agreement. Your notice must include your name and address, your Company username (if any), the email address you used to set up your Company account (if you have one), and an unequivocal statement that you want to opt out of this Arbitration Agreement. If you opt out of this Arbitration Agreement, all other parts of this Agreement will continue to apply to you. Opting out of this Arbitration Agreement has no effect on any other arbitration agreements that you may currently have, or may enter in the future, with us.\r\n\r\n(g) Severability. Except as provided in Section 10(e)(Waiver of Class or Other Non-Individualized Relief), if any part or parts of this Arbitration Agreement are found under the law to be invalid or unenforceable, then such specific part or parts shall be of no force and effect and shall be severed and the remainder of the Arbitration Agreement shall continue in full force and effect.\r\n\r\n(h) Survival of Agreement. This Arbitration Agreement will survive the termination of your relationship with Company.\r\n\r\nModification. Notwithstanding any provision in this Agreement to the contrary, we agree that if Company makes any future material change to this Arbitration Agreement, you may reject that change within thirty (30) days of such change becoming effective by writing Company at the following address: Foundation Devices, Inc., 6 Liberty Square #6018, Boston, MA 02109, Attn: CEO.\r\n\r\n19. GENERAL\r\n(a) Changes to Terms of Use. This Agreement is subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to us (if any) and/or by prominently posting notice of the changes on our website. Any changes to this agreement will be effective upon the earlier of thirty (30) calendar days following our dispatch of an e-mail notice to you (if applicable) or thirty (30) calendar days following our posting of notice of the changes on our website. These changes will be effective immediately for new users of our website. You are responsible for providing us with your most current e-mail address. In the event that the last e-mail address that you have provided us is not valid, or for any reason is not capable of delivering to you the notice described above, our dispatch of the e-mail containing such notice will nonetheless constitute effective notice of the changes described in the notice. Continued use of Passport following notice of such changes will indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes.\r\n\r\nChoice Of Law. The Agreement is made under and will be governed by and construed in accordance with the laws of the Commonwealth of Massachusetts, consistent with the Federal Arbitration Act, without giving effect to any principles that provide for the application of the law of another jurisdiction.\r\n\r\n(b) Entire Agreement. This Agreement constitutes the entire agreement between you and us regarding the use of Passport. Our failure to exercise or enforce any right or provision of this Agreement will not operate as a waiver of such right or provision. The section titles in this Agreement are for convenience only and have no legal or contractual effect. The word including means including without limitation. If any provision of this Agreement is, for any reason, held to be invalid or unenforceable, the other provisions of this Agreement will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law. Your relationship to us is that of an independent contractor, and neither party is an agent or partner of the other. This Agreement, and your rights and obligations herein, may not be assigned, subcontracted, delegated, or otherwise transferred by you without our prior written consent, and any attempted assignment, subcontract, delegation, or transfer in violation of the foregoing will be null and void. The terms of this Agreement will be binding upon assignees.\r\n\r\n(c) Copyright/Trademark Information. Copyright © 2020, Foundation Devices, Inc. All rights reserved. All trademarks, logos and service marks displayed on the Site are our property or the property of other third parties. You are not permitted to use such trademarks, logos and service marks without our prior written consent or the consent of such third party which may own the Marks.\r\n\r\nContact Information:\r\n\r\nFoundation Devices, Inc.\r\n6 Liberty Square #6018\r\nBoston, MA 02109\r\nhello@foundationdevices.com`
+  String get envoy_account_tos_subheading {
+    return Intl.message(
+      'Last updated: May 16, 2021.\r\n\r\nBy purchasing, using or continuing to use a Passport hardware wallet (“Passport“), you, the purchaser of Passport, agree to be bound by these terms of and use (the “Passport Terms of Use” or “Terms”).\r\n\r\n1. Use of Passport\n\nPassport includes functionality to store and facilitate the transfer of bitcoin (“Bitcoin”) and which may be used to facilitate various types of transactions and other activities (“Transactions”). You understand and agree that Foundation Devices (“Foundation”, “We”, or “Us“) is not responsible for, and has no obligation or liability to you or others in respect of any Transactions. You agree to comply with all applicable laws in your use of Products (including all Transactions), including without limitation any anti-money laundering laws or regulations.\r\n\r\n2. Security\n\r\nYou understand and agree that control and access to Bitcoin stored on any Product is based upon physical possession and control of such Product and that any person given physical possession of the Product may remove or transfer any or all Bitcoin stored on such Product.\r\n\r\n3. BACKUPS\r\nYou are solely responsible for generating and making backups of your recovery phrase and for preserving and maintaining the security and confidentiality of your recovery phrase and your PIN. You acknowledge and agree that failure to do so may result in the complete loss of all Bitcoin stored on Passport and that we have no obligation to liability whatsoever for any such loss.\r\n\r\n4. MODIFICATIONS\r\nYou acknowledge and agree that any modifications to Passport, the installation of any additional software or firmware on a Passport or the use of Passport in connection with any other software or equipment are at your sole risk, and that we have no obligation or liability in respect thereof or in respect of any resulting loss of Bitcoin, damage to Passport, failure of the Passport or errors in storing Bitcoin or processing Transactions;\r\n\r\n5. OPEN SOURCE LICENSES\r\nPassport includes software licensed under the GNU General Public License v3 and other open source licenses, as identified in documentation provided with Passport. Your use of such software is subject to the applicable open source licenses and, to the extent such open source licenses conflicts with this Agreement, the terms of such licenses will prevail.\r\n\r\n6. ACKNOWLEDGEMENT AND ASSUMPTION OF RISK\r\nYou understand and agree that:\r\n\r\n(a) there are risks associated with the use and holding of Bitcoin and you represent and warrant that you are knowledgeable and/or experienced in matters relating to the use of Bitcoin and are capable of evaluating the benefits and risks of using and holding Bitcoin and fully understand the nature of Bitcoin, the limitations and restrictions on its liquidity and transferability and are capable of bearing the economic risk of holding and transacting using Bitcoin;\r\n\r\n(b) the continued ability to use Bitcoin is dependent on many elements beyond our control, including without limitation the publication of blocks, network connectivity, hacking or changes in the technical and other standards, policies and procedures applicable to Bitcoin;\r\n\r\n(c) no regulatory authority has reviewed or passed on the merits, legality or fungibility of Bitcoin;\r\n\r\n(d) there is no government or other insurance covering Bitcoin, the loss or theft of Bitcoin, or any loss in the value of Bitcoin;\r\n\r\n(e) the use of Bitcoin or the Products may become subject to regulatory controls that limit, restrict, prohibit or otherwise impose conditions on your use of same;\r\n\r\n(f) Bitcoin do not constitute a currency, asset, security, negotiable instrument, or other form of property and do not have any intrinsic or inherent value;\r\n\r\n(g) the value of and/or exchange rates for Bitcoin may fluctuate significantly and may result in you incurring significant losses;\r\n\r\n(h) Transactions may have tax consequences (including obligations to report, collect or remit taxes) and you are solely responsible for understanding and complying with all applicable tax laws and regulations; and\r\n\r\n(i) the use of Bitcoin or Products may be illegal or subject to regulation in certain jurisdictions, and it is your responsibility to ensure that you comply with the laws of any jurisdiction in which you use Bitcoin or Products.\r\n\r\n7. TRANSFER OF PASSPORT\r\nYou may transfer or sell Passport to others on the condition that you ensure that the transferee or purchaser agrees to be bound by the then-current form of these Terms available on our website at the time of transfer.\r\n\r\n8. RESTRICTIONS\r\nYou shall not:\r\n\r\n(a) use Passport in a manner or for a purpose that: (i) is illegal or otherwise contravenes applicable law (including the facilitation or furtherance of any criminal or fraudulent activity or the violation of any anti-money laundering legislation); or (ii) infringes upon the lawful rights of others;\r\n\r\n(b) interfere with the security or integrity of Passport;\r\n\r\n(c) remove, destroy, cover, obfuscate or alter in any manner any notices, legends, trademarks, branding or logos appearing on or contained in Passport; or\r\n\r\n(d) attempt, or cause, permit or encourage any other person, to do any of the foregoing.\r\n\r\nNotwithstanding the foregoing, you may investigate security and other vulnerabilities, provided you do so in a reasonable and responsible manner in compliance with applicable law and our responsible disclosure policy and otherwise use good faith efforts to minimize or avoid contravention of any of the foregoing.\r\n\r\n9. REPRESENTATIONS AND WARRANTIES\r\nYou represent, warrant and covenant that:\r\n\r\n(a) you have the capacity to, and are and will be free to, enter into and to fully perform your obligations under these Terms and that no agreement or understanding with any other person exists or will exist which would interfere with such obligations; and\r\n\r\n(b) these Terms constitute a legal, valid and binding obligation upon you.\r\n\r\n10. OWNERSHIP\r\nExcept for the limited rights of use expressly granted to you under these Terms, all right, title and interest (including all copyrights, trademarks, service marks, patents, inventions, trade secrets, intellectual property rights and other proprietary rights) in and to Passport are and shall remain exclusively owned by us and our licensors. All trade names, company names, trademarks, service marks and other names and logos are the proprietary marks of us or our licensors, and are protected by law and may not be copied, imitated or used, in whole or in part, without the consent of their respective owners. These Terms do not grant you any rights in respect of any such marks. You understand and agree that any feedback, input, suggestions, recommendations, improvements, changes, specifications, test results, or other data or information that you provide or make available to us arising from or related to your use of the Products or Software shall become our exclusive property and may be used by us to modify, enhance, maintain and improve Passport without any obligation or payment to you whatsoever.\r\n\r\n11. THIRD PARTY PRODUCTS\r\nYou acknowledge and agree that you will require certain third party equipment, products, software and services in order to use the Products and may also use optional third party equipment, products, software and services that enhance or complement such use (collectively, “Third Party Products”). You acknowledge and agree that failure to use or procure Third Party Products that meet the minimum requirements for Products, or failure to properly configure or setup Third Party Products may result in the inability to use the Products and/or processing failures or errors. Third Party Products include, without limitation, computers, mobile devices, networking equipment, operating system software, web browsers and internet connectivity. We may also identify, recommend, reference or link to optional Third Party Products on our website. You acknowledge and agree that: (a) Third Party Products are be governed by separate licenses, agreements or terms and conditions and we have no obligation or liability to you in respect thereof; and (b) you are solely responsible for procuring any Third Party Products at your cost and expense, and are solely responsible for compliance with any applicable licenses, agreements or terms and conditions governing same. \r\n\r\n12. INDEMNITY\r\nYou agree to indemnify and hold Foundation Devices (and our officers, employees, and agents) harmless, including costs and attorneys’ fees, from any claim or demand due to or arising out of (a) your use of Passport, (b) your violation of this Agreement or (c) your violation of applicable laws or regulations. We reserve the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us and you agree to cooperate with our defense of these claims. You agree not to settle any matter without our prior written consent. We will use reasonable efforts to notify you of any such claim, action or proceeding upon becoming aware of it.\r\n\r\n13. DISCLAIMERS\r\nPASSPORT IS PROVIDED “AS-IS” AND “AS AVAILABLE” AND WE (AND OUR SUPPLIERS) EXPRESSLY DISCLAIM ANY WARRANTIES AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, OR NON-INFRINGEMENT. WE (AND OUR SUPPLIERS) MAKE NO WARRANTY THAT PASSPORT: (A) WILL MEET YOUR REQUIREMENTS; (B) WILL BE AVAILABLE ON AN UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE BASIS; OR (C) WILL BE ACCURATE, RELIABLE, FREE OF VIRUSES OR OTHER HARMFUL CODE, COMPLETE, LEGAL, OR SAFE.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n14. LIMITATION ON LIABILITY\r\nYOU AGREE THAT, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, OUR AGGREGATE LIABILITY ARISING FROM OR RELATED TO THESE TERMS OR PASSPORT IN ANY MANNER WILL BE LIMITED TO DIRECT DAMAGES NOT TO EXCEED THE PURCHASE PRICE YOU HAVE PAID TO US FOR PASSPORT (EXCLUDING SHIPPING CHARGES AND TAXES). TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL WE (AND OUR SUPPLIERS) BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, PUNITIVE, OR OTHER DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF REVENUE, PROFITS, OR EXPECTED SAVINGS, BUSINESS INTERRUPTION, PERSONAL INJURY, LOSS OF PRIVACY, LOSS OF DATA OR INFORMATION OR OTHER PECUNIARY OR INTANGIBLE LOSS) ARISING OUT OF THESE TERMS OR THE USE OF OR INABILITY TO USE PASSPORT, EVEN IF WE FORESEE OR HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OF CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n15. RELEASE\r\nYou hereby release and forever discharge us (and our officers, employees, agents, successors, and assigns) from, and hereby waive and relinquish, each and every past, present and future dispute, claim, controversy, demand, right, obligation, liability, action and cause of action of every kind and nature (including personal injuries, death, and property damage), that has arisen or arises directly or indirectly out of, or relates directly or indirectly to, use of Passport. IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE CALIFORNIA CIVIL CODE SECTION 1542 IN CONNECTION WITH THE FOREGOING, WHICH STATES: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”\r\n\r\n16. SURVIVAL\r\nNeither the expiration nor the earlier termination of your account will release you from any obligation or liability that accrued prior to such expiration or termination. The provisions of these Terms requiring performance or fulfilment after the expiration or earlier termination of your account and any other provisions hereof, the nature and intent of which is to survive termination or expiration, will survive.\r\n\r\n17. PRIVACY POLICY\r\nPlease review our Privacy Policy, located at https://foundationdevices.com/privacy, which governs the use of personal information.\r\n\r\n18. DISPUTE RESOLUTION\r\nPlease read the following arbitration agreement in this section (“Arbitration Agreement”) carefully. It requires U.S. users to arbitrate disputes with Foundation Devices and limits the manner in which you can seek relief from us.\r\n\r\n(a) Applicability of Arbitration Agreement. You agree that any dispute, claim, or request for relief relating in any way to your use of Passport will be resolved by binding arbitration, rather than in court, except that (a) you may assert claims or seek relief in small claims court if your claims qualify; and (b) you or we may seek equitable relief in court for infringement or other misuse of intellectual property rights (such as trademarks, trade dress, domain names, trade secrets, copyrights, and patents). This Arbitration Agreement shall apply, without limitation, to all disputes or claims and requests for relief that arose or were asserted before the effective date of this Agreement or any prior version of this Agreement.\r\n\r\n(b) Arbitration Rules and Forum. The Federal Arbitration Act governs the interpretation and enforcement of this Arbitration Agreement. To begin an arbitration proceeding, you must send a letter requesting arbitration and describing your dispute or claim or request for relief to our registered agent. The arbitration will be conducted by JAMS, an established alternative dispute resolution provider. Disputes involving claims, counterclaims, or request for relief under \$250,000, not inclusive of attorneys’ fees and interest, shall be subject to JAMS’s most current version of the Streamlined Arbitration Rules and procedures available at https://jamsadr.com/rules-streamlined-arbitration/; all other disputes shall be subject to JAMS’s most current version of the Comprehensive Arbitration Rules and Procedures, available at https://jamsadr.com/rules-comprehensive-arbitration/. JAMS’s rules are also available at https://jamsadr.com or by calling JAMS at 800-352-5267. If JAMS is not available to arbitrate, the parties will select an alternative arbitral forum. If the arbitrator finds that you cannot afford to pay JAMS’s filing, administrative, hearing and/or other fees and cannot obtain a waiver from JAMS, Company will pay them for you. In addition, Company will reimburse all such JAMS’s filing, administrative, hearing and/or other fees for disputes, claims, or requests for relief totaling less than \$10,000 unless the arbitrator determines the claims are frivolous.\r\n\r\nYou may choose to have the arbitration conducted by telephone, based on written submissions, or in person in the country where you live or at another mutually agreed location. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction.\r\n\r\n(c) Authority of Arbitrator. The arbitrator shall have exclusive authority to (a) determine the scope and enforceability of this Arbitration Agreement and (b) resolve any dispute related to the interpretation, applicability, enforceability or formation of this Arbitration Agreement including, but not limited to, any assertion that all or any part of this Arbitration Agreement is void or voidable. The arbitration will decide the rights and liabilities, if any, of you and Company. The arbitration proceeding will not be consolidated with any other matters or joined with any other cases or parties. The arbitrator shall have the authority to grant motions dispositive of all or part of any claim. The arbitrator shall have the authority to award monetary damages and to grant any non-monetary remedy or relief available to an individual under applicable law, the arbitral forum’s rules, and the Agreement (including the Arbitration Agreement). The arbitrator shall issue a written award and statement of decision describing the essential findings and conclusions on which the award is based, including the calculation of any damages awarded. The arbitrator has the same authority to award relief on an individual basis that a judge in a court of law would have. The award of the arbitrator is final and binding upon you and us.\r\n\r\n(d) Waiver of Jury Trial. YOU AND COMPANY HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. You and Company are instead electing that all disputes, claims, or requests for relief shall be resolved by arbitration under this Arbitration Agreement, except as specified in Section 10(a) (Application of Arbitration Agreement) above. An arbitrator can award on an individual basis the same damages and relief as a court and must follow this Agreement as a court would. However, there is no judge or jury in arbitration, and court review of an arbitration award is subject to very limited review.\r\n\r\n(e) Waiver of Class or Other Non-Individualized Relief. ALL DISPUTES, CLAIMS, AND REQUESTS FOR RELIEF WITHIN THE SCOPE OF THIS ARBITRATION AGREEMENT MUST BE ARBITRATED ON AN INDIVIDUAL BASIS AND NOT ON A CLASS OR COLLECTIVE BASIS, ONLY INDIVIDUAL RELIEF IS AVAILABLE, AND CLAIMS OF MORE THAN ONE CUSTOMER OR USER CANNOT BE ARBITRATED OR CONSOLIDATED WITH THOSE OF ANY OTHER CUSTOMER OR USER. If a decision is issued stating that applicable law precludes enforcement of any of this section’s limitations as to a given dispute, claim, or request for relief, then such aspect must be severed from the arbitration and brought into the State or Federal Courts located in the Commonwealth of Massachusetts. All other disputes, claims, or requests for relief shall be arbitrated.\r\n\r\n(f) 30-Day Right to Opt Out. You have the right to opt out of the provisions of this Arbitration Agreement by sending written notice of your decision to opt out to: hello@foundationdevices.com, within thirty (30) days after first becoming subject to this Arbitration Agreement. Your notice must include your name and address, your Company username (if any), the email address you used to set up your Company account (if you have one), and an unequivocal statement that you want to opt out of this Arbitration Agreement. If you opt out of this Arbitration Agreement, all other parts of this Agreement will continue to apply to you. Opting out of this Arbitration Agreement has no effect on any other arbitration agreements that you may currently have, or may enter in the future, with us.\r\n\r\n(g) Severability. Except as provided in Section 10(e)(Waiver of Class or Other Non-Individualized Relief), if any part or parts of this Arbitration Agreement are found under the law to be invalid or unenforceable, then such specific part or parts shall be of no force and effect and shall be severed and the remainder of the Arbitration Agreement shall continue in full force and effect.\r\n\r\n(h) Survival of Agreement. This Arbitration Agreement will survive the termination of your relationship with Company.\r\n\r\nModification. Notwithstanding any provision in this Agreement to the contrary, we agree that if Company makes any future material change to this Arbitration Agreement, you may reject that change within thirty (30) days of such change becoming effective by writing Company at the following address: Foundation Devices, Inc., 6 Liberty Square #6018, Boston, MA 02109, Attn: CEO.\r\n\r\n19. GENERAL\r\n(a) Changes to Terms of Use. This Agreement is subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to us (if any) and/or by prominently posting notice of the changes on our website. Any changes to this agreement will be effective upon the earlier of thirty (30) calendar days following our dispatch of an e-mail notice to you (if applicable) or thirty (30) calendar days following our posting of notice of the changes on our website. These changes will be effective immediately for new users of our website. You are responsible for providing us with your most current e-mail address. In the event that the last e-mail address that you have provided us is not valid, or for any reason is not capable of delivering to you the notice described above, our dispatch of the e-mail containing such notice will nonetheless constitute effective notice of the changes described in the notice. Continued use of Passport following notice of such changes will indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes.\r\n\r\nChoice Of Law. The Agreement is made under and will be governed by and construed in accordance with the laws of the Commonwealth of Massachusetts, consistent with the Federal Arbitration Act, without giving effect to any principles that provide for the application of the law of another jurisdiction.\r\n\r\n(b) Entire Agreement. This Agreement constitutes the entire agreement between you and us regarding the use of Passport. Our failure to exercise or enforce any right or provision of this Agreement will not operate as a waiver of such right or provision. The section titles in this Agreement are for convenience only and have no legal or contractual effect. The word including means including without limitation. If any provision of this Agreement is, for any reason, held to be invalid or unenforceable, the other provisions of this Agreement will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law. Your relationship to us is that of an independent contractor, and neither party is an agent or partner of the other. This Agreement, and your rights and obligations herein, may not be assigned, subcontracted, delegated, or otherwise transferred by you without our prior written consent, and any attempted assignment, subcontract, delegation, or transfer in violation of the foregoing will be null and void. The terms of this Agreement will be binding upon assignees.\r\n\r\n(c) Copyright/Trademark Information. Copyright © 2020, Foundation Devices, Inc. All rights reserved. All trademarks, logos and service marks displayed on the Site are our property or the property of other third parties. You are not permitted to use such trademarks, logos and service marks without our prior written consent or the consent of such third party which may own the Marks.\r\n\r\nContact Information:\r\n\r\nFoundation Devices, Inc.\r\n6 Liberty Square #6018\r\nBoston, MA 02109\r\nhello@foundationdevices.com',
+      name: 'envoy_account_tos_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is a Bitcoin mobile wallet and Passport companion app, available on iOS and Android.`
+  String get envoy_faq_answer_1 {
+    return Intl.message(
+      'Envoy is a Bitcoin mobile wallet and Passport companion app, available on iOS and Android.',
+      name: 'envoy_faq_answer_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No, anyone is still free to manually download, verify and install new firmware. See [[here]] for more information.`
+  String get envoy_faq_answer_10 {
+    return Intl.message(
+      'No, anyone is still free to manually download, verify and install new firmware. See [[here]] for more information.',
+      name: 'envoy_faq_answer_10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy.`
+  String get envoy_faq_answer_11 {
+    return Intl.message(
+      'Absolutely, there is no limit to the number of Passports you can manage and interact with using Envoy.',
+      name: 'envoy_faq_answer_11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, Envoy makes multi-account management simple.`
+  String get envoy_faq_answer_12 {
+    return Intl.message(
+      'Yes, Envoy makes multi-account management simple.',
+      name: 'envoy_faq_answer_12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy communicates predominantly via QR codes, however firmware updates are passed from your phone via a microSD card. Passport includes microSD adapters for your phone.`
+  String get envoy_faq_answer_13 {
+    return Intl.message(
+      'Envoy communicates predominantly via QR codes, however firmware updates are passed from your phone via a microSD card. Passport includes microSD adapters for your phone.',
+      name: 'envoy_faq_answer_13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, just be aware that any wallet-specific information, such as address or UTXO labeling, will not be copied to or from Envoy.`
+  String get envoy_faq_answer_14 {
+    return Intl.message(
+      'Yes, just be aware that any wallet-specific information, such as address or UTXO labeling, will not be copied to or from Envoy.',
+      name: 'envoy_faq_answer_14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This may be possible as most QR enabled hardware wallets communicate in very similar ways, however this is not explicitly supported. As Envoy is open source, we welcome other QR-based hardware wallets to add support!`
+  String get envoy_faq_answer_15 {
+    return Intl.message(
+      'This may be possible as most QR enabled hardware wallets communicate in very similar ways, however this is not explicitly supported. As Envoy is open source, we welcome other QR-based hardware wallets to add support!',
+      name: 'envoy_faq_answer_15',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At this time Envoy only works with ‘on-chain’ Bitcoin. We plan to support Lightning in the future.`
+  String get envoy_faq_answer_16 {
+    return Intl.message(
+      'At this time Envoy only works with ‘on-chain’ Bitcoin. We plan to support Lightning in the future.',
+      name: 'envoy_faq_answer_16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Anyone finding your phone would first need to get past your phones operating system PIN or biometric authentication to access Envoy. In the unlikely event they achieve this, the attacker could send funds from your Envoy Mobile Wallet and see the amount of Bitcoin stored within any connected Passport accounts. These Passport funds are not at risk because any transactions must be authorized by the paired Passport device.`
+  String get envoy_faq_answer_17 {
+    return Intl.message(
+      'Anyone finding your phone would first need to get past your phones operating system PIN or biometric authentication to access Envoy. In the unlikely event they achieve this, the attacker could send funds from your Envoy Mobile Wallet and see the amount of Bitcoin stored within any connected Passport accounts. These Passport funds are not at risk because any transactions must be authorized by the paired Passport device.',
+      name: 'envoy_faq_answer_17',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If used with a Passport, Envoy acts as a ‘watch-only’ wallet connected to your hardware wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide. Passport is the 'cold storage' and Envoy is simply the internet connected interface!If you use Envoy to create a mobile wallet, where the keys are stored securely on your phone, that mobile wallet would not be considered cold storage. This has zero effect on the security of any Passport connected accounts.`
+  String get envoy_faq_answer_18 {
+    return Intl.message(
+      'If used with a Passport, Envoy acts as a ‘watch-only’ wallet connected to your hardware wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide. Passport is the \'cold storage\' and Envoy is simply the internet connected interface!If you use Envoy to create a mobile wallet, where the keys are stored securely on your phone, that mobile wallet would not be considered cold storage. This has zero effect on the security of any Passport connected accounts.',
+      name: 'envoy_faq_answer_18',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.`
+  String get envoy_faq_answer_19 {
+    return Intl.message(
+      'Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.',
+      name: 'envoy_faq_answer_19',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.`
+  String get envoy_faq_answer_2 {
+    return Intl.message(
+      'Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.',
+      name: 'envoy_faq_answer_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Downloading and installing Envoy requires zero personal information and Envoy can connect to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely.`
+  String get envoy_faq_answer_20 {
+    return Intl.message(
+      'Downloading and installing Envoy requires zero personal information and Envoy can connect to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely.',
+      name: 'envoy_faq_answer_20',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes. From version 1.4.0, Envoy now support full coin selection as well as coin 'tagging'.`
+  String get envoy_faq_answer_21 {
+    return Intl.message(
+      'Yes. From version 1.4.0, Envoy now support full coin selection as well as coin \'tagging\'.',
+      name: 'envoy_faq_answer_21',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At this time Envoy does not support batch spending.`
+  String get envoy_faq_answer_22 {
+    return Intl.message(
+      'At this time Envoy does not support batch spending.',
+      name: 'envoy_faq_answer_22',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. 'Standard' aims to get your transaction finalized within 60 minutes and 'Faster' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction.`
+  String get envoy_faq_answer_23 {
+    return Intl.message(
+      'Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. \'Standard\' aims to get your transaction finalized within 60 minutes and \'Faster\' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction.',
+      name: 'envoy_faq_answer_23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.`
+  String get envoy_faq_answer_3 {
+    return Intl.message(
+      'Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.',
+      name: 'envoy_faq_answer_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Android Auto Backup. All app data is encrypted by your seed and stored on Foundation Servers. Set up your wallet in 60 seconds, and automatically restore if you lose your phone!`
+  String get envoy_faq_answer_4 {
+    return Intl.message(
+      'Magic Backups is the easiest way to set up and back up a Bitcoin mobile wallet. Magic Backups stores your mobile wallet seed end-to-end encrypted in iCloud Keychain or Android Auto Backup. All app data is encrypted by your seed and stored on Foundation Servers. Set up your wallet in 60 seconds, and automatically restore if you lose your phone!',
+      name: 'envoy_faq_answer_4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups are completely optional for users that want to leverage Envoy as a mobile wallet. If you prefer to manage your own mobile wallet seed words and backup file, choose 'Manually Configure Seed Words' at the wallet set up stage.`
+  String get envoy_faq_answer_5 {
+    return Intl.message(
+      'Magic Backups are completely optional for users that want to leverage Envoy as a mobile wallet. If you prefer to manage your own mobile wallet seed words and backup file, choose \'Manually Configure Seed Words\' at the wallet set up stage.',
+      name: 'envoy_faq_answer_5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Envoy backup file contains app settings, account info and transaction labels. The file is encrypted with your mobile wallet seed words. For Magic Backup users, this is stored fully encrypted on the Foundation server. Manual backup Envoy users can download and store their backup file anywhere they like. This could be any combination of your phone, a personal cloud server, or on something physical like a microSD card or USB drive.`
+  String get envoy_faq_answer_6 {
+    return Intl.message(
+      'The Envoy backup file contains app settings, account info and transaction labels. The file is encrypted with your mobile wallet seed words. For Magic Backup users, this is stored fully encrypted on the Foundation server. Manual backup Envoy users can download and store their backup file anywhere they like. This could be any combination of your phone, a personal cloud server, or on something physical like a microSD card or USB drive.',
+      name: 'envoy_faq_answer_6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No, Envoy’s core features will always be free to use. In the future we may introduce optional paid services or subscriptions.`
+  String get envoy_faq_answer_7 {
+    return Intl.message(
+      'No, Envoy’s core features will always be free to use. In the future we may introduce optional paid services or subscriptions.',
+      name: 'envoy_faq_answer_7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same [[GPLv3]] license as our Passport Firmware. For those wanting to check our source code, click [[here]].`
+  String get envoy_faq_answer_8 {
+    return Intl.message(
+      'Yes, like everything we do at Foundation, Envoy is completely open source. Envoy is licensed under the same [[GPLv3]] license as our Passport Firmware. For those wanting to check our source code, click [[here]].',
+      name: 'envoy_faq_answer_8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials [[here]].`
+  String get envoy_faq_answer_9 {
+    return Intl.message(
+      'No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials [[here]].',
+      name: 'envoy_faq_answer_9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is Envoy?`
+  String get envoy_faq_question_1 {
+    return Intl.message(
+      'What is Envoy?',
+      name: 'envoy_faq_question_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I have to use Envoy to update the firmware on Passport?`
+  String get envoy_faq_question_10 {
+    return Intl.message(
+      'Do I have to use Envoy to update the firmware on Passport?',
+      name: 'envoy_faq_question_10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I manage more than one Passport with Envoy?`
+  String get envoy_faq_question_11 {
+    return Intl.message(
+      'Can I manage more than one Passport with Envoy?',
+      name: 'envoy_faq_question_11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I manage multiple accounts from the same Passport?`
+  String get envoy_faq_question_12 {
+    return Intl.message(
+      'Can I manage multiple accounts from the same Passport?',
+      name: 'envoy_faq_question_12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How does Envoy communicate with Passport?`
+  String get envoy_faq_question_13 {
+    return Intl.message(
+      'How does Envoy communicate with Passport?',
+      name: 'envoy_faq_question_13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I use Envoy in parallel to another piece of software like Sparrow Wallet?`
+  String get envoy_faq_question_14 {
+    return Intl.message(
+      'Can I use Envoy in parallel to another piece of software like Sparrow Wallet?',
+      name: 'envoy_faq_question_14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I manage other hardware wallets with Envoy?`
+  String get envoy_faq_question_15 {
+    return Intl.message(
+      'Can I manage other hardware wallets with Envoy?',
+      name: 'envoy_faq_question_15',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is Envoy compatible with the Lightning Network?`
+  String get envoy_faq_question_16 {
+    return Intl.message(
+      'Is Envoy compatible with the Lightning Network?',
+      name: 'envoy_faq_question_16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What happens if I lose my phone with Envoy installed?`
+  String get envoy_faq_question_17 {
+    return Intl.message(
+      'What happens if I lose my phone with Envoy installed?',
+      name: 'envoy_faq_question_17',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is Envoy considered ‘Cold Storage’?`
+  String get envoy_faq_question_18 {
+    return Intl.message(
+      'Is Envoy considered ‘Cold Storage’?',
+      name: 'envoy_faq_question_18',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I connect Envoy to my own Bitcoin node?`
+  String get envoy_faq_question_19 {
+    return Intl.message(
+      'Can I connect Envoy to my own Bitcoin node?',
+      name: 'envoy_faq_question_19',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Why should I use Envoy?`
+  String get envoy_faq_question_2 {
+    return Intl.message(
+      'Why should I use Envoy?',
+      name: 'envoy_faq_question_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How does Envoy protect my privacy?`
+  String get envoy_faq_question_20 {
+    return Intl.message(
+      'How does Envoy protect my privacy?',
+      name: 'envoy_faq_question_20',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does Envoy offer coin control?`
+  String get envoy_faq_question_21 {
+    return Intl.message(
+      'Does Envoy offer coin control?',
+      name: 'envoy_faq_question_21',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does Envoy support Batch spends?`
+  String get envoy_faq_question_22 {
+    return Intl.message(
+      'Does Envoy support Batch spends?',
+      name: 'envoy_faq_question_22',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does Envoy allow custom miner fee selection?`
+  String get envoy_faq_question_23 {
+    return Intl.message(
+      'Does Envoy allow custom miner fee selection?',
+      name: 'envoy_faq_question_23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What can Envoy do?`
+  String get envoy_faq_question_3 {
+    return Intl.message(
+      'What can Envoy do?',
+      name: 'envoy_faq_question_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is Envoy Magic Backup?`
+  String get envoy_faq_question_4 {
+    return Intl.message(
+      'What is Envoy Magic Backup?',
+      name: 'envoy_faq_question_4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I have to use Envoy Magic Backups?`
+  String get envoy_faq_question_5 {
+    return Intl.message(
+      'Do I have to use Envoy Magic Backups?',
+      name: 'envoy_faq_question_5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is the Envoy Backup File?`
+  String get envoy_faq_question_6 {
+    return Intl.message(
+      'What is the Envoy Backup File?',
+      name: 'envoy_faq_question_6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I need to pay for Envoy?`
+  String get envoy_faq_question_7 {
+    return Intl.message(
+      'Do I need to pay for Envoy?',
+      name: 'envoy_faq_question_7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Is Envoy Open Source?`
+  String get envoy_faq_question_8 {
+    return Intl.message(
+      'Is Envoy Open Source?',
+      name: 'envoy_faq_question_8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do I have to use Envoy to transact with Passport?`
+  String get envoy_faq_question_9 {
+    return Intl.message(
+      'Do I have to use Envoy to transact with Passport?',
+      name: 'envoy_faq_question_9',
       desc: '',
       args: [],
     );
@@ -1557,6 +2541,36 @@ class S {
     return Intl.message(
       'Grant Envoy access to copy files to the microSD card. Tap Browse, then PASSPORT-SD, then Open.',
       name: 'envoy_fw_ios_instructions_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get envoy_fw_microsd_fails_cta1 {
+    return Intl.message(
+      'Cancel',
+      name: 'envoy_fw_microsd_fails_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download from Github`
+  String get envoy_fw_microsd_fails_cta2 {
+    return Intl.message(
+      'Download from Github',
+      name: 'envoy_fw_microsd_fails_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sorry, we can’t get the firmware update right now.`
+  String get envoy_fw_microsd_fails_heading {
+    return Intl.message(
+      'Sorry, we can’t get the firmware update right now.',
+      name: 'envoy_fw_microsd_fails_heading',
       desc: '',
       args: [],
     );
@@ -2172,6 +3186,26 @@ class S {
     );
   }
 
+  /// `Next, scan the QR code on Passport's screen`
+  String get envoy_scv_scan_qr_heading {
+    return Intl.message(
+      'Next, scan the QR code on Passport\'s screen',
+      name: 'envoy_scv_scan_qr_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This QR code completes the validation and shares some Passport information with Envoy.`
+  String get envoy_scv_scan_qr_subheading {
+    return Intl.message(
+      'This QR code completes the validation and shares some Passport information with Envoy.',
+      name: 'envoy_scv_scan_qr_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Next`
   String get envoy_scv_show_qr_cta {
     return Intl.message(
@@ -2297,6 +3331,16 @@ class S {
     return Intl.message(
       'Delete Accounts anyway',
       name: 'erase_wallet_with_balance_modal_CTA2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get erase_wallet_with_balance_modal_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'erase_wallet_with_balance_modal_heading',
       desc: '',
       args: [],
     );
@@ -2512,6 +3556,18 @@ class S {
     );
   }
 
+  /// `Tap any of the above cards to receive Bitcoin.`
+  String
+      get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
+    return Intl.message(
+      'Tap any of the above cards to receive Bitcoin.',
+      name:
+          'hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Try Again`
   String get launch_screen_faceID_fail_CTA {
     return Intl.message(
@@ -2612,6 +3668,26 @@ class S {
     );
   }
 
+  /// `Podcast`
+  String get learning_center_podcast_title {
+    return Intl.message(
+      'Podcast',
+      name: 'learning_center_podcast_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Results`
+  String get learning_center_results_title {
+    return Intl.message(
+      'Results',
+      name: 'learning_center_results_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Search...`
   String get learning_center_search_input {
     return Intl.message(
@@ -2647,6 +3723,66 @@ class S {
     return Intl.message(
       'Oldest first',
       name: 'learning_center_sort_oldest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blog`
+  String get learning_center_title_blog {
+    return Intl.message(
+      'Blog',
+      name: 'learning_center_title_blog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FAQs`
+  String get learning_center_title_faq {
+    return Intl.message(
+      'FAQs',
+      name: 'learning_center_title_faq',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Videos`
+  String get learning_center_title_video {
+    return Intl.message(
+      'Videos',
+      name: 'learning_center_title_video',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tooltips`
+  String get learning_center_tooltops_title {
+    return Intl.message(
+      'Tooltips',
+      name: 'learning_center_tooltops_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Read`
+  String get learningcenter_status_read {
+    return Intl.message(
+      'Read',
+      name: 'learningcenter_status_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watched`
+  String get learningcenter_status_watched {
+    return Intl.message(
+      'Watched',
+      name: 'learningcenter_status_watched',
       desc: '',
       args: [],
     );
@@ -2772,16 +3908,6 @@ class S {
     );
   }
 
-  /// `Retry`
-  String get magic_setup_recovery_fail_backup_cta1 {
-    return Intl.message(
-      'Retry',
-      name: 'magic_setup_recovery_fail_backup_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Import Envoy Backup File`
   String get magic_setup_recovery_fail_backup_cta2 {
     return Intl.message(
@@ -2817,16 +3943,6 @@ class S {
     return Intl.message(
       'Envoy is unable to locate a Magic Backup file on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used Magic Backups.',
       name: 'magic_setup_recovery_fail_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retry`
-  String get magic_setup_recovery_fail_connectivity_cta1 {
-    return Intl.message(
-      'Retry',
-      name: 'magic_setup_recovery_fail_connectivity_cta1',
       desc: '',
       args: [],
     );
@@ -2872,6 +3988,16 @@ class S {
     );
   }
 
+  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
+  String get magic_setup_recovery_fail_ios_2_subheading {
+    return Intl.message(
+      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
+      name: 'magic_setup_recovery_fail_ios_2_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Recovery Unsuccessful`
   String get magic_setup_recovery_fail_ios_heading {
     return Intl.message(
@@ -2907,6 +4033,16 @@ class S {
     return Intl.message(
       'Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.',
       name: 'magic_setup_send_backup_to_envoy_server_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups`
+  String get magic_setup_tutorial_android_heading {
+    return Intl.message(
+      'Magic Backups',
+      name: 'magic_setup_tutorial_android_heading',
       desc: '',
       args: [],
     );
@@ -3162,6 +4298,16 @@ class S {
     );
   }
 
+  /// `Discard Selection`
+  String get manual_coin_preselection_cta2 {
+    return Intl.message(
+      'Discard Selection',
+      name: 'manual_coin_preselection_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Yes`
   String get manual_coin_preselection_dialog_cta1 {
     return Intl.message(
@@ -3282,6 +4428,26 @@ class S {
     );
   }
 
+  /// `Choose a word to continue`
+  String get manual_setup_generate_seed_verify_seed_again_quiz_infotext {
+    return Intl.message(
+      'Choose a word to continue',
+      name: 'manual_setup_generate_seed_verify_seed_again_quiz_infotext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is your #2 seed word?`
+  String get manual_setup_generate_seed_verify_seed_again_quiz_subheading {
+    return Intl.message(
+      'What is your #2 seed word?',
+      name: 'manual_setup_generate_seed_verify_seed_again_quiz_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Let’s Verify Your Seed`
   String get manual_setup_generate_seed_verify_seed_heading {
     return Intl.message(
@@ -3297,6 +4463,36 @@ class S {
     return Intl.message(
       'Verify Your Seed',
       name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What’s your seed word number 2?`
+  String get manual_setup_generate_seed_verify_seed_quiz_1_4_subheading {
+    return Intl.message(
+      'What’s your seed word number 2?',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Correct`
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_correct {
+    return Intl.message(
+      'Correct',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_correct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is your #11 seed word?`
+  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading {
+    return Intl.message(
+      'What is your #11 seed word?',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading',
       desc: '',
       args: [],
     );
@@ -3324,6 +4520,18 @@ class S {
     );
   }
 
+  /// `Choose a word from the list below.`
+  String
+      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_infotext {
+    return Intl.message(
+      'Choose a word from the list below.',
+      name:
+          'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_infotext',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
   String
       get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
@@ -3336,11 +4544,31 @@ class S {
     );
   }
 
+  /// `What’s your seed word number`
+  String get manual_setup_generate_seed_verify_seed_quiz_question {
+    return Intl.message(
+      'What’s your seed word number',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_question',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Correct`
   String get manual_setup_generate_seed_verify_seed_quiz_success_correct {
     return Intl.message(
       'Correct',
       name: 'manual_setup_generate_seed_verify_seed_quiz_success_correct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Your Seed`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_heading {
+    return Intl.message(
+      'Verify Your Seed',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_heading',
       desc: '',
       args: [],
     );
@@ -3436,6 +4664,16 @@ class S {
     );
   }
 
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  String get manual_setup_import_existing_backup_subheading {
+    return Intl.message(
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      name: 'manual_setup_import_existing_backup_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Done`
   String get manual_setup_import_seed_12_words_CTA_inactive {
     return Intl.message(
@@ -3476,6 +4714,16 @@ class S {
     );
   }
 
+  /// `Back`
+  String get manual_setup_import_seed_24_words_fail_modal_cta1 {
+    return Intl.message(
+      'Back',
+      name: 'manual_setup_import_seed_24_words_fail_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Import with QR code`
   String get manual_setup_import_seed_CTA1 {
     return Intl.message(
@@ -3501,6 +4749,16 @@ class S {
     return Intl.message(
       '12 Word Seed',
       name: 'manual_setup_import_seed_CTA3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My seed has a passphrase`
+  String get manual_setup_import_seed_checkbox {
+    return Intl.message(
+      'My seed has a passphrase',
+      name: 'manual_setup_import_seed_checkbox',
       desc: '',
       args: [],
     );
@@ -3576,6 +4834,36 @@ class S {
     );
   }
 
+  /// `Import Seed Words`
+  String get manual_setup_recovery_fail_cta2 {
+    return Intl.message(
+      'Import Seed Words',
+      name: 'manual_setup_recovery_fail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to scan QR Code`
+  String get manual_setup_recovery_fail_heading {
+    return Intl.message(
+      'Unable to scan QR Code',
+      name: 'manual_setup_recovery_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try scanning again or manually import your seed words instead.`
+  String get manual_setup_recovery_fail_subheading {
+    return Intl.message(
+      'Try scanning again or manually import your seed words instead.',
+      name: 'manual_setup_recovery_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get manual_setup_recovery_import_backup_modal_fail_connectivity_cta1 {
     return Intl.message(
@@ -3620,11 +4908,93 @@ class S {
     );
   }
 
+  /// `Re-type Passphrase`
+  String get manual_setup_recovery_import_backup_modal_fail_cta1 {
+    return Intl.message(
+      'Re-type Passphrase',
+      name: 'manual_setup_recovery_import_backup_modal_fail_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose other Backup File`
+  String get manual_setup_recovery_import_backup_modal_fail_cta2 {
+    return Intl.message(
+      'Choose other Backup File',
+      name: 'manual_setup_recovery_import_backup_modal_fail_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy can’t open this Envoy Backup File`
+  String get manual_setup_recovery_import_backup_modal_fail_heading {
+    return Intl.message(
+      'Envoy can’t open this Envoy Backup File',
+      name: 'manual_setup_recovery_import_backup_modal_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.`
+  String get manual_setup_recovery_import_backup_modal_fail_subheading {
+    return Intl.message(
+      'This could be because you imported a backup file from a different Envoy Wallet, or because your passphrase was entered incorrectly.',
+      name: 'manual_setup_recovery_import_backup_modal_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-type Your \nPassphrase`
+  String get manual_setup_recovery_import_backup_re_enter_passphrase_heading {
+    return Intl.message(
+      'Re-type Your \nPassphrase',
+      name: 'manual_setup_recovery_import_backup_re_enter_passphrase_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup File.`
+  String
+      get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
+    return Intl.message(
+      'Carefully re-type your passphrase so Envoy can open your Envoy Backup File.',
+      name:
+          'manual_setup_recovery_import_backup_re_enter_passphrase_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Passphrase`
+  String get manual_setup_recovery_passphrase_modal_heading {
+    return Intl.message(
+      'Enter Your Passphrase',
+      name: 'manual_setup_recovery_passphrase_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This seed is protected by a passphrase. Enter it below to import your Envoy Wallet.`
   String get manual_setup_recovery_passphrase_modal_subheading {
     return Intl.message(
       'This seed is protected by a passphrase. Enter it below to import your Envoy Wallet.',
       name: 'manual_setup_recovery_passphrase_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importing your Seed`
+  String get manual_setup_recovery_success_heading {
+    return Intl.message(
+      'Importing your Seed',
+      name: 'manual_setup_recovery_success_heading',
       desc: '',
       args: [],
     );
@@ -3760,6 +5130,16 @@ class S {
     );
   }
 
+  /// `Continue`
+  String get manual_setup_verify_seed_24_words_verify_passphrase_modal_cta {
+    return Intl.message(
+      'Continue',
+      name: 'manual_setup_verify_seed_24_words_verify_passphrase_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Magic Backups`
   String get manual_toggle_off_automatic_backups {
     return Intl.message(
@@ -3795,6 +5175,16 @@ class S {
     return Intl.message(
       'View Envoy Seed',
       name: 'manual_toggle_off_view_wallet_seed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup Now`
+  String get manual_toggle_on_seed_backedup_android_backup_now {
+    return Intl.message(
+      'Backup Now',
+      name: 'manual_toggle_on_seed_backedup_android_backup_now',
       desc: '',
       args: [],
     );
@@ -3870,6 +5260,16 @@ class S {
     );
   }
 
+  /// `Download Envoy Backup File`
+  String get manual_toggle_on_seed_backup_in_progress_ios_download_backup_file {
+    return Intl.message(
+      'Download Envoy Backup File',
+      name: 'manual_toggle_on_seed_backup_in_progress_ios_download_backup_file',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Your Envoy backup is complete.`
   String get manual_toggle_on_seed_backup_in_progress_toast_heading {
     return Intl.message(
@@ -3939,6 +5339,18 @@ class S {
       'Pending Android Auto Backup (once daily)',
       name:
           'manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending backup to iCloud Keychain`
+  String
+      get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
+    return Intl.message(
+      'Pending backup to iCloud Keychain',
+      name:
+          'manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup',
       desc: '',
       args: [],
     );
@@ -4084,11 +5496,51 @@ class S {
     );
   }
 
+  /// `Connect Passport \nwith Envoy`
+  String get pair_new_device_intro_connect_envoy_heading {
+    return Intl.message(
+      'Connect Passport \nwith Envoy',
+      name: 'pair_new_device_intro_connect_envoy_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. `
   String get pair_new_device_intro_connect_envoy_subheading {
     return Intl.message(
       'This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. ',
       name: 'pair_new_device_intro_connect_envoy_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get pair_new_device_qr_code_cta {
+    return Intl.message(
+      'Continue',
+      name: 'pair_new_device_qr_code_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan this QR code with Passport to validate`
+  String get pair_new_device_qr_code_heading {
+    return Intl.message(
+      'Scan this QR code with Passport to validate',
+      name: 'pair_new_device_qr_code_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is a Bitcoin address belonging to your Passport.`
+  String get pair_new_device_qr_code_subheading {
+    return Intl.message(
+      'This is a Bitcoin address belonging to your Passport.',
+      name: 'pair_new_device_qr_code_subheading',
       desc: '',
       args: [],
     );
@@ -4374,6 +5826,16 @@ class S {
     );
   }
 
+  /// `Connect`
+  String get privacy_setting_add_node_modal_cta {
+    return Intl.message(
+      'Connect',
+      name: 'privacy_setting_add_node_modal_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add Node`
   String get privacy_setting_add_node_modal_heading {
     return Intl.message(
@@ -4419,6 +5881,16 @@ class S {
     return Intl.message(
       'Your Node is connected via Clearnet.',
       name: 'privacy_setting_clearnet_node_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
+  String get privacy_setting_clearnet_node_tor_off {
+    return Intl.message(
+      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
+      name: 'privacy_setting_clearnet_node_tor_off',
       desc: '',
       args: [],
     );
@@ -4564,11 +6036,11 @@ class S {
     );
   }
 
-  /// `Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.`
-  String get privacy_setting_privacy_tor_on {
+  /// `Use Taproot Address`
+  String get receive_QR_code_receive_QR_code_taproot_on_taproot_toggle {
     return Intl.message(
-      'Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable.',
-      name: 'privacy_setting_privacy_tor_on',
+      'Use Taproot Address',
+      name: 'receive_QR_code_receive_QR_code_taproot_on_taproot_toggle',
       desc: '',
       args: [],
     );
@@ -4629,6 +6101,16 @@ class S {
     return Intl.message(
       'Install Envoy and tap “Set Up Envoy Wallet”',
       name: 'recovery_scenario_Android_instruction2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will then automatically restore your Magic Backup`
+  String get recovery_scenario_Android_instruction3 {
+    return Intl.message(
+      'Envoy will then automatically restore your Magic Backup',
+      name: 'recovery_scenario_Android_instruction3',
       desc: '',
       args: [],
     );
@@ -4739,6 +6221,16 @@ class S {
     return Intl.message(
       'Amount too low',
       name: 'send_keyboard_amount_too_low_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boost`
+  String get send_keyboard_network_fees_boost_button {
+    return Intl.message(
+      'Boost',
+      name: 'send_keyboard_network_fees_boost_button',
       desc: '',
       args: [],
     );
@@ -4864,6 +6356,46 @@ class S {
     );
   }
 
+  /// `Activate`
+  String get settings_advanced_taproot_modal_cta1 {
+    return Intl.message(
+      'Activate',
+      name: 'settings_advanced_taproot_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get settings_advanced_taproot_modal_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'settings_advanced_taproot_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING`
+  String get settings_advanced_taproot_modal_heading {
+    return Intl.message(
+      'WARNING',
+      name: 'settings_advanced_taproot_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution.`
+  String get settings_advanced_taproot_modal_subheading {
+    return Intl.message(
+      'Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution.',
+      name: 'settings_advanced_taproot_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Enable Testnet`
   String get settings_advanced_testnet {
     return Intl.message(
@@ -4894,11 +6426,31 @@ class S {
     );
   }
 
+  /// `Connect my Node`
+  String get settings_electrum {
+    return Intl.message(
+      'Connect my Node',
+      name: 'settings_electrum',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Display Fiat Values`
   String get settings_show_fiat {
     return Intl.message(
       'Display Fiat Values',
       name: 'settings_show_fiat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect with Tor`
+  String get settings_tor {
+    return Intl.message(
+      'Connect with Tor',
+      name: 'settings_tor',
       desc: '',
       args: [],
     );
@@ -4929,6 +6481,16 @@ class S {
     return Intl.message(
       'No thanks',
       name: 'stalls_before_sending_tx_add_note_modal_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don’t show again`
+  String get stalls_before_sending_tx_add_note_modal_dontAskAgain {
+    return Intl.message(
+      'Don’t show again',
+      name: 'stalls_before_sending_tx_add_note_modal_dontAskAgain',
       desc: '',
       args: [],
     );
@@ -5039,6 +6601,16 @@ class S {
     return Intl.message(
       'Discard Changes',
       name: 'tagged_coin_details_inputs_fails_cta2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get tagged_coin_details_inputs_success_cta2 {
+    return Intl.message(
+      'Cancel',
+      name: 'tagged_coin_details_inputs_success_cta2',
       desc: '',
       args: [],
     );

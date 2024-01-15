@@ -147,7 +147,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                               fontWeight: FontWeight.w900,
                               color: EnvoyColors.listAccountTileColors[0]))
                       : LinkText(
-                          text: S().privacy_setting_privacy_tor_on,
+                          text: S().privacy_privacyMode_torSuggestionOn,
                           linkStyle: _messageStyle?.copyWith(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,

@@ -291,7 +291,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_backup_cta1,
+              label: S().component_retry,
               onTap: () async {
                 setState(() {
                   _magicRecoverWalletState =
@@ -410,7 +410,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             Consumer(
               builder: (context, ref, child) {
                 return OnboardingButton(
-                  label: S().magic_setup_recovery_fail_backup_cta1,
+                  label: S().component_retry,
                   type: EnvoyButtonTypes.primary,
                   onTap: () async {
                     _setIndeterminateState();
@@ -453,7 +453,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_connectivity_cta1,
+              label: S().component_retry,
               onTap: () async {
                 setState(() {
                   _magicRecoverWalletState =
