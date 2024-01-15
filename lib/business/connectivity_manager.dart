@@ -85,25 +85,29 @@ class ConnectivityManager {
   electrumSuccess() {
     electrumConnected = true;
     events.add(ConnectivityManagerEvent.ElectrumReachable);
+    checkTor();
   }
 
   electrumFailure() {
     electrumConnected = false;
     events.add(ConnectivityManagerEvent.ElectrumUnreachable);
+    checkTor();
   }
 
   nguSuccess() {
     nguConnected = true;
+    checkTor();
   }
 
   nguFailure() {
     nguConnected = false;
+    checkTor();
+  }
 
-    // TODO: consider having a counter of times we have failed?
-    if (torEnabled) {
+  void checkTor() {
+    if (torEnabled && !nguConnected && !electrumConnected) {
       restartTor();
-      EnvoyReport().log(
-          "tor", "Tor bootstrapped but doesn't seem to work: NGU unreachable");
+      EnvoyReport().log("tor", "Both Electrum and NGU unreachable through Tor");
 
       if (_torWarningDisplayedMoreThan5minAgo) {
         events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
