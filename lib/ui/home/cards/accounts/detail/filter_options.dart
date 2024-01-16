@@ -196,7 +196,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                   });
                 },
                 child: Text(
-                  S().account_details_filter_tags_resetFilter,
+                  S().component_reset,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -262,7 +262,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                   });
                 },
                 child: Text(
-                  S().account_details_filter_tags_resetSorting,
+                  S().component_reset,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -385,7 +385,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
                   });
                 },
                 child: Text(
-                  S().account_details_filter_tags_resetSorting,
+                  S().component_reset,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(

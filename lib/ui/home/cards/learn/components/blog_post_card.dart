@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -108,7 +109,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                           ),
                           _isBlogRead
                               ? Text(
-                                  "Read", // TODO: FIGMA
+                                  S().learningcenter_status_read,
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )

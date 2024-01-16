@@ -6,6 +6,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/loader_ghost.dart';
@@ -366,7 +367,7 @@ class AccountBadge extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.xs),
-                        child: Text("Testnet", // TODO: FIGMA
+                        child: Text(S().account_type_sublabel_testnet,
                             style: isTaproot
                                 ? EnvoyTypography.label
                                     .copyWith(color: Colors.white)
@@ -378,7 +379,7 @@ class AccountBadge extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.xs),
                         child: Text(
-                          "Taproot", // TODO: FIGMA
+                          S().account_type_label_taproot,
                           style: EnvoyTypography.info
                               .copyWith(color: Colors.white),
                         ),

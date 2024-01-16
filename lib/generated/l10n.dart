@@ -72,10 +72,10 @@ class S {
     );
   }
 
-  /// `DELETE`
+  /// `2?`
   String get _ {
     return Intl.message(
-      'DELETE',
+      '2?',
       name: '_',
       desc: '',
       args: [],
@@ -117,26 +117,6 @@ class S {
     return Intl.message(
       'Terms of Use',
       name: 'about_termsOfUse',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset`
-  String get account_details_filter_tags_resetFilter {
-    return Intl.message(
-      'Reset',
-      name: 'account_details_filter_tags_resetFilter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset`
-  String get account_details_filter_tags_resetSorting {
-    return Intl.message(
-      'Reset',
-      name: 'account_details_filter_tags_resetSorting',
       desc: '',
       args: [],
     );
@@ -317,16 +297,6 @@ class S {
     return Intl.message(
       'Sent',
       name: 'activity_sent',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get add_note_modal_cta {
-    return Intl.message(
-      'Save',
-      name: 'add_note_modal_cta',
       desc: '',
       args: [],
     );
@@ -642,6 +612,16 @@ class S {
     );
   }
 
+  /// `Coins Locked`
+  String get card_coins_locked {
+    return Intl.message(
+      'Coins Locked',
+      name: 'card_coins_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Coins Selected`
   String get card_coins_selected {
     return Intl.message(
@@ -767,6 +747,16 @@ class S {
     return Intl.message(
       'WARNING\n\nLocking coins will prevent them from being used in transactions.',
       name: 'coincontrol_lock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review transaction`
+  String get coincontrol_txDetail_ReviewTransaction {
+    return Intl.message(
+      'Review transaction',
+      name: 'coincontrol_txDetail_ReviewTransaction',
       desc: '',
       args: [],
     );
@@ -1064,16 +1054,6 @@ class S {
     );
   }
 
-  /// `Review transaction`
-  String get coincontrol_tx_detail_passport_cta {
-    return Intl.message(
-      'Review transaction',
-      name: 'coincontrol_tx_detail_passport_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Cancel transaction`
   String get coincontrol_tx_detail_passport_cta2 {
     return Intl.message(
@@ -1194,10 +1174,10 @@ class S {
     );
   }
 
-  /// `coin details`
+  /// `COIN DETAILS`
   String get coindetails_overlay_heading {
     return Intl.message(
-      'coin details',
+      'COIN DETAILS',
       name: 'coindetails_overlay_heading',
       desc: '',
       args: [],
@@ -1344,11 +1324,41 @@ class S {
     );
   }
 
+  /// `No`
+  String get component_no {
+    return Intl.message(
+      'No',
+      name: 'component_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset`
+  String get component_reset {
+    return Intl.message(
+      'Reset',
+      name: 'component_reset',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Retry`
   String get component_retry {
     return Intl.message(
       'Retry',
       name: 'component_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get component_save {
+    return Intl.message(
+      'Save',
+      name: 'component_save',
       desc: '',
       args: [],
     );
@@ -2516,16 +2526,6 @@ class S {
     );
   }
 
-  /// `Retry`
-  String get envoy_scv_result_fail_cta {
-    return Intl.message(
-      'Retry',
-      name: 'envoy_scv_result_fail_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Contact Us`
   String get envoy_scv_result_fail_cta1 {
     return Intl.message(
@@ -2938,46 +2938,6 @@ class S {
     );
   }
 
-  /// `Blog posts`
-  String get learning_center_filter_blog {
-    return Intl.message(
-      'Blog posts',
-      name: 'learning_center_filter_blog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `FAQs`
-  String get learning_center_filter_faqs {
-    return Intl.message(
-      'FAQs',
-      name: 'learning_center_filter_faqs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset`
-  String get learning_center_filter_reset_filter_cta {
-    return Intl.message(
-      'Reset',
-      name: 'learning_center_filter_reset_filter_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Videos`
-  String get learning_center_filter_videos {
-    return Intl.message(
-      'Videos',
-      name: 'learning_center_filter_videos',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Podcast`
   String get learning_center_podcast_title {
     return Intl.message(
@@ -3158,16 +3118,6 @@ class S {
     );
   }
 
-  /// `Recovery Unsuccessful`
-  String get magic_setup_recovery_fail_Android_heading {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_setup_recovery_fail_Android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup.`
   String get magic_setup_recovery_fail_Android_subheading {
     return Intl.message(
@@ -3233,16 +3183,6 @@ class S {
     return Intl.message(
       'Recovery Unsuccessful',
       name: 'magic_setup_recovery_fail_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovery Unsuccessful`
-  String get magic_setup_recovery_fail_ios_heading {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_setup_recovery_fail_ios_heading',
       desc: '',
       args: [],
     );
@@ -3348,10 +3288,10 @@ class S {
     );
   }
 
-  /// `Account details`
+  /// `ACCOUNT DETAILS`
   String get manage_account_address_heading {
     return Intl.message(
-      'Account details',
+      'ACCOUNT DETAILS',
       name: 'manage_account_address_heading',
       desc: '',
       args: [],
@@ -3408,16 +3348,6 @@ class S {
     );
   }
 
-  /// `Save`
-  String get manage_account_rename_cta {
-    return Intl.message(
-      'Save',
-      name: 'manage_account_rename_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Rename Account`
   String get manage_account_rename_heading {
     return Intl.message(
@@ -3448,10 +3378,10 @@ class S {
     );
   }
 
-  /// `Device DETAILS`
+  /// `DEVICE DETAILS`
   String get manage_device_details_heading {
     return Intl.message(
-      'Device DETAILS',
+      'DEVICE DETAILS',
       name: 'manage_device_details_heading',
       desc: '',
       args: [],
@@ -3463,16 +3393,6 @@ class S {
     return Intl.message(
       'EDIT DEVICE NAME',
       name: 'manage_device_details_menu_editDevice',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get manage_device_disconnect_modal_cta {
-    return Intl.message(
-      'Save',
-      name: 'manage_device_disconnect_modal_cta',
       desc: '',
       args: [],
     );
@@ -3513,16 +3433,6 @@ class S {
     return Intl.message(
       'Yes',
       name: 'manual_coin_preselection_dialog_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No`
-  String get manual_coin_preselection_dialog_cta2 {
-    return Intl.message(
-      'No',
-      name: 'manual_coin_preselection_dialog_cta2',
       desc: '',
       args: [],
     );
@@ -3717,6 +3627,16 @@ class S {
     return Intl.message(
       'Verify Your Seed',
       name: 'manual_setup_generate_seed_verify_seed_quiz_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a word to continue`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_infotext {
+    return Intl.message(
+      'Choose a word to continue',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_infotext',
       desc: '',
       args: [],
     );
@@ -4824,16 +4744,6 @@ class S {
     );
   }
 
-  /// `Retry`
-  String get privacy_setting_connecting_node_fails_modal_cta {
-    return Intl.message(
-      'Retry',
-      name: 'privacy_setting_connecting_node_fails_modal_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `We couldn’t connect your node`
   String get privacy_setting_connecting_node_fails_modal_failed {
     return Intl.message(
@@ -5304,16 +5214,6 @@ class S {
     );
   }
 
-  /// `Save`
-  String get stalls_before_sending_tx_add_note_modal_cta1 {
-    return Intl.message(
-      'Save',
-      name: 'stalls_before_sending_tx_add_note_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No thanks`
   String get stalls_before_sending_tx_add_note_modal_cta2 {
     return Intl.message(
@@ -5339,16 +5239,6 @@ class S {
     return Intl.message(
       'Try Again',
       name: 'stalls_before_sending_tx_scanning_broadcasting_fail_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Review Transaction`
-  String get stalls_before_sending_tx_scanning_broadcasting_fail_cta2 {
-    return Intl.message(
-      'Review Transaction',
-      name: 'stalls_before_sending_tx_scanning_broadcasting_fail_cta2',
       desc: '',
       args: [],
     );
@@ -5409,6 +5299,56 @@ class S {
     return Intl.message(
       'This might a take few seconds',
       name: 'stalls_before_sending_tx_scanning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expenses`
+  String get tagSelection_example1 {
+    return Intl.message(
+      'Expenses',
+      name: 'tagSelection_example1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal`
+  String get tagSelection_example2 {
+    return Intl.message(
+      'Personal',
+      name: 'tagSelection_example2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Savings`
+  String get tagSelection_example3 {
+    return Intl.message(
+      'Savings',
+      name: 'tagSelection_example3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Donations`
+  String get tagSelection_example4 {
+    return Intl.message(
+      'Donations',
+      name: 'tagSelection_example4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Travel`
+  String get tagSelection_example5 {
+    return Intl.message(
+      'Travel',
+      name: 'tagSelection_example5',
       desc: '',
       args: [],
     );

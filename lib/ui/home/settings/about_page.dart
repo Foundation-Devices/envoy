@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 //import 'package:envoy/generated/l10n.dart';
@@ -31,7 +32,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("App Version"), //TODO: FIGMA
+                AboutText(S().about_appVersion),
                 FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
                     builder: (context, snapshot) {
@@ -50,7 +51,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("Open Source Licences"), //TODO: FIGMA
+                AboutText(S().about_openSourceLicences),
                 AboutButton(
                   "Show", //TODO: FIGMA
                   onTap: () {
@@ -75,7 +76,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("Terms of Use"), //TODO: FIGMA
+                AboutText(S().about_termsOfUse),
                 AboutButton(
                   "Show", //TODO: FIGMA
                   onTap: () {
@@ -88,7 +89,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText("Privacy Policy"), //TODO: FIGMA
+                AboutText(S().about_privacyPolicy), //TODO: FIGMA
                 AboutButton(
                   "Show", //TODO: FIGMA
                   onTap: () {

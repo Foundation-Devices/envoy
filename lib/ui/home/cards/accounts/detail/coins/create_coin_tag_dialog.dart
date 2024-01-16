@@ -29,12 +29,11 @@ class CreateCoinTag extends StatefulWidget {
 }
 
 List<String> tagSuggestions = [
-  // TODO: FIGMA
-  "Fuel",
-  "Savings",
-  "Expenses",
-  "Business",
-  "Conferences",
+  S().tagSelection_example1,
+  S().tagSelection_example2,
+  S().tagSelection_example3,
+  S().tagSelection_example4,
+  S().tagSelection_example5,
 ];
 
 class _CreateCoinTagState extends State<CreateCoinTag> {

@@ -217,7 +217,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   style: trailingTextStyle),
                             ),
                             CoinTagListItem(
-                              title: "Tag", // TODO: FIGMA
+                              title:
+                                  S().coincontrol_tx_history_tx_details_history,
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_tag.svg",
                                 color: Colors.black,

@@ -446,8 +446,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                       padding: const EdgeInsets.symmetric(horizontal: 34),
                       child: EnvoyButton(
                         nodeConnectionState.error != null
-                            ? S()
-                                .privacy_setting_connecting_node_fails_modal_cta
+                            ? S().component_retry
                             : nodeConnectionState.isConnected
                                 ? S().privacy_setting_add_node_modal_heading
                                 : S().privacy_setting_connecting_node_modal_cta,

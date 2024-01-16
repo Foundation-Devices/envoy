@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/blog_post.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/search.dart';
 import 'package:envoy/ui/home/cards/learn/components/blog_post_card.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -127,7 +128,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     padding:
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
-                      "Videos", // TODO: FIGMA
+                      S().learning_center_title_video,
                       style: EnvoyTypography.subheading
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
@@ -162,7 +163,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     padding:
                         const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
-                      "Blogs", // TODO: FIGMA
+                      S().learning_center_title_blog,
                       style: EnvoyTypography.subheading
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),

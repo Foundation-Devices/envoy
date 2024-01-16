@@ -380,7 +380,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                       style: trailingTextStyle),
                                 ),
                                 CoinTagListItem(
-                                  title: "Fee", // TODO: FIGMA
+                                  title: S().coincontrol_tx_detail_fee,
                                   icon: SvgPicture.asset(
                                     "assets/icons/ic_bitcoin_straight_circle.svg",
                                     color: Colors.black,

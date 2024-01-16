@@ -490,34 +490,34 @@ class CoinSubTitleText extends ConsumerWidget {
     final lockedCoins = tag.coins.where((element) => element.locked);
     final availableCoins = tag.numOfCoins - lockedCoins.length;
     String selectionMessage =
-        "${selectedCoins.length} of ${availableCoins} Coins Selected"; // TODO: FIGMA
+        "${selectedCoins.length} ${S().card_label_of} ${availableCoins} ${S().card_coins_selected}";
 
     if (availableCoins == 0 || availableCoins == selectedCoins.length) {
       selectionMessage =
-          "${selectedCoins.length} ${selectedCoins.length == 1 ? 'Coin' : 'Coins'} Selected"; // TODO: FIGMA
+          "${selectedCoins.length} ${selectedCoins.length == 1 ? S().card_coin_selected : S().card_coins_selected}";
     }
 
-    String message = "${tag.numOfCoins} Coins"; // TODO: FIGMA
+    String message = "${tag.numOfCoins} ${S().card_coins_unselected}";
     if (selectedCoins.isEmpty) {
       message =
-          "${tag.numOfCoins} ${tag.numOfCoins == 1 ? 'Coin' : 'Coins'}"; // TODO: FIGMA
+          "${tag.numOfCoins} ${tag.numOfCoins == 1 ? S().card_coin_unselected : S().card_coins_unselected}";
       if (lockedCoins.isNotEmpty) {
         message =
-            "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? 'Coin' : 'Coins'} Locked"; // TODO: FIGMA
+            "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";
       }
     } else {
       message = "${selectionMessage}";
       if (lockedCoins.isNotEmpty) {
         message =
-            "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? 'Coin' : 'Coins'} Locked"; // TODO: FIGMA
+            "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";
       }
     }
     if (tag.numOfCoins == lockedCoins.length) {
       message =
-          "${tag.numOfCoins} ${tag.numOfCoins == 1 ? 'Coin' : 'Coins'} Locked"; // TODO: FIGMA
+          "${tag.numOfCoins} ${tag.numOfCoins == 1 ? S().card_coin_locked : S().card_coins_locked} ";
     }
     if (tag.numOfCoins == 0) {
-      message = "0 Coins"; // TODO: FIGMA
+      message = "0 ${S().card_coins_unselected}";
     }
     return Text(
       message,

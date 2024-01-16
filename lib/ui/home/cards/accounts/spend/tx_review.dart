@@ -348,7 +348,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         Padding(padding: EdgeInsets.all(6)),
         EnvoyButton(
           enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
-          S().stalls_before_sending_tx_scanning_broadcasting_fail_cta2,
+          S().coincontrol_txDetail_ReviewTransaction,
           onTap: () {
             ref.read(spendTransactionProvider.notifier).resetBroadcastState();
           },
@@ -1123,7 +1123,7 @@ class _DiscardTransactionDialogState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().coincontrol_tx_detail_passport_cta,
+            S().coincontrol_txDetail_ReviewTransaction,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Navigator.of(context).pop(false);
@@ -1306,7 +1306,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
               }, type: EnvoyButtonTypes.tertiary),
               Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(
-                S().stalls_before_sending_tx_add_note_modal_cta1,
+                S().component_save,
                 onTap: () {
                   ref.read(stagingTxNoteProvider.notifier).state =
                       _textEditingController.text;

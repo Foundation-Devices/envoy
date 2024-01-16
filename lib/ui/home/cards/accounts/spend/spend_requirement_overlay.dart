@@ -797,7 +797,7 @@ class _SpendSelectionCancelWarningState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
-            S().manual_coin_preselection_dialog_cta2,
+            S().component_no,
             type: EnvoyButtonTypes.tertiary,
             onTap: () {
               txWarningExit(context);

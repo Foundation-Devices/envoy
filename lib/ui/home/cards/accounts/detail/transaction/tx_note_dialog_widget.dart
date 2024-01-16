@@ -106,7 +106,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
           }, type: EnvoyButtonTypes.tertiary),
           Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
-            S().add_note_modal_cta,
+            S().component_save,
             onTap: () {
               widget.onAdd(_textEditingController.text);
             },

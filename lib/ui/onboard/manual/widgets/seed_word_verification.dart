@@ -66,7 +66,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                 SliverPadding(padding: EdgeInsets.all(8)),
                 SliverToBoxAdapter(
                   child: Text(
-                      "What’s your seed word number ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
+                      "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
                       style: Theme.of(context).textTheme.titleSmall,
                       textAlign: TextAlign.center),
                 ),
@@ -120,7 +120,9 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                               totalPages: _puzzleOptions.length)),
                       Padding(padding: EdgeInsets.all(6)),
                       !_finishedAnswers
-                          ? Text("Choose a word to continue ", // TODO: FIGMA
+                          ? Text(
+                              S()
+                                  .manual_setup_generate_seed_verify_seed_quiz_success_infotext,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -129,7 +131,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                               padding: EdgeInsets.symmetric(
                                   vertical: 4, horizontal: 0),
                               child: OnboardingButton(
-                                  label: "Continue", // TODO: FIGMA
+                                  label: S().component_continue,
                                   onTap: () {
                                     widget.onVerificationFinished(true);
                                   })),
