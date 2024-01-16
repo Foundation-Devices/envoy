@@ -10,6 +10,10 @@ class EnvoyTypography {
   static TextStyle explainer =
       EnvoyTypography.label.copyWith(color: EnvoyColors.textTertiary);
 
+  static TextStyle largeAmount = GoogleFonts.montserrat(
+    fontSize: 40,
+    fontWeight: FontWeight.w300,
+  );
   static TextStyle heading = GoogleFonts.montserrat(
     fontSize: 16,
     fontWeight: FontWeight.w600,
