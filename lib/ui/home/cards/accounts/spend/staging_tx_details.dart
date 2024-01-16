@@ -611,7 +611,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       noteSubTitle: S()
                                                           .coincontrol_tx_add_note_subheading,
                                                       noteTitle: S()
-                                                          .coincontrol_tx_add_note_heading,
+                                                          .add_note_modal_heading,
                                                       value: ref.read(
                                                           stagingTxNoteProvider),
                                                     ),

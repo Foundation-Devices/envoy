@@ -136,8 +136,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                           child: Opacity(
                             opacity: finishSeedEntries ? 1 : 0.5,
                             child: OnboardingButton(
-                                label: S()
-                                    .manual_setup_import_seed_12_words_CTA_inactive,
+                                label: S().component_done,
                                 onTap: () {
                                   String result = currentWords.join(' ');
                                   checkSeed(context, result);
@@ -265,7 +264,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                 child: EnvoyButton(
-                  S().manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA,
+                  S().component_continue,
                   type: EnvoyButtonTypes.primaryModal,
                   onTap: () async {
                     Navigator.of(context).pop();

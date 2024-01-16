@@ -148,7 +148,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           txId: "UpcomingTx",
                           noteSubTitle: S()
                               .stalls_before_sending_tx_add_note_modal_subheading,
-                          noteTitle: S().coincontrol_tx_add_note_heading,
+                          noteTitle: S().add_note_modal_heading,
                           value: ref.read(stagingTxNoteProvider),
                         ),
                         alignment: Alignment(0.0, -0.5));
@@ -322,7 +322,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         mainAxisSize: MainAxisSize.max,
         children: [
           EnvoyButton(
-            S().stalls_before_sending_tx_scanning_broadcasting_success_cta,
+            S().component_continue,
             onTap: () async {
               final providerScope = ProviderScope.containerOf(context);
               clearSpendState(providerScope);
@@ -1101,7 +1101,7 @@ class _DiscardTransactionDialogState
             size: 42,
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(S().coincontrol_tx_detail_passport_heading,
+          Text(S().manage_account_remove_heading,
               style: Theme.of(context).textTheme.titleSmall),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(

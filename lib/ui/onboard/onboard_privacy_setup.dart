@@ -98,11 +98,11 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   String heading = S().privacy_setting_perfomance_heading;
                   String subheading = S().privacy_setting_perfomance_subheading;
                   if (nodeConnectionState.isConnected && usingTor) {
-                    heading = S().privacy_setting_onion_node_heading;
+                    heading = S().privacySetting_nodeConnected;
                     subheading = S().privacy_setting_onion_node_sbheading;
                   }
                   if (nodeConnectionState.isConnected && !usingTor) {
-                    heading = S().privacy_setting_clearnet_node_heading;
+                    heading = S().privacySetting_nodeConnected;
                     subheading = S().privacy_setting_clearnet_node_subheading;
                   }
                   return Column(
@@ -147,7 +147,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                               fontWeight: FontWeight.w900,
                               color: EnvoyColors.listAccountTileColors[0]))
                       : LinkText(
-                          text: S().privacy_privacyMode_torSuggestionOn,
+                          text: S().privacy_setting_perfomance_tor_off,
                           linkStyle: _messageStyle?.copyWith(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
@@ -162,7 +162,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   EnvoyButton(
-                    S().privacy_setting_perfomance_cta,
+                    S().component_continue,
                     onTap: () async {
                       //tor is necessary if user selects onion node
                       bool torRequire = ref.read(isNodeRequiredTorProvider);
@@ -318,8 +318,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                       border: InputBorder.none,
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 8),
-                                      hintText: S()
-                                          .privacy_setting_add_node_modal_text_field,
+                                      hintText: S().privacy_node_nodeAddress,
                                       hintStyle: TextStyle(height: 1.3)),
                                 ),
                               ),
@@ -450,8 +449,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                             ? S()
                                 .privacy_setting_connecting_node_fails_modal_cta
                             : nodeConnectionState.isConnected
-                                ? S()
-                                    .privacy_setting_connecting_node_success_modal_heading_cta
+                                ? S().privacy_setting_add_node_modal_heading
                                 : S().privacy_setting_connecting_node_modal_cta,
                         readOnly: nodeConnectionState.isConnecting,
                         type: EnvoyButtonTypes.primaryModal,
@@ -552,7 +550,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       Widget icon = _performanceArtBoard == null
           ? Container()
           : Rive.Rive(artboard: _performanceArtBoard!);
-      String text = S().privacy_setting_perfomance_better_performance;
+      String text = S().privacy_privacyMode_betterPerformance;
 
       if ((isTorRequired) || !_betterPerformance) {
         text = S().privacy_setting_privacy_better_privacy;
@@ -625,7 +623,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Text(
-                    S().privacy_setting_perfomance_better_performance,
+                    S().privacy_privacyMode_betterPerformance,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium

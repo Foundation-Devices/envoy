@@ -20,14 +20,14 @@ class PpRestoreSeedBackupPage extends StatelessWidget {
       ),
       text: [
         OnboardingText(
-            header: S().envoy_pp_restore_seed_backup_heading,
-            text: S().envoy_pp_restore_seed_backup_subheading),
+            header: S().envoy_pp_new_seed_backup_heading,
+            text: S().envoy_pp_new_seed_backup_subheading),
       ],
       navigationDots: 3,
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
-            label: S().envoy_pp_restore_seed_backup_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return PpRestoreSeedSuccessPage();

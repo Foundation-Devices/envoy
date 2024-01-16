@@ -66,7 +66,7 @@ void showRestoreFailedDialog(BuildContext context) {
               ),
               OnboardingButton(
                   type: EnvoyButtonTypes.primaryModal,
-                  label: S().manual_setup_import_backup_fails_modal_continue,
+                  label: S().component_continue,
                   onTap: () {
                     Navigator.pop(context);
                   }),

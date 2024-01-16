@@ -127,7 +127,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
-                    S().export_seed_modal_QR_code_CTA1,
+                    S().component_done,
                     type: EnvoyButtonTypes.primaryModal,
                     onTap: () {
                       Navigator.of(context).pop();

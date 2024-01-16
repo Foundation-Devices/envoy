@@ -180,7 +180,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().manage_device_details_menu_Delete,
+          child: Text(S().component_delete,
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -208,7 +208,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   ),
                   actions: [
                     EnvoyButton(
-                      S().manage_device_disconnect_modal,
+                      S().component_delete,
                       borderRadius:
                           BorderRadius.all(Radius.circular(EnvoySpacing.small)),
                       textStyle: EnvoyTypography.button

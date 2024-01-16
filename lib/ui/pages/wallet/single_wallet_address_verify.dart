@@ -24,7 +24,7 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            label: S().pair_new_device_QR_code_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleWalletAddressVerifyConfirmPage();

@@ -154,7 +154,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   height: !s.syncToCloud ? 0 : 16,
                   child: Padding(padding: EdgeInsets.all(8)),
                 ),
-                SettingText(S().manual_toggle_off_automatic_backups),
+                SettingText(S().magic_setup_tutorial_heading),
                 if (!s.syncToCloud)
                   SettingText(
                     S().manual_toggle_off_disabled_for_manual_seed_configuration,
@@ -389,7 +389,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 Padding(padding: EdgeInsets.all(8)),
                 OnboardingButton(
                     type: EnvoyButtonTypes.primaryModal,
-                    label: S().manual_toggle_on_seed_backup_now_modal_cta,
+                    label: S().component_continue,
                     onTap: () {
                       Navigator.pop(context);
                       createBackup();

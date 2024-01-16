@@ -445,7 +445,7 @@ class TransactionListTile extends StatelessWidget {
               showEnvoyPopUp(
                   context,
                   S().coincontrol_coin_change_spendable_tate_modal_subheading,
-                  S().coincontrol_coin_change_spendable_tate_modal_cta1,
+                  S().component_continue,
                   () {
                     Clipboard.setData(
                         ClipboardData(text: transaction.txId)); // here
@@ -455,8 +455,7 @@ class TransactionListTile extends StatelessWidget {
                     ));
                   },
                   icon: EnvoyIcons.info,
-                  secondaryButtonLabel:
-                      S().coincontrol_coin_change_spendable_state_modal_cta2,
+                  secondaryButtonLabel: S().component_cancel,
                   onSecondaryButtonTap: () {
                     Navigator.pop(context);
                   },
@@ -712,7 +711,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().manage_account_menu_delete.toUpperCase(),
+          child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -724,7 +723,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     content: Text(S().manage_account_remove_subheading),
                     actions: [
                       EnvoyButton(
-                        S().manage_account_remove_cta,
+                        S().component_delete,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
                           Navigator.pop(context);

@@ -35,7 +35,7 @@ class ScvScanQrPage extends StatelessWidget {
       },
       buttons: [
         OnboardingButton(
-            label: S().envoy_scv_scan_qr_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ScannerPage.scv(challenge);

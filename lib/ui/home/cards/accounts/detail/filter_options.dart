@@ -186,7 +186,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                S().account_details_filter_tags_filter,
+                S().component_filter,
                 style: titleStyle,
               ),
               TextButton(
@@ -232,7 +232,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                 icon: Icons.call_received,
                 selected: _filterState?.contains(TransactionFilters.Received) ??
                     false,
-                text: S().account_details_filter_tags_received,
+                text: S().activity_received,
                 onTap: () {
                   final Set<TransactionFilters> newState = Set()
                     ..addAll(_filterState!);
@@ -313,7 +313,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().account_details_filter_tags_applyFilters,
+            S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();
@@ -437,7 +437,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().account_details_filter_tags_applyFilters,
+            S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();

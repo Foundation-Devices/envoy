@@ -22,7 +22,7 @@ class ScvIntroPage extends StatelessWidget {
       navigationDotsIndex: 0,
       buttons: [
         OnboardingButton(
-            label: S().envoy_scv_intro_cta,
+            label: S().component_next,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ScvShowQrPage();

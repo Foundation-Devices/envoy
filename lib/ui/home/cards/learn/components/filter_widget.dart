@@ -55,7 +55,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                S().learning_center_filter_heading,
+                S().component_filter,
                 style: EnvoyTypography.subheading
                     .copyWith(color: EnvoyColors.textPrimary),
               ),
@@ -179,7 +179,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(
-            text: S().learning_center_sort_newest,
+            text: S().filter_sortBy_newest,
             checked: _sortState == LearnSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -189,7 +189,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: S().learning_center_sort_oldest,
+            text: S().filter_sortBy_oldest,
             checked: _sortState == LearnSortTypes.oldestFirst,
             onTap: () {
               setState(() {
@@ -199,7 +199,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().learning_center_main_cta,
+            S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();

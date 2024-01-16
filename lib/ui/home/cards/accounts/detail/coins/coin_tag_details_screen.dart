@@ -407,7 +407,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
-              S().tagged_coin_details_menu_cta2,
+              S().delete_tag_modal_cta2.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper),
             ),
           ),
@@ -507,7 +507,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         builder: (context) {
           return DeleteTagDialog(
               dialogSubheading: S().delete_tag_modal_subheading,
-              primaryButtonText: S().delete_tag_modal_cta1,
+              primaryButtonText: S().component_back,
               secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
                 Navigator.pop(context);
@@ -534,8 +534,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         builder: (context) {
           return DeleteTagDialog(
               dialogSubheading: S().delete_emptyTag_modal_subheading,
-              primaryButtonText: S().delete_emptyTag_modal_cta1,
-              secondaryButtonText: S().delete_emptyTag_modal_cta2,
+              primaryButtonText: S().component_back,
+              secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
                 Navigator.pop(context);
               },

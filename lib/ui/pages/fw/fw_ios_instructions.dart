@@ -41,7 +41,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
       navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
-            label: S().envoy_fw_ios_instructions_cta,
+            label: S().component_continue,
             onTap: () async {
               final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
               final uploader = FwUploader(firmwareFile);

@@ -35,7 +35,7 @@ class FwPassportPage extends StatelessWidget {
       navigationDotsIndex: 5,
       buttons: [
         OnboardingButton(
-            label: S().envoy_fw_passport_cta,
+            label: S().component_continue,
             onTap: () {
               if (!onboarding) {
                 OnboardingPage.popUntilGoRoute(context);

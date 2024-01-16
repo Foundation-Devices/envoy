@@ -100,7 +100,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   EnvoyButton(
-                    S().azteco_redeem_modal_cta2,
+                    S().component_back,
                     type: EnvoyButtonTypes.tertiary,
                     onTap: () {
                       Navigator.of(context).pop();

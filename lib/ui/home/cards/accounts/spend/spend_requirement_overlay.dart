@@ -467,8 +467,7 @@ class SpendRequirementOverlayState
                                         type: EnvoyButtonTypes.primaryModal,
                                         inTagSelectionMode
                                             ? S().tagged_tagDetails_sheet_cta1
-                                            : S()
-                                                .coincontrol_edit_transaction_cta,
+                                            : S().component_continue,
                                         onTap: () async {
                                           /// if the user is in utxo details screen we need to wait animations to finish
                                           /// before we can pop back to home screen
@@ -551,7 +550,7 @@ class SpendRequirementOverlayState
         return EnvoyButton(
           selectionChanged
               ? S().tagged_coin_details_inputs_fails_cta2
-              : S().coincontrol_edit_transaction_cta2,
+              : S().component_cancel,
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
             ref

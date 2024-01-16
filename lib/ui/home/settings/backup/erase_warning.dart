@@ -106,13 +106,13 @@ class _EraseWalletsAndBackupsWarningState
             ),
             OnboardingButton(
                 type: EnvoyButtonTypes.tertiary,
-                label: S().backups_erase_wallets_and_backups_modal_1_2_ios_cta1,
+                label: S().component_cancel,
                 onTap: () {
                   Navigator.pop(context);
                 }),
             OnboardingButton(
                 type: EnvoyButtonTypes.primaryModal,
-                label: S().backups_erase_wallets_and_backups_modal_1_2_ios_cta,
+                label: S().component_continue,
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
                   if (currentPage == 1) {
@@ -289,7 +289,7 @@ class _EraseWalletsConfirmationState
                 }),
             OnboardingButton(
                 type: EnvoyButtonTypes.primaryModal,
-                label: S().delete_wallet_for_good_modal_cta1,
+                label: S().component_cancel,
                 onTap: () {
                   OnboardingPage.popUntilHome(context);
                 }),
@@ -455,7 +455,7 @@ class AndroidBackupWarning extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        S().delete_wallet_for_good_instant_android_heading,
+                        S().android_backup_info_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
