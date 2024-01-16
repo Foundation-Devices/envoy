@@ -823,7 +823,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
     txid: *const c_char,
 ) -> RBFfeeRates {
     let error_return = RBFfeeRates {
-        min_fee_rate: 0.0,
+        min_fee_rate: -1.0,
         max_fee_rate: 0.0,
     };
 
@@ -865,16 +865,8 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
                 Err(e) => {
                     update_last_error(e);
-                    return RBFfeeRates {
-                        min_fee_rate: -1.,
-                        max_fee_rate: 0.0,
-                    };
+                    return error_return;
                 }
-            };
-
-            let error_return = RBFfeeRates {
-                min_fee_rate: 0.0,
-                max_fee_rate: 0.0,
             };
 
             let mut total_change_output: u64 = 0;
@@ -887,9 +879,13 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                     total_change_output += out.value
                 }
             }
+            if (total_change_output == 0) {
+                return error_return;
+            }
 
             let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(tx_id), error_return);
             //set maxiumum availble change output as fee to find max fee rate
+
             tx_builder.fee_absolute(total_change_output);
 
             let psbt = tx_builder.finish();
