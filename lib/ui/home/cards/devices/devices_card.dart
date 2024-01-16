@@ -256,7 +256,7 @@ class GhostDevice extends StatelessWidget {
                 ),
                 SizedBox(width: EnvoySpacing.small),
                 GestureDetector(
-                  child: Text(S().devices_empty_learn_more,
+                  child: Text(S().component_learnMore,
                       style: EnvoyTypography.explainer
                           .copyWith(color: EnvoyColors.accentPrimary)),
                   onTap: () {
@@ -310,7 +310,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    S().devices_empty_modal_video_header,
+                    S().bottomNav_learn.toUpperCase(),
                     style: _ctaTextStyle.copyWith(
                         fontWeight: FontWeight.w500, fontSize: 18),
                   ),

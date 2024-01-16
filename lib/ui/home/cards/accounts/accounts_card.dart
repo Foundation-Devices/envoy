@@ -262,7 +262,7 @@ class AccountPrompts extends ConsumerWidget {
         ),
         GestureDetector(
           child: Text(
-            S().hot_wallet_accounts_creation_done_button,
+            S().component_dismiss,
             style: EnvoyTypography.explainer
                 .copyWith(color: EnvoyColors.accentPrimary),
           ),
@@ -288,7 +288,7 @@ class AccountPrompts extends ConsumerWidget {
                 style: EnvoyTypography.explainer,
               ),
               GestureDetector(
-                child: Text(S().hide_amount_first_time_text_button,
+                child: Text(S().component_dismiss,
                     style: EnvoyTypography.explainer
                         .copyWith(color: EnvoyColors.accentPrimary)),
                 onTap: () {
@@ -316,7 +316,7 @@ class AccountPrompts extends ConsumerWidget {
               ),
               GestureDetector(
                 child: Text(
-                  S().tap_and_drag_first_time_text_button,
+                  S().component_dismiss,
                   style: EnvoyTypography.explainer
                       .copyWith(color: EnvoyColors.accentPrimary),
                 ),
@@ -397,13 +397,13 @@ void showSecurityDialog(BuildContext context) {
               ),
               OnboardingButton(
                   type: EnvoyButtonTypes.tertiary,
-                  label: S().wallet_security_modal_cta2,
+                  label: S().component_back,
                   onTap: () {
                     Navigator.of(context).pop();
                   }),
               OnboardingButton(
                   type: EnvoyButtonTypes.primaryModal,
-                  label: S().wallet_security_modal_cta1,
+                  label: S().component_learnMore,
                   onTap: () {
                     Navigator.of(context).pop();
                     showDialog(

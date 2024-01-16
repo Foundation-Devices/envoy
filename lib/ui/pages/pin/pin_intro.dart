@@ -25,7 +25,7 @@ class PinIntroPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            label: S().envoy_pin_intro_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 if (mustUpdateFirmware) {

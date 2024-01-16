@@ -28,7 +28,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
           type: EnvoyButtonTypes.secondary,
         ),
         OnboardingButton(
-            label: S().pair_new_device_address_cta1,
+            label: S().component_continue,
             onTap: () {
               OnboardingPage.popUntilHome(context);
             }),

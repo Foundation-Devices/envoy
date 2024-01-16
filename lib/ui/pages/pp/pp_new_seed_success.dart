@@ -27,7 +27,7 @@ class PpNewSeedSuccessPage extends StatelessWidget {
       navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
-            label: S().envoy_pp_new_seed_success_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleImportPpIntroPage(

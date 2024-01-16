@@ -54,7 +54,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
             ),
             Padding(padding: EdgeInsets.only(bottom: 6)),
             Text(
-              S().magic_setup_tutorial_ios_heading,
+              S().magic_setup_tutorial_heading,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
@@ -165,7 +165,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
 //               OnboardingButton(
 //                   label: Platform.isAndroid
 //                       ? S().magic_setup_generate_wallet_modal_android_CTA
-//                       : S().magic_setup_generate_wallet_modal_ios_CTA,
+//                       : S().component_continue,
 //                   onTap: () async {
 //                     Navigator.pop(context);
 //                     Navigator.of(context)

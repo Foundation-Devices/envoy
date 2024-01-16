@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/locale.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -83,7 +84,7 @@ class Faq extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
             child: Text(
-              "FAQs", // TODO: FIGMA
+              S().learning_center_title_faq,
               style:
                   EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
             ),

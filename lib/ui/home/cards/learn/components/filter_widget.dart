@@ -3,16 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/cards/learn/filter_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:envoy/ui/home/cards/learn/filter_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LearnFilterWidget extends ConsumerStatefulWidget {
   @override
@@ -55,7 +55,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                S().learning_center_filter_heading,
+                S().component_filter,
                 style: EnvoyTypography.subheading
                     .copyWith(color: EnvoyColors.textPrimary),
               ),
@@ -66,7 +66,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   });
                 },
                 child: Text(
-                  S().learning_center_filter_reset_filter_cta,
+                  S().component_reset,
                   style: filterButtonTextStyle,
                 ),
                 style: TextButton.styleFrom(
@@ -109,7 +109,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   selected:
                       ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
                           !(_filterState?.contains(LearnFilters.All) ?? true)),
-                  text: S().learning_center_filter_videos,
+                  text: S().learning_center_title_video,
                   onTap: () {
                     final Set<LearnFilters> newState = Set()
                       ..addAll(_filterState!);
@@ -131,7 +131,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   selected:
                       ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
                           !(_filterState?.contains(LearnFilters.All) ?? true)),
-                  text: S().learning_center_filter_faqs,
+                  text: S().learning_center_title_faq,
                   onTap: () {
                     final Set<LearnFilters> newState = Set()
                       ..addAll(_filterState!);
@@ -153,7 +153,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   selected:
                       ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
                           !(_filterState?.contains(LearnFilters.All) ?? true)),
-                  text: S().learning_center_filter_blog,
+                  text: S().learning_center_title_blog,
                   onTap: () {
                     final Set<LearnFilters> newState = Set()
                       ..addAll(_filterState!);
@@ -179,7 +179,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(
-            text: S().learning_center_sort_newest,
+            text: S().filter_sortBy_newest,
             checked: _sortState == LearnSortTypes.newestFirst,
             onTap: () {
               Haptics.selectionClick();
@@ -189,7 +189,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             },
           ),
           CheckBoxFilterItem(
-            text: S().learning_center_sort_oldest,
+            text: S().filter_sortBy_oldest,
             checked: _sortState == LearnSortTypes.oldestFirst,
             onTap: () {
               setState(() {
@@ -199,7 +199,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().learning_center_main_cta,
+            S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Haptics.lightImpact();

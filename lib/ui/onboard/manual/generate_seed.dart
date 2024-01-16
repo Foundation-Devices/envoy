@@ -274,8 +274,7 @@ class _SeedScreenState extends State<SeedScreen> {
                 )),
                 OnboardingButton(
                     type: EnvoyButtonTypes.primaryModal,
-                    label: S()
-                        .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA,
+                    label: S().component_back,
                     onTap: () async {
                       Navigator.pop(context);
                       _pageController.animateToPage(1,

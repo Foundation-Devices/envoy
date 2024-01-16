@@ -27,7 +27,7 @@ class PpNewSeedBackupPage extends StatelessWidget {
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
-            label: S().envoy_pp_new_seed_backup_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return PpNewSeedSuccessPage();

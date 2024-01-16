@@ -287,13 +287,13 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              EnvoyButton(S().change_output_from_multiple_tags_modal_cta2,
+              EnvoyButton(S().coincontrol_tx_detail_cta2,
                   enabled: true,
                   type: EnvoyButtonTypes.tertiary, onTap: () async {
                 widget.onEditTransaction();
               }),
               Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              EnvoyButton(S().change_output_from_multiple_tags_modal_cta1,
+              EnvoyButton(S().component_continue,
                   enabled: true,
                   borderRadius: BorderRadius.circular(6),
                   textStyle: EnvoyTypography.button.copyWith(

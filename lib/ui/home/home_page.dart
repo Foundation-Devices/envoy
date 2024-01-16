@@ -161,7 +161,7 @@ class HomePageState extends ConsumerState<HomePage>
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,
       ),
-      actionButtonText: S().tor_connectivity_toast_warning_learn_more,
+      actionButtonText: S().component_learnMore,
       onActionTap: () {
         EnvoyToast.dismissPreviousToasts(context);
         showEnvoyDialog(dialog: TorWarning(), context: context);

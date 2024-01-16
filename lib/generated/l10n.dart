@@ -72,20 +72,10 @@ class S {
     );
   }
 
-  /// `Watched`
-  String get Watched {
-    return Intl.message(
-      'Watched',
-      name: 'Watched',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
+  /// `2?`
   String get _ {
     return Intl.message(
-      'Continue',
+      '2?',
       name: '_',
       desc: '',
       args: [],
@@ -127,56 +117,6 @@ class S {
     return Intl.message(
       'Terms of Use',
       name: 'about_termsOfUse',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Apply`
-  String get account_details_filter_tags_applyFilters {
-    return Intl.message(
-      'Apply',
-      name: 'account_details_filter_tags_applyFilters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Filter`
-  String get account_details_filter_tags_filter {
-    return Intl.message(
-      'Filter',
-      name: 'account_details_filter_tags_filter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Received`
-  String get account_details_filter_tags_received {
-    return Intl.message(
-      'Received',
-      name: 'account_details_filter_tags_received',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset`
-  String get account_details_filter_tags_resetFilter {
-    return Intl.message(
-      'Reset',
-      name: 'account_details_filter_tags_resetFilter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset`
-  String get account_details_filter_tags_resetSorting {
-    return Intl.message(
-      'Reset',
-      name: 'account_details_filter_tags_resetSorting',
       desc: '',
       args: [],
     );
@@ -282,21 +222,21 @@ class S {
     );
   }
 
-  /// `Mobile Wallet`
-  String get accounts_screen_walletType_defaultName {
+  /// `Envoy`
+  String get accounts_screen_walletType_Envoy {
     return Intl.message(
-      'Mobile Wallet',
-      name: 'accounts_screen_walletType_defaultName',
+      'Envoy',
+      name: 'accounts_screen_walletType_Envoy',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy`
-  String get accounts_screen_walletType_mobile {
+  /// `Mobile Wallet`
+  String get accounts_screen_walletType_defaultName {
     return Intl.message(
-      'Envoy',
-      name: 'accounts_screen_walletType_mobile',
+      'Mobile Wallet',
+      name: 'accounts_screen_walletType_defaultName',
       desc: '',
       args: [],
     );
@@ -357,36 +297,6 @@ class S {
     return Intl.message(
       'Sent',
       name: 'activity_sent',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get add_note_modal_cta {
-    return Intl.message(
-      'Save',
-      name: 'add_note_modal_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get add_note_modal_cta2 {
-    return Intl.message(
-      'Cancel',
-      name: 'add_note_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get add_note_modal_filled_cta2 {
-    return Intl.message(
-      'Cancel',
-      name: 'add_note_modal_filled_cta2',
       desc: '',
       args: [],
     );
@@ -502,26 +412,6 @@ class S {
     );
   }
 
-  /// `Back`
-  String get azteco_redeem_modal_cta2 {
-    return Intl.message(
-      'Back',
-      name: 'azteco_redeem_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get azteco_redeem_modal_fail_cta {
-    return Intl.message(
-      'Continue',
-      name: 'azteco_redeem_modal_fail_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Unable to Redeem`
   String get azteco_redeem_modal_fail_heading {
     return Intl.message(
@@ -542,21 +432,11 @@ class S {
     );
   }
 
-  /// `Redeem your Voucher?`
+  /// `Redeem Voucher?`
   String get azteco_redeem_modal_heading {
     return Intl.message(
-      'Redeem your Voucher?',
+      'Redeem Voucher?',
       name: 'azteco_redeem_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get azteco_redeem_modal_success_cta {
-    return Intl.message(
-      'Continue',
-      name: 'azteco_redeem_modal_success_cta',
       desc: '',
       args: [],
     );
@@ -592,41 +472,11 @@ class S {
     );
   }
 
-  /// `Cancel`
-  String get backups_erase_wallets_and_backups_modal_1_2_android_cta1 {
-    return Intl.message(
-      'Cancel',
-      name: 'backups_erase_wallets_and_backups_modal_1_2_android_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. `
   String get backups_erase_wallets_and_backups_modal_1_2_android_subheading {
     return Intl.message(
       'You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_android_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get backups_erase_wallets_and_backups_modal_1_2_ios_cta {
-    return Intl.message(
-      'Continue',
-      name: 'backups_erase_wallets_and_backups_modal_1_2_ios_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get backups_erase_wallets_and_backups_modal_1_2_ios_cta1 {
-    return Intl.message(
-      'Cancel',
-      name: 'backups_erase_wallets_and_backups_modal_1_2_ios_cta1',
       desc: '',
       args: [],
     );
@@ -647,16 +497,6 @@ class S {
     return Intl.message(
       'You’re about to permanently delete your Envoy Wallet.\n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from iCloud Keychain. ',
       name: 'backups_erase_wallets_and_backups_modal_1_2_ios_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING`
-  String get backups_erase_wallets_and_backups_modal_2_2_heading {
-    return Intl.message(
-      'WARNING',
-      name: 'backups_erase_wallets_and_backups_modal_2_2_heading',
       desc: '',
       args: [],
     );
@@ -812,26 +652,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get change_output_from_multiple_tags_modal_cta1 {
-    return Intl.message(
-      'Continue',
-      name: 'change_output_from_multiple_tags_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Edit Transaction`
-  String get change_output_from_multiple_tags_modal_cta2 {
-    return Intl.message(
-      'Edit Transaction',
-      name: 'change_output_from_multiple_tags_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Choose a Tag`
   String get change_output_from_multiple_tags_modal_heading {
     return Intl.message(
@@ -852,36 +672,6 @@ class S {
     );
   }
 
-  /// `Cancel`
-  String get coincontrol_coin_change_spendable_state_modal_cta2 {
-    return Intl.message(
-      'Cancel',
-      name: 'coincontrol_coin_change_spendable_state_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING\n\nThis action will override your coin selection.`
-  String get coincontrol_coin_change_spendable_state_modal_heading {
-    return Intl.message(
-      'WARNING\n\nThis action will override your coin selection.',
-      name: 'coincontrol_coin_change_spendable_state_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get coincontrol_coin_change_spendable_tate_modal_cta1 {
-    return Intl.message(
-      'Continue',
-      name: 'coincontrol_coin_change_spendable_tate_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone.`
   String get coincontrol_coin_change_spendable_tate_modal_subheading {
     return Intl.message(
@@ -897,46 +687,6 @@ class S {
     return Intl.message(
       'Available balance',
       name: 'coincontrol_edit_transaction_available_balance',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Confirm`
-  String get coincontrol_edit_transaction_confirm {
-    return Intl.message(
-      'Confirm',
-      name: 'coincontrol_edit_transaction_confirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get coincontrol_edit_transaction_cta {
-    return Intl.message(
-      'Continue',
-      name: 'coincontrol_edit_transaction_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get coincontrol_edit_transaction_cta2 {
-    return Intl.message(
-      'Cancel',
-      name: 'coincontrol_edit_transaction_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Yes`
-  String get coincontrol_edit_transaction_dialog_cta1 {
-    return Intl.message(
-      'Yes',
-      name: 'coincontrol_edit_transaction_dialog_cta1',
       desc: '',
       args: [],
     );
@@ -982,16 +732,6 @@ class S {
     );
   }
 
-  /// `Back`
-  String get coincontrol_lock_coin_modal_cta2 {
-    return Intl.message(
-      'Back',
-      name: 'coincontrol_lock_coin_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Don’t show again`
   String get coincontrol_lock_coin_modal_dontShowAgain {
     return Intl.message(
@@ -1007,6 +747,16 @@ class S {
     return Intl.message(
       'WARNING\n\nLocking coins will prevent them from being used in transactions.',
       name: 'coincontrol_lock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review transaction`
+  String get coincontrol_txDetail_ReviewTransaction {
+    return Intl.message(
+      'Review transaction',
+      name: 'coincontrol_txDetail_ReviewTransaction',
       desc: '',
       args: [],
     );
@@ -1037,16 +787,6 @@ class S {
     return Intl.message(
       'Confirm the transaction details are correct before signing with Passport.',
       name: 'coincontrol_txDetail_subheading_passport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Add a Note`
-  String get coincontrol_tx_add_note_heading {
-    return Intl.message(
-      'Add a Note',
-      name: 'coincontrol_tx_add_note_heading',
       desc: '',
       args: [],
     );
@@ -1134,16 +874,6 @@ class S {
     );
   }
 
-  /// `Confirm Fee`
-  String get coincontrol_tx_detail_custom_fee_insufficients_funds_cta {
-    return Intl.message(
-      'Confirm Fee',
-      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `sats/vb`
   String get coincontrol_tx_detail_custom_fee_sats_vb {
     return Intl.message(
@@ -1204,10 +934,10 @@ class S {
     );
   }
 
-  /// `TRANSACTION Details`
+  /// `TRANSACTION DETAILS`
   String get coincontrol_tx_detail_expand_heading {
     return Intl.message(
-      'TRANSACTION Details',
+      'TRANSACTION DETAILS',
       name: 'coincontrol_tx_detail_expand_heading',
       desc: '',
       args: [],
@@ -1239,16 +969,6 @@ class S {
     return Intl.message(
       'Fee',
       name: 'coincontrol_tx_detail_fee',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Your transaction is ready \nto be sent`
-  String get coincontrol_tx_detail_feeChange_heading {
-    return Intl.message(
-      'Your transaction is ready \nto be sent',
-      name: 'coincontrol_tx_detail_feeChange_heading',
       desc: '',
       args: [],
     );
@@ -1314,16 +1034,6 @@ class S {
     );
   }
 
-  /// `Your transaction is ready to be sent`
-  String get coincontrol_tx_detail_high_fee_info_heading {
-    return Intl.message(
-      'Your transaction is ready to be sent',
-      name: 'coincontrol_tx_detail_high_fee_info_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `[[Learn more]]`
   String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
     return Intl.message(
@@ -1344,41 +1054,11 @@ class S {
     );
   }
 
-  /// `Review transaction`
-  String get coincontrol_tx_detail_passport_cta {
-    return Intl.message(
-      'Review transaction',
-      name: 'coincontrol_tx_detail_passport_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Cancel transaction`
   String get coincontrol_tx_detail_passport_cta2 {
     return Intl.message(
       'Cancel transaction',
       name: 'coincontrol_tx_detail_passport_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Are you sure?`
-  String get coincontrol_tx_detail_passport_heading {
-    return Intl.message(
-      'Are you sure?',
-      name: 'coincontrol_tx_detail_passport_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Your transaction is ready \nto be sent`
-  String get coincontrol_tx_detail_passport_send_heading {
-    return Intl.message(
-      'Your transaction is ready \nto be sent',
-      name: 'coincontrol_tx_detail_passport_send_heading',
       desc: '',
       args: [],
     );
@@ -1409,16 +1089,6 @@ class S {
     return Intl.message(
       'Total',
       name: 'coincontrol_tx_detail_total',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ACCOUNT DETAILS`
-  String get coincontrol_tx_history_filter_off_heading {
-    return Intl.message(
-      'ACCOUNT DETAILS',
-      name: 'coincontrol_tx_history_filter_off_heading',
       desc: '',
       args: [],
     );
@@ -1464,16 +1134,6 @@ class S {
     );
   }
 
-  /// `Don’t show again`
-  String get coincontrol_unlock_coin_modal_dontShowAgain {
-    return Intl.message(
-      'Don’t show again',
-      name: 'coincontrol_unlock_coin_modal_dontShowAgain',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `WARNING\n\nUnlocking coins will make them available for use in transactions.`
   String get coincontrol_unlock_coin_modal_subheading {
     return Intl.message(
@@ -1514,10 +1174,10 @@ class S {
     );
   }
 
-  /// `coin details`
+  /// `COIN DETAILS`
   String get coindetails_overlay_heading {
     return Intl.message(
-      'coin details',
+      'COIN DETAILS',
       name: 'coindetails_overlay_heading',
       desc: '',
       args: [],
@@ -1564,11 +1224,61 @@ class S {
     );
   }
 
+  /// `Apply`
+  String get component_Apply {
+    return Intl.message(
+      'Apply',
+      name: 'component_Apply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get component_back {
+    return Intl.message(
+      'Back',
+      name: 'component_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get component_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'component_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get component_continue {
     return Intl.message(
       'Continue',
       name: 'component_continue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get component_delete {
+    return Intl.message(
+      'Delete',
+      name: 'component_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dismiss`
+  String get component_dismiss {
+    return Intl.message(
+      'Dismiss',
+      name: 'component_dismiss',
       desc: '',
       args: [],
     );
@@ -1584,11 +1294,71 @@ class S {
     );
   }
 
+  /// `Filter`
+  String get component_filter {
+    return Intl.message(
+      'Filter',
+      name: 'component_filter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Learn More`
+  String get component_learnMore {
+    return Intl.message(
+      'Learn More',
+      name: 'component_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get component_next {
+    return Intl.message(
+      'Next',
+      name: 'component_next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get component_no {
+    return Intl.message(
+      'No',
+      name: 'component_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset`
+  String get component_reset {
+    return Intl.message(
+      'Reset',
+      name: 'component_reset',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Retry`
   String get component_retry {
     return Intl.message(
       'Retry',
       name: 'component_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get component_save {
+    return Intl.message(
+      'Save',
+      name: 'component_save',
       desc: '',
       args: [],
     );
@@ -1604,41 +1374,11 @@ class S {
     );
   }
 
-  /// `Choose a Tag`
-  String get create_first_tag_modal_1_2_heading {
-    return Intl.message(
-      'Choose a Tag',
-      name: 'create_first_tag_modal_1_2_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Tags are a useful way to organize your coins.`
   String get create_first_tag_modal_1_2_subheading {
     return Intl.message(
       'Tags are a useful way to organize your coins.',
       name: 'create_first_tag_modal_1_2_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get create_first_tag_modal_2_2_cta {
-    return Intl.message(
-      'Continue',
-      name: 'create_first_tag_modal_2_2_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose a Tag`
-  String get create_first_tag_modal_2_2_heading {
-    return Intl.message(
-      'Choose a Tag',
-      name: 'create_first_tag_modal_2_2_heading',
       desc: '',
       args: [],
     );
@@ -1716,41 +1456,11 @@ class S {
     );
   }
 
-  /// `Back`
-  String get delete_emptyTag_modal_cta1 {
-    return Intl.message(
-      'Back',
-      name: 'delete_emptyTag_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete Tag`
-  String get delete_emptyTag_modal_cta2 {
-    return Intl.message(
-      'Delete Tag',
-      name: 'delete_emptyTag_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `WARNING\n\nAre you sure you want to delete this tag?`
   String get delete_emptyTag_modal_subheading {
     return Intl.message(
       'WARNING\n\nAre you sure you want to delete this tag?',
       name: 'delete_emptyTag_modal_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back`
-  String get delete_tag_modal_cta1 {
-    return Intl.message(
-      'Back',
-      name: 'delete_tag_modal_cta1',
       desc: '',
       args: [],
     );
@@ -1796,16 +1506,6 @@ class S {
     );
   }
 
-  /// `Android Backs Up Every 24h`
-  String get delete_wallet_for_good_instant_android_heading {
-    return Intl.message(
-      'Android Backs Up Every 24h',
-      name: 'delete_wallet_for_good_instant_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Seed from Android Auto Backups, you can perform a manual backup in your device [[Settings.]]`
   String get delete_wallet_for_good_instant_android_subheading {
     return Intl.message(
@@ -1821,16 +1521,6 @@ class S {
     return Intl.message(
       'Deleting your Envoy Wallet',
       name: 'delete_wallet_for_good_loading_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get delete_wallet_for_good_modal_cta1 {
-    return Intl.message(
-      'Cancel',
-      name: 'delete_wallet_for_good_modal_cta1',
       desc: '',
       args: [],
     );
@@ -1866,36 +1556,6 @@ class S {
     );
   }
 
-  /// `CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT`
-  String get devices_add_menu {
-    return Intl.message(
-      'CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT',
-      name: 'devices_add_menu',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT`
-  String get devices_empty_add_menu {
-    return Intl.message(
-      'CONNECT AN EXISTING PASSPORT\n\nSET UP A NEW PASSPORT',
-      name: 'devices_empty_add_menu',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn More`
-  String get devices_empty_learn_more {
-    return Intl.message(
-      'Learn More',
-      name: 'devices_empty_learn_more',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Buy Passport`
   String get devices_empty_modal_video_cta1 {
     return Intl.message(
@@ -1916,16 +1576,6 @@ class S {
     );
   }
 
-  /// `LEARN`
-  String get devices_empty_modal_video_header {
-    return Intl.message(
-      'LEARN',
-      name: 'devices_empty_modal_video_header',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Secure your Bitcoin with Passport.`
   String get devices_empty_text_explainer {
     return Intl.message(
@@ -1941,16 +1591,6 @@ class S {
     return Intl.message(
       'Don’t have a Passport?',
       name: 'devices_text_explainer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete Tag`
-  String get empty_tag_modal_cta2 {
-    return Intl.message(
-      'Delete Tag',
-      name: 'empty_tag_modal_cta2',
       desc: '',
       args: [],
     );
@@ -2516,16 +2156,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_fw_ios_instructions_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_fw_ios_instructions_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Allow Envoy to access the microSD card`
   String get envoy_fw_ios_instructions_heading {
     return Intl.message(
@@ -2541,16 +2171,6 @@ class S {
     return Intl.message(
       'Grant Envoy access to copy files to the microSD card. Tap Browse, then PASSPORT-SD, then Open.',
       name: 'envoy_fw_ios_instructions_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get envoy_fw_microsd_fails_cta1 {
-    return Intl.message(
-      'Cancel',
-      name: 'envoy_fw_microsd_fails_cta1',
       desc: '',
       args: [],
     );
@@ -2586,31 +2206,11 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_fw_microsd_heading_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_fw_microsd_heading_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Insert the provided microSD card adapter into your phone, then insert the microSD card into the adapter.`
   String get envoy_fw_microsd_subheading {
     return Intl.message(
       'Insert the provided microSD card adapter into your phone, then insert the microSD card into the adapter.',
       name: 'envoy_fw_microsd_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_fw_passport_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_fw_passport_cta',
       desc: '',
       args: [],
     );
@@ -2666,41 +2266,11 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_fw_success_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_fw_success_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_fw_success_cta_ios {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_fw_success_cta_ios',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Firmware was successfully copied onto the microSD card`
   String get envoy_fw_success_heading {
     return Intl.message(
       'Firmware was successfully copied onto the microSD card',
       name: 'envoy_fw_success_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Firmware was successfully copied onto the microSD card`
-  String get envoy_fw_success_heading_ios {
-    return Intl.message(
-      'Firmware was successfully copied onto the microSD card',
-      name: 'envoy_fw_success_heading_ios',
       desc: '',
       args: [],
     );
@@ -2726,16 +2296,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_pin_intro_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pin_intro_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Enter a 6-12 digit PIN on your Passport`
   String get envoy_pin_intro_heading {
     return Intl.message(
@@ -2751,16 +2311,6 @@ class S {
     return Intl.message(
       'Passport will always ask for the PIN when starting up. We recommend using a unique PIN and writing it down.\n\nIf you forget your PIN, there is no way to recover Passport, and the device will be permanently disabled.',
       name: 'envoy_pin_intro_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_pp_new_seed_backup_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_new_seed_backup_cta',
       desc: '',
       args: [],
     );
@@ -2786,16 +2336,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_pp_new_seed_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_new_seed_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `On Passport select \nCreate New Seed`
   String get envoy_pp_new_seed_heading {
     return Intl.message(
@@ -2811,16 +2351,6 @@ class S {
     return Intl.message(
       'Passport\'s Avalanche Noise Source, an open source true random number generator, helps create a strong seed.',
       name: 'envoy_pp_new_seed_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_pp_new_seed_success_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_new_seed_success_cta',
       desc: '',
       args: [],
     );
@@ -2846,31 +2376,11 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_pp_restore_backup_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_restore_backup_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `On Passport, select \nRestore Backup`
   String get envoy_pp_restore_backup_heading {
     return Intl.message(
       'On Passport, select \nRestore Backup',
       name: 'envoy_pp_restore_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_pp_restore_backup_password_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_restore_backup_password_cta',
       desc: '',
       args: [],
     );
@@ -2906,71 +2416,11 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_pp_restore_backup_success_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_restore_backup_success_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your Backup File has been successfully restored`
   String get envoy_pp_restore_backup_success_heading {
     return Intl.message(
       'Your Backup File has been successfully restored',
       name: 'envoy_pp_restore_backup_success_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Next, we will connect Envoy and Passport.`
-  String get envoy_pp_restore_backup_success_subheading {
-    return Intl.message(
-      'Next, we will connect Envoy and Passport.',
-      name: 'envoy_pp_restore_backup_success_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_pp_restore_seed_backup_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_restore_seed_backup_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Now, create an encrypted backup of your seed`
-  String get envoy_pp_restore_seed_backup_heading {
-    return Intl.message(
-      'Now, create an encrypted backup of your seed',
-      name: 'envoy_pp_restore_seed_backup_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Passport will back up your seed and device settings to an encrypted microSD card.`
-  String get envoy_pp_restore_seed_backup_subheading {
-    return Intl.message(
-      'Passport will back up your seed and device settings to an encrypted microSD card.',
-      name: 'envoy_pp_restore_seed_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get envoy_pp_restore_seed_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_restore_seed_cta',
       desc: '',
       args: [],
     );
@@ -2996,31 +2446,11 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_pp_restore_seed_success_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_pp_restore_seed_success_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your seed has been \nsuccessfully restored`
   String get envoy_pp_restore_seed_success_heading {
     return Intl.message(
       'Your seed has been \nsuccessfully restored',
       name: 'envoy_pp_restore_seed_success_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Next, we will connect Envoy and Passport.`
-  String get envoy_pp_restore_seed_success_subheading {
-    return Intl.message(
-      'Next, we will connect Envoy and Passport.',
-      name: 'envoy_pp_restore_seed_success_subheading',
       desc: '',
       args: [],
     );
@@ -3076,16 +2506,6 @@ class S {
     );
   }
 
-  /// `Next`
-  String get envoy_scv_intro_cta {
-    return Intl.message(
-      'Next',
-      name: 'envoy_scv_intro_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `First, let’s make sure your Passport is secure`
   String get envoy_scv_intro_heading {
     return Intl.message(
@@ -3101,16 +2521,6 @@ class S {
     return Intl.message(
       'This security check will ensure your Passport has not been tampered with during shipping.',
       name: 'envoy_scv_intro_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retry`
-  String get envoy_scv_result_fail_cta {
-    return Intl.message(
-      'Retry',
-      name: 'envoy_scv_result_fail_cta',
       desc: '',
       args: [],
     );
@@ -3146,16 +2556,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_scv_result_ok_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_scv_result_ok_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your Passport is secure`
   String get envoy_scv_result_ok_heading {
     return Intl.message(
@@ -3176,16 +2576,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get envoy_scv_scan_qr_cta {
-    return Intl.message(
-      'Continue',
-      name: 'envoy_scv_scan_qr_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Next, scan the QR code on Passport's screen`
   String get envoy_scv_scan_qr_heading {
     return Intl.message(
@@ -3201,16 +2591,6 @@ class S {
     return Intl.message(
       'This QR code completes the validation and shares some Passport information with Envoy.',
       name: 'envoy_scv_scan_qr_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Next`
-  String get envoy_scv_show_qr_cta {
-    return Intl.message(
-      'Next',
-      name: 'envoy_scv_show_qr_cta',
       desc: '',
       args: [],
     );
@@ -3336,16 +2716,6 @@ class S {
     );
   }
 
-  /// `WARNING`
-  String get erase_wallet_with_balance_modal_heading {
-    return Intl.message(
-      'WARNING',
-      name: 'erase_wallet_with_balance_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done.`
   String get erase_wallet_with_balance_modal_subheading {
     return Intl.message(
@@ -3386,31 +2756,11 @@ class S {
     );
   }
 
-  /// `Done`
-  String get export_seed_modal_12_words_CTA1 {
-    return Intl.message(
-      'Done',
-      name: 'export_seed_modal_12_words_CTA1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `View as QR Code`
   String get export_seed_modal_12_words_CTA2 {
     return Intl.message(
       'View as QR Code',
       name: 'export_seed_modal_12_words_CTA2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get export_seed_modal_QR_code_CTA1 {
-    return Intl.message(
-      'Done',
-      name: 'export_seed_modal_QR_code_CTA1',
       desc: '',
       args: [],
     );
@@ -3526,26 +2876,6 @@ class S {
     );
   }
 
-  /// `Dismiss`
-  String get hide_amount_first_time_text_button {
-    return Intl.message(
-      'Dismiss',
-      name: 'hide_amount_first_time_text_button',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Dismiss`
-  String get hot_wallet_accounts_creation_done_button {
-    return Intl.message(
-      'Dismiss',
-      name: 'hot_wallet_accounts_creation_done_button',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Tap the above card to receive Bitcoin.`
   String get hot_wallet_accounts_creation_done_text_explainer {
     return Intl.message(
@@ -3608,66 +2938,6 @@ class S {
     );
   }
 
-  /// `Blog posts`
-  String get learning_center_filter_blog {
-    return Intl.message(
-      'Blog posts',
-      name: 'learning_center_filter_blog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `FAQs`
-  String get learning_center_filter_faqs {
-    return Intl.message(
-      'FAQs',
-      name: 'learning_center_filter_faqs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Filter`
-  String get learning_center_filter_heading {
-    return Intl.message(
-      'Filter',
-      name: 'learning_center_filter_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset`
-  String get learning_center_filter_reset_filter_cta {
-    return Intl.message(
-      'Reset',
-      name: 'learning_center_filter_reset_filter_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Videos`
-  String get learning_center_filter_videos {
-    return Intl.message(
-      'Videos',
-      name: 'learning_center_filter_videos',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Apply`
-  String get learning_center_main_cta {
-    return Intl.message(
-      'Apply',
-      name: 'learning_center_main_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Podcast`
   String get learning_center_podcast_title {
     return Intl.message(
@@ -3703,26 +2973,6 @@ class S {
     return Intl.message(
       'Sort by',
       name: 'learning_center_sort_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Newest first`
-  String get learning_center_sort_newest {
-    return Intl.message(
-      'Newest first',
-      name: 'learning_center_sort_newest',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Oldest first`
-  String get learning_center_sort_oldest {
-    return Intl.message(
-      'Oldest first',
-      name: 'learning_center_sort_oldest',
       desc: '',
       args: [],
     );
@@ -3808,16 +3058,6 @@ class S {
     );
   }
 
-  /// `Creating Your Envoy Seed`
-  String get magic_setup_generate_envoy_key_android_heading {
-    return Intl.message(
-      'Creating Your Envoy Seed',
-      name: 'magic_setup_generate_envoy_key_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Android backup.`
   String get magic_setup_generate_envoy_key_android_subheading {
     return Intl.message(
@@ -3829,10 +3069,10 @@ class S {
   }
 
   /// `Creating Your Envoy Seed`
-  String get magic_setup_generate_envoy_key_ios_heading {
+  String get magic_setup_generate_envoy_key_heading {
     return Intl.message(
       'Creating Your Envoy Seed',
-      name: 'magic_setup_generate_envoy_key_ios_heading',
+      name: 'magic_setup_generate_envoy_key_heading',
       desc: '',
       args: [],
     );
@@ -3858,16 +3098,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get magic_setup_generate_wallet_modal_ios_cta {
-    return Intl.message(
-      'Continue',
-      name: 'magic_setup_generate_wallet_modal_ios_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account.`
   String get magic_setup_generate_wallet_modal_ios_subheading {
     return Intl.message(
@@ -3883,16 +3113,6 @@ class S {
     return Intl.message(
       'Recover with QR Code',
       name: 'magic_setup_recovery_fail_Android_CTA2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recovery Unsuccessful`
-  String get magic_setup_recovery_fail_Android_heading {
-    return Intl.message(
-      'Recovery Unsuccessful',
-      name: 'magic_setup_recovery_fail_Android_heading',
       desc: '',
       args: [],
     );
@@ -3918,16 +3138,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get magic_setup_recovery_fail_backup_cta3 {
-    return Intl.message(
-      'Continue',
-      name: 'magic_setup_recovery_fail_backup_cta3',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Magic Backup Not Found`
   String get magic_setup_recovery_fail_backup_heading {
     return Intl.message(
@@ -3943,26 +3153,6 @@ class S {
     return Intl.message(
       'Envoy is unable to locate a Magic Backup file on the Foundation server.\n\nPlease check you’re recovering a wallet that previously used Magic Backups.',
       name: 'magic_setup_recovery_fail_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Import Envoy Backup File`
-  String get magic_setup_recovery_fail_connectivity_cta2 {
-    return Intl.message(
-      'Import Envoy Backup File',
-      name: 'magic_setup_recovery_fail_connectivity_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get magic_setup_recovery_fail_connectivity_cta3 {
-    return Intl.message(
-      'Continue',
-      name: 'magic_setup_recovery_fail_connectivity_cta3',
       desc: '',
       args: [],
     );
@@ -3988,21 +3178,11 @@ class S {
     );
   }
 
-  /// `Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.`
-  String get magic_setup_recovery_fail_ios_2_subheading {
-    return Intl.message(
-      'Envoy is unable to locate an Envoy Wallet backup. \n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
-      name: 'magic_setup_recovery_fail_ios_2_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Recovery Unsuccessful`
-  String get magic_setup_recovery_fail_ios_heading {
+  String get magic_setup_recovery_fail_heading {
     return Intl.message(
       'Recovery Unsuccessful',
-      name: 'magic_setup_recovery_fail_ios_heading',
+      name: 'magic_setup_recovery_fail_heading',
       desc: '',
       args: [],
     );
@@ -4058,6 +3238,16 @@ class S {
     );
   }
 
+  /// `Magic Backups`
+  String get magic_setup_tutorial_heading {
+    return Intl.message(
+      'Magic Backups',
+      name: 'magic_setup_tutorial_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create Magic Backup`
   String get magic_setup_tutorial_ios_CTA1 {
     return Intl.message(
@@ -4073,16 +3263,6 @@ class S {
     return Intl.message(
       'Recover Magic Backup',
       name: 'magic_setup_tutorial_ios_CTA2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Magic Backups`
-  String get magic_setup_tutorial_ios_heading {
-    return Intl.message(
-      'Magic Backups',
-      name: 'magic_setup_tutorial_ios_heading',
       desc: '',
       args: [],
     );
@@ -4108,10 +3288,10 @@ class S {
     );
   }
 
-  /// `Account details`
+  /// `ACCOUNT DETAILS`
   String get manage_account_address_heading {
     return Intl.message(
-      'Account details',
+      'ACCOUNT DETAILS',
       name: 'manage_account_address_heading',
       desc: '',
       args: [],
@@ -4123,16 +3303,6 @@ class S {
     return Intl.message(
       'Make sure not to share this descriptor unless you are comfortable with your transactions being public.',
       name: 'manage_account_descriptor_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `DELETE`
-  String get manage_account_menu_delete {
-    return Intl.message(
-      'DELETE',
-      name: 'manage_account_menu_delete',
       desc: '',
       args: [],
     );
@@ -4158,16 +3328,6 @@ class S {
     );
   }
 
-  /// `Delete`
-  String get manage_account_remove_cta {
-    return Intl.message(
-      'Delete',
-      name: 'manage_account_remove_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Are you sure?`
   String get manage_account_remove_heading {
     return Intl.message(
@@ -4183,16 +3343,6 @@ class S {
     return Intl.message(
       'This only removes the account from Envoy.',
       name: 'manage_account_remove_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get manage_account_rename_cta {
-    return Intl.message(
-      'Save',
-      name: 'manage_account_rename_cta',
       desc: '',
       args: [],
     );
@@ -4218,31 +3368,21 @@ class S {
     );
   }
 
-  /// `Serial: `
+  /// `Serial `
   String get manage_device_details_deviceSerial {
     return Intl.message(
-      'Serial: ',
+      'Serial ',
       name: 'manage_device_details_deviceSerial',
       desc: '',
       args: [],
     );
   }
 
-  /// `Device DETAILS`
+  /// `DEVICE DETAILS`
   String get manage_device_details_heading {
     return Intl.message(
-      'Device DETAILS',
+      'DEVICE DETAILS',
       name: 'manage_device_details_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `DELETE`
-  String get manage_device_details_menu_Delete {
-    return Intl.message(
-      'DELETE',
-      name: 'manage_device_details_menu_Delete',
       desc: '',
       args: [],
     );
@@ -4253,26 +3393,6 @@ class S {
     return Intl.message(
       'EDIT DEVICE NAME',
       name: 'manage_device_details_menu_editDevice',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get manage_device_disconnect_modal {
-    return Intl.message(
-      'Delete',
-      name: 'manage_device_disconnect_modal',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get manage_device_disconnect_modal_cta {
-    return Intl.message(
-      'Save',
-      name: 'manage_device_disconnect_modal_cta',
       desc: '',
       args: [],
     );
@@ -4313,16 +3433,6 @@ class S {
     return Intl.message(
       'Yes',
       name: 'manual_coin_preselection_dialog_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No`
-  String get manual_coin_preselection_dialog_cta2 {
-    return Intl.message(
-      'No',
-      name: 'manual_coin_preselection_dialog_cta2',
       desc: '',
       args: [],
     );
@@ -4438,16 +3548,6 @@ class S {
     );
   }
 
-  /// `What is your #2 seed word?`
-  String get manual_setup_generate_seed_verify_seed_again_quiz_subheading {
-    return Intl.message(
-      'What is your #2 seed word?',
-      name: 'manual_setup_generate_seed_verify_seed_again_quiz_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Let’s Verify Your Seed`
   String get manual_setup_generate_seed_verify_seed_heading {
     return Intl.message(
@@ -4468,53 +3568,11 @@ class S {
     );
   }
 
-  /// `What’s your seed word number 2?`
-  String get manual_setup_generate_seed_verify_seed_quiz_1_4_subheading {
-    return Intl.message(
-      'What’s your seed word number 2?',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_1_4_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Correct`
-  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_correct {
-    return Intl.message(
-      'Correct',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_correct',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What is your #11 seed word?`
-  String get manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading {
-    return Intl.message(
-      'What is your #11 seed word?',
-      name: 'manual_setup_generate_seed_verify_seed_quiz_4_4_done_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Invalid Entry`
   String get manual_setup_generate_seed_verify_seed_quiz_fail_invalid {
     return Intl.message(
       'Invalid Entry',
       name: 'manual_setup_generate_seed_verify_seed_quiz_fail_invalid',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back`
-  String
-      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA {
-    return Intl.message(
-      'Back',
-      name:
-          'manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_CTA',
       desc: '',
       args: [],
     );
@@ -4574,6 +3632,16 @@ class S {
     );
   }
 
+  /// `Choose a word to continue`
+  String get manual_setup_generate_seed_verify_seed_quiz_success_infotext {
+    return Intl.message(
+      'Choose a word to continue',
+      name: 'manual_setup_generate_seed_verify_seed_quiz_success_infotext',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy will ask you some questions to verify you correctly recorded your seed.`
   String get manual_setup_generate_seed_verify_seed_subheading {
     return Intl.message(
@@ -4609,16 +3677,6 @@ class S {
     return Intl.message(
       'Import Envoy Backup',
       name: 'manual_setup_import_backup_CTA2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_import_backup_fails_modal_continue {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_import_backup_fails_modal_continue',
       desc: '',
       args: [],
     );
@@ -4664,36 +3722,6 @@ class S {
     );
   }
 
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
-  String get manual_setup_import_existing_backup_subheading {
-    return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as labels, accounts, and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
-      name: 'manual_setup_import_existing_backup_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Done`
-  String get manual_setup_import_seed_12_words_CTA_inactive {
-    return Intl.message(
-      'Done',
-      name: 'manual_setup_import_seed_12_words_CTA_inactive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back`
-  String get manual_setup_import_seed_12_words_fail_modal_CTA {
-    return Intl.message(
-      'Back',
-      name: 'manual_setup_import_seed_12_words_fail_modal_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `That seed appears to be invalid. Please check the words entered, including the order they are in and try again.`
   String get manual_setup_import_seed_12_words_fail_modal_subheading {
     return Intl.message(
@@ -4709,16 +3737,6 @@ class S {
     return Intl.message(
       'Enter Your Seed',
       name: 'manual_setup_import_seed_12_words_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back`
-  String get manual_setup_import_seed_24_words_fail_modal_cta1 {
-    return Intl.message(
-      'Back',
-      name: 'manual_setup_import_seed_24_words_fail_modal_cta1',
       desc: '',
       args: [],
     );
@@ -4859,26 +3877,6 @@ class S {
     return Intl.message(
       'Try scanning again or manually import your seed words instead.',
       name: 'manual_setup_recovery_fail_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_recovery_import_backup_modal_fail_connectivity_cta1 {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_recovery_import_backup_modal_fail_connectivity_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back`
-  String get manual_setup_recovery_import_backup_modal_fail_connectivity_cta2 {
-    return Intl.message(
-      'Back',
-      name: 'manual_setup_recovery_import_backup_modal_fail_connectivity_cta2',
       desc: '',
       args: [],
     );
@@ -5062,16 +4060,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_verify_seed_12_words_passphrase_warning_modal_CTA',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `WARNING`
   String
       get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading {
@@ -5125,26 +4113,6 @@ class S {
       'Please carefully re-enter your passphrase.',
       name:
           'manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_setup_verify_seed_24_words_verify_passphrase_modal_cta {
-    return Intl.message(
-      'Continue',
-      name: 'manual_setup_verify_seed_24_words_verify_passphrase_modal_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Magic Backups`
-  String get manual_toggle_off_automatic_backups {
-    return Intl.message(
-      'Magic Backups',
-      name: 'manual_toggle_off_automatic_backups',
       desc: '',
       args: [],
     );
@@ -5260,31 +4228,11 @@ class S {
     );
   }
 
-  /// `Download Envoy Backup File`
-  String get manual_toggle_on_seed_backup_in_progress_ios_download_backup_file {
-    return Intl.message(
-      'Download Envoy Backup File',
-      name: 'manual_toggle_on_seed_backup_in_progress_ios_download_backup_file',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your Envoy backup is complete.`
   String get manual_toggle_on_seed_backup_in_progress_toast_heading {
     return Intl.message(
       'Your Envoy backup is complete.',
       name: 'manual_toggle_on_seed_backup_in_progress_toast_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get manual_toggle_on_seed_backup_now_modal_cta {
-    return Intl.message(
-      'Continue',
-      name: 'manual_toggle_on_seed_backup_now_modal_cta',
       desc: '',
       args: [],
     );
@@ -5426,16 +4374,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get pair_new_device_QR_code_cta {
-    return Intl.message(
-      'Continue',
-      name: 'pair_new_device_QR_code_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Scan this QR code with Passport to validate`
   String get pair_new_device_QR_code_heading {
     return Intl.message(
@@ -5451,16 +4389,6 @@ class S {
     return Intl.message(
       'This is a Bitcoin address belonging to your Passport.',
       name: 'pair_new_device_QR_code_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get pair_new_device_address_cta1 {
-    return Intl.message(
-      'Continue',
-      name: 'pair_new_device_address_cta1',
       desc: '',
       args: [],
     );
@@ -5496,31 +4424,11 @@ class S {
     );
   }
 
-  /// `Connect Passport \nwith Envoy`
-  String get pair_new_device_intro_connect_envoy_heading {
-    return Intl.message(
-      'Connect Passport \nwith Envoy',
-      name: 'pair_new_device_intro_connect_envoy_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. `
   String get pair_new_device_intro_connect_envoy_subheading {
     return Intl.message(
       'This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. ',
       name: 'pair_new_device_intro_connect_envoy_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get pair_new_device_qr_code_cta {
-    return Intl.message(
-      'Continue',
-      name: 'pair_new_device_qr_code_cta',
       desc: '',
       args: [],
     );
@@ -5666,6 +4574,16 @@ class S {
     );
   }
 
+  /// `Node Connected`
+  String get privacySetting_nodeConnected {
+    return Intl.message(
+      'Node Connected',
+      name: 'privacySetting_nodeConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Application lock`
   String get privacy_applicationLock_title {
     return Intl.message(
@@ -5711,16 +4629,6 @@ class S {
     return Intl.message(
       'Couldn\'t reach node.',
       name: 'privacy_node_connection_couldNotReach',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn more`
-  String get privacy_node_learnMore {
-    return Intl.message(
-      'Learn more',
-      name: 'privacy_node_learnMore',
       desc: '',
       args: [],
     );
@@ -5786,31 +4694,11 @@ class S {
     );
   }
 
-  /// `Learn more`
-  String get privacy_privacyMode_learnMore {
-    return Intl.message(
-      'Learn more',
-      name: 'privacy_privacyMode_learnMore',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Privacy mode`
   String get privacy_privacyMode_title {
     return Intl.message(
       'Privacy mode',
       name: 'privacy_privacyMode_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
-  String get privacy_privacyMode_torSuggestion {
-    return Intl.message(
-      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
-      name: 'privacy_privacyMode_torSuggestion',
       desc: '',
       args: [],
     );
@@ -5826,31 +4714,11 @@ class S {
     );
   }
 
-  /// `Connect`
-  String get privacy_setting_add_node_modal_cta {
-    return Intl.message(
-      'Connect',
-      name: 'privacy_setting_add_node_modal_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Add Node`
   String get privacy_setting_add_node_modal_heading {
     return Intl.message(
       'Add Node',
       name: 'privacy_setting_add_node_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter your node address`
-  String get privacy_setting_add_node_modal_text_field {
-    return Intl.message(
-      'Enter your node address',
-      name: 'privacy_setting_add_node_modal_text_field',
       desc: '',
       args: [],
     );
@@ -5866,41 +4734,11 @@ class S {
     );
   }
 
-  /// `Node Connected`
-  String get privacy_setting_clearnet_node_heading {
-    return Intl.message(
-      'Node Connected',
-      name: 'privacy_setting_clearnet_node_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your Node is connected via Clearnet.`
   String get privacy_setting_clearnet_node_subheading {
     return Intl.message(
       'Your Node is connected via Clearnet.',
       name: 'privacy_setting_clearnet_node_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
-  String get privacy_setting_clearnet_node_tor_off {
-    return Intl.message(
-      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
-      name: 'privacy_setting_clearnet_node_tor_off',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retry`
-  String get privacy_setting_connecting_node_fails_modal_cta {
-    return Intl.message(
-      'Retry',
-      name: 'privacy_setting_connecting_node_fails_modal_cta',
       desc: '',
       args: [],
     );
@@ -5936,61 +4774,11 @@ class S {
     );
   }
 
-  /// `Add Node`
-  String get privacy_setting_connecting_node_success_modal_heading {
-    return Intl.message(
-      'Add Node',
-      name: 'privacy_setting_connecting_node_success_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get privacy_setting_connecting_node_success_modal_heading_cta {
-    return Intl.message(
-      'Continue',
-      name: 'privacy_setting_connecting_node_success_modal_heading_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Node Connected`
-  String get privacy_setting_onion_node_heading {
-    return Intl.message(
-      'Node Connected',
-      name: 'privacy_setting_onion_node_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your Node is connected via Tor.`
   String get privacy_setting_onion_node_sbheading {
     return Intl.message(
       'Your Node is connected via Tor.',
       name: 'privacy_setting_onion_node_sbheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Better \nPerformance`
-  String get privacy_setting_perfomance_better_performance {
-    return Intl.message(
-      'Better \nPerformance',
-      name: 'privacy_setting_perfomance_better_performance',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get privacy_setting_perfomance_cta {
-    return Intl.message(
-      'Continue',
-      name: 'privacy_setting_perfomance_cta',
       desc: '',
       args: [],
     );
@@ -6106,31 +4894,21 @@ class S {
     );
   }
 
-  /// `Envoy will then automatically restore your Magic Backup`
-  String get recovery_scenario_Android_instruction3 {
+  /// `To recover your Envoy wallet, follow these simple instructions.`
+  String get recovery_scenario_android_subheading {
     return Intl.message(
-      'Envoy will then automatically restore your Magic Backup',
-      name: 'recovery_scenario_Android_instruction3',
+      'To recover your Envoy wallet, follow these simple instructions.',
+      name: 'recovery_scenario_android_subheading',
       desc: '',
       args: [],
     );
   }
 
   /// `How to Recover?`
-  String get recovery_scenario_android_heading {
+  String get recovery_scenario_heading {
     return Intl.message(
       'How to Recover?',
-      name: 'recovery_scenario_android_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To recover your Magic Backup, follow these simple instructions.`
-  String get recovery_scenario_android_subheading {
-    return Intl.message(
-      'To recover your Magic Backup, follow these simple instructions.',
-      name: 'recovery_scenario_android_subheading',
+      name: 'recovery_scenario_heading',
       desc: '',
       args: [],
     );
@@ -6316,16 +5094,6 @@ class S {
     );
   }
 
-  /// `Continue`
-  String get settings_advanced_enabled_testnet_modal_cta {
-    return Intl.message(
-      'Continue',
-      name: 'settings_advanced_enabled_testnet_modal_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Learn how to do that [[here]].`
   String get settings_advanced_enabled_testnet_modal_link {
     return Intl.message(
@@ -6366,26 +5134,6 @@ class S {
     );
   }
 
-  /// `Cancel`
-  String get settings_advanced_taproot_modal_cta2 {
-    return Intl.message(
-      'Cancel',
-      name: 'settings_advanced_taproot_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING`
-  String get settings_advanced_taproot_modal_heading {
-    return Intl.message(
-      'WARNING',
-      name: 'settings_advanced_taproot_modal_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution.`
   String get settings_advanced_taproot_modal_subheading {
     return Intl.message(
@@ -6396,10 +5144,10 @@ class S {
     );
   }
 
-  /// `Enable Testnet`
+  /// `Testnet`
   String get settings_advanced_testnet {
     return Intl.message(
-      'Enable Testnet',
+      'Testnet',
       name: 'settings_advanced_testnet',
       desc: '',
       args: [],
@@ -6466,31 +5214,11 @@ class S {
     );
   }
 
-  /// `Save`
-  String get stalls_before_sending_tx_add_note_modal_cta1 {
-    return Intl.message(
-      'Save',
-      name: 'stalls_before_sending_tx_add_note_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No thanks`
   String get stalls_before_sending_tx_add_note_modal_cta2 {
     return Intl.message(
       'No thanks',
       name: 'stalls_before_sending_tx_add_note_modal_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Don’t show again`
-  String get stalls_before_sending_tx_add_note_modal_dontAskAgain {
-    return Intl.message(
-      'Don’t show again',
-      name: 'stalls_before_sending_tx_add_note_modal_dontAskAgain',
       desc: '',
       args: [],
     );
@@ -6516,16 +5244,6 @@ class S {
     );
   }
 
-  /// `Review Transaction`
-  String get stalls_before_sending_tx_scanning_broadcasting_fail_cta2 {
-    return Intl.message(
-      'Review Transaction',
-      name: 'stalls_before_sending_tx_scanning_broadcasting_fail_cta2',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Your transaction couldn’t be sent`
   String get stalls_before_sending_tx_scanning_broadcasting_fail_heading {
     return Intl.message(
@@ -6541,16 +5259,6 @@ class S {
     return Intl.message(
       'Please check your connection and try again',
       name: 'stalls_before_sending_tx_scanning_broadcasting_fail_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Continue`
-  String get stalls_before_sending_tx_scanning_broadcasting_success_cta {
-    return Intl.message(
-      'Continue',
-      name: 'stalls_before_sending_tx_scanning_broadcasting_success_cta',
       desc: '',
       args: [],
     );
@@ -6596,21 +5304,61 @@ class S {
     );
   }
 
-  /// `Discard Changes`
-  String get tagged_coin_details_inputs_fails_cta2 {
+  /// `Expenses`
+  String get tagSelection_example1 {
     return Intl.message(
-      'Discard Changes',
-      name: 'tagged_coin_details_inputs_fails_cta2',
+      'Expenses',
+      name: 'tagSelection_example1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cancel`
-  String get tagged_coin_details_inputs_success_cta2 {
+  /// `Personal`
+  String get tagSelection_example2 {
     return Intl.message(
-      'Cancel',
-      name: 'tagged_coin_details_inputs_success_cta2',
+      'Personal',
+      name: 'tagSelection_example2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Savings`
+  String get tagSelection_example3 {
+    return Intl.message(
+      'Savings',
+      name: 'tagSelection_example3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Donations`
+  String get tagSelection_example4 {
+    return Intl.message(
+      'Donations',
+      name: 'tagSelection_example4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Travel`
+  String get tagSelection_example5 {
+    return Intl.message(
+      'Travel',
+      name: 'tagSelection_example5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Changes`
+  String get tagged_coin_details_inputs_fails_cta2 {
+    return Intl.message(
+      'Discard Changes',
+      name: 'tagged_coin_details_inputs_fails_cta2',
       desc: '',
       args: [],
     );
@@ -6631,16 +5379,6 @@ class S {
     return Intl.message(
       'EDIT TAG NAME',
       name: 'tagged_coin_details_menu_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `DELETE TAG`
-  String get tagged_coin_details_menu_cta2 {
-    return Intl.message(
-      'DELETE TAG',
-      name: 'tagged_coin_details_menu_cta2',
       desc: '',
       args: [],
     );
@@ -6691,16 +5429,6 @@ class S {
     return Intl.message(
       'Hold to drag and reorder your accounts.',
       name: 'tap_and_drag_first_time_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Dismiss`
-  String get tap_and_drag_first_time_text_button {
-    return Intl.message(
-      'Dismiss',
-      name: 'tap_and_drag_first_time_text_button',
       desc: '',
       args: [],
     );
@@ -6786,16 +5514,6 @@ class S {
     );
   }
 
-  /// `Learn More`
-  String get tor_connectivity_toast_warning_learn_more {
-    return Intl.message(
-      'Learn More',
-      name: 'tor_connectivity_toast_warning_learn_more',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Tag Details`
   String get untagged_coin_details_locked_heading {
     return Intl.message(
@@ -6846,16 +5564,6 @@ class S {
     );
   }
 
-  /// `How Your Data is Secured`
-  String get wallet_security_modal_3_4_ios_heading {
-    return Intl.message(
-      'How Your Data is Secured',
-      name: 'wallet_security_modal_3_4_ios_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA.`
   String get wallet_security_modal_3_4_ios_subheading {
     return Intl.message(
@@ -6901,26 +5609,6 @@ class S {
     return Intl.message(
       'Security Tip',
       name: 'wallet_security_modal__heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn More`
-  String get wallet_security_modal_cta1 {
-    return Intl.message(
-      'Learn More',
-      name: 'wallet_security_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back`
-  String get wallet_security_modal_cta2 {
-    return Intl.message(
-      'Back',
-      name: 'wallet_security_modal_cta2',
       desc: '',
       args: [],
     );
