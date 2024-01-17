@@ -127,7 +127,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           runAlignment: WrapAlignment.spaceBetween,
                           children: [
                             CoinTagListItem(
-                              title: "Address", // TODO: FIGMA
+                              title: S().coindetails_overlay_address,
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_spend.svg",
                                 color: Colors.black,
@@ -168,7 +168,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   )),
                             ),
                             CoinTagListItem(
-                              title: "Transaction ID", // TODO: FIGMA
+                              title: S().coindetails_overlay_transactionID,
                               icon: Icon(
                                 CupertinoIcons.compass,
                                 size: 16,
@@ -206,7 +206,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   )),
                             ),
                             CoinTagListItem(
-                              title: "Date", // TODO: FIGMA
+                              title: S().coindetails_overlay_date,
                               icon: Icon(
                                 Icons.calendar_today_outlined,
                                 size: 16,
@@ -217,8 +217,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   style: trailingTextStyle),
                             ),
                             CoinTagListItem(
-                              title:
-                                  S().coincontrol_tx_history_tx_details_history,
+                              title: S().coindetails_overlay_tag,
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_tag.svg",
                                 color: Colors.black,
@@ -228,7 +227,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   style: trailingTextStyle),
                             ),
                             CoinTagListItem(
-                              title: "Status", // TODO: FIGMA
+                              title: S().coindetails_overlay_status,
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_status_icon.svg",
                                 color: Colors.black,
@@ -258,7 +257,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     alignment: Alignment(0.0, -0.8));
                               },
                               child: CoinTagListItem(
-                                title: "Notes", // TODO: FIGMA
+                                title: S().coindetails_overlay_notes,
                                 icon: SvgPicture.asset(
                                   "assets/icons/ic_notes.svg",
                                   color: Colors.black,
