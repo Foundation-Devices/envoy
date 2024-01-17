@@ -14,18 +14,20 @@ class AmountWidget extends StatelessWidget {
   final int amountSats;
   final AmountDisplayUnit unit;
   final bool decimalDot;
+  final String symbolFiat;
   final double fxRateFiat;
 
   AmountWidget({
     required this.amountSats,
     required this.unit,
+    this.symbolFiat = "",
     this.fxRateFiat = 0.0,
     this.decimalDot = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bottomWidgetUnit = unit != AmountDisplayUnit.fiat
+    final bottomWidgetUnit = unit == AmountDisplayUnit.fiat
         ? AmountDisplayUnit.btc
         : AmountDisplayUnit.fiat;
     return Column(
@@ -34,10 +36,12 @@ class AmountWidget extends StatelessWidget {
             unit: unit,
             amountSats: amountSats,
             decimalDot: decimalDot,
+            symbolFiat: symbolFiat,
             fxRateFiat: fxRateFiat),
         SmallAmountWidget(
             unit: bottomWidgetUnit,
             amountSats: amountSats,
+            symbolFiat: symbolFiat,
             fxRateFiat: fxRateFiat,
             decimalDot: decimalDot),
       ],
@@ -48,6 +52,7 @@ class AmountWidget extends StatelessWidget {
 class SmallAmountWidget extends StatelessWidget {
   final AmountDisplayUnit unit;
   final int amountSats;
+  final String symbolFiat;
   final double fxRateFiat;
   final bool decimalDot;
 
@@ -67,8 +72,9 @@ class SmallAmountWidget extends StatelessWidget {
     super.key,
     required this.unit,
     required this.amountSats,
-    required this.fxRateFiat,
-    required this.decimalDot,
+    this.symbolFiat = "",
+    this.fxRateFiat = 0.0,
+    this.decimalDot = true,
   });
 
   @override
@@ -85,12 +91,12 @@ class SmallAmountWidget extends StatelessWidget {
                     color: EnvoyColors.accentPrimary,
                   )
                 : Text(
-                    "\$",
+                    symbolFiat,
                     style: textStyleFiatSymbol,
                   )),
         RichText(
           text: TextSpan(
-              children: unit != AmountDisplayUnit.fiat
+              children: unit == AmountDisplayUnit.fiat
                   ? buildFiatTextSpans(
                       amountSats, fxRateFiat, decimalDot, textStyle)
                   : _buildBtcLowerTextSpans(
@@ -105,6 +111,7 @@ class LargeAmountWidget extends StatelessWidget {
   final AmountDisplayUnit unit;
   final int amountSats;
   final bool decimalDot;
+  final String symbolFiat;
   final double fxRateFiat;
 
   final TextStyle textStyleBlack = EnvoyTypography.largeAmount.copyWith(
@@ -129,8 +136,9 @@ class LargeAmountWidget extends StatelessWidget {
     super.key,
     required this.unit,
     required this.amountSats,
-    required this.decimalDot,
-    required this.fxRateFiat,
+    this.decimalDot = true,
+    this.symbolFiat = "",
+    this.fxRateFiat = 0.0,
   });
 
   @override
@@ -142,7 +150,7 @@ class LargeAmountWidget extends StatelessWidget {
             padding: const EdgeInsets.only(right: 6.0),
             child: unit == AmountDisplayUnit.fiat
                 ? Text(
-                    "\$",
+                    symbolFiat,
                     style: textStyleFiatSymbol,
                   )
                 : EnvoyIcon(

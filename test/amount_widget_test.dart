@@ -10,7 +10,7 @@ import 'util/preload_fonts.dart';
 
 void main() {
   testWidgets('AmountWidget', (tester) async {
-    tester.view.physicalSize = Size(2000, 600);
+    tester.view.physicalSize = Size(1000, 600);
     tester.view.devicePixelRatio = 1.0;
 
     await preloadFonts(tester);
@@ -21,7 +21,12 @@ void main() {
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
-          child: Container(color: Colors.white, child: AmountWidgetTestCases()),
+          child: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: AmountWidgetTestCases(),
+              )),
         ),
       );
     }
@@ -49,48 +54,56 @@ class AmountWidgetTestCases extends StatelessWidget {
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 43421,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 2343421,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 122343421,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 523722343000,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 12523722300000,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 512523722000000,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
             AmountWidget(
               amountSats: 2012523720000000,
               unit: AmountDisplayUnit.btc,
               decimalDot: true,
               fxRateFiat: 2871.759259259,
+              symbolFiat: "\$",
             ),
           ],
         ),
@@ -102,24 +115,28 @@ class AmountWidgetTestCases extends StatelessWidget {
             unit: AmountDisplayUnit.sat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 43421,
             unit: AmountDisplayUnit.sat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 2343421,
             unit: AmountDisplayUnit.sat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 22343421,
             unit: AmountDisplayUnit.sat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           SizedBox(height: 100),
           // section for EU
@@ -128,18 +145,21 @@ class AmountWidgetTestCases extends StatelessWidget {
             unit: AmountDisplayUnit.btc,
             decimalDot: false,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 2343421,
             unit: AmountDisplayUnit.sat,
             decimalDot: false,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 122343421,
             unit: AmountDisplayUnit.sat,
             decimalDot: false,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
         ]),
         SizedBox(width: 2),
@@ -150,36 +170,42 @@ class AmountWidgetTestCases extends StatelessWidget {
             unit: AmountDisplayUnit.fiat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 43421,
             unit: AmountDisplayUnit.fiat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 22343421,
             unit: AmountDisplayUnit.fiat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 698197340,
             unit: AmountDisplayUnit.fiat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 523722343000,
             unit: AmountDisplayUnit.fiat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
           AmountWidget(
             amountSats: 512523722000000,
             unit: AmountDisplayUnit.fiat,
             decimalDot: true,
             fxRateFiat: 2871.759259259,
+            symbolFiat: "\$",
           ),
         ]),
       ],
