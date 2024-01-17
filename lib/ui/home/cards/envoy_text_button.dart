@@ -7,21 +7,27 @@ import 'package:envoy/ui/envoy_colors.dart';
 
 class EnvoyTextButton extends StatelessWidget {
   const EnvoyTextButton(
-      {Key? key, required this.label, this.onTap, this.error = false})
+      {Key? key,
+      required this.label,
+      this.onTap,
+      this.error = false,
+      this.textStyle})
       : super(key: key);
 
   final String label;
   final Function()? onTap;
   final bool error;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onTap,
       child: Text(label,
-          style: TextStyle(
-              color: error ? EnvoyColors.darkCopper : EnvoyColors.darkTeal,
-              fontWeight: FontWeight.w600)),
+          style: textStyle ??
+              TextStyle(
+                  color: error ? EnvoyColors.darkCopper : EnvoyColors.darkTeal,
+                  fontWeight: FontWeight.w600)),
     );
   }
 }
