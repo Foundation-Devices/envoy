@@ -137,7 +137,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   final dismissedNoteDialog = await EnvoyStorage()
                       .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
                   if ((userNote == null || userNote.isEmpty) &&
-                      !dismissedNoteDialog) {
+                      !dismissedNoteDialog &&
+                      !ref.read(spendTransactionProvider).isPSBTFinalized) {
                     await showEnvoyDialog(
                         context: context,
                         useRootNavigator: true,
