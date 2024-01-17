@@ -38,6 +38,8 @@ enum EnvoyIcons {
   btc,
   tool,
   testnet_badge,
+  copy,
+  share
 }
 
 class EnvoyIcon extends StatelessWidget {
