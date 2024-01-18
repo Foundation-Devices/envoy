@@ -53,7 +53,7 @@ String removeFiatTrailingZeros(String fiatAmount) {
 String convertSatsToBtcString(int amountSats, {bool trailingZeroes = false}) {
   final amountBtc = amountSats / 100000000;
 
-  NumberFormat formatter = NumberFormat();
+  NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
   formatter.minimumFractionDigits = trailingZeroes ? 8 : 0;
   formatter.maximumFractionDigits = 8;
 
