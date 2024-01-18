@@ -14,12 +14,12 @@ use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 
-use bdk::bitcoin::{Address, Network, OutPoint, Txid};
-use bdk::database::{ConfigurableDatabase, MemoryDatabase};
+use bdk::bitcoin::{Address, Network, OutPoint, Script, Txid};
+use bdk::database::{ConfigurableDatabase, Database, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, Balance, FeeRate, SignOptions, SyncOptions};
+use bdk::{electrum_client, miniscript, Balance, FeeRate, KeychainKind, SignOptions, SyncOptions};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -40,7 +40,7 @@ use bdk::keys::{
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::psbt::PsbtUtils;
 use bip39::{Language, Mnemonic};
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard};
 
 mod util;
 
@@ -80,6 +80,14 @@ impl Into<String> for NetworkType {
 pub enum WalletType {
     WitnessPublicKeyHash,
     Taproot,
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub enum OutputPath {
+    External,
+    Internal,
+    NotMine,
 }
 
 impl Display for WalletType {
@@ -125,6 +133,7 @@ pub struct RawTransaction {
 pub struct RawTransactionOutput {
     amount: u64,
     address: *const c_char,
+    path: OutputPath,
 }
 
 #[repr(C)]
@@ -815,6 +824,7 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
         }
     }
 }
+
 /// Returns max fee rate for the transaction, fee amount will be deducted from change output
 /// if the return max_fee_rate is negative,then RBF with current output is not possible
 #[no_mangle]
@@ -958,6 +968,7 @@ pub unsafe extern "C" fn wallet_decode_psbt(
 pub unsafe extern "C" fn wallet_decode_raw_tx(
     raw_tx: *const c_char,
     network: NetworkType,
+    wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> RawTransaction {
     let error_return = RawTransaction {
         version: -1,
@@ -971,15 +982,42 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
         hex::decode(CStr::from_ptr(raw_tx).to_str().unwrap()),
         error_return
     );
+    //
+    //
 
     let tx: Result<bdk::bitcoin::blockdata::transaction::Transaction, _> = deserialize(&data);
     let decoded_tx = unwrap_or_return!(tx, error_return);
+
+    let mut wallet_instance: Option<MutexGuard<bdk::Wallet<Tree>>> = None;
+
+    if (!wallet.is_null()) {
+        wallet_instance = Some(util::get_wallet_mutex(wallet).lock().unwrap());
+    }
 
     let outputs: Vec<_> = decoded_tx
         .output
         .iter()
         .map(|o| RawTransactionOutput {
             amount: o.value.clone(),
+            ///this is a static function we dont have a wallet context
+            path: match &wallet_instance {
+                None => OutputPath::NotMine,
+                Some(wallet) => {
+                    let path = wallet
+                        .database()
+                        .get_path_from_script_pubkey(&o.script_pubkey);
+                    match path {
+                        Ok(path_type) => match path_type {
+                            None => OutputPath::NotMine,
+                            Some(keychain_path) => match keychain_path.0 {
+                                KeychainKind::External => OutputPath::External,
+                                KeychainKind::Internal => OutputPath::Internal,
+                            },
+                        },
+                        Err(_) => OutputPath::NotMine,
+                    }
+                }
+            },
             address: CString::new(
                 Address::from_script(&o.script_pubkey, network.into())
                     .unwrap()

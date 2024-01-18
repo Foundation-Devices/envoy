@@ -294,7 +294,8 @@ class RawTransaction {
       rust.RawTransactionOutput nativeOutput = tx.outputs.elementAt(i).ref;
       outputs.add(RawTransactionOutput(
           address: nativeOutput.address.cast<Utf8>().toDartString(),
-          amount: nativeOutput.amount));
+          amount: nativeOutput.amount,
+          path: TxOutputPath.values[nativeOutput.path]));
     }
 
     for (var i = 0; i < tx.inputs_len; i++) {
@@ -317,11 +318,22 @@ class RawTransactionInput {
       {required this.previousOutputIndex, required this.previousOutputHash});
 }
 
+/// enum positions matters, this will be mapped to [OutputPath]
+enum TxOutputPath {
+  External,
+  Internal,
+  NotMine,
+}
+
 class RawTransactionOutput {
   final int amount;
   final String address;
+  final TxOutputPath path;
 
-  RawTransactionOutput({required this.amount, required this.address});
+  RawTransactionOutput(
+      {required this.amount,
+      required this.address,
+      this.path = TxOutputPath.NotMine});
 }
 
 @freezed
@@ -700,6 +712,28 @@ class Wallet {
     });
   }
 
+  ///Decode raw transaction
+  Future<RawTransaction> decodeWalletRawTx(
+      String rawTransaction, Network network) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final dynlib = load(_libName);
+      final lib = rust.NativeLibrary(dynlib);
+
+      rust.RawTransaction rawTx = lib.wallet_decode_raw_tx(
+          rawTransaction.toNativeUtf8() as Pointer<Char>,
+          network.index,
+          Pointer.fromAddress(walletAddress));
+
+      if (rawTx.version == -1) {
+        throwRustException(dynlib);
+      }
+
+      return RawTransaction.fromNative(rawTx);
+    });
+  }
+
   Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(String txId) async {
     final walletAddress = _self.address;
     return Isolate.run(() {
@@ -724,7 +758,9 @@ class Wallet {
       final lib = rust.NativeLibrary(dynlib);
 
       rust.RawTransaction rawTx = lib.wallet_decode_raw_tx(
-          rawTransaction.toNativeUtf8() as Pointer<Char>, network.index);
+          rawTransaction.toNativeUtf8() as Pointer<Char>,
+          network.index,
+          nullptr);
 
       if (rawTx.version == -1) {
         throwRustException(dynlib);
