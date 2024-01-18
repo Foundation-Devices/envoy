@@ -66,5 +66,10 @@ localazy.json
 
 #Flutter version manager config
 .fvm
+
 # Passport simulator
 /passport2
+
+# Failed golden tests
+test/failures
+
