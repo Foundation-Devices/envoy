@@ -10,6 +10,8 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/locale.dart';
 
+import '../theme/envoy_spacing.dart';
+
 class AmountWidget extends StatelessWidget {
   final int amountSats;
   final AmountDisplayUnit unit;
@@ -147,7 +149,7 @@ class LargeAmountWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-            padding: const EdgeInsets.only(right: 6.0),
+            padding: const EdgeInsets.only(right: EnvoySpacing.xs),
             child: unit == AmountDisplayUnit.fiat
                 ? Text(
                     symbolFiat,
