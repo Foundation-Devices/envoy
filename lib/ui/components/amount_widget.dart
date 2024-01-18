@@ -9,19 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/locale.dart';
-
-import '../theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class AmountWidget extends StatelessWidget {
   final int amountSats;
-  final AmountDisplayUnit unit;
+  final AmountDisplayUnit primaryUnit;
+  final AmountDisplayUnit? secondaryUnit;
   final bool decimalDot;
   final String symbolFiat;
   final double fxRateFiat;
 
   AmountWidget({
     required this.amountSats,
-    required this.unit,
+    required this.primaryUnit,
+    this.secondaryUnit = null,
     this.symbolFiat = "",
     this.fxRateFiat = 0.0,
     this.decimalDot = true,
@@ -29,29 +30,27 @@ class AmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomWidgetUnit = unit == AmountDisplayUnit.fiat
-        ? AmountDisplayUnit.btc
-        : AmountDisplayUnit.fiat;
     return Column(
       children: [
-        LargeAmountWidget(
-            unit: unit,
+        PrimaryAmountWidget(
+            unit: primaryUnit,
             amountSats: amountSats,
             decimalDot: decimalDot,
             symbolFiat: symbolFiat,
             fxRateFiat: fxRateFiat),
-        SmallAmountWidget(
-            unit: bottomWidgetUnit,
-            amountSats: amountSats,
-            symbolFiat: symbolFiat,
-            fxRateFiat: fxRateFiat,
-            decimalDot: decimalDot),
+        if (secondaryUnit != null)
+          SecondaryAmountWidget(
+              unit: secondaryUnit!,
+              amountSats: amountSats,
+              symbolFiat: symbolFiat,
+              fxRateFiat: fxRateFiat,
+              decimalDot: decimalDot),
       ],
     );
   }
 }
 
-class SmallAmountWidget extends StatelessWidget {
+class SecondaryAmountWidget extends StatelessWidget {
   final AmountDisplayUnit unit;
   final int amountSats;
   final String symbolFiat;
@@ -70,7 +69,7 @@ class SmallAmountWidget extends StatelessWidget {
       fontSize: 12,
       fontWeight: FontWeight.w500);
 
-  SmallAmountWidget({
+  SecondaryAmountWidget({
     super.key,
     required this.unit,
     required this.amountSats,
@@ -89,7 +88,7 @@ class SmallAmountWidget extends StatelessWidget {
             child: unit == AmountDisplayUnit.btc
                 ? EnvoyIcon(
                     iconBtc,
-                    size: EnvoyIconSize.superSmall,
+                    size: EnvoyIconSize.extraSmall,
                     color: EnvoyColors.accentPrimary,
                   )
                 : Text(
@@ -109,7 +108,7 @@ class SmallAmountWidget extends StatelessWidget {
   }
 }
 
-class LargeAmountWidget extends StatelessWidget {
+class PrimaryAmountWidget extends StatelessWidget {
   final AmountDisplayUnit unit;
   final int amountSats;
   final bool decimalDot;
@@ -134,7 +133,7 @@ class LargeAmountWidget extends StatelessWidget {
       fontSize: 24,
       fontWeight: FontWeight.w500);
 
-  LargeAmountWidget({
+  PrimaryAmountWidget({
     super.key,
     required this.unit,
     required this.amountSats,
