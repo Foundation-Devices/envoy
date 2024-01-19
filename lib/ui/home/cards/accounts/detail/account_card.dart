@@ -485,7 +485,7 @@ class TransactionListTile extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: transaction.amount < 0
-                  ? Text(S().Sent)
+                  ? Text(S().activity_sent)
                   : Text(S().activity_received),
             ),
             subtitle: FittedBox(

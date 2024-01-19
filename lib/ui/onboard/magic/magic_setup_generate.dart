@@ -283,9 +283,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               ),
               Padding(padding: EdgeInsets.all(16)),
               Text(
-                Platform.isAndroid
-                    ? S().recovery_scenario_android_subheading
-                    : S().recovery_scenario_ios_subheading,
+                S().recovery_scenario_subheading,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme

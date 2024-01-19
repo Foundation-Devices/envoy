@@ -211,7 +211,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             children: [
               EnvoyFilterChip(
                 icon: Icons.call_made,
-                text: S().account_details_filter_tags_sent,
+                text: S().activity_sent,
                 selected:
                     _filterState?.contains(TransactionFilters.Sent) ?? false,
                 onTap: () {

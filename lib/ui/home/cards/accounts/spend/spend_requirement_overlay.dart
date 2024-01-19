@@ -787,7 +787,7 @@ class _SpendSelectionCancelWarningState
                   ),
                 ),
                 Text(
-                  S().manual_coin_preselection_dialog_dontShowAgain,
+                  S().coincontrol_lock_coin_modal_dontShowAgain,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: dismissed ? Colors.black : Color(0xff808080),
                       ),
@@ -806,7 +806,7 @@ class _SpendSelectionCancelWarningState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().manual_coin_preselection_dialog_cta1,
+            S().component_yes,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               txWarningExit(context);

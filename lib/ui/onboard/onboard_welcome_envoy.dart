@@ -53,7 +53,7 @@ class _OnboardEnvoyWelcomeScreenState
               padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               child: EnvoyButton(
-                S().envoy_welcome_screen_skip,
+                S().component_skip,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium

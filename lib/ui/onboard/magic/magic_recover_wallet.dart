@@ -646,9 +646,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
+                          vertical: 8, horizontal: 8),
                       child: Text(
-                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_heading,
+                        S().component_warning,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.labelLarge,
                       ),
