@@ -74,14 +74,6 @@ class _EraseWalletsAndBackupsWarningState
                       style: Theme.of(context).textTheme.titleLarge),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Text(
-                      S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
-                ),
-                Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     child: SizedBox(
