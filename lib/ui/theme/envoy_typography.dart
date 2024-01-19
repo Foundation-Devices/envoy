@@ -9,37 +9,46 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EnvoyTypography {
-  static TextStyle explainer =
-      EnvoyTypography.label.copyWith(color: EnvoyColors.textTertiary);
-
-  static TextStyle largeAmount = GoogleFonts.montserrat(
-    fontSize: 40,
-    fontWeight: FontWeight.w300,
+  static TextStyle _baseFont = GoogleFonts.montserrat(
     fontFeatures: [
       FontFeature.tabularFigures(),
     ],
   );
-  static TextStyle heading = GoogleFonts.montserrat(
+
+  static TextStyle explainer =
+      EnvoyTypography.label.copyWith(color: EnvoyColors.textTertiary);
+
+  static TextStyle largeAmount = _baseFont.copyWith(
+    fontSize: 40,
+    fontWeight: FontWeight.w300,
+  );
+
+  static TextStyle heading = _baseFont.copyWith(
     fontSize: 16,
     fontWeight: FontWeight.w600,
   );
-  static TextStyle subheading = GoogleFonts.montserrat(
+
+  static TextStyle subheading = _baseFont.copyWith(
     fontSize: 16,
     fontWeight: FontWeight.w600,
   );
-  static TextStyle button = GoogleFonts.montserrat(
+
+  static TextStyle button = _baseFont.copyWith(
     fontSize: 14,
     fontWeight: FontWeight.w600,
   );
-  static TextStyle body = GoogleFonts.montserrat(
+
+  static TextStyle body = _baseFont.copyWith(
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
-  static TextStyle info = GoogleFonts.montserrat(
+
+  static TextStyle info = _baseFont.copyWith(
     fontSize: 12,
     fontWeight: FontWeight.w500,
   );
-  static TextStyle label = GoogleFonts.montserrat(
+
+  static TextStyle label = _baseFont.copyWith(
     fontSize: 10,
     fontWeight: FontWeight.w500,
   );
