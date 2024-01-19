@@ -233,7 +233,7 @@ packages:
       path: "."
       ref: master
       resolved-ref: a9328d5a37054606c1b96b9ae26f02c8e93cc836
-      url: "https://github.com/icota/schedulers_dart.git"
+      url: "https://github.com/foundation-devices/schedulers_dart.git"
     source: git
     version: "1.0.1"
   sky_engine:
@@ -293,8 +293,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c63b3c6cf628ee40e865e91ffbc200c4fff5a75b
-      resolved-ref: c63b3c6cf628ee40e865e91ffbc200c4fff5a75b
+      ref: "366e89469d8459371566fd9fa1a5eeed69f01acf"
+      resolved-ref: "366e89469d8459371566fd9fa1a5eeed69f01acf"
       url: "https://github.com/foundation-devices/tor.git"
     source: git
     version: "0.0.1"
