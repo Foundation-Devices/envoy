@@ -340,7 +340,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       children: [
         EnvoyButton(
           enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
-          S().stalls_before_sending_tx_scanning_broadcasting_fail_cta1,
+          S().component_tryAgain,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
             broadcastTx(context);

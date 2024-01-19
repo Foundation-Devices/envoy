@@ -128,9 +128,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     ),
                     Text(
                       _selectedCoin == null
-                          ? S()
-                              .untagged_coin_details_locked_heading
-                              .toUpperCase()
+                          ? S().coinDetails_tagDetails.toUpperCase()
                           : S().coindetails_overlay_heading.toUpperCase(),
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(

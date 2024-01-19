@@ -238,8 +238,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(S()
-                              .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading),
+                          Text(S().component_warning),
                           LinkText(
                               text: S()
                                   .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,

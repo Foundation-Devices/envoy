@@ -58,7 +58,8 @@ class _SendCardState extends ConsumerState<SendCard>
       account: ref.read(selectedAccountProvider),
     );
     Future.delayed(Duration(milliseconds: 10)).then((value) {
-      ref.read(homePageTitleProvider.notifier).state = S().send_qr_code_heading;
+      ref.read(homePageTitleProvider.notifier).state =
+          S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));

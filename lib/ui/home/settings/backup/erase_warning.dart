@@ -68,9 +68,16 @@ class _EraseWalletsAndBackupsWarningState
                 Padding(padding: EdgeInsets.all(4)),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: Text(S().component_warning,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                   child: Text(
-                      S().backups_erase_wallets_and_backups_modal_1_2_ios_heading,
+                      S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge),
                 ),
@@ -181,9 +188,16 @@ class _EraseWalletsBalanceWarningState
                 Padding(padding: EdgeInsets.all(4)),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: Text(S().component_warning,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                   child: Text(
-                      S().backups_erase_wallets_and_backups_modal_1_2_ios_heading,
+                      S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge),
                 ),
@@ -484,8 +498,7 @@ class AndroidBackupWarning extends StatelessWidget {
                         builder: (context, ref, child) {
                           return OnboardingButton(
                             type: EnvoyButtonTypes.tertiary,
-                            label:
-                                S().delete_wallet_for_good_instant_android_cta2,
+                            label: S().component_skip,
                             onTap: () async {
                               OnboardingPage.popUntilHome(context);
                               ref

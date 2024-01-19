@@ -175,7 +175,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             ),
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(S().learning_center_sort_heading,
+          Text(S().account_details_filter_tags_sortBy,
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
           CheckBoxFilterItem(

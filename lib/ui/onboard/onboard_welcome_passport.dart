@@ -130,7 +130,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               child: EnvoyButton(
-                S().passport_welcome_screen_skip,
+                S().component_skip,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium
