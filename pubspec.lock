@@ -390,9 +390,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
+      ref: abf22df735e644b7e13e4115ce3fb0c41b5219e8
       resolved-ref: abf22df735e644b7e13e4115ce3fb0c41b5219e8
-      url: "https://github.com/icota/flutter_html.git"
+      url: "https://github.com/foundation-devices/flutter_html.git"
     source: git
     version: "3.0.0-beta.2"
   flutter_localizations:
@@ -481,9 +481,9 @@ packages:
     dependency: "direct main"
     description:
       path: flutter_vlc_player
-      ref: set-position
+      ref: "405f0341c86f8f676cdca39115ea055ec7239346"
       resolved-ref: "405f0341c86f8f676cdca39115ea055ec7239346"
-      url: "https://github.com/icota/flutter_vlc_player.git"
+      url: "https://github.com/foundation-devices/flutter_vlc_player.git"
     source: git
     version: "7.1.2"
   flutter_vlc_player_platform_interface:
@@ -987,7 +987,7 @@ packages:
       path: "."
       ref: "71db8c9dcb3ed56cc55f86caf1044ef2068603b7"
       resolved-ref: "71db8c9dcb3ed56cc55f86caf1044ef2068603b7"
-      url: "https://github.com/icota/qr_code_scanner.git"
+      url: "https://github.com/foundation-devices/qr_code_scanner.git"
     source: git
     version: "1.0.0"
   qr_flutter:
@@ -1050,9 +1050,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
+      ref: a9328d5a37054606c1b96b9ae26f02c8e93cc836
       resolved-ref: a9328d5a37054606c1b96b9ae26f02c8e93cc836
-      url: "https://github.com/icota/schedulers_dart.git"
+      url: "https://github.com/foundation-devices/schedulers_dart.git"
     source: git
     version: "1.0.1"
   screenshot:
@@ -1495,9 +1495,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
+      ref: f6c13566b5641022f5a953965f5a2061fbc40c13
       resolved-ref: f6c13566b5641022f5a953965f5a2061fbc40c13
-      url: "https://github.com/icota/webfeed.git"
+      url: "https://github.com/foundation-devices/webfeed.git"
     source: git
     version: "0.7.0"
   webkit_inspection_protocol:
