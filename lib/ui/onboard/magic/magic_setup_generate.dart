@@ -33,9 +33,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   late int step;
 
   List<String> stepsHeadings = [
-    Platform.isAndroid
-        ? S().magic_setup_generate_envoy_key_android_heading
-        : S().magic_setup_generate_envoy_key_ios_heading,
+    S().magic_setup_generate_envoy_key_heading,
     S().magic_setup_generate_backup_heading,
     S().magic_setup_send_backup_to_envoy_server_heading,
   ];
@@ -279,17 +277,13 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                Platform.isAndroid
-                    ? S().recovery_scenario_android_heading
-                    : S().recovery_scenario_ios_heading,
+                S().recovery_scenario_heading,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               Padding(padding: EdgeInsets.all(16)),
               Text(
-                Platform.isAndroid
-                    ? S().recovery_scenario_android_subheading
-                    : S().recovery_scenario_ios_subheading,
+                S().recovery_scenario_subheading,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme

@@ -273,7 +273,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                               controller: _scrollController,
                               children: [
                                 CoinTagListItem(
-                                  title: "Address", // TODO: FIGMA
+                                  title: S().coindetails_overlay_address,
                                   icon: SvgPicture.asset(
                                     "assets/icons/ic_spend.svg",
                                     color: Colors.black,
@@ -317,7 +317,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                       )),
                                 ),
                                 CoinTagListItem(
-                                  title: "Transaction ID", // TODO: FIGMA
+                                  title: S().coindetails_overlay_transactionID,
                                   icon: Icon(
                                     CupertinoIcons.compass,
                                     size: 16,
@@ -357,7 +357,7 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                       )),
                                 ),
                                 CoinTagListItem(
-                                  title: "Date", // TODO: FIGMA
+                                  title: S().coindetails_overlay_date,
                                   icon: Icon(
                                     Icons.calendar_today_outlined,
                                     size: 16,
@@ -368,19 +368,17 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
                                       style: trailingTextStyle),
                                 ),
                                 CoinTagListItem(
-                                  title: "Status", // TODO: FIGMA
+                                  title: S().coindetails_overlay_status,
                                   icon: SvgPicture.asset(
                                     "assets/icons/ic_status_icon.svg",
                                     color: Colors.black,
                                     height: 14,
                                   ),
-                                  trailing: Text(
-                                      getTransactionStatusString(
-                                          tx), // TODO: FIGMA
+                                  trailing: Text(getTransactionStatusString(tx),
                                       style: trailingTextStyle),
                                 ),
                                 CoinTagListItem(
-                                  title: "Fee", // TODO: FIGMA
+                                  title: S().coincontrol_tx_detail_fee,
                                   icon: SvgPicture.asset(
                                     "assets/icons/ic_bitcoin_straight_circle.svg",
                                     color: Colors.black,
@@ -536,12 +534,12 @@ class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
 
 String getTransactionDateAndTimeString(Transaction transaction) {
   if (!transaction.isConfirmed) {
-    return "Pending"; // TODO: FIGMA
+    return S().activity_pending;
   }
   final String transactionDateInfo =
       DateFormat.yMd(currentLocale).format(transaction.date) +
           " " +
-          "at" + // TODO: FIGMA
+          S().coindetails_overlay_at +
           " " +
           DateFormat.Hm(currentLocale).format(transaction.date);
   return transactionDateInfo;
@@ -550,6 +548,6 @@ String getTransactionDateAndTimeString(Transaction transaction) {
 // TODO: figma
 String getTransactionStatusString(Transaction tx) {
   return tx.type == TransactionType.normal && tx.isConfirmed
-      ? "Confirmed"
-      : "Pending";
+      ? S().coindetails_overlay_status_confirmed
+      : S().activity_pending;
 }

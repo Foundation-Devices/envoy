@@ -21,7 +21,7 @@ class ScvResultFailPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            label: S().envoy_scv_result_fail_cta,
+            label: S().component_retry,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ScvShowQrPage();

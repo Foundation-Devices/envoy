@@ -22,7 +22,7 @@ class PpRestoreSeedPage extends StatelessWidget {
       navigationDotsIndex: 0,
       buttons: [
         OnboardingButton(
-            label: S().envoy_pp_restore_seed_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return PpRestoreSeedBackupPage();

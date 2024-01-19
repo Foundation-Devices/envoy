@@ -35,7 +35,7 @@ class ScvShowQrPage extends StatelessWidget {
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
-            label: S().envoy_scv_show_qr_cta,
+            label: S().component_next,
             onTap: () {
               if (_challenge != null) {
                 // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background

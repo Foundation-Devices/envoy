@@ -7,6 +7,9 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -45,7 +48,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
         children: [
           Flexible(
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(EnvoySpacing.medium2),
               child: QrTab(
                 title: widget.account.name,
                 subtitle: S().manage_account_descriptor_subheading,
@@ -57,39 +60,40 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
+            padding: EdgeInsets.only(bottom: EnvoySpacing.large1),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: descriptor));
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            "Descriptor copied to clipboard!"), //TODO: FIGMA
-                      ));
-                    },
-                    icon: Icon(
-                      Icons.copy,
-                      size: 20,
-                      color: EnvoyColors.darkTeal,
-                    )),
+                Padding(
+                  padding: const EdgeInsets.only(right: EnvoySpacing.large3),
+                  child: IconButton(
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: descriptor));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              "Descriptor copied to clipboard!"), //TODO: FIGMA
+                        ));
+                      },
+                      icon: EnvoyIcon(EnvoyIcons.copy)),
+                ),
                 EnvoyTextButton(
                   onTap: () {
                     context.pop();
                   },
                   label: S().OK,
+                  textStyle: EnvoyTypography.subheading.copyWith(
+                      fontWeight: FontWeight.w400, color: EnvoyColors.darkTeal),
                 ),
-                IconButton(
-                    onPressed: () {
-                      Share.share(descriptor);
-                    },
-                    icon: Icon(
-                      Icons.share,
-                      size: 20,
-                      color: EnvoyColors.darkTeal,
-                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: EnvoySpacing.large3),
+                  child: IconButton(
+                      onPressed: () {
+                        Share.share(descriptor);
+                      },
+                      icon: EnvoyIcon(EnvoyIcons.share)),
+                ),
               ],
             ),
           ),

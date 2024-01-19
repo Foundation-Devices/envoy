@@ -402,7 +402,7 @@ class TestnetInfoModal extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: EnvoyButton(
-                    S().settings_advanced_enabled_testnet_modal_cta,
+                    S().component_continue,
                     type: EnvoyButtonTypes.primaryModal,
                     onTap: () {
                       Navigator.of(context).pop();

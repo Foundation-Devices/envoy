@@ -21,13 +21,13 @@ class PpRestoreBackupSuccessPage extends StatelessWidget {
       text: [
         OnboardingText(
             header: S().envoy_pp_restore_backup_success_heading,
-            text: S().envoy_pp_restore_backup_success_subheading),
+            text: S().envoy_pp_new_seed_success_subheading),
       ],
       navigationDots: 3,
       navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
-            label: S().envoy_pp_restore_backup_success_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return SingleImportPpIntroPage(isExistingDevice: false);

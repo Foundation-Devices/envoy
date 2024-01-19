@@ -251,7 +251,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       case ROUTE_ACCOUNT_SEND:
         return "send"; //TODO: Figma
       case ROUTE_ACCOUNT_DETAIL:
-        return S().coincontrol_tx_history_filter_off_heading;
+        return S().manage_account_address_heading;
       default:
         return S().menu_heading;
     }

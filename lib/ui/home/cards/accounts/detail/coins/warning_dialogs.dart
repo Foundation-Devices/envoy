@@ -103,7 +103,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 EnvoyButton(
-                  S().coincontrol_lock_coin_modal_cta2,
+                  S().component_back,
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -184,7 +184,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 ),
                 Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Text(
-                  S().create_first_tag_modal_1_2_heading,
+                  S().change_output_from_multiple_tags_modal_heading,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium

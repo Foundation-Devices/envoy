@@ -11,6 +11,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class EnvoyBottomNavigation extends ConsumerStatefulWidget {
   final Function(int)? onIndexChanged;
@@ -63,18 +64,21 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         enableFeedback: true,
         elevation: 0.0,
         onTap: (int index) {
-          setState(
-            () {
-              if (index == _selectedIndex) {
+          setState(() {
+            if (index == _selectedIndex) {
+              // if selected index is "Accounts"
+              if (index == 2 && GoRouter.of(context).canPop()) {
+                GoRouter.of(context).pop();
+              } else {
                 return;
               }
+            }
 
-              _selectedIndex = index;
-              if (widget.onIndexChanged != null) {
-                widget.onIndexChanged!(_selectedIndex);
-              }
-            },
-          );
+            _selectedIndex = index;
+            if (widget.onIndexChanged != null) {
+              widget.onIndexChanged!(_selectedIndex);
+            }
+          });
         },
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(

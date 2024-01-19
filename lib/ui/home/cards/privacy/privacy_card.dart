@@ -80,7 +80,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                             const EdgeInsets.only(top: EnvoySpacing.medium1),
                         child: SettingsHeader(
                           title: S().privacy_privacyMode_title,
-                          linkText: S().privacy_privacyMode_learnMore,
+                          linkText: S().component_learnMore,
                           onTap: () {
                             launchUrl(
                                 Uri.parse(
@@ -124,7 +124,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                       LinkText(
                           textAlign: TextAlign.start,
                           text: _betterPerformance == true
-                              ? S().privacy_privacyMode_torSuggestion
+                              ? S().privacy_setting_perfomance_tor_off
                               : S().privacy_privacyMode_torSuggestionOn,
                           textStyle: EnvoyTypography.info
                               .copyWith(color: EnvoyColors.textSecondary),
@@ -135,7 +135,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                       buildDivider(),
                       SettingsHeader(
                         title: S().privacy_node_title,
-                        linkText: S().privacy_node_learnMore,
+                        linkText: S().component_learnMore,
                         onTap: () {
                           launchUrl(
                               Uri.parse(

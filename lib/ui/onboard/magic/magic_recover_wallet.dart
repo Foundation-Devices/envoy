@@ -261,7 +261,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: OnboardingButton(
-                label: S().magic_setup_generate_wallet_modal_ios_cta,
+                label: S().component_continue,
                 onTap: () async {
                   await Future.delayed(Duration(milliseconds: 200));
                   OnboardingPage.popUntilHome(context);
@@ -277,7 +277,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_backup_cta3,
+              label: S().component_continue,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
                 showContinueWarningDialog(context);
@@ -435,7 +435,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_connectivity_cta3,
+              label: S().component_continue,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
                 showContinueWarningDialog(context);
@@ -444,7 +444,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             Consumer(
               builder: (context, ref, child) {
                 return OnboardingButton(
-                  label: S().magic_setup_recovery_fail_connectivity_cta2,
+                  label: S().magic_setup_recovery_fail_backup_cta2,
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     openBackupFile(context);
@@ -584,9 +584,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            Platform.isAndroid
-                ? S().magic_setup_recovery_fail_Android_heading
-                : S().magic_setup_recovery_fail_ios_heading,
+            S().magic_setup_recovery_fail_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
@@ -648,9 +646,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
+                          vertical: 8, horizontal: 8),
                       child: Text(
-                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_heading,
+                        S().component_warning,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.labelLarge,
                       ),
@@ -669,8 +667,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   ],
                 ),
                 OnboardingButton(
-                    label: S()
-                        .manual_setup_recovery_import_backup_modal_fail_connectivity_cta2,
+                    label: S().component_back,
                     type: EnvoyButtonTypes.tertiary,
                     onTap: () async {
                       Navigator.maybePop(context);
@@ -680,8 +677,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   builder: (context, ref, child) {
                     return OnboardingButton(
                         type: EnvoyButtonTypes.primaryModal,
-                        label: S()
-                            .manual_setup_recovery_import_backup_modal_fail_connectivity_cta1,
+                        label: S().component_continue,
                         onTap: () {
                           EnvoySeed().get().then((seed) async {
                             EnvoySeed().deriveAndAddWallets(seed!);

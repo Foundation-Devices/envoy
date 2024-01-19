@@ -120,7 +120,7 @@ class Devices extends ChangeNotifier {
 
   getDeviceName(String serialNumber) {
     if (serialNumber == "envoy") {
-      return S().accounts_screen_walletType_mobile;
+      return S().accounts_screen_walletType_Envoy;
     }
 
     return devices.firstWhere((d) => d.serial == serialNumber).name;

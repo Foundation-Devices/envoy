@@ -72,7 +72,7 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
                 Padding(
                   padding: const EdgeInsets.only(top: 2 * 4),
                   child: EnvoyButton(
-                    S().azteco_redeem_modal_success_cta,
+                    S().component_continue,
                     type: EnvoyButtonTypes.primaryModal,
                     onTap: () {
                       Navigator.of(context).pop();

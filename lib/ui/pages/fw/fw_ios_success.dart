@@ -27,7 +27,7 @@ class FwIosSuccessPage extends StatelessWidget {
       key: Key("fw_ios_success"),
       text: [
         OnboardingText(
-          header: S().envoy_fw_success_heading_ios,
+          header: S().envoy_fw_success_heading,
           text: S().envoy_fw_success_subheading_ios,
         ),
       ],
@@ -40,7 +40,7 @@ class FwIosSuccessPage extends StatelessWidget {
       navigationDotsIndex: 4,
       buttons: [
         OnboardingButton(
-            label: S().envoy_fw_success_cta_ios,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(builder: (context) {

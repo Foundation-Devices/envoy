@@ -137,7 +137,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   final dismissedNoteDialog = await EnvoyStorage()
                       .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
                   if ((userNote == null || userNote.isEmpty) &&
-                      !dismissedNoteDialog) {
+                      !dismissedNoteDialog &&
+                      !ref.read(spendTransactionProvider).isPSBTFinalized) {
                     await showEnvoyDialog(
                         context: context,
                         useRootNavigator: true,
@@ -148,7 +149,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           txId: "UpcomingTx",
                           noteSubTitle: S()
                               .stalls_before_sending_tx_add_note_modal_subheading,
-                          noteTitle: S().coincontrol_tx_add_note_heading,
+                          noteTitle: S().add_note_modal_heading,
                           value: ref.read(stagingTxNoteProvider),
                         ),
                         alignment: Alignment(0.0, -0.5));
@@ -322,7 +323,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         mainAxisSize: MainAxisSize.max,
         children: [
           EnvoyButton(
-            S().stalls_before_sending_tx_scanning_broadcasting_success_cta,
+            S().component_continue,
             onTap: () async {
               final providerScope = ProviderScope.containerOf(context);
               clearSpendState(providerScope);
@@ -339,7 +340,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       children: [
         EnvoyButton(
           enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
-          S().stalls_before_sending_tx_scanning_broadcasting_fail_cta1,
+          S().component_tryAgain,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
             broadcastTx(context);
@@ -348,7 +349,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         Padding(padding: EdgeInsets.all(6)),
         EnvoyButton(
           enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
-          S().stalls_before_sending_tx_scanning_broadcasting_fail_cta2,
+          S().coincontrol_txDetail_ReviewTransaction,
           onTap: () {
             ref.read(spendTransactionProvider.notifier).resetBroadcastState();
           },
@@ -1101,7 +1102,7 @@ class _DiscardTransactionDialogState
             size: 42,
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(S().coincontrol_tx_detail_passport_heading,
+          Text(S().manage_account_remove_heading,
               style: Theme.of(context).textTheme.titleSmall),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
@@ -1123,7 +1124,7 @@ class _DiscardTransactionDialogState
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
-            S().coincontrol_tx_detail_passport_cta,
+            S().coincontrol_txDetail_ReviewTransaction,
             type: EnvoyButtonTypes.primaryModal,
             onTap: () {
               Navigator.of(context).pop(false);
@@ -1306,7 +1307,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
               }, type: EnvoyButtonTypes.tertiary),
               Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(
-                S().stalls_before_sending_tx_add_note_modal_cta1,
+                S().component_save,
                 onTap: () {
                   ref.read(stagingTxNoteProvider.notifier).state =
                       _textEditingController.text;

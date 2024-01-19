@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:typed_data';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -162,7 +163,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                           ),
                           _isVideoWatched
                               ? Text(
-                                  "Watched", // TODO: FIGMA
+                                  S().learningcenter_status_watched,
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )

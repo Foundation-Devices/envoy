@@ -128,9 +128,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     ),
                     Text(
                       _selectedCoin == null
-                          ? S()
-                              .untagged_coin_details_locked_heading
-                              .toUpperCase()
+                          ? S().coinDetails_tagDetails.toUpperCase()
                           : S().coindetails_overlay_heading.toUpperCase(),
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
@@ -407,7 +405,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
-              S().tagged_coin_details_menu_cta2,
+              S().delete_tag_modal_cta2.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper),
             ),
           ),
@@ -507,7 +505,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         builder: (context) {
           return DeleteTagDialog(
               dialogSubheading: S().delete_tag_modal_subheading,
-              primaryButtonText: S().delete_tag_modal_cta1,
+              primaryButtonText: S().component_back,
               secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
                 Navigator.pop(context);
@@ -534,8 +532,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         builder: (context) {
           return DeleteTagDialog(
               dialogSubheading: S().delete_emptyTag_modal_subheading,
-              primaryButtonText: S().delete_emptyTag_modal_cta1,
-              secondaryButtonText: S().delete_emptyTag_modal_cta2,
+              primaryButtonText: S().component_back,
+              secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
                 Navigator.pop(context);
               },
@@ -590,7 +588,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 type: EnvoyButtonTypes.tertiary,
               ),
               EnvoyButton(
-                S().add_note_modal_cta,
+                S().component_save,
                 onTap: () async {
                   widget.coinTag.name = textEntry.enteredText;
                   int updated =

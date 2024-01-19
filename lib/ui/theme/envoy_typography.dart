@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:ui';
+
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +12,13 @@ class EnvoyTypography {
   static TextStyle explainer =
       EnvoyTypography.label.copyWith(color: EnvoyColors.textTertiary);
 
+  static TextStyle largeAmount = GoogleFonts.montserrat(
+    fontSize: 40,
+    fontWeight: FontWeight.w300,
+    fontFeatures: [
+      FontFeature.tabularFigures(),
+    ],
+  );
   static TextStyle heading = GoogleFonts.montserrat(
     fontSize: 16,
     fontWeight: FontWeight.w600,

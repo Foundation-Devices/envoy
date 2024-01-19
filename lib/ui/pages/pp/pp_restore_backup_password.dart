@@ -22,7 +22,7 @@ class PpRestoreBackupPasswordPage extends StatelessWidget {
       navigationDotsIndex: 1,
       buttons: [
         OnboardingButton(
-            label: S().envoy_pp_restore_backup_password_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return PpRestoreBackupSuccessPage();

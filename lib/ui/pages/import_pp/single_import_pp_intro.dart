@@ -36,7 +36,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: EnvoyButton(
-                S().passport_welcome_screen_skip,
+                S().component_skip,
                 textStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium

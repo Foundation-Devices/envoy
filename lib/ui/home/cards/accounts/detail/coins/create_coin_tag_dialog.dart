@@ -29,12 +29,11 @@ class CreateCoinTag extends StatefulWidget {
 }
 
 List<String> tagSuggestions = [
-  // TODO: FIGMA
-  "Fuel",
-  "Savings",
-  "Expenses",
-  "Business",
-  "Conferences",
+  S().tagSelection_example1,
+  S().tagSelection_example2,
+  S().tagSelection_example3,
+  S().tagSelection_example4,
+  S().tagSelection_example5,
 ];
 
 class _CreateCoinTagState extends State<CreateCoinTag> {
@@ -71,7 +70,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   ),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Text(
-                    S().create_first_tag_modal_2_2_heading,
+                    S().change_output_from_multiple_tags_modal_heading,
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
@@ -209,7 +208,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               child: EnvoyButton(
-                S().create_first_tag_modal_2_2_cta,
+                S().component_continue,
                 enabled: _tagController.text.isNotEmpty,
                 textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: _tagController.text.isNotEmpty
@@ -337,7 +336,7 @@ Widget tagItem(context, String item, Function() onTap) {
 //         return DeleteTagDialog(
 //             dialogSubheading: S().empty_tag_modal_subheading(tag.name),
 //             primaryButtonText: S().empty_tag_modal_cta1,
-//             secondaryButtonText: S().empty_tag_modal_cta2,
+//             secondaryButtonText: S().delete_tag_modal_cta2,
 //             onPrimaryButtonTap: () {
 //               Navigator.pop(context);
 //               Navigator.pop(context);

@@ -24,7 +24,7 @@ class ScvResultOkPage extends StatelessWidget {
       ],
       buttons: [
         OnboardingButton(
-            label: S().envoy_scv_result_ok_cta,
+            label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return PinIntroPage(

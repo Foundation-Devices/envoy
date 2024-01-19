@@ -115,7 +115,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       navigationDotsIndex: currentDotIndex,
       buttons: [
         OnboardingButton(
-            label: done ? S().envoy_fw_success_cta : S().envoy_fw_fail_cta,
+            label: done ? S().component_continue : S().component_tryAgain,
             onTap: () {
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(builder: (context) {
