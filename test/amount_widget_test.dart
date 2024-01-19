@@ -25,7 +25,7 @@ void main() {
           child: Container(
               color: Colors.white,
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(10.0),
                 child: AmountWidgetTestCases(),
               )),
         ),
