@@ -94,8 +94,6 @@ class TestnetIcon extends StatelessWidget {
 extension FloatSize on EnvoyIconSize {
   double get toDouble {
     switch (this) {
-      case EnvoyIconSize.superSmall:
-        return 16.0;
       case EnvoyIconSize.extraSmall:
         return 16.0;
       case EnvoyIconSize.small:
