@@ -10,8 +10,12 @@ class AddressWidget extends StatelessWidget {
   final String address;
   final TextStyle textStyleBold =
       EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
-  final TextStyle textStyleNormal =
-      EnvoyTypography.body.copyWith(color: EnvoyColors.textTertiary);
+  final TextStyle textStyleNormal = EnvoyTypography.body
+      .copyWith(
+        color: EnvoyColors.textTertiary,
+      )
+      .setWeight(FontWeight.w400);
+
   final bool short;
 
   AddressWidget({
