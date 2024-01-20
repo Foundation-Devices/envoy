@@ -89,55 +89,59 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
         }
         Haptics.buttonPress();
       },
-      child: FittedBox(
-        fit: BoxFit.fitWidth,
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.decelerate,
-          width: 48,
-          decoration: boxDecoration,
-          child: AnimatedAlign(
-              alignment: knobAlign,
-              curve: (widget.value == CoinTagSwitchState.off ||
-                      widget.value == CoinTagSwitchState.partial)
-                  ? Curves.decelerate
-                  : Curves.easeIn,
-              duration: Duration(milliseconds: 200),
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: GestureDetector(
-                  child: Material(
-                    elevation: 1,
-                    shape: CircleBorder(),
-                    child: widget.triState
-                        ? SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  "assets/icons/ic_filter_funnel.svg",
-                                  width: 10,
-                                  height: 10,
-                                  fit: BoxFit.fitHeight,
-                                  color:
-                                      widget.value == CoinTagSwitchState.partial
-                                          ? EnvoyColors.darkTeal
-                                          : EnvoyColors.transparent,
-                                ),
-                              ],
+      child: Container(
+        color: Colors.transparent,
+        height: 40,
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.decelerate,
+            width: 48,
+            decoration: boxDecoration,
+            child: AnimatedAlign(
+                alignment: knobAlign,
+                curve: (widget.value == CoinTagSwitchState.off ||
+                        widget.value == CoinTagSwitchState.partial)
+                    ? Curves.decelerate
+                    : Curves.easeIn,
+                duration: Duration(milliseconds: 200),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: GestureDetector(
+                    child: Material(
+                      elevation: 1,
+                      shape: CircleBorder(),
+                      child: widget.triState
+                          ? SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/ic_filter_funnel.svg",
+                                    width: 10,
+                                    height: 10,
+                                    fit: BoxFit.fitHeight,
+                                    color: widget.value ==
+                                            CoinTagSwitchState.partial
+                                        ? EnvoyColors.darkTeal
+                                        : EnvoyColors.transparent,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : SizedBox(
+                              width: 18,
+                              height: 18,
                             ),
-                          )
-                        : SizedBox(
-                            width: 18,
-                            height: 18,
-                          ),
+                    ),
                   ),
-                ),
-              )),
+                )),
+          ),
         ),
       ),
     );
