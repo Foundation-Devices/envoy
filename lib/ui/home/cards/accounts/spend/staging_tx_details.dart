@@ -768,16 +768,20 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                          child: LinkText(
-                            text: S()
-                                .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                            textAlign: TextAlign.center,
-                            linkStyle: EnvoyTypography.button
-                                .copyWith(color: EnvoyColors.solidWhite),
-                            onTap: () {
-                              launchUrlString(
-                                  "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
-                            },
+                          child: Container(
+                            height: 40,
+                            width: 200,
+                            child: LinkText(
+                              text: S()
+                                  .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                              textAlign: TextAlign.center,
+                              linkStyle: EnvoyTypography.button
+                                  .copyWith(color: EnvoyColors.solidWhite),
+                              onTap: () {
+                                launchUrlString(
+                                    "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
+                              },
+                            ),
                           ),
                         )
                       ]
