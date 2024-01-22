@@ -284,7 +284,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             OnboardingButton(
-              label: S().magic_setup_recovery_fail_backup_cta2,
+              label: S().manual_setup_import_backup_CTA2,
               type: EnvoyButtonTypes.secondary,
               onTap: () {
                 openBackupFile(context);
@@ -444,7 +444,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             Consumer(
               builder: (context, ref, child) {
                 return OnboardingButton(
-                  label: S().magic_setup_recovery_fail_backup_cta2,
+                  label: S().manual_setup_import_backup_CTA2,
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     openBackupFile(context);

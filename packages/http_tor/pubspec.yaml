@@ -14,8 +14,8 @@ environment:
 dependencies:
   schedulers:
     git:
-      url: https://github.com/icota/schedulers_dart.git
-      ref: master
+      url: https://github.com/foundation-devices/schedulers_dart.git
+      ref: a9328d5a37054606c1b96b9ae26f02c8e93cc836
   ffi: ^2.0.1
   flutter:
     sdk: flutter

@@ -39,10 +39,11 @@ class TransactionsDetailsWidget extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<TransactionsDetailsWidget> createState() =>
-      _CoinDetailsWidgetState();
+      _TransactionsDetailsWidgetState();
 }
 
-class _CoinDetailsWidgetState extends ConsumerState<TransactionsDetailsWidget> {
+class _TransactionsDetailsWidgetState
+    extends ConsumerState<TransactionsDetailsWidget> {
   bool showTxIdExpanded = false;
   bool showAddressExpanded = false;
   GlobalKey _detailWidgetKey = GlobalKey();
@@ -545,7 +546,6 @@ String getTransactionDateAndTimeString(Transaction transaction) {
   return transactionDateInfo;
 }
 
-// TODO: figma
 String getTransactionStatusString(Transaction tx) {
   return tx.type == TransactionType.normal && tx.isConfirmed
       ? S().coindetails_overlay_status_confirmed

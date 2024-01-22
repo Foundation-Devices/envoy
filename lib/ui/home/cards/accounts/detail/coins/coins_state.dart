@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
@@ -121,7 +122,7 @@ final coinsTagProvider =
   if (coins.isNotEmpty)
     tags.add(CoinTag(
         id: CoinTag.generateNewId(),
-        name: "Untagged", // TODO: FIGMA
+        name: S().account_details_untagged_card,
         account: accountId,
         untagged: true)
       ..addCoins(coins));

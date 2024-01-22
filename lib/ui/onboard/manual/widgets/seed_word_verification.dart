@@ -122,7 +122,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                       !_finishedAnswers
                           ? Text(
                               S()
-                                  .manual_setup_generate_seed_verify_seed_quiz_success_infotext,
+                                  .manual_setup_generate_seed_verify_seed_again_quiz_infotext,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall

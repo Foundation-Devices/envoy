@@ -92,7 +92,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                         ),
                       ),
                       Text(
-                        S().coincontrol_lock_coin_modal_dontShowAgain,
+                        S().component_dontShowAgain,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color:
                                   dismissed ? Colors.black : Color(0xff808080),
