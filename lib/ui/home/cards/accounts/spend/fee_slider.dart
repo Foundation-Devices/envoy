@@ -2,21 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
 
 class FeeChooser extends ConsumerStatefulWidget {
-  const FeeChooser({super.key});
+  final Function(int fee, BuildContext context, bool setCustomFee) onFeeSelect;
+
+  const FeeChooser({super.key, required this.onFeeSelect});
 
   @override
   ConsumerState createState() => _FeeChooserState();
@@ -36,9 +35,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final rate = ref.read(spendFeeRateProvider);
-      final account = ref.read(selectedAccountProvider);
-      setFees(account);
-
+      setFees(ref.read(feeChooserStateProvider));
       if (rate == standardFee) {
         _tabController.animateTo(0);
       } else {
@@ -51,12 +48,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
   }
 
-  void setFees(Account? account) {
-    standardFee =
-        Fees().slowRate(account?.wallet.network ?? Network.Mainnet) * 100000;
-    fasterFee =
-        Fees().fastRate(account?.wallet.network ?? Network.Mainnet) * 100000;
-
+  void setFees(FeeChooserState feeChooserState) {
+    standardFee = feeChooserState.standardFeeRate;
+    fasterFee = feeChooserState.fasterFeeRate;
     if (standardFee == fasterFee) {
       fasterFee = standardFee + 1;
     }
@@ -64,7 +58,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
 
   @override
   Widget build(BuildContext context) {
-    setFees(ref.read(selectedAccountProvider));
+    ref.listen(feeChooserStateProvider, (previous, feeChooserState) {
+      setFees(feeChooserState);
+    });
 
     ref.listen(spendFeeRateProvider, (previous, next) {
       int index = 0;
@@ -92,18 +88,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           onTap: (index) {
             switch (index) {
               case 0:
-                ref.read(userHasChangedFeesProvider.notifier).state = true;
-                ref.read(spendFeeRateProvider.notifier).state = standardFee;
-                ref
-                    .read(spendTransactionProvider.notifier)
-                    .validate(ProviderScope.containerOf(context));
+                widget.onFeeSelect(standardFee.toInt(), context, false);
                 break;
               case 1:
-                ref.read(userHasChangedFeesProvider.notifier).state = true;
-                ref.read(spendFeeRateProvider.notifier).state = fasterFee;
-                ref
-                    .read(spendTransactionProvider.notifier)
-                    .validate(ProviderScope.containerOf(context));
+                widget.onFeeSelect(fasterFee.toInt(), context, false);
                 break;
               case 2:
                 showModalBottomSheet(
@@ -128,7 +116,15 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         child: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: FeeSlider(),
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                return FeeSlider(
+                                  onFeeSelect: (index) {
+                                    widget.onFeeSelect(index, context, true);
+                                  },
+                                );
+                              },
+                            ),
                           ),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -189,7 +185,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
 }
 
 class FeeSlider extends ConsumerStatefulWidget {
-  const FeeSlider({super.key});
+  final Function(int index) onFeeSelect;
+  final int selectedItem;
+
+  const FeeSlider(
+      {super.key, this.selectedItem = 1, required this.onFeeSelect});
 
   @override
   ConsumerState createState() => _FeeSliderState();
@@ -197,7 +197,7 @@ class FeeSlider extends ConsumerStatefulWidget {
 
 class _FeeSliderState extends ConsumerState<FeeSlider> {
   double yOffset = 0.0;
-  num selectedItem = 0;
+  int selectedItem = 0;
   int? _lastHapticIndex;
 
   bool _disableHaptic = false;
@@ -209,41 +209,44 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
-      int maxFeeRate = ref.read(spendMaxFeeRateProvider);
-      maxFeeRate = (maxFeeRate * 0.7).round();
+    Future.delayed(Duration(milliseconds: 10))
+        .then((value) => calculateFeeBoundary());
+  }
 
-      setState(() {
-        list = List.generate(maxFeeRate, (index) => index + 1);
-      });
-      num feeRate = ref.read(spendFeeRateProvider);
-      if (feeRate != selectedItem) {
-        setState(() {
-          selectedItem = feeRate.toInt();
-          //since we are setting the initial item, we need to disable haptic feedback
-          _disableHaptic = true;
-        });
-
-        _controller
-            .animateToItem(list.reversed.toList().indexOf(selectedItem),
-                duration: Duration(milliseconds: 120), curve: Curves.easeInOut)
-            .then((value) {
-          _disableHaptic = false;
-        });
-      }
+  void calculateFeeBoundary() {
+    FeeChooserState feeChooserState = ref.read(feeChooserStateProvider);
+    setState(() {
+      int totalFeeSuggestion =
+          feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
+      list = List.generate(
+          totalFeeSuggestion, (index) => (feeChooserState.minFeeRate) + index);
     });
+    num feeRate = ref.read(spendFeeRateProvider);
+
+    if (feeRate != selectedItem) {
+      setState(() {
+        selectedItem = feeRate.toInt();
+        //since we are setting the initial item, we need to disable haptic feedback
+        _disableHaptic = true;
+      });
+      int jumpIndex = list.reversed.toList().indexOf(selectedItem);
+      if (jumpIndex < 0) {
+        jumpIndex = list.length - 1;
+      }
+      _controller
+          .animateToItem(jumpIndex,
+              duration: Duration(milliseconds: 60), curve: Curves.easeInOut)
+          .then((value) {
+        _disableHaptic = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
 
-    ref.listen(spendMaxFeeRateProvider, (previous, maxFeeRate) {
-      setState(() {
-        list = List.generate(maxFeeRate, (index) => index + 1);
-      });
-    });
-
+    bool processingFee = ref.watch(spendFeeProcessing);
     return Container(
         constraints: BoxConstraints(minHeight: 190, maxHeight: 210),
         child: Column(
@@ -273,7 +276,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                         onSelectedItemChanged: _handleItemChanged,
                         childDelegate: ListWheelChildListDelegate(
                             children: list.reversed
-                                .map((index) => RotatedBox(
+                                .map((feeRate) => RotatedBox(
                                       quarterTurns: 3,
                                       child: Container(
                                         height: 68,
@@ -285,18 +288,18 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                             AnimatedScale(
                                               duration:
                                                   Duration(milliseconds: 200),
-                                              scale: selectedItem == index
+                                              scale: selectedItem == feeRate
                                                   ? 1.2
                                                   : 1,
                                               child: Text(
-                                                "$index",
+                                                "$feeRate",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleSmall
                                                     ?.copyWith(
                                                       fontSize: 13,
                                                       color: selectedItem ==
-                                                              index
+                                                              feeRate
                                                           ? EnvoyColors.teal500
                                                           : EnvoyColors.gray600,
                                                     ),
@@ -305,22 +308,23 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                             AnimatedContainer(
                                               duration:
                                                   Duration(milliseconds: 120),
-                                              height: selectedItem == index
+                                              height: selectedItem == feeRate
                                                   ? 34
                                                   : 32,
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(2),
-                                                color: selectedItem == index
+                                                color: selectedItem == feeRate
                                                     ? EnvoyColors.teal500
                                                     : EnvoyColors.gray600,
                                               ),
                                               margin: EdgeInsets.only(
-                                                  top: selectedItem == index
+                                                  top: selectedItem == feeRate
                                                       ? 4
                                                       : 0),
-                                              width:
-                                                  selectedItem == index ? 3 : 2,
+                                              width: selectedItem == feeRate
+                                                  ? 3
+                                                  : 2,
                                             )
                                           ],
                                         ),
@@ -382,34 +386,19 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
               child: EnvoyButton(
                   label: S().coincontrol_tx_detail_custom_fee_cta,
-                  onTap: () => setFee(context),
+                  onTap: () {
+                    if (processingFee != ButtonState.loading) {
+                      widget.onFeeSelect(selectedItem);
+                    }
+                  },
                   type: ButtonType.primary,
-                  state: ButtonState.default_state),
+                  state: processingFee
+                      ? ButtonState.loading
+                      : ButtonState.default_state),
             ),
             Padding(padding: EdgeInsets.only(bottom: 8)),
           ],
         ));
-  }
-
-  Future<void> setFee(BuildContext context) async {
-    // FIXME: we need a way to stop the coin selection randomness past the send screen
-    // Sometimes this results in a max fee calculation that is no longer correct
-    // As a workaround we decrement the fee rate here until we get a valid PSBT
-
-    while (true) {
-      ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
-      bool valid = await ref
-          .read(spendTransactionProvider.notifier)
-          .validate(ProviderScope.containerOf(context), settingFee: true);
-
-      if (valid) {
-        break;
-      }
-
-      selectedItem--;
-    }
-
-    Navigator.pop(context);
   }
 
   void _handleItemChanged(int index) {
@@ -418,7 +407,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       if (!_disableHaptic) HapticFeedback.selectionClick();
     }
     setState(() {
-      selectedItem = list.reversed.toList()[index];
+      selectedItem = list.reversed.toList()[index].toInt();
     });
     ref.read(spendFeeRateBlockEstimationProvider.notifier).state = selectedItem;
   }

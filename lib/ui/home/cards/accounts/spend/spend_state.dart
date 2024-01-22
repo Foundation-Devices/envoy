@@ -10,6 +10,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -163,7 +164,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           : await account.wallet
               .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
 
-      container.read(spendMaxFeeRateProvider.notifier).state = maxFeeRate;
+      container.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+          standardFeeRate: Fees().slowRate(account.wallet.network) * 100000,
+          fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
+          minFeeRate: 1,
+          maxFeeRate: maxFeeRate);
 
       ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
@@ -361,14 +366,6 @@ final spendEditModeProvider = StateProvider((ref) => false);
 final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);
-final spendMaxFeeRateProvider = StateProvider((ref) => 1);
-final spendFeeRateProvider = StateProvider<num>((ref) {
-  Account? account = ref.watch(selectedAccountProvider);
-  if (account == null) {
-    return 1;
-  }
-  return Fees().slowRate(account.wallet.network) * 100000;
-});
 
 final rawTransactionProvider = Provider<RawTransaction?>((ref) {
   ref.listenSelf((previous, next) {
@@ -507,42 +504,6 @@ final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
 final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
 final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
-final spendFeeRateBlockEstimationProvider =
-    StateProvider<num>((ref) => ref.read(spendFeeRateProvider));
-
-///returns estimated block time for the transaction
-final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
-  final feeRate = ref.watch(spendFeeRateBlockEstimationProvider);
-  final account = ref.watch(selectedAccountProvider);
-  if (account == null) {
-    return "~10";
-  }
-
-  Network network = account.wallet.network;
-  // Network network = Network.Mainnet;
-
-  //with in 10 minutes
-  double feeRateFast = Fees().fees[network]!.mempoolFastestRate;
-  //with in 30 minutes
-  double feeHalfHourRate = Fees().fees[network]!.mempoolHalfHourRate;
-
-  double feeHourRate = Fees().fees[network]!.mempoolHourRate;
-
-  double selectedFeeRate = convertToFeeRate(feeRate);
-
-  if (feeRateFast <= selectedFeeRate) {
-    return "~10";
-  } else if (feeHalfHourRate <= selectedFeeRate &&
-      selectedFeeRate < feeRateFast) {
-    return "~20";
-  } else if (feeHourRate <= selectedFeeRate &&
-      selectedFeeRate < feeHalfHourRate) {
-    return "~30";
-  } else {
-    return "40+";
-  }
-});
-
 ///returns if the user has selected coins
 final isCoinsSelectedProvider = Provider<bool>((ref) {
   final account = ref.watch(selectedAccountProvider);
@@ -612,7 +573,7 @@ final showSpendRequirementOverlayProvider = Provider<bool>(
   },
 );
 
-///clears all the spend realted states. this is need once the user exits the spend screen or account details...
+///clears all the spend related states. this is need once the user exits the spend screen or account details...
 ///or when the user finishes the spend flow
 void clearSpendState(ProviderContainer ref) {
   ref.read(spendAddressProvider.notifier).state = "";
@@ -622,6 +583,7 @@ void clearSpendState(ProviderContainer ref) {
           100000;
   ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
   ref.read(stagingTxNoteProvider.notifier).state = null;
+  ref.read(spendFeeProcessing.notifier).state = false;
 }
 
 Future<Psbt> getPsbt(
