@@ -57,7 +57,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                     children: [
                       Padding(padding: EdgeInsets.all(8)),
                       Text(
-                        S().manual_setup_import_backup_heading,
+                        S().manual_setup_import_backup_CTA2,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),

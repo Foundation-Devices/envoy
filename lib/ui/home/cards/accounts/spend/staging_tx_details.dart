@@ -581,9 +581,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                     0.0, -.6));
                                                       },
                                                       child: _coinTag(
-                                                          changeOutputTag ==
-                                                                  null
-                                                              ? "Untagged"
+                                                          changeOutputTag == null
+                                                              ? S()
+                                                                  .account_details_untagged_card
                                                               : changeOutputTag
                                                                   .name)),
                                                 ],

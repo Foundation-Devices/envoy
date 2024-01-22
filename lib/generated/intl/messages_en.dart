@@ -25,7 +25,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "Label": MessageLookupByLibrary.simpleMessage("Try Again"),
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
         "_": MessageLookupByLibrary.simpleMessage(
             "https://github.com/Foundation-Devices/envoy"),
@@ -58,6 +57,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_walletType_defaultName":
             MessageLookupByLibrary.simpleMessage("Mobile Wallet"),
+        "activity_boosted": MessageLookupByLibrary.simpleMessage("Boosted"),
+        "activity_canceling": MessageLookupByLibrary.simpleMessage("Canceling"),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
             "There is no activity to display."),
         "activity_envoyUpdate":
@@ -69,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pending"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Received"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Sent"),
+        "activity_sent_boosted":
+            MessageLookupByLibrary.simpleMessage("Canceled"),
         "add_note_modal_heading":
             MessageLookupByLibrary.simpleMessage("Add a Note"),
         "add_note_modal_ie_text_field": MessageLookupByLibrary.simpleMessage(
@@ -116,9 +119,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n"),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Show Seed"),
-        "backups_erase_wallets_and_backups_show_seed_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Envoy is about to show your seed words. Anyone with access to them can spend your Bitcoin!"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Activity"),
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "This transaction spends coins from multiple tags. How would you like to tag your change?"),
         "coinDetails_tagDetails":
-            MessageLookupByLibrary.simpleMessage("TAG Details"),
+            MessageLookupByLibrary.simpleMessage("TAG DETAILS"),
         "coincontrol_coin_change_spendable_tate_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
@@ -149,16 +149,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Required Amount"),
         "coincontrol_edit_transaction_selectedAmount":
-            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+            MessageLookupByLibrary.simpleMessage("Selected amount"),
         "coincontrol_lock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Lock"),
-        "coincontrol_lock_coin_modal_dontShowAgain":
-            MessageLookupByLibrary.simpleMessage("Don’t show again"),
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Locking coins will prevent them from being used in transactions"),
         "coincontrol_txDetail_ReviewTransaction":
-            MessageLookupByLibrary.simpleMessage("Review transaction"),
+            MessageLookupByLibrary.simpleMessage("Review Transaction"),
         "coincontrol_txDetail_cta1_passport":
             MessageLookupByLibrary.simpleMessage("Sign with Passport"),
         "coincontrol_txDetail_heading_passport":
@@ -184,8 +182,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Over 25%"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt":
             MessageLookupByLibrary.simpleMessage("Over 25%"),
-        "coincontrol_tx_detail_custom_fee_sats_vb":
-            MessageLookupByLibrary.simpleMessage("sats/vb"),
         "coincontrol_tx_detail_destination":
             MessageLookupByLibrary.simpleMessage("Destination"),
         "coincontrol_tx_detail_destination_details":
@@ -198,8 +194,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("coins"),
         "coincontrol_tx_detail_expand_heading":
             MessageLookupByLibrary.simpleMessage("TRANSACTION DETAILS"),
-        "coincontrol_tx_detail_expand_note_note":
-            MessageLookupByLibrary.simpleMessage("BBQ"),
         "coincontrol_tx_detail_expand_spentFrom":
             MessageLookupByLibrary.simpleMessage("Spent from"),
         "coincontrol_tx_detail_fee":
@@ -221,7 +215,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
         "coincontrol_tx_detail_passport_cta2":
-            MessageLookupByLibrary.simpleMessage("Cancel transaction"),
+            MessageLookupByLibrary.simpleMessage("Cancel Transaction"),
         "coincontrol_tx_detail_passport_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "By canceling you will lose all transaction progress."),
@@ -232,10 +226,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Total"),
         "coincontrol_tx_history_tx_detail_note":
             MessageLookupByLibrary.simpleMessage("Note"),
-        "coincontrol_tx_history_tx_details_history":
-            MessageLookupByLibrary.simpleMessage("Tags"),
-        "coincontrol_tx_history_tx_details_tx_id":
-            MessageLookupByLibrary.simpleMessage("TX ID"),
         "coincontrol_unlock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Unlock"),
         "coincontrol_unlock_coin_modal_subheading":
@@ -244,6 +234,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_address":
             MessageLookupByLibrary.simpleMessage("Address"),
         "coindetails_overlay_at": MessageLookupByLibrary.simpleMessage("at"),
+        "coindetails_overlay_boostedFees":
+            MessageLookupByLibrary.simpleMessage("Boosted Fee"),
+        "coindetails_overlay_confirmationIn":
+            MessageLookupByLibrary.simpleMessage("Confirmation in"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Date"),
         "coindetails_overlay_heading":
@@ -264,16 +258,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Dismiss"),
         "component_done": MessageLookupByLibrary.simpleMessage("Done"),
+        "component_dontShowAgain":
+            MessageLookupByLibrary.simpleMessage("Don’t show again"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "component_learnMore":
-            MessageLookupByLibrary.simpleMessage("Learn More"),
+            MessageLookupByLibrary.simpleMessage("Learn more"),
         "component_next": MessageLookupByLibrary.simpleMessage("Next"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_save": MessageLookupByLibrary.simpleMessage("Save"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Skip"),
-        "component_tryAgain": MessageLookupByLibrary.simpleMessage("Try again"),
+        "component_tryAgain": MessageLookupByLibrary.simpleMessage("Try Again"),
         "component_warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
         "create_first_tag_modal_1_2_subheading":
@@ -281,16 +277,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Tags are a useful way to organize your coins."),
         "create_first_tag_modal_2_2_suggest":
             MessageLookupByLibrary.simpleMessage("Suggestions"),
-        "create_second_tag_modal_2_2_exampleTag_donations":
-            MessageLookupByLibrary.simpleMessage("Donations"),
-        "create_second_tag_modal_2_2_exampleTag_exchange":
-            MessageLookupByLibrary.simpleMessage("Exchange"),
-        "create_second_tag_modal_2_2_exampleTag_personal":
-            MessageLookupByLibrary.simpleMessage("Personal"),
-        "create_second_tag_modal_2_2_exampleTag_savings":
-            MessageLookupByLibrary.simpleMessage("Savings"),
-        "create_second_tag_modal_2_2_exampleTag_travel":
-            MessageLookupByLibrary.simpleMessage("Travel"),
         "create_second_tag_modal_2_2_mostUsed":
             MessageLookupByLibrary.simpleMessage("Most used"),
         "delete_emptyTag_modal_subheading":
@@ -321,8 +307,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Watch Later"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Secure your Bitcoin with Passport."),
-        "devices_text_explainer":
-            MessageLookupByLibrary.simpleMessage("Don’t have a Passport?"),
         "empty_tag_modal_subheading": m0,
         "envoy_account_tos_cta":
             MessageLookupByLibrary.simpleMessage("I Accept"),
@@ -571,7 +555,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "This seed is protected by a passphrase. You need these seed words and the passphrase to recover your funds."),
         "export_seed_modal_subheading": MessageLookupByLibrary.simpleMessage(
-            "WARNING\nThe following screen displays highly sensitive information.\n\nAnyone with access to this data can steal your Bitcoin. Proceed with extreme caution."),
+            "The following screen displays highly sensitive information.\n\nAnyone with access to this data can steal your Bitcoin. Proceed with extreme caution."),
         "filter_sortBy_aToZ": MessageLookupByLibrary.simpleMessage("A to Z"),
         "filter_sortBy_highest":
             MessageLookupByLibrary.simpleMessage("Highest value"),
@@ -606,8 +590,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Biometric authentication temporarily disabled. Please wait 30 seconds and try again."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("All"),
-        "learning_center_podcast_title":
-            MessageLookupByLibrary.simpleMessage("Podcast"),
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Results"),
         "learning_center_search_input":
@@ -618,8 +600,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("FAQs"),
         "learning_center_title_video":
             MessageLookupByLibrary.simpleMessage("Videos"),
-        "learning_center_tooltops_title":
-            MessageLookupByLibrary.simpleMessage("Tooltips"),
         "learningcenter_status_read":
             MessageLookupByLibrary.simpleMessage("Read"),
         "learningcenter_status_watched":
@@ -648,8 +628,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_recovery_fail_Android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup."),
-        "magic_setup_recovery_fail_backup_cta2":
-            MessageLookupByLibrary.simpleMessage("Import Envoy Backup File"),
         "magic_setup_recovery_fail_backup_heading":
             MessageLookupByLibrary.simpleMessage("Magic Backup Not Found"),
         "magic_setup_recovery_fail_backup_subheading":
@@ -670,8 +648,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_send_backup_to_envoy_server_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
-        "magic_setup_tutorial_android_heading":
-            MessageLookupByLibrary.simpleMessage("Magic Backups"),
         "magic_setup_tutorial_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The easiest way to create a new Bitcoin wallet while maintaining your sovereignty.\n\nMagic Backups automatically backs up your wallet and settings with Android Auto Backup, 100% end-to-end encrypted. \n\n[[Learn more]]."),
@@ -715,8 +691,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "manualToggleOnSeed_toastHeading_failedText":
             MessageLookupByLibrary.simpleMessage(
                 "Unable to backup. Please try again later."),
-        "manual_coin_preselection_cta2":
-            MessageLookupByLibrary.simpleMessage("Discard Selection"),
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
                 "This will discard any coin selection changes. Do you want to proceed?"),
@@ -747,9 +721,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_invalid":
             MessageLookupByLibrary.simpleMessage("Invalid Entry"),
-        "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_infotext":
-            MessageLookupByLibrary.simpleMessage(
-                "Choose a word from the list below."),
         "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again."),
@@ -758,10 +729,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "What’s your seed word number"),
         "manual_setup_generate_seed_verify_seed_quiz_success_correct":
             MessageLookupByLibrary.simpleMessage("Correct"),
-        "manual_setup_generate_seed_verify_seed_quiz_success_heading":
-            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
-        "manual_setup_generate_seed_verify_seed_quiz_success_infotext":
-            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will ask you some questions to verify you correctly recorded your seed."),
@@ -770,14 +737,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_import_backup_CTA1":
             MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
         "manual_setup_import_backup_CTA2":
-            MessageLookupByLibrary.simpleMessage("Import Envoy Backup"),
+            MessageLookupByLibrary.simpleMessage("Import Envoy Backup File"),
         "manual_setup_import_backup_fails_modal_heading":
             MessageLookupByLibrary.simpleMessage("We can’t read Envoy Backup"),
         "manual_setup_import_backup_fails_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Make sure you have selected the right file."),
-        "manual_setup_import_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Import Envoy Backup"),
         "manual_setup_import_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file."),
@@ -850,7 +815,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Manual Seed Setup"),
         "manual_setup_tutorial_subheading": MessageLookupByLibrary.simpleMessage(
             "If you prefer to manage your own seed words, continue below to import or create a new seed.\n\nPlease note that you alone will be responsible for managing backups. No cloud services will be used."),
-        "manual_setup_verify_seed_12_words_enter_passphrase_modal_heading":
+        "manual_setup_verify_enterYourPassphrase":
             MessageLookupByLibrary.simpleMessage("Enter Your Passphrase"),
         "manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -1006,8 +971,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "How would you like Envoy to connect to the Internet?"),
         "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
             "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
-        "privacy_setting_privacy_better_privacy":
-            MessageLookupByLibrary.simpleMessage("Improved Privacy"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_qr_code_heading":
@@ -1023,12 +986,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_Android_instruction2":
             MessageLookupByLibrary.simpleMessage(
                 "Install Envoy and tap “Set Up Envoy Wallet”"),
-        "recovery_scenario_android_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "To recover your Envoy wallet, follow these simple instructions."),
         "recovery_scenario_heading":
-            MessageLookupByLibrary.simpleMessage("How to Recover?"),
-        "recovery_scenario_ios_heading":
             MessageLookupByLibrary.simpleMessage("How to Recover?"),
         "recovery_scenario_ios_instruction1":
             MessageLookupByLibrary.simpleMessage(
@@ -1039,10 +997,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "recovery_scenario_ios_instruction3":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will then automatically restore your Magic Backup"),
-        "recovery_scenario_ios_subheading": MessageLookupByLibrary.simpleMessage(
-            "To recover your Envoy wallet, follow these simple instructions."),
         "recovery_scenario_subheading": MessageLookupByLibrary.simpleMessage(
             "To recover your Envoy wallet, follow these simple instructions."),
+        "replaceByFee_boost_confirm_heading":
+            MessageLookupByLibrary.simpleMessage("Boosting transaction"),
+        "replaceByFee_boost_tx_boostFee":
+            MessageLookupByLibrary.simpleMessage("Boost Fee"),
+        "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
+            "Your transaction is ready \nto be boosted"),
+        "replaceByFee_cancel_confirm_heading":
+            MessageLookupByLibrary.simpleMessage("Canceling transaction"),
+        "replaceByFee_cancel_overlay_modal_cancelationFees":
+            MessageLookupByLibrary.simpleMessage("Cancelation fee"),
+        "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
+            MessageLookupByLibrary.simpleMessage("Proceed with cancelation"),
+        "replaceByFee_cancel_overlay_modal_receivingAmount":
+            MessageLookupByLibrary.simpleMessage("Receiving amount"),
+        "replaceByFee_cancel_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet."),
+        "replaceByFee_coindetails_overlay_boost":
+            MessageLookupByLibrary.simpleMessage("Boost"),
+        "replaceByFee_coindetails_overlay_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Boost Transaction"),
+        "replaceByFee_coindetails_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Increase the fee attached to your transaction to speed up confirmation time."),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
@@ -1051,8 +1031,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Insufficient funds"),
         "send_keyboard_amount_too_low_info":
             MessageLookupByLibrary.simpleMessage("Amount too low"),
-        "send_keyboard_network_fees_boost_button":
-            MessageLookupByLibrary.simpleMessage("Boost"),
         "send_keyboard_send_max":
             MessageLookupByLibrary.simpleMessage("Send Max"),
         "send_keyboard_to": MessageLookupByLibrary.simpleMessage("To:"),
