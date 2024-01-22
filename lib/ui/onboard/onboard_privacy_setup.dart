@@ -552,7 +552,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       String text = S().privacy_privacyMode_betterPerformance;
 
       if ((isTorRequired) || !_betterPerformance) {
-        text = S().privacy_setting_privacy_better_privacy;
+        text = S().privacy_privacyMode_improvedPrivacy;
         icon = _privacyIconArtBoard == null
             ? Container()
             : Rive.Rive(
@@ -664,7 +664,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                   Container(
                     width: 80,
                     child: Text(
-                      S().privacy_setting_privacy_better_privacy,
+                      S().privacy_privacyMode_improvedPrivacy,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium

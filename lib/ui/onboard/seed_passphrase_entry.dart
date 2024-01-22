@@ -38,8 +38,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
       physics: NeverScrollableScrollPhysics(),
       children: [
         _buildInput(
-            S()
-                .manual_setup_verify_seed_12_words_enter_passphrase_modal_heading,
+            S().manual_setup_verify_enterYourPassphrase,
             widget.recovering
                 ? S().manual_setup_recovery_passphrase_modal_subheading
                 : S()

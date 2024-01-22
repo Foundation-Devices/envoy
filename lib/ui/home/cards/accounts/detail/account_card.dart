@@ -459,8 +459,7 @@ class TransactionListTile extends StatelessWidget {
                   onSecondaryButtonTap: () {
                     Navigator.pop(context);
                   },
-                  checkBoxText: "Don’t show again",
-                  // TODO: FIGMA
+                  checkBoxText: S().component_dontShowAgain,
                   checkedValue: dismissed,
                   onCheckBoxChanged: (checkedValue) {
                     if (!checkedValue) {
