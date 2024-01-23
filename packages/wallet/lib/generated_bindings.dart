@@ -304,6 +304,45 @@ class NativeLibrary {
       Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, double,
           ffi.Pointer<UtxoList>, ffi.Pointer<UtxoList>)>();
 
+  Psbt wallet_get_bumped_psbt(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+    double fee_rate,
+  ) {
+    return _wallet_get_bumped_psbt(
+      wallet,
+      txid,
+      fee_rate,
+    );
+  }
+
+  late final _wallet_get_bumped_psbtPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Double)>>('wallet_get_bumped_psbt');
+  late final _wallet_get_bumped_psbt = _wallet_get_bumped_psbtPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double)>();
+
+  /// Returns max fee rate for the transaction, fee amount will be deducted from change output
+  /// if the return max_fee_rate is negative,then RBF with current output is not possible
+  RBFfeeRates wallet_get_max_bumped_fee_rate(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+  ) {
+    return _wallet_get_max_bumped_fee_rate(
+      wallet,
+      txid,
+    );
+  }
+
+  late final _wallet_get_max_bumped_fee_ratePtr = _lookup<
+      ffi.NativeFunction<
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_get_max_bumped_fee_rate');
+  late final _wallet_get_max_bumped_fee_rate =
+      _wallet_get_max_bumped_fee_ratePtr.asFunction<
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
   Psbt wallet_decode_psbt(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> psbt,
@@ -324,19 +363,22 @@ class NativeLibrary {
   RawTransaction wallet_decode_raw_tx(
     ffi.Pointer<ffi.Char> raw_tx,
     int network,
+    ffi.Pointer<ffi.Char> wallet,
   ) {
     return _wallet_decode_raw_tx(
       raw_tx,
       network,
+      wallet,
     );
   }
 
   late final _wallet_decode_raw_txPtr = _lookup<
       ffi.NativeFunction<
-          RawTransaction Function(
-              ffi.Pointer<ffi.Char>, ffi.Int32)>>('wallet_decode_raw_tx');
-  late final _wallet_decode_raw_tx = _wallet_decode_raw_txPtr
-      .asFunction<RawTransaction Function(ffi.Pointer<ffi.Char>, int)>();
+          RawTransaction Function(ffi.Pointer<ffi.Char>, ffi.Int32,
+              ffi.Pointer<ffi.Char>)>>('wallet_decode_raw_tx');
+  late final _wallet_decode_raw_tx = _wallet_decode_raw_txPtr.asFunction<
+      RawTransaction Function(
+          ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
 
   ffi.Pointer<ffi.Char> wallet_broadcast_tx(
     ffi.Pointer<ffi.Char> electrum_address,
@@ -509,6 +551,12 @@ abstract class NetworkType {
   static const int Regtest = 3;
 }
 
+abstract class OutputPath {
+  static const int External = 0;
+  static const int Internal = 1;
+  static const int NotMine = 2;
+}
+
 abstract class WalletType {
   static const int WitnessPublicKeyHash = 0;
   static const int Taproot = 1;
@@ -618,11 +666,22 @@ class Psbt extends ffi.Struct {
   external ffi.Pointer<ffi.Char> raw_tx;
 }
 
+class RBFfeeRates extends ffi.Struct {
+  @ffi.Double()
+  external double min_fee_rate;
+
+  @ffi.Double()
+  external double max_fee_rate;
+}
+
 class RawTransactionOutput extends ffi.Struct {
   @ffi.Uint64()
   external int amount;
 
   external ffi.Pointer<ffi.Char> address;
+
+  @ffi.Int32()
+  external int path;
 }
 
 class RawTransactionInput extends ffi.Struct {

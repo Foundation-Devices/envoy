@@ -61,6 +61,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
     var unit = ref.read(sendScreenUnitProvider);
 
     return Material(
+      borderRadius: BorderRadius.circular(15),
       child: Form(
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Container(

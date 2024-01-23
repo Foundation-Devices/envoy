@@ -59,7 +59,6 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                   width: 68,
                 ),
                 Padding(padding: EdgeInsets.all(8)),
-                //TODO: updated copy & localization
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(widget.warningMessage,

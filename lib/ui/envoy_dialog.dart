@@ -9,9 +9,14 @@ class EnvoyDialog extends StatelessWidget {
   final bool dismissible;
   final Widget? content;
   final List<Widget>? actions;
+  final double paddingBottom;
 
   EnvoyDialog(
-      {this.title, this.content, this.actions, this.dismissible = true});
+      {this.title,
+      this.content,
+      this.paddingBottom = 12,
+      this.actions,
+      this.dismissible = true});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +52,7 @@ class EnvoyDialog extends StatelessWidget {
               : SizedBox(),
           Padding(padding: EdgeInsets.all(this.title != null ? 8 : 0)),
           content ?? Container(),
-          Padding(padding: EdgeInsets.all(12)),
+          Padding(padding: EdgeInsets.all(paddingBottom)),
           ...actions?.map((widget) {
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),

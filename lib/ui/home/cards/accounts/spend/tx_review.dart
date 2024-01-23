@@ -8,11 +8,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -21,25 +17,23 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:wallet/wallet.dart';
@@ -51,8 +45,6 @@ class TxReview extends ConsumerStatefulWidget {
   @override
   ConsumerState<TxReview> createState() => _TxReviewState();
 }
-
-final _truncatedAddressLength = 16.0;
 
 class _TxReviewState extends ConsumerState<TxReview> {
   //TODO: disable note
@@ -175,13 +167,17 @@ class _TxReviewState extends ConsumerState<TxReview> {
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
                       broadcastTx(context);
                     } else {
-                      await Navigator.of(_rootContext, rootNavigator: false)
-                          .push(MaterialPageRoute(
-                              builder: (context) => Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: PsbtCard(
-                                        transactionModel.psbt!, account),
-                                  )));
+                      final psbt =
+                          await Navigator.of(_rootContext, rootNavigator: false)
+                              .push(MaterialPageRoute(
+                                  builder: (context) => Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: PsbtCard(
+                                            transactionModel.psbt!, account),
+                                      )));
+                      ref
+                          .read(spendTransactionProvider.notifier)
+                          .updateWithFinalPSBT(psbt);
                       await Future.delayed(Duration(milliseconds: 200));
                     }
                   }
@@ -449,17 +445,11 @@ class TransactionReviewScreen extends ConsumerStatefulWidget {
 
 class _TransactionReviewScreenState
     extends ConsumerState<TransactionReviewScreen> {
-  bool _showFullAddress = false;
-
   @override
   Widget build(BuildContext context) {
     Account? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
-    final amount = ref.watch(receiveAmountProvider);
-    final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
-
-    final spendScreenUnit = ref.watch(sendScreenUnitProvider);
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
     final userSelectedCoinsThisSession =
@@ -473,16 +463,6 @@ class _TransactionReviewScreenState
         transactionInputsChanged &&
         userHasChangedFees;
 
-    /// if user selected unit from the form screen then use that, otherwise use the default
-    DisplayUnit unit = spendScreenUnit == AmountDisplayUnit.btc
-        ? DisplayUnit.btc
-        : DisplayUnit.sat;
-    if (spendScreenUnit == AmountDisplayUnit.fiat) {
-      unit = Settings().displayUnit;
-    }
-    AmountDisplayUnit formatUnit =
-        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
-
     if (account == null || transactionModel.psbt == null) {
       return Container(
           child: Center(
@@ -492,17 +472,6 @@ class _TransactionReviewScreenState
 
     Psbt psbt = transactionModel.psbt!;
 
-    TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-        color: EnvoyColors.textPrimaryInverse, fontWeight: FontWeight.w700);
-
-    TextStyle? trailingStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-        color: EnvoyColors.textPrimaryInverse,
-        fontWeight: FontWeight.w400,
-        fontSize: 13);
-
-    // total amount to spend including fee
-    int totalSpendAmount = amount + psbt.fee;
-
     String header = (account.wallet.hot || transactionModel.isPSBTFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
@@ -511,18 +480,6 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    TextStyle contentLeadingStyle =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: Color(0xFF808080),
-              fontWeight: FontWeight.w400,
-              fontSize: 18,
-            );
-    TextStyle contentTrailingStyle =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: Color(0xFF808080),
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-            );
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -565,386 +522,24 @@ class _TransactionReviewScreenState
             ),
           ),
           SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
-                color: account.color,
-                border: Border.all(
-                    color: Colors.black, width: 2, style: BorderStyle.solid),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(22)),
-                    gradient: LinearGradient(
-                      begin: Alignment(0.00, 1.00),
-                      end: Alignment(0, -1),
-                      stops: [0, .65, 1],
-                      colors: [
-                        Colors.black.withOpacity(0.65),
-                        Colors.black.withOpacity(0.13),
-                        Colors.black.withOpacity(0)
-                      ],
-                    ),
-                    border: Border.all(
-                        width: 2,
-                        color: account.color,
-                        style: BorderStyle.solid)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  child: CustomPaint(
-                    isComplex: true,
-                    willChange: false,
-                    painter: LinesPainter(
-                        lineDistance: 2.5,
-                        color: EnvoyColors.gray1000,
-                        opacity: 0.4),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.small,
-                          horizontal: EnvoySpacing.xs),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.xs,
-                                horizontal: EnvoySpacing.small),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  S().coincontrol_tx_detail_amount_to_sent,
-                                  style: titleStyle,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Navigator.of(context,rootNavigator: true).push(MaterialTransparentRoute(builder: (context) {
-                                    //   return SpendTxDetails();
-                                    // },fullscreenDialog: true));
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(PageRouteBuilder(
-                                            pageBuilder: (context, animation,
-                                                secondaryAnimation) {
-                                              return StagingTxDetails();
-                                            },
-                                            transitionDuration:
-                                                Duration(milliseconds: 100),
-                                            transitionsBuilder: (context,
-                                                animation,
-                                                secondaryAnimation,
-                                                child) {
-                                              return FadeTransition(
-                                                opacity: animation,
-                                                child: child,
-                                              );
-                                            },
-                                            opaque: false,
-                                            fullscreenDialog: true));
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (uneconomicSpends)
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: EnvoySpacing.xs),
-                                          child: EnvoyIcon(EnvoyIcons.info,
-                                              color: EnvoyColors.solidWhite),
-                                        ),
-                                      Text(
-                                        S().coincontrol_tx_detail_amount_details,
-                                        style: trailingStyle,
-                                      ),
-                                      Icon(
-                                        Icons.chevron_right_outlined,
-                                        color: EnvoyColors.textPrimaryInverse,
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          _whiteContainer(
-                              child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    alignment: Alignment(0, 0),
-                                    child: SizedBox.square(
-                                        dimension: 12,
-                                        child: SvgPicture.asset(
-                                          unit == DisplayUnit.btc
-                                              ? "assets/icons/ic_bitcoin_straight.svg"
-                                              : "assets/icons/ic_sats.svg",
-                                          color: EnvoyColors.textSecondary,
-                                        )),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.only(
-                                        left: unit == DisplayUnit.btc ? 4 : 0,
-                                        right: unit == DisplayUnit.btc ? 0 : 8),
-                                    child: Text(
-                                      "${getFormattedAmount(amount.toInt(), trailingZeroes: true, unit: formatUnit)}",
-                                      style: contentLeadingStyle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  ExchangeRate().getFormattedAmount(
-                                      amount.toInt(),
-                                      wallet: account.wallet),
-                                  style: contentTrailingStyle),
-                            ],
-                          )),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.xs,
-                                horizontal: EnvoySpacing.small),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  S().coincontrol_tx_detail_destination,
-                                  style: titleStyle,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _showFullAddress = !_showFullAddress;
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        S().coincontrol_tx_detail_destination_details,
-                                        style: trailingStyle,
-                                      ),
-                                      AnimatedRotation(
-                                        duration: Duration(milliseconds: 200),
-                                        turns: _showFullAddress ? -.25 : 0,
-                                        child: Icon(
-                                          Icons.chevron_right_outlined,
-                                          color: EnvoyColors.textPrimaryInverse,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 120),
-                            height: _showFullAddress ? 56 : 44,
-                            child: _whiteContainer(
-                                child: TweenAnimationBuilder(
-                              duration: Duration(milliseconds: 320),
-                              curve: Curves.easeInOut,
-                              tween: Tween<double>(
-                                  begin: _truncatedAddressLength,
-                                  end: _showFullAddress
-                                      ? address.length.toDouble()
-                                      : _truncatedAddressLength),
-                              builder: (context, value, child) {
-                                return Text(
-                                  "${truncateWithEllipsisInCenter(address, value.toInt())}",
-                                  style: contentLeadingStyle,
-                                );
-                              },
-                              // child: Text(
-                              //     "${truncateWithEllipsisInCenter(address, _showFullAddress ?  address.length : 12)}"),
-                            )),
-                          ),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.xs,
-                                horizontal: EnvoySpacing.small),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  S().coincontrol_tx_detail_fee,
-                                  style: titleStyle,
-                                ),
-                                Padding(padding: EdgeInsets.all(12)),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Opacity(
-                                        opacity:
-                                            transactionModel.loading ? 1 : 0,
-                                        child: SizedBox.square(
-                                          dimension: 8,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 1,
-                                            color:
-                                                EnvoyColors.textPrimaryInverse,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(padding: EdgeInsets.all(4)),
-                                      Opacity(
-                                        child: FeeChooser(),
-                                        opacity:
-                                            transactionModel.isPSBTFinalized
-                                                ? 0.0
-                                                : 1,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          _whiteContainer(
-                              child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    alignment: Alignment(0, 0),
-                                    child: SizedBox.square(
-                                        dimension: 12,
-                                        child: SvgPicture.asset(
-                                          unit == DisplayUnit.btc
-                                              ? "assets/icons/ic_bitcoin_straight.svg"
-                                              : "assets/icons/ic_sats.svg",
-                                          color: EnvoyColors.textSecondary,
-                                        )),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        left: unit == DisplayUnit.btc ? 4 : 0,
-                                        right: unit == DisplayUnit.btc ? 0 : 8),
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      getFormattedAmount(psbt.fee,
-                                          unit: formatUnit),
-                                      style: contentLeadingStyle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "${ExchangeRate().getFormattedAmount(
-                                      psbt.fee,
-                                      wallet: account.wallet,
-                                    )}",
-                                    textAlign: unit == DisplayUnit.btc
-                                        ? TextAlign.start
-                                        : TextAlign.end,
-                                    style: contentTrailingStyle,
-                                  )
-                                ],
-                              ),
-                            ],
-                          )),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.small,
-                                horizontal: EnvoySpacing.small),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  S().coincontrol_tx_detail_total,
-                                  style: titleStyle,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.timer_outlined,
-                                        size: 14,
-                                        color: EnvoyColors.textPrimaryInverse,
-                                      ),
-                                      Consumer(builder: (context, ref, child) {
-                                        final spendTimeEstimationProvider =
-                                            ref.watch(
-                                                spendEstimatedBlockTimeProvider);
-                                        return Text(
-                                          " $spendTimeEstimationProvider min",
-                                          //TODO: figma
-                                          style: trailingStyle,
-                                        );
-                                      }),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          _whiteContainer(
-                              child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    alignment: Alignment(0, 0),
-                                    child: SizedBox.square(
-                                        dimension: 12,
-                                        child: SvgPicture.asset(
-                                          unit == DisplayUnit.btc
-                                              ? "assets/icons/ic_bitcoin_straight.svg"
-                                              : "assets/icons/ic_sats.svg",
-                                          color: EnvoyColors.textSecondary,
-                                        )),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.only(
-                                        left: unit == DisplayUnit.btc ? 4 : 0,
-                                        right: unit == DisplayUnit.btc ? 0 : 8),
-                                    child: Text(
-                                      "${getFormattedAmount(totalSpendAmount, trailingZeroes: true, unit: formatUnit)}",
-                                      style: contentLeadingStyle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  ExchangeRate().getFormattedAmount(
-                                      totalSpendAmount.toInt(),
-                                      wallet: account.wallet),
-                                  style: contentTrailingStyle),
-                            ],
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
+            child: Consumer(builder: (context, ref, child) {
+              return TransactionReviewCard(
+                psbt: psbt,
+                psbtFinalized: transactionModel.isPSBTFinalized,
+                loading: transactionModel.loading,
+                address: address,
+                feeTitle: S().coincontrol_tx_detail_fee,
+                feeChooserWidget: FeeChooser(
+                  onFeeSelect: (fee, context, bool customFee) {
+                    ref
+                        .read(spendTransactionProvider.notifier)
+                        .validate(ProviderScope.containerOf(context));
+                    setFee(fee, context, customFee);
+                    ref.read(userHasChangedFeesProvider.notifier).state = true;
+                  },
                 ),
-              ),
-            ),
+              );
+            }),
           ),
           // Special warning if we are sending max or the fee changed the TX
           if (transactionModel.mode == SpendMode.sendMax || showFeeChangeNotice)
@@ -1051,23 +646,29 @@ class _TransactionReviewScreenState
     router.pop();
   }
 
-  Widget _whiteContainer({required Widget child}) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-        constraints: BoxConstraints(
-          minHeight: 44,
-        ),
-        alignment: Alignment.centerLeft,
-        width: double.infinity,
-        decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.all(Radius.circular(constraints.maxWidth)),
-            color: EnvoyColors.textPrimaryInverse),
-        padding:
-            EdgeInsets.symmetric(vertical: 6, horizontal: EnvoySpacing.small),
-        child: child,
-      );
-    });
+  void setFee(int fee, BuildContext context, bool customFee) async {
+    // FIXME: we need a way to stop the coin selection randomness past the send screen
+    // Sometimes this results in a max fee calculation that is no longer correct
+    // As a workaround we decrement the fee rate here until we get a valid PSBT
+    ref.read(spendFeeProcessing.notifier).state = true;
+    int selectedItem = fee;
+    while (true) {
+      ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
+      bool valid = await ref
+          .read(spendTransactionProvider.notifier)
+          .validate(ProviderScope.containerOf(context), settingFee: true);
+
+      if (valid) {
+        ref.read(spendFeeProcessing.notifier).state = false;
+        break;
+      }
+      selectedItem--;
+    }
+
+    ///hide fee slider bottomsheet
+    if (customFee) {
+      Navigator.pop(context);
+    }
   }
 }
 

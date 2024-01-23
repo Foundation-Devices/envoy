@@ -4,14 +4,15 @@
 
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 import 'dart:isolate';
+
+import 'package:collection/collection.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'dart:io';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
-import 'package:collection/collection.dart';
 import 'package:wallet/generated_bindings.dart';
 
 // Generated
@@ -63,7 +64,15 @@ class Transaction extends Comparable {
   final TransactionType type;
   final String? address;
 
-  get isConfirmed => date.compareTo(DateTime(2008)) > 0;
+  get isConfirmed {
+    /// TODO: find root cause of this bug
+    /// The tx date is sometimes shows proper date even though it is not confirmed
+    if (DateTime.now().millisecondsSinceEpoch - date.millisecondsSinceEpoch <
+        15000) {
+      return false;
+    }
+    return date.compareTo(DateTime(2008)) > 0;
+  }
 
   int get amount => received - sent;
 
@@ -293,7 +302,8 @@ class RawTransaction {
       rust.RawTransactionOutput nativeOutput = tx.outputs.elementAt(i).ref;
       outputs.add(RawTransactionOutput(
           address: nativeOutput.address.cast<Utf8>().toDartString(),
-          amount: nativeOutput.amount));
+          amount: nativeOutput.amount,
+          path: TxOutputPath.values[nativeOutput.path]));
     }
 
     for (var i = 0; i < tx.inputs_len; i++) {
@@ -316,11 +326,22 @@ class RawTransactionInput {
       {required this.previousOutputIndex, required this.previousOutputHash});
 }
 
+/// enum positions matters, this will be mapped to [OutputPath]
+enum TxOutputPath {
+  External,
+  Internal,
+  NotMine,
+}
+
 class RawTransactionOutput {
   final int amount;
   final String address;
+  final TxOutputPath path;
 
-  RawTransactionOutput({required this.amount, required this.address});
+  RawTransactionOutput(
+      {required this.amount,
+      required this.address,
+      this.path = TxOutputPath.NotMine});
 }
 
 @freezed
@@ -679,6 +700,65 @@ class Wallet {
     });
   }
 
+  Future<Psbt> getBumpedPSBT(String txId, double feeRate) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = load(_libName);
+      final native = rust.NativeLibrary(lib);
+
+      rust.Psbt psbt = native.wallet_get_bumped_psbt(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>,
+          feeRate);
+
+      if (psbt.base64 == nullptr) {
+        throwRustException(lib);
+      }
+
+      return Psbt.fromNative(psbt);
+    });
+  }
+
+  ///Decode raw transaction
+  Future<RawTransaction> decodeWalletRawTx(
+      String rawTransaction, Network network) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final dynlib = load(_libName);
+      final lib = rust.NativeLibrary(dynlib);
+
+      rust.RawTransaction rawTx = lib.wallet_decode_raw_tx(
+          rawTransaction.toNativeUtf8() as Pointer<Char>,
+          network.index,
+          Pointer.fromAddress(walletAddress));
+
+      if (rawTx.version == -1) {
+        throwRustException(dynlib);
+      }
+
+      return RawTransaction.fromNative(rawTx);
+    });
+  }
+
+  Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(String txId) async {
+    final walletAddress = _self.address;
+    return Isolate.run(() {
+      final lib = load(_libName);
+      final native = rust.NativeLibrary(lib);
+
+      RBFfeeRates feeRates = native.wallet_get_max_bumped_fee_rate(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>);
+
+      if (feeRates.min_fee_rate <= 1) {
+        throwRustException(lib);
+      }
+      return feeRates;
+    });
+  }
+
   static Future<RawTransaction> decodeRawTx(
       String rawTransaction, Network network) async {
     return Isolate.run(() {
@@ -686,7 +766,9 @@ class Wallet {
       final lib = rust.NativeLibrary(dynlib);
 
       rust.RawTransaction rawTx = lib.wallet_decode_raw_tx(
-          rawTransaction.toNativeUtf8() as Pointer<Char>, network.index);
+          rawTransaction.toNativeUtf8() as Pointer<Char>,
+          network.index,
+          nullptr);
 
       if (rawTx.version == -1) {
         throwRustException(dynlib);

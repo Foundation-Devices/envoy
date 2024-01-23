@@ -47,6 +47,7 @@ final watchedVideoStreamProvider = StreamProvider.family<bool, String>(
 const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
+const String rbfBoostStoreName = "boosted_tx";
 const String dismissedPromptsStoreName = "dismissed_prompts";
 const String firmwareStoreName = "firmware";
 const String utxoBlockStateStoreName = "utxo_block_state";
@@ -69,6 +70,8 @@ class EnvoyStorage {
       StoreRef<String, Map>(pendingTxStoreName);
   StoreRef<String, bool> dismissedPromptsStore =
       StoreRef<String, bool>(dismissedPromptsStoreName);
+  StoreRef<String, Map> rbfBoostStore =
+      StoreRef<String, Map>(rbfBoostStoreName);
 
   StoreRef<int, Map> firmwareStore = StoreRef<int, Map>(firmwareStoreName);
 
@@ -145,6 +148,7 @@ class EnvoyStorage {
       utxoBlockStateStoreName: utxoBlockState,
       preferencesStoreName: preferencesStore,
       exchangeRateStoreName: exchangeRateStore,
+      rbfBoostStoreName: rbfBoostStore,
     };
 
     for (var store in storesToBackUp.values) {
@@ -511,6 +515,15 @@ class EnvoyStorage {
         if (item is Video) insertVideo(item);
       }
     }
+  }
+
+  Future addRBFBoost(String txId, Map payload) async {
+    await rbfBoostStore.record(txId).put(_db, payload);
+    return true;
+  }
+
+  Future<Map?> getRBFBoostState(String txId) async {
+    return (await rbfBoostStore.record(txId).get(_db));
   }
 
   Database get db => _db;

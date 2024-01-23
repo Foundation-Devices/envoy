@@ -19,6 +19,7 @@ enum ButtonType {
 
 enum ButtonState {
   default_state,
+  loading,
   hover,
   focus,
   pressed,
@@ -84,34 +85,59 @@ class _EnvoyButtonState extends State<EnvoyButton> {
               borderRadius: BorderRadius.circular(EnvoySpacing.small),
             ),
             child: Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.icon != null)
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(right: EnvoySpacing.small),
-                        child: EnvoyIcon(
-                          widget.icon,
-                          size: EnvoyIconSize.small,
-                          color: _getMainColor(),
-                        ),
-                      ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                      child: Text(
-                        widget.label,
-                        style: EnvoyTypography.button.copyWith(
-                          color: _getMainColor(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedOpacity(
+                    duration: Duration(milliseconds: 230),
+                    opacity: widget.state == ButtonState.loading ? 1 : 0,
+                    child: SizedBox.square(
+                      dimension: 42,
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 1,
+                          strokeCap: StrokeCap.round,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  AnimatedOpacity(
+                    duration: Duration(milliseconds: 180),
+                    opacity: widget.state == ButtonState.loading ? 0 : 1,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs,
+                          vertical: EnvoySpacing.small),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (widget.icon != null)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: EnvoySpacing.small),
+                              child: EnvoyIcon(
+                                widget.icon,
+                                size: EnvoyIconSize.small,
+                                color: _getMainColor(),
+                              ),
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.xs),
+                            child: Text(
+                              widget.label,
+                              style: EnvoyTypography.button.copyWith(
+                                color: _getMainColor(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

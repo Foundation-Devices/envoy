@@ -38,6 +38,7 @@ enum DismissiblePrompt {
   coinUnlockWarning,
   coinLockWarning,
   copyTxId,
+  rbfWarning,
 
   ///warning for exiting manual coin selection
   txDiscardWarning,
