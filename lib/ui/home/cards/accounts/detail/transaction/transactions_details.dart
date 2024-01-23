@@ -12,10 +12,12 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -102,7 +104,6 @@ class _TransactionsDetailsWidgetState
           fontSize: 11,
           fontWeight: FontWeight.w400,
         );
-
     return GestureDetector(
       onTapDown: (details) {
         final RenderBox box =
@@ -379,6 +380,21 @@ class _TransactionsDetailsWidgetState
                                   trailing: Text(getTransactionStatusString(tx),
                                       style: trailingTextStyle),
                                 ),
+                                !(tx.isConfirmed &&
+                                        tx.type == TransactionType.normal)
+                                    ? CoinTagListItem(
+                                        title:
+                                            "Confirmation in ~ 10", // TODO: FIGMA
+                                        icon: Icon(
+                                          Icons.access_time,
+                                          color: Colors.black,
+                                          size: 16,
+                                        ),
+                                        trailing: TxRBFButton(
+                                          tx: tx,
+                                        ),
+                                      )
+                                    : Container(),
                                 CoinTagListItem(
                                   title: S().coincontrol_tx_detail_fee,
                                   icon: SvgPicture.asset(

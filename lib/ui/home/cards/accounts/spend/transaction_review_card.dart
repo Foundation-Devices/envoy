@@ -29,6 +29,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
   final bool loading;
   final Widget feeChooserWidget;
   final bool hideTxDetailsDialog;
+  final String feeTitle;
 
   const TransactionReviewCard({
     super.key,
@@ -38,6 +39,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
     required this.address,
     required this.feeChooserWidget,
     this.hideTxDetailsDialog = false,
+    required this.feeTitle,
   });
 
   @override
@@ -302,7 +304,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          S().coincontrol_tx_detail_fee,
+                          widget.feeTitle,
                           style: titleStyle,
                         ),
                         Padding(padding: EdgeInsets.all(12)),
@@ -311,7 +313,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Opacity(
-                                opacity: widget.loading ? 1 : 0, //fixme
+                                opacity: widget.loading ? 1 : 0,
                                 child: SizedBox.square(
                                   dimension: 8,
                                   child: CircularProgressIndicator(
