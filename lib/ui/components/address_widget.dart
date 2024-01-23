@@ -17,10 +17,12 @@ class AddressWidget extends StatelessWidget {
       .setWeight(FontWeight.w400);
 
   final bool short;
+  final Key? widgetKey;
 
   AddressWidget({
     required this.address,
     this.short = false,
+    this.widgetKey,
   });
 
   @override

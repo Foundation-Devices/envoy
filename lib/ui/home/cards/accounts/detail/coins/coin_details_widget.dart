@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
   final Coin coin;
@@ -134,38 +135,25 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 height: 14,
                               ),
                               trailing: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      showExpandedAddress =
-                                          !showExpandedAddress;
-                                      showExpandedTxId = false;
-                                    });
-                                  },
-                                  child: TweenAnimationBuilder(
-                                    tween: Tween<double>(
-                                        begin: 0,
-                                        end: showExpandedAddress ? 1 : 0),
+                                onTap: () {
+                                  setState(() {
+                                    showExpandedAddress = !showExpandedAddress;
+                                    showExpandedTxId = false;
+                                  });
+                                },
+                                child: SingleChildScrollView(
+                                  child: AnimatedSize(
                                     duration: Duration(milliseconds: 200),
-                                    builder: (context, value, child) {
-                                      return SelectableText(
-                                        "${truncateWithEllipsisInCenter(utxoAddress, lerpDouble(20, utxoAddress.length, value)!.toInt())}",
-                                        style: trailingTextStyle?.copyWith(
-                                            color: EnvoyColors.accentPrimary),
-                                        textAlign: TextAlign.end,
-                                        maxLines: 3,
-                                        minLines: 1,
-                                        enableInteractiveSelection:
-                                            showExpandedAddress,
-                                        onTap: () {
-                                          setState(() {
-                                            showExpandedAddress =
-                                                !showExpandedAddress;
-                                            showExpandedTxId = false;
-                                          });
-                                        },
-                                      );
-                                    },
-                                  )),
+                                    curve: Curves.easeInOut,
+                                    child: AddressWidget(
+                                      widgetKey:
+                                          ValueKey<bool>(showExpandedAddress),
+                                      address: utxoAddress,
+                                      short: !showExpandedAddress,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                             CoinTagListItem(
                               title: S().coindetails_overlay_transactionID,

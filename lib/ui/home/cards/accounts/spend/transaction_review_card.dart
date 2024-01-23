@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -46,8 +47,6 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
   ConsumerState<TransactionReviewCard> createState() =>
       _TransactionReviewCardState();
 }
-
-final _truncatedAddressLength = 16.0;
 
 class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   bool _showFullAddress = false;
@@ -276,23 +275,18 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     duration: Duration(milliseconds: 120),
                     height: _showFullAddress ? 56 : 44,
                     child: _whiteContainer(
-                        child: TweenAnimationBuilder(
-                      duration: Duration(milliseconds: 320),
-                      curve: Curves.easeInOut,
-                      tween: Tween<double>(
-                          begin: _truncatedAddressLength,
-                          end: _showFullAddress
-                              ? address.length.toDouble()
-                              : _truncatedAddressLength),
-                      builder: (context, value, child) {
-                        return Text(
-                          "${truncateWithEllipsisInCenter(address, value.toInt())}",
-                          style: contentLeadingStyle,
-                        );
-                      },
-                      // child: Text(
-                      //     "${truncateWithEllipsisInCenter(address, _showFullAddress ?  address.length : 12)}"),
-                    )),
+                      child: SingleChildScrollView(
+                        child: AnimatedSize(
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          child: AddressWidget(
+                            widgetKey: ValueKey<bool>(_showFullAddress),
+                            address: address,
+                            short: !_showFullAddress,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
