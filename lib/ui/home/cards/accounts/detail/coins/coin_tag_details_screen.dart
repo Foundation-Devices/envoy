@@ -170,16 +170,19 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 );
               },
               child: _selectedCoin != null
-                  ? Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium2),
-                        child: CoinDetailsWidget(
-                          coin: _selectedCoin!,
-                          tag: widget.coinTag,
-                        ),
-                      ))
+                  ? GestureDetector(
+                      onTap: () {}, // if you tap inside the window do not exit
+                      child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium2),
+                            child: CoinDetailsWidget(
+                              coin: _selectedCoin!,
+                              tag: widget.coinTag,
+                            ),
+                          )),
+                    )
                   : CoinTagDetails(context),
             ),
           ),
