@@ -11,8 +11,8 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
@@ -31,6 +31,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -283,41 +284,26 @@ class _TransactionsDetailsWidgetState
                                     height: 14,
                                   ),
                                   trailing: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          showAddressExpanded =
-                                              !showAddressExpanded;
-                                          showTxIdExpanded = false;
-                                        });
-                                      },
-                                      child: SingleChildScrollView(
-                                        child: TweenAnimationBuilder(
-                                          tween: Tween<double>(
-                                              begin: 0,
-                                              end: showAddressExpanded ? 1 : 0),
-                                          curve: EnvoyEasing.easeInOut,
-                                          duration: Duration(milliseconds: 200),
-                                          builder: (context, value, child) {
-                                            return SelectableText(
-                                              "${truncateWithEllipsisInCenter(address, lerpDouble(20, address.length, value)!.toInt())}",
-                                              style:
-                                                  trailingTextStyle?.copyWith(
-                                                      color: EnvoyColors
-                                                          .accentPrimary),
-                                              textAlign: TextAlign.end,
-                                              minLines: 1,
-                                              maxLines: 4,
-                                              onTap: () {
-                                                setState(() {
-                                                  showAddressExpanded =
-                                                      !showAddressExpanded;
-                                                  showTxIdExpanded = false;
-                                                });
-                                              },
-                                            );
-                                          },
+                                    onTap: () {
+                                      setState(() {
+                                        showAddressExpanded =
+                                            !showAddressExpanded;
+                                        showTxIdExpanded = false;
+                                      });
+                                    },
+                                    child: SingleChildScrollView(
+                                      child: AnimatedSize(
+                                        duration: Duration(milliseconds: 200),
+                                        curve: Curves.easeInOut,
+                                        child: AddressWidget(
+                                          widgetKey: ValueKey<bool>(
+                                              showAddressExpanded),
+                                          address: address,
+                                          short: !showAddressExpanded,
                                         ),
-                                      )),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 CoinTagListItem(
                                   title: S().coindetails_overlay_transactionID,
