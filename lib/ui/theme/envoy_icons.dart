@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum EnvoyIconSize { normal, small, big, extraSmall, superSmall }
+enum EnvoyIconSize { normal, small, big, extraSmall }
 
 enum EnvoyIcons {
   chevron_left,
@@ -39,7 +39,8 @@ enum EnvoyIcons {
   tool,
   testnet_badge,
   copy,
-  share
+  share,
+  stop_watch
 }
 
 class EnvoyIcon extends StatelessWidget {
