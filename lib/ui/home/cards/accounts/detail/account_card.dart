@@ -431,6 +431,10 @@ class TransactionListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
 
+    Widget txIcons = transaction.amount < 0
+        ? Icon(Icons.call_made)
+        : Icon(Icons.call_received);
+
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
@@ -483,9 +487,18 @@ class TransactionListTile extends StatelessWidget {
             title: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
-              child: transaction.amount < 0
-                  ? Text(S().activity_sent)
-                  : Text(S().activity_received),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  bool? isBoosted =
+                      ref.watch(isTxBoostedProvider(transaction.txId));
+                  if (isBoosted == true) {
+                    return Text("Boosted");
+                  }
+                  return transaction.amount < 0
+                      ? Text(S().activity_sent)
+                      : Text(S().activity_received);
+                },
+              ),
             ),
             subtitle: FittedBox(
               fit: BoxFit.scaleDown,
@@ -512,9 +525,16 @@ class TransactionListTile extends StatelessWidget {
                           style: _transactionTextStyleInfo,
                         ),
             ),
-            leading: transaction.amount < 0
-                ? Icon(Icons.call_made)
-                : Icon(Icons.call_received),
+            leading: Consumer(
+              builder: (context, ref, child) {
+                bool? isBoosted =
+                    ref.watch(isTxBoostedProvider(transaction.txId));
+                if (isBoosted == true) {
+                  return Icon(Icons.fast_forward_outlined);
+                }
+                return txIcons;
+              },
+            ),
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: Settings().selectedFiat == null
