@@ -11,7 +11,6 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
@@ -110,11 +109,7 @@ class PsbtCard extends StatelessWidget {
                                     return ScannerPage.tx((psbt) async {
                                       Psbt PsbtParsed =
                                           await account.wallet.decodePsbt(psbt);
-                                      ref
-                                          .read(
-                                              spendTransactionProvider.notifier)
-                                          .updateWithFinalPSBT(PsbtParsed);
-                                      Navigator.pop(context);
+                                      Navigator.pop(context, PsbtParsed);
                                     });
                                   }));
                                 },

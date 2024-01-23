@@ -528,6 +528,7 @@ class _TransactionReviewScreenState
                 psbtFinalized: transactionModel.isPSBTFinalized,
                 loading: transactionModel.loading,
                 address: address,
+                feeTitle: S().coincontrol_tx_detail_fee,
                 feeChooserWidget: FeeChooser(
                   onFeeSelect: (fee, context, bool customFee) {
                     ref
