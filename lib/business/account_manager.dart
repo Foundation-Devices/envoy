@@ -329,13 +329,17 @@ class AccountManager extends ChangeNotifier {
   static Device getDeviceFromJson(json) {
     var fwVersion = json["fw_version"].toString();
     var serial = json["serial"].toString();
+    String deviceName = json.containsKey("device_name") &&
+            json["device_name"].toString().isNotEmpty
+        ? json["device_name"].toString()
+        : "Passport";
 
     // Pick colours
     int colorIndex =
         Devices().devices.length % (EnvoyColors.listTileColorPairs.length);
 
     Device device = Device(
-        "Passport",
+        deviceName,
         json["hw_version"] == 1
             ? DeviceType.passportGen1
             : DeviceType.passportGen12,
