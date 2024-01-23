@@ -223,6 +223,7 @@ class _EraseWalletsBalanceWarningState
                       HomePageBackgroundState.hidden;
                   ref.read(homePageTabProvider.notifier).state =
                       HomePageTabState.accounts;
+                  ref.read(homePageTitleProvider.notifier).state = "";
 
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -498,6 +499,8 @@ class AndroidBackupWarning extends StatelessWidget {
                                   .state = HomePageBackgroundState.hidden;
                               ref.read(homePageTabProvider.notifier).state =
                                   HomePageTabState.accounts;
+                              ref.read(homePageTitleProvider.notifier).state =
+                                  "";
                               await Future.delayed(Duration(milliseconds: 100));
                             },
                           );
