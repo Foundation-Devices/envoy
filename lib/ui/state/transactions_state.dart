@@ -98,3 +98,38 @@ final isThereAnyTransactionsProvider = Provider<bool>((ref) {
 
   return false;
 });
+
+final getTransactionProvider = Provider.family<Transaction?, String>(
+  (ref, param) {
+    final selectedAccount = ref.watch(selectedAccountProvider);
+    final tx = ref
+        .watch(transactionsProvider(selectedAccount?.id ?? ""))
+        .firstWhereOrNull((element) => element.txId == param);
+
+    if (tx == null) {
+      return null;
+    }
+    return Transaction.fromJson(tx.toJson());
+  },
+);
+
+final RBFTxStateProvider = FutureProvider.family<Map?, String>(
+  (ref, param) {
+    return EnvoyStorage().getRBFBoostState(param);
+  },
+);
+
+final isTxBoostedProvider = Provider.family<bool?, String>(
+  (ref, param) {
+    return ref.watch(RBFTxStateProvider(param)).when(
+          data: (data) {
+            if (data != null) {
+              return true;
+            }
+            return null;
+          },
+          loading: () => null,
+          error: (err, stack) => null,
+        );
+  },
+);

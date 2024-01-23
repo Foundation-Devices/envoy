@@ -79,7 +79,8 @@ class _TransactionsDetailsWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final tx = widget.tx;
+    ///watch transaction changes to get real time updates
+    final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
