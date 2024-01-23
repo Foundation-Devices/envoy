@@ -64,7 +64,15 @@ class Transaction extends Comparable {
   final TransactionType type;
   final String? address;
 
-  get isConfirmed => date.compareTo(DateTime(2008)) > 0;
+  get isConfirmed {
+    /// TODO: find root cause of this bug
+    /// The tx date is sometimes shows proper date even though it is not confirmed
+    if (DateTime.now().millisecondsSinceEpoch - date.millisecondsSinceEpoch <
+        15000) {
+      return false;
+    }
+    return date.compareTo(DateTime(2008)) > 0;
+  }
 
   int get amount => received - sent;
 
