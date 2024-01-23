@@ -801,6 +801,7 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(txid), error_return);
 
     tx_builder.fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
+    tx_builder.enable_rbf();
 
     let psbt = tx_builder.finish();
     match psbt {
@@ -839,7 +840,13 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
 
     let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), error_return);
     let tx_id = CStr::from_ptr(txid).to_str().unwrap();
-    let tx_id = unwrap_or_return!(Txid::from_str(tx_id), error_return);
+    let tx_id = unwrap_or_return!(
+        Txid::from_str(tx_id),
+        RBFfeeRates {
+            min_fee_rate: -1.0,
+            max_fee_rate: 0.1,
+        }
+    );
 
     match unwrap_or_return!(wallet.get_tx(&tx_id, true), error_return) {
         //tx not found in the database
@@ -853,7 +860,13 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             let current_fee = raw_transaction.fee.unwrap();
             let current_fee_rate = FeeRate::from_wu(current_fee, transaction.weight());
 
-            let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(tx_id), error_return);
+            let mut tx_builder = unwrap_or_return!(
+                wallet.build_fee_bump(tx_id),
+                RBFfeeRates {
+                    min_fee_rate: -1.0,
+                    max_fee_rate: 0.3,
+                }
+            );
 
             // get current fee rate and bump 1 sat/vb
             tx_builder.fee_rate(FeeRate::from_sat_per_vb(
@@ -889,11 +902,18 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                     total_change_output += out.value
                 }
             }
-            if (total_change_output == 0) {
+
+            if total_change_output == 0 {
                 return error_return;
             }
 
-            let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(tx_id), error_return);
+            let mut tx_builder = unwrap_or_return!(
+                wallet.build_fee_bump(tx_id),
+                RBFfeeRates {
+                    min_fee_rate: -1.0,
+                    max_fee_rate: 0.5,
+                }
+            );
             //set maxiumum availble change output as fee to find max fee rate
 
             tx_builder.fee_absolute(total_change_output);
@@ -915,7 +935,10 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
                 Err(e) => {
                     update_last_error(e);
-                    return error_return;
+                    return RBFfeeRates {
+                        min_fee_rate: -1.0,
+                        max_fee_rate: 0.6,
+                    };
                 }
             }
         }
