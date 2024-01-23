@@ -8,7 +8,9 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +18,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class AuthenticateApp extends StatelessWidget {
   const AuthenticateApp({Key? key}) : super(key: key);
@@ -32,8 +35,6 @@ class AuthenticateApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
         overlays: [SystemUiOverlay.top]);
 
-    final envoyAccentColor = EnvoyColors.darkTeal;
-    final envoyBaseColor = Colors.transparent;
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
@@ -47,9 +48,9 @@ class AuthenticateApp extends StatelessWidget {
         supportedLocales: S.delegate.supportedLocales,
         theme: ThemeData(
           textTheme: envoyTextTheme,
-          primaryColor: envoyAccentColor,
+          primaryColor: EnvoyColors.accentPrimary,
           brightness: Brightness.light,
-          scaffoldBackgroundColor: envoyBaseColor,
+          scaffoldBackgroundColor: Colors.transparent,
         ),
         home: Builder(builder: (c) => AuthenticatePage()));
   }
@@ -67,7 +68,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: EnvoyColors.textPrimaryInverse,
         image: new DecorationImage(
             image: new ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,
@@ -105,7 +106,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             },
             title: S().launch_screen_faceID_fail_heading,
             subtitle: S().launch_screen_faceID_fail_subheading,
-            icon: Icons.error_outline,
+            icon: EnvoyIcons.info,
           );
           return;
         }
@@ -124,7 +125,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                 ///TODO: localize this
                 ? "Biometric authentication is disabled. Please lock and unlock your screen to enable it."
                 : "Biometric authentication is disabled. Please wait 30 seconds before trying again.",
-            icon: Icons.timer,
+            icon: EnvoyIcons.stop_watch,
           );
         } else if (e.code == auth_error.notAvailable) {
           /// use dismissed the biometric prompt
@@ -136,7 +137,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             },
             title: S().launch_screen_faceID_fail_heading,
             subtitle: S().launch_screen_faceID_fail_subheading,
-            icon: Icons.error_outline,
+            icon: EnvoyIcons.info,
           );
         } else {
           showAuthLockedOutDialog(
@@ -144,7 +145,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             ctaTapCallback: null,
             title: S().launch_screen_faceID_fail_heading,
             subtitle: S().launch_screen_faceID_fail_subheading,
-            icon: Icons.error_outline,
+            icon: EnvoyIcons.info,
           );
         }
       } on Exception {
@@ -154,7 +155,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           ctaTapCallback: null,
           title: S().launch_screen_faceID_fail_heading,
           subtitle: S().launch_screen_faceID_fail_subheading,
-          icon: Icons.error_outline,
+          icon: EnvoyIcons.info,
         );
       }
     } else {
@@ -177,7 +178,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           },
           title: S().launch_screen_faceID_fail_heading,
           subtitle: S().launch_screen_faceID_fail_subheading,
-          icon: Icons.error_outline,
+          icon: EnvoyIcons.info,
         );
       }
       return;
@@ -189,11 +190,11 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       required String subtitle,
       required String ctaButtonTitle,
       GestureTapCallback? ctaTapCallback = null,
-      required IconData icon}) {
+      required EnvoyIcons icon}) {
     showEnvoyDialog(
         dismissible: false,
         context: context,
-        cardColor: EnvoyColors.white100,
+        cardColor: EnvoyColors.textPrimaryInverse,
         dialog: Builder(
           builder: (context) {
             return Theme(
@@ -201,7 +202,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               child: Container(
                 height: 310,
                 width: MediaQuery.of(context).size.width * .8,
-                padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+                padding: EdgeInsets.all(EnvoySpacing.medium2)
+                    .add(EdgeInsets.only(top: -6)),
                 constraints: BoxConstraints(
                   minHeight: 270,
                 ),
@@ -215,26 +217,23 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        EnvoyIcon(
                           icon,
-                          color: EnvoyColors.darkTeal,
-                          size: 68,
+                          size: EnvoyIconSize.big,
+                          color: EnvoyColors.accentPrimary,
                         ),
+                        SizedBox(height: EnvoySpacing.medium2),
                         ListTile(
                           contentPadding: EdgeInsets.all(0),
                           title: Text(title,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: Colors.black87),
+                              style: EnvoyTypography.subheading
+                                  .copyWith(color: EnvoyColors.textPrimary),
                               textAlign: TextAlign.center),
                           subtitle: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Text(subtitle,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(color: Colors.black87),
+                                style: EnvoyTypography.info
+                                    .copyWith(color: EnvoyColors.textPrimary),
                                 textAlign: TextAlign.center),
                           ),
                         ),
