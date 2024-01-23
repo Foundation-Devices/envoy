@@ -596,9 +596,11 @@ Future<Psbt> getPsbt(
         initialAddress, amount, feeRate,
         dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
   } on InsufficientFunds catch (e) {
+    // TODO: figure out why this can happen
+    if (e.available < 0) throw e;
+
     // Get another one with correct amount
     var fee = e.needed - e.available;
-
     try {
       _returnPsbt = await account.wallet.createPsbt(
           initialAddress, amount - fee, feeRate,
