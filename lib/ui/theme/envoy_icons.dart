@@ -65,9 +65,11 @@ class EnvoyIcon extends StatelessWidget {
 class TestnetIcon extends StatelessWidget {
   final EnvoyIcons icon;
   final EnvoyIconSize size;
-  final Color? color;
+  final Color? badgeColor;
+  final Color? iconColor;
 
-  TestnetIcon(this.icon, {this.color, this.size = EnvoyIconSize.normal});
+  TestnetIcon(this.icon,
+      {this.badgeColor, this.size = EnvoyIconSize.normal, this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,7 @@ class TestnetIcon extends StatelessWidget {
         "assets/components/icons/testnet_badge.svg",
         width: size.toDouble / 2,
         height: size.toDouble / 2,
-        color: this.color,
+        color: this.badgeColor,
       ),
       Padding(
         padding: EdgeInsets.only(
@@ -86,6 +88,7 @@ class TestnetIcon extends StatelessWidget {
           "assets/components/icons/${this.icon.name}.svg",
           width: size.toDouble,
           height: size.toDouble,
+          color: iconColor,
         ),
       ),
     ]);
