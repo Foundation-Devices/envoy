@@ -132,7 +132,7 @@ Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize}) {
   } else {
     return TestnetIcon(
       EnvoyIcons.sats,
-      color: account.color,
+      badgeColor: account.color,
       size: iconSize ?? EnvoyIconSize.normal,
     );
   }
@@ -147,7 +147,7 @@ Widget getBtcIcon(Account account, {EnvoyIconSize? iconSize}) {
   } else {
     return TestnetIcon(
       EnvoyIcons.btc,
-      color: account.color,
+      badgeColor: account.color,
       size: iconSize ?? EnvoyIconSize.normal,
     );
   }

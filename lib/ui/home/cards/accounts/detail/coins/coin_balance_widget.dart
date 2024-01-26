@@ -2,13 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
@@ -17,15 +13,16 @@ import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/business/account_manager.dart';
 
 //Widget that displays the balance,lock icon etc of a coin
 
@@ -50,39 +47,9 @@ class BalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hide = ref.watch(balanceHideStateStatusProvider(accountId));
-    bool hideFiat = AccountManager().isAccountTestnet(accountId);
-
-    TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: EnvoyColors.grey,
-          fontSize: 11,
-          fontWeight: FontWeight.w400,
-        );
-
-    TextStyle _textStyleAmountSatBtc =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: EnvoyColors.grey,
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-            );
+    final account = AccountManager().getAccountById(accountId);
 
     List<Widget> rowItems = [];
-    rowItems.add(Container(
-      constraints: BoxConstraints(minWidth: 80),
-      alignment: Alignment.centerRight,
-      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-      child: hide
-          ? LoaderGhost(
-              width: 40,
-              height: 20,
-              animate: false,
-            )
-          : Text(
-              hideFiat ? "" : ExchangeRate().getFormattedAmount(amount),
-              style: _textStyleFiat,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.end,
-            ),
-    ));
     if (showLock) {
       rowItems.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
@@ -99,13 +66,16 @@ class BalanceWidget extends ConsumerWidget {
       ));
     }
     if (switchWidget != null) {
-      rowItems.add(Flexible(
-          child: AnimatedOpacity(
-              opacity: locked ? 0.2 : 1,
-              duration: Duration(milliseconds: 250),
-              child: IgnorePointer(
-                  ignoring: locked,
-                  child: switchWidget ?? SizedBox.shrink()))));
+      rowItems.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+        child: Flexible(
+            child: AnimatedOpacity(
+                opacity: locked ? 0.2 : 1,
+                duration: Duration(milliseconds: 250),
+                child: IgnorePointer(
+                    ignoring: locked,
+                    child: switchWidget ?? SizedBox.shrink()))),
+      ));
     }
 
     return Container(
@@ -117,48 +87,25 @@ class BalanceWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-              flex: 3,
+              flex: 4,
               child: Container(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      alignment: Alignment(0, 0),
-                      child: SizedBox.square(
-                          dimension: 12,
-                          child: SvgPicture.asset(
-                            Settings().displayUnit == DisplayUnit.btc
-                                ? "assets/icons/ic_bitcoin_straight.svg"
-                                : "assets/icons/ic_sats.svg",
-                            color: Color(0xff808080),
-                          )),
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(
-                          left: EnvoySpacing.xs, right: EnvoySpacing.small),
-                      child: hide
-                          ? LoaderGhost(width: 100, height: 20)
-                          : Text(
-                              "${getFormattedAmount(amount, trailingZeroes: true)}",
-                              textAlign: TextAlign.start,
-                              style: _textStyleAmountSatBtc,
-                            ),
-                    ),
-                  ],
-                ),
+                child: hide
+                    ? LoaderGhost(width: 100, height: 20)
+                    : EnvoyAmount(
+                        account: account!,
+                        amountSats: amount,
+                        amountWidgetStyle: AmountWidgetStyle.singleLine),
               )),
-          Flexible(
-            flex: 4,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: rowItems,
-            ),
-          )
+          if (rowItems.isNotEmpty)
+            Flexible(
+              flex: 2,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: rowItems,
+              ),
+            )
         ],
       ),
     );

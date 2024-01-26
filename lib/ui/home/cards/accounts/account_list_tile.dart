@@ -9,17 +9,17 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
-import 'package:envoy/util/amount.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 
 class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
@@ -74,19 +74,6 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         Theme.of(context).textTheme.titleSmall!.copyWith(
               color: Colors.white,
               fontSize: 12,
-              fontWeight: FontWeight.w400,
-            );
-
-    TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: EnvoyColors.grey,
-          fontSize: 11,
-          fontWeight: FontWeight.w400,
-        );
-
-    TextStyle _textStyleAmountSatBtc =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: EnvoyColors.grey,
-              fontSize: 24,
               fontWeight: FontWeight.w400,
             );
 
@@ -198,7 +185,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                   final hide = ref.watch(
                                       balanceHideStateStatusProvider(
                                           account.id));
-                                  if (hide) {
+                                  if (hide || account.dateSynced == null) {
                                     return Container(
                                       decoration: ShapeDecoration(
                                         color: Color(0xFFF8F8F8),
@@ -256,61 +243,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                  height: 20,
-                                                  child: getUnitIcon(
-                                                      widget.account)),
-                                              Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 2.0)),
-                                              FittedBox(
-                                                fit: BoxFit.fitWidth,
-                                                child: account.dateSynced ==
-                                                            null ||
-                                                        hide
-                                                    ? LoaderGhost(
-                                                        width: 200,
-                                                        height: 20,
-                                                      )
-                                                    : Text(
-                                                        getFormattedAmount(
-                                                            balance,
-                                                            testnet: account
-                                                                    .wallet
-                                                                    .network ==
-                                                                Network
-                                                                    .Testnet),
-                                                        style:
-                                                            _textStyleAmountSatBtc,
-                                                      ),
-                                              ),
-                                            ],
-                                          ),
-                                          account.dateSynced == null || hide
-                                              ? LoaderGhost(
-                                                  width: 50,
-                                                  height: 15,
-                                                )
-                                              : Flexible(
-                                                  child: Text(
-                                                    ExchangeRate()
-                                                        .getFormattedAmount(
-                                                            balance,
-                                                            wallet: widget
-                                                                .account
-                                                                .wallet),
-                                                    style: _textStyleFiat,
-                                                  ),
-                                                )
-                                        ],
-                                      ),
+                                      child: EnvoyAmount(
+                                          account: widget.account,
+                                          amountSats: balance,
+                                          amountWidgetStyle:
+                                              AmountWidgetStyle.singleLine),
                                     ),
                                   );
                                 },

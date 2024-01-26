@@ -10,16 +10,17 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/locale.dart';
 
@@ -237,7 +238,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             horizontal: 24,
             vertical: 24,
           ),
-          child: SpendableAmountWidget(),
+          child: SpendableAmountWidget(widget.account!),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
@@ -249,7 +250,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 }
 
 class SpendableAmountWidget extends ConsumerWidget {
-  const SpendableAmountWidget({super.key});
+  final Account account;
+
+  const SpendableAmountWidget(this.account, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -258,6 +261,8 @@ class SpendableAmountWidget extends ConsumerWidget {
     final isCoinsSelected = ref.watch(isCoinsSelectedProvider);
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           isCoinsSelected
@@ -269,32 +274,12 @@ class SpendableAmountWidget extends ConsumerWidget {
                 fontWeight: FontWeight.w400,
               ),
         ),
-        Spacer(),
-        Row(
-          children: [
-            Container(
-              alignment: Alignment(0, 0),
-              child: SizedBox.square(
-                  dimension: 12,
-                  child: SvgPicture.asset(
-                    sendScreenUnit == AmountDisplayUnit.btc
-                        ? "assets/icons/ic_bitcoin_straight.svg"
-                        : "assets/icons/ic_sats.svg",
-                    color: EnvoyColors.gray600,
-                  )),
-            ),
-            Container(
-              alignment: Alignment.centerRight,
-              child: Text(
-                " ${sendScreenUnit == AmountDisplayUnit.btc ? convertSatsToBtcString(totalAmount, trailingZeroes: true) : satsFormatter.format(totalAmount)}",
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      color: EnvoyColors.textSecondary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-              ),
-            ),
-          ],
+        EnvoyAmount(
+          unit: sendScreenUnit,
+          amountSats: totalAmount,
+          amountWidgetStyle: AmountWidgetStyle.normal,
+          account: account,
+          alignToEnd: true,
         )
       ],
     );

@@ -21,6 +21,8 @@ class AmountWidget extends StatelessWidget {
   final bool decimalDot;
   final String symbolFiat;
   final double fxRateFiat;
+  final Color? badgeColor;
+  final bool alignToEnd;
 
   AmountWidget({
     required this.amountSats,
@@ -30,6 +32,8 @@ class AmountWidget extends StatelessWidget {
     this.symbolFiat = "",
     this.fxRateFiat = 0.0,
     this.decimalDot = true,
+    this.badgeColor,
+    this.alignToEnd = true,
   });
 
   @override
@@ -44,7 +48,8 @@ class AmountWidget extends StatelessWidget {
                 amountSats: amountSats,
                 decimalDot: decimalDot,
                 symbolFiat: symbolFiat,
-                fxRateFiat: fxRateFiat),
+                fxRateFiat: fxRateFiat,
+                badgeColor: badgeColor),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -52,11 +57,14 @@ class AmountWidget extends StatelessWidget {
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
                   fxRateFiat: fxRateFiat,
-                  decimalDot: decimalDot),
+                  decimalDot: decimalDot,
+                  badgeColor: badgeColor),
           ],
         );
       case AmountWidgetStyle.normal:
         return Column(
+          crossAxisAlignment:
+              alignToEnd ? CrossAxisAlignment.end : CrossAxisAlignment.center,
           children: [
             PrimaryAmountWidget(
                 unit: primaryUnit,
@@ -64,7 +72,8 @@ class AmountWidget extends StatelessWidget {
                 amountSats: amountSats,
                 decimalDot: decimalDot,
                 symbolFiat: symbolFiat,
-                fxRateFiat: fxRateFiat),
+                fxRateFiat: fxRateFiat,
+                badgeColor: badgeColor),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -72,7 +81,8 @@ class AmountWidget extends StatelessWidget {
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
                   fxRateFiat: fxRateFiat,
-                  decimalDot: decimalDot),
+                  decimalDot: decimalDot,
+                  badgeColor: badgeColor),
           ],
         );
       case AmountWidgetStyle.singleLine:
@@ -86,7 +96,8 @@ class AmountWidget extends StatelessWidget {
                 amountSats: amountSats,
                 decimalDot: decimalDot,
                 symbolFiat: symbolFiat,
-                fxRateFiat: fxRateFiat),
+                fxRateFiat: fxRateFiat,
+                badgeColor: badgeColor),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -94,7 +105,8 @@ class AmountWidget extends StatelessWidget {
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
                   fxRateFiat: fxRateFiat,
-                  decimalDot: decimalDot),
+                  decimalDot: decimalDot,
+                  badgeColor: badgeColor),
           ],
         );
     }
@@ -111,6 +123,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final String symbolFiat;
   final double fxRateFiat;
   final PrimaryAmountWidgetStyle style;
+  final Color? badgeColor;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
@@ -126,7 +139,8 @@ class PrimaryAmountWidget extends StatelessWidget {
       this.fiatDecimals = 2,
       this.symbolFiat = "",
       this.fxRateFiat = 0.0,
-      this.style = PrimaryAmountWidgetStyle.normal});
+      this.style = PrimaryAmountWidgetStyle.normal,
+      this.badgeColor});
 
   @override
   Widget build(BuildContext context) {
@@ -163,11 +177,14 @@ class PrimaryAmountWidget extends StatelessWidget {
                     symbolFiat,
                     style: textStyleFiatSymbol,
                   )
-                : EnvoyIcon(
-                    unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
-                    size: iconSize,
-                    color: iconColor,
-                  )),
+                : (badgeColor == null
+                    ? EnvoyIcon(
+                        unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
+                        size: iconSize,
+                        color: iconColor,
+                      )
+                    : displayTestnetIcon(unit, badgeColor!,
+                        iconSize: iconSize, iconColor: iconColor))),
         RichText(
           text: TextSpan(
             children: unit == AmountDisplayUnit.btc
@@ -194,6 +211,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final double fxRateFiat;
   final bool decimalDot;
   final SecondaryAmountWidgetStyle style;
+  final Color? badgeColor;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
 
@@ -204,7 +222,8 @@ class SecondaryAmountWidget extends StatelessWidget {
       this.symbolFiat = "",
       this.fxRateFiat = 0.0,
       this.decimalDot = true,
-      this.style = SecondaryAmountWidgetStyle.normal});
+      this.style = SecondaryAmountWidgetStyle.normal,
+      this.badgeColor});
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +232,9 @@ class SecondaryAmountWidget extends StatelessWidget {
           ? EnvoyColors.textPrimary
           : EnvoyColors.accentPrimary,
     );
+    final iconColor = style == PrimaryAmountWidgetStyle.normal
+        ? EnvoyColors.textPrimary
+        : EnvoyColors.accentPrimary;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -220,13 +242,15 @@ class SecondaryAmountWidget extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.only(right: 2.0),
             child: unit == AmountDisplayUnit.btc
-                ? EnvoyIcon(
-                    iconBtc,
-                    size: EnvoyIconSize.extraSmall,
-                    color: style == PrimaryAmountWidgetStyle.normal
-                        ? EnvoyColors.textPrimary
-                        : EnvoyColors.accentPrimary,
-                  )
+                ? (badgeColor == null
+                    ? EnvoyIcon(
+                        iconBtc,
+                        size: EnvoyIconSize.extraSmall,
+                        color: iconColor,
+                      )
+                    : getTestnetBtcIcon(badgeColor!,
+                        iconSize: EnvoyIconSize.extraSmall,
+                        iconColor: iconColor))
                 : Text(
                     symbolFiat,
                     style: textStyle,
@@ -521,7 +545,7 @@ String formatAmountWithCommas(double amount) {
 
 double convertSatsToFiat(int amountSats, double fxRateFiat,
     {int decimals = 2}) {
-  double fiatValue = amountSats / fxRateFiat;
+  double fiatValue = fxRateFiat * amountSats / 100000000;
 
   fiatValue = double.parse(fiatValue.toStringAsFixed(decimals));
 
@@ -532,7 +556,8 @@ String convertSatsToFiatString(int amountSats, double fxRateFiat) {
   NumberFormat currencyFormatter =
       NumberFormat.currency(locale: currentLocale, symbol: "");
 
-  String formattedAmount = currencyFormatter.format(amountSats / fxRateFiat);
+  String formattedAmount =
+      currencyFormatter.format(fxRateFiat * amountSats / 100000000);
 
   return formattedAmount;
 }
@@ -570,4 +595,32 @@ List<TextSpan> changeDecimalMark(
     }
   }
   return textSpans;
+}
+
+Widget getTestnetBtcIcon(Color badgeColor,
+    {EnvoyIconSize? iconSize, Color? iconColor}) {
+  return TestnetIcon(
+    EnvoyIcons.btc,
+    badgeColor: badgeColor,
+    size: iconSize ?? EnvoyIconSize.normal,
+    iconColor: iconColor,
+  );
+}
+
+Widget getTestnetSatsIcon(Color badgeColor,
+    {EnvoyIconSize? iconSize, Color? iconColor}) {
+  return TestnetIcon(
+    EnvoyIcons.sats,
+    badgeColor: badgeColor,
+    size: iconSize ?? EnvoyIconSize.normal,
+    iconColor: iconColor,
+  );
+}
+
+Widget displayTestnetIcon(AmountDisplayUnit unit, Color color,
+    {EnvoyIconSize? iconSize, Color? iconColor}) {
+  if (unit == AmountDisplayUnit.btc)
+    return getTestnetBtcIcon(color, iconSize: iconSize, iconColor: iconColor);
+  else
+    return getTestnetSatsIcon(color, iconSize: iconSize, iconColor: iconColor);
 }

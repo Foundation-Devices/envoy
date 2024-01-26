@@ -6,9 +6,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/locale.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/address_widget.dart';
@@ -19,7 +17,6 @@ import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -32,6 +29,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -92,19 +91,9 @@ class _TransactionsDetailsWidgetState
           color: EnvoyColors.textPrimary,
           fontWeight: FontWeight.w600,
         );
-    TextStyle _textStyleAmountSatBtc =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: EnvoyColors.textPrimary,
-              fontSize: 15,
-            );
 
     final address = tx.address ?? tx.outputs?[0] ?? "";
 
-    TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: EnvoyColors.textPrimary,
-          fontSize: 11,
-          fontWeight: FontWeight.w400,
-        );
     return GestureDetector(
       onTapDown: (details) {
         final RenderBox box =
@@ -195,72 +184,17 @@ class _TransactionsDetailsWidgetState
                                   Radius.circular(EnvoySpacing.medium2)),
                               color: Colors.white,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment(0, 0),
-                                      child: SizedBox.square(
-                                          dimension: 12,
-                                          child: SvgPicture.asset(
-                                            Settings().displayUnit ==
-                                                    DisplayUnit.btc
-                                                ? "assets/icons/ic_bitcoin_straight.svg"
-                                                : "assets/icons/ic_sats.svg",
-                                            color: Color(0xff808080),
-                                          )),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.only(
-                                          left: Settings().displayUnit ==
-                                                  DisplayUnit.btc
-                                              ? 4
-                                              : 0,
-                                          right: Settings().displayUnit ==
-                                                  DisplayUnit.btc
-                                              ? 0
-                                              : 8),
-                                      child: hideBalance
-                                          ? LoaderGhost(
-                                              width: 110,
-                                              height: 20,
-                                              animate: false,
-                                            )
-                                          : Text(
-                                              "${getFormattedAmount(tx.amount, trailingZeroes: true)}",
-                                              textAlign:
-                                                  Settings().displayUnit ==
-                                                          DisplayUnit.btc
-                                                      ? TextAlign.start
-                                                      : TextAlign.end,
-                                              style: _textStyleAmountSatBtc,
-                                            ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  constraints: BoxConstraints(minWidth: 80),
-                                  alignment: Alignment.centerRight,
-                                  child: hideBalance
-                                      ? LoaderGhost(
-                                          width: 64,
-                                          height: 20,
-                                          animate: false,
-                                        )
-                                      : Text(
-                                          ExchangeRate().getFormattedAmount(
-                                              tx.amount,
-                                              wallet: widget.account.wallet),
-                                          style: _textStyleFiat,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.end,
-                                        ),
-                                ),
-                              ],
-                            ),
+                            child: hideBalance
+                                ? LoaderGhost(
+                                    width: 110,
+                                    height: 20,
+                                    animate: false,
+                                  )
+                                : EnvoyAmount(
+                                    account: widget.account,
+                                    amountSats: tx.amount,
+                                    amountWidgetStyle:
+                                        AmountWidgetStyle.singleLine),
                           ),
                           Expanded(
                               child: Container(
@@ -391,40 +325,17 @@ class _TransactionsDetailsWidgetState
                                   trailing: hideBalance
                                       ? LoaderGhost(
                                           width: 74, animate: false, height: 16)
-                                      : RichText(
-                                          text: TextSpan(
-                                              style:
-                                                  trailingTextStyle?.copyWith(
-                                                color: EnvoyColors.textPrimary,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              children: [
-                                              WidgetSpan(
-                                                alignment:
-                                                    PlaceholderAlignment.middle,
-                                                child: getUnitIcon(
-                                                  widget.account,
-                                                  iconSize:
-                                                      EnvoyIconSize.extraSmall,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: "${getFormattedAmount(
-                                                  tx.fee,
-                                                  trailingZeroes: true,
-                                                  testnet: widget.account.wallet
-                                                          .network ==
-                                                      Network.Testnet,
-                                                )}",
-                                              ),
-                                              TextSpan(
-                                                  text:
-                                                      "${widget.account.wallet.network == Network.Testnet ? '' : (Settings().selectedFiat != null ? "  " : '')}${ExchangeRate().getFormattedAmount(tx.fee, wallet: widget.account.wallet)}",
-                                                  style: trailingTextStyle
-                                                      ?.copyWith(
-                                                    fontWeight: FontWeight.w300,
-                                                  )),
-                                            ])),
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            EnvoyAmount(
+                                                account: widget.account,
+                                                amountSats: tx.fee,
+                                                amountWidgetStyle:
+                                                    AmountWidgetStyle
+                                                        .singleLine),
+                                          ],
+                                        ),
                                 ),
                                 GestureDetector(
                                   onTap: () {
