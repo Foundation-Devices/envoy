@@ -30,6 +30,7 @@ import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
@@ -49,7 +50,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -438,6 +438,11 @@ class TransactionListTile extends StatelessWidget {
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
+        final txTitleStyle = Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
+
         return GestureDetector(
           onTap: () {
             action();
@@ -492,11 +497,23 @@ class TransactionListTile extends StatelessWidget {
                   bool? isBoosted =
                       ref.watch(isTxBoostedProvider(transaction.txId));
                   if (isBoosted == true) {
-                    return Text("Boosted");
+                    if (transaction.isConfirmed) {
+                      return Text(
+                        S().activity_sent_boosted,
+                        style: txTitleStyle,
+                      );
+                    }
+                    return Text(S().activity_boosted, style: txTitleStyle);
                   }
                   return transaction.amount < 0
-                      ? Text(S().activity_sent)
-                      : Text(S().activity_received);
+                      ? Text(
+                          S().activity_sent,
+                          style: txTitleStyle,
+                        )
+                      : Text(
+                          S().activity_received,
+                          style: txTitleStyle,
+                        );
                 },
               ),
             ),
@@ -530,7 +547,14 @@ class TransactionListTile extends StatelessWidget {
                 bool? isBoosted =
                     ref.watch(isTxBoostedProvider(transaction.txId));
                 if (isBoosted == true) {
-                  return Icon(Icons.fast_forward_outlined);
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: EnvoyIcon(
+                      EnvoyIcons.rbf_boost,
+                      color: IconTheme.of(context).color,
+                      size: EnvoyIconSize.superSmall,
+                    ),
+                  );
                 }
                 return txIcons;
               },
