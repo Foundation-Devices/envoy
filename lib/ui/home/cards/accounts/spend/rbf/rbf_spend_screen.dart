@@ -386,6 +386,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         Transaction originalTx = widget.rbfSpendState.originalTx;
         await EnvoyStorage().addRBFBoost(txid, {
           "originalTxId": originalTx.txId,
+          "account_id": account.id,
           "previousFee": originalTx.fee,
           "rbfFee": psbt.fee,
           "rbfTimeStamp": DateTime.now().millisecondsSinceEpoch,
