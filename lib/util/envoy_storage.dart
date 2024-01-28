@@ -522,8 +522,14 @@ class EnvoyStorage {
     return true;
   }
 
-  Future<Map?> getRBFBoostState(String txId) async {
-    return (await rbfBoostStore.record(txId).get(_db));
+  Future<Map?> getRBFBoostState(String txId, String accountId) async {
+    Map? data = (await rbfBoostStore.record(txId).get(_db));
+    if (data != null) {
+      if (data['account_id'] == accountId) {
+        return data;
+      }
+    }
+    return null;
   }
 
   Database get db => _db;
