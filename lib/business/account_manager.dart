@@ -8,6 +8,7 @@ import 'dart:io';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/azteco_voucher.dart';
+import 'package:envoy/business/btcPay_voucher.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -174,6 +175,7 @@ class AccountManager extends ChangeNotifier {
       account = account.copyWith(dateSynced: DateTime.now());
 
       aztecoSync(account);
+      btcPaySync(account);
       pendingSync(account);
     }
     ;

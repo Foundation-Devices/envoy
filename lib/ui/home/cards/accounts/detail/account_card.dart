@@ -243,7 +243,11 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           return MediaQuery.removePadding(
                             context: context,
                             child: ScannerPage(
-                              [ScannerType.address, ScannerType.azteco],
+                              [
+                                ScannerType.address,
+                                ScannerType.azteco,
+                                ScannerType.btcPay
+                              ],
                               account: account,
                               onAddressValidated: (address, amount) {
                                 // Navigator.pop(context);
