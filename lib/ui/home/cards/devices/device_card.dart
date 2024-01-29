@@ -180,7 +180,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete,
+          child: Text(S().component_delete.toUpperCase(),
               style: TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
