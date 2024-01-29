@@ -202,6 +202,10 @@ Future prunePendingTransactions(
       .where((element) => element.type == TransactionType.normal)
       .toList();
 
+  List<Transaction> btcPay = newTxList
+      .where((element) => element.type == TransactionType.btcPay)
+      .toList();
+
   if (pending.isEmpty) return;
 
   //prune azteco transactions
@@ -218,6 +222,22 @@ Future prunePendingTransactions(
       EnvoyStorage().deletePendingTx(pendingTx.address!);
     });
   }
+
+  for (var pendingTx in btcPay) {
+    transactions
+        .where((tx) => tx.outputs!.contains(pendingTx.address))
+        .forEach((actualBtcPayTx) {
+      if (kDebugMode) {
+        print("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
+      }
+      EnvoyStorage()
+          .addTxNote("BTCPay voucher", actualBtcPayTx.txId); // TODO: FIGMA
+      EnvoyStorage().deleteTxNote(pendingTx.address!);
+      EnvoyStorage().deletePendingTx(pendingTx.address!);
+    });
+  }
+
+
 
   //prune pending transactions
   // this includes pending dummy transactions and RBF pending transactions

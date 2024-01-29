@@ -7,6 +7,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:envoy/business/account.dart';
+<<<<<<< HEAD
+=======
+import 'package:envoy/business/azteco_voucher.dart';
+import 'package:envoy/business/btcPay_voucher.dart';
+>>>>>>> 9d261258 (add possibility to redeem btcPay voucher)
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
