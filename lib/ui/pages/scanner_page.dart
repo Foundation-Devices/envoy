@@ -10,7 +10,7 @@ import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcPay_voucher.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_dialog.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';

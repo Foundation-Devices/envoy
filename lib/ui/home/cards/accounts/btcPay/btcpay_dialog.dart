@@ -3,15 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/btcPay_voucher.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_info.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_fail.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_loading_payout.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_reedem_success.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_info.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_fail.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading_payout.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_reedem_success.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_loading.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading.dart';
 
 class BtcPayDialog extends StatelessWidget {
   final BtcPayVoucher voucher;
