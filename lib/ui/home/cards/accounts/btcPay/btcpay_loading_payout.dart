@@ -6,7 +6,7 @@ import 'dart:async';
 import 'package:envoy/business/btcPay_voucher.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/ui/home/cards/accounts/btcPay/btcPay_dialog.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 
 class BtcPayLoadingPayout extends StatefulWidget {
   final BtcPayVoucher voucher;
