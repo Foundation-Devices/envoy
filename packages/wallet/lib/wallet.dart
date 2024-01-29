@@ -754,17 +754,15 @@ class Wallet {
       Pointer<rust.UtxoList> doNotSpendPointer =
           _createUtxoListPointer(doNotSpend);
       final native = rust.NativeLibrary(lib);
-
       RBFfeeRates feeRates = native.wallet_get_max_bumped_fee_rate(
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
           doNotSpendPointer);
-
       if (feeRates.min_fee_rate <= 1) {
-        if (feeRates.max_fee_rate == -1.1) {
+        if (feeRates.min_fee_rate == -1.1) {
           throw Exception("Transaction cannot be boosted");
         }
-        if (feeRates.max_fee_rate == -1.2) {
+        if (feeRates.min_fee_rate == -1.2) {
           throw Exception("Insufficient balance to boost transaction");
         }
         throwRustException(lib);
