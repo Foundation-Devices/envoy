@@ -19,7 +19,10 @@ use bdk::database::{ConfigurableDatabase, Database, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, Balance, FeeRate, KeychainKind, SignOptions, SyncOptions};
+use bdk::{
+    electrum_client, miniscript, Balance, FeeRate, KeychainKind, LocalUtxo, SignOptions,
+    SyncOptions, TxBuilder,
+};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -39,6 +42,8 @@ use bdk::keys::{
 };
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::psbt::PsbtUtils;
+use bdk::wallet::coin_selection::DefaultCoinSelectionAlgorithm;
+use bdk::wallet::tx_builder::ChangeSpendPolicy;
 use bip39::{Language, Mnemonic};
 use std::sync::{Mutex, MutexGuard};
 
@@ -785,6 +790,7 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     txid: *const c_char,
     fee_rate: f64,
+    dont_spend: *const UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
         sent: 0,
@@ -799,9 +805,14 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     let txid = CStr::from_ptr(txid).to_str().unwrap();
     let txid = unwrap_or_return!(Txid::from_str(txid), error_return);
     let mut tx_builder = unwrap_or_return!(wallet.build_fee_bump(txid), error_return);
+    let dont_spend = util::extract_utxo_list(dont_spend);
 
     tx_builder.fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
     tx_builder.enable_rbf();
+
+    for outpoint in dont_spend.clone() {
+        tx_builder.add_unspendable(outpoint);
+    }
 
     let psbt = tx_builder.finish();
     match psbt {
@@ -832,6 +843,7 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
 pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     txid: *const c_char,
+    dont_spend: *const UtxoList,
 ) -> RBFfeeRates {
     let error_return = RBFfeeRates {
         min_fee_rate: -1.0,
@@ -847,6 +859,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             max_fee_rate: 0.1,
         }
     );
+    let dont_spend = util::extract_utxo_list(dont_spend);
 
     match unwrap_or_return!(wallet.get_tx(&tx_id, true), error_return) {
         //tx not found in the database
@@ -863,11 +876,15 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             let mut tx_builder = unwrap_or_return!(
                 wallet.build_fee_bump(tx_id),
                 RBFfeeRates {
-                    min_fee_rate: -1.0,
-                    max_fee_rate: 0.3,
+                    min_fee_rate: -1.1,
+                    max_fee_rate: 0.5,
                 }
             );
 
+            /// find min fee rate
+            for outpoint in dont_spend.clone() {
+                tx_builder.add_unspendable(outpoint);
+            }
             // get current fee rate and bump 1 sat/vb
             tx_builder.fee_rate(FeeRate::from_sat_per_vb(
                 current_fee_rate.as_sat_per_vb() + 1.0,
@@ -892,53 +909,100 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
             };
 
-            let mut total_change_output: u64 = 0;
-            // let mut total_receive_output: u64 = 0;
+            /// end of min fee rate
 
-            //iterate and find total change output
+            /// total amount to be spent
+            let mut amount = 0;
+
             for out in transaction.output {
-                //if output pub key belongs to wallet
-                if wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) {
-                    total_change_output += out.value
+                //if output pub key not belongs to wallet
+                if (wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) == false) {
+                    amount += out.value
                 }
             }
 
-            if total_change_output == 0 {
-                return error_return;
+            /// total blocked amount from dont_spend
+            let mut blocked_amount: u64 = 0;
+
+            for outpoint in dont_spend.clone() {
+                let utxo = wallet.get_utxo(outpoint);
+                match utxo {
+                    Ok(utxo) => match utxo {
+                        Some(utxo) => {
+                            blocked_amount = utxo.txout.value + blocked_amount;
+                        }
+                        None => {}
+                    },
+                    Err(_) => {}
+                }
             }
 
-            let mut tx_builder = unwrap_or_return!(
-                wallet.build_fee_bump(tx_id),
-                RBFfeeRates {
-                    min_fee_rate: -1.0,
-                    max_fee_rate: 0.5,
+            let balance = get_total_balance(wallet.get_balance().unwrap());
+
+            let available_balance = (balance - blocked_amount);
+
+            if (available_balance <= 0 || available_balance - amount <= 0) {
+                return RBFfeeRates {
+                    min_fee_rate: -1.2,
+                    max_fee_rate: 0.0,
+                };
+            }
+            let mut max_fee = available_balance - amount;
+
+            if (max_fee == 0) {
+                return RBFfeeRates {
+                    min_fee_rate: -1.2,
+                    max_fee_rate: 0.0,
+                };
+            }
+
+            ///prevent infinite loop
+            let mut rounds = 1;
+            loop {
+                let mut tx_builder = unwrap_or_return!(
+                    wallet.build_fee_bump(tx_id),
+                    RBFfeeRates {
+                        min_fee_rate: -1.1,
+                        max_fee_rate: 0.5,
+                    }
+                );
+                //set maxiumum availble change output as fee to find max fee rate
+                for outpoint in dont_spend.clone() {
+                    tx_builder.add_unspendable(outpoint);
                 }
-            );
-            //set maxiumum availble change output as fee to find max fee rate
+                tx_builder.fee_absolute(max_fee);
 
-            tx_builder.fee_absolute(total_change_output);
-
-            let psbt = tx_builder.finish();
-            match psbt {
-                Ok((psbt, _)) => {
-                    match psbt.fee_rate() {
-                        None => {
+                if (rounds >= 300) {
+                    return RBFfeeRates {
+                        min_fee_rate: -1.5,
+                        max_fee_rate: max_fee as f64,
+                    };
+                }
+                let psbt = tx_builder.finish();
+                match psbt {
+                    Ok((psbt, _)) => {
+                        match psbt.fee_rate() {
+                            None => {
+                                return error_return;
+                            }
+                            Some(r) => {
+                                return RBFfeeRates {
+                                    max_fee_rate: r.as_sat_per_vb() as f64,
+                                    min_fee_rate: min_fee_rate,
+                                };
+                            }
+                        };
+                    }
+                    Err(e) => match e {
+                        bdk::Error::InsufficientFunds { available, .. } => {
+                            max_fee = available;
+                            rounds += 1;
+                        }
+                        _ => {
+                            update_last_error(e);
                             return error_return;
                         }
-                        Some(r) => {
-                            return RBFfeeRates {
-                                max_fee_rate: r.as_sat_per_vb() as f64,
-                                min_fee_rate: min_fee_rate,
-                            };
-                        }
-                    };
-                }
-                Err(e) => {
-                    update_last_error(e);
-                    return RBFfeeRates {
-                        min_fee_rate: -1.0,
-                        max_fee_rate: 0.6,
-                    };
+                    },
                 }
             }
         }

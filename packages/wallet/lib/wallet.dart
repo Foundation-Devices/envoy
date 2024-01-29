@@ -700,17 +700,21 @@ class Wallet {
     });
   }
 
-  Future<Psbt> getBumpedPSBT(String txId, double feeRate) async {
+  Future<Psbt> getBumpedPSBT(
+      String txId, double feeRate, List<Utxo>? doNotSpend) async {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
       final lib = load(_libName);
+      Pointer<rust.UtxoList> doNotSpendPointer =
+          _createUtxoListPointer(doNotSpend);
       final native = rust.NativeLibrary(lib);
 
       rust.Psbt psbt = native.wallet_get_bumped_psbt(
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
-          feeRate);
+          feeRate,
+          doNotSpendPointer);
 
       if (psbt.base64 == nullptr) {
         throwRustException(lib);
@@ -742,17 +746,27 @@ class Wallet {
     });
   }
 
-  Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(String txId) async {
+  Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(
+      String txId, List<Utxo>? doNotSpend) async {
     final walletAddress = _self.address;
     return Isolate.run(() {
       final lib = load(_libName);
+      Pointer<rust.UtxoList> doNotSpendPointer =
+          _createUtxoListPointer(doNotSpend);
       final native = rust.NativeLibrary(lib);
 
       RBFfeeRates feeRates = native.wallet_get_max_bumped_fee_rate(
           Pointer.fromAddress(walletAddress),
-          txId.toNativeUtf8() as Pointer<Char>);
+          txId.toNativeUtf8() as Pointer<Char>,
+          doNotSpendPointer);
 
       if (feeRates.min_fee_rate <= 1) {
+        if (feeRates.max_fee_rate == -1.1) {
+          throw Exception("Transaction cannot be boosted");
+        }
+        if (feeRates.max_fee_rate == -1.2) {
+          throw Exception("Insufficient balance to boost transaction");
+        }
         throwRustException(lib);
       }
       return feeRates;
