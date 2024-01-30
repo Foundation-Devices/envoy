@@ -181,7 +181,7 @@ checksum = "604178f6c5c21f02dc555784810edfb88d34ac2c73b2eae109655649ee73ce3d"
 [[package]]
 name = "bdk"
 version = "0.28.0"
-source = "git+https://github.com/icota/bdk?rev=c1d14e6cd60baf994e563350935d7ddc84d3ce69#c1d14e6cd60baf994e563350935d7ddc84d3ce69"
+source = "git+https://github.com/foundation-devices/bdk?rev=c1d14e6cd60baf994e563350935d7ddc84d3ce69#c1d14e6cd60baf994e563350935d7ddc84d3ce69"
 dependencies = [
  "async-trait",
  "bdk-macros",

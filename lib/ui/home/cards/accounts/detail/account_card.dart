@@ -8,6 +8,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -39,14 +40,13 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/amount.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
@@ -590,66 +590,13 @@ class TransactionListTile extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 4),
-                        child: SizedBox.square(
-                            dimension: 12,
-                            child: SvgPicture.asset(
-                              Settings().displayUnit == DisplayUnit.btc
-                                  ? "assets/icons/ic_bitcoin_straight.svg"
-                                  : "assets/icons/ic_sats.svg",
-                              color: EnvoyColors.blackish,
-                            )),
-                      ),
-                      Text(
-                        transaction.type == TransactionType.azteco
-                            ? ""
-                            : getFormattedAmount(transaction.amount,
-                                trailingZeroes: true),
-                        style: Settings().selectedFiat == null
-                            ? Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(fontSize: 20.0)
-                            : Theme.of(context).textTheme.titleMedium,
-                      ),
+                      EnvoyAmount(
+                          account: account,
+                          amountSats: transaction.amount,
+                          amountWidgetStyle: AmountWidgetStyle.normal),
                     ],
                   ),
                 ),
-                if (Settings().selectedFiat != null)
-                  Consumer(
-                      builder: (context, ref, child) {
-                        bool hide = ref
-                            .watch(balanceHideStateStatusProvider(account.id));
-                        if (hide) {
-                          return Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: SizedBox(
-                              width: 64,
-                              height: 15,
-                              child: Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffEEEEEE),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return child ?? Container();
-                        }
-                      },
-                      child: Text(
-                        transaction.type == TransactionType.azteco
-                            ? ""
-                            : ExchangeRate().getFormattedAmount(
-                                transaction.amount,
-                                wallet: account.wallet),
-                        style: _transactionTextStyleInfo,
-                      )),
               ],
             ),
           ),

@@ -61,7 +61,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
     return SingleChildScrollView(
       child: Container(
           width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 420),
+          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 520),
           padding: EdgeInsets.all(EnvoySpacing.small),
           child: Stack(
             fit: StackFit.passthrough,
@@ -180,6 +180,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                     color: Color(0xffD9D9D9),
                     borderRadius: BorderRadius.circular(8)),
                 child: TextFormField(
+                    maxLength: 30,
                     style: TextStyle(
                         fontSize: 14,
                         overflow: TextOverflow.fade,

@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final Account account;
@@ -70,16 +71,8 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                             onTap: () {
                               _copyAddressToClipboard(context, snapshot.data!);
                             },
-                            child: Text(
-                              snapshot.data!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(
-                                      color: EnvoyColors.darkTeal,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13),
-                            ),
+                            child: AddressWidget(
+                                address: snapshot.data!, short: false),
                           ),
                         ),
                       ],

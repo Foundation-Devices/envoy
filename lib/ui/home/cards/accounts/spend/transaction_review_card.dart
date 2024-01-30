@@ -3,23 +3,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/amount.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -48,14 +45,11 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
       _TransactionReviewCardState();
 }
 
-final _truncatedAddressLength = 16.0;
-
 class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   bool _showFullAddress = false;
 
   @override
   Widget build(BuildContext context) {
-    final spendScreenUnit = ref.watch(sendScreenUnitProvider);
     String address = widget.address;
 
     TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -66,16 +60,6 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         fontWeight: FontWeight.w400,
         fontSize: 13);
 
-    /// if user selected unit from the form screen then use that, otherwise use the default
-    DisplayUnit unit = spendScreenUnit == AmountDisplayUnit.btc
-        ? DisplayUnit.btc
-        : DisplayUnit.sat;
-    if (spendScreenUnit == AmountDisplayUnit.fiat) {
-      unit = Settings().displayUnit;
-    }
-    AmountDisplayUnit formatUnit =
-        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
-
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     int amount = ref.watch(spendAmountProvider);
@@ -83,18 +67,6 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;
 
-    TextStyle contentLeadingStyle =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: Color(0xFF808080),
-              fontWeight: FontWeight.w400,
-              fontSize: 18,
-            );
-    TextStyle contentTrailingStyle =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: Color(0xFF808080),
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-            );
     Account account = ref.read(selectedAccountProvider)!;
 
     return Container(
@@ -173,42 +145,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     ),
                   ),
                   _whiteContainer(
-                      child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            alignment: Alignment(0, 0),
-                            child: SizedBox.square(
-                                dimension: 12,
-                                child: SvgPicture.asset(
-                                  unit == DisplayUnit.btc
-                                      ? "assets/icons/ic_bitcoin_straight.svg"
-                                      : "assets/icons/ic_sats.svg",
-                                  color: EnvoyColors.textSecondary,
-                                )),
-                          ),
-                          Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(
-                                left: unit == DisplayUnit.btc ? 4 : 0,
-                                right: unit == DisplayUnit.btc ? 0 : 8),
-                            child: Text(
-                              "${getFormattedAmount(amount.toInt(), trailingZeroes: true, unit: formatUnit)}",
-                              style: contentLeadingStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                          ExchangeRate().getFormattedAmount(amount.toInt(),
-                              wallet: account.wallet),
-                          style: contentTrailingStyle),
-                    ],
-                  )),
+                      child: EnvoyAmount(
+                          account: account,
+                          amountSats: amount,
+                          amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -253,23 +193,18 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     duration: Duration(milliseconds: 120),
                     height: _showFullAddress ? 56 : 44,
                     child: _whiteContainer(
-                        child: TweenAnimationBuilder(
-                      duration: Duration(milliseconds: 320),
-                      curve: Curves.easeInOut,
-                      tween: Tween<double>(
-                          begin: _truncatedAddressLength,
-                          end: _showFullAddress
-                              ? address.length.toDouble()
-                              : _truncatedAddressLength),
-                      builder: (context, value, child) {
-                        return Text(
-                          "${truncateWithEllipsisInCenter(address, value.toInt())}",
-                          style: contentLeadingStyle,
-                        );
-                      },
-                      // child: Text(
-                      //     "${truncateWithEllipsisInCenter(address, _showFullAddress ?  address.length : 12)}"),
-                    )),
+                      child: SingleChildScrollView(
+                        child: AnimatedSize(
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          child: AddressWidget(
+                            widgetKey: ValueKey<bool>(_showFullAddress),
+                            address: address,
+                            short: !_showFullAddress,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
@@ -311,53 +246,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     ),
                   ),
                   _whiteContainer(
-                      child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            alignment: Alignment(0, 0),
-                            child: SizedBox.square(
-                                dimension: 12,
-                                child: SvgPicture.asset(
-                                  unit == DisplayUnit.btc
-                                      ? "assets/icons/ic_bitcoin_straight.svg"
-                                      : "assets/icons/ic_sats.svg",
-                                  color: EnvoyColors.textSecondary,
-                                )),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: unit == DisplayUnit.btc ? 4 : 0,
-                                right: unit == DisplayUnit.btc ? 0 : 8),
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              getFormattedAmount(psbt.fee, unit: formatUnit),
-                              style: contentLeadingStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "${ExchangeRate().getFormattedAmount(
-                              psbt.fee,
-                              wallet: account.wallet,
-                            )}",
-                            textAlign: unit == DisplayUnit.btc
-                                ? TextAlign.start
-                                : TextAlign.end,
-                            style: contentTrailingStyle,
-                          )
-                        ],
-                      ),
-                    ],
-                  )),
+                      child: EnvoyAmount(
+                          account: account,
+                          amountSats: psbt.fee,
+                          amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -397,43 +289,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     ),
                   ),
                   _whiteContainer(
-                      child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            alignment: Alignment(0, 0),
-                            child: SizedBox.square(
-                                dimension: 12,
-                                child: SvgPicture.asset(
-                                  unit == DisplayUnit.btc
-                                      ? "assets/icons/ic_bitcoin_straight.svg"
-                                      : "assets/icons/ic_sats.svg",
-                                  color: EnvoyColors.textSecondary,
-                                )),
-                          ),
-                          Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(
-                                left: unit == DisplayUnit.btc ? 4 : 0,
-                                right: unit == DisplayUnit.btc ? 0 : 8),
-                            child: Text(
-                              "${getFormattedAmount(totalSpendAmount, trailingZeroes: true, unit: formatUnit)}",
-                              style: contentLeadingStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                          ExchangeRate().getFormattedAmount(
-                              totalSpendAmount.toInt(),
-                              wallet: account.wallet),
-                          style: contentTrailingStyle),
-                    ],
-                  )),
+                      child: EnvoyAmount(
+                          account: account,
+                          amountSats: totalSpendAmount,
+                          amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
               ),
             ),
