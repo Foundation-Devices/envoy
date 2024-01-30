@@ -940,8 +940,8 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             let balance = get_total_balance(wallet.get_balance().unwrap());
 
             let available_balance = (balance - blocked_amount);
-
-            if (available_balance <= 0 || available_balance - amount <= 0) {
+            /// spend not possible if available balance is less than amount
+            if (available_balance < amount || available_balance <= 0) {
                 return RBFfeeRates {
                     min_fee_rate: -1.2,
                     max_fee_rate: 0.0,
@@ -972,7 +972,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
                 tx_builder.fee_absolute(max_fee);
 
-                if (rounds >= 300) {
+                if (rounds >= 5) {
                     return RBFfeeRates {
                         min_fee_rate: -1.5,
                         max_fee_rate: max_fee as f64,
