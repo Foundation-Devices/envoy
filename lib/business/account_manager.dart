@@ -244,6 +244,9 @@ class AccountManager extends ChangeNotifier {
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {
+            if (account.name != newAccount.name) {
+              renameAccount(account, newAccount.name);
+            }
             // Don't add this one
             alreadyPairedAccountsCount++;
             continue newAccountsLoop;
@@ -302,6 +305,9 @@ class AccountManager extends ChangeNotifier {
     // Check if account already present
     for (var account in accounts) {
       if (account.wallet.name == json["xpub"].toString()) {
+        if (account.name != json["acct_name"].toString()) {
+          renameAccount(account, json["acct_name"].toString());
+        }
         throw AccountAlreadyPaired();
       }
     }
