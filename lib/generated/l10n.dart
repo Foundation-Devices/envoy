@@ -62,10 +62,10 @@ class S {
     );
   }
 
-  /// `https://github.com/Foundation-Devices/envoy`
+  /// `Create New Envoy Backup`
   String get _ {
     return Intl.message(
-      'https://github.com/Foundation-Devices/envoy',
+      'Create New Envoy Backup',
       name: '_',
       desc: '',
       args: [],
@@ -302,11 +302,21 @@ class S {
     );
   }
 
-  /// `Canceled`
+  /// `Sent (Boosted)`
   String get activity_sent_boosted {
     return Intl.message(
-      'Canceled',
+      'Sent (Boosted)',
       name: 'activity_sent_boosted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Canceled`
+  String get activity_sent_canceled {
+    return Intl.message(
+      'Canceled',
+      name: 'activity_sent_canceled',
       desc: '',
       args: [],
     );
@@ -352,10 +362,10 @@ class S {
     );
   }
 
-  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings.]]`
+  /// `Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings]].`
   String get android_backup_info_subheading {
     return Intl.message(
-      'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings.]]',
+      'Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings]].',
       name: 'android_backup_info_subheading',
       desc: '',
       args: [],
@@ -672,10 +682,10 @@ class S {
     );
   }
 
-  /// `\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone.`
+  /// `Your transaction ID will be copied to the clipboard and may be visible to other apps on your phone.`
   String get coincontrol_coin_change_spendable_tate_modal_subheading {
     return Intl.message(
-      '\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone.',
+      'Your transaction ID will be copied to the clipboard and may be visible to other apps on your phone.',
       name: 'coincontrol_coin_change_spendable_tate_modal_subheading',
       desc: '',
       args: [],
@@ -1105,6 +1115,16 @@ class S {
   }
 
   /// `Confirmation in`
+  String get coindetails_overlay_confirmation {
+    return Intl.message(
+      'Confirmation in',
+      name: 'coindetails_overlay_confirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmation in`
   String get coindetails_overlay_confirmationIn {
     return Intl.message(
       'Confirmation in',
@@ -1134,10 +1154,10 @@ class S {
     );
   }
 
-  /// `Notes`
+  /// `Note`
   String get coindetails_overlay_notes {
     return Intl.message(
-      'Notes',
+      'Note',
       name: 'coindetails_overlay_notes',
       desc: '',
       args: [],
@@ -1354,10 +1374,10 @@ class S {
     );
   }
 
-  /// `Warning`
+  /// `WARNING`
   String get component_warning {
     return Intl.message(
-      'Warning',
+      'WARNING',
       name: 'component_warning',
       desc: '',
       args: [],
@@ -2166,10 +2186,10 @@ class S {
     );
   }
 
-  /// `Envoy is now copying the firmware onto the \nmicroSD card`
+  /// `Envoy is now copying the firmware onto the\nmicroSD card`
   String get envoy_fw_progress_heading {
     return Intl.message(
-      'Envoy is now copying the firmware onto the \nmicroSD card',
+      'Envoy is now copying the firmware onto the\nmicroSD card',
       name: 'envoy_fw_progress_heading',
       desc: '',
       args: [],
@@ -2186,10 +2206,10 @@ class S {
     );
   }
 
-  /// `Firmware was successfully copied onto the microSD card`
+  /// `Firmware was successfully copied onto the\nmicroSD card`
   String get envoy_fw_success_heading {
     return Intl.message(
-      'Firmware was successfully copied onto the microSD card',
+      'Firmware was successfully copied onto the\nmicroSD card',
       name: 'envoy_fw_success_heading',
       desc: '',
       args: [],
@@ -2316,10 +2336,10 @@ class S {
     );
   }
 
-  /// `To decrypt the backup file, enter the 20 digit backup code shown to you when creating the  backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead.`
+  /// `To decrypt the backup file, enter the 20 digit backup code shown to you when creating the backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead.`
   String get envoy_pp_restore_backup_password_subheading {
     return Intl.message(
-      'To decrypt the backup file, enter the 20 digit backup code shown to you when creating the  backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead.',
+      'To decrypt the backup file, enter the 20 digit backup code shown to you when creating the backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead.',
       name: 'envoy_pp_restore_backup_password_subheading',
       desc: '',
       args: [],
@@ -2366,10 +2386,10 @@ class S {
     );
   }
 
-  /// `Your seed has been \nsuccessfully restored`
+  /// `Your seed has been successfully restored`
   String get envoy_pp_restore_seed_success_heading {
     return Intl.message(
-      'Your seed has been \nsuccessfully restored',
+      'Your seed has been successfully restored',
       name: 'envoy_pp_restore_seed_success_heading',
       desc: '',
       args: [],
@@ -3248,6 +3268,16 @@ class S {
     );
   }
 
+  /// `Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts.`
+  String get manage_device_deletePassportWarning {
+    return Intl.message(
+      'Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts.',
+      name: 'manage_device_deletePassportWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Paired`
   String get manage_device_details_devicePaired {
     return Intl.message(
@@ -3258,10 +3288,10 @@ class S {
     );
   }
 
-  /// `Serial `
+  /// `Serial`
   String get manage_device_details_deviceSerial {
     return Intl.message(
-      'Serial ',
+      'Serial',
       name: 'manage_device_details_deviceSerial',
       desc: '',
       args: [],
@@ -3358,10 +3388,10 @@ class S {
     );
   }
 
-  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as tags, notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
+  /// `Envoy has generated your encrypted backup. This backup contains useful wallet data such as Tags, Notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.`
   String get manual_setup_create_and_store_backup_subheading {
     return Intl.message(
-      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as tags, notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
+      'Envoy has generated your encrypted backup. This backup contains useful wallet data such as Tags, Notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card.',
       name: 'manual_setup_create_and_store_backup_subheading',
       desc: '',
       args: [],
@@ -3480,20 +3510,20 @@ class S {
     );
   }
 
-  /// `Write Down these 12 Words`
+  /// `Write Down These 12 Words`
   String get manual_setup_generate_seed_write_words_heading {
     return Intl.message(
-      'Write Down these 12 Words',
+      'Write Down These 12 Words',
       name: 'manual_setup_generate_seed_write_words_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Create New Envoy Backup`
+  /// `Create Envoy Backup File`
   String get manual_setup_import_backup_CTA1 {
     return Intl.message(
-      'Create New Envoy Backup',
+      'Create Envoy Backup File',
       name: 'manual_setup_import_backup_CTA1',
       desc: '',
       args: [],
@@ -3600,10 +3630,10 @@ class S {
     );
   }
 
-  /// `Import your Seed`
+  /// `Import Your Seed`
   String get manual_setup_import_seed_heading {
     return Intl.message(
-      'Import your Seed',
+      'Import Your Seed',
       name: 'manual_setup_import_seed_heading',
       desc: '',
       args: [],
@@ -4128,20 +4158,20 @@ class S {
     );
   }
 
-  /// `support`
+  /// `SUPPORT`
   String get menu_support {
     return Intl.message(
-      'support',
+      'SUPPORT',
       name: 'menu_support',
       desc: '',
       args: [],
     );
   }
 
-  /// `Connect Passport \nwith Envoy`
+  /// `Connect Passport\nwith Envoy`
   String get pair_existing_device_intro_heading {
     return Intl.message(
-      'Connect Passport \nwith Envoy',
+      'Connect Passport\nwith Envoy',
       name: 'pair_existing_device_intro_heading',
       desc: '',
       args: [],
@@ -4538,10 +4568,10 @@ class S {
     );
   }
 
-  /// `Choose your Privacy`
+  /// `Choose Your Privacy`
   String get privacy_setting_perfomance_heading {
     return Intl.message(
-      'Choose your Privacy',
+      'Choose Your Privacy',
       name: 'privacy_setting_perfomance_heading',
       desc: '',
       args: [],
@@ -4618,21 +4648,11 @@ class S {
     );
   }
 
-  /// `Sign into Google and restore your  backup data`
+  /// `Sign into Google and restore your backup data`
   String get recovery_scenario_Android_instruction1 {
     return Intl.message(
-      'Sign into Google and restore your  backup data',
+      'Sign into Google and restore your backup data',
       name: 'recovery_scenario_Android_instruction1',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Install Envoy and tap “Set Up Envoy Wallet”`
-  String get recovery_scenario_Android_instruction2 {
-    return Intl.message(
-      'Install Envoy and tap “Set Up Envoy Wallet”',
-      name: 'recovery_scenario_Android_instruction2',
       desc: '',
       args: [],
     );
@@ -4648,21 +4668,21 @@ class S {
     );
   }
 
-  /// `Sign into iCloud and restore your iCloud backup`
-  String get recovery_scenario_ios_instruction1 {
+  /// `Install Envoy and tap “Set Up Envoy Wallet”`
+  String get recovery_scenario_instruction2 {
     return Intl.message(
-      'Sign into iCloud and restore your iCloud backup',
-      name: 'recovery_scenario_ios_instruction1',
+      'Install Envoy and tap “Set Up Envoy Wallet”',
+      name: 'recovery_scenario_instruction2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Install Envoy and tap “Set Up Envoy Wallet”`
-  String get recovery_scenario_ios_instruction2 {
+  /// `Sign into iCloud and restore your iCloud backup`
+  String get recovery_scenario_ios_instruction1 {
     return Intl.message(
-      'Install Envoy and tap “Set Up Envoy Wallet”',
-      name: 'recovery_scenario_ios_instruction2',
+      'Sign into iCloud and restore your iCloud backup',
+      name: 'recovery_scenario_ios_instruction1',
       desc: '',
       args: [],
     );
@@ -4728,10 +4748,10 @@ class S {
     );
   }
 
-  /// `Cancelation fee`
+  /// `Cancelation Fee`
   String get replaceByFee_cancel_overlay_modal_cancelationFees {
     return Intl.message(
-      'Cancelation fee',
+      'Cancelation Fee',
       name: 'replaceByFee_cancel_overlay_modal_cancelationFees',
       desc: '',
       args: [],
@@ -5008,16 +5028,6 @@ class S {
     );
   }
 
-  /// `Connect with Tor`
-  String get settings_tor {
-    return Intl.message(
-      'Connect with Tor',
-      name: 'settings_tor',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `View Envoy Logs`
   String get settings_viewEnvoyLogs {
     return Intl.message(
@@ -5258,10 +5268,10 @@ class S {
     );
   }
 
-  /// `To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport.`
+  /// `To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport.`
   String get taproot_passport_dialog_subheading {
     return Intl.message(
-      'To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport.',
+      'To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport.',
       name: 'taproot_passport_dialog_subheading',
       desc: '',
       args: [],
@@ -5475,6 +5485,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'ca'),
       Locale.fromSubtags(languageCode: 'es'),
     ];
   }
