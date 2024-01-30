@@ -19,6 +19,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -525,6 +526,27 @@ class _TransactionReviewScreenState
             child: Consumer(builder: (context, ref, child) {
               return TransactionReviewCard(
                 psbt: psbt,
+                onTxDetailTap: () {
+                  if (transactionModel.psbt == null) return;
+                  Navigator.of(context, rootNavigator: true).push(
+                      PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return StagingTxDetails(
+                              psbt: transactionModel.psbt!,
+                            );
+                          },
+                          transitionDuration: Duration(milliseconds: 100),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          opaque: false,
+                          fullscreenDialog: true));
+                },
                 psbtFinalized: transactionModel.isPSBTFinalized,
                 loading: transactionModel.loading,
                 address: address,

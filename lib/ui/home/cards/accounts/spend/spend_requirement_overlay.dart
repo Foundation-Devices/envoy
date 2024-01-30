@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -12,6 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -484,6 +486,15 @@ class SpendRequirementOverlayState
                                           ///if the user changed the selection, validate the transaction
                                           if (ref.read(
                                               userSelectedCoinsThisSessionProvider)) {
+                                            ///reset fees if coin selection changed
+                                            final account = ref
+                                                .read(selectedAccountProvider);
+                                            ref
+                                                .read(spendFeeRateProvider
+                                                    .notifier)
+                                                .state = Fees().slowRate(
+                                                    account!.wallet.network) *
+                                                100000;
                                             ref
                                                 .read(spendTransactionProvider
                                                     .notifier)
@@ -580,7 +591,7 @@ class SpendRequirementOverlayState
         Account? selectedAccount = ref.read(selectedAccountProvider);
         Set<String> selection = ref.watch(coinSelectionStateProvider);
 
-        String buttonText = "Cancel"; // TODO: Figma
+        String buttonText = S().component_cancel;
         if (inTagSelectionMode) {
           List<CoinTag> tags =
               ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
@@ -609,8 +620,6 @@ class SpendRequirementOverlayState
           readOnly: !valid,
           type: EnvoyButtonTypes.secondary,
           buttonText,
-
-          ///TODO:figma
           onTap: () async {
             if (!inTagSelectionMode) {
               cancel();

@@ -9,6 +9,7 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -83,14 +84,20 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
     try {
       final account = ref.read(selectedAccountProvider);
-      rust.RBFfeeRates? rates =
-          await account?.wallet.getBumpedPSBTMaxFeeRate(widget.tx.txId);
-      if (rates != null && rates.min_fee_rate > 0) {
+      if (account == null) {
+        return;
+      }
+      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+
+      rust.RBFfeeRates? rates = await account.wallet
+          .getBumpedPSBTMaxFeeRate(widget.tx.txId, lockedUtxos);
+
+      if (rates.min_fee_rate > 0) {
         double minFeeRate = rates.min_fee_rate.ceil().toDouble();
-        Psbt? psbt = await account?.wallet
-            .getBumpedPSBT(widget.tx.txId, convertToFeeRate(minFeeRate));
-        final rawTxx = await account!.wallet
-            .decodeWalletRawTx(psbt!.rawTx, account.wallet.network);
+        Psbt? psbt = await account.wallet.getBumpedPSBT(
+            widget.tx.txId, convertToFeeRate(minFeeRate), lockedUtxos);
+        final rawTxx = await account.wallet
+            .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
 
         RawTransactionOutput receiveOutPut =
             rawTxx.outputs.firstWhere((element) {
@@ -130,11 +137,27 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
     } catch (e, stackTrace) {
       print(stackTrace);
+      if (e.toString().contains("Insufficient")) {
+        EnvoyToast(
+          backgroundColor: EnvoyColors.danger,
+          replaceExisting: true,
+          duration: Duration(seconds: 4),
+          message: "Error: Insufficient Funds",
+          icon: Icon(
+            Icons.info_outline,
+            color: EnvoyColors.solidWhite,
+          ),
+        ).show(context);
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
       EnvoyToast(
         backgroundColor: EnvoyColors.danger,
         replaceExisting: true,
         duration: Duration(seconds: 4),
-        message: "Error: ${e.toString()}",
+        message: "${e.toString()}",
         icon: Icon(
           Icons.info_outline,
           color: EnvoyColors.solidWhite,
@@ -160,6 +183,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         });
       },
       onTap: () {
+        if (_isLoading) return;
         _showRBFDialog(context);
       },
       onTapCancel: () {
