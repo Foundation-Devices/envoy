@@ -324,6 +324,8 @@ class RawTransactionInput {
 
   RawTransactionInput(
       {required this.previousOutputIndex, required this.previousOutputHash});
+
+  String get id => "$previousOutputHash:$previousOutputIndex";
 }
 
 /// enum positions matters, this will be mapped to [OutputPath]
@@ -764,6 +766,9 @@ class Wallet {
         }
         if (feeRates.min_fee_rate == -1.2) {
           throw Exception("Insufficient balance to boost transaction");
+        }
+        if (feeRates.max_fee_rate == 0.404) {
+          throw Exception("Transaction not found");
         }
         throwRustException(lib);
       }
