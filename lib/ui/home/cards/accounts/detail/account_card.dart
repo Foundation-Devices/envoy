@@ -346,8 +346,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
               itemCount: transactions.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  child: TransactionListTile(
-                      transaction: transactions[index], account: account),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.small),
+                    child: TransactionListTile(
+                        transaction: transactions[index], account: account),
+                  ),
                 );
               },
             );
@@ -484,6 +488,9 @@ class TransactionListTile extends StatelessWidget {
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
           child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            minLeadingWidth: 0,
+            horizontalTitleGap: EnvoySpacing.small,
             title: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
@@ -525,15 +532,21 @@ class TransactionListTile extends StatelessWidget {
                           style: _transactionTextStyleInfo,
                         ),
             ),
-            leading: Consumer(
-              builder: (context, ref, child) {
-                bool? isBoosted =
-                    ref.watch(isTxBoostedProvider(transaction.txId));
-                if (isBoosted == true) {
-                  return Icon(Icons.fast_forward_outlined);
-                }
-                return txIcons;
-              },
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Consumer(
+                  builder: (context, ref, child) {
+                    bool? isBoosted =
+                        ref.watch(isTxBoostedProvider(transaction.txId));
+                    if (isBoosted == true) {
+                      return Icon(Icons.fast_forward_outlined);
+                    }
+                    return txIcons;
+                  },
+                ),
+              ],
             ),
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
