@@ -169,7 +169,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     ),
                   ),
                   Container(
-                      height: 250.0,
+                      height: 270.0,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: blogs.length,
