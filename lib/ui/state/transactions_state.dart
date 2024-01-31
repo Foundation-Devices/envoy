@@ -117,7 +117,11 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
 
 final RBFTxStateProvider = FutureProvider.family<Map?, String>(
   (ref, param) {
-    return EnvoyStorage().getRBFBoostState(param);
+    final account = ref.watch(selectedAccountProvider);
+    if (account == null) {
+      return null;
+    }
+    return EnvoyStorage().getRBFBoostState(param, account.id!);
   },
 );
 

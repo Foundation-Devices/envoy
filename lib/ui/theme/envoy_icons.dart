@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum EnvoyIconSize { normal, small, big, extraSmall }
+enum EnvoyIconSize { normal, small, big, extraSmall, superSmall }
 
 enum EnvoyIcons {
   chevron_left,
@@ -38,6 +38,7 @@ enum EnvoyIcons {
   btc,
   tool,
   testnet_badge,
+  rbf_boost,
   copy,
   share,
   stop_watch
@@ -100,6 +101,8 @@ extension FloatSize on EnvoyIconSize {
     switch (this) {
       case EnvoyIconSize.extraSmall:
         return 16.0;
+      case EnvoyIconSize.superSmall:
+        return 12.0;
       case EnvoyIconSize.small:
         return 18.0;
       case EnvoyIconSize.normal:

@@ -17,6 +17,7 @@ import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
@@ -84,6 +85,7 @@ class _TransactionsDetailsWidgetState
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
+    final isBoosted = ref.watch(isTxBoostedProvider(tx.txId)) ?? false;
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
     final accountAccentColor = widget.account.color;
@@ -303,8 +305,7 @@ class _TransactionsDetailsWidgetState
                                 !(tx.isConfirmed &&
                                         tx.type == TransactionType.normal)
                                     ? CoinTagListItem(
-                                        title:
-                                            "Confirmation in ~ 10", // TODO: FIGMA
+                                        title: "Confirmation", // TODO: FIGMA
                                         icon: Icon(
                                           Icons.access_time,
                                           color: Colors.black,
@@ -316,12 +317,19 @@ class _TransactionsDetailsWidgetState
                                       )
                                     : Container(),
                                 CoinTagListItem(
-                                  title: S().coincontrol_tx_detail_fee,
-                                  icon: SvgPicture.asset(
-                                    "assets/icons/ic_bitcoin_straight_circle.svg",
-                                    color: Colors.black,
-                                    height: 14,
-                                  ),
+                                  title: isBoosted
+                                      ? S().coindetails_overlay_boostedFees
+                                      : S().coincontrol_tx_detail_fee,
+                                  icon: isBoosted
+                                      ? EnvoyIcon(
+                                          EnvoyIcons.rbf_boost,
+                                          size: EnvoyIconSize.superSmall,
+                                        )
+                                      : SvgPicture.asset(
+                                          "assets/icons/ic_bitcoin_straight_circle.svg",
+                                          color: Colors.black,
+                                          height: 14,
+                                        ),
                                   trailing: hideBalance
                                       ? LoaderGhost(
                                           width: 74, animate: false, height: 16)
