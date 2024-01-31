@@ -16,8 +16,7 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
