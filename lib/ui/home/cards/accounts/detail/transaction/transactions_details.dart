@@ -267,7 +267,7 @@ class _TransactionsDetailsWidgetState
                                                     EnvoyColors.accentPrimary),
                                             textAlign: TextAlign.end,
                                             minLines: 1,
-                                            maxLines: 4,
+                                            maxLines: 3,
                                             onTap: () {
                                               setState(() {
                                                 showTxIdExpanded =
@@ -413,28 +413,28 @@ class _TransactionsDetailsWidgetState
   Widget CoinTagListItem(
       {required String title, required Widget icon, required Widget trailing}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(
-            flex: 1,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: icon,
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-                Text(
-                  "$title",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                child: icon,
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Text(
+                "$title",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.black, fontWeight: FontWeight.w600),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(left: EnvoySpacing.medium2)),
+            ],
           ),
           Expanded(
               child: Container(
