@@ -185,11 +185,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     DisplayUnit unit = sendScreenUnit == AmountDisplayUnit.btc
         ? DisplayUnit.btc
         : DisplayUnit.sat;
+
+    AmountDisplayUnit formatUnit =
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+
     if (sendScreenUnit == AmountDisplayUnit.fiat) {
       unit = Settings().displayUnit;
     }
-    AmountDisplayUnit formatUnit =
-        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
     int totalInputAmount = inputTagData
         .map((e) => e.item2)
@@ -427,8 +429,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                             Row(
                                               mainAxisSize: MainAxisSize.max,
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 Row(
                                                   children: [
@@ -445,45 +446,59 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                         "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}")
                                                   ],
                                                 ),
-                                                Expanded(
-                                                    child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    EnvoyAmount(
-                                                        unit: formatUnit,
-                                                        account: account,
-                                                        amountSats:
-                                                            totalInputAmount,
-                                                        amountWidgetStyle:
-                                                            AmountWidgetStyle
-                                                                .singleLine),
-                                                    Container(
-                                                      constraints:
-                                                          BoxConstraints(
-                                                              minWidth: 40),
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      margin: EdgeInsets.only(
-                                                          left: EnvoySpacing
-                                                              .small),
-                                                      child: Text(
-                                                        ExchangeRate()
-                                                            .getFormattedAmount(
-                                                                totalInputAmount,
-                                                                wallet: account
-                                                                    .wallet),
-                                                        style: _textStyleFiat,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textAlign:
-                                                            TextAlign.end,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ))
+                                                Expanded(child:
+                                                    Builder(builder: (context) {
+                                                  String? fiatRate =
+                                                      ExchangeRate()
+                                                          .getFormattedAmount(
+                                                              totalInputAmount,
+                                                              wallet: account
+                                                                  .wallet);
+
+                                                  return Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      EnvoyAmount(
+                                                          unit: formatUnit,
+                                                          account: account,
+                                                          amountSats:
+                                                              totalInputAmount,
+                                                          amountWidgetStyle:
+                                                              AmountWidgetStyle
+                                                                  .singleLine),
+                                                      fiatRate.isEmpty
+                                                          ? SizedBox.shrink()
+                                                          : Container(
+                                                              constraints:
+                                                                  BoxConstraints(
+                                                                      minWidth:
+                                                                          40),
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              margin: EdgeInsets.only(
+                                                                  left: EnvoySpacing
+                                                                      .small),
+                                                              child: Text(
+                                                                ExchangeRate().getFormattedAmount(
+                                                                    totalInputAmount,
+                                                                    wallet: account
+                                                                        .wallet),
+                                                                style:
+                                                                    _textStyleFiat,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .end,
+                                                              ),
+                                                            ),
+                                                    ],
+                                                  );
+                                                }))
                                               ],
                                             ),
                                             Padding(
@@ -525,69 +540,86 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                     ],
                                                   ),
                                                   Expanded(
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        loading
-                                                            ? Padding(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        EnvoySpacing
-                                                                            .xs),
-                                                                child: SizedBox
-                                                                    .square(
-                                                                  dimension: 12,
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                    strokeWidth:
-                                                                        1,
+                                                    child: Builder(
+                                                        builder: (context) {
+                                                      String? fiatRate = ExchangeRate()
+                                                          .getFormattedAmount(
+                                                              totalChangeAmount,
+                                                              wallet: account
+                                                                  .wallet);
+
+                                                      return Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          loading
+                                                              ? Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          EnvoySpacing
+                                                                              .xs),
+                                                                  child: SizedBox
+                                                                      .square(
+                                                                    dimension:
+                                                                        12,
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      strokeWidth:
+                                                                          1,
+                                                                    ),
                                                                   ),
+                                                                )
+                                                              : Container(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerRight,
+                                                                  child: EnvoyAmount(
+                                                                      unit:
+                                                                          formatUnit,
+                                                                      account:
+                                                                          account,
+                                                                      amountSats:
+                                                                          totalChangeAmount,
+                                                                      amountWidgetStyle:
+                                                                          AmountWidgetStyle
+                                                                              .singleLine),
                                                                 ),
-                                                              )
-                                                            : Container(
-                                                                alignment: Alignment
-                                                                    .centerRight,
-                                                                child: EnvoyAmount(
-                                                                    unit:
-                                                                        formatUnit,
-                                                                    account:
-                                                                        account,
-                                                                    amountSats:
+                                                          fiatRate.isNotEmpty
+                                                              ? Container(
+                                                                  constraints:
+                                                                      BoxConstraints(
+                                                                          minWidth:
+                                                                              40),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerRight,
+                                                                  margin: EdgeInsets.only(
+                                                                      left: EnvoySpacing
+                                                                          .small),
+                                                                  child: Text(
+                                                                    ExchangeRate().getFormattedAmount(
                                                                         totalChangeAmount,
-                                                                    amountWidgetStyle:
-                                                                        AmountWidgetStyle
-                                                                            .singleLine),
-                                                              ),
-                                                        Container(
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                  minWidth: 40),
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          margin: EdgeInsets.only(
-                                                              left: EnvoySpacing
-                                                                  .small),
-                                                          child: Text(
-                                                            ExchangeRate()
-                                                                .getFormattedAmount(
-                                                                    totalChangeAmount,
-                                                                    wallet: account
-                                                                        .wallet),
-                                                            style:
-                                                                _textStyleFiat,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign:
-                                                                TextAlign.end,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                                        wallet:
+                                                                            account.wallet),
+                                                                    style:
+                                                                        _textStyleFiat,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .end,
+                                                                  ),
+                                                                )
+                                                              : SizedBox
+                                                                  .shrink(),
+                                                        ],
+                                                      );
+                                                    }),
                                                   )
                                                 ]),
                                             Padding(
