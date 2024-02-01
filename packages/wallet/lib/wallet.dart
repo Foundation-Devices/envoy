@@ -1092,4 +1092,46 @@ class Wallet {
     return Future(() =>
         dartFunction(_self, psbt.toNativeUtf8()).cast<Utf8>().toDartString());
   }
+
+  Future<Psbt> cancelTx(
+      String txId, List<Utxo>? doNotSpend, double feeRate) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = load(_libName);
+      Pointer<rust.UtxoList> doNotSpendPointer =
+          _createUtxoListPointer(doNotSpend);
+      final native = rust.NativeLibrary(lib);
+
+      rust.Psbt psbt = native.wallet_cancel_tx(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>,
+          feeRate,
+          doNotSpendPointer);
+
+      if (psbt.base64 == nullptr) {
+        throwRustException(lib);
+      }
+      return Psbt.fromNative(psbt);
+    });
+  }
+
+  Future<String> getRawTxFromTxId(String txId) {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = load(_libName);
+
+      final native = rust.NativeLibrary(lib);
+
+      final rawHex = native.wallet_get_raw_tx_from_txid(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>);
+
+      if (rawHex == nullptr) {
+        throwRustException(lib);
+      }
+      return rawHex.cast<Utf8>().toDartString();
+    });
+  }
 }
