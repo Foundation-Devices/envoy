@@ -547,17 +547,17 @@ double convertSatsToBTC(int sats) {
   return sats / 100000000;
 }
 
-String convertSatsToBtcString(int sats) {
+String convertSatsToBtcString(int sats, {bool trailingZeroes = true}) {
   // Divide by 100,000,000 to convert to BTC
   double btcAmount = sats / 100000000;
 
-  // Format the BTC amount with commas for thousands
-  String formattedAmount = formatAmountWithCommas(btcAmount);
+  // Format the BTC amount with commas for thousands and trailing zeroes
+  String formattedAmount = formatAmountWithCommas(btcAmount, trailingZeroes);
 
   return formattedAmount;
 }
 
-String formatAmountWithCommas(double amount) {
+String formatAmountWithCommas(double amount, bool trailingZeroes) {
   // Convert the double to a string and add commas for thousands
   String amountString = amount.toString();
 
@@ -577,6 +577,16 @@ String formatAmountWithCommas(double amount) {
   // Join the integer and decimal parts
   String formattedAmount = integerDigits.join('') +
       (decimalPart.isNotEmpty ? '.' + decimalPart : '');
+
+  // Add trailing zeroes if specified
+  if (trailingZeroes) {
+    int currentDecimalLength = decimalPart.length;
+    int targetDecimalLength = 8; // BTC has up to 8 decimal places
+
+    for (int i = currentDecimalLength; i < targetDecimalLength; i++) {
+      formattedAmount += '0';
+    }
+  }
 
   return formattedAmount;
 }
