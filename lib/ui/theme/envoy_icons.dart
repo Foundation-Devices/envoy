@@ -41,7 +41,10 @@ enum EnvoyIcons {
   rbf_boost,
   copy,
   share,
-  stop_watch
+  stop_watch,
+  close,
+  spend,
+  receive,
 }
 
 class EnvoyIcon extends StatelessWidget {
