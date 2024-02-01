@@ -68,13 +68,11 @@ class BalanceWidget extends ConsumerWidget {
     if (switchWidget != null) {
       rowItems.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-        child: Flexible(
-            child: AnimatedOpacity(
-                opacity: locked ? 0.2 : 1,
-                duration: Duration(milliseconds: 250),
-                child: IgnorePointer(
-                    ignoring: locked,
-                    child: switchWidget ?? SizedBox.shrink()))),
+        child: AnimatedOpacity(
+            opacity: locked ? 0.2 : 1,
+            duration: Duration(milliseconds: 250),
+            child: IgnorePointer(
+                ignoring: locked, child: switchWidget ?? SizedBox.shrink())),
       ));
     }
 
