@@ -561,7 +561,8 @@ class _CancelTransactionProgressState
                     SliverToBoxAdapter(
                       child: Builder(
                         builder: (context) {
-                          String title = S().replaceByFee_boost_confirm_heading;
+                          String title =
+                              S().replaceByFee_cancel_confirm_heading;
                           String subTitle =
                               S().stalls_before_sending_tx_scanning_subheading;
                           if (broadcastProgress !=
