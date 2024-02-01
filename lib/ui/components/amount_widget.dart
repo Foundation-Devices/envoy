@@ -99,14 +99,17 @@ class AmountWidget extends StatelessWidget {
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor),
             if (secondaryUnit != null)
-              SecondaryAmountWidget(
-                  unit: secondaryUnit!,
-                  style: SecondaryAmountWidgetStyle.normal,
-                  amountSats: amountSats,
-                  symbolFiat: symbolFiat,
-                  fxRateFiat: fxRateFiat,
-                  decimalDot: decimalDot,
-                  badgeColor: badgeColor),
+              Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.small),
+                child: SecondaryAmountWidget(
+                    unit: secondaryUnit!,
+                    style: SecondaryAmountWidgetStyle.normal,
+                    amountSats: amountSats,
+                    symbolFiat: symbolFiat,
+                    fxRateFiat: fxRateFiat,
+                    decimalDot: decimalDot,
+                    badgeColor: badgeColor),
+              ),
           ],
         );
     }
@@ -272,6 +275,7 @@ List<TextSpan> buildPrimaryBtcTextSpans(int amountSats, bool decimalDot,
     TextStyle? textStyleBlack, TextStyle? textStyleGray) {
   List<TextSpan> textSpans = [];
   String btcString = convertSatsToBtcString(amountSats);
+
   double amountBTC = convertSatsToBTC(amountSats);
   bool isAmountBtcUnder1 = amountBTC < 1;
 
@@ -340,7 +344,11 @@ List<TextSpan> buildPrimaryBtcTextSpans(int amountSats, bool decimalDot,
 List<TextSpan> buildTextSpansWithSpaces(bool isAmountBtcUnder1,
     List<TextSpan> textSpans, TextStyle? textStyleSpace) {
   List<TextSpan> textSpansWithSpaces = [];
-
+  bool negativeAmount = false;
+  if (textSpans[0].text == "-") {
+    textSpans.removeAt(0);
+    negativeAmount = true;
+  }
   if (isAmountBtcUnder1) {
     int numCount = 0;
     for (int i = 0; i < textSpans.length; i++) {
@@ -385,6 +393,8 @@ List<TextSpan> buildTextSpansWithSpaces(bool isAmountBtcUnder1,
       }
     }
   }
+  if (negativeAmount)
+    textSpansWithSpaces.insert(0, _createTextSpan('-', textStyleSpace!));
 
   return textSpansWithSpaces;
 }
@@ -393,6 +403,11 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
     TextStyle? textStyleBlack, TextStyle? textStyleGray) {
   List<TextSpan> textSpans = [];
   String satsString = amountSats.toString();
+  bool negativeAmount = false;
+  if (satsString.startsWith("-")) {
+    satsString = satsString.substring(1);
+    negativeAmount = true;
+  }
 
   // Reverse the string to make it easier to insert commas from the right
   satsString = satsString.split('').reversed.join();
@@ -409,6 +424,8 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
 
   // Reverse the list to get the original order
   textSpans = textSpans.reversed.toList();
+  if (negativeAmount)
+    textSpans.insert(0, _createTextSpan("-", textStyleBlack!));
 
   return changeDecimalMark(
       AmountDisplayUnit.sat,
