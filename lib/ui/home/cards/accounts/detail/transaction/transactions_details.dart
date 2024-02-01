@@ -264,9 +264,7 @@ class _TransactionsDetailsWidgetState
                                         builder: (context, value, child) {
                                           return SelectableText(
                                             "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
-                                            style: trailingTextStyle?.copyWith(
-                                                color:
-                                                    EnvoyColors.accentPrimary),
+                                            style: trailingTextStyle,
                                             textAlign: TextAlign.end,
                                             minLines: 1,
                                             maxLines: 4,
