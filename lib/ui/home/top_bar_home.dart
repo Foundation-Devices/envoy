@@ -55,7 +55,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
     bool _inEditMode = ref.watch(spendEditModeProvider);
 
-    Widget rightAction = _homeShellState?.rightAction ?? SizedBox.shrink();
+    Widget rightAction = _homeShellState?.rightAction ?? SizedBox.expand();
     HomePageBackgroundState homePageDropState =
         ref.watch(homePageBackgroundProvider);
     String path = ref.watch(routePathProvider);
@@ -162,24 +162,25 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         ),
       ),
       title: Stack(fit: StackFit.loose, alignment: Alignment.center, children: [
-        AnimatedSwitcher(
-            duration: _animationsDuration,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
-            child: FittedBox(
-              key: ValueKey<String>(title),
-              fit: BoxFit.fitWidth,
-              child: Text(
-                title.toUpperCase(),
-              ),
-            )),
+        Center(
+          child: AnimatedSwitcher(
+              duration: _animationsDuration,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: FittedBox(
+                key: ValueKey<String>(title),
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  title.toUpperCase(),
+                ),
+              )),
+        ),
         SizedBox(height: 50, child: IndicatorShield())
       ]),
-      centerTitle: true,
       actions: [
 // Right action
         if (!_inEditMode)
