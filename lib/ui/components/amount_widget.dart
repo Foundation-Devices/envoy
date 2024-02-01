@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
-enum AmountWidgetStyle { normal, large, singleLine }
+enum AmountWidgetStyle { normal, large, singleLine, sendScreen }
 
 class AmountWidget extends StatelessWidget {
   final int amountSats;
@@ -43,13 +43,14 @@ class AmountWidget extends StatelessWidget {
         return Column(
           children: [
             PrimaryAmountWidget(
-                unit: primaryUnit,
-                style: PrimaryAmountWidgetStyle.large,
-                amountSats: amountSats,
-                decimalDot: decimalDot,
-                symbolFiat: symbolFiat,
-                fxRateFiat: fxRateFiat,
-                badgeColor: badgeColor),
+              unit: primaryUnit,
+              style: PrimaryAmountWidgetStyle.large,
+              amountSats: amountSats,
+              decimalDot: decimalDot,
+              symbolFiat: symbolFiat,
+              fxRateFiat: fxRateFiat,
+              badgeColor: badgeColor,
+            ),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -67,13 +68,14 @@ class AmountWidget extends StatelessWidget {
               alignToEnd ? CrossAxisAlignment.end : CrossAxisAlignment.center,
           children: [
             PrimaryAmountWidget(
-                unit: primaryUnit,
-                style: PrimaryAmountWidgetStyle.normal,
-                amountSats: amountSats,
-                decimalDot: decimalDot,
-                symbolFiat: symbolFiat,
-                fxRateFiat: fxRateFiat,
-                badgeColor: badgeColor),
+              unit: primaryUnit,
+              style: PrimaryAmountWidgetStyle.normal,
+              amountSats: amountSats,
+              decimalDot: decimalDot,
+              symbolFiat: symbolFiat,
+              fxRateFiat: fxRateFiat,
+              badgeColor: badgeColor,
+            ),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -91,13 +93,14 @@ class AmountWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             PrimaryAmountWidget(
-                unit: primaryUnit,
-                style: PrimaryAmountWidgetStyle.normal,
-                amountSats: amountSats,
-                decimalDot: decimalDot,
-                symbolFiat: symbolFiat,
-                fxRateFiat: fxRateFiat,
-                badgeColor: badgeColor),
+              unit: primaryUnit,
+              style: PrimaryAmountWidgetStyle.normal,
+              amountSats: amountSats,
+              decimalDot: decimalDot,
+              symbolFiat: symbolFiat,
+              fxRateFiat: fxRateFiat,
+              badgeColor: badgeColor,
+            ),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -111,6 +114,18 @@ class AmountWidget extends StatelessWidget {
                     badgeColor: badgeColor),
               ),
           ],
+        );
+
+      case AmountWidgetStyle.sendScreen:
+        return PrimaryAmountWidget(
+          unit: primaryUnit,
+          style: PrimaryAmountWidgetStyle.normal,
+          amountSats: amountSats,
+          decimalDot: decimalDot,
+          symbolFiat: symbolFiat,
+          fxRateFiat: fxRateFiat,
+          badgeColor: badgeColor,
+          sendScreen: true,
         );
     }
   }
@@ -127,6 +142,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final double fxRateFiat;
   final PrimaryAmountWidgetStyle style;
   final Color? badgeColor;
+  final bool sendScreen;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
@@ -134,16 +150,18 @@ class PrimaryAmountWidget extends StatelessWidget {
   final TextStyle textStyleFiatSymbol = EnvoyTypography.body
       .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
 
-  PrimaryAmountWidget(
-      {super.key,
-      required this.unit,
-      required this.amountSats,
-      this.decimalDot = true,
-      this.fiatDecimals = 2,
-      this.symbolFiat = "",
-      this.fxRateFiat = 0.0,
-      this.style = PrimaryAmountWidgetStyle.normal,
-      this.badgeColor});
+  PrimaryAmountWidget({
+    super.key,
+    required this.unit,
+    required this.amountSats,
+    this.decimalDot = true,
+    this.fiatDecimals = 2,
+    this.symbolFiat = "",
+    this.fxRateFiat = 0.0,
+    this.style = PrimaryAmountWidgetStyle.normal,
+    this.badgeColor,
+    this.sendScreen = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +196,10 @@ class PrimaryAmountWidget extends StatelessWidget {
             child: unit == AmountDisplayUnit.fiat
                 ? Text(
                     symbolFiat,
-                    style: textStyleFiatSymbol,
+                    style: sendScreen
+                        ? EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.textSecondary)
+                        : textStyleFiatSymbol,
                   )
                 : (badgeColor == null
                     ? EnvoyIcon(
