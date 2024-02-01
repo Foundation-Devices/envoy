@@ -49,6 +49,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Flexible(
                           child: Container(
@@ -72,7 +73,10 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                               _copyAddressToClipboard(context, snapshot.data!);
                             },
                             child: AddressWidget(
-                                address: snapshot.data!, short: false),
+                              address: snapshot.data!,
+                              short: false,
+                              align: TextAlign.center,
+                            ),
                           ),
                         ),
                       ],
