@@ -326,7 +326,6 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                               amountSats: _totalFeeAmount,
                               amountWidgetStyle: AmountWidgetStyle.singleLine),
                           Builder(builder: (context) {
-                            String symbolFiat = ExchangeRate().getSymbol();
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: EnvoySpacing.xs, vertical: 2),
@@ -395,6 +394,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                 height: 0,
                 state: ButtonState.default_state,
                 onTap: () async {
+                  final navigator = Navigator.of(context, rootNavigator: true);
                   if (widget.originalTx.isConfirmed) {
                     EnvoyToast(
                       backgroundColor: EnvoyColors.danger,
@@ -409,26 +409,21 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     return;
                   } else {
                     if (account.wallet.hot == false) {
-                      Psbt? psbt =
-                          await Navigator.of(context, rootNavigator: false)
-                              .push(MaterialPageRoute(
-                                  builder: (context) => _Background(
-                                      child: PsbtCard(widget.cancelTx, account),
-                                      context: context)));
-
-                      if (psbt != null) {
-                        print("psbt $psbt");
-                        Navigator.pop(context);
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) {
-                            return CancelTransactionProgress(
-                              cancelTx: psbt,
-                              cancelRawTx: widget.cancelRawTx,
-                              originalTx: widget.originalTx,
-                            );
-                          },
-                        ));
-                      }
+                      Psbt? psbt = await navigator.push(MaterialPageRoute(
+                          builder: (context) => Builder(builder: (context) {
+                                return _Background(
+                                    child: PsbtCard(widget.cancelTx, account),
+                                    context: context);
+                              })));
+                      navigator.push(MaterialPageRoute(
+                        builder: (context) {
+                          return CancelTransactionProgress(
+                            cancelTx: psbt!,
+                            cancelRawTx: widget.cancelRawTx,
+                            originalTx: widget.originalTx,
+                          );
+                        },
+                      ));
                     } else {
                       Navigator.pop(context);
                       Navigator.of(context).push(MaterialPageRoute(
@@ -659,8 +654,9 @@ class _CancelTransactionProgressState
           EnvoyButton(
             label: S().component_continue,
             onTap: () async {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) {
+                return route.settings is MaterialPage;
+              });
             },
             type: ButtonType.primary,
             state: ButtonState.default_state,
