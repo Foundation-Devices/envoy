@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/components/address_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -96,11 +97,14 @@ class OnboardingPage extends StatelessWidget {
                             dimension: 230,
                             data: snapshot.data!,
                           ),
-                          Text(
-                            "${snapshot.data ?? ""}",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleSmall,
-                          )
+                          Container(
+                            width: 250,
+                            child: AddressWidget(
+                              address: snapshot.data!,
+                              short: false,
+                              align: TextAlign.center,
+                            ),
+                          ),
                         ],
                       ),
                     )
