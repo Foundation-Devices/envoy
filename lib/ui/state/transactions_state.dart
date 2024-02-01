@@ -4,9 +4,11 @@
 
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 
@@ -136,6 +138,35 @@ final isTxBoostedProvider = Provider.family<bool?, String>(
           },
           loading: () => null,
           error: (err, stack) => null,
+        );
+  },
+);
+
+final cancelTxStateFutureProvider =
+    FutureProvider.family<TxCancelState?, String>(
+  (ref, param) {
+    final account = ref.watch(selectedAccountProvider);
+    if (account == null) {
+      return null;
+    }
+    return EnvoyStorage().getCancelTxState(account.id!, param);
+  },
+);
+
+final cancelTxStateProvider = Provider.family<TxCancelState?, String>(
+  (ref, param) {
+    return ref.watch(cancelTxStateFutureProvider(param)).when(
+          data: (data) {
+            if (data != null) {
+              return data;
+            }
+            return null;
+          },
+          loading: () => null,
+          error: (err, stack) {
+            debugPrintStack(stackTrace: stack);
+            return null;
+          },
         );
   },
 );

@@ -596,6 +596,18 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+
+      String receiverAddress = widget.rbfSpendState.receiveAddress;
+      await EnvoyStorage().addPendingTx(
+        psbt.txid,
+        account.id!,
+        DateTime.now(),
+        TransactionType.pending,
+        psbt.fee,
+        psbt.fee,
+        receiverAddress,
+      );
+
       await Future.delayed(Duration(milliseconds: 300));
       setState(() {
         broadcastProgress = BroadcastProgress.success;

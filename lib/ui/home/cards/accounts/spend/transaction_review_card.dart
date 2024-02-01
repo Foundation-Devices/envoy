@@ -3,11 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -68,6 +71,20 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     int totalSpendAmount = amount + psbt.fee;
 
     Account account = ref.read(selectedAccountProvider)!;
+
+    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+
+    /// if user selected unit from the form screen then use that, otherwise use the default
+    DisplayUnit unit = sendScreenUnit == AmountDisplayUnit.btc
+        ? DisplayUnit.btc
+        : DisplayUnit.sat;
+
+    AmountDisplayUnit formatUnit =
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+
+    if (sendScreenUnit == AmountDisplayUnit.fiat) {
+      unit = Settings().displayUnit;
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -147,6 +164,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   _whiteContainer(
                       child: EnvoyAmount(
                           account: account,
+                          unit: formatUnit,
                           amountSats: amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
@@ -247,6 +265,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   ),
                   _whiteContainer(
                       child: EnvoyAmount(
+                          unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
@@ -291,6 +310,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   _whiteContainer(
                       child: EnvoyAmount(
                           account: account,
+                          unit: formatUnit,
                           amountSats: totalSpendAmount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],

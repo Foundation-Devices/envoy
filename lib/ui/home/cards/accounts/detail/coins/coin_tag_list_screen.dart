@@ -10,6 +10,7 @@ import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
   Widget build(BuildContext context) {
     List<CoinTag> tags = ref.watch(coinsTagProvider(widget.account.id ?? ""));
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12),
+      margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(
         scrollController: _scrollController,
         child: StatefulBuilder(

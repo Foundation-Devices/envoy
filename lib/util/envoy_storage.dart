@@ -10,6 +10,7 @@ import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -50,6 +51,7 @@ const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
 const String rbfBoostStoreName = "boosted_tx";
+const String canceledTxStoreName = "rbf_cancel_tx";
 const String dismissedPromptsStoreName = "dismissed_prompts";
 const String firmwareStoreName = "firmware";
 const String utxoBlockStateStoreName = "utxo_block_state";
@@ -78,6 +80,10 @@ class EnvoyStorage {
       StoreRef<String, bool>(dismissedPromptsStoreName);
   StoreRef<String, Map> rbfBoostStore =
       StoreRef<String, Map>(rbfBoostStoreName);
+
+  StoreRef<int, Map> canceledTxStore =
+      intMapStoreFactory.store(canceledTxStoreName);
+
   StoreRef<String, Map<String, dynamic>> tagHistoryStore =
       StoreRef<String, Map<String, dynamic>>(inputTagHistoryStoreName);
 
@@ -560,6 +566,36 @@ class EnvoyStorage {
       }
     }
     return null;
+  }
+
+  Future addCancelState(Map<String, dynamic> payload) async {
+    await canceledTxStore.add(_db, payload);
+    return payload;
+  }
+
+  /// Returns the cancel state for a given txId
+  /// If the txId matches with originalTxId or newTxId.
+  Future<TxCancelState?> getCancelTxState(String accountId, String txId) async {
+    RecordSnapshot? data = await canceledTxStore.findFirst(_db,
+        finder: Finder(filter: Filter.custom(
+      (record) {
+        final data = record.value;
+        if (data != null && data is Map) {
+          if (data["originalTxId"] == txId) {
+            return true;
+          }
+          if (data["newTxId"] == txId) {
+            return true;
+          }
+        }
+        return false;
+      },
+    )));
+    if (data != null) {
+      return TxCancelState.fromJson(data.value as Map<String, Object?>);
+    } else {
+      return null;
+    }
   }
 
   Database get db => _db;
