@@ -22,10 +22,6 @@ class ExportSeedModal extends StatefulWidget {
 class _ExportSeedModalState extends State<ExportSeedModal> {
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        );
-
     return Container(
       width: MediaQuery.of(context).size.width * 0.80,
       child: Column(
