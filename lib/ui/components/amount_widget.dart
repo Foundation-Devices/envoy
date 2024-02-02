@@ -579,7 +579,7 @@ String formatAmountWithCommas(double amount, bool trailingZeroes) {
       (decimalPart.isNotEmpty ? '.' + decimalPart : '');
 
   // Add trailing zeroes if specified and btcAmount is less than 999
-  if (trailingZeroes && amount < 999) {
+  if (trailingZeroes && amount < 1000) {
     int currentDecimalLength = decimalPart.length;
     int targetDecimalLength = 8; // BTC has up to 8 decimal places
 
