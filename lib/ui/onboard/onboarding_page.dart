@@ -273,6 +273,7 @@ class OnboardingText extends StatelessWidget {
                     style: EnvoyTypography.body.copyWith(
                         height: 1.2,
                         fontSize: 20,
+                        fontWeight: FontWeight.w500,
                         color: EnvoyColors.gray1000,
                         decoration: TextDecoration.none),
                   ),
