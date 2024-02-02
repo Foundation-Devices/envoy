@@ -294,16 +294,15 @@ class SecondaryAmountWidget extends StatelessWidget {
 
 List<TextSpan> buildPrimaryBtcTextSpans(int amountSats, bool decimalDot,
     TextStyle? textStyleBlack, TextStyle? textStyleGray) {
+  if (amountSats == 0) {
+    return [_createTextSpan('0', textStyleGray!)];
+  }
+
   List<TextSpan> textSpans = [];
   String btcString = convertSatsToBtcString(amountSats);
 
   double amountBTC = convertSatsToBTC(amountSats);
   bool isAmountBtcUnder1 = amountBTC < 1;
-
-  if (amountSats == 0) {
-    textSpans.add(_createTextSpan('0', textStyleGray!));
-    return textSpans;
-  }
 
   if (isAmountBtcUnder1) {
     bool foundNum = false;
@@ -519,6 +518,10 @@ List<TextSpan> buildSecondaryFiatTextSpans(int amountSats, double fxRateFiat,
 
 List<TextSpan> buildSecondaryBtcTextSpans(int amountSats, bool decimalDot,
     TextStyle? textStyle, TextStyle? textStyleSpace) {
+  if (amountSats == 0) {
+    return [_createTextSpan('0', textStyle!)];
+  }
+
   List<TextSpan> textSpans = [];
   double amountBTC = convertSatsToBTC(amountSats);
   bool isAmountBtcUnder1 = amountBTC < 1;
