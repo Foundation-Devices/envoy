@@ -12,6 +12,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -325,12 +326,11 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                               amountSats: _totalFeeAmount,
                               amountWidgetStyle: AmountWidgetStyle.singleLine),
                           Builder(builder: (context) {
-                            String symbolFiat = ExchangeRate().getSymbol();
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: EnvoySpacing.xs, vertical: 2),
                               child: Text(
-                                "${symbolFiat}${ExchangeRate().getFormattedAmount(_totalFeeAmount)}",
+                                "${ExchangeRate().getFormattedAmount(_totalFeeAmount)}",
                                 style: EnvoyTypography.body,
                               ),
                             );
@@ -393,7 +393,8 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                 ///wrap to the text and padding...
                 height: 0,
                 state: ButtonState.default_state,
-                onTap: () {
+                onTap: () async {
+                  final navigator = Navigator.of(context, rootNavigator: true);
                   if (widget.originalTx.isConfirmed) {
                     EnvoyToast(
                       backgroundColor: EnvoyColors.danger,
@@ -407,16 +408,34 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     ).show(context);
                     return;
                   } else {
-                    Navigator.pop(context);
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return CancelTransactionProgress(
-                          cancelTx: widget.cancelTx,
-                          cancelRawTx: widget.cancelRawTx,
-                          originalTx: widget.originalTx,
-                        );
-                      },
-                    ));
+                    if (account.wallet.hot == false) {
+                      Psbt? psbt = await navigator.push(MaterialPageRoute(
+                          builder: (context) => Builder(builder: (context) {
+                                return _Background(
+                                    child: PsbtCard(widget.cancelTx, account),
+                                    context: context);
+                              })));
+                      navigator.push(MaterialPageRoute(
+                        builder: (context) {
+                          return CancelTransactionProgress(
+                            cancelTx: psbt!,
+                            cancelRawTx: widget.cancelRawTx,
+                            originalTx: widget.originalTx,
+                          );
+                        },
+                      ));
+                    } else {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) {
+                          return CancelTransactionProgress(
+                            cancelTx: widget.cancelTx,
+                            cancelRawTx: widget.cancelRawTx,
+                            originalTx: widget.originalTx,
+                          );
+                        },
+                      ));
+                    }
                   }
                 }),
           ],
@@ -525,7 +544,7 @@ class _CancelTransactionProgressState
       onPopInvoked: (didPop) {
         clearSpendState(ProviderScope.containerOf(context));
       },
-      child: Background(
+      child: _Background(
         child: MediaQuery.removePadding(
           removeTop: true,
           removeBottom: true,
@@ -561,7 +580,8 @@ class _CancelTransactionProgressState
                     SliverToBoxAdapter(
                       child: Builder(
                         builder: (context) {
-                          String title = S().replaceByFee_boost_confirm_heading;
+                          String title =
+                              S().replaceByFee_cancel_confirm_heading;
                           String subTitle =
                               S().stalls_before_sending_tx_scanning_subheading;
                           if (broadcastProgress !=
@@ -634,8 +654,9 @@ class _CancelTransactionProgressState
           EnvoyButton(
             label: S().component_continue,
             onTap: () async {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) {
+                return route.settings is MaterialPage;
+              });
             },
             type: ButtonType.primary,
             state: ButtonState.default_state,
@@ -659,25 +680,25 @@ class _CancelTransactionProgressState
       );
     }
   }
+}
 
-  Widget Background({required Widget child, required BuildContext context}) {
-    double _appBarHeight = AppBar().preferredSize.height;
-    double _topAppBarOffset = _appBarHeight + 10;
+Widget _Background({required Widget child, required BuildContext context}) {
+  double _appBarHeight = AppBar().preferredSize.height;
+  double _topAppBarOffset = _appBarHeight + 10;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          AppBackground(),
-          Positioned(
-            top: _topAppBarOffset,
-            left: 5,
-            bottom: BottomAppBar().height ?? 20 + 8,
-            right: 5,
-            child: Shield(child: child),
-          )
-        ],
-      ),
-    );
-  }
+  return Scaffold(
+    resizeToAvoidBottomInset: true,
+    body: Stack(
+      children: [
+        AppBackground(),
+        Positioned(
+          top: _topAppBarOffset,
+          left: 5,
+          bottom: BottomAppBar().height ?? 20 + 8,
+          right: 5,
+          child: Shield(child: child),
+        )
+      ],
+    ),
+  );
 }
