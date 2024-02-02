@@ -449,17 +449,18 @@ class TransactionListTile extends StatelessWidget {
                   context,
                   S().coincontrol_coin_change_spendable_tate_modal_subheading,
                   S().component_continue,
-                  () {
+                  (BuildContext context) {
                     Clipboard.setData(
                         ClipboardData(text: transaction.txId)); // here
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
                           "Transaction ID copied to clipboard!"), //TODO: FIGMA
                     ));
+                    Navigator.pop(context);
                   },
                   icon: EnvoyIcons.info,
                   secondaryButtonLabel: S().component_cancel,
-                  onSecondaryButtonTap: () {
+                  onSecondaryButtonTap: (BuildContext context) {
                     Navigator.pop(context);
                   },
                   checkBoxText: S().component_dontShowAgain,
