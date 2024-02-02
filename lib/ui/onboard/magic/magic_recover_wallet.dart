@@ -16,6 +16,8 @@ import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -616,7 +618,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         context: context,
         dismissible: false,
         dialog: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
+          width: MediaQuery.of(context).size.width * 0.75,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
@@ -643,24 +645,23 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       height: 80,
                       width: 80,
                     ),
-                    Padding(padding: EdgeInsets.all(4)),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 8),
+                          vertical: 0, horizontal: 0),
                       child: Text(
                         S().component_warning,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: EnvoyTypography.info,
                       ),
                     ),
-                    Padding(padding: EdgeInsets.all(2)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       child: Text(
                         S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyLarge,
+                        style: EnvoyTypography.info,
                       ),
                     ),
                     Padding(padding: EdgeInsets.all(2)),

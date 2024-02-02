@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal_qr_code.dart';
 
@@ -25,7 +27,7 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
         );
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
+      width: MediaQuery.of(context).size.width * 0.80,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -47,14 +49,25 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(EnvoyIcons.exclamation_warning,
-                    color: EnvoyColors.darkCopper, size: 84),
+                EnvoyIcon(
+                  EnvoyIcons.alert,
+                  size: EnvoyIconSize.big,
+                  color: EnvoyColors.copper,
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                  child: Text(
+                    S().component_warning,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
                   child: Text(
                     S().export_seed_modal_subheading,
                     textAlign: TextAlign.center,
-                    style: textStyle,
+                    style: EnvoyTypography.info,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(4)),

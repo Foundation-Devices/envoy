@@ -11,6 +11,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
@@ -238,11 +239,14 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(S().component_warning),
+                          Text(
+                            S().component_warning,
+                            style: EnvoyTypography.info,
+                          ),
                           LinkText(
                               text: S()
                                   .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,
-                              textStyle: Theme.of(context).textTheme.bodyMedium,
+                              textStyle: EnvoyTypography.info,
                               linkStyle: TextStyle(
                                   decoration: TextDecoration.underline),
                               onTap: () {
