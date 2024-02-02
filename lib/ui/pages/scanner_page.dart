@@ -295,12 +295,10 @@ class _ScannerPageState extends State<ScannerPage> {
       if (widget._acceptableTypes.contains(ScannerType.scv)) {
         _validateScvData(_urDecoder.decoded);
       } else if (widget._acceptableTypes.contains(ScannerType.tx)) {
-
         ///popping this page
         _navigator.pop();
 
         widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
-
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded) &&
             _urDecoder.decoded is Binary) {
