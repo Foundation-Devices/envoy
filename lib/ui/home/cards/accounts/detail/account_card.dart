@@ -482,7 +482,6 @@ class TransactionListTile extends StatelessWidget {
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
-
           child: Row(
             children: [
               transactionIcon(context),
