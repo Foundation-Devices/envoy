@@ -487,6 +487,8 @@ class TransactionListTile extends StatelessWidget {
               transactionIcon(context),
               Expanded(
                 child: ListTile(
+                  minLeadingWidth: 0,
+                  horizontalTitleGap: EnvoySpacing.small,
                   title: transactionTitle(context),
                   subtitle: FittedBox(
                     fit: BoxFit.scaleDown,
