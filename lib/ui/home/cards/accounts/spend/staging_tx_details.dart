@@ -472,10 +472,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       fiatRate.isEmpty
                                                           ? SizedBox.shrink()
                                                           : Container(
-                                                              constraints:
-                                                                  BoxConstraints(
-                                                                      minWidth:
-                                                                          40),
                                                               alignment: Alignment
                                                                   .centerRight,
                                                               margin: EdgeInsets.only(
@@ -590,10 +586,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                 ),
                                                           fiatRate.isNotEmpty
                                                               ? Container(
-                                                                  constraints:
-                                                                      BoxConstraints(
-                                                                          minWidth:
-                                                                              40),
                                                                   alignment:
                                                                       Alignment
                                                                           .centerRight,
