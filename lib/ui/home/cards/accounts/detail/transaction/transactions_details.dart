@@ -10,15 +10,20 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -28,9 +33,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
-import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -84,6 +86,7 @@ class _TransactionsDetailsWidgetState
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
+
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
     final accountAccentColor = widget.account.color;
@@ -93,6 +96,9 @@ class _TransactionsDetailsWidgetState
         );
 
     final address = tx.address ?? tx.outputs?[0] ?? "";
+
+    final RBFPossible =
+        (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
 
     return GestureDetector(
       onTapDown: (details) {
@@ -176,6 +182,7 @@ class _TransactionsDetailsWidgetState
                         children: [
                           Container(
                             height: 36,
+                            width: double.infinity,
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             margin: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 4),
@@ -185,10 +192,23 @@ class _TransactionsDetailsWidgetState
                               color: Colors.white,
                             ),
                             child: hideBalance
-                                ? LoaderGhost(
-                                    width: 110,
-                                    height: 20,
-                                    animate: false,
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // hide placeholder for btc
+                                      LoaderGhost(
+                                        width: 110,
+                                        height: 20,
+                                        animate: false,
+                                      ),
+                                      // hide placeholder for fiat
+                                      LoaderGhost(
+                                        width: 80,
+                                        height: 20,
+                                        animate: false,
+                                      ),
+                                    ],
                                   )
                                 : EnvoyAmount(
                                     account: widget.account,
@@ -262,9 +282,7 @@ class _TransactionsDetailsWidgetState
                                         builder: (context, value, child) {
                                           return SelectableText(
                                             "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
-                                            style: trailingTextStyle?.copyWith(
-                                                color:
-                                                    EnvoyColors.accentPrimary),
+                                            style: trailingTextStyle,
                                             textAlign: TextAlign.end,
                                             minLines: 1,
                                             maxLines: 4,
@@ -300,11 +318,9 @@ class _TransactionsDetailsWidgetState
                                   trailing: Text(getTransactionStatusString(tx),
                                       style: trailingTextStyle),
                                 ),
-                                !(tx.isConfirmed &&
-                                        tx.type == TransactionType.normal)
+                                RBFPossible
                                     ? CoinTagListItem(
-                                        title:
-                                            "Confirmation in ~ 10", // TODO: FIGMA
+                                        title: "Confirmation", // TODO: FIGMA
                                         icon: Icon(
                                           Icons.access_time,
                                           color: Colors.black,
@@ -315,28 +331,7 @@ class _TransactionsDetailsWidgetState
                                         ),
                                       )
                                     : Container(),
-                                CoinTagListItem(
-                                  title: S().coincontrol_tx_detail_fee,
-                                  icon: SvgPicture.asset(
-                                    "assets/icons/ic_bitcoin_straight_circle.svg",
-                                    color: Colors.black,
-                                    height: 14,
-                                  ),
-                                  trailing: hideBalance
-                                      ? LoaderGhost(
-                                          width: 74, animate: false, height: 16)
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            EnvoyAmount(
-                                                account: widget.account,
-                                                amountSats: tx.fee,
-                                                amountWidgetStyle:
-                                                    AmountWidgetStyle
-                                                        .singleLine),
-                                          ],
-                                        ),
-                                ),
+                                _renderFeeWidget(context, tx),
                                 GestureDetector(
                                   onTap: () {
                                     showEnvoyDialog(
@@ -398,6 +393,11 @@ class _TransactionsDetailsWidgetState
                                     ),
                                   ),
                                 ),
+                                RBFPossible
+                                    ? CancelTxButton(
+                                        transaction: tx,
+                                      )
+                                    : SizedBox.shrink(),
                               ],
                             ),
                           )),
@@ -407,6 +407,51 @@ class _TransactionsDetailsWidgetState
               ),
             )),
       ),
+    );
+  }
+
+  Widget _renderFeeWidget(BuildContext context, Transaction tx) {
+    final isBoosted = ref.watch(isTxBoostedProvider(tx.txId)) ?? false;
+    final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
+    final hideBalance =
+        ref.watch(balanceHideStateStatusProvider(widget.account.id));
+
+    String feeTitle = isBoosted
+        ? S().coindetails_overlay_boostedFees
+        : S().coincontrol_tx_detail_fee;
+
+    Widget icon = isBoosted
+        ? EnvoyIcon(
+            EnvoyIcons.rbf_boost,
+            size: EnvoyIconSize.superSmall,
+          )
+        : SvgPicture.asset(
+            "assets/icons/ic_bitcoin_straight_circle.svg",
+            color: Colors.black,
+            height: 14,
+          );
+
+    if (cancelState?.newTxId == tx.txId) {
+      icon = EnvoyIcon(
+        EnvoyIcons.close,
+        size: EnvoyIconSize.superSmall,
+      );
+      feeTitle = S().replaceByFee_cancel_overlay_modal_cancelationFees;
+    }
+    return CoinTagListItem(
+      title: feeTitle,
+      icon: icon,
+      trailing: hideBalance
+          ? LoaderGhost(width: 74, animate: false, height: 16)
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                EnvoyAmount(
+                    account: widget.account,
+                    amountSats: tx.fee,
+                    amountWidgetStyle: AmountWidgetStyle.singleLine),
+              ],
+            ),
     );
   }
 

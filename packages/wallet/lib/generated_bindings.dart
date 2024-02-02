@@ -308,40 +308,87 @@ class NativeLibrary {
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> txid,
     double fee_rate,
+    ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_get_bumped_psbt(
       wallet,
       txid,
       fee_rate,
+      dont_spend,
     );
   }
 
   late final _wallet_get_bumped_psbtPtr = _lookup<
       ffi.NativeFunction<
           Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('wallet_get_bumped_psbt');
+              ffi.Double, ffi.Pointer<UtxoList>)>>('wallet_get_bumped_psbt');
   late final _wallet_get_bumped_psbt = _wallet_get_bumped_psbtPtr.asFunction<
-      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double)>();
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double,
+          ffi.Pointer<UtxoList>)>();
 
   /// Returns max fee rate for the transaction, fee amount will be deducted from change output
   /// if the return max_fee_rate is negative,then RBF with current output is not possible
   RBFfeeRates wallet_get_max_bumped_fee_rate(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> txid,
+    ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_get_max_bumped_fee_rate(
       wallet,
       txid,
+      dont_spend,
     );
   }
 
   late final _wallet_get_max_bumped_fee_ratePtr = _lookup<
       ffi.NativeFunction<
-          RBFfeeRates Function(ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('wallet_get_max_bumped_fee_rate');
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<UtxoList>)>>('wallet_get_max_bumped_fee_rate');
   late final _wallet_get_max_bumped_fee_rate =
       _wallet_get_max_bumped_fee_ratePtr.asFunction<
-          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<UtxoList>)>();
+
+  Psbt wallet_cancel_tx(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+    double next_block_fee_rate,
+    ffi.Pointer<UtxoList> dont_spend,
+  ) {
+    return _wallet_cancel_tx(
+      wallet,
+      txid,
+      next_block_fee_rate,
+      dont_spend,
+    );
+  }
+
+  late final _wallet_cancel_txPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Double, ffi.Pointer<UtxoList>)>>('wallet_cancel_tx');
+  late final _wallet_cancel_tx = _wallet_cancel_txPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double,
+          ffi.Pointer<UtxoList>)>();
+
+  ffi.Pointer<ffi.Char> wallet_get_raw_tx_from_txid(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+  ) {
+    return _wallet_get_raw_tx_from_txid(
+      wallet,
+      txid,
+    );
+  }
+
+  late final _wallet_get_raw_tx_from_txidPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_get_raw_tx_from_txid');
+  late final _wallet_get_raw_tx_from_txid =
+      _wallet_get_raw_tx_from_txidPtr.asFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   Psbt wallet_decode_psbt(
     ffi.Pointer<ffi.Char> wallet,
@@ -544,6 +591,817 @@ class NativeLibrary {
   late final _wallet_hello = _wallet_helloPtr.asFunction<void Function()>();
 }
 
+abstract class idtype_t {
+  static const int P_ALL = 0;
+  static const int P_PID = 1;
+  static const int P_PGID = 2;
+}
+
+class sigval extends ffi.Union {
+  @ffi.Int()
+  external int sival_int;
+
+  external ffi.Pointer<ffi.Void> sival_ptr;
+}
+
+class sigevent extends ffi.Struct {
+  @ffi.Int()
+  external int sigev_notify;
+
+  @ffi.Int()
+  external int sigev_signo;
+
+  external sigval sigev_value;
+
+  external ffi.Pointer<ffi.NativeFunction<ffi.Void Function(sigval)>>
+      sigev_notify_function;
+
+  external ffi.Pointer<pthread_attr_t> sigev_notify_attributes;
+}
+
+typedef pthread_attr_t = __darwin_pthread_attr_t;
+typedef __darwin_pthread_attr_t = _opaque_pthread_attr_t;
+
+class _opaque_pthread_attr_t extends ffi.Struct {
+  @ffi.Long()
+  external int __sig;
+
+  @ffi.Array.multi([56])
+  external ffi.Array<ffi.Char> __opaque;
+}
+
+class sigaction extends ffi.Struct {
+  external __sigaction_u __sigaction_u1;
+
+  @sigset_t()
+  external int sa_mask;
+
+  @ffi.Int()
+  external int sa_flags;
+}
+
+class __sigaction_u extends ffi.Union {
+  external ffi.Pointer<ffi.NativeFunction<ffi.Void Function(ffi.Int)>>
+      __sa_handler;
+
+  external ffi.Pointer<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int, ffi.Pointer<__siginfo>, ffi.Pointer<ffi.Void>)>>
+      __sa_sigaction;
+}
+
+class __siginfo extends ffi.Struct {
+  @ffi.Int()
+  external int si_signo;
+
+  @ffi.Int()
+  external int si_errno;
+
+  @ffi.Int()
+  external int si_code;
+
+  @pid_t()
+  external int si_pid;
+
+  @uid_t()
+  external int si_uid;
+
+  @ffi.Int()
+  external int si_status;
+
+  external ffi.Pointer<ffi.Void> si_addr;
+
+  external sigval si_value;
+
+  @ffi.Long()
+  external int si_band;
+
+  @ffi.Array.multi([7])
+  external ffi.Array<ffi.UnsignedLong> __pad;
+}
+
+typedef pid_t = __darwin_pid_t;
+typedef __darwin_pid_t = __int32_t;
+typedef __int32_t = ffi.Int;
+typedef uid_t = __darwin_uid_t;
+typedef __darwin_uid_t = __uint32_t;
+typedef __uint32_t = ffi.UnsignedInt;
+typedef sigset_t = __darwin_sigset_t;
+typedef __darwin_sigset_t = __uint32_t;
+
+class sigvec extends ffi.Struct {
+  external ffi.Pointer<ffi.NativeFunction<ffi.Void Function(ffi.Int)>>
+      sv_handler;
+
+  @ffi.Int()
+  external int sv_mask;
+
+  @ffi.Int()
+  external int sv_flags;
+}
+
+class sigstack extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> ss_sp;
+
+  @ffi.Int()
+  external int ss_onstack;
+}
+
+class timeval extends ffi.Struct {
+  @__darwin_time_t()
+  external int tv_sec;
+
+  @__darwin_suseconds_t()
+  external int tv_usec;
+}
+
+typedef __darwin_time_t = ffi.Long;
+typedef __darwin_suseconds_t = __int32_t;
+
+class rusage extends ffi.Struct {
+  external timeval ru_utime;
+
+  external timeval ru_stime;
+
+  @ffi.Long()
+  external int ru_maxrss;
+
+  @ffi.Long()
+  external int ru_ixrss;
+
+  @ffi.Long()
+  external int ru_idrss;
+
+  @ffi.Long()
+  external int ru_isrss;
+
+  @ffi.Long()
+  external int ru_minflt;
+
+  @ffi.Long()
+  external int ru_majflt;
+
+  @ffi.Long()
+  external int ru_nswap;
+
+  @ffi.Long()
+  external int ru_inblock;
+
+  @ffi.Long()
+  external int ru_oublock;
+
+  @ffi.Long()
+  external int ru_msgsnd;
+
+  @ffi.Long()
+  external int ru_msgrcv;
+
+  @ffi.Long()
+  external int ru_nsignals;
+
+  @ffi.Long()
+  external int ru_nvcsw;
+
+  @ffi.Long()
+  external int ru_nivcsw;
+}
+
+class rusage_info_v0 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+}
+
+class rusage_info_v1 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+
+  @ffi.Uint64()
+  external int ri_child_user_time;
+
+  @ffi.Uint64()
+  external int ri_child_system_time;
+
+  @ffi.Uint64()
+  external int ri_child_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_pageins;
+
+  @ffi.Uint64()
+  external int ri_child_elapsed_abstime;
+}
+
+class rusage_info_v2 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+
+  @ffi.Uint64()
+  external int ri_child_user_time;
+
+  @ffi.Uint64()
+  external int ri_child_system_time;
+
+  @ffi.Uint64()
+  external int ri_child_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_pageins;
+
+  @ffi.Uint64()
+  external int ri_child_elapsed_abstime;
+
+  @ffi.Uint64()
+  external int ri_diskio_bytesread;
+
+  @ffi.Uint64()
+  external int ri_diskio_byteswritten;
+}
+
+class rusage_info_v3 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+
+  @ffi.Uint64()
+  external int ri_child_user_time;
+
+  @ffi.Uint64()
+  external int ri_child_system_time;
+
+  @ffi.Uint64()
+  external int ri_child_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_pageins;
+
+  @ffi.Uint64()
+  external int ri_child_elapsed_abstime;
+
+  @ffi.Uint64()
+  external int ri_diskio_bytesread;
+
+  @ffi.Uint64()
+  external int ri_diskio_byteswritten;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_default;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_maintenance;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_background;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_utility;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_legacy;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_initiated;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_interactive;
+
+  @ffi.Uint64()
+  external int ri_billed_system_time;
+
+  @ffi.Uint64()
+  external int ri_serviced_system_time;
+}
+
+class rusage_info_v4 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+
+  @ffi.Uint64()
+  external int ri_child_user_time;
+
+  @ffi.Uint64()
+  external int ri_child_system_time;
+
+  @ffi.Uint64()
+  external int ri_child_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_pageins;
+
+  @ffi.Uint64()
+  external int ri_child_elapsed_abstime;
+
+  @ffi.Uint64()
+  external int ri_diskio_bytesread;
+
+  @ffi.Uint64()
+  external int ri_diskio_byteswritten;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_default;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_maintenance;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_background;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_utility;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_legacy;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_initiated;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_interactive;
+
+  @ffi.Uint64()
+  external int ri_billed_system_time;
+
+  @ffi.Uint64()
+  external int ri_serviced_system_time;
+
+  @ffi.Uint64()
+  external int ri_logical_writes;
+
+  @ffi.Uint64()
+  external int ri_lifetime_max_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_instructions;
+
+  @ffi.Uint64()
+  external int ri_cycles;
+
+  @ffi.Uint64()
+  external int ri_billed_energy;
+
+  @ffi.Uint64()
+  external int ri_serviced_energy;
+
+  @ffi.Uint64()
+  external int ri_interval_max_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_runnable_time;
+}
+
+class rusage_info_v5 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+
+  @ffi.Uint64()
+  external int ri_child_user_time;
+
+  @ffi.Uint64()
+  external int ri_child_system_time;
+
+  @ffi.Uint64()
+  external int ri_child_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_pageins;
+
+  @ffi.Uint64()
+  external int ri_child_elapsed_abstime;
+
+  @ffi.Uint64()
+  external int ri_diskio_bytesread;
+
+  @ffi.Uint64()
+  external int ri_diskio_byteswritten;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_default;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_maintenance;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_background;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_utility;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_legacy;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_initiated;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_interactive;
+
+  @ffi.Uint64()
+  external int ri_billed_system_time;
+
+  @ffi.Uint64()
+  external int ri_serviced_system_time;
+
+  @ffi.Uint64()
+  external int ri_logical_writes;
+
+  @ffi.Uint64()
+  external int ri_lifetime_max_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_instructions;
+
+  @ffi.Uint64()
+  external int ri_cycles;
+
+  @ffi.Uint64()
+  external int ri_billed_energy;
+
+  @ffi.Uint64()
+  external int ri_serviced_energy;
+
+  @ffi.Uint64()
+  external int ri_interval_max_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_runnable_time;
+
+  @ffi.Uint64()
+  external int ri_flags;
+}
+
+class rusage_info_v6 extends ffi.Struct {
+  @ffi.Array.multi([16])
+  external ffi.Array<ffi.Uint8> ri_uuid;
+
+  @ffi.Uint64()
+  external int ri_user_time;
+
+  @ffi.Uint64()
+  external int ri_system_time;
+
+  @ffi.Uint64()
+  external int ri_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_pageins;
+
+  @ffi.Uint64()
+  external int ri_wired_size;
+
+  @ffi.Uint64()
+  external int ri_resident_size;
+
+  @ffi.Uint64()
+  external int ri_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_proc_start_abstime;
+
+  @ffi.Uint64()
+  external int ri_proc_exit_abstime;
+
+  @ffi.Uint64()
+  external int ri_child_user_time;
+
+  @ffi.Uint64()
+  external int ri_child_system_time;
+
+  @ffi.Uint64()
+  external int ri_child_pkg_idle_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_interrupt_wkups;
+
+  @ffi.Uint64()
+  external int ri_child_pageins;
+
+  @ffi.Uint64()
+  external int ri_child_elapsed_abstime;
+
+  @ffi.Uint64()
+  external int ri_diskio_bytesread;
+
+  @ffi.Uint64()
+  external int ri_diskio_byteswritten;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_default;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_maintenance;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_background;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_utility;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_legacy;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_initiated;
+
+  @ffi.Uint64()
+  external int ri_cpu_time_qos_user_interactive;
+
+  @ffi.Uint64()
+  external int ri_billed_system_time;
+
+  @ffi.Uint64()
+  external int ri_serviced_system_time;
+
+  @ffi.Uint64()
+  external int ri_logical_writes;
+
+  @ffi.Uint64()
+  external int ri_lifetime_max_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_instructions;
+
+  @ffi.Uint64()
+  external int ri_cycles;
+
+  @ffi.Uint64()
+  external int ri_billed_energy;
+
+  @ffi.Uint64()
+  external int ri_serviced_energy;
+
+  @ffi.Uint64()
+  external int ri_interval_max_phys_footprint;
+
+  @ffi.Uint64()
+  external int ri_runnable_time;
+
+  @ffi.Uint64()
+  external int ri_flags;
+
+  @ffi.Uint64()
+  external int ri_user_ptime;
+
+  @ffi.Uint64()
+  external int ri_system_ptime;
+
+  @ffi.Uint64()
+  external int ri_pinstructions;
+
+  @ffi.Uint64()
+  external int ri_pcycles;
+
+  @ffi.Uint64()
+  external int ri_energy_nj;
+
+  @ffi.Uint64()
+  external int ri_penergy_nj;
+
+  @ffi.Array.multi([14])
+  external ffi.Array<ffi.Uint64> ri_reserved;
+}
+
+class rlimit extends ffi.Struct {
+  @rlim_t()
+  external int rlim_cur;
+
+  @rlim_t()
+  external int rlim_max;
+}
+
+typedef rlim_t = __uint64_t;
+typedef __uint64_t = ffi.UnsignedLongLong;
+
+class proc_rlimit_control_wakeupmon extends ffi.Struct {
+  @ffi.Uint32()
+  external int wm_flags;
+
+  @ffi.Int32()
+  external int wm_rate;
+}
+
+class wait extends ffi.Opaque {}
+
+class div_t extends ffi.Struct {
+  @ffi.Int()
+  external int quot;
+
+  @ffi.Int()
+  external int rem;
+}
+
+class ldiv_t extends ffi.Struct {
+  @ffi.Long()
+  external int quot;
+
+  @ffi.Long()
+  external int rem;
+}
+
+class lldiv_t extends ffi.Struct {
+  @ffi.LongLong()
+  external int quot;
+
+  @ffi.LongLong()
+  external int rem;
+}
+
 abstract class NetworkType {
   static const int Mainnet = 0;
   static const int Testnet = 1;
@@ -714,13 +1572,11 @@ class Seed extends ffi.Struct {
   external ffi.Pointer<ffi.Char> fingerprint;
 }
 
-const int INT8_MIN = -128;
+const int false1 = 0;
 
-const int INT16_MIN = -32768;
+const int true1 = 1;
 
-const int INT32_MIN = -2147483648;
-
-const int INT64_MIN = -9223372036854775808;
+const int USER_ADDR_NULL = 0;
 
 const int INT8_MAX = 127;
 
@@ -729,6 +1585,14 @@ const int INT16_MAX = 32767;
 const int INT32_MAX = 2147483647;
 
 const int INT64_MAX = 9223372036854775807;
+
+const int INT8_MIN = -128;
+
+const int INT16_MIN = -32768;
+
+const int INT32_MIN = -2147483648;
+
+const int INT64_MIN = -9223372036854775808;
 
 const int UINT8_MAX = 255;
 
@@ -764,143 +1628,575 @@ const int UINT_LEAST64_MAX = -1;
 
 const int INT_FAST8_MIN = -128;
 
-const int INT_FAST16_MIN = -9223372036854775808;
+const int INT_FAST16_MIN = -32768;
 
-const int INT_FAST32_MIN = -9223372036854775808;
+const int INT_FAST32_MIN = -2147483648;
 
 const int INT_FAST64_MIN = -9223372036854775808;
 
 const int INT_FAST8_MAX = 127;
 
-const int INT_FAST16_MAX = 9223372036854775807;
+const int INT_FAST16_MAX = 32767;
 
-const int INT_FAST32_MAX = 9223372036854775807;
+const int INT_FAST32_MAX = 2147483647;
 
 const int INT_FAST64_MAX = 9223372036854775807;
 
 const int UINT_FAST8_MAX = 255;
 
-const int UINT_FAST16_MAX = -1;
+const int UINT_FAST16_MAX = 65535;
 
-const int UINT_FAST32_MAX = -1;
+const int UINT_FAST32_MAX = 4294967295;
 
 const int UINT_FAST64_MAX = -1;
 
-const int INTPTR_MIN = -9223372036854775808;
-
 const int INTPTR_MAX = 9223372036854775807;
 
-const int UINTPTR_MAX = -1;
+const int INTPTR_MIN = -9223372036854775808;
 
-const int INTMAX_MIN = -9223372036854775808;
+const int UINTPTR_MAX = -1;
 
 const int INTMAX_MAX = 9223372036854775807;
 
 const int UINTMAX_MAX = -1;
 
+const int INTMAX_MIN = -9223372036854775808;
+
 const int PTRDIFF_MIN = -9223372036854775808;
 
 const int PTRDIFF_MAX = 9223372036854775807;
+
+const int SIZE_MAX = -1;
+
+const int RSIZE_MAX = 9223372036854775807;
+
+const int WCHAR_MAX = 2147483647;
+
+const int WCHAR_MIN = -2147483648;
+
+const int WINT_MIN = -2147483648;
+
+const int WINT_MAX = 2147483647;
 
 const int SIG_ATOMIC_MIN = -2147483648;
 
 const int SIG_ATOMIC_MAX = 2147483647;
 
-const int SIZE_MAX = -1;
+const int MAC_OS_X_VERSION_10_0 = 1000;
 
-const int WCHAR_MIN = -2147483648;
+const int MAC_OS_X_VERSION_10_1 = 1010;
 
-const int WCHAR_MAX = 2147483647;
+const int MAC_OS_X_VERSION_10_2 = 1020;
 
-const int WINT_MIN = 0;
+const int MAC_OS_X_VERSION_10_3 = 1030;
 
-const int WINT_MAX = 4294967295;
+const int MAC_OS_X_VERSION_10_4 = 1040;
 
-const int INT8_WIDTH = 8;
+const int MAC_OS_X_VERSION_10_5 = 1050;
 
-const int UINT8_WIDTH = 8;
+const int MAC_OS_X_VERSION_10_6 = 1060;
 
-const int INT16_WIDTH = 16;
+const int MAC_OS_X_VERSION_10_7 = 1070;
 
-const int UINT16_WIDTH = 16;
+const int MAC_OS_X_VERSION_10_8 = 1080;
 
-const int INT32_WIDTH = 32;
+const int MAC_OS_X_VERSION_10_9 = 1090;
 
-const int UINT32_WIDTH = 32;
+const int MAC_OS_X_VERSION_10_10 = 101000;
 
-const int INT64_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_10_2 = 101002;
 
-const int UINT64_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_10_3 = 101003;
 
-const int INT_LEAST8_WIDTH = 8;
+const int MAC_OS_X_VERSION_10_11 = 101100;
 
-const int UINT_LEAST8_WIDTH = 8;
+const int MAC_OS_X_VERSION_10_11_2 = 101102;
 
-const int INT_LEAST16_WIDTH = 16;
+const int MAC_OS_X_VERSION_10_11_3 = 101103;
 
-const int UINT_LEAST16_WIDTH = 16;
+const int MAC_OS_X_VERSION_10_11_4 = 101104;
 
-const int INT_LEAST32_WIDTH = 32;
+const int MAC_OS_X_VERSION_10_12 = 101200;
 
-const int UINT_LEAST32_WIDTH = 32;
+const int MAC_OS_X_VERSION_10_12_1 = 101201;
 
-const int INT_LEAST64_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_12_2 = 101202;
 
-const int UINT_LEAST64_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_12_4 = 101204;
 
-const int INT_FAST8_WIDTH = 8;
+const int MAC_OS_X_VERSION_10_13 = 101300;
 
-const int UINT_FAST8_WIDTH = 8;
+const int MAC_OS_X_VERSION_10_13_1 = 101301;
 
-const int INT_FAST16_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_13_2 = 101302;
 
-const int UINT_FAST16_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_13_4 = 101304;
 
-const int INT_FAST32_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_14 = 101400;
 
-const int UINT_FAST32_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_14_1 = 101401;
 
-const int INT_FAST64_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_14_4 = 101404;
 
-const int UINT_FAST64_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_14_5 = 101405;
 
-const int INTPTR_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_14_6 = 101406;
 
-const int UINTPTR_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_15 = 101500;
 
-const int INTMAX_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_15_1 = 101501;
 
-const int UINTMAX_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_15_4 = 101504;
 
-const int PTRDIFF_WIDTH = 64;
+const int MAC_OS_X_VERSION_10_16 = 101600;
 
-const int SIG_ATOMIC_WIDTH = 32;
+const int MAC_OS_VERSION_11_0 = 110000;
 
-const int SIZE_WIDTH = 64;
+const int MAC_OS_VERSION_11_1 = 110100;
 
-const int WCHAR_WIDTH = 32;
+const int MAC_OS_VERSION_11_3 = 110300;
 
-const int WINT_WIDTH = 32;
+const int MAC_OS_VERSION_11_4 = 110400;
 
-const int NULL = 0;
+const int MAC_OS_VERSION_11_5 = 110500;
+
+const int MAC_OS_VERSION_11_6 = 110600;
+
+const int MAC_OS_VERSION_12_0 = 120000;
+
+const int MAC_OS_VERSION_12_1 = 120100;
+
+const int MAC_OS_VERSION_12_2 = 120200;
+
+const int MAC_OS_VERSION_12_3 = 120300;
+
+const int MAC_OS_VERSION_12_4 = 120400;
+
+const int MAC_OS_VERSION_12_5 = 120500;
+
+const int MAC_OS_VERSION_12_6 = 120600;
+
+const int MAC_OS_VERSION_12_7 = 120700;
+
+const int MAC_OS_VERSION_13_0 = 130000;
+
+const int MAC_OS_VERSION_13_1 = 130100;
+
+const int MAC_OS_VERSION_13_2 = 130200;
+
+const int MAC_OS_VERSION_13_3 = 130300;
+
+const int MAC_OS_VERSION_13_4 = 130400;
+
+const int MAC_OS_VERSION_13_5 = 130500;
+
+const int MAC_OS_VERSION_13_6 = 130600;
+
+const int MAC_OS_VERSION_14_0 = 140000;
+
+const int MAC_OS_VERSION_14_1 = 140100;
+
+const int MAC_OS_VERSION_14_2 = 140200;
+
+const int NSIG = 32;
+
+const int SIGHUP = 1;
+
+const int SIGINT = 2;
+
+const int SIGQUIT = 3;
+
+const int SIGILL = 4;
+
+const int SIGTRAP = 5;
+
+const int SIGABRT = 6;
+
+const int SIGIOT = 6;
+
+const int SIGEMT = 7;
+
+const int SIGFPE = 8;
+
+const int SIGKILL = 9;
+
+const int SIGBUS = 10;
+
+const int SIGSEGV = 11;
+
+const int SIGSYS = 12;
+
+const int SIGPIPE = 13;
+
+const int SIGALRM = 14;
+
+const int SIGTERM = 15;
+
+const int SIGURG = 16;
+
+const int SIGSTOP = 17;
+
+const int SIGTSTP = 18;
+
+const int SIGCONT = 19;
+
+const int SIGCHLD = 20;
+
+const int SIGTTIN = 21;
+
+const int SIGTTOU = 22;
+
+const int SIGIO = 23;
+
+const int SIGXCPU = 24;
+
+const int SIGXFSZ = 25;
+
+const int SIGVTALRM = 26;
+
+const int SIGPROF = 27;
+
+const int SIGWINCH = 28;
+
+const int SIGINFO = 29;
+
+const int SIGUSR1 = 30;
+
+const int SIGUSR2 = 31;
+
+const int SIGEV_NONE = 0;
+
+const int SIGEV_SIGNAL = 1;
+
+const int SIGEV_THREAD = 3;
+
+const int ILL_NOOP = 0;
+
+const int ILL_ILLOPC = 1;
+
+const int ILL_ILLTRP = 2;
+
+const int ILL_PRVOPC = 3;
+
+const int ILL_ILLOPN = 4;
+
+const int ILL_ILLADR = 5;
+
+const int ILL_PRVREG = 6;
+
+const int ILL_COPROC = 7;
+
+const int ILL_BADSTK = 8;
+
+const int FPE_NOOP = 0;
+
+const int FPE_FLTDIV = 1;
+
+const int FPE_FLTOVF = 2;
+
+const int FPE_FLTUND = 3;
+
+const int FPE_FLTRES = 4;
+
+const int FPE_FLTINV = 5;
+
+const int FPE_FLTSUB = 6;
+
+const int FPE_INTDIV = 7;
+
+const int FPE_INTOVF = 8;
+
+const int SEGV_NOOP = 0;
+
+const int SEGV_MAPERR = 1;
+
+const int SEGV_ACCERR = 2;
+
+const int BUS_NOOP = 0;
+
+const int BUS_ADRALN = 1;
+
+const int BUS_ADRERR = 2;
+
+const int BUS_OBJERR = 3;
+
+const int TRAP_BRKPT = 1;
+
+const int TRAP_TRACE = 2;
+
+const int CLD_NOOP = 0;
+
+const int CLD_EXITED = 1;
+
+const int CLD_KILLED = 2;
+
+const int CLD_DUMPED = 3;
+
+const int CLD_TRAPPED = 4;
+
+const int CLD_STOPPED = 5;
+
+const int CLD_CONTINUED = 6;
+
+const int POLL_IN = 1;
+
+const int POLL_OUT = 2;
+
+const int POLL_MSG = 3;
+
+const int POLL_ERR = 4;
+
+const int POLL_PRI = 5;
+
+const int POLL_HUP = 6;
+
+const int SA_ONSTACK = 1;
+
+const int SA_RESTART = 2;
+
+const int SA_RESETHAND = 4;
+
+const int SA_NOCLDSTOP = 8;
+
+const int SA_NODEFER = 16;
+
+const int SA_NOCLDWAIT = 32;
+
+const int SA_SIGINFO = 64;
+
+const int SA_USERTRAMP = 256;
+
+const int SA_64REGSET = 512;
+
+const int SA_USERSPACE_MASK = 127;
+
+const int SIG_BLOCK = 1;
+
+const int SIG_UNBLOCK = 2;
+
+const int SIG_SETMASK = 3;
+
+const int SI_USER = 65537;
+
+const int SI_QUEUE = 65538;
+
+const int SI_TIMER = 65539;
+
+const int SI_ASYNCIO = 65540;
+
+const int SI_MESGQ = 65541;
+
+const int SS_ONSTACK = 1;
+
+const int SS_DISABLE = 4;
+
+const int MINSIGSTKSZ = 32768;
+
+const int SIGSTKSZ = 131072;
+
+const int SV_ONSTACK = 1;
+
+const int SV_INTERRUPT = 2;
+
+const int SV_RESETHAND = 4;
+
+const int SV_NODEFER = 16;
+
+const int SV_NOCLDSTOP = 8;
+
+const int SV_SIGINFO = 64;
+
+const int PRIO_PROCESS = 0;
+
+const int PRIO_PGRP = 1;
+
+const int PRIO_USER = 2;
+
+const int PRIO_DARWIN_THREAD = 3;
+
+const int PRIO_DARWIN_PROCESS = 4;
+
+const int PRIO_MIN = -20;
+
+const int PRIO_MAX = 20;
+
+const int PRIO_DARWIN_BG = 4096;
+
+const int PRIO_DARWIN_NONUI = 4097;
+
+const int RUSAGE_SELF = 0;
+
+const int RUSAGE_CHILDREN = -1;
+
+const int RUSAGE_INFO_V0 = 0;
+
+const int RUSAGE_INFO_V1 = 1;
+
+const int RUSAGE_INFO_V2 = 2;
+
+const int RUSAGE_INFO_V3 = 3;
+
+const int RUSAGE_INFO_V4 = 4;
+
+const int RUSAGE_INFO_V5 = 5;
+
+const int RUSAGE_INFO_V6 = 6;
+
+const int RUSAGE_INFO_CURRENT = 6;
+
+const int RU_PROC_RUNS_RESLIDE = 1;
+
+const int RLIM_INFINITY = 9223372036854775807;
+
+const int RLIM_SAVED_MAX = 9223372036854775807;
+
+const int RLIM_SAVED_CUR = 9223372036854775807;
+
+const int RLIMIT_CPU = 0;
+
+const int RLIMIT_FSIZE = 1;
+
+const int RLIMIT_DATA = 2;
+
+const int RLIMIT_STACK = 3;
+
+const int RLIMIT_CORE = 4;
+
+const int RLIMIT_AS = 5;
+
+const int RLIMIT_RSS = 5;
+
+const int RLIMIT_MEMLOCK = 6;
+
+const int RLIMIT_NPROC = 7;
+
+const int RLIMIT_NOFILE = 8;
+
+const int RLIM_NLIMITS = 9;
+
+const int RLIMIT_WAKEUPS_MONITOR = 1;
+
+const int RLIMIT_CPU_USAGE_MONITOR = 2;
+
+const int RLIMIT_THREAD_CPULIMITS = 3;
+
+const int RLIMIT_FOOTPRINT_INTERVAL = 4;
+
+const int WAKEMON_ENABLE = 1;
+
+const int WAKEMON_DISABLE = 2;
+
+const int WAKEMON_GET_PARAMS = 4;
+
+const int WAKEMON_SET_DEFAULTS = 8;
+
+const int WAKEMON_MAKE_FATAL = 16;
+
+const int CPUMON_MAKE_FATAL = 4096;
+
+const int FOOTPRINT_INTERVAL_RESET = 1;
+
+const int IOPOL_TYPE_DISK = 0;
+
+const int IOPOL_TYPE_VFS_ATIME_UPDATES = 2;
+
+const int IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES = 3;
+
+const int IOPOL_TYPE_VFS_STATFS_NO_DATA_VOLUME = 4;
+
+const int IOPOL_TYPE_VFS_TRIGGER_RESOLVE = 5;
+
+const int IOPOL_TYPE_VFS_IGNORE_CONTENT_PROTECTION = 6;
+
+const int IOPOL_TYPE_VFS_IGNORE_PERMISSIONS = 7;
+
+const int IOPOL_TYPE_VFS_SKIP_MTIME_UPDATE = 8;
+
+const int IOPOL_TYPE_VFS_ALLOW_LOW_SPACE_WRITES = 9;
+
+const int IOPOL_TYPE_VFS_DISALLOW_RW_FOR_O_EVTONLY = 10;
+
+const int IOPOL_SCOPE_PROCESS = 0;
+
+const int IOPOL_SCOPE_THREAD = 1;
+
+const int IOPOL_SCOPE_DARWIN_BG = 2;
+
+const int IOPOL_DEFAULT = 0;
+
+const int IOPOL_IMPORTANT = 1;
+
+const int IOPOL_PASSIVE = 2;
+
+const int IOPOL_THROTTLE = 3;
+
+const int IOPOL_UTILITY = 4;
+
+const int IOPOL_STANDARD = 5;
+
+const int IOPOL_APPLICATION = 5;
+
+const int IOPOL_NORMAL = 1;
+
+const int IOPOL_ATIME_UPDATES_DEFAULT = 0;
+
+const int IOPOL_ATIME_UPDATES_OFF = 1;
+
+const int IOPOL_MATERIALIZE_DATALESS_FILES_DEFAULT = 0;
+
+const int IOPOL_MATERIALIZE_DATALESS_FILES_OFF = 1;
+
+const int IOPOL_MATERIALIZE_DATALESS_FILES_ON = 2;
+
+const int IOPOL_VFS_STATFS_NO_DATA_VOLUME_DEFAULT = 0;
+
+const int IOPOL_VFS_STATFS_FORCE_NO_DATA_VOLUME = 1;
+
+const int IOPOL_VFS_TRIGGER_RESOLVE_DEFAULT = 0;
+
+const int IOPOL_VFS_TRIGGER_RESOLVE_OFF = 1;
+
+const int IOPOL_VFS_CONTENT_PROTECTION_DEFAULT = 0;
+
+const int IOPOL_VFS_CONTENT_PROTECTION_IGNORE = 1;
+
+const int IOPOL_VFS_IGNORE_PERMISSIONS_OFF = 0;
+
+const int IOPOL_VFS_IGNORE_PERMISSIONS_ON = 1;
+
+const int IOPOL_VFS_SKIP_MTIME_UPDATE_OFF = 0;
+
+const int IOPOL_VFS_SKIP_MTIME_UPDATE_ON = 1;
+
+const int IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_OFF = 0;
+
+const int IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_ON = 1;
+
+const int IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_DEFAULT = 0;
+
+const int IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_ON = 1;
+
+const int IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_DEFAULT = 0;
+
+const int IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_ON = 1;
 
 const int WNOHANG = 1;
 
 const int WUNTRACED = 2;
 
-const int WSTOPPED = 2;
+const int WCOREFLAG = 128;
 
 const int WEXITED = 4;
 
-const int WCONTINUED = 8;
+const int WSTOPPED = 8;
 
-const int WNOWAIT = 16777216;
+const int WCONTINUED = 16;
 
-const int RAND_MAX = 2147483647;
+const int WNOWAIT = 32;
 
-const int EXIT_FAILURE = 1;
+const int WAIT_ANY = -1;
 
-const int EXIT_SUCCESS = 0;
+const int WAIT_MYPGRP = 0;
 
 const int LITTLE_ENDIAN = 1234;
 
@@ -910,6 +2206,10 @@ const int PDP_ENDIAN = 3412;
 
 const int BYTE_ORDER = 1234;
 
-const int FD_SETSIZE = 1024;
+const int NULL = 0;
 
-const int NFDBITS = 64;
+const int EXIT_FAILURE = 1;
+
+const int EXIT_SUCCESS = 0;
+
+const int RAND_MAX = 2147483647;

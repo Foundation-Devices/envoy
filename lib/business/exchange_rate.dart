@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
@@ -188,10 +188,14 @@ class ExchangeRate extends ChangeNotifier {
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
       {bool includeSymbol = true, Wallet? wallet}) {
-    if (wallet?.network == Network.Testnet ||
-        _currency == null ||
-        _selectedCurrencyRate == null) {
-      return "";
+    /// dont hide testnet fiat values on debug builds
+    if (!kDebugMode) {
+      /// hide testnet fiat values on production builds
+      if (wallet?.network == Network.Testnet ||
+          _currency == null ||
+          _selectedCurrencyRate == null) {
+        return "";
+      }
     }
 
     NumberFormat currencyFormatter =

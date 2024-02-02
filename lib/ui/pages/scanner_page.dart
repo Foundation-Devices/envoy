@@ -167,12 +167,12 @@ class _ScannerPageState extends State<ScannerPage> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
+  void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
     controller.scannedDataStream.listen((barcode) {
       if (barcode.code != null && barcode.code != _lastCodeDetected) {
         _lastCodeDetected = barcode.code!;
-        _onDetect(barcode.code!);
+        _onDetect(barcode.code!, context);
       }
     });
 
@@ -192,7 +192,8 @@ class _ScannerPageState extends State<ScannerPage> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return QRView(
                   key: qrViewKey,
-                  onQRViewCreated: _onQRViewCreated,
+                  onQRViewCreated: (controller) =>
+                      _onQRViewCreated(controller, context),
                 );
               } else {
                 return SizedBox.shrink();
@@ -221,11 +222,12 @@ class _ScannerPageState extends State<ScannerPage> {
     );
   }
 
-  _onDetect(String code) async {
+  _onDetect(String code, BuildContext context) async {
+    final _navigator = Navigator.of(context);
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
-        Navigator.of(context).pop();
+        _navigator.pop();
         showEnvoyDialog(
             context: context, dialog: AztecoDialog(voucher, widget.account!));
         return;
@@ -238,7 +240,7 @@ class _ScannerPageState extends State<ScannerPage> {
       // TODO: account for passphrases (when we reenable that feature)
       if ((seedLength == 12 || seedLength == 24) && Wallet.validateSeed(code)) {
         widget.onSeedValidated!(code);
-        Navigator.of(context).pop();
+        _navigator.pop();
         return;
       }
       showSnackbar(invalidSeedSnackbar);
@@ -270,7 +272,7 @@ class _ScannerPageState extends State<ScannerPage> {
         showSnackbar(invalidAddressSnackbar);
       } else {
         widget.onAddressValidated!(address, amount);
-        Navigator.of(context).pop();
+        _navigator.pop();
         return;
       }
     }
@@ -279,7 +281,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
     if (widget._acceptableTypes.contains(ScannerType.nodeUrl)) {
       widget.onNodeUrlParsed!(scannedData);
-      Navigator.of(context).pop();
+      _navigator.pop();
       return;
     }
 
@@ -293,9 +295,10 @@ class _ScannerPageState extends State<ScannerPage> {
       if (widget._acceptableTypes.contains(ScannerType.scv)) {
         _validateScvData(_urDecoder.decoded);
       } else if (widget._acceptableTypes.contains(ScannerType.tx)) {
+        ///popping this page
+        _navigator.pop();
+
         widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
-        await Future.delayed(Duration(milliseconds: 1500));
-        Navigator.of(context).pop();
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded) &&
             _urDecoder.decoded is Binary) {

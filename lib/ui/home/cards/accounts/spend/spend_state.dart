@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -251,6 +252,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               state.broadcastProgress != BroadcastProgress.inProgress))) {
         return;
       }
+      final coins = ref.read(coinsProvider(account.id!));
+      final coinTags = ref.read(coinsTagProvider(account.id!));
+      final rawTx = state.rawTransaction!;
+
+      final inputCoins = rawTx.inputs.map((input) {
+        return coins.firstWhere((element) => element.id == input.id);
+      }).toList();
+
       // Increment the change index before broadcasting
       await account.wallet.getChangeAddress();
       this.state = state.clone()
@@ -290,6 +299,20 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           final tags = ref
               .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
 
+          inputCoins.forEach((coin) async {
+            final coinTag = coinTags.firstWhereOrNull((element) =>
+                element.coins_id.contains(coin.id) &&
+                element.account == account.id);
+            await EnvoyStorage().addCoinHistory(
+                coin.id,
+                InputCoinHistory(
+                    account.id!,
+                    coinTag?.name ?? S().account_details_untagged_card,
+                    psbt.txid,
+                    coin));
+          });
+
+          ///add change tag if its new and if it is not already added to the database
           if (tags.map((e) => e.id).contains(tag.id) == false &&
               tag.untagged == false) {
             await CoinRepository().addCoinTag(tag);
@@ -299,6 +322,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           int index = transaction.outputs.indexWhere((element) =>
               element.address == changeOutPut.item1 &&
               element.amount == changeOutPut.item2);
+
+          ///add change tag to the database
           if (index != -1) {
             changeOutPutTag.addCoin(Coin(
                 Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
@@ -617,3 +642,14 @@ Future<Psbt> getPsbt(
 
   return _returnPsbt;
 }
+
+///Will return the raw transaction for a given txId
+///this can be used as a cache mechanism to avoid decoding the same transaction multiple times
+final rawWalletTransactionProvider =
+    FutureProvider.family((ref, String rawTx) async {
+  Account? account = ref.watch(selectedAccountProvider);
+  if (account == null) {
+    return null;
+  }
+  return await account.wallet.decodeWalletRawTx(rawTx, account.wallet.network);
+});

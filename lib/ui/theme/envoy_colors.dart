@@ -34,6 +34,7 @@ class EnvoyColors {
   static const Color border1 = gray100;
   static const Color surface2 = gray100;
   static const Color border2 = gray200;
+  static const Color surface3 = gray200;
 
   static const Color accentPrimary = teal500;
   static const Color accentSecondary = copper500;

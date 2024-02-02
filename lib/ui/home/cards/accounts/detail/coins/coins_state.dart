@@ -202,3 +202,8 @@ class FilterTagPayload {
   @override
   int get hashCode => accountId.hashCode ^ txId.hashCode;
 }
+
+final lockedUtxosProvider = Provider.family<List<Utxo>, String>((ref, id) {
+  final utxos = ref.watch(coinsProvider(id));
+  return utxos.where((element) => element.locked).map((e) => e.utxo).toList();
+});

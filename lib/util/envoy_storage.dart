@@ -4,7 +4,13 @@
 
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:envoy/business/blog_post.dart';
+import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/media.dart';
+import 'package:envoy/business/video.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -15,9 +21,6 @@ import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
-import 'package:envoy/business/video.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/media.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -48,6 +51,7 @@ const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
 const String rbfBoostStoreName = "boosted_tx";
+const String canceledTxStoreName = "rbf_cancel_tx";
 const String dismissedPromptsStoreName = "dismissed_prompts";
 const String firmwareStoreName = "firmware";
 const String utxoBlockStateStoreName = "utxo_block_state";
@@ -55,6 +59,10 @@ const String tagsStoreName = "tags";
 const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
+
+///keeps track of spend input tags, this would be handy to show previously used tags
+///for example when user trying RBF.
+const String inputTagHistoryStoreName = "input_coin_history";
 
 const String exchangeRateKey = exchangeRateStoreName;
 
@@ -72,6 +80,12 @@ class EnvoyStorage {
       StoreRef<String, bool>(dismissedPromptsStoreName);
   StoreRef<String, Map> rbfBoostStore =
       StoreRef<String, Map>(rbfBoostStoreName);
+
+  StoreRef<int, Map> canceledTxStore =
+      intMapStoreFactory.store(canceledTxStoreName);
+
+  StoreRef<String, Map<String, dynamic>> tagHistoryStore =
+      StoreRef<String, Map<String, dynamic>>(inputTagHistoryStoreName);
 
   StoreRef<int, Map> firmwareStore = StoreRef<int, Map>(firmwareStoreName);
 
@@ -522,8 +536,66 @@ class EnvoyStorage {
     return true;
   }
 
-  Future<Map?> getRBFBoostState(String txId) async {
-    return (await rbfBoostStore.record(txId).get(_db));
+  Future getCachedRBFBoost(String coinId) async {
+    return await rbfBoostStore.record(coinId).get(_db);
+  }
+
+  Future addCoinHistory(String txId, InputCoinHistory inputHistory) async {
+    await tagHistoryStore.record(txId).put(_db, inputHistory.toJson());
+    return true;
+  }
+
+  Future<InputCoinHistory?> getCoinHistory(String txId) async {
+    return await tagHistoryStore
+        .record(txId)
+        .get(_db)
+        .then((value) => InputCoinHistory.fromJson(value!));
+  }
+
+  Future<List<InputCoinHistory>?> getCoinHistoryByTransactionId(
+      String txId) async {
+    return await tagHistoryStore.find(_db, finder: Finder()).then((record) =>
+        record.map((e) => InputCoinHistory.fromJson(e.value)).toList());
+  }
+
+  Future<Map?> getRBFBoostState(String txId, String accountId) async {
+    Map? data = (await rbfBoostStore.record(txId).get(_db));
+    if (data != null) {
+      if (data['account_id'] == accountId) {
+        return data;
+      }
+    }
+    return null;
+  }
+
+  Future addCancelState(Map<String, dynamic> payload) async {
+    await canceledTxStore.add(_db, payload);
+    return payload;
+  }
+
+  /// Returns the cancel state for a given txId
+  /// If the txId matches with originalTxId or newTxId.
+  Future<TxCancelState?> getCancelTxState(String accountId, String txId) async {
+    RecordSnapshot? data = await canceledTxStore.findFirst(_db,
+        finder: Finder(filter: Filter.custom(
+      (record) {
+        final data = record.value;
+        if (data != null && data is Map) {
+          if (data["originalTxId"] == txId) {
+            return true;
+          }
+          if (data["newTxId"] == txId) {
+            return true;
+          }
+        }
+        return false;
+      },
+    )));
+    if (data != null) {
+      return TxCancelState.fromJson(data.value as Map<String, Object?>);
+    } else {
+      return null;
+    }
   }
 
   Database get db => _db;

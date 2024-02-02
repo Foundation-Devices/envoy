@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -26,6 +28,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
   final bool loading;
   final Widget feeChooserWidget;
   final bool hideTxDetailsDialog;
+  final GestureTapCallback onTxDetailTap;
   final String feeTitle;
 
   const TransactionReviewCard({
@@ -34,6 +37,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
     required this.psbtFinalized,
     required this.loading,
     required this.address,
+    required this.onTxDetailTap,
     required this.feeChooserWidget,
     this.hideTxDetailsDialog = false,
     required this.feeTitle,
@@ -67,6 +71,20 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     int totalSpendAmount = amount + psbt.fee;
 
     Account account = ref.read(selectedAccountProvider)!;
+
+    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+
+    /// if user selected unit from the form screen then use that, otherwise use the default
+    DisplayUnit unit = sendScreenUnit == AmountDisplayUnit.btc
+        ? DisplayUnit.btc
+        : DisplayUnit.sat;
+
+    AmountDisplayUnit formatUnit =
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+
+    if (sendScreenUnit == AmountDisplayUnit.fiat) {
+      unit = Settings().displayUnit;
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -117,51 +135,27 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           S().coincontrol_tx_detail_amount_to_sent,
                           style: titleStyle,
                         ),
-                        Opacity(
-                          opacity: widget.hideTxDetailsDialog ? 0 : 1,
-                          child: GestureDetector(
-                            onTap: () {
-                              // Navigator.of(context,rootNavigator: true).push(MaterialTransparentRoute(builder: (context) {
-                              //   return SpendTxDetails();
-                              // },fullscreenDialog: true));
-                              Navigator.of(context, rootNavigator: true).push(
-                                  PageRouteBuilder(
-                                      pageBuilder: (context, animation,
-                                          secondaryAnimation) {
-                                        return StagingTxDetails();
-                                      },
-                                      transitionDuration:
-                                          Duration(milliseconds: 100),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                      opaque: false,
-                                      fullscreenDialog: true));
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (uneconomicSpends)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: EnvoySpacing.xs),
-                                    child: EnvoyIcon(EnvoyIcons.info,
-                                        color: EnvoyColors.solidWhite),
-                                  ),
-                                Text(
-                                  S().coincontrol_tx_detail_amount_details,
-                                  style: trailingStyle,
+                        GestureDetector(
+                          onTap: widget.onTxDetailTap,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (uneconomicSpends)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.xs),
+                                  child: EnvoyIcon(EnvoyIcons.info,
+                                      color: EnvoyColors.solidWhite),
                                 ),
-                                Icon(
-                                  Icons.chevron_right_outlined,
-                                  color: EnvoyColors.textPrimaryInverse,
-                                )
-                              ],
-                            ),
+                              Text(
+                                S().coincontrol_tx_detail_amount_details,
+                                style: trailingStyle,
+                              ),
+                              Icon(
+                                Icons.chevron_right_outlined,
+                                color: EnvoyColors.textPrimaryInverse,
+                              )
+                            ],
                           ),
                         )
                       ],
@@ -170,6 +164,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   _whiteContainer(
                       child: EnvoyAmount(
                           account: account,
+                          unit: formatUnit,
                           amountSats: amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
@@ -270,6 +265,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   ),
                   _whiteContainer(
                       child: EnvoyAmount(
+                          unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
@@ -314,6 +310,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   _whiteContainer(
                       child: EnvoyAmount(
                           account: account,
+                          unit: formatUnit,
                           amountSats: totalSpendAmount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
