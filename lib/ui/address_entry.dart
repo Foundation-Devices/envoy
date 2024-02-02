@@ -6,7 +6,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +66,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+              color: EnvoyColors.surface3,
+              borderRadius: BorderRadius.circular(15)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextFormField(
@@ -113,7 +114,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                 child: Icon(
                                   Icons.paste,
                                   size: 21,
-                                  color: EnvoyColors.darkTeal,
+                                  color: EnvoyColors.accentPrimary,
                                 ),
                               ),
                               onTap: () async {
@@ -152,7 +153,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                 child: Icon(
                                   EnvoyIcons.qr_scan,
                                   size: 20,
-                                  color: EnvoyColors.darkTeal,
+                                  color: EnvoyColors.accentPrimary,
                                 ),
                               ),
                               onTap: () {
