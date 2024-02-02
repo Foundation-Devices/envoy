@@ -52,7 +52,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
         horizontal: EnvoySpacing.medium1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black12,
+        color: EnvoyColors.surface3,
         border: _focus.hasFocus
             ? Border.all(color: EnvoyColors.accentPrimary)
             : Border.all(color: Colors.transparent),
