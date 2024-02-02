@@ -158,6 +158,16 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
+                // Testing the cursed 6 digits sat amounts
+                AmountWidget(
+                  amountSats: -421432,
+                  primaryUnit: AmountDisplayUnit.sat,
+                  secondaryUnit: AmountDisplayUnit.fiat,
+                  style: AmountWidgetStyle.normal,
+                  decimalDot: true,
+                  fxRateFiat: fxRateFiat,
+                  symbolFiat: "\$",
+                ),
               ],
             ),
           ),
