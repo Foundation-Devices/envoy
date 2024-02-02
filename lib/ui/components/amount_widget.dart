@@ -300,6 +300,11 @@ List<TextSpan> buildPrimaryBtcTextSpans(int amountSats, bool decimalDot,
   double amountBTC = convertSatsToBTC(amountSats);
   bool isAmountBtcUnder1 = amountBTC < 1;
 
+  if (amountSats == 0) {
+    textSpans.add(_createTextSpan('0', textStyleGray!));
+    return textSpans;
+  }
+
   if (isAmountBtcUnder1) {
     bool foundNum = false;
 
