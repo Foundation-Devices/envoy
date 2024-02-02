@@ -281,12 +281,16 @@ class AccountBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isTaproot = account?.wallet.type == WalletType.taproot;
     bool isTestnet = account?.wallet.network == Network.Testnet;
+    bool isNotCircular = isTestnet || isTaproot;
     return Container(
-        width: (isTestnet || isTaproot) ? null : containerHeight / 2,
+        width: (isNotCircular) ? null : containerHeight / 2,
         height: containerHeight / 2.0,
         decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(containerHeight / 2),
+            borderRadius: isNotCircular
+                ? BorderRadius.circular(containerHeight / 2)
+                : null,
+            shape: isNotCircular ? BoxShape.rectangle : BoxShape.circle,
             border: Border.all(
                 color: account!.color, width: 3, style: BorderStyle.solid)),
         child: Center(
