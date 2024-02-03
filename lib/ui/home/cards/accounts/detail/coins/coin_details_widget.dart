@@ -64,6 +64,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     double height = showExpandedAddress ? 324 : 280;
     height = showExpandedTxId ? 324 : height;
 
+    double cardRadius = 26;
+
     return Container(
       padding: EdgeInsets.all(8),
       child: SingleChildScrollView(
@@ -71,8 +73,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
           height: height,
           duration: Duration(milliseconds: 300),
           decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
             border: Border.all(
                 color: Colors.black, width: 2, style: BorderStyle.solid),
             gradient: LinearGradient(
@@ -85,15 +86,13 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
           ),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+                borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
                     color: accountAccentColor,
                     width: 2,
                     style: BorderStyle.solid)),
             child: ClipRRect(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+                borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
                 child: StripesBackground(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,

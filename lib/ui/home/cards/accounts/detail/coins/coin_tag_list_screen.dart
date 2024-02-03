@@ -89,10 +89,12 @@ class CoinItemWidget extends StatelessWidget {
     Color cardBackground = tag.untagged
         ? Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+    double cardRadius = 26;
+
     return Container(
       height: 108,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(22)),
+        borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
         border:
             Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
         gradient: LinearGradient(
@@ -105,11 +107,11 @@ class CoinItemWidget extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
             border: Border.all(
                 color: cardBackground, width: 2, style: BorderStyle.solid)),
         child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
             child: StripesBackground(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,9 +144,9 @@ class CoinItemWidget extends StatelessWidget {
                     builder: (context, ref, child) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 3, horizontal: 4),
+                            vertical: 5, horizontal: 4.5),
                         child: Container(
-                          height: 40,
+                          height: 34,
                           child: CoinTagBalanceWidget(
                             coinTag: tag,
                             isListScreen: isInListScreen,
