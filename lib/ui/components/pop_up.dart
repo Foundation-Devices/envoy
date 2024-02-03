@@ -21,11 +21,11 @@ void showEnvoyPopUp(
   BuildContext context,
   String content,
   primaryButtonLabel,
-  onPrimaryButtonTap, {
+  Function(BuildContext context)? onPrimaryButtonTap, {
   EnvoyIcons? icon,
   String? title,
   String? secondaryButtonLabel,
-  onSecondaryButtonTap,
+  Function(BuildContext context)? onSecondaryButtonTap,
   PopUpState? typeOfMessage,
   String? checkBoxText,
   onCheckBoxChanged,
@@ -34,6 +34,7 @@ void showEnvoyPopUp(
 }) =>
     showEnvoyDialog(
         context: context,
+        useRootNavigator: true,
         dialog: EnvoyPopUp(
             title: title,
             content: content,
@@ -70,8 +71,8 @@ class EnvoyPopUp extends StatefulWidget {
   final EnvoyIcons? icon;
   final String primaryButtonLabel;
   final String? secondaryButtonLabel;
-  final onPrimaryButtonTap;
-  final onSecondaryButtonTap;
+  final Function(BuildContext context)? onPrimaryButtonTap;
+  final Function(BuildContext context)? onSecondaryButtonTap;
   final PopUpState? typeOfMessage;
   final String? checkBoxText;
   final onCheckBoxChanged;
@@ -182,7 +183,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                     state: ButtonState.default_state,
                     onTap: () {
                       if (widget.onSecondaryButtonTap != null) {
-                        widget.onSecondaryButtonTap();
+                        widget.onSecondaryButtonTap!(context);
                       }
                     }),
               ),
@@ -191,7 +192,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 type: ButtonType.primary,
                 state: ButtonState.default_state,
                 onTap: () {
-                  widget.onPrimaryButtonTap();
+                  widget.onPrimaryButtonTap?.call(context);
                 }),
           ],
         ),

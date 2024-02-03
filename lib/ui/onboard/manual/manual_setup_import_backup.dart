@@ -133,12 +133,12 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
               title: S().manual_setup_magicBackupDetected_heading,
               S().manual_setup_magicBackupDetected_subheading,
               S().manual_setup_magicBackupDetected_restore,
-              () async {
+              (BuildContext context) async {
                 await tryMagicRecover(seedList, seed, data, context);
               },
               icon: EnvoyIcons.info,
               secondaryButtonLabel: S().manual_setup_magicBackupDetected_ignore,
-              onSecondaryButtonTap: () {
+              onSecondaryButtonTap: (BuildContext context) {
                 recoverManually(seedList, context);
                 Navigator.pop(context);
               },

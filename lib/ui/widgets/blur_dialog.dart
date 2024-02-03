@@ -4,6 +4,7 @@
 
 import 'dart:ui';
 
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 
 class BlurDialogRoute<T> extends OverlayRoute<T> {
@@ -244,7 +245,7 @@ Future<T?> showEnvoyDialog<T>(
     Alignment alignment = Alignment.center,
     Builder? builder,
     bool dismissible = true,
-    double borderRadius = 14}) async {
+    double borderRadius = EnvoySpacing.medium2}) async {
   var route = BlurDialogRoute<T>(
       blur: blur,
       builder: builder ?? Builder(builder: (context) => dialog ?? Container()),

@@ -15,6 +15,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,18 +68,22 @@ class _EraseWalletsAndBackupsWarningState
                 ),
                 Padding(padding: EdgeInsets.all(4)),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Text(S().component_warning,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    child: Text(
+                      S().component_warning,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
-                ),
+                      style: EnvoyTypography.info,
+                    )),
                 Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     child: SizedBox(
-                      height: 200,
+                      height: 130,
                       child: PageView(
+                        onPageChanged: (int page) {
+                          setState(() {});
+                        },
                         controller: _pageController,
                         children: [
                           Text(
@@ -88,10 +93,12 @@ class _EraseWalletsAndBackupsWarningState
                                 : S()
                                     .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
                             textAlign: TextAlign.center,
+                            style: EnvoyTypography.info,
                           ),
                           Text(
                             S().backups_erase_wallets_and_backups_modal_2_2_subheading,
                             textAlign: TextAlign.center,
+                            style: EnvoyTypography.info,
                           ),
                         ],
                       ),
@@ -100,7 +107,6 @@ class _EraseWalletsAndBackupsWarningState
                   totalPages: 2,
                   pageController: _pageController,
                 ),
-                Padding(padding: EdgeInsets.all(5)),
               ],
             ),
             OnboardingButton(
@@ -125,8 +131,8 @@ class _EraseWalletsAndBackupsWarningState
                     }
                   } else {
                     _pageController.nextPage(
-                        duration: Duration(milliseconds: 600),
-                        curve: Curves.easeInOut);
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubicEmphasized);
                   }
                 }),
             Padding(padding: EdgeInsets.all(12)),
@@ -177,21 +183,24 @@ class _EraseWalletsBalanceWarningState
                   height: 80,
                   width: 80,
                 ),
-                Padding(padding: EdgeInsets.all(4)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Text(S().component_warning,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                  child: Text(
+                    S().component_warning,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
+                  ),
                 ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                   child: Text(
-                      S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
+                    S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
+                  ),
                 ),
                 Padding(
                   padding:
@@ -199,6 +208,7 @@ class _EraseWalletsBalanceWarningState
                   child: Text(
                     S().erase_wallet_with_balance_modal_subheading,
                     textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(5)),
@@ -282,6 +292,7 @@ class _EraseWalletsConfirmationState
                   child: Text(
                     S().delete_wallet_for_good_modal_subheading,
                     textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(5)),

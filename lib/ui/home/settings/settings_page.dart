@@ -221,7 +221,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         title: S().taproot_passport_dialog_heading,
                         S().taproot_passport_dialog_subheading,
                         S().taproot_passport_dialog_reconnect,
-                        () {
+                        (BuildContext context) {
                           Navigator.pop(context);
                           Navigator.push(
                               context,
@@ -231,7 +231,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         },
                         icon: EnvoyIcons.info,
                         secondaryButtonLabel: S().taproot_passport_dialog_later,
-                        onSecondaryButtonTap: () {
+                        onSecondaryButtonTap: (BuildContext context) {
                           Navigator.pop(context);
                         },
                       );
