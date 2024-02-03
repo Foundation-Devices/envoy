@@ -260,40 +260,41 @@ class OnboardingText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-      child: Column(
-        children: [
-          header != null
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    header!,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.body.copyWith(
+    return Material(
+      color: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+        child: Column(
+          children: [
+            header != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(header!,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading
+                            .copyWith(
+                                height: 1.2,
+                                fontSize: 20,
+                                color: EnvoyColors.gray1000,
+                                decoration: TextDecoration.none)
+                            .setWeight(FontWeight.w500)))
+                : SizedBox.shrink(),
+            text != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                    child: Text(
+                      text!,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.info.copyWith(
                         height: 1.2,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: EnvoyColors.gray1000,
-                        decoration: TextDecoration.none),
-                  ),
-                )
-              : SizedBox.shrink(),
-          text != null
-              ? Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-                  child: Text(
-                    text!,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info.copyWith(
-                      height: 1.2,
-                      color: newColorScheme.EnvoyColors.inactiveDark,
-                      decoration: TextDecoration.none,
+                        color: newColorScheme.EnvoyColors.inactiveDark,
+                        decoration: TextDecoration.none,
+                      ),
                     ),
-                  ),
-                )
-              : SizedBox.shrink()
-        ],
+                  )
+                : SizedBox.shrink()
+          ],
+        ),
       ),
     );
   }
