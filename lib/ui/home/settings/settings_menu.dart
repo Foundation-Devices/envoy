@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
@@ -162,7 +163,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                       child: SvgPicture.asset(
                         "assets/menu_x.svg",
                         width: 40,
-                        color: Colors.white24,
+                        color: EnvoyColors.textSecondary,
                       )),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -174,7 +175,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                         child: Image.asset(
                           "assets/github.png",
                           width: 40,
-                          color: Colors.white54,
+                          color: EnvoyColors.textTertiary,
                         )),
                   ),
                   GestureDetector(
@@ -186,7 +187,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                       child: SvgPicture.asset(
                         "assets/telegram.svg",
                         width: 40,
-                        color: Colors.white54,
+                        color: EnvoyColors.textTertiary,
                       )),
                 ],
               ),
@@ -224,7 +225,7 @@ class MenuOption extends StatelessWidget {
                   label.toUpperCase(),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      color: Colors.white,
+                      color: EnvoyColors.textPrimaryInverse,
                       fontSize: 18,
                       fontWeight: FontWeight.w600),
                 ),
@@ -233,7 +234,7 @@ class MenuOption extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white,
+                  color: EnvoyColors.textPrimaryInverse,
                   size: 16,
                 ),
               )
