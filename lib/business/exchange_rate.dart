@@ -212,7 +212,7 @@ class ExchangeRate extends ChangeNotifier {
     formattedAmount =
         formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
 
-    return (includeSymbol ? _currency!.symbol : "") + formattedAmount;
+    return (includeSymbol ? _currency?.symbol ?? '' : "") + formattedAmount;
   }
 
   String getSymbol() {
