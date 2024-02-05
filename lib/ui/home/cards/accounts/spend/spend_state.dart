@@ -173,8 +173,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
-      RawTransaction rawTransaction =
-          await Wallet.decodeRawTx(psbt.rawTx, account.wallet.network);
+      RawTransaction rawTransaction = await account.wallet
+          .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
       state = state.clone()
         ..psbt = psbt
         ..loading = false
@@ -184,6 +184,25 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ///get all input that selected for the current PSBT
       final utxoSet = rawTransaction.inputs
           .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}");
+
+      /// in the case of sendMax we need, receive amount might be different from the amount we are sending
+      /// Make sure psbt is the source of truth for the amount
+      bool foundOutput = false;
+      rawTransaction.outputs.forEach((output) {
+        if (output.path == TxOutputPath.NotMine) {
+          foundOutput = true;
+          container.read(spendAmountProvider.notifier).state = output.amount;
+        }
+      });
+
+      ///if user is trying to send it themself
+      if (!foundOutput) {
+        rawTransaction.outputs.forEach((output) {
+          if (output.path == TxOutputPath.External) {
+            container.read(spendAmountProvider.notifier).state = output.amount;
+          }
+        });
+      }
 
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
       container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
