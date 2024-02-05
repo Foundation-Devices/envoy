@@ -100,6 +100,8 @@ class _TransactionsDetailsWidgetState
     final RBFPossible =
         (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
 
+    double cardRadius = 26;
+
     return GestureDetector(
       onTapDown: (details) {
         final RenderBox box =
@@ -155,7 +157,7 @@ class _TransactionsDetailsWidgetState
               height: containerHeight,
               duration: Duration(milliseconds: 160),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
                     color: Colors.black, width: 2, style: BorderStyle.solid),
                 gradient: LinearGradient(
@@ -168,13 +170,14 @@ class _TransactionsDetailsWidgetState
               ),
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     border: Border.all(
                         color: accountAccentColor,
                         width: 2,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(cardRadius - 2)),
                     child: StripesBackground(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -183,9 +186,9 @@ class _TransactionsDetailsWidgetState
                           Container(
                             height: 36,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            padding: EdgeInsets.symmetric(horizontal: 4),
                             margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 4),
+                                vertical: 4, horizontal: 4),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(EnvoySpacing.medium2)),
