@@ -160,9 +160,9 @@ class SettingsMenuWidget extends ConsumerWidget {
                             Uri.parse("https://twitter.com/FOUNDATIONdvcs"));
                       },
                       child: SvgPicture.asset(
-                        "assets/twitter.svg",
+                        "assets/menu_x.svg",
                         width: 40,
-                        color: Colors.white54,
+                        color: Colors.white24,
                       )),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
