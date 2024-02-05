@@ -742,7 +742,10 @@ class _DiscardTransactionDialogState
               GoRouter.of(context).pop(true);
               await Future.delayed(Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
-              context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+              GoRouter.of(context)
+                  .pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
+              await Future.delayed(Duration(milliseconds: 50));
+              GoRouter.of(context).pop();
             },
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
