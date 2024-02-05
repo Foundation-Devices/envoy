@@ -544,73 +544,90 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               wallet: account
                                                                   .wallet);
 
-                                                      return Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          loading
-                                                              ? Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          EnvoySpacing
-                                                                              .xs),
-                                                                  child: SizedBox
-                                                                      .square(
-                                                                    dimension:
-                                                                        12,
-                                                                    child:
-                                                                        CircularProgressIndicator(
-                                                                      strokeWidth:
-                                                                          1,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerRight,
-                                                                  child: EnvoyAmount(
-                                                                      unit:
-                                                                          formatUnit,
-                                                                      account:
-                                                                          account,
-                                                                      amountSats:
-                                                                          totalChangeAmount,
-                                                                      amountWidgetStyle:
-                                                                          AmountWidgetStyle
-                                                                              .singleLine),
+                                                      return totalChangeAmount !=
+                                                              0
+                                                          ? Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                loading
+                                                                    ? Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                EnvoySpacing.xs),
+                                                                        child: SizedBox
+                                                                            .square(
+                                                                          dimension:
+                                                                              12,
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                            strokeWidth:
+                                                                                1,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : Container(
+                                                                        alignment:
+                                                                            Alignment.centerRight,
+                                                                        child: EnvoyAmount(
+                                                                            unit:
+                                                                                formatUnit,
+                                                                            account:
+                                                                                account,
+                                                                            amountSats:
+                                                                                totalChangeAmount,
+                                                                            amountWidgetStyle:
+                                                                                AmountWidgetStyle.singleLine),
+                                                                      ),
+                                                                fiatRate
+                                                                        .isNotEmpty
+                                                                    ? Container(
+                                                                        alignment:
+                                                                            Alignment.centerRight,
+                                                                        margin: EdgeInsets.only(
+                                                                            left:
+                                                                                EnvoySpacing.small),
+                                                                        child:
+                                                                            Text(
+                                                                          ExchangeRate().getFormattedAmount(
+                                                                              totalChangeAmount,
+                                                                              wallet: account.wallet),
+                                                                          style:
+                                                                              _textStyleFiat,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          textAlign:
+                                                                              TextAlign.end,
+                                                                        ),
+                                                                      )
+                                                                    : SizedBox
+                                                                        .shrink(),
+                                                              ],
+                                                            )
+                                                          : Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              children: [
+                                                                Text(
+                                                                  "No change",
+                                                                  style: EnvoyTypography
+                                                                      .body
+                                                                      .copyWith(
+                                                                          color:
+                                                                              EnvoyColors.textTertiary),
                                                                 ),
-                                                          fiatRate.isNotEmpty
-                                                              ? Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerRight,
-                                                                  margin: EdgeInsets.only(
-                                                                      left: EnvoySpacing
-                                                                          .small),
-                                                                  child: Text(
-                                                                    ExchangeRate().getFormattedAmount(
-                                                                        totalChangeAmount,
-                                                                        wallet:
-                                                                            account.wallet),
-                                                                    style:
-                                                                        _textStyleFiat,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .end,
-                                                                  ),
-                                                                )
-                                                              : SizedBox
-                                                                  .shrink(),
-                                                        ],
-                                                      );
+                                                                // TODO: Figma "S().coincontrol_tx_detail_no_change"
+                                                              ],
+                                                            );
                                                     }),
                                                   )
                                                 ]),
