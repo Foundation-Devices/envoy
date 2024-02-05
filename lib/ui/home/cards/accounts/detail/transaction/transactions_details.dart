@@ -101,7 +101,7 @@ class _TransactionsDetailsWidgetState
         (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
 
     return GestureDetector(
-      onTapDown: (details) {
+      onTapUp: (details) {
         final RenderBox box =
             _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
         final Offset localOffset = box.globalToLocal(details.globalPosition);
@@ -109,12 +109,6 @@ class _TransactionsDetailsWidgetState
         if (!box.paintBounds.contains(localOffset)) {
           Navigator.of(context).pop();
         }
-        //
-        // if(details.globalPosition.dy > size.height){
-        //   return;
-        //   Navigator.of(context).pop();
-        // }
-        // if(details.globalPosition.dy > size.height)
       },
       child: Scaffold(
         appBar: AppBar(
