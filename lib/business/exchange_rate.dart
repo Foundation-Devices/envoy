@@ -51,10 +51,10 @@ class ExchangeRate extends ChangeNotifier {
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";
 
-  double? _selectedCurrencyRate = 0;
+  double? _selectedCurrencyRate = null;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
-  double? _usdRate = 0;
+  double? _usdRate = null;
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
@@ -149,7 +149,10 @@ class ExchangeRate extends ChangeNotifier {
       }
 
       usdRate = await _getRateForCode("USD");
-      _usdRate = selectedRate;
+      _usdRate = usdRate;
+      if (selectedCurrencyCode == "USD") {
+        _selectedCurrencyRate = usdRate;
+      }
       notifyListeners();
     } on Exception catch (e) {
       EnvoyReport().log("connectivity", e.toString());

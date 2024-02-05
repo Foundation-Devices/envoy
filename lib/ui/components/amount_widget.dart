@@ -10,6 +10,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/loader_ghost.dart';
 
 enum AmountWidgetStyle { normal, large, singleLine, sendScreen }
 
@@ -20,7 +21,7 @@ class AmountWidget extends StatelessWidget {
   final AmountDisplayUnit? secondaryUnit;
   final bool decimalDot;
   final String symbolFiat;
-  final double fxRateFiat;
+  final double? fxRateFiat;
   final Color? badgeColor;
   final bool alignToEnd;
 
@@ -30,7 +31,7 @@ class AmountWidget extends StatelessWidget {
     this.style = AmountWidgetStyle.normal,
     this.secondaryUnit = null,
     this.symbolFiat = "",
-    this.fxRateFiat = 0.0,
+    this.fxRateFiat = null,
     this.decimalDot = true,
     this.badgeColor,
     this.alignToEnd = true,
@@ -139,7 +140,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final bool decimalDot;
   final int fiatDecimals;
   final String symbolFiat;
-  final double fxRateFiat;
+  final double? fxRateFiat;
   final PrimaryAmountWidgetStyle style;
   final Color? badgeColor;
   final bool sendScreen;
@@ -157,7 +158,7 @@ class PrimaryAmountWidget extends StatelessWidget {
     this.decimalDot = true,
     this.fiatDecimals = 2,
     this.symbolFiat = "",
-    this.fxRateFiat = 0.0,
+    this.fxRateFiat = null,
     this.style = PrimaryAmountWidgetStyle.normal,
     this.badgeColor,
     this.sendScreen = false,
@@ -165,6 +166,14 @@ class PrimaryAmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (unit == AmountDisplayUnit.fiat && fxRateFiat == null) {
+      return LoaderGhost(
+        width: 30,
+        height: 15,
+        animate: true,
+      );
+    }
+
     final TextStyle textStyleBlack = style == PrimaryAmountWidgetStyle.normal
         ? EnvoyTypography.body.copyWith(
             color: EnvoyColors.textPrimary,
@@ -215,7 +224,7 @@ class PrimaryAmountWidget extends StatelessWidget {
                 ? buildPrimaryBtcTextSpans(
                     amountSats, decimalDot, textStyleBlack, textStyleGray)
                 : unit == AmountDisplayUnit.fiat
-                    ? buildPrimaryFiatTextSpans(amountSats, fxRateFiat,
+                    ? buildPrimaryFiatTextSpans(amountSats, fxRateFiat!,
                         decimalDot, fiatDecimals, textStyleBlack, textStyleGray)
                     : buildPrimarySatsTextSpans(
                         amountSats, decimalDot, textStyleBlack, textStyleGray),
@@ -232,7 +241,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final AmountDisplayUnit unit;
   final int amountSats;
   final String symbolFiat;
-  final double fxRateFiat;
+  final double? fxRateFiat;
   final bool decimalDot;
   final SecondaryAmountWidgetStyle style;
   final Color? badgeColor;
@@ -244,13 +253,21 @@ class SecondaryAmountWidget extends StatelessWidget {
       required this.unit,
       required this.amountSats,
       this.symbolFiat = "",
-      this.fxRateFiat = 0.0,
+      this.fxRateFiat = null,
       this.decimalDot = true,
       this.style = SecondaryAmountWidgetStyle.normal,
       this.badgeColor});
 
   @override
   Widget build(BuildContext context) {
+    if (unit == AmountDisplayUnit.fiat && fxRateFiat == null) {
+      return LoaderGhost(
+        width: 30,
+        height: 15,
+        animate: true,
+      );
+    }
+
     final TextStyle textStyle = EnvoyTypography.info.copyWith(
       color: style == SecondaryAmountWidgetStyle.normal
           ? EnvoyColors.textPrimary
@@ -283,7 +300,7 @@ class SecondaryAmountWidget extends StatelessWidget {
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
                   ? buildSecondaryFiatTextSpans(
-                      amountSats, fxRateFiat, decimalDot, textStyle)
+                      amountSats, fxRateFiat!, decimalDot, textStyle)
                   : buildSecondaryBtcTextSpans(
                       amountSats, decimalDot, textStyle, textStyle)),
         ),
