@@ -26,12 +26,14 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "_": MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
+        "_": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
         "about_privacyPolicy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "about_show": MessageLookupByLibrary.simpleMessage("Show"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Terms of Use"),
         "account_details_filter_tags_sortBy":
@@ -173,6 +175,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Show details"),
         "coincontrol_tx_detail_amount_to_sent":
             MessageLookupByLibrary.simpleMessage("Amount to send"),
+        "coincontrol_tx_detail_change":
+            MessageLookupByLibrary.simpleMessage("Change received"),
         "coincontrol_tx_detail_cta1":
             MessageLookupByLibrary.simpleMessage("Send Transaction"),
         "coincontrol_tx_detail_cta2":
@@ -215,6 +219,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
+        "coincontrol_tx_detail_no_change":
+            MessageLookupByLibrary.simpleMessage("No change"),
         "coincontrol_tx_detail_passport_cta2":
             MessageLookupByLibrary.simpleMessage("Cancel Transaction"),
         "coincontrol_tx_detail_passport_subheading":
@@ -240,7 +246,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_confirmation":
             MessageLookupByLibrary.simpleMessage("Confirmation in"),
         "coindetails_overlay_confirmationIn":
-            MessageLookupByLibrary.simpleMessage("Confirmation in"),
+            MessageLookupByLibrary.simpleMessage("Confirms in"),
+        "coindetails_overlay_confirmationIn_day":
+            MessageLookupByLibrary.simpleMessage("day"),
+        "coindetails_overlay_confirmationIn_days":
+            MessageLookupByLibrary.simpleMessage("days"),
+        "coindetails_overlay_confirmationIn_month":
+            MessageLookupByLibrary.simpleMessage("month"),
+        "coindetails_overlay_confirmationIn_week":
+            MessageLookupByLibrary.simpleMessage("week"),
+        "coindetails_overlay_confirmationIn_weeks":
+            MessageLookupByLibrary.simpleMessage("weeks"),
+        "coindetails_overlay_confirmation_boost":
+            MessageLookupByLibrary.simpleMessage("Boost"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Date"),
         "coindetails_overlay_heading":
@@ -251,6 +269,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Status"),
         "coindetails_overlay_status_confirmed":
             MessageLookupByLibrary.simpleMessage("Confirmed"),
+        "coindetails_overlay_status_pending":
+            MessageLookupByLibrary.simpleMessage("Pending"),
         "coindetails_overlay_tag": MessageLookupByLibrary.simpleMessage("Tag"),
         "coindetails_overlay_transactionID":
             MessageLookupByLibrary.simpleMessage("Transaction ID"),
@@ -590,13 +610,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Biometric authentication temporarily disabled. Please lock and unlock your screen to re-enable."),
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Biometric authentication temporarily disabled. Please wait 30 seconds and try again."),
+                "Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Results"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Search..."),
+            MessageLookupByLibrary.simpleMessage("Passport"),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -1024,6 +1044,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Increase the fee attached to your transaction to speed up confirmation time."),
+        "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":

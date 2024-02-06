@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Licencias de Código Abierto"),
         "about_privacyPolicy":
             MessageLookupByLibrary.simpleMessage("Política de Privacidad"),
+        "about_show": MessageLookupByLibrary.simpleMessage("Mostrar"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Condiciones de Uso"),
         "account_details_filter_tags_sortBy":
@@ -179,6 +180,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostrar detalles"),
         "coincontrol_tx_detail_amount_to_sent":
             MessageLookupByLibrary.simpleMessage("Cantidad a enviar"),
+        "coincontrol_tx_detail_change":
+            MessageLookupByLibrary.simpleMessage("Cambio recibido"),
         "coincontrol_tx_detail_cta1":
             MessageLookupByLibrary.simpleMessage("Enviar Transacción"),
         "coincontrol_tx_detail_cta2":
@@ -221,6 +224,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Algunas de las monedas más pequeñas han sido excluidas de esta transacción. Con el coste de envío seleccionado, cuesta más incluirlas de lo que valen."),
+        "coincontrol_tx_detail_no_change":
+            MessageLookupByLibrary.simpleMessage("Sin cambio"),
         "coincontrol_tx_detail_passport_cta2":
             MessageLookupByLibrary.simpleMessage("Cancelar Transacción"),
         "coincontrol_tx_detail_passport_subheading":
@@ -245,7 +250,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_confirmation":
             MessageLookupByLibrary.simpleMessage("Confirmación en"),
         "coindetails_overlay_confirmationIn":
-            MessageLookupByLibrary.simpleMessage("Confirmación en"),
+            MessageLookupByLibrary.simpleMessage("Confirma en"),
+        "coindetails_overlay_confirmationIn_day":
+            MessageLookupByLibrary.simpleMessage("día"),
+        "coindetails_overlay_confirmationIn_days":
+            MessageLookupByLibrary.simpleMessage("días"),
+        "coindetails_overlay_confirmationIn_month":
+            MessageLookupByLibrary.simpleMessage("mes"),
+        "coindetails_overlay_confirmationIn_week":
+            MessageLookupByLibrary.simpleMessage("semana"),
+        "coindetails_overlay_confirmationIn_weeks":
+            MessageLookupByLibrary.simpleMessage("semanas"),
+        "coindetails_overlay_confirmation_boost":
+            MessageLookupByLibrary.simpleMessage("Impulsar"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Fecha"),
         "coindetails_overlay_heading":
@@ -256,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Estado"),
         "coindetails_overlay_status_confirmed":
             MessageLookupByLibrary.simpleMessage("Confirmado"),
+        "coindetails_overlay_status_pending":
+            MessageLookupByLibrary.simpleMessage("Pendiente"),
         "coindetails_overlay_tag":
             MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "coindetails_overlay_transactionID":
@@ -601,13 +620,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Autenticación biométrica desactivada temporalmente. Por favor, bloquea y desbloquea tu pantalla para volver a activarla."),
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Autenticación biométrica desactivada temporalmente. Por favor, espera 30 segundos e inténtalo de nuevo."),
+                "Autenticación biométrica desactivada temporalmente. Por favor, cierra Envoy, espera 30 segundos e inténtalo de nuevo."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("Todos"),
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Resultados"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Buscar..."),
+            MessageLookupByLibrary.simpleMessage("Passport"),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -1052,6 +1071,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Aumenta la tasa asociada a tu transacción para acelerar el tiempo de confirmación."),
+        "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas."),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_amount_enter_valid_address":
