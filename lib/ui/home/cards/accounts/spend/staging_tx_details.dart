@@ -7,7 +7,6 @@ import 'dart:ui';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
@@ -28,7 +27,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
-import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
@@ -192,7 +190,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     if (sendScreenUnit == AmountDisplayUnit.fiat) {
       unit = Settings().displayUnit;
     }
-    double cardRadius = 26;
 
     int totalInputAmount = inputTagData
         .map((e) => e.item2)
@@ -201,17 +198,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     final accountAccentColor = account.color;
 
     Set<String> spendTags = inputTagData.map((e) => e.item1).toSet();
-    TextStyle _textStyleAmountSatBtc =
-        Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: EnvoyColors.textPrimary,
-              fontSize: 15,
-            );
 
-    TextStyle _textStyleFiat = Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: EnvoyColors.textTertiary,
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-        );
     final note = ref.watch(stagingTxNoteProvider) ?? "";
 
     return Stack(
@@ -224,8 +211,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black,
-                    Colors.black,
+                    EnvoyColors.textPrimary,
+                    EnvoyColors.textPrimary,
                     Colors.transparent,
                   ]),
             ),
@@ -242,7 +229,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
               }
             },
             child: Scaffold(
-              backgroundColor: Colors.black12,
+              backgroundColor: EnvoyColors.textPrimary,
               appBar: AppBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
@@ -251,7 +238,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   IconButton(
                     icon: Icon(
                       Icons.close,
-                      color: Colors.white,
+                      color: EnvoyColors.textPrimaryInverse,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -270,7 +257,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         S().coincontrol_tx_detail_expand_heading.toUpperCase(),
                         style:
                             Theme.of(context).textTheme.displayMedium?.copyWith(
-                                  color: Colors.white,
+                                  color: EnvoyColors.textPrimaryInverse,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -286,15 +273,15 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(EnvoySpacing.small),
                         child: AnimatedContainer(
-                          height: 248,
+                          height: 260,
                           duration: Duration(milliseconds: 250),
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(cardRadius)),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(EnvoySpacing.medium2)),
                             border: Border.all(
-                                color: Colors.black,
+                                color: EnvoyColors.textPrimary,
                                 width: 2,
                                 style: BorderStyle.solid),
                             gradient: LinearGradient(
@@ -302,20 +289,20 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   accountAccentColor,
-                                  Colors.black,
+                                  EnvoyColors.textPrimary,
                                 ]),
                           ),
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.all(
-                                    Radius.circular(cardRadius)),
+                                    Radius.circular(EnvoySpacing.medium2)),
                                 border: Border.all(
                                     color: accountAccentColor,
                                     width: 2,
                                     style: BorderStyle.solid)),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.all(
-                                    Radius.circular(cardRadius - 2)),
+                                    Radius.circular(EnvoySpacing.medium2)),
                                 child: StripesBackground(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -324,104 +311,37 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                     children: [
                                       Container(
                                         height: 36,
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 8),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: EnvoySpacing.small),
                                         margin: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 4),
+                                            vertical: EnvoySpacing.xs,
+                                            horizontal: EnvoySpacing.xs),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(24)),
-                                          color: Colors.white,
+                                              Radius.circular(
+                                                  EnvoySpacing.medium2)),
+                                          color: EnvoyColors.textPrimaryInverse,
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  alignment: Alignment(0, 0),
-                                                  child: SizedBox.square(
-                                                      dimension: 12,
-                                                      child: SvgPicture.asset(
-                                                        unit == DisplayUnit.btc
-                                                            ? "assets/icons/ic_bitcoin_straight.svg"
-                                                            : "assets/icons/ic_sats.svg",
-                                                        color:
-                                                            Color(0xff808080),
-                                                      )),
-                                                ),
-                                                Container(
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  padding: EdgeInsets.only(
-                                                      left: unit ==
-                                                              DisplayUnit.btc
-                                                          ? 4
-                                                          : 0,
-                                                      right: unit ==
-                                                              DisplayUnit.btc
-                                                          ? 0
-                                                          : 8),
-                                                  child: loading
-                                                      ? Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      EnvoySpacing
-                                                                          .xs),
-                                                          child:
-                                                              SizedBox.square(
-                                                            dimension: 12,
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                              strokeWidth: 1,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : Text(
-                                                          "${getFormattedAmount(totalReceiveAmount, trailingZeroes: true, unit: formatUnit)}",
-                                                          textAlign: unit ==
-                                                                  DisplayUnit
-                                                                      .btc
-                                                              ? TextAlign.start
-                                                              : TextAlign.end,
-                                                          style:
-                                                              _textStyleAmountSatBtc,
-                                                        ),
-                                                ),
-                                              ],
-                                            ),
-                                            Container(
-                                              constraints:
-                                                  BoxConstraints(minWidth: 80),
-                                              alignment: Alignment.centerRight,
-                                              child: Text(
-                                                ExchangeRate()
-                                                    .getFormattedAmount(
-                                                        totalReceiveAmount,
-                                                        wallet: account.wallet),
-                                                style: _textStyleFiat,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.end,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                        child: EnvoyAmount(
+                                            unit: formatUnit,
+                                            account: account,
+                                            amountSats: totalReceiveAmount,
+                                            amountWidgetStyle:
+                                                AmountWidgetStyle.singleLine),
                                       ),
                                       Expanded(
                                           child: Container(
                                         margin: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 4),
+                                            vertical: EnvoySpacing.xs,
+                                            horizontal: EnvoySpacing.xs),
                                         padding: EdgeInsets.symmetric(
                                             horizontal: EnvoySpacing.small,
                                             vertical: EnvoySpacing.small),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(
-                                                  EnvoySpacing.medium2 - 3)),
-                                          color: Colors.white,
+                                                  EnvoySpacing.medium1)),
+                                          color: EnvoyColors.textPrimaryInverse,
                                         ),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.max,
@@ -432,6 +352,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                               mainAxisSize: MainAxisSize.max,
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Row(
                                                   children: [
@@ -441,22 +363,15 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       height: 16,
                                                     ),
                                                     Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 8)),
+                                                        padding: EdgeInsets.only(
+                                                            left: EnvoySpacing
+                                                                .small)),
                                                     Text(
                                                         "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}")
                                                   ],
                                                 ),
                                                 Expanded(child:
                                                     Builder(builder: (context) {
-                                                  String? fiatRate =
-                                                      ExchangeRate()
-                                                          .getFormattedAmount(
-                                                              totalInputAmount,
-                                                              wallet: account
-                                                                  .wallet);
-
                                                   return Row(
                                                     mainAxisSize:
                                                         MainAxisSize.max,
@@ -470,30 +385,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               totalInputAmount,
                                                           amountWidgetStyle:
                                                               AmountWidgetStyle
-                                                                  .singleLine),
-                                                      fiatRate.isEmpty
-                                                          ? SizedBox.shrink()
-                                                          : Container(
-                                                              alignment: Alignment
-                                                                  .centerRight,
-                                                              margin: EdgeInsets.only(
-                                                                  left: EnvoySpacing
-                                                                      .small),
-                                                              child: Text(
-                                                                ExchangeRate().getFormattedAmount(
-                                                                    totalInputAmount,
-                                                                    wallet: account
-                                                                        .wallet),
-                                                                style:
-                                                                    _textStyleFiat,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end,
-                                                              ),
-                                                            ),
+                                                                  .normal),
                                                     ],
                                                   );
                                                 }))
@@ -522,6 +414,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Row(
                                                     children: [
@@ -530,9 +424,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                         size: 16,
                                                       ),
                                                       Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 8)),
+                                                          padding: EdgeInsets.only(
+                                                              left: EnvoySpacing
+                                                                  .small)),
                                                       Text(S()
                                                           .coincontrol_tx_detail_expand_changeReceived)
                                                     ],
@@ -540,12 +434,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                   Expanded(
                                                     child: Builder(
                                                         builder: (context) {
-                                                      String? fiatRate = ExchangeRate()
-                                                          .getFormattedAmount(
-                                                              totalChangeAmount,
-                                                              wallet: account
-                                                                  .wallet);
-
                                                       return Row(
                                                         mainAxisSize:
                                                             MainAxisSize.max,
@@ -575,42 +463,19 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                   alignment:
                                                                       Alignment
                                                                           .centerRight,
-                                                                  child: EnvoyAmount(
-                                                                      unit:
-                                                                          formatUnit,
-                                                                      account:
-                                                                          account,
-                                                                      amountSats:
-                                                                          totalChangeAmount,
-                                                                      amountWidgetStyle:
-                                                                          AmountWidgetStyle
-                                                                              .singleLine),
+                                                                  child: totalChangeAmount == 0
+                                                                      ? Text(S()
+                                                                          .coincontrol_tx_detail_no_change)
+                                                                      : EnvoyAmount(
+                                                                          unit:
+                                                                              formatUnit,
+                                                                          account:
+                                                                              account,
+                                                                          amountSats:
+                                                                              totalChangeAmount,
+                                                                          amountWidgetStyle:
+                                                                              AmountWidgetStyle.normal),
                                                                 ),
-                                                          fiatRate.isNotEmpty
-                                                              ? Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerRight,
-                                                                  margin: EdgeInsets.only(
-                                                                      left: EnvoySpacing
-                                                                          .small),
-                                                                  child: Text(
-                                                                    ExchangeRate().getFormattedAmount(
-                                                                        totalChangeAmount,
-                                                                        wallet:
-                                                                            account.wallet),
-                                                                    style:
-                                                                        _textStyleFiat,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .end,
-                                                                  ),
-                                                                )
-                                                              : SizedBox
-                                                                  .shrink(),
                                                         ],
                                                       );
                                                     }),
@@ -761,22 +626,24 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       child: Row(
                                                         children: [
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 4),
+                                                            padding: const EdgeInsets
+                                                                .only(
+                                                                left:
+                                                                    EnvoySpacing
+                                                                        .xs),
                                                             child: SvgPicture
                                                                 .asset(
                                                               "assets/icons/ic_notes.svg",
-                                                              color:
-                                                                  Colors.black,
+                                                              color: EnvoyColors
+                                                                  .textPrimary,
                                                               height: 14,
                                                             ),
                                                           ),
                                                           Padding(
                                                               padding:
-                                                                  EdgeInsets
-                                                                      .all(4)),
+                                                                  EdgeInsets.all(
+                                                                      EnvoySpacing
+                                                                          .xs)),
                                                           Text(
                                                             S().coincontrol_tx_history_tx_detail_note,
                                                             style: Theme.of(
@@ -784,8 +651,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                 .textTheme
                                                                 .bodySmall
                                                                 ?.copyWith(
-                                                                    color: Colors
-                                                                        .black,
+                                                                    color: EnvoyColors
+                                                                        .textPrimary,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w600),
@@ -937,7 +804,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
             color: EnvoyColors.accentPrimary,
             height: 12,
           ),
-          Padding(padding: EdgeInsets.only(left: 4)),
+          Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
           Text(
             "${title}",
             style: _titleStyle,

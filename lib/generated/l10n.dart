@@ -62,10 +62,10 @@ class S {
     );
   }
 
-  /// `Create New Envoy Backup`
+  /// `https://github.com/Foundation-Devices/envoy`
   String get _ {
     return Intl.message(
-      'Create New Envoy Backup',
+      'https://github.com/Foundation-Devices/envoy',
       name: '_',
       desc: '',
       args: [],
@@ -97,6 +97,16 @@ class S {
     return Intl.message(
       'Privacy Policy',
       name: 'about_privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show`
+  String get about_show {
+    return Intl.message(
+      'Show',
+      name: 'about_show',
       desc: '',
       args: [],
     );
@@ -812,6 +822,16 @@ class S {
     );
   }
 
+  /// `Change received`
+  String get coincontrol_tx_detail_change {
+    return Intl.message(
+      'Change received',
+      name: 'coincontrol_tx_detail_change',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Send Transaction`
   String get coincontrol_tx_detail_cta1 {
     return Intl.message(
@@ -1014,6 +1034,16 @@ class S {
     );
   }
 
+  /// `No change`
+  String get coincontrol_tx_detail_no_change {
+    return Intl.message(
+      'No change',
+      name: 'coincontrol_tx_detail_no_change',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cancel Transaction`
   String get coincontrol_tx_detail_passport_cta2 {
     return Intl.message(
@@ -1124,11 +1154,71 @@ class S {
     );
   }
 
-  /// `Confirmation in`
+  /// `Confirms in`
   String get coindetails_overlay_confirmationIn {
     return Intl.message(
-      'Confirmation in',
+      'Confirms in',
       name: 'coindetails_overlay_confirmationIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `day`
+  String get coindetails_overlay_confirmationIn_day {
+    return Intl.message(
+      'day',
+      name: 'coindetails_overlay_confirmationIn_day',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `days`
+  String get coindetails_overlay_confirmationIn_days {
+    return Intl.message(
+      'days',
+      name: 'coindetails_overlay_confirmationIn_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `month`
+  String get coindetails_overlay_confirmationIn_month {
+    return Intl.message(
+      'month',
+      name: 'coindetails_overlay_confirmationIn_month',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `week`
+  String get coindetails_overlay_confirmationIn_week {
+    return Intl.message(
+      'week',
+      name: 'coindetails_overlay_confirmationIn_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `weeks`
+  String get coindetails_overlay_confirmationIn_weeks {
+    return Intl.message(
+      'weeks',
+      name: 'coindetails_overlay_confirmationIn_weeks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boost`
+  String get coindetails_overlay_confirmation_boost {
+    return Intl.message(
+      'Boost',
+      name: 'coindetails_overlay_confirmation_boost',
       desc: '',
       args: [],
     );
@@ -1179,6 +1269,16 @@ class S {
     return Intl.message(
       'Confirmed',
       name: 'coindetails_overlay_status_confirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending`
+  String get coindetails_overlay_status_pending {
+    return Intl.message(
+      'Pending',
+      name: 'coindetails_overlay_status_pending',
       desc: '',
       args: [],
     );
@@ -2878,10 +2978,10 @@ class S {
     );
   }
 
-  /// `Biometric authentication temporarily disabled. Please wait 30 seconds and try again.`
+  /// `Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again.`
   String get launch_screen_lockedout_wait_subheading {
     return Intl.message(
-      'Biometric authentication temporarily disabled. Please wait 30 seconds and try again.',
+      'Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again.',
       name: 'launch_screen_lockedout_wait_subheading',
       desc: '',
       args: [],
@@ -2908,10 +3008,10 @@ class S {
     );
   }
 
-  /// `Search...`
+  /// `Passport`
   String get learning_center_search_input {
     return Intl.message(
-      'Search...',
+      'Passport',
       name: 'learning_center_search_input',
       desc: '',
       args: [],
@@ -4813,6 +4913,16 @@ class S {
     return Intl.message(
       'Increase the fee attached to your transaction to speed up confirmation time.',
       name: 'replaceByFee_coindetails_overlay_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. `
+  String get replaceByFee_warning_extraUTXO_overlay_modal_subheading {
+    return Intl.message(
+      'The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ',
+      name: 'replaceByFee_warning_extraUTXO_overlay_modal_subheading',
       desc: '',
       args: [],
     );
