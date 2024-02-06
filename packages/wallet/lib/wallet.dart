@@ -594,9 +594,6 @@ class Wallet {
       }
 
       return changed;
-    }).timeout(Duration(seconds: 30), onTimeout: () {
-      _currentlySyncing = false;
-      throw TimeoutException;
     });
   }
 
