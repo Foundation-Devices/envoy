@@ -192,6 +192,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     if (sendScreenUnit == AmountDisplayUnit.fiat) {
       unit = Settings().displayUnit;
     }
+    double cardRadius = 26;
 
     int totalInputAmount = inputTagData
         .map((e) => e.item2)
@@ -290,7 +291,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           height: 248,
                           duration: Duration(milliseconds: 250),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(cardRadius)),
                             border: Border.all(
                                 color: Colors.black,
                                 width: 2,
@@ -305,15 +307,15 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           ),
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(24)),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(cardRadius)),
                                 border: Border.all(
                                     color: accountAccentColor,
                                     width: 2,
                                     style: BorderStyle.solid)),
                             child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(24)),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(cardRadius - 2)),
                                 child: StripesBackground(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -325,7 +327,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                         padding:
                                             EdgeInsets.symmetric(horizontal: 8),
                                         margin: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 4),
+                                            vertical: 4, horizontal: 4),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(24)),
@@ -418,7 +420,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(
-                                                  EnvoySpacing.medium1)),
+                                                  EnvoySpacing.medium2 - 3)),
                                           color: Colors.white,
                                         ),
                                         child: Column(

@@ -85,8 +85,9 @@ class Faq extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
             child: Text(
               S().learning_center_title_faq,
-              style:
-                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.body
+                  .copyWith(color: EnvoyColors.textPrimary)
+                  .setWeight(FontWeight.w600),
             ),
           ),
         Material(
