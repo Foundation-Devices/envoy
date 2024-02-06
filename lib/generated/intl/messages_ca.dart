@@ -21,18 +21,20 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ca';
 
   static String m0(tagName) =>
-      "La teva ${tagName} etiqueta ara està buida. Voleu suprimir-lo?";
+      "La teva etiqueta ${tagName} està buida. Vols eliminar-la?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "OK": MessageLookupByLibrary.simpleMessage("D\'ACORD"),
-        "_": MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
+        "_": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Llicències de Codi Obert"),
         "about_privacyPolicy":
             MessageLookupByLibrary.simpleMessage("Política de Privacitat"),
+        "about_show": MessageLookupByLibrary.simpleMessage("Mostra"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Condicions d\'Ús"),
         "account_details_filter_tags_sortBy":
@@ -50,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_type_sublabel_testnet":
             MessageLookupByLibrary.simpleMessage("Testnet"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
-            "Creeu una cartera mòbil amb Magic Backups."),
+            "Creeu una cartera mòbil amb Còpia de Seguretat Màgica."),
         "accounts_empty_text_learn_more":
             MessageLookupByLibrary.simpleMessage("Comença"),
         "accounts_screen_walletType_Envoy":
@@ -86,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
             "Android fa una còpia de seguretat automàtica de les teves dades d\'Envoy cada 24 hores.\n\nPer assegurar-vos que la vostra primera còpia de seguretat s\'hagi completat, us recomanem que feu una còpia de seguretat manual al vostre dispositiu [[Configuració.]]"),
         "appstore_description": MessageLookupByLibrary.simpleMessage(
-            "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitati gestió de comptes. Utilitzeu Envoy juntament amb la cartera Passport per a la configuració, actualitzacions de firmware i molt més. Envoy ofereix les següents característiques:\n\n1. Còpies de Seguretat Màgiques. Posat en marxa amb l\'autocustodia en només 60 segons amb còpies de seguretat xifrades automàtiques. Clau Privada opcionals.\n\n2. Gestioneu la vostra cartera mòbil i els comptes de la cartera Passport a la mateixa aplicació.\n\n3. Envia i rep Bitcoin en una interfície amigable.\n\n4. Connecteu la vostra cartera Passport per a la configuració, les actualitzacions de microprogramari i els vídeos d\'assistència. Utilitzeu Envoy com a cartera connectada al vostre Passport.\n\n5. Codi obert totalment i preservació de la privadesacitat. \n\n6. De forma opcional, connecteu el vostre propi node Bitcoin."),
+            "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitati gestió de comptes. Utilitzeu Envoy juntament amb la cartera Passport per a la configuració, actualitzacions de firmware i molt més. Envoy ofereix les següents característiques:\n\n1. Còpies de Seguretat Màgiques. Posat en marxa amb l\'autocustodia en només 60 segons amb còpies de seguretat xifrades automàtiques. Clau Privada opcionals.\n\n2. Gestioneu la vostra cartera mòbil i els comptes de la cartera Passport a la mateixa aplicació.\n\n3. Envia i rep Bitcoin en una interfície amigable.\n\n4. Connecteu la vostra cartera Passport per a la configuració, les actualitzacions de microprogramari i els vídeos d\'assistència. Utilitzeu Envoy com a cartera connectada al vostre Passport.\n\n5. Codi obert totalment i preservació de la privacitat. \n\n6. De forma opcional, connecteu el vostre propi node Bitcoin."),
         "azteco_account_tx_history_pending_voucher":
             MessageLookupByLibrary.simpleMessage("Cupó Azteco pendent"),
         "azteco_connection_modal_fail_heading":
@@ -118,10 +120,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Esteu a punt de suprimir permanentment la vostra cartera Envoy.\n\nSi utilitzeu Magic Backups, la vostra Envoy Seed també es suprimirà d\'Android Auto Backup."),
         "backups_erase_wallets_and_backups_modal_1_2_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Esteu a punt de suprimir permanentment la vostra cartera Envoy. Si utilitzeu Magic Backups, el vostre Envoy Seed també s\'eliminarà de l\'iCloud Keychain."),
+                "Esteu a punt de suprimir permanentment la vostra cartera Envoy. Si utilitzeu Còpies de Seguretat Màgiques, la vostra clau privada d\'Envoy també s\'eliminarà del Clauer d\'iCloud."),
         "backups_erase_wallets_and_backups_modal_2_2_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Els comptes de Passport connectats no s\'eliminaran com a part d\'aquest procés. Abans d\'eliminar la cartera d\'Envoy, assegurem-nos que el vostre fitxer de recuperació i la còpia de seguretat estigui desat."),
+                "Els comptes de Passport connectats no s\'eliminaran com a part d\'aquest procés. Abans d\'eliminar la cartera d\'Envoy, assegurem-nos que la vostra Clau Privada i la Còpia de Seguretat estigui desat."),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostra les Paraules"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Comptes"),
@@ -180,6 +182,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostra els detalls"),
         "coincontrol_tx_detail_amount_to_sent":
             MessageLookupByLibrary.simpleMessage("Import a enviar"),
+        "coincontrol_tx_detail_change":
+            MessageLookupByLibrary.simpleMessage("Canvi rebut"),
         "coincontrol_tx_detail_cta1":
             MessageLookupByLibrary.simpleMessage("Enviar Transacció"),
         "coincontrol_tx_detail_cta2":
@@ -210,7 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Actualitzar la teva tarifa pot haver modificat la selecció de monedes. Si us plau, revisa-ho."),
         "coincontrol_tx_detail_fee_custom":
-            MessageLookupByLibrary.simpleMessage("Personalitzat"),
+            MessageLookupByLibrary.simpleMessage("Altres"),
         "coincontrol_tx_detail_fee_faster":
             MessageLookupByLibrary.simpleMessage("Més ràpid"),
         "coincontrol_tx_detail_fee_standard":
@@ -222,6 +226,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Algunes monedes més petites s\'han exclòs d\'aquesta transacció. A la tarifa escollida, costen més d\'incloure del que valen."),
+        "coincontrol_tx_detail_no_change":
+            MessageLookupByLibrary.simpleMessage("Sense canvis"),
         "coincontrol_tx_detail_passport_cta2":
             MessageLookupByLibrary.simpleMessage("Cancela la Transacció"),
         "coincontrol_tx_detail_passport_subheading":
@@ -247,6 +253,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirmació en"),
         "coindetails_overlay_confirmationIn":
             MessageLookupByLibrary.simpleMessage("Confirmació en"),
+        "coindetails_overlay_confirmationIn_day":
+            MessageLookupByLibrary.simpleMessage("dia"),
+        "coindetails_overlay_confirmationIn_days":
+            MessageLookupByLibrary.simpleMessage("dies"),
+        "coindetails_overlay_confirmationIn_month":
+            MessageLookupByLibrary.simpleMessage("Mes"),
+        "coindetails_overlay_confirmationIn_week":
+            MessageLookupByLibrary.simpleMessage("setmana"),
+        "coindetails_overlay_confirmationIn_weeks":
+            MessageLookupByLibrary.simpleMessage("setmanes"),
+        "coindetails_overlay_confirmation_boost":
+            MessageLookupByLibrary.simpleMessage("Augmenta"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Data"),
         "coindetails_overlay_heading":
@@ -257,6 +275,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Estat"),
         "coindetails_overlay_status_confirmed":
             MessageLookupByLibrary.simpleMessage("Confirmat"),
+        "coindetails_overlay_status_pending":
+            MessageLookupByLibrary.simpleMessage("Pendent"),
         "coindetails_overlay_tag":
             MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "coindetails_overlay_transactionID":
@@ -351,7 +371,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
             "Sí, Envoy es connecta utilitzant el protocol del servidor Electrum. Per connectar amb el teu propi servidor Electrum, escaneja el codi QR o introdueix l\'URL proporcionada a la configuració de xarxa en Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
-            "Envoy està dissenyat per oferir l\'experiència més fàcil d\'utilitzar de qualsevol cartera Bitcoin, sense comprometre la vostra privadesa. Amb les Còpies de Seguretat d\'Envoy, configureu una cartera mòbil de Bitcoin amb custòdia pròpia en 60 segons, sense paraules inicials! Els usuaris de Passport poden connectar els seus dispositius a Envoy per a una fàcil configuració, actualitzacions de firmware i una experiència senzilla de cartera de Bitcoin."),
+            "Envoy està dissenyat per oferir l\'experiència més fàcil d\'utilitzar de qualsevol cartera Bitcoin, sense comprometre la vostra privacitat. Amb les Còpies de Seguretat d\'Envoy, configureu una cartera mòbil de Bitcoin amb custòdia pròpia en 60 segons, sense paraules inicials! Els usuaris de Passport poden connectar els seus dispositius a Envoy per a una fàcil configuració, actualitzacions de firmware i una experiència senzilla de cartera de Bitcoin."),
         "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
             "Descarregar i instal·lar Envoy no requereix cap informació personal i Envoy pot connectar-se a internet mitjançant Tor, un protocol de preservació de la privacitat. Això significa que Foundation no té cap manera de saber qui ets. Envoy també permet als usuaris més avançats connectar-se al seu propi node de Bitcoin per eliminar qualsevol dependència dels servidors de lFoundation completament."),
         "envoy_faq_answer_21": MessageLookupByLibrary.simpleMessage(
@@ -361,11 +381,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sí. A partir de la versió 1.4.0, Envoy permet personalitzar totalment les comissions dels miners, així com dues opcions ràpides de selecció de comissions: \'Estàndard\' i \'Més ràpid\'. \'Estàndard\' té com a objectiu finalitzar la teva transacció en un termini de 60 minuts i \'Més ràpid\' en 10 minuts. Aquestes són estimacions basades en la congestió de la xarxa en el moment de construir la transacció i sempre et mostrarem el cost de les dues opcions abans de finalitzar la transacció."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
-            "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitat i gestió de comptes, com ara Magic Backups. Utilitzeu Envoy juntament amb la vostra cartera Passport per a la configuració, actualitzacions de firmware i molt més."),
+            "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitat i gestió de comptes, com ara les Còpies de Seguretat Màgiques. Utilitzeu Envoy juntament amb la vostra cartera Passport per a la configuració, actualitzacions de firmware i molt més."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
-            "Magic Backups és la manera més fàcil de configurar i fer una còpia de seguretat d\'una cartera mòbil de Bitcoin. Magic Backups emmagatzema la llavor de la teva cartera mòbil xifrada d\'extrem a extrem a iCloud Keychain o Android Auto Backup. Totes les dades de l\'aplicació estan xifrades per la vostra llavor i s\'emmagatzemen als servidors de Foundation. Configura la teva cartera en 60 segons i restaura automàticament si perds el telèfon!"),
+            "Còpies de seguretat Màgiques és la manera més fàcil de configurar i fer una còpia de seguretat d\'una cartera mòbil de Bitcoin. La Còpia de Seguretat Màgica emmagatzema la clau privada de la teva cartera mòbil xifrada d\'extrem a extrem a Clauer d\'iCloud o Còpia de Seguretat Automàtica d\'Android. Totes les dades de l\'aplicació estan xifrades per la vostra clau privada i s\'emmagatzemen als servidors de Foundation. Configura la teva cartera en 60 segons i restaura automàticament si perds el telèfon!"),
         "envoy_faq_answer_5": MessageLookupByLibrary.simpleMessage(
-            "Els Magic Backups són completament opcionals per als usuaris que vulguin aprofitar Envoy com a cartera mòbil. Si prefereixes gestionar les teves pròpies paraules clau de llavor de cartera mòbil i el fitxer de còpia de seguretat, selecciona \'Configurar manualment la clau privada\' durant la configuració de la cartera."),
+            "Les Còpies de Seguretat Màgiques són completament opcionals per als usuaris que vulguin aprofitar Envoy com a cartera mòbil. Si prefereixes gestionar les teves pròpies paraules clau de llavor de cartera mòbil i el fitxer de còpia de seguretat, selecciona \'Configurar manualment la clau privada\' durant la configuració de la cartera."),
         "envoy_faq_answer_6": MessageLookupByLibrary.simpleMessage(
             "El fitxer de còpia de seguretat de l\'Envoy conté la configuració de l\'aplicació, la informació del compte i les etiquetes de les transaccions. El fitxer està encriptat amb les paraules de l\'embrió de la teva cartera mòbil. Per als usuaris de Magic Backup, això s\'emmagatzema totalment encriptat en el servidor de Foundation. Els usuaris de l\'Envoy de còpia de seguretat manual poden descarregar i emmagatzemar el fitxer de còpia de seguretat on vulguin. Això pot ser qualsevol combinació del teu telèfon, un servidor personal de núvol o alguna cosa física com una targeta microSD o una unitat USB."),
         "envoy_faq_answer_7": MessageLookupByLibrary.simpleMessage(
@@ -408,10 +428,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Envoy permet la selecció personalitzada de tarifes de miners?"),
         "envoy_faq_question_3":
             MessageLookupByLibrary.simpleMessage("Què pot fer Envoy?"),
-        "envoy_faq_question_4":
-            MessageLookupByLibrary.simpleMessage("Què és Envoy Magic Backup?"),
+        "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(
+            "Què son les Còpies de Seguretat Màgiques d\'Envoy?"),
         "envoy_faq_question_5": MessageLookupByLibrary.simpleMessage(
-            "He d\'utilitzar Envoy Magic Backups?"),
+            "He d\'utilitzar les Còpies de Seguretat Màgiques d\'Envoy?"),
         "envoy_faq_question_6": MessageLookupByLibrary.simpleMessage(
             "Què és el fitxer de Còpia de Seguretat d\'Envoy?"),
         "envoy_faq_question_7":
@@ -484,7 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "A Passport, seleccioneu Restaura la Còpia de Seguretat"),
         "envoy_pp_restore_backup_password_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Desencripta la teva Còpia de Seguretat"),
+                "Desxifra la teva Còpia de Seguretat"),
         "envoy_pp_restore_backup_password_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Per desxifrar el fitxer de còpia de seguretat, introduïu el codi de còpia de seguretat de 20 dígits que se us mostra quan creeu el fitxer de còpia de seguretat.\n\nSi heu perdut o oblidat aquest codi, podeu restaurar-lo fent servir les teves paraules."),
@@ -494,18 +514,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "El vostre Fitxer de Còpia de Seguretat s\'ha restaurat correctament"),
         "envoy_pp_restore_seed_heading": MessageLookupByLibrary.simpleMessage(
-            "A Passport, seleccioneu Restaura les paraules"),
+            "A Passport, seleccioneu Restaura la Clau Privada"),
         "envoy_pp_restore_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Utilitza aquesta funció per restaurar una clau existent de 12 o 24 paraules."),
         "envoy_pp_restore_seed_success_heading":
             MessageLookupByLibrary.simpleMessage(
                 "La teva clau s\'ha restaurat correctament"),
         "envoy_pp_setup_intro_cta1":
-            MessageLookupByLibrary.simpleMessage("Crea una nova clau"),
+            MessageLookupByLibrary.simpleMessage("Crea una Nova Clau Privada"),
         "envoy_pp_setup_intro_cta2":
-            MessageLookupByLibrary.simpleMessage("Restaura la Clau Privada"),
+            MessageLookupByLibrary.simpleMessage("Restaurar Clau Privada"),
         "envoy_pp_setup_intro_cta3": MessageLookupByLibrary.simpleMessage(
-            "Restaura una còpia de seguretat"),
+            "Restaurar Còpia de Seguretat"),
         "envoy_pp_setup_intro_heading": MessageLookupByLibrary.simpleMessage(
             "Com vols configurar el teu Passport?"),
         "envoy_pp_setup_intro_subheading": MessageLookupByLibrary.simpleMessage(
@@ -555,9 +575,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Abans d\'eliminar la cartera d\'Envoy, buideu els vostres comptes.\nAneu a Còpies de Seguretat > Esborra Carteres i Còpies de Seguretat un cop hàgiu acabat."),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
-            "Aquest fitxer xifrat conté dades útils de la cartera, com ara etiquetes, comptes i configuració. Aquest fitxer està xifrat amb el vostre Envoy Seed. Assegureu-vos que la vostra clau tingui una còpia de seguretat segura."),
+            "Aquest fitxer xifrat conté dades útils de la cartera, com ara etiquetes, comptes i configuració. Aquest fitxer està xifrat amb el vostre Clau Privada d\'Envoy. Assegureu-vos que la vostra clau tingui una còpia de seguretat segura."),
         "export_backup_send_CTA1": MessageLookupByLibrary.simpleMessage(
-            "Descarrega el fitxer de Còpia de Seguretat"),
+            "Descarrega la Còpia de Seguretat"),
         "export_backup_send_CTA2":
             MessageLookupByLibrary.simpleMessage("Descartar"),
         "export_seed_modal_12_words_CTA2":
@@ -611,7 +631,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Resultats"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Cerca..."),
+            MessageLookupByLibrary.simpleMessage("Passport"),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -633,7 +653,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy està creant una clau privada de Bitcoin, que es guardarà encriptada d\'extrem a extrem en la còpia de seguretat del teu Android."),
         "magic_setup_generate_envoy_key_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Creant la Vostra Llavor d\'Envoy"),
+                "Creant la Vostra Clau Privada d\'Envoy"),
         "magic_setup_generate_envoy_key_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy està creant una clau segura per a la cartera de Bitcoin, que s\'emmagatzemarà encriptada d\'extrem a extrem en el teu Clauer d\'iCloud."),
@@ -653,7 +673,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Còpia De Seguretat Màgica Non Trobat"),
         "magic_setup_recovery_fail_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy no pot localitzar un fitxer Magic Backup al servidor Foundation. Si us plau, comproveu que esteu recuperant una cartera que abans utilitzava Magic Backups."),
+                "Envoy no pot localitzar la Còpia de Seguretat Màgica al servidor Foundation. Si us plau, comproveu que esteu recuperant una cartera que abans utilitzava la Còpia de Seguretat Màgica."),
         "magic_setup_recovery_fail_connectivity_heading":
             MessageLookupByLibrary.simpleMessage("Problema De Connexió"),
         "magic_setup_recovery_fail_connectivity_subheading":
@@ -671,7 +691,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy està penjant la còpia de seguretat de la cartera xifrada als servidors de Foundation.\n\nCom que la vostra còpia de seguretat està xifrada d\'extrem a extrem, Foundation no té accés a la vostra còpia de seguretat ni al coneixement del seu contingut."),
         "magic_setup_tutorial_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "La manera més senzilla de crear una nova cartera Bitcoin mantenint la teva sobirania. Magic Backups fa una còpia de seguretat automàtica de la teva cartera i de la teva configuració amb Android Auto Backup, 100% xifrat d\'extrem a extrem. [[Aprèn més]]."),
+                "La manera més senzilla de crear una nova cartera Bitcoin mantenint la teva sobirania.\nLEs Còpies de Seguretat Màgiques fa una còpia de seguretat automàtica de la teva cartera i de la teva configuració amb Còpia de Seguretat Automàtica d\'Android, 100% xifrat d\'extrem a extrem.\n\n[[Aprèn més]]."),
         "magic_setup_tutorial_heading": MessageLookupByLibrary.simpleMessage(
             "Còpies de Seguretat Màgiques"),
         "magic_setup_tutorial_ios_CTA1": MessageLookupByLibrary.simpleMessage(
@@ -700,7 +720,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_account_rename_heading":
             MessageLookupByLibrary.simpleMessage("Canvia el Nom del Compte"),
         "manage_device_deletePassportWarning": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts."),
+            "Estàs segur que vols desconnectar Passport?\nAixò eliminarà el dispositiu d\'Envoy juntament amb els comptes connectats."),
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage("Vinculat"),
         "manage_device_details_deviceSerial":
@@ -708,7 +728,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("DETALLS DEL DISPOSITIU"),
         "manage_device_details_menu_editDevice":
-            MessageLookupByLibrary.simpleMessage("EDITA EL NOM DEL DISPOSITIU"),
+            MessageLookupByLibrary.simpleMessage("EDITAR NOM DEL DISPOSITIU"),
         "manage_device_rename_modal_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Canvia el nom del teu Passport"),
@@ -721,13 +741,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Trieu Destinació"),
         "manual_setup_create_and_store_backup_heading":
-            MessageLookupByLibrary.simpleMessage(
-                "Desa el fitxer de còpia de seguretat d\'Envoy"),
+            MessageLookupByLibrary.simpleMessage("Desa el Fitxer d\'Envoy"),
         "manual_setup_create_and_store_backup_modal_CTA":
             MessageLookupByLibrary.simpleMessage("Ho entenc"),
         "manual_setup_create_and_store_backup_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "El vostre fitxer de còpia de seguretat d\'Envoy està xifrat amb les vostres paraules inicials. Si perdeu l\'accés a les vostres paraules inicials, no podreu recuperar la vostra còpia de seguretat."),
+                "El vostre fitxer de còpia de seguretat d\'Envoy està xifrat amb les vostres paraules clau inicials. Si perdeu l\'accés a les vostres paraules inicials, no podreu recuperar la vostra còpia de seguretat."),
         "manual_setup_create_and_store_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy ha generat la vostra còpia de seguretat xifrada. Aquesta còpia de seguretat conté dades útils de la cartera, com ara Etiquetes, Notes, comptes i configuracions.\n\nPodeu triar protegir-lo al núvol, un altre dispositiu o una opció d\'emmagatzematge extern com una targeta microSD."),
@@ -747,7 +766,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Verifiquem La Teva Clau Privada"),
         "manual_setup_generate_seed_verify_seed_quiz_1_4_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Verifiqueu la vostra Clau Privada"),
+                "Verifiqueu la Teva Clau Privada"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_invalid":
             MessageLookupByLibrary.simpleMessage("Entrada No Vàlida"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading":
@@ -769,7 +788,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Importar Còpia de Seguretat d\'Envoy"),
         "manual_setup_import_backup_fails_modal_heading":
             MessageLookupByLibrary.simpleMessage(
-                "No podem llegir Envoy Backup"),
+                "No podem llegir la còpia de Seguretat d\'Envoy"),
         "manual_setup_import_backup_fails_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Assegureu-vos que heu seleccionat el fitxer correcte."),
@@ -842,8 +861,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_recovery_success_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Importa la teva Clau Privada"),
-        "manual_setup_tutorial_CTA1":
-            MessageLookupByLibrary.simpleMessage("Genera una nova llavor"),
+        "manual_setup_tutorial_CTA1": MessageLookupByLibrary.simpleMessage(
+            "Genera una Nova Clau Privada"),
         "manual_setup_tutorial_CTA2":
             MessageLookupByLibrary.simpleMessage("Importar Clau"),
         "manual_setup_tutorial_heading": MessageLookupByLibrary.simpleMessage(
@@ -871,23 +890,21 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Desactivat per a la configuració manual de Claus Privades"),
         "manual_toggle_off_download_wallet_data":
             MessageLookupByLibrary.simpleMessage(
-                "Baixeu el fitxer de còpia de seguretat d\'Envoy"),
+                "Baixeu la Copia de Seguretat d\'Envoy"),
         "manual_toggle_off_view_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Veure Envoy Clau Privada"),
         "manual_toggle_on_seed_backedup_android_stored":
             MessageLookupByLibrary.simpleMessage(
-                "Emmagatzemat a Android Auto Backup"),
+                "Emmagatzemat a Còpia de seguretat Automàtica d\'Android"),
         "manual_toggle_on_seed_backedup_android_wallet_data":
-            MessageLookupByLibrary.simpleMessage(
-                "Fitxer de còpia de seguretat d\'Envoy"),
+            MessageLookupByLibrary.simpleMessage("Còpia de Seguretat d\'Envoy"),
         "manual_toggle_on_seed_backedup_android_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Envoy Clau Privada"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
-            MessageLookupByLibrary.simpleMessage(
-                "Fes una còpia de seguretat ara"),
+            MessageLookupByLibrary.simpleMessage("Fer Còpia de Seguretat ara"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
             MessageLookupByLibrary.simpleMessage(
-                "Emmagatzemat a l\'iCloud Keychain"),
+                "Emmagatzemat al Clauer d\'iCloud"),
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
             MessageLookupByLibrary.simpleMessage("als Servidors de Foundation"),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
@@ -898,7 +915,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "La còpia de seguretat d\'Envoy s\'ha completat."),
         "manual_toggle_on_seed_backup_now_modal_heading":
             MessageLookupByLibrary.simpleMessage(
-                "S\'està carregant la còpia de seguretat d\'Envoy"),
+                "Carregant Còpia de Seguretat d\'Envoy"),
         "manual_toggle_on_seed_backup_now_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Aquesta còpia de seguretat conté dispositius i comptes connectats, etiquetes i configuració d\'aplicacions. No conté informació de la teva clau privada.\n\nLes còpies de seguretat d\'Envoy estan xifrades d\'extrem a extrem, Foundation no té accés ni coneixement dels seus continguts.\n\nEnvoy us notificarà quan s\'hagi completat la càrrega."),
@@ -913,7 +930,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Còpia de Seguretat Automàtica d\'Android Pendent (un cop al dia)"),
         "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
-                "Còpia de seguretat pendent a l\'iCloud Keychain"),
+                "Còpia de Seguretat pendent al Clauer d\'iCloud"),
         "menu_about": MessageLookupByLibrary.simpleMessage("SOBRE"),
         "menu_backups":
             MessageLookupByLibrary.simpleMessage("CÒPIES DE SEGURETAT"),
@@ -931,12 +948,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "pair_new_device_QR_code_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Aquesta és una adreça de Bitcoin que pertany al teu Passport."),
-        "pair_new_device_address_cta2": MessageLookupByLibrary.simpleMessage(
-            "Contacta amb el servei tècnic"),
+        "pair_new_device_address_cta2":
+            MessageLookupByLibrary.simpleMessage("Contactar Servei Tècnic"),
         "pair_new_device_address_heading":
             MessageLookupByLibrary.simpleMessage("Adreça validada?"),
         "pair_new_device_address_subheading": MessageLookupByLibrary.simpleMessage(
-            "Si rebeu un missatge d\'èxit a Passport, la vostra configuració ja s\'ha completat. Si Passport no ha pogut verificar l\'adreça, torneu-ho a provar o poseu-vos en contacte amb el servei d\'assistència."),
+            "Si rebeu un missatge d\'èxit a Passport, la vostra configuració ja s\'ha completat. Si Passport no ha pogut verificar l\'adreça, torneu-ho a provar o poseu-vos en contacte amb el servei t\'écnic."),
         "pair_new_device_intro_connect_envoy_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Aquest pas permet a Envoy generar adreces de rebuda per Passport i proposar transaccions que Passport ha d\'autoritzar."),
@@ -954,7 +971,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Envoy està connectat al teu Passport."),
         "passport_welcome_screen_cta1":
-            MessageLookupByLibrary.simpleMessage("Configura un Passport nou"),
+            MessageLookupByLibrary.simpleMessage("Configurar un Passport nou"),
         "passport_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
             "Connecteu un Passport existent"),
         "passport_welcome_screen_cta3": MessageLookupByLibrary.simpleMessage(
@@ -986,15 +1003,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Millor\nRendiment"),
         "privacy_privacyMode_improvedPrivacy":
-            MessageLookupByLibrary.simpleMessage("Privadesa\nMillorada"),
+            MessageLookupByLibrary.simpleMessage("Privacitat\nMillorada"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Mode de Privacitat"),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
             "Tor s\'activarà [[ACTIVAT]] per millorar la privacitat. És possible que la connexió d\'Envoy no sigui eficient."),
         "privacy_setting_add_node_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Afegeix un node"),
+            MessageLookupByLibrary.simpleMessage("Afegeix Node"),
         "privacy_setting_clearnet_node_edit_note":
-            MessageLookupByLibrary.simpleMessage("Edita el node"),
+            MessageLookupByLibrary.simpleMessage("Editar Node"),
         "privacy_setting_clearnet_node_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "El teu Node està connectat a través de Clearnet."),
@@ -1014,7 +1031,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Com t\'agradaria que Envoy es connectés a Internet?"),
         "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "La connexió d\'Envoy serà fiable amb Tor activat [[OFF]]. Suggerit per a nous usuaris."),
+            "La connexió d\'Envoy serà fiable amb Tor activat [[APAGAT]]. Suggerit per a nous usuaris."),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage(
                 "Utilitzeu una Adreça Taproot"),
@@ -1027,11 +1044,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_tx_list_send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
-                "Inicia sessió a Google i restaura les teves dades de còpia de seguretat"),
+                "Inicia sessió a Google i restaura les teves dades de la teva còpia de seguretat"),
         "recovery_scenario_heading":
             MessageLookupByLibrary.simpleMessage("Com es Recupera?"),
         "recovery_scenario_instruction2": MessageLookupByLibrary.simpleMessage(
-            "Instala Envoy i toqueu \'Configura la cartera de l\'Envoy\'"),
+            "Instal·la Envoy i toca \"Configura la Cartera d\'Envoy\""),
         "recovery_scenario_ios_instruction1": MessageLookupByLibrary.simpleMessage(
             "Inicia sessió a iCloud i restaura la teva còpia de seguretat d\'iCloud"),
         "recovery_scenario_ios_instruction3": MessageLookupByLibrary.simpleMessage(
@@ -1041,7 +1058,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Aumenta la transacció"),
         "replaceByFee_boost_tx_boostFee":
-            MessageLookupByLibrary.simpleMessage("Aumenta la Transacció"),
+            MessageLookupByLibrary.simpleMessage("Acelerar Transacció"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "La vostra transacció està a punt per ser impulsada"),
         "replaceByFee_cancel_confirm_heading":
@@ -1064,6 +1081,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Augmenteu la tarifa adjunta a la vostra transacció per accelerar el temps de confirmació."),
+        "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. "),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_amount_enter_valid_address":
@@ -1166,8 +1186,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "Per habilitar un compte de Passport Taproot, assegureu-vos que esteu executant el firmware 2.3.0 o posterior i torneu a connectar el vostre Passport."),
         "torToast_learnMore_retryTorConnection":
-            MessageLookupByLibrary.simpleMessage(
-                "Torneu a provar la connexió Tor"),
+            MessageLookupByLibrary.simpleMessage("Reintentar Tor"),
         "torToast_learnMore_temporarilyDisableTor":
             MessageLookupByLibrary.simpleMessage("Desactiva Temporalment Tor"),
         "torToast_learnMore_warningBody": MessageLookupByLibrary.simpleMessage(
@@ -1176,10 +1195,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Problema per establir la connectivitat amb Tor"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy fa una còpia de seguretat automàtica i segura de la llavor de la cartera amb [[Android Auto Backup]]. La vostra llavor sempre està xifrada d\'extrem a extrem i mai és visible per a Google."),
+                "Envoy fa una còpia de seguretat automàtica i segura de la llavor de la cartera amb [[Còpia de Seguretat Automàtica d\'Android]]. La vostra llavor sempre està xifrada d\'extrem a extrem i mai és visible per a Google."),
         "wallet_security_modal_1_4_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy fa una còpia de seguretat automàtica i segura de la llavor de la cartera a [[iCloud Keychain.]] La teva llavor sempre està xifrada d\'extrem a extrem i mai no és visible per a Apple."),
+                "Envoy fa una còpia de seguretat automàtica i segura de la llavor de la cartera a [[Clauer iCloud.]] La teva llavor sempre està xifrada d\'extrem a extrem i mai no és visible per a Apple."),
         "wallet_security_modal_2_4_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Les dades de la vostra cartera, incloses etiquetes, notes, comptes i configuració, es fa una còpia de seguretat automàtica als servidors de Foundation.\n\nAquesta còpia de seguretat es xifra primer amb la clau privada de la vostra cartera, assegurant-vos que Foundation mai no pugui accedir a les vostres dades."),
@@ -1206,8 +1225,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("La Teva Cartera Està A Punt"),
         "wallet_setup_success_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy està configurat i preparat per al vostre Bitcoin!"),
-        "welcome_screen_ctA1":
-            MessageLookupByLibrary.simpleMessage("Configura Envoy Wallet"),
+        "welcome_screen_ctA1": MessageLookupByLibrary.simpleMessage(
+            "Configura la Cartera de l\'Envoy"),
         "welcome_screen_cta2":
             MessageLookupByLibrary.simpleMessage("Gestionar Passport"),
         "welcome_screen_heading":
