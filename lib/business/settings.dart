@@ -41,7 +41,7 @@ class Settings extends ChangeNotifier {
   // FD testnet server
   static const String TESTNET_ELECTRUM_SERVER =
       //"tcp://testnet.foundationdevices.com:50001";
-      "ssl://testnet.aranguren.org:51002"; // TODO: this is temporary, remove
+      "tcp://electrum.blockstream.info:60001"; // TODO: this is temporary, remove
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
