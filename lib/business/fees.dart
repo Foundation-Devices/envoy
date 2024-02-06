@@ -52,15 +52,22 @@ class Fees {
 
   @JsonKey(
       defaultValue: _defaultFees, toJson: _feesToJson, fromJson: _feesFromJson)
-  var fees = _defaultFees();
+  Map<Network, FeeRates> fees = _defaultFees();
 
   static const String FEE_RATE_PREFS = "fees";
   static final Fees _instance = Fees._internal();
 
-  static const _mempoolUrls = {
-    Network.Mainnet: "https://mempool.space/api/v1/fees/recommended",
-    Network.Testnet: "https://mempool.space/testnet/api/v1/fees/recommended",
-    Network.Signet: "https://mempool.space/signet/api/v1/fees/recommended"
+  static const _mempoolInstance = "https://mempool.space";
+  static const _mempoolRecommendedFeesEndpoints = {
+    Network.Mainnet: "$_mempoolInstance/api/v1/fees/recommended",
+    Network.Testnet: "$_mempoolInstance/testnet/api/v1/fees/recommended",
+    Network.Signet: "$_mempoolInstance/signet/api/v1/fees/recommended"
+  };
+
+  static const _mempoolBlocksFeesEndpoints = {
+    Network.Mainnet: "$_mempoolInstance/api/v1/fees/mempool-blocks",
+    Network.Testnet: "$_mempoolInstance/testnet/api/v1/fees/mempool-blocks",
+    Network.Signet: "$_mempoolInstance/signet/api/v1/fees/mempool-blocks"
   };
 
   factory Fees() {
@@ -86,8 +93,11 @@ class Fees {
 
   void _getRates() {
     // Just mainnet and testnet for now
-    _getMempoolRates(Network.Mainnet);
-    _getMempoolRates(Network.Testnet);
+    _getMempoolRecommendedRates(Network.Mainnet);
+    _getMempoolRecommendedRates(Network.Testnet);
+
+    _getMempoolBlocksFees(Network.Mainnet);
+    _getMempoolBlocksFees(Network.Testnet);
   }
 
   static restore() {
@@ -104,9 +114,9 @@ class Fees {
     _ls.prefs.setString(FEE_RATE_PREFS, json);
   }
 
-  _getMempoolRates(Network network) {
+  _getMempoolRecommendedRates(Network network) {
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolUrls[network]!)
+        .get(_mempoolRecommendedFeesEndpoints[network]!)
         .then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -124,6 +134,24 @@ class Fees {
         _storeRates();
       } else {
         throw Exception("Couldn't get mempool.space fees");
+      }
+    });
+  }
+
+  _getMempoolBlocksFees(Network network) {
+    HttpTor(Tor.instance, EnvoyScheduler().parallel)
+        .get(_mempoolBlocksFeesEndpoints[network]!)
+        .then((response) {
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        for (final block in json) {
+          fees[network]!
+              .mempoolBlocksMedianFeeRate
+              .add(block["medianFee"].toDouble());
+        }
+        _storeRates();
+      } else {
+        throw Exception("Couldn't get mempool.space blocks fees");
       }
     });
   }
