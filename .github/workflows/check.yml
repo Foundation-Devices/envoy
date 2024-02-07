@@ -36,6 +36,8 @@ jobs:
 
       - run: rustup --version
 
+      - run: rustup component add rustfmt
+
       - name: Verify Rust formatting
         run: cargo fmt --all -- --check
 
