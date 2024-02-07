@@ -38,6 +38,8 @@ jobs:
 
       - run: rustup component add rustfmt
 
+      - run: rustup component add clippy
+
       - name: Verify Rust formatting
         run: cargo fmt --all -- --check
 
