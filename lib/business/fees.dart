@@ -5,15 +5,45 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/fee_rates.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/util/tuple.dart';
 
 // Generated
 part 'fees.g.dart';
+
+final mempoolBlocksMedianFeeRateProvider =
+    Provider.family<List<double>, Network>((ref, network) {
+  return Fees().fees[network]?.mempoolBlocksMedianFeeRate ?? [];
+});
+
+final txEstimatedConfirmationTimeProvider =
+    Provider.family<int, Tuple<Transaction, Network>>((ref, txNetwork) {
+  final tx = txNetwork.item1;
+  final network = txNetwork.item2;
+
+  if (tx.vsize == null) {
+    return 0;
+  }
+
+  final feeRate = tx.fee / tx.vsize!;
+  final medianFeeRates = ref.watch(mempoolBlocksMedianFeeRateProvider(network));
+
+  int minutesToConfirmation = 0;
+  for (final blockFeeRate in medianFeeRates) {
+    if (feeRate > blockFeeRate) {
+      return minutesToConfirmation;
+    }
+    minutesToConfirmation += 10;
+  }
+
+  return minutesToConfirmation;
+});
 
 LocalStorage _ls = LocalStorage();
 

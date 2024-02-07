@@ -33,6 +33,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/util/tuple.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -66,6 +68,20 @@ class _TransactionsDetailsWidgetState
     //Calculate height periodically
     _timer =
         Timer.periodic(Duration(milliseconds: 100), _calculateContainerHeight);
+  }
+
+  String _getConfirmationTimeString(int minutes) {
+    String confirmationTime = "";
+
+    if (minutes < 60) {
+      confirmationTime = minutes.toString() + "m";
+    } else if (minutes >= 60 && minutes < 120) {
+      confirmationTime = "~1h";
+    } else {
+      confirmationTime = "~1day";
+    }
+
+    return S().coindetails_overlay_confirmationIn + " ~" + confirmationTime;
   }
 
   void _calculateContainerHeight(timeStamp) {
@@ -323,7 +339,12 @@ class _TransactionsDetailsWidgetState
                                 ),
                                 RBFPossible
                                     ? CoinTagListItem(
-                                        title: "Confirmation", // TODO: FIGMA
+                                        title: _getConfirmationTimeString(ref.watch(
+                                            txEstimatedConfirmationTimeProvider(
+                                                Tuple(
+                                                    tx,
+                                                    widget.account.wallet
+                                                        .network)))),
                                         icon: Icon(
                                           Icons.access_time,
                                           color: Colors.black,
