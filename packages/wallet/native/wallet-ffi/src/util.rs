@@ -23,8 +23,8 @@ use std::sync::{Mutex, MutexGuard};
 pub unsafe fn get_wallet_mutex(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> &'static mut Mutex<bdk::Wallet<Tree>> {
-        assert!(!wallet.is_null());
-        &mut *wallet
+    assert!(!wallet.is_null());
+    &mut *wallet
 }
 
 fn get_electrum_blockchain_config(

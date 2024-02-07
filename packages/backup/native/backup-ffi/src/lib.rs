@@ -336,9 +336,7 @@ async fn get_challenge_async(server_url: &str, proxy_port: i32) -> Option<Challe
             Ok(r) => Some(r),
             Err(_) => None,
         },
-        Err(_) => {
-            None
-        }
+        Err(_) => None,
     }
 }
 

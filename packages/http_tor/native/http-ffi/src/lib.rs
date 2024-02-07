@@ -162,9 +162,7 @@ pub unsafe extern "C" fn http_request(
 
     let url = unwrap_or_return!(CStr::from_ptr(url).to_str(), err_ret);
 
-    let client: reqwest::blocking::Client =
-
-    if tor_port > 0 {
+    let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = unwrap_or_return!(
             reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &tor_port.to_string()),
             err_ret

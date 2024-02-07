@@ -22,10 +22,7 @@ use bdk::database::{ConfigurableDatabase, Database, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{
-    electrum_client, miniscript, Balance, FeeRate, KeychainKind, SignOptions,
-    SyncOptions,
-};
+use bdk::{electrum_client, miniscript, Balance, FeeRate, KeychainKind, SignOptions, SyncOptions};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -605,16 +602,14 @@ pub unsafe extern "C" fn wallet_get_transactions(
 
             for output in outputs_iter.clone() {
                 let is_mine = wallet.is_mine(&output.script_pubkey).unwrap_or(false);
-                if (is_mine && transaction.received > 0)
-                    || (!is_mine && transaction.sent > 0)
-                {
+                if (is_mine && transaction.received > 0) || (!is_mine && transaction.sent > 0) {
                     ret = match Address::from_script(&output.script_pubkey, wallet.network()) {
                         Ok(a) => a,
                         Err(_) => {
                             continue; // keep looking
                         }
                     }
-                        .to_string();
+                    .to_string();
 
                     break;
                 }
@@ -631,8 +626,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
                         Err(_) => "".to_string(), // These are OP_RETURNS
                     },
                 )
-                    .unwrap()
-                    .into_raw() as *const c_char
+                .unwrap()
+                .into_raw() as *const c_char
             })
             .collect();
 
@@ -1224,8 +1219,8 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
                     .unwrap()
                     .to_string(),
             )
-                .unwrap()
-                .into_raw() as *const c_char,
+            .unwrap()
+            .into_raw() as *const c_char,
         })
         .collect();
 
@@ -1319,7 +1314,7 @@ pub unsafe extern "C" fn wallet_sign_offline(
         network.into(),
         MemoryDatabase::new(),
     )
-        .unwrap();
+    .unwrap();
 
     let data = base64::decode(CStr::from_ptr(psbt).to_str().unwrap()).unwrap();
     let mut psbt = deserialize::<PartiallySignedTransaction>(&data).unwrap();
