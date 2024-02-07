@@ -36,7 +36,6 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
-import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 
@@ -518,10 +517,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       await Future.delayed(Duration(seconds: 4));
 
+      int port = Settings().getPort(account.wallet.network);
+
       final txid = await account.wallet.broadcastTx(
-          Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port,
-          psbt.rawTx);
+          Settings().electrumAddress(account.wallet.network), port, psbt.rawTx);
 
       await Future.delayed(Duration(seconds: 1));
       try {

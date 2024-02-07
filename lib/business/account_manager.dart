@@ -24,7 +24,6 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
-import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
@@ -144,11 +143,11 @@ class AccountManager extends ChangeNotifier {
 
   Future<Account> _syncAccount(Account account) async {
     bool? changed = null;
+    int port = Settings().getPort(account.wallet.network);
 
     try {
-      changed = await account.wallet.sync(
-          Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port);
+      changed = await account.wallet
+          .sync(Settings().electrumAddress(account.wallet.network), port);
     } on Exception catch (e) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {

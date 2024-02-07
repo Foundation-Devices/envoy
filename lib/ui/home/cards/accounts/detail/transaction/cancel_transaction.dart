@@ -27,7 +27,6 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
-import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 
 class TxCancelState {
@@ -485,10 +484,11 @@ class _CancelTransactionProgressState
     if (account == null) {
       return;
     }
+    int port = Settings().getPort(account.wallet.network);
     try {
       await account.wallet.broadcastTx(
           Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port,
+          port,
           widget.cancelTx.rawTx);
       await Future.delayed(Duration(seconds: 1));
       await EnvoyStorage().addCancelState(TxCancelState(
