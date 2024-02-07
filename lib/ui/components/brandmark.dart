@@ -7,7 +7,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 
 enum BrandmarkStyle {
   normal,
-  endMark,
+  endMark, // Mark used to signify the end of a list or in other contexts
 }
 
 class Brandmark extends StatelessWidget {
@@ -30,7 +30,7 @@ class Brandmark extends StatelessWidget {
       case BrandmarkStyle.normal:
         filterColor = Colors.transparent;
         opacity = 1.0;
-        blendMode = BlendMode.saturation; //modulate, saturation!
+        blendMode = BlendMode.saturation;
         break;
       case BrandmarkStyle.endMark:
         filterColor = EnvoyColors.surface1;
