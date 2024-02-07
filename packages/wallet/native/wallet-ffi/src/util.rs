@@ -23,11 +23,8 @@ use std::sync::{Mutex, MutexGuard};
 pub unsafe fn get_wallet_mutex(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
 ) -> &'static mut Mutex<bdk::Wallet<Tree>> {
-    let wallet = {
         assert!(!wallet.is_null());
         &mut *wallet
-    };
-    wallet
 }
 
 fn get_electrum_blockchain_config(
@@ -67,26 +64,25 @@ pub fn get_electrum_client(
     tor_port: i32,
     electrum_address: &str,
 ) -> Result<Client, electrum_client::Error> {
-    let config: electrum_client::Config;
-    if tor_port > 0 {
+    let config: electrum_client::Config = if tor_port > 0 {
         let tor_config = Socks5Config {
             addr: "127.0.0.1:".to_owned() + &tor_port.to_string(),
             credentials: None,
         };
-        config = ConfigBuilder::new()
+        ConfigBuilder::new()
             .validate_domain(false)
             .socks5(Some(tor_config))
             .unwrap()
-            .build();
+            .build()
     } else {
-        config = ConfigBuilder::new()
+        ConfigBuilder::new()
             .validate_domain(false)
             .socks5(None)
             .unwrap()
             .timeout(Some(5))
             .unwrap()
-            .build();
-    }
+            .build()
+    };
 
     Client::from_config(electrum_address, config)
 }
@@ -121,17 +117,17 @@ pub fn psbt_extract_details<T: BatchDatabase>(
         })
         .sum();
 
-    let encoded = base64::encode(&serialize(&psbt));
+    let encoded = base64::encode(serialize(&psbt));
     let psbt = CString::new(encoded).unwrap().into_raw();
 
-    return Psbt {
+    Psbt {
         sent,
         received,
         fee: inputs_value - sent - received,
         base64: psbt,
         txid: CString::new(tx.txid().to_hex()).unwrap().into_raw(),
         raw_tx: CString::new(raw_tx).unwrap().into_raw(),
-    };
+    }
 }
 
 pub unsafe fn extract_utxo_list(utxos: *const UtxoList) -> Vec<OutPoint> {
@@ -154,7 +150,7 @@ pub fn build_tx(
     fee_absolute: Option<u64>,
     wallet: &MutexGuard<bdk::Wallet<Tree>>,
     send_to: Address,
-    must_spend: &Vec<OutPoint>,
+    must_spend: &[OutPoint],
     dont_spend: &Vec<OutPoint>,
 ) -> Result<(PartiallySignedTransaction, TransactionDetails), bdk::Error> {
     let mut builder = wallet.build_tx();
@@ -164,7 +160,7 @@ pub fn build_tx(
         .only_witness_utxo()
         .add_recipient(send_to.script_pubkey(), amount)
         .enable_rbf()
-        .add_utxos(&*must_spend)
+        .add_utxos(must_spend)
         .unwrap();
 
     match fee_absolute {

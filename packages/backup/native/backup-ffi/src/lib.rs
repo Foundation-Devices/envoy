@@ -242,7 +242,7 @@ fn encrypt_backup(files: Vec<(&str, &str)>, secret: &StaticSecret) -> Vec<u8> {
     // Default is Compression + Encryption, to avoid mistakes
     let mut config = ArchiveWriterConfig::default();
     // The use of multiple public keys is supported
-    config.add_public_keys(&vec![secret.into()]);
+    config.add_public_keys(&[secret.into()]);
     {
         // Create the Writer
         let mut mla = ArchiveWriter::from_config(&mut buf, config).unwrap();
@@ -337,7 +337,7 @@ async fn get_challenge_async(server_url: &str, proxy_port: i32) -> Option<Challe
             Err(_) => None,
         },
         Err(_) => {
-            return None;
+            None
         }
     }
 }
