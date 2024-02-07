@@ -275,7 +275,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                       Container(
                         padding: EdgeInsets.all(EnvoySpacing.small),
                         child: AnimatedContainer(
-                          height: 260,
+                          height: 275,
                           duration: Duration(milliseconds: 250),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(
