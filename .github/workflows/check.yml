@@ -39,7 +39,7 @@ jobs:
       - name: Verify Rust formatting
         run: cargo fmt --all -- --check
 
-      - name: Catching common Rust mistakes
+      - name: Catch common Rust mistakes
         run: cargo clippy -Dwarnings
 
       - name: Run Rust tests
