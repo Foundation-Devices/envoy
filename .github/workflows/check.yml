@@ -40,7 +40,7 @@ jobs:
         run: cargo fmt --all -- --check
 
       - name: Catching common Rust mistakes
-        runt: cargo clippy -Dwarnings
+        run: cargo clippy -Dwarnings
 
       - name: Run Rust tests
         run: cargo test
