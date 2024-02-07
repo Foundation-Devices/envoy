@@ -107,15 +107,13 @@ pub unsafe extern "C" fn http_get_file(
 ) -> *mut JoinHandle<()> {
     let path = CStr::from_ptr(path).to_str().unwrap();
     let url = CStr::from_ptr(url).to_str().unwrap();
-    let client: reqwest::Client;
-
-    if tor_port > 0 {
+    let client: reqwest::Client = if tor_port > 0 {
         let proxy =
             reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &tor_port.to_string()).unwrap();
-        client = reqwest::Client::builder().proxy(proxy).build().unwrap();
+        reqwest::Client::builder().proxy(proxy).build().unwrap()
     } else {
-        client = reqwest::Client::builder().build().unwrap();
-    }
+        reqwest::Client::builder().build().unwrap()
+    };
 
     let rt = RUNTIME.as_ref().unwrap();
 
@@ -135,7 +133,7 @@ async fn http_get_file_async(path: &str, url: &str, client: reqwest::Client, iso
     let isolate = Isolate::new(isolate_port);
 
     while let Some(chunk) = res.chunk().await.unwrap() {
-        file.write(&chunk).unwrap();
+        file.write_all(&chunk).unwrap();
         let new_size = min(downloaded + (chunk.len() as u64), total_size);
         downloaded = new_size;
 
@@ -164,20 +162,18 @@ pub unsafe extern "C" fn http_request(
 
     let url = unwrap_or_return!(CStr::from_ptr(url).to_str(), err_ret);
 
-    let client: reqwest::blocking::Client;
-
-    if tor_port > 0 {
+    let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = unwrap_or_return!(
             reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &tor_port.to_string()),
             err_ret
         );
-        client = unwrap_or_return!(
+        unwrap_or_return!(
             reqwest::blocking::Client::builder().proxy(proxy).build(),
             err_ret
-        );
+        )
     } else {
-        client = unwrap_or_return!(reqwest::blocking::Client::builder().build(), err_ret);
-    }
+        unwrap_or_return!(reqwest::blocking::Client::builder().build(), err_ret)
+    };
 
     let body = unwrap_or_return!(CStr::from_ptr(body).to_str(), err_ret);
 
@@ -225,18 +221,16 @@ pub unsafe extern "C" fn http_post(uri: *const c_char) {
 
 #[no_mangle]
 pub unsafe extern "C" fn http_get_ip(tor_port: i32) -> *const c_char {
-    let client: reqwest::blocking::Client;
-
-    if tor_port > 0 {
+    let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy =
             reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &tor_port.to_string()).unwrap();
-        client = reqwest::blocking::Client::builder()
+        reqwest::blocking::Client::builder()
             .proxy(proxy)
             .build()
-            .unwrap();
+            .unwrap()
     } else {
-        client = reqwest::blocking::Client::builder().build().unwrap();
-    }
+        reqwest::blocking::Client::builder().build().unwrap()
+    };
 
     let response = client.get("https://icanhazip.com").send().unwrap();
     CString::new(response.text().unwrap()).unwrap().into_raw()

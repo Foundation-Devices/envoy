@@ -153,7 +153,7 @@ unsafe fn u8_to_char_array(message: Vec<u8>) -> *mut CharArray {
 pub unsafe extern "C" fn decode_single_part(value: *const c_char) -> *const CharArray {
     let c_string = { CStr::from_ptr(value) };
 
-    let parsed_ur = UR::parse(&c_string.to_str().unwrap()).unwrap();
+    let parsed_ur = UR::parse(c_string.to_str().unwrap()).unwrap();
     let decoded = match bytewords::decode(parsed_ur.as_bytewords().unwrap(), Style::Minimal) {
         Ok(d) => d,
         Err(e) => {

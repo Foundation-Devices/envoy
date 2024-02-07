@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// These are all because of FFI's inherent unsafety
+#![allow(clippy::drop_copy, clippy::forget_copy, clippy::mut_mutex_lock)]
+
 #[macro_use]
 extern crate log;
 
@@ -14,15 +17,12 @@ use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 
-use bdk::bitcoin::{Address, Network, OutPoint, Script, Txid};
+use bdk::bitcoin::{Address, Network, OutPoint, Txid};
 use bdk::database::{ConfigurableDatabase, Database, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{
-    electrum_client, miniscript, Balance, FeeRate, KeychainKind, LocalUtxo, SignOptions,
-    SyncOptions, TransactionDetails, TxBuilder,
-};
+use bdk::{electrum_client, miniscript, Balance, FeeRate, KeychainKind, SignOptions, SyncOptions};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -43,8 +43,6 @@ use bdk::keys::{
 };
 use bdk::miniscript::psbt::PsbtExt;
 use bdk::psbt::PsbtUtils;
-use bdk::wallet::coin_selection::DefaultCoinSelectionAlgorithm;
-use bdk::wallet::tx_builder::ChangeSpendPolicy;
 use bip39::{Language, Mnemonic};
 use std::sync::{Mutex, MutexGuard};
 
@@ -59,9 +57,9 @@ pub enum NetworkType {
     Regtest,
 }
 
-impl Into<Network> for NetworkType {
-    fn into(self) -> Network {
-        match self {
+impl From<NetworkType> for Network {
+    fn from(val: NetworkType) -> Self {
+        match val {
             NetworkType::Mainnet => Network::Bitcoin,
             NetworkType::Testnet => Network::Testnet,
             NetworkType::Signet => Network::Signet,
@@ -70,9 +68,9 @@ impl Into<Network> for NetworkType {
     }
 }
 
-impl Into<String> for NetworkType {
-    fn into(self) -> String {
-        match self {
+impl From<NetworkType> for String {
+    fn from(val: NetworkType) -> Self {
+        match val {
             NetworkType::Mainnet => "mainnet".to_string(),
             NetworkType::Testnet => "testnet".to_string(),
             NetworkType::Signet => "signet".to_string(),
@@ -328,7 +326,7 @@ pub unsafe extern "C" fn wallet_derive(
     let secp = Secp256k1::new();
 
     // Derive
-    let xprv = match xkey.into_xprv(network.clone().into()) {
+    let xprv = match xkey.into_xprv(network.into()) {
         None => {
             return error_return;
         }
@@ -373,18 +371,18 @@ pub unsafe extern "C" fn wallet_derive(
         } else if private {
             init(
                 network,
-                &*name,
-                &*external_prv_descriptor,
-                &*internal_prv_descriptor,
-                &*wallet_dir,
+                &name,
+                &external_prv_descriptor,
+                &internal_prv_descriptor,
+                &wallet_dir,
             )
         } else {
             init(
                 network,
-                &*name,
-                &*external_pub_descriptor,
-                &*internal_pub_descriptor,
-                &*wallet_dir,
+                &name,
+                &external_pub_descriptor,
+                &internal_pub_descriptor,
+                &wallet_dir,
             )
         }
     };
@@ -538,7 +536,7 @@ pub unsafe extern "C" fn wallet_get_server_features(
 
     match client.server_features() {
         Ok(f) => {
-            let genesis_hash = f.genesis_hash.clone();
+            let genesis_hash = f.genesis_hash;
 
             // Freed on Dart side
             std::mem::forget(genesis_hash);
@@ -584,8 +582,8 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 confirmation_time = 0;
             }
             Some(block_time) => {
-                confirmation_height = block_time.height.clone();
-                confirmation_time = block_time.timestamp.clone();
+                confirmation_height = block_time.height;
+                confirmation_time = block_time.timestamp;
             }
         }
 
@@ -604,9 +602,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
 
             for output in outputs_iter.clone() {
                 let is_mine = wallet.is_mine(&output.script_pubkey).unwrap_or(false);
-                if (is_mine.clone() && transaction.received.clone() > 0)
-                    || (!is_mine && transaction.sent.clone() > 0)
-                {
+                if (is_mine && transaction.received > 0) || (!is_mine && transaction.sent > 0) {
                     ret = match Address::from_script(&output.script_pubkey, wallet.network()) {
                         Ok(a) => a,
                         Err(_) => {
@@ -775,16 +771,13 @@ pub unsafe extern "C" fn wallet_create_psbt(
             };
 
             // Always try signing
-            let _finalized = match wallet.sign(&mut psbt, sign_options) {
-                Ok(f) => f,
-                Err(_) => false,
-            };
+            wallet.sign(&mut psbt, sign_options).unwrap_or(false);
 
             util::psbt_extract_details(&wallet, &psbt)
         }
         Err(e) => {
             update_last_error(e);
-            return error_return;
+            error_return
         }
     }
 }
@@ -814,7 +807,7 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     tx_builder.fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
     tx_builder.enable_rbf();
 
-    for outpoint in dont_spend.clone() {
+    for outpoint in dont_spend {
         tx_builder.add_unspendable(outpoint);
     }
 
@@ -827,16 +820,13 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
             };
 
             // Always try signing
-            let _finalized = match wallet.sign(&mut psbt, sign_options) {
-                Ok(f) => f,
-                Err(_) => false,
-            };
+            wallet.sign(&mut psbt, sign_options).unwrap_or(false);
 
             util::psbt_extract_details(&wallet, &psbt)
         }
         Err(e) => {
             update_last_error(e);
-            return error_return;
+            error_return
         }
     }
 }
@@ -885,7 +875,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
             );
 
-            /// find min fee rate
+            // find min fee rate
             for outpoint in dont_spend.clone() {
                 tx_builder.add_unspendable(outpoint);
             }
@@ -894,7 +884,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 current_fee_rate.as_sat_per_vb() + 1.0,
             ));
 
-            let mut min_fee_rate = 0.0;
+            let min_fee_rate;
 
             match tx_builder.finish() {
                 Ok((psbt, _)) => {
@@ -912,40 +902,34 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                     return error_return;
                 }
             };
+            // end of min fee rate
 
-            /// end of min fee rate
-
-            /// total amount to be spent
+            // total amount to be spent
             let mut amount = 0;
 
             for out in transaction.output {
                 //if output pub key not belongs to wallet
-                if (wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) == false) {
+                if !wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) {
                     amount += out.value
                 }
             }
 
-            /// total blocked amount from dont_spend
+            // total blocked amount from dont_spend
             let mut blocked_amount: u64 = 0;
 
             for outpoint in dont_spend.clone() {
                 let utxo = wallet.get_utxo(outpoint);
-                match utxo {
-                    Ok(utxo) => match utxo {
-                        Some(utxo) => {
-                            blocked_amount = utxo.txout.value + blocked_amount;
-                        }
-                        None => {}
-                    },
-                    Err(_) => {}
+                if let Ok(Some(utxo)) = utxo {
+                    blocked_amount += utxo.txout.value;
                 }
             }
 
             let balance = get_total_balance(wallet.get_balance().unwrap());
 
-            let available_balance = (balance - blocked_amount);
-            /// spend not possible if available balance is less than amount
-            if (available_balance < amount || available_balance <= 0) {
+            let available_balance = balance - blocked_amount;
+
+            // spend not possible if available balance is less than amount
+            if available_balance < amount || available_balance == 0 {
                 return RBFfeeRates {
                     min_fee_rate: -1.2,
                     max_fee_rate: 0.0,
@@ -953,14 +937,14 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             }
             let mut max_fee = available_balance - amount;
 
-            if (max_fee == 0) {
+            if max_fee == 0 {
                 return RBFfeeRates {
                     min_fee_rate: -1.2,
                     max_fee_rate: 0.0,
                 };
             }
 
-            ///prevent infinite loop
+            // prevent infinite loop
             let mut rounds = 1;
             loop {
                 let mut tx_builder = unwrap_or_return!(
@@ -976,7 +960,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
                 tx_builder.fee_absolute(max_fee);
 
-                if (rounds >= 5) {
+                if rounds >= 5 {
                     return RBFfeeRates {
                         min_fee_rate: -1.5,
                         max_fee_rate: max_fee as f64,
@@ -992,7 +976,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                             Some(r) => {
                                 return RBFfeeRates {
                                     max_fee_rate: r.as_sat_per_vb() as f64,
-                                    min_fee_rate: min_fee_rate,
+                                    min_fee_rate,
                                 };
                             }
                         };
@@ -1051,7 +1035,7 @@ pub unsafe extern "C" fn wallet_cancel_tx(
             let mut target_fee_rate =
                 FeeRate::from_sat_per_vb((next_block_fee_rate * 100000.0) as f32).as_sat_per_vb();
 
-            if (current_fee_rate.as_sat_per_vb() >= target_fee_rate) {
+            if current_fee_rate.as_sat_per_vb() >= target_fee_rate {
                 target_fee_rate = current_fee_rate.as_sat_per_vb() + 1.0;
             }
 
@@ -1067,9 +1051,9 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                 utxo_list.push(input.previous_output);
             }
             return match tx_builder.add_utxos(&utxo_list) {
-                Ok(builder) => {
-                    /// add blocked utxo as unspendable
-                    for outpoint in dont_spend.clone() {
+                Ok(_builder) => {
+                    // add blocked utxo as unspendable
+                    for outpoint in dont_spend {
                         tx_builder.add_unspendable(outpoint);
                     }
 
@@ -1086,10 +1070,7 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                             };
 
                             // Always try signing
-                            let _finalized = match wallet.sign(&mut psbt, sign_options) {
-                                Ok(f) => f,
-                                Err(_) => false,
-                            };
+                            wallet.sign(&mut psbt, sign_options).unwrap_or(false);
 
                             util::psbt_extract_details(&wallet, &psbt)
                         }
@@ -1163,7 +1144,7 @@ pub unsafe extern "C" fn wallet_decode_psbt(
             let finalized_psbt = match PsbtExt::finalize(psbt, &secp) {
                 Ok(x) => x,
                 Err(e) => {
-                    let (psbt, errors) = e;
+                    let (_psbt, errors) = e;
                     for error in errors {
                         update_last_error(error);
                     }
@@ -1205,7 +1186,7 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
 
     let mut wallet_instance: Option<MutexGuard<bdk::Wallet<Tree>>> = None;
 
-    if (!wallet.is_null()) {
+    if !wallet.is_null() {
         wallet_instance = Some(util::get_wallet_mutex(wallet).lock().unwrap());
     }
 
@@ -1213,7 +1194,7 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
         .output
         .iter()
         .map(|o| RawTransactionOutput {
-            amount: o.value.clone(),
+            amount: o.value,
             ///this is a static function we dont have a wallet context
             path: match &wallet_instance {
                 None => OutputPath::NotMine,
@@ -1250,9 +1231,8 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
     let inputs: Vec<_> = decoded_tx
         .input
         .iter()
-        .into_iter()
         .map(|i| RawTransactionInput {
-            previous_output_index: i.previous_output.vout.clone(),
+            previous_output_index: i.previous_output.vout,
             previous_output: CString::new(format!("{}", i.previous_output.txid))
                 .unwrap()
                 .into_raw() as *const c_char,
@@ -1290,7 +1270,7 @@ pub unsafe extern "C" fn wallet_broadcast_tx(
     let hex_tx = unwrap_or_return!(CStr::from_ptr(tx).to_str(), error_return);
     let raw_tx = unwrap_or_return!(hex::decode(hex_tx), error_return);
 
-    let tx: bdk::bitcoin::Transaction = unwrap_or_return!(deserialize(&*raw_tx), error_return);
+    let tx: bdk::bitcoin::Transaction = unwrap_or_return!(deserialize(&raw_tx), error_return);
     let txid = unwrap_or_return!(client.transaction_broadcast(&tx), error_return);
 
     unwrap_or_return!(CString::new(txid.to_string()), error_return).into_raw()
