@@ -87,7 +87,7 @@ class _TransactionsDetailsWidgetState
   void _calculateContainerHeight(timeStamp) {
     if (mounted) {
       ///ensures we only set of the height changes
-      double nextHeight = 44 + (_scrollController.position.extentTotal);
+      double nextHeight = 64 + (_scrollController.position.extentTotal);
       if (nextHeight != containerHeight)
         setState(() {
           containerHeight = nextHeight;
@@ -473,7 +473,7 @@ class _TransactionsDetailsWidgetState
                 EnvoyAmount(
                     account: widget.account,
                     amountSats: tx.fee,
-                    amountWidgetStyle: AmountWidgetStyle.singleLine),
+                    amountWidgetStyle: AmountWidgetStyle.normal),
               ],
             ),
     );
@@ -486,7 +486,7 @@ class _TransactionsDetailsWidgetState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             flex: 1,
