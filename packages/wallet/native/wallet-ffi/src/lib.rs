@@ -118,6 +118,7 @@ pub struct Transaction {
     inputs_len: u8,
     inputs: *const *const c_char,
     address: *const c_char,
+    vsize: usize,
 }
 
 #[repr(C)]
@@ -595,6 +596,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
             }
         };
 
+        let vsize = tx.vsize();
         let outputs_iter = tx.output.into_iter();
 
         let address = {
@@ -665,6 +667,7 @@ pub unsafe extern "C" fn wallet_get_transactions(
             inputs_len,
             inputs: inputs_ptr,
             address: CString::new(address).unwrap().into_raw(),
+            vsize,
         };
 
         transactions_vec.push(tx);

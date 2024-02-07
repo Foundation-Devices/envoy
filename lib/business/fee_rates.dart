@@ -20,6 +20,8 @@ class FeeRates {
   double electrumFastRate = 0;
   double electrumSlowRate = 0;
 
+  List<double> mempoolBlocksMedianFeeRate = [];
+
   // Generated
   factory FeeRates.fromJson(Map<String, dynamic> json) =>
       _$FeeRatesFromJson(json);
