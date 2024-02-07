@@ -6,7 +6,7 @@ name: Check
 
 on:
   pull_request:
-    branches: [ main, dev-v0.1.0 ]
+    branches: [ main ]
 
 jobs:
   check:
@@ -38,6 +38,9 @@ jobs:
 
       - name: Verify Rust formatting
         run: cargo fmt --all -- --check
+
+      - name: Catching common Rust mistakes
+        runt: cargo clippy -Dwarnings
 
       - name: Run Rust tests
         run: cargo test
