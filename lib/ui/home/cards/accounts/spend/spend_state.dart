@@ -101,11 +101,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   Future<bool> validate(ProviderContainer container,
       {bool settingFee = false}) async {
-    String sendTo = container.read(spendAddressProvider);
-    int amount = container.read(spendAmountProvider);
-    int spendableBalance = container.read(totalSpendableAmountProvider);
-    num feeRate = container.read(spendFeeRateProvider);
-    Account? account = container.read(selectedAccountProvider);
+    final String sendTo = container.read(spendAddressProvider);
+    final int amount = container.read(spendAmountProvider);
+    final int spendableBalance = container.read(totalSpendableAmountProvider);
+    final num feeRate = container.read(spendFeeRateProvider);
+    final Account? account = container.read(selectedAccountProvider);
 
     if (sendTo.isEmpty ||
         amount == 0 ||
@@ -152,12 +152,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: null);
 
-      if (sendMax) {
-        state = state.clone()
-          ..mode = SpendMode.sendMax
-          ..uneconomicSpends = (psbt.sent + psbt.fee) != amount;
-      }
-
       ///get max fee rate that we can use on this transaction
       ///when we are sending max, this is basically infinite
       int maxFeeRate = sendMax
@@ -202,6 +196,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             container.read(spendAmountProvider.notifier).state = output.amount;
           }
         });
+      }
+
+      if (sendMax) {
+        final amountToSpend = container.read(spendAmountProvider);
+        state = state.clone()
+          ..mode = SpendMode.sendMax
+          ..uneconomicSpends = (amountToSpend + psbt.fee) != amount;
       }
 
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
