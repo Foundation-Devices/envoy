@@ -34,7 +34,7 @@ final txEstimatedConfirmationTimeProvider =
   final feeRate = tx.fee / tx.vsize!;
   final medianFeeRates = ref.watch(mempoolBlocksMedianFeeRateProvider(network));
 
-  int minutesToConfirmation = 0;
+  int minutesToConfirmation = 10;
   for (final blockFeeRate in medianFeeRates) {
     if (feeRate > blockFeeRate) {
       return minutesToConfirmation;
