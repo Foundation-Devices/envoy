@@ -248,9 +248,7 @@ class _TransactionsDetailsWidgetState
                                 horizontal: 4, vertical: 4),
                             decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.circular(
-                                      cardRadius - 4
-                                  ),
+                                  BorderRadius.circular(cardRadius - 4),
                               color: Colors.white,
                             ),
                             child: ListView(
