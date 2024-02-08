@@ -571,8 +571,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   return Container(
                     alignment: Alignment.bottomCenter,
                     padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                    height: 42,
+                        const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                    height: 40,
                     child: CoinTagBalanceWidget(coinTag: tag),
                   );
                 },

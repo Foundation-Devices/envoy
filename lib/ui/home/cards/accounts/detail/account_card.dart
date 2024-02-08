@@ -96,12 +96,20 @@ class _AccountCardState extends ConsumerState<AccountCard>
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return IconButton(
-                  onPressed: () {
-                    HomePageState.of(context)?.toggleOptions();
-                  },
-                  icon: Icon(
-                      menuVisible ? Icons.close : Icons.more_horiz_outlined));
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  HomePageState.of(context)?.toggleOptions();
+                },
+                child: Container(
+                  height: 55,
+                  width: 55,
+                  color: Colors.transparent,
+                  child: Icon(
+                    menuVisible ? Icons.close : Icons.more_horiz_outlined,
+                  ),
+                ),
+              );
             },
           ));
 
