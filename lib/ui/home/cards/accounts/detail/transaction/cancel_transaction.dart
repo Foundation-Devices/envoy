@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -317,29 +316,13 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                         S().replaceByFee_cancel_overlay_modal_cancelationFees,
                         style: EnvoyTypography.body,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          EnvoyAmount(
-                              account: account,
-                              amountSats: _totalFeeAmount,
-                              amountWidgetStyle: AmountWidgetStyle.singleLine),
-                          Builder(builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.xs, vertical: 2),
-                              child: Text(
-                                "${ExchangeRate().getFormattedAmount(_totalFeeAmount)}",
-                                style: EnvoyTypography.body,
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
+                      EnvoyAmount(
+                          account: account,
+                          amountSats: _totalFeeAmount,
+                          amountWidgetStyle: AmountWidgetStyle.normal),
                     ],
                   ),
-                  SizedBox(height: EnvoySpacing.small),
+                  SizedBox(height: EnvoySpacing.medium1),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -349,33 +332,19 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                         S().replaceByFee_cancel_overlay_modal_receivingAmount,
                         style: EnvoyTypography.body,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          EnvoyAmount(
-                              account: account,
-                              amountSats: _totalReturnAmount,
-                              amountWidgetStyle: AmountWidgetStyle.singleLine),
-                          Builder(builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.xs, vertical: 2),
-                              child: Text(
-                                "${ExchangeRate().getFormattedAmount(_totalReturnAmount)}",
-                                style: EnvoyTypography.body,
-                              ),
-                            );
-                          }),
-                        ],
+                      EnvoyAmount(
+                        account: account,
+                        amountSats: _totalReturnAmount,
+                        amountWidgetStyle: AmountWidgetStyle.normal,
                       )
                     ],
                   ),
+                  SizedBox(height: EnvoySpacing.medium1),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
               child: TextButton(
                 onPressed: () {},
                 child: Text(
