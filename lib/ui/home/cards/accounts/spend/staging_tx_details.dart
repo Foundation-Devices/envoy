@@ -211,8 +211,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    EnvoyColors.textPrimary,
-                    EnvoyColors.textPrimary,
+                    Colors.black,
+                    Colors.black,
                     Colors.transparent,
                   ]),
             ),
@@ -229,7 +229,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
               }
             },
             child: Scaffold(
-              backgroundColor: EnvoyColors.textPrimary,
+              backgroundColor: Colors.transparent,
               appBar: AppBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
