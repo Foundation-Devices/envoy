@@ -87,7 +87,7 @@ class _TransactionsDetailsWidgetState
   void _calculateContainerHeight(timeStamp) {
     if (mounted) {
       ///ensures we only set of the height changes
-      double nextHeight = 64 + (_scrollController.position.extentTotal);
+      double nextHeight = 38 + (_scrollController.position.extentTotal);
       if (nextHeight != containerHeight)
         setState(() {
           containerHeight = nextHeight;
@@ -113,9 +113,14 @@ class _TransactionsDetailsWidgetState
 
     final address = tx.address ?? tx.outputs?[0] ?? "";
 
-    final RBFPossible =
+    bool RBFPossible =
         (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
 
+    final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
+
+    if (cancelState?.newTxId == tx.txId) {
+      RBFPossible = false;
+    }
     double cardRadius = 26;
 
     return GestureDetector(
