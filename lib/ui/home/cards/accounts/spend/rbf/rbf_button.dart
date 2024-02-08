@@ -303,7 +303,7 @@ class _RBFWarningState extends State<RBFWarning> {
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
-            S().replaceByFee_coindetails_overlay_modal_subheading,
+            S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
