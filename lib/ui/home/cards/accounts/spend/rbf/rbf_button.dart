@@ -23,6 +23,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
 
@@ -217,7 +218,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
                     ),
                     Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Text(
-                      "Boost",
+                      S().coindetails_overlay_confirmation_boost,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontSize: 14,
@@ -283,6 +284,7 @@ class _RBFWarningState extends State<RBFWarning> {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
@@ -308,13 +310,19 @@ class _RBFWarningState extends State<RBFWarning> {
             textAlign: TextAlign.center,
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(
-            S().component_learnMore,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
+          GestureDetector(
+            child: Text(
+              S().component_learnMore,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: EnvoyColors.accentPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+            ),
+            onTap: () {
+              launchUrl(Uri.parse(
+                  "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+            },
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           GestureDetector(
