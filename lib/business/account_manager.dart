@@ -240,12 +240,15 @@ class AccountManager extends ChangeNotifier {
       int alreadyPairedAccountsCount = 0;
 
       newAccountsLoop:
-      for (var newAccount in newAccounts) {
+      for (var (index, newAccount) in newAccounts.indexed) {
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {
             // Don't add this one
             alreadyPairedAccountsCount++;
+
+            // But add the existing one to the list in case user wants to verify address again
+            newAccounts[index] = account;
             continue newAccountsLoop;
           }
         }
