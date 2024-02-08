@@ -180,7 +180,7 @@ class _TransactionsDetailsWidgetState
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
-                    color: Colors.black, width: 2, style: BorderStyle.solid),
+                    color: Colors.black, width: 1.5, style: BorderStyle.solid),
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -194,11 +194,11 @@ class _TransactionsDetailsWidgetState
                     borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     border: Border.all(
                         color: accountAccentColor,
-                        width: 2,
+                        width: 1.5,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
                     borderRadius:
-                        BorderRadius.all(Radius.circular(cardRadius - 2)),
+                        BorderRadius.all(Radius.circular(cardRadius - 1.5)),
                     child: StripesBackground(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -243,12 +243,14 @@ class _TransactionsDetailsWidgetState
                           Expanded(
                               child: Container(
                             margin: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 4),
+                                vertical: 3.5, horizontal: 3.5),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 4, vertical: 4),
                             decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(18)),
+                                  BorderRadius.circular(
+                                      cardRadius - 4
+                                  ),
                               color: Colors.white,
                             ),
                             child: ListView(
