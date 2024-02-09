@@ -119,14 +119,13 @@ class SettingsMenuWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(height: 34),
+                  SizedBox(height: 9),
                   MenuOption(
                     label: S().menu_settings.toUpperCase(),
                     onTap: () {
                       background.state = HomePageBackgroundState.settings;
                     },
                   ),
-                  if (EnvoySeed().walletDerived()) SizedBox(height: 50),
                   if (EnvoySeed().walletDerived())
                     MenuOption(
                       label: S().menu_backups.toUpperCase(),
@@ -134,14 +133,14 @@ class SettingsMenuWidget extends ConsumerWidget {
                         background.state = HomePageBackgroundState.backups;
                       },
                     ),
-                  SizedBox(height: 50),
+                  SizedBox(height: 0),
                   MenuOption(
                     label: S().menu_support.toUpperCase(),
                     onTap: () {
                       background.state = HomePageBackgroundState.support;
                     },
                   ),
-                  SizedBox(height: 50),
+                  SizedBox(height: 0),
                   MenuOption(
                     label: S().menu_about.toUpperCase(),
                     onTap: () {
@@ -211,8 +210,10 @@ class MenuOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
+        padding: const EdgeInsets.only(top: 25, bottom: 25),
         margin: EdgeInsets.only(left: 18),
         child: Row(
             mainAxisSize: MainAxisSize.max,
