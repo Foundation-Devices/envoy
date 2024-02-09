@@ -73,6 +73,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     bool showProgress = broadcastProgress == BroadcastProgress.inProgress ||
         broadcastProgress == BroadcastProgress.success ||
         broadcastProgress == BroadcastProgress.failed;
+
+    Account? account = ref.watch(selectedAccountProvider);
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+
+    String subHeading =
+        (account!.wallet.hot || transactionModel.isPSBTFinalized)
+            ? S().coincontrol_tx_detail_subheading
+            : S().coincontrol_txDetail_subheading_passport;
+
     return PopScope(
       canPop:
           broadcastProgress == BroadcastProgress.inProgress || _rebuildingTx,
@@ -126,7 +135,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                          "Your transaction is ready\nto be boosted",
+                                          S().replaceByFee_boost_tx_heading,
                                           textAlign: TextAlign.center,
                                           style: EnvoyTypography.heading),
                                     ),
@@ -144,7 +153,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: EnvoySpacing.small),
                                 child: Text(
-                                  "Choose a new fee below to boost your transaction.",
+                                  subHeading,
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
