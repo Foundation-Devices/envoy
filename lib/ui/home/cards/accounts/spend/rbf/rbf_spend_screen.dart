@@ -73,6 +73,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     bool showProgress = broadcastProgress == BroadcastProgress.inProgress ||
         broadcastProgress == BroadcastProgress.success ||
         broadcastProgress == BroadcastProgress.failed;
+
+    Account? account = ref.watch(selectedAccountProvider);
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+
+    String subHeading =
+        (account!.wallet.hot || transactionModel.isPSBTFinalized)
+            ? S().coincontrol_tx_detail_subheading
+            : S().coincontrol_txDetail_subheading_passport;
+
     return PopScope(
       canPop:
           broadcastProgress == BroadcastProgress.inProgress || _rebuildingTx,
@@ -144,7 +153,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: EnvoySpacing.small),
                                 child: Text(
-                                  S().coincontrol_tx_detail_subheading,
+                                  subHeading,
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
