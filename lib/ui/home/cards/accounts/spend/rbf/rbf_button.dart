@@ -238,7 +238,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     return AnimatedContainer(
         duration: Duration(milliseconds: 200),
         height: 28,
-        width: 90,
         padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
         decoration: BoxDecoration(
             color: buttonColor,
