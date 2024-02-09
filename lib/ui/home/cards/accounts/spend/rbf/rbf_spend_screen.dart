@@ -430,26 +430,29 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
                       child: Text(
-                        //TODO: localize figma string
-                        "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ",
+                        S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
                         style: EnvoyTypography.info,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    TextButton(
-                        onPressed: () async {
+                    GestureDetector(
+                        onTap: () async {
                           final link =
                               "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
                           if (await canLaunchUrlString(link)) {
                             launchUrlString(link);
                           }
                         },
-                        child: Text(
-                          S().component_learnMore,
-                          style: EnvoyTypography.baseFont.copyWith(
-                              color: EnvoyColors.accentPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.medium1),
+                          child: Text(
+                            S().component_learnMore,
+                            style: EnvoyTypography.baseFont.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
+                          ),
                         )),
                     Padding(
                       padding:
