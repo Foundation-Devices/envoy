@@ -907,10 +907,28 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             // total amount to be spent
             let mut amount = 0;
 
-            for out in transaction.output {
+            for out in transaction.output.clone() {
                 //if output pub key not belongs to wallet
                 if !wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) {
                     amount += out.value
+                }
+            }
+
+            // // check for possible self transfer
+            if amount == 0 {
+                for out in &transaction.output {
+                    //if output pub key not belongs to wallet
+                    let path = wallet
+                        .database()
+                        .get_path_from_script_pubkey(&out.script_pubkey.clone());
+                    if let Ok(path_type) = path {
+                        if path_type.is_none() {
+                        } else if let Some(keychain_path) = path_type {
+                            if let KeychainKind::External = keychain_path.0 {
+                                amount += out.value;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -969,16 +987,12 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 let psbt = tx_builder.finish();
                 match psbt {
                     Ok((psbt, _)) => {
-                        match psbt.fee_rate() {
-                            None => {
-                                return error_return;
-                            }
-                            Some(r) => {
-                                return RBFfeeRates {
-                                    max_fee_rate: r.as_sat_per_vb() as f64,
-                                    min_fee_rate,
-                                };
-                            }
+                        return match psbt.fee_rate() {
+                            None => error_return,
+                            Some(r) => RBFfeeRates {
+                                max_fee_rate: r.as_sat_per_vb() as f64,
+                                min_fee_rate,
+                            },
                         };
                     }
                     Err(e) => match e {

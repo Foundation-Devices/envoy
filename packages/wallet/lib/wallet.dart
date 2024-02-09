@@ -763,12 +763,19 @@ class Wallet {
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
           doNotSpendPointer);
+      if (kDebugMode) {
+        print(
+            "Fee rate min: ${feeRates.min_fee_rate} \n Fee rate max: ${feeRates.max_fee_rate}");
+      }
       if (feeRates.min_fee_rate <= 1) {
         if (feeRates.min_fee_rate == -1.1) {
           throw Exception("Transaction cannot be boosted");
         }
         if (feeRates.min_fee_rate == -1.2) {
           throw Exception("Insufficient balance to boost transaction");
+        }
+        if (feeRates.min_fee_rate == -1.5) {
+          throw Exception("Unable to boost transaction");
         }
         if (feeRates.max_fee_rate == 0.404) {
           throw Exception("Transaction not found");
