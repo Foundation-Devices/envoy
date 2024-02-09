@@ -126,7 +126,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                          "Your transaction is ready\nto be boosted",
+                                          S().replaceByFee_boost_tx_heading,
                                           textAlign: TextAlign.center,
                                           style: EnvoyTypography.heading),
                                     ),
@@ -144,7 +144,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: EnvoySpacing.small),
                                 child: Text(
-                                  "Choose a new fee below to boost your transaction.",
+                                  S().coincontrol_tx_detail_subheading,
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
