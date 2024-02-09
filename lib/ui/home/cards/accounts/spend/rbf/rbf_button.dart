@@ -197,13 +197,17 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           child: _isLoading
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox.square(
-                      dimension: 12,
-                      child: CircularProgressIndicator(
-                        color: EnvoyColors.solidWhite,
-                        strokeWidth: 2,
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium3),
+                      child: SizedBox.square(
+                        dimension: 12,
+                        child: CircularProgressIndicator(
+                          color: EnvoyColors.solidWhite,
+                          strokeWidth: 2,
+                        ),
                       ),
                     ),
                   ],
