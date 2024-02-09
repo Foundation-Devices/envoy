@@ -37,7 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/wallet.dart';
 
 class RBFSpendScreen extends ConsumerStatefulWidget {
@@ -439,9 +439,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         onTap: () async {
                           final link =
                               "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
-                          if (await canLaunchUrlString(link)) {
-                            launchUrlString(link);
-                          }
+                          launchUrl(Uri.parse(link));
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
