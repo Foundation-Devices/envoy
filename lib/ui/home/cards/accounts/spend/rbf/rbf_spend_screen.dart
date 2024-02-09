@@ -82,11 +82,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ? S().coincontrol_tx_detail_subheading
             : S().coincontrol_txDetail_subheading_passport;
 
+    bool canPoop =
+        !(broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
+    ProviderContainer scope = ProviderScope.containerOf(context);
+
     return PopScope(
-      canPop:
-          broadcastProgress == BroadcastProgress.inProgress || _rebuildingTx,
+      canPop: canPoop,
       onPopInvoked: (didPop) {
-        clearSpendState(ProviderScope.containerOf(context));
+        clearSpendState(scope);
       },
       child: Background(
         child: MediaQuery.removePadding(
