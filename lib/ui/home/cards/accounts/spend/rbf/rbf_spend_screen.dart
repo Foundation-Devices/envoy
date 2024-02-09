@@ -421,8 +421,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
                       child: Text(
-                        //TODO: localize figma string
-                        "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ",
+                        S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
                         style: EnvoyTypography.info,
                         textAlign: TextAlign.center,
                       ),
