@@ -402,7 +402,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                   children: <Widget>[
                     Padding(
                       padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                      const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                       child: EnvoyIcon(
                         EnvoyIcons.alert,
                         size: EnvoyIconSize.big,
@@ -411,7 +411,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                      const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                       child: Text(
                         S().component_warning,
                         style: EnvoyTypography.subheading,
@@ -426,24 +426,29 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    TextButton(
-                        onPressed: () async {
+                    GestureDetector(
+                        onTap: () async {
                           final link =
                               "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
                           if (await canLaunchUrlString(link)) {
                             launchUrlString(link);
                           }
                         },
-                        child: Text(
-                          S().component_learnMore,
-                          style: EnvoyTypography.baseFont.copyWith(
-                              color: EnvoyColors.accentPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.medium1
+                          ),
+                          child: Text(
+                            S().component_learnMore,
+                            style: EnvoyTypography.baseFont.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
+                          ),
                         )),
                     Padding(
                       padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                      const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                       child: EnvoyButton(
                           label: S().component_back,
                           type: ButtonType.secondary,
