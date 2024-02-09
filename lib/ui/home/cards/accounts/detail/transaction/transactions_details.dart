@@ -423,8 +423,12 @@ class _TransactionsDetailsWidgetState
                                   ),
                                 ),
                                 RBFPossible
-                                    ? CancelTxButton(
-                                        transaction: tx,
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: EnvoySpacing.xs),
+                                        child: CancelTxButton(
+                                          transaction: tx,
+                                        ),
                                       )
                                     : SizedBox.shrink(),
                               ],
