@@ -402,7 +402,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                   children: <Widget>[
                     Padding(
                       padding:
-                      const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                       child: EnvoyIcon(
                         EnvoyIcons.alert,
                         size: EnvoyIconSize.big,
@@ -411,7 +411,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     ),
                     Padding(
                       padding:
-                      const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                       child: Text(
                         S().component_warning,
                         style: EnvoyTypography.subheading,
@@ -436,8 +436,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.medium1
-                          ),
+                              vertical: EnvoySpacing.medium1),
                           child: Text(
                             S().component_learnMore,
                             style: EnvoyTypography.baseFont.copyWith(
@@ -448,7 +447,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         )),
                     Padding(
                       padding:
-                      const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                       child: EnvoyButton(
                           label: S().component_back,
                           type: ButtonType.secondary,
