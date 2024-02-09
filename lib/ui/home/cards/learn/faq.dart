@@ -119,10 +119,13 @@ class Faq extends ConsumerWidget {
                 .toList(),
           ),
         ),
+        Padding(padding: const EdgeInsets.only(top: EnvoySpacing.medium2)),
         Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.large2,
-            horizontal: EnvoySpacing.small,
+          padding: const EdgeInsets.only(
+            top: EnvoySpacing.large2,
+            bottom: EnvoySpacing.small,
+            left: EnvoySpacing.small,
+            right: EnvoySpacing.small,
           ),
           child: Brandmark(logoSize: 32, style: BrandmarkStyle.endMark),
         ),
