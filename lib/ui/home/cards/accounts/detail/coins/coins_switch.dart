@@ -118,14 +118,22 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
                         ? SizedBox(
                             width: 18,
                             height: 18,
-                            child: SvgPicture.asset(
-                              "assets/icons/ic_filter_funnel.svg",
-                              width: 10,
-                              height: 10,
-                              fit: BoxFit.fitHeight,
-                              color: widget.value == CoinTagSwitchState.partial
-                                  ? EnvoyColors.darkTeal
-                                  : EnvoyColors.transparent,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/ic_filter_funnel.svg",
+                                  width: 10,
+                                  height: 10,
+                                  fit: BoxFit.fitHeight,
+                                  color:
+                                      widget.value == CoinTagSwitchState.partial
+                                          ? EnvoyColors.darkTeal
+                                          : EnvoyColors.transparent,
+                                ),
+                              ],
                             ),
                           )
                         : SizedBox(
