@@ -37,7 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/wallet.dart';
 
 class RBFSpendScreen extends ConsumerStatefulWidget {
@@ -82,11 +82,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ? S().coincontrol_tx_detail_subheading
             : S().coincontrol_txDetail_subheading_passport;
 
+    bool canPoop =
+        !(broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
+    ProviderContainer scope = ProviderScope.containerOf(context);
+
     return PopScope(
-      canPop:
-          broadcastProgress == BroadcastProgress.inProgress || _rebuildingTx,
+      canPop: canPoop,
       onPopInvoked: (didPop) {
-        clearSpendState(ProviderScope.containerOf(context));
+        clearSpendState(scope);
       },
       child: Background(
         child: MediaQuery.removePadding(
@@ -439,9 +442,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         onTap: () async {
                           final link =
                               "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
-                          if (await canLaunchUrlString(link)) {
-                            launchUrlString(link);
-                          }
+                          launchUrl(Uri.parse(link));
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
