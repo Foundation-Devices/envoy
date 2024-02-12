@@ -25,6 +25,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
+  List<num> feeList = List.generate(2, (index) => index + 1);
+
   //default fee rates
   num standardFee = 1;
   num fasterFee = 2;
@@ -46,6 +48,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         }
       }
     });
+    Future.delayed(Duration(milliseconds: 10))
+        .then((value) => calculateFeeBoundary());
   }
 
   void setFees(FeeChooserState feeChooserState) {
@@ -119,6 +123,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                             child: Consumer(
                               builder: (context, ref, child) {
                                 return FeeSlider(
+                                  fees: feeList,
                                   onFeeSelect: (index) {
                                     widget.onFeeSelect(index, context, true);
                                   },
@@ -182,14 +187,28 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           ]),
     );
   }
+
+  void calculateFeeBoundary() {
+    FeeChooserState feeChooserState = ref.read(feeChooserStateProvider);
+    setState(() {
+      int totalFeeSuggestion =
+          feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
+      feeList = List.generate(totalFeeSuggestion,
+          (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
+    });
+  }
 }
 
 class FeeSlider extends ConsumerStatefulWidget {
   final Function(int index) onFeeSelect;
   final int selectedItem;
+  final List<num> fees;
 
   const FeeSlider(
-      {super.key, this.selectedItem = 1, required this.onFeeSelect});
+      {super.key,
+      this.selectedItem = 1,
+      required this.onFeeSelect,
+      required this.fees});
 
   @override
   ConsumerState createState() => _FeeSliderState();
@@ -204,34 +223,25 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
-  List<num> list = List.generate(2, (index) => index + 1);
-
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10))
-        .then((value) => calculateFeeBoundary());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      initializeSelectedRate();
+    });
   }
 
-  void calculateFeeBoundary() {
-    FeeChooserState feeChooserState = ref.read(feeChooserStateProvider);
-    setState(() {
-      int totalFeeSuggestion =
-          feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
-      list = List.generate(
-          totalFeeSuggestion, (index) => (feeChooserState.minFeeRate) + index);
-    });
+  void initializeSelectedRate() {
     num feeRate = ref.read(spendFeeRateProvider);
-
     if (feeRate != selectedItem) {
       setState(() {
         selectedItem = feeRate.toInt();
         //since we are setting the initial item, we need to disable haptic feedback
         _disableHaptic = true;
       });
-      int jumpIndex = list.reversed.toList().indexOf(selectedItem);
+      int jumpIndex = widget.fees.indexOf(selectedItem);
       if (jumpIndex < 0) {
-        jumpIndex = list.length - 1;
+        jumpIndex = widget.fees.length - 1;
       }
       _controller
           .animateToItem(jumpIndex,
@@ -275,7 +285,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                         squeeze: 1.2,
                         onSelectedItemChanged: _handleItemChanged,
                         childDelegate: ListWheelChildListDelegate(
-                            children: list.reversed
+                            children: widget.fees
                                 .map((feeRate) => RotatedBox(
                                       quarterTurns: 3,
                                       child: Container(
@@ -407,7 +417,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       if (!_disableHaptic) HapticFeedback.selectionClick();
     }
     setState(() {
-      selectedItem = list.reversed.toList()[index].toInt();
+      selectedItem = widget.fees[index].toInt();
     });
     ref.read(spendFeeRateBlockEstimationProvider.notifier).state = selectedItem;
   }
