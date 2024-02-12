@@ -669,6 +669,9 @@ class _TransactionReviewScreenState
   }
 
   void setFee(int fee, BuildContext context, bool customFee) async {
+    if (!this.mounted) {
+      return;
+    }
     // FIXME: we need a way to stop the coin selection randomness past the send screen
     // Sometimes this results in a max fee calculation that is no longer correct
     // As a workaround we decrement the fee rate here until we get a valid PSBT
