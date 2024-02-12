@@ -369,7 +369,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       backgroundColor: EnvoyColors.danger,
                       replaceExisting: true,
                       duration: Duration(seconds: 4),
-                      message: "Error: Transaction Confirmed",
+                      message: "Error: Transaction Confirmed", // TODO: Figma
                       icon: Icon(
                         Icons.info_outline,
                         color: EnvoyColors.solidWhite,
