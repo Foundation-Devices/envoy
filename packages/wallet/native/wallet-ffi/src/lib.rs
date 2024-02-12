@@ -696,7 +696,22 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let dont_spend = util::extract_utxo_list(dont_spend);
 
     let balance = get_total_balance(wallet.get_balance().unwrap());
-    let mut max_fee = balance - amount;
+
+    let mut blocked_amount: u64 = 0;
+
+    // total blocked amount from dont_spend
+    for outpoint in dont_spend.clone() {
+        let utxo = wallet.get_utxo(outpoint);
+        if let Ok(Some(utxo)) = utxo {
+            blocked_amount += utxo.txout.value;
+        }
+    }
+
+    let mut spendable_balance = balance;
+    if balance > 0 && blocked_amount < balance {
+        spendable_balance = balance - blocked_amount;
+    }
+    let mut max_fee = spendable_balance - amount;
 
     loop {
         match util::build_tx(
