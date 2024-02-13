@@ -290,13 +290,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                       S().stalls_before_sending_tx_scanning_subheading;
                   if (broadcastProgress != BroadcastProgress.inProgress) {
                     if (broadcastProgress == BroadcastProgress.success) {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_heading;
+                      title = S().replaceByFee_boost_success_header;
                       subTitle = S()
                           .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
                     } else {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                      title = S().replaceByFee_boost_fail_header;
                       subTitle = S()
                           .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
                     }
