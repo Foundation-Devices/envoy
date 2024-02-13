@@ -41,7 +41,6 @@ class TransactionModel {
   int amount;
   double feeRate;
   Psbt? psbt;
-  bool sendMax;
   RawTransaction? rawTransaction;
   List<Utxo>? utxos;
   bool valid = false;
@@ -60,7 +59,6 @@ class TransactionModel {
       required this.feeRate,
       this.utxos,
       this.psbt,
-      this.sendMax = false,
       this.rawTransaction,
       this.valid = false,
       this.loading = false,
@@ -71,23 +69,22 @@ class TransactionModel {
       this.mode = SpendMode.normal,
       this.uneconomicSpends = false});
 
-  static TransactionModel copy(TransactionModel mode) {
+  static TransactionModel copy(TransactionModel model) {
     return TransactionModel(
-        sendTo: mode.sendTo,
-        amount: mode.amount,
-        sendMax: mode.sendMax,
-        feeRate: mode.feeRate,
-        error: mode.error,
-        utxos: mode.utxos,
-        psbt: mode.psbt,
-        rawTransaction: mode.rawTransaction,
-        valid: mode.valid,
-        loading: mode.loading,
-        canProceed: mode.canProceed,
-        belowDustLimit: mode.belowDustLimit,
-        broadcastProgress: mode.broadcastProgress,
-        mode: mode.mode,
-        uneconomicSpends: mode.uneconomicSpends);
+        sendTo: model.sendTo,
+        amount: model.amount,
+        feeRate: model.feeRate,
+        error: model.error,
+        utxos: model.utxos,
+        psbt: model.psbt,
+        rawTransaction: model.rawTransaction,
+        valid: model.valid,
+        loading: model.loading,
+        canProceed: model.canProceed,
+        belowDustLimit: model.belowDustLimit,
+        broadcastProgress: model.broadcastProgress,
+        mode: model.mode,
+        uneconomicSpends: model.uneconomicSpends);
   }
 
   TransactionModel clone() {
@@ -105,10 +102,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   Future<bool> validate(ProviderContainer container,
       {bool settingFee = false}) async {
     final String sendTo = container.read(spendAddressProvider);
-    int amount = container.read(spendAmountProvider);
     final int spendableBalance = container.read(totalSpendableAmountProvider);
     final num feeRate = container.read(spendFeeRateProvider);
     final Account? account = container.read(selectedAccountProvider);
+    int amount = container.read(spendAmountProvider);
 
     if (sendTo.isEmpty ||
         amount == 0 ||
@@ -116,23 +113,27 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         state.broadcastProgress == BroadcastProgress.inProgress) {
       return false;
     }
-
-    ///If the user selected to spend max.
-    ///subsequent validation calls will stick to the original amount user entered
-    if (state.sendMax) {
-      amount = spendableBalance;
-    }
-
-    ///if fee rate deducted from spend amount, we reset the amount to original
-    /// this is needed if the user lowers the fee rate
-    if (state.amount != amount && state.amount != 0) {
-      amount = state.amount;
-    }
-
     List<Utxo> utxos = container
         .read(getSelectedCoinsProvider(account.id!))
         .map((e) => e.utxo)
         .toList();
+
+    ///If the user selected to spend max.
+    ///subsequent validation calls will stick to the original amount user entered
+    if (state.mode == SpendMode.sendMax) {
+      //if user choose new coins, we reset the mode to normal since the tx is no longer sendMax
+      if ((state.utxos ?? []).length != utxos.length) {
+        state = state.clone()..mode = SpendMode.normal;
+      } else {
+        amount = spendableBalance;
+      }
+    }
+
+    ///if fee rate deducted from spend amount, we reset the amount to original
+    ///this is needed if the user lowers the fee rate
+    if (state.amount != amount && state.amount != 0) {
+      amount = state.amount;
+    }
 
     try {
       state = state.clone()
@@ -165,17 +166,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       bool sendMax = spendableBalance == amount;
 
-      if (sendMax) {
-        state = state.clone()..sendMax = true;
-      }
-
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: null);
 
       ///get max fee rate that we can use on this transaction
       ///when we are sending max, this is basically infinite
-      int maxFeeRate = state.sendMax
+      int maxFeeRate = sendMax
           ? 1000
           : await account.wallet
               .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);

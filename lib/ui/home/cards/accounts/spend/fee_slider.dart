@@ -274,6 +274,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                     Positioned.fill(
                       child: ListWheelScrollView.useDelegate(
                         controller: _controller,
+                        renderChildrenOutsideViewport: false,
                         physics: FixedExtentScrollPhysics(
                             parent: ClampingScrollPhysics()),
                         diameterRatio: 2.8,
@@ -282,7 +283,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                         perspective: 0.004,
                         overAndUnderCenterOpacity: 1,
                         itemExtent: 48,
-                        squeeze: 1.2,
+                        squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
                         onSelectedItemChanged: _handleItemChanged,
                         childDelegate: ListWheelChildListDelegate(
                             children: widget.fees
@@ -307,7 +308,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                                     .textTheme
                                                     .titleSmall
                                                     ?.copyWith(
-                                                      fontSize: 13,
+                                                      fontSize: 12,
                                                       color: selectedItem ==
                                                               feeRate
                                                           ? EnvoyColors.teal500
