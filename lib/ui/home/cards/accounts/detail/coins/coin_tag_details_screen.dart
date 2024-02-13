@@ -222,9 +222,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       thumbColor: Colors.white38,
       thumbVisibility: totalTagHeight >= maxContainerHeight,
 
-      ///to show scroller outside of the main container widget
-      padding: EdgeInsets.only(top: 200, right: 24, left: 2),
-
       interactive: true,
 
       ///sets up top margin for scroller
