@@ -41,6 +41,7 @@ class TransactionModel {
   int amount;
   double feeRate;
   Psbt? psbt;
+  bool sendMax;
   RawTransaction? rawTransaction;
   List<Utxo>? utxos;
   bool valid = false;
@@ -59,6 +60,7 @@ class TransactionModel {
       required this.feeRate,
       this.utxos,
       this.psbt,
+      this.sendMax = false,
       this.rawTransaction,
       this.valid = false,
       this.loading = false,
@@ -73,6 +75,7 @@ class TransactionModel {
     return TransactionModel(
         sendTo: mode.sendTo,
         amount: mode.amount,
+        sendMax: mode.sendMax,
         feeRate: mode.feeRate,
         error: mode.error,
         utxos: mode.utxos,
@@ -102,7 +105,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   Future<bool> validate(ProviderContainer container,
       {bool settingFee = false}) async {
     final String sendTo = container.read(spendAddressProvider);
-    final int amount = container.read(spendAmountProvider);
+    int amount = container.read(spendAmountProvider);
     final int spendableBalance = container.read(totalSpendableAmountProvider);
     final num feeRate = container.read(spendFeeRateProvider);
     final Account? account = container.read(selectedAccountProvider);
@@ -112,6 +115,18 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         account == null ||
         state.broadcastProgress == BroadcastProgress.inProgress) {
       return false;
+    }
+
+    ///If the user selected to spend max.
+    ///subsequent validation calls will stick to the original amount user entered
+    if (state.sendMax) {
+      amount = spendableBalance;
+    }
+
+    ///if fee rate deducted from spend amount, we reset the amount to original
+    /// this is needed if the user lowers the fee rate
+    if (state.amount != amount && state.amount != 0) {
+      amount = state.amount;
     }
 
     List<Utxo> utxos = container
@@ -144,9 +159,15 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         }
       });
 
+      //remove if there is any duplicates
+      dontSpend = dontSpend?.unique((e) => e.id).toList();
       container.read(dontSpendCoinsProvider.notifier).state = dontSpend ?? [];
 
       bool sendMax = spendableBalance == amount;
+
+      if (sendMax) {
+        state = state.clone()..sendMax = true;
+      }
 
       Psbt psbt = await getPsbt(
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
@@ -154,8 +175,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       ///get max fee rate that we can use on this transaction
       ///when we are sending max, this is basically infinite
-      int maxFeeRate = sendMax
-          ? 100000
+      int maxFeeRate = state.sendMax
+          ? 1000
           : await account.wallet
               .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
 
@@ -185,6 +206,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       rawTransaction.outputs.forEach((output) {
         if (output.path == TxOutputPath.NotMine) {
           foundOutput = true;
+          if (amount != output.amount) {
+            state = state.clone()..amount = amount;
+          }
           container.read(spendAmountProvider.notifier).state = output.amount;
         }
       });
@@ -193,6 +217,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       if (!foundOutput) {
         rawTransaction.outputs.forEach((output) {
           if (output.path == TxOutputPath.External) {
+            if (amount != output.amount) {
+              state = state.clone()..amount = amount;
+            }
             container.read(spendAmountProvider.notifier).state = output.amount;
           }
         });
@@ -235,8 +262,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_too_low_info;
     } catch (e, stackTrace) {
-      print("Error ${e}");
-      debugPrintStack(stackTrace: stackTrace);
+      if (kDebugMode) {
+        print("Error ${e}");
+        debugPrintStack(stackTrace: stackTrace);
+      }
 
       state = state.clone()
         ..loading = false
