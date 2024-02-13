@@ -8,6 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -274,6 +275,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                     Positioned.fill(
                       child: ListWheelScrollView.useDelegate(
                         controller: _controller,
+                        renderChildrenOutsideViewport: false,
                         physics: FixedExtentScrollPhysics(
                             parent: ClampingScrollPhysics()),
                         diameterRatio: 2.8,
@@ -282,7 +284,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                         perspective: 0.004,
                         overAndUnderCenterOpacity: 1,
                         itemExtent: 48,
-                        squeeze: 1.2,
+                        squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
                         onSelectedItemChanged: _handleItemChanged,
                         childDelegate: ListWheelChildListDelegate(
                             children: widget.fees
@@ -307,7 +309,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                                     .textTheme
                                                     .titleSmall
                                                     ?.copyWith(
-                                                      fontSize: 13,
+                                                      fontSize: 12,
                                                       color: selectedItem ==
                                                               feeRate
                                                           ? EnvoyColors.teal500
