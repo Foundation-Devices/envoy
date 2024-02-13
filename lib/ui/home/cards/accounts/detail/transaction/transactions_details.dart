@@ -87,7 +87,7 @@ class _TransactionsDetailsWidgetState
   void _calculateContainerHeight(timeStamp) {
     if (mounted) {
       ///ensures we only set of the height changes
-      double nextHeight = 38 + (_scrollController.position.extentTotal);
+      double nextHeight = 34 + (_scrollController.position.extentTotal);
       if (nextHeight != containerHeight)
         setState(() {
           containerHeight = nextHeight;
@@ -423,12 +423,8 @@ class _TransactionsDetailsWidgetState
                                   ),
                                 ),
                                 RBFPossible
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: EnvoySpacing.xs),
-                                        child: CancelTxButton(
-                                          transaction: tx,
-                                        ),
+                                    ? CancelTxButton(
+                                        transaction: tx,
                                       )
                                     : SizedBox.shrink(),
                               ],
