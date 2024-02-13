@@ -557,13 +557,11 @@ class _CancelTransactionProgressState
                               BroadcastProgress.inProgress) {
                             if (broadcastProgress ==
                                 BroadcastProgress.success) {
-                              title = S()
-                                  .stalls_before_sending_tx_scanning_broadcasting_success_heading;
-                              subTitle = S()
-                                  .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                              title = S().replaceByFee_cancel_success_heading;
+                              subTitle =
+                                  S().replaceByFee_cancel_success_subheading;
                             } else {
-                              title = S()
-                                  .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                              title = S().replaceByFee_cancel_fail_heading;
                               subTitle = S()
                                   .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
                             }
