@@ -134,7 +134,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               ),
             ),
           ),
-          SizedBox(height: EnvoySpacing.xs),
         ],
       ),
     );

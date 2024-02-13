@@ -121,7 +121,7 @@ class _TransactionsDetailsWidgetState
     if (cancelState?.newTxId == tx.txId) {
       RBFPossible = false;
     }
-    double cardRadius = 26;
+    double cardRadius = 20;
 
     return GestureDetector(
       onTapDown: (details) {
@@ -197,8 +197,7 @@ class _TransactionsDetailsWidgetState
                         width: 1.5,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(cardRadius - 1.5)),
+                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     child: StripesBackground(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -207,9 +206,9 @@ class _TransactionsDetailsWidgetState
                           Container(
                             height: 36,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.xs),
+                            margin: EdgeInsets.all(EnvoySpacing.xs),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(EnvoySpacing.medium2)),
@@ -242,13 +241,11 @@ class _TransactionsDetailsWidgetState
                           ),
                           Expanded(
                               child: Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: 3.5, horizontal: 3.5),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4),
+                            margin: EdgeInsets.all(EnvoySpacing.xs),
+                            padding: EdgeInsets.all(EnvoySpacing.xs),
                             decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.circular(cardRadius - 4),
+                                  BorderRadius.circular(EnvoySpacing.medium1),
                               color: Colors.white,
                             ),
                             child: ListView(
