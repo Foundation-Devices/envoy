@@ -599,7 +599,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Más antiguos primero"),
         "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("Z a A"),
         "hide_amount_first_time_text": MessageLookupByLibrary.simpleMessage(
-            "Desliza el dedo para mostrar y ocultar tu saldo."),
+            "Desliza sobre una cuenta para mostrar u ocultar tu saldo."),
         "hot_wallet_accounts_creation_done_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "Pulsa la tarjeta de arriba para recibir Bitcoin."),
@@ -678,6 +678,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_recovery_fail_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy no puede encontrar una Copia de Seguridad Mágica.\n\nConfirma que has iniciado sesión con la cuenta de Apple correcta y que has restaurado tu última copia de seguridad de iCloud."),
+        "magic_setup_recovery_retry_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Recuperando tu cartera Envoy"),
         "magic_setup_send_backup_to_envoy_server_heading":
             MessageLookupByLibrary.simpleMessage("Cargando Copia de Seguridad"),
         "magic_setup_send_backup_to_envoy_server_subheading":
@@ -1049,12 +1052,20 @@ class MessageLookup extends MessageLookupByLibrary {
             "Para recuperar tu Cartera Envoy, sigue estas sencillas instrucciones."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Impulsando transacción"),
+        "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
+            "Tu transacción no ha podido ser impulsada"),
+        "replaceByFee_boost_success_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Tu transacción ha sido impulsada"),
         "replaceByFee_boost_tx_boostFee":
             MessageLookupByLibrary.simpleMessage("Tasa de Impulso"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "Tu transacción está lista para ser impulsada"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Cancelando transacción"),
+        "replaceByFee_cancel_fail_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Tu transacción no ha podido ser cancelada"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
             MessageLookupByLibrary.simpleMessage("Tasa de Cancelación"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
@@ -1064,6 +1075,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Reemplaza la transacción no confirmada por una que contenga una tasa más alta y devuelve los fondos a tu cartera."),
+        "replaceByFee_cancel_success_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Tu transacción ha sido cancelada"),
+        "replaceByFee_cancel_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Este es un intento de cancelación. Existe una pequeña posibilidad de que tu transacción original se confirme antes de este intento de cancelación."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Impulsar"),
         "replaceByFee_coindetails_overlay_modal_heading":
