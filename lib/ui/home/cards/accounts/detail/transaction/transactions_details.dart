@@ -456,7 +456,7 @@ class _TransactionsDetailsWidgetState
     Widget icon = isBoosted
         ? EnvoyIcon(
             EnvoyIcons.rbf_boost,
-            size: EnvoyIconSize.superSmall,
+            size: EnvoyIconSize.extraSmall,
           )
         : SvgPicture.asset(
             "assets/icons/ic_bitcoin_straight_circle.svg",
