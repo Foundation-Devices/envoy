@@ -783,6 +783,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy et farà algunes preguntes per verificar que has enregistrat correctament la teva clau semilla."),
+        "manual_setup_generate_seed_write_words_24_heading":
+            MessageLookupByLibrary.simpleMessage("Escriu Aquestes 24 Paraules"),
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Escriu Aquestes 12 Paraules"),
         "manual_setup_import_backup_CTA1": MessageLookupByLibrary.simpleMessage(

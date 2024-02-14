@@ -358,6 +358,7 @@
   "manual_setup_generate_seed_verify_seed_quiz_question": "What’s your seed word number",
   "manual_setup_generate_seed_verify_seed_quiz_success_correct": "Correct",
   "manual_setup_generate_seed_verify_seed_subheading": "Envoy will ask you some questions to verify you correctly recorded your seed.",
+  "manual_setup_generate_seed_write_words_24_heading": "Write Down These 24 Words",
   "manual_setup_generate_seed_write_words_heading": "Write Down These 12 Words",
   "manual_setup_import_backup_CTA1": "Create Envoy Backup File",
   "manual_setup_import_backup_CTA2": "Import Envoy Backup File",

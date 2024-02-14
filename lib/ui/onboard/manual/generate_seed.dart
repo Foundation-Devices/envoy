@@ -30,6 +30,7 @@ class SeedScreen extends StatefulWidget {
 
 class _SeedScreenState extends State<SeedScreen> {
   PageController _pageController = PageController();
+  PageController _seedDisplayPageController = PageController();
   List<String> seedList = [];
 
   @override
@@ -168,7 +169,10 @@ class _SeedScreenState extends State<SeedScreen> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Text(
-                      S().manual_setup_generate_seed_write_words_heading,
+                      seedList.length == 24
+                          ? S()
+                              .manual_setup_generate_seed_write_words_24_heading
+                          : S().manual_setup_generate_seed_write_words_heading,
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center),
                 ),
@@ -178,35 +182,34 @@ class _SeedScreenState extends State<SeedScreen> {
                     if (seedList.isEmpty) {
                       return Container();
                     }
-                    List<String> section1 = seedList.sublist(0, 6);
-                    List<String> section2 = seedList.sublist(6, 12);
-                    List<Tuple<int, String>> section1WithIndex = [];
-                    List<Tuple<int, String>> section2WithIndex = [];
-                    section1.asMap().forEach((index, element) {
-                      section1WithIndex.add(Tuple(index + 1, element));
-                    });
-                    section2.asMap().forEach((index, element) {
-                      section2WithIndex.add(Tuple(index + 7, element));
-                    });
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Flexible(
-                            child: _buildMnemonicColumn(section1WithIndex)),
-                        Flexible(
-                            child: _buildMnemonicColumn(section2WithIndex)),
-                      ],
-                    );
+
+                    if (seedList.length == 12) {
+                      return _buildTwoMnemonicColumns(0);
+                    } else {
+                      return PageView(
+                          controller: _seedDisplayPageController,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: [
+                            _buildTwoMnemonicColumns(0),
+                            _buildTwoMnemonicColumns(11),
+                          ]);
+                    }
                   }),
                 ),
               ],
             ),
             floatingActionButton: OnboardingButton(
               onTap: () {
-                _pageController.nextPage(
-                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+                if (seedList.length == 12 ||
+                    _seedDisplayPageController.page! == 1.0) {
+                  _pageController.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease);
+                } else {
+                  _seedDisplayPageController.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease);
+                }
               },
               label: S().component_done,
             ),
@@ -214,6 +217,32 @@ class _SeedScreenState extends State<SeedScreen> {
                 FloatingActionButtonLocation.centerDocked,
           ),
         ))
+      ],
+    );
+  }
+
+  Row _buildTwoMnemonicColumns(int startingIndex) {
+    List<String> section1 = seedList.sublist(startingIndex, startingIndex + 6);
+    List<String> section2 =
+        seedList.sublist(startingIndex + 6, startingIndex + 12);
+    List<Tuple<int, String>> section1WithIndex = [];
+    List<Tuple<int, String>> section2WithIndex = [];
+
+    section1.asMap().forEach((index, element) {
+      section1WithIndex.add(Tuple(startingIndex + index + 1, element));
+    });
+
+    section2.asMap().forEach((index, element) {
+      section2WithIndex.add(Tuple(startingIndex + index + 7, element));
+    });
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Flexible(child: _buildMnemonicColumn(section1WithIndex)),
+        Flexible(child: _buildMnemonicColumn(section2WithIndex)),
       ],
     );
   }

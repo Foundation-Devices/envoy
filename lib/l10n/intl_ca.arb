@@ -358,6 +358,7 @@
   "manual_setup_generate_seed_verify_seed_quiz_question": "Quin és el vostre número de clau privada",
   "manual_setup_generate_seed_verify_seed_quiz_success_correct": "Correcte",
   "manual_setup_generate_seed_verify_seed_subheading": "Envoy et farà algunes preguntes per verificar que has enregistrat correctament la teva clau semilla.",
+  "manual_setup_generate_seed_write_words_24_heading": "Escriu Aquestes 24 Paraules",
   "manual_setup_generate_seed_write_words_heading": "Escriu Aquestes 12 Paraules",
   "manual_setup_import_backup_CTA1": "Crear Còpia de Seguretat D'Envoy",
   "manual_setup_import_backup_CTA2": "Importar Còpia de Seguretat d'Envoy",

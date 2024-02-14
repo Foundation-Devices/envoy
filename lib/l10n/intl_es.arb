@@ -358,6 +358,7 @@
   "manual_setup_generate_seed_verify_seed_quiz_question": "¿Cuál es tu palabra semilla número",
   "manual_setup_generate_seed_verify_seed_quiz_success_correct": "Correcto",
   "manual_setup_generate_seed_verify_seed_subheading": "Envoy te hará algunas preguntas para verificar que registraste correctamente tu semilla.",
+  "manual_setup_generate_seed_write_words_24_heading": "Escribe Estas 24 Palabras",
   "manual_setup_generate_seed_write_words_heading": "Escribe Estas 12 Palabras",
   "manual_setup_import_backup_CTA1": "Crear Copia de Seguridad de Envoy",
   "manual_setup_import_backup_CTA2": "Importar Copia de Seguridad de Envoy",

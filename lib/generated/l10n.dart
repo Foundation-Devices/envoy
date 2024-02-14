@@ -3620,6 +3620,16 @@ class S {
     );
   }
 
+  /// `Write Down These 24 Words`
+  String get manual_setup_generate_seed_write_words_24_heading {
+    return Intl.message(
+      'Write Down These 24 Words',
+      name: 'manual_setup_generate_seed_write_words_24_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Write Down These 12 Words`
   String get manual_setup_generate_seed_write_words_heading {
     return Intl.message(
