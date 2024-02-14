@@ -8,7 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transacti
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 
@@ -78,7 +78,7 @@ final filteredTransactionsProvider =
   return transactions;
 });
 
-//keeps a cache or RBF ed transactions, so we can remove them from the list unless they are confirmed
+//We keep a cache of RBFed transactions so that we can remove the original tx from the list unless they are confirmed
 final RBFBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
 
 final transactionsProvider =
@@ -132,7 +132,7 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
   },
 );
 
-final RBFTxStateProvider = FutureProvider.family<Map?, String>(
+final RBFTxStateProvider = FutureProvider.family<RBFState?, String>(
   (ref, param) {
     final account = ref.watch(selectedAccountProvider);
     if (account == null) {
@@ -152,13 +152,15 @@ final isTxBoostedProvider = Provider.family<bool?, String>(
             return null;
           },
           loading: () => null,
-          error: (err, stack) => null,
+          error: (err, stack) {
+            if (kDebugMode) debugPrintStack(stackTrace: stack);
+            return null;
+          },
         );
   },
 );
 
-final cancelTxStateFutureProvider =
-    FutureProvider.family<TxCancelState?, String>(
+final cancelTxStateFutureProvider = FutureProvider.family<RBFState?, String>(
   (ref, param) {
     final account = ref.watch(selectedAccountProvider);
     if (account == null) {
@@ -168,7 +170,7 @@ final cancelTxStateFutureProvider =
   },
 );
 
-final cancelTxStateProvider = Provider.family<TxCancelState?, String>(
+final cancelTxStateProvider = Provider.family<RBFState?, String>(
   (ref, param) {
     return ref.watch(cancelTxStateFutureProvider(param)).when(
           data: (data) {
@@ -208,8 +210,7 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualAztecoTx) {
       if (kDebugMode) {
-        print(
-            "Pruning Azteco tx: ${actualAztecoTx.txId}");
+        print("Pruning Azteco tx: ${actualAztecoTx.txId}");
       }
       EnvoyStorage()
           .addTxNote("Azteco voucher", actualAztecoTx.txId); // TODO: FIGMA

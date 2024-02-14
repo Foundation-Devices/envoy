@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -29,15 +30,24 @@ import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 
-class TxCancelState {
+class RBFState {
   final String originalTxId;
   final String newTxId;
   final String accountId;
   final num oldFee;
   final num newFee;
+  final int rbfTimeStamp;
+  final int previousTxTimeStamp;
 
-  TxCancelState(this.originalTxId, this.newTxId, this.oldFee, this.newFee,
-      this.accountId);
+  RBFState({
+    required this.originalTxId,
+    required this.newTxId,
+    required this.oldFee,
+    required this.newFee,
+    required this.accountId,
+    required this.rbfTimeStamp,
+    required this.previousTxTimeStamp,
+  });
 
   /// returns json
   Map<String, dynamic> toJson() {
@@ -46,18 +56,22 @@ class TxCancelState {
       "newTxId": newTxId,
       "oldFee": oldFee,
       "newFee": newFee,
-      "accountId": accountId
+      "accountId": accountId,
+      "rbfTimeStamp": rbfTimeStamp,
+      "previousTxTimeStamp": previousTxTimeStamp
     };
   }
 
   /// from json
-  factory TxCancelState.fromJson(Map<String, dynamic> json) {
-    return TxCancelState(
-      json["originalTxId"],
-      json["newTxId"],
-      json["oldFee"],
-      json["newFee"],
-      json["accountId"] ?? "",
+  factory RBFState.fromJson(Map<String, dynamic> json) {
+    return RBFState(
+      originalTxId: json["originalTxId"],
+      newTxId: json["newTxId"],
+      oldFee: json["oldFee"],
+      newFee: json["newFee"],
+      accountId: json["accountId"],
+      rbfTimeStamp: json["rbfTimeStamp"] ?? 0,
+      previousTxTimeStamp: json["previousTxTimeStamp"] ?? 0,
     );
   }
 }
@@ -459,14 +473,23 @@ class _CancelTransactionProgressState
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port,
           widget.cancelTx.rawTx);
-      await Future.delayed(Duration(seconds: 1));
-      await EnvoyStorage().addCancelState(TxCancelState(
-              widget.originalTx.txId,
-              widget.cancelTx.txid,
-              widget.originalTx.fee,
-              widget.cancelTx.fee,
-              account.id ?? "")
+      await Future.delayed(Duration(seconds: 500));
+      await EnvoyStorage().addCancelState(RBFState(
+              originalTxId: widget.originalTx.txId,
+              newTxId: widget.cancelTx.txid,
+              oldFee: widget.originalTx.fee,
+              newFee: widget.cancelTx.fee,
+              accountId: account.id!,
+              rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
+              previousTxTimeStamp:
+                  widget.originalTx.date.millisecondsSinceEpoch)
           .toJson());
+      await Future.delayed(Duration(seconds: 500));
+
+      ref.read(RBFBroadCastedTxProvider.notifier).state = [
+        ...ref.read(RBFBroadCastedTxProvider),
+        widget.originalTx.txId
+      ];
 
       Psbt psbt = widget.cancelTx;
 

@@ -633,7 +633,7 @@ class TransactionListTile extends StatelessWidget {
           String txTitle = transaction.amount < 0
               ? S().activity_sent
               : S().activity_received;
-          TxCancelState? cancelState =
+          RBFState? cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
           if (cancelState != null) {
             if (cancelState.originalTxId == transaction.txId) {
