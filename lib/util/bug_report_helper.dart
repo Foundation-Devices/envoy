@@ -21,7 +21,7 @@ class EnvoyReport {
     return _instance;
   }
 
-  final int _logCapacity = 100;
+  final int _logCapacity = 50;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -38,7 +38,8 @@ class EnvoyReport {
     };
     //purge old logs
     if (_db != null) {
-      if ((await _logsStore.find(_db!)).length > _logCapacity) {
+      final logsLength = (await _logsStore.find(_db!)).length;
+      if (logsLength > _logCapacity) {
         _logsStore.delete(_db!,
             finder: Finder(
                 sortOrders: [SortOrder(Field.key, true)], limit: _logCapacity));
