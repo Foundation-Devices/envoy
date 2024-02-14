@@ -366,6 +366,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                         tag.coins.isEmpty
                                             ? Expanded(
                                                 child: Container(
+                                                  alignment: Alignment.center,
                                                   margin: EdgeInsets.symmetric(
                                                       vertical: 4,
                                                       horizontal: 4),
@@ -570,8 +571,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 builder: (context, ref, child) {
                   return Container(
                     alignment: Alignment.bottomCenter,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 2, horizontal: 4.5),
                     height: 40,
                     child: CoinTagBalanceWidget(coinTag: tag),
                   );
