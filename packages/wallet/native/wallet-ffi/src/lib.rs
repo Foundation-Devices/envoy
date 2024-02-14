@@ -1014,6 +1014,16 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                         bdk::Error::InsufficientFunds { available, .. } => {
                             max_fee = available;
                             rounds += 1;
+                            if rounds > 2 {
+                                if max_fee > amount {
+                                    match max_fee.checked_sub(amount) {
+                                        Some(available_for_fee) => {
+                                            max_fee = available_for_fee;
+                                        }
+                                        _ => {}
+                                    }
+                                }
+                            }
                         }
                         _ => {
                             update_last_error(e);
