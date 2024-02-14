@@ -3218,6 +3218,16 @@ class S {
     );
   }
 
+  /// `Recovering your Envoy wallet`
+  String get magic_setup_recovery_retry_header {
+    return Intl.message(
+      'Recovering your Envoy wallet',
+      name: 'magic_setup_recovery_retry_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Uploading Your Backup`
   String get magic_setup_send_backup_to_envoy_server_heading {
     return Intl.message(
@@ -3605,6 +3615,16 @@ class S {
     return Intl.message(
       'Envoy will ask you some questions to verify you correctly recorded your seed.',
       name: 'manual_setup_generate_seed_verify_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write Down These 24 Words`
+  String get manual_setup_generate_seed_write_words_24_heading {
+    return Intl.message(
+      'Write Down These 24 Words',
+      name: 'manual_setup_generate_seed_write_words_24_heading',
       desc: '',
       args: [],
     );
@@ -4818,6 +4838,26 @@ class S {
     );
   }
 
+  /// `Your transaction could not be boosted`
+  String get replaceByFee_boost_fail_header {
+    return Intl.message(
+      'Your transaction could not be boosted',
+      name: 'replaceByFee_boost_fail_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction has been boosted`
+  String get replaceByFee_boost_success_header {
+    return Intl.message(
+      'Your transaction has been boosted',
+      name: 'replaceByFee_boost_success_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boost Fee`
   String get replaceByFee_boost_tx_boostFee {
     return Intl.message(
@@ -4843,6 +4883,16 @@ class S {
     return Intl.message(
       'Canceling transaction',
       name: 'replaceByFee_cancel_confirm_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction could not be canceled`
+  String get replaceByFee_cancel_fail_heading {
+    return Intl.message(
+      'Your transaction could not be canceled',
+      name: 'replaceByFee_cancel_fail_heading',
       desc: '',
       args: [],
     );
@@ -4883,6 +4933,26 @@ class S {
     return Intl.message(
       'Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet.',
       name: 'replaceByFee_cancel_overlay_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction has been canceled`
+  String get replaceByFee_cancel_success_heading {
+    return Intl.message(
+      'Your transaction has been canceled',
+      name: 'replaceByFee_cancel_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt.`
+  String get replaceByFee_cancel_success_subheading {
+    return Intl.message(
+      'This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt.',
+      name: 'replaceByFee_cancel_success_subheading',
       desc: '',
       args: [],
     );

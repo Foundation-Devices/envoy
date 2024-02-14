@@ -218,7 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_fee_faster":
             MessageLookupByLibrary.simpleMessage("Més ràpid"),
         "coincontrol_tx_detail_fee_standard":
-            MessageLookupByLibrary.simpleMessage("Estàndard"),
+            MessageLookupByLibrary.simpleMessage("Normal"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
             "La teva transacció està a punt per ser enviada"),
         "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
@@ -684,6 +684,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_recovery_fail_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy no pot localitzar una Còpia de Seguretat Màgica.\n\nConfirmeu que heu iniciat sessió amb el compte d\'Apple correctament i que heu restaurat la vostra ultima còpia de seguretat d\'iCloud."),
+        "magic_setup_recovery_retry_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Recuperant la teva cartera Envoy"),
         "magic_setup_send_backup_to_envoy_server_heading":
             MessageLookupByLibrary.simpleMessage("Pujant Còpia de Seguretat"),
         "magic_setup_send_backup_to_envoy_server_subheading":
@@ -780,6 +783,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy et farà algunes preguntes per verificar que has enregistrat correctament la teva clau semilla."),
+        "manual_setup_generate_seed_write_words_24_heading":
+            MessageLookupByLibrary.simpleMessage("Escriu Aquestes 24 Paraules"),
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Escriu Aquestes 12 Paraules"),
         "manual_setup_import_backup_CTA1": MessageLookupByLibrary.simpleMessage(
@@ -901,7 +906,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_android_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Envoy Clau Privada"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
-            MessageLookupByLibrary.simpleMessage("Fer Còpia de Seguretat ara"),
+            MessageLookupByLibrary.simpleMessage("Fer Còpia Ara"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
             MessageLookupByLibrary.simpleMessage(
                 "Emmagatzemat al Clauer d\'iCloud"),
@@ -920,8 +925,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Aquesta còpia de seguretat conté dispositius i comptes connectats, etiquetes i configuració d\'aplicacions. No conté informació de la teva clau privada.\n\nLes còpies de seguretat d\'Envoy estan xifrades d\'extrem a extrem, Foundation no té accés ni coneixement dels seus continguts.\n\nEnvoy us notificarà quan s\'hagi completat la càrrega."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
-            MessageLookupByLibrary.simpleMessage(
-                "Obriu la Configuració d\'Android"),
+            MessageLookupByLibrary.simpleMessage("Configuració d\'Android"),
         "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Còpia de seguretat pendent als servidors de Foundation"),
@@ -1057,6 +1061,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Per recuperar la teva cartera d\'Envoy, segueix aquestes instruccions senzilles."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Aumenta la transacció"),
+        "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
+            "No s\'ha pogut acelerar la teva transacció"),
+        "replaceByFee_boost_success_header":
+            MessageLookupByLibrary.simpleMessage(
+                "La teva transacció s\'ha acelerat"),
         "replaceByFee_boost_tx_boostFee":
             MessageLookupByLibrary.simpleMessage("Acelerar Transacció"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
@@ -1064,6 +1073,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage(
                 "S\'està cancel·lant la transacció"),
+        "replaceByFee_cancel_fail_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "No s\'ha pogut cancel·lar la teva transacció"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
             MessageLookupByLibrary.simpleMessage("Quota de Cancel·lació"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
@@ -1074,6 +1086,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Substituïu la transacció no confirmada per una que contingui una tarifa més alta i que torni els fons a la vostra cartera."),
+        "replaceByFee_cancel_success_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "La teva transacció s\'ha cancel·lat"),
+        "replaceByFee_cancel_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Aquest és un intent de cancel·lació. Hi ha una petita possibilitat que la teva transacció original sigui confirmada abans d\'aquest intent de cancel·lació."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Aumenta"),
         "replaceByFee_coindetails_overlay_modal_heading":

@@ -666,6 +666,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_recovery_fail_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup."),
+        "magic_setup_recovery_retry_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Recovering your Envoy wallet"),
         "magic_setup_send_backup_to_envoy_server_heading":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
         "magic_setup_send_backup_to_envoy_server_subheading":
@@ -757,6 +760,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will ask you some questions to verify you correctly recorded your seed."),
+        "manual_setup_generate_seed_write_words_24_heading":
+            MessageLookupByLibrary.simpleMessage("Write Down These 24 Words"),
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Write Down These 12 Words"),
         "manual_setup_import_backup_CTA1":
@@ -1022,12 +1027,20 @@ class MessageLookup extends MessageLookupByLibrary {
             "To recover your Envoy wallet, follow these simple instructions."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Boosting transaction"),
+        "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
+            "Your transaction could not be boosted"),
+        "replaceByFee_boost_success_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction has been boosted"),
         "replaceByFee_boost_tx_boostFee":
             MessageLookupByLibrary.simpleMessage("Boost Fee"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be boosted"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Canceling transaction"),
+        "replaceByFee_cancel_fail_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction could not be canceled"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
             MessageLookupByLibrary.simpleMessage("Cancelation Fee"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
@@ -1037,6 +1050,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet."),
+        "replaceByFee_cancel_success_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction has been canceled"),
+        "replaceByFee_cancel_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Boost"),
         "replaceByFee_coindetails_overlay_modal_heading":
