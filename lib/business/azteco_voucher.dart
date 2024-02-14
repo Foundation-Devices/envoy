@@ -94,21 +94,3 @@ void addPendingTx(String address, Account account) {
       TransactionType.azteco, 0, 0, address);
   EnvoyStorage().addTxNote("Azteco voucher", address); // TODO: FIGMA
 }
-
-aztecoSync(Account account) async {
-  final pendingAztecoTxs =
-      await EnvoyStorage().getPendingTxs(account.id!, TransactionType.azteco);
-
-  if (pendingAztecoTxs.isEmpty) return;
-
-  for (var pendingAztecoTx in pendingAztecoTxs) {
-    account.wallet.transactions
-        .where((tx) => tx.outputs!.contains(pendingAztecoTx.address))
-        .forEach((actualAztecoTx) {
-      EnvoyStorage()
-          .addTxNote("Azteco voucher", actualAztecoTx.txId); // TODO: FIGMA
-      EnvoyStorage().deleteTxNote(pendingAztecoTx.address!);
-      EnvoyStorage().deletePendingTx(pendingAztecoTx.address!);
-    });
-  }
-}
