@@ -66,7 +66,7 @@ class Transaction extends Comparable {
   final int? vsize;
 
   get isConfirmed {
-    /// TODO: find root cause of this bug
+    /// if the tx is a pending transaction, the date will be based on the time the tx was created
     /// The tx date is sometimes shows proper date even though it is not confirmed
     if (DateTime.now().millisecondsSinceEpoch - date.millisecondsSinceEpoch <
         15000) {

@@ -15,6 +15,7 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
@@ -541,14 +542,23 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             await ref.read(rawWalletTransactionProvider(_psbt.rawTx).future);
 
         Transaction originalTx = widget.rbfSpendState.originalTx;
-        await EnvoyStorage().addRBFBoost(psbt.txid, {
-          "originalTxId": originalTx.txId,
-          "account_id": account.id,
-          "previousFee": originalTx.fee,
-          "rbfFee": psbt.fee,
-          "rbfTimeStamp": DateTime.now().millisecondsSinceEpoch,
-          "previousTxTimeStamp": originalTx.date.millisecondsSinceEpoch,
-        });
+
+        await EnvoyStorage().addRBFBoost(
+          psbt.txid,
+          RBFState(
+            originalTxId: originalTx.txId,
+            newTxId: psbt.txid,
+            accountId: account.id ?? "",
+            newFee: psbt.fee,
+            oldFee: originalTx.fee,
+            previousTxTimeStamp: originalTx.date.millisecondsSinceEpoch,
+            rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+        ref.read(RBFBroadCastedTxProvider.notifier).state = [
+          ...ref.read(RBFBroadCastedTxProvider),
+          originalTx.txId
+        ];
 
         ///Copy existing or updated note to the new transaction id
         final updatedNote = ref.read(stagingTxNoteProvider);

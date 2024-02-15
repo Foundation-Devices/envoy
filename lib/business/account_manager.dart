@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -21,7 +20,6 @@ import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:tor/tor.dart';
@@ -127,21 +125,6 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
-  pendingSync(Account account) async {
-    final pendingTxs = await EnvoyStorage()
-        .getPendingTxs(account.id!, TransactionType.pending);
-
-    if (pendingTxs.isEmpty) return;
-
-    for (var pendingTx in pendingTxs) {
-      account.wallet.transactions.where((tx) {
-        return tx.txId == pendingTx.txId;
-      }).forEach((txToRemove) {
-        EnvoyStorage().deletePendingTx(pendingTx.txId);
-      });
-    }
-  }
-
   Future<Account> _syncAccount(Account account) async {
     bool? changed = null;
 
@@ -172,9 +155,6 @@ class AccountManager extends ChangeNotifier {
 
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
-
-      aztecoSync(account);
-      pendingSync(account);
     }
     ;
 

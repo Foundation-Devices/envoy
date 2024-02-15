@@ -531,13 +531,9 @@ class EnvoyStorage {
     }
   }
 
-  Future addRBFBoost(String txId, Map payload) async {
-    await rbfBoostStore.record(txId).put(_db, payload);
+  Future addRBFBoost(String txId, RBFState payload) async {
+    await rbfBoostStore.record(txId).put(_db, payload.toJson());
     return true;
-  }
-
-  Future getCachedRBFBoost(String coinId) async {
-    return await rbfBoostStore.record(coinId).get(_db);
   }
 
   Future addCoinHistory(String txId, InputCoinHistory inputHistory) async {
@@ -558,11 +554,12 @@ class EnvoyStorage {
         record.map((e) => InputCoinHistory.fromJson(e.value)).toList());
   }
 
-  Future<Map?> getRBFBoostState(String txId, String accountId) async {
-    Map? data = (await rbfBoostStore.record(txId).get(_db));
+  Future<RBFState?> getRBFBoostState(String txId, String accountId) async {
+    Map<dynamic, dynamic>? data = (await rbfBoostStore.record(txId).get(_db));
     if (data != null) {
-      if (data['account_id'] == accountId) {
-        return data;
+      final rbfState = RBFState.fromJson(data as Map<String, Object?>);
+      if (rbfState.accountId == accountId) {
+        return rbfState;
       }
     }
     return null;
@@ -575,7 +572,7 @@ class EnvoyStorage {
 
   /// Returns the cancel state for a given txId
   /// If the txId matches with originalTxId or newTxId.
-  Future<TxCancelState?> getCancelTxState(String accountId, String txId) async {
+  Future<RBFState?> getCancelTxState(String accountId, String txId) async {
     RecordSnapshot? data = await canceledTxStore.findFirst(_db,
         finder: Finder(filter: Filter.custom(
       (record) {
@@ -592,7 +589,7 @@ class EnvoyStorage {
       },
     )));
     if (data != null) {
-      return TxCancelState.fromJson(data.value as Map<String, Object?>);
+      return RBFState.fromJson(data.value as Map<String, Object?>);
     } else {
       return null;
     }
