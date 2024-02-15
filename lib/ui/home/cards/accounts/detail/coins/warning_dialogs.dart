@@ -155,110 +155,102 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-        height: (MediaQuery.of(context).size.height * 0.46).clamp(270, 540),
-        padding: EdgeInsets.all(EnvoySpacing.medium1),
-        child: Stack(
-          fit: StackFit.passthrough,
-          children: [
-            Align(
-              alignment: Alignment(1.15, -1.1),
-              child: IconButton(
-                padding: EdgeInsets.all(EnvoySpacing.small),
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+      width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+      padding: EdgeInsets.all(EnvoySpacing.medium1),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              padding: EdgeInsets.all(EnvoySpacing.small),
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+          ),
+          Image.asset(
+            "assets/exclamation_icon.png",
+            height: 68,
+            width: 68,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          Text(
+            S().change_output_from_multiple_tags_modal_heading,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            child: Text(S().create_first_tag_modal_1_2_subheading,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                dismissed = !dismissed;
+              });
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 68,
-                  width: 68,
-                ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                Text(
-                  S().change_output_from_multiple_tags_modal_heading,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1),
-                  child: Text(S().create_first_tag_modal_1_2_subheading,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
-                      textAlign: TextAlign.center),
-                ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      dismissed = !dismissed;
-                    });
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        child: EnvoyCheckbox(
-                          value: dismissed,
-                          onChanged: (value) {
-                            if (value != null)
-                              setState(() {
-                                dismissed = value;
-                              });
-                          },
-                        ),
-                      ),
-                      Text(
-                        "Don’t show again",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color:
-                                  dismissed ? Colors.black : Color(0xff808080),
-                            ),
-                      ),
-                    ],
+                SizedBox(
+                  child: EnvoyCheckbox(
+                    value: dismissed,
+                    onChanged: (value) {
+                      if (value != null)
+                        setState(() {
+                          dismissed = value;
+                        });
+                    },
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(12)),
-                EnvoyButton(
-                  "Return to my coins", // TODO: FIGMA
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  type: EnvoyButtonTypes.tertiary,
-                ),
-                Padding(padding: EdgeInsets.all(8)),
-                EnvoyButton(
-                  "Continue", // TODO: FIGMA
-                  onTap: () {
-                    ///user has dismissed the prompt
-                    if (dismissed) {
-                      EnvoyStorage().addPromptState(
-                          DismissiblePrompt.createCoinTagWarning);
-                    } else {
-                      EnvoyStorage().removePromptState(
-                          DismissiblePrompt.createCoinTagWarning);
-                    }
-                    widget.onContinue();
-                  },
-                  type: EnvoyButtonTypes.primaryModal,
+                Text(
+                  S().component_dontShowAgain,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: dismissed ? Colors.black : Color(0xff808080),
+                      ),
                 ),
               ],
             ),
-          ],
-        ));
+          ),
+          EnvoyButton(
+            S().component_back,
+            onTap: () {
+              Navigator.pop(context);
+            },
+            type: EnvoyButtonTypes.tertiary,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          EnvoyButton(
+            S().component_continue,
+            onTap: () {
+              ///user has dismissed the prompt
+              if (dismissed) {
+                EnvoyStorage()
+                    .addPromptState(DismissiblePrompt.createCoinTagWarning);
+              } else {
+                EnvoyStorage()
+                    .removePromptState(DismissiblePrompt.createCoinTagWarning);
+              }
+              widget.onContinue();
+            },
+            type: EnvoyButtonTypes.primaryModal,
+          ),
+        ],
+      ),
+    );
   }
 }
