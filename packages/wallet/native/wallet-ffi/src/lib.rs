@@ -22,7 +22,10 @@ use bdk::database::{ConfigurableDatabase, Database, MemoryDatabase};
 use bdk::electrum_client::{ElectrumApi, Socks5Config};
 use bdk::sled::Tree;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, miniscript, Balance, FeeRate, KeychainKind, SignOptions, SyncOptions};
+use bdk::{
+    electrum_client, miniscript, Balance, FeeRate, KeychainKind, LocalUtxo, SignOptions,
+    SyncOptions,
+};
 use std::str::FromStr;
 
 use bdk::bitcoin::consensus::encode::deserialize;
@@ -822,8 +825,18 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     tx_builder.fee_rate(FeeRate::from_sat_per_vb((fee_rate * 100000.0) as f32));
     tx_builder.enable_rbf();
 
+    let mut unconfirmed_utxos: Vec<LocalUtxo> = vec![];
+
+    if let Ok(utxos) = util::get_unconfirmed_utxos(&wallet) {
+        unconfirmed_utxos = utxos;
+    }
+
     for outpoint in dont_spend {
         tx_builder.add_unspendable(outpoint);
+    }
+
+    for utxo in unconfirmed_utxos {
+        tx_builder.add_unspendable(utxo.outpoint);
     }
 
     let psbt = tx_builder.finish();
@@ -890,9 +903,27 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
             );
 
+            // total blocked amount from dont_spend
+            let mut blocked_amount: u64 = 0;
+
+            let mut unconfirmed_utxos: Vec<LocalUtxo> = vec![];
+
+            if let Ok(utxos) = util::get_unconfirmed_utxos(&wallet) {
+                unconfirmed_utxos = utxos;
+            }
+
             // find min fee rate
             for outpoint in dont_spend.clone() {
+                #[cfg(debug_assertions)]
+                println!("adding do not spendutxo: {}", outpoint);
                 tx_builder.add_unspendable(outpoint);
+            }
+
+            for utxo in unconfirmed_utxos.clone() {
+                #[cfg(debug_assertions)]
+                println!("unconfirmed utxo: {}", utxo.outpoint);
+                tx_builder.add_unspendable(utxo.outpoint);
+                blocked_amount += utxo.txout.value;
             }
             // get current fee rate and bump 1 sat/vb
             tx_builder.fee_rate(FeeRate::from_sat_per_vb(
@@ -947,9 +978,6 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 }
             }
 
-            // total blocked amount from dont_spend
-            let mut blocked_amount: u64 = 0;
-
             for outpoint in dont_spend.clone() {
                 let utxo = wallet.get_utxo(outpoint);
                 if let Ok(Some(utxo)) = utxo {
@@ -960,6 +988,16 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             let balance = get_total_balance(wallet.get_balance().unwrap());
 
             let available_balance = balance - blocked_amount;
+
+            #[cfg(debug_assertions)]
+            println!(
+                "Total balance: {} \n \
+            available blance: {} \n\
+            total unconfrimed utxos: {} ",
+                balance,
+                available_balance,
+                unconfirmed_utxos.len()
+            );
 
             // spend not possible if available balance is less than amount
             if available_balance < amount || available_balance == 0 {
@@ -991,6 +1029,11 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                 for outpoint in dont_spend.clone() {
                     tx_builder.add_unspendable(outpoint);
                 }
+
+                for outpoint in unconfirmed_utxos.clone() {
+                    tx_builder.add_unspendable(outpoint.outpoint);
+                }
+
                 tx_builder.fee_absolute(max_fee);
 
                 if rounds >= 5 {
@@ -1052,6 +1095,12 @@ pub unsafe extern "C" fn wallet_cancel_tx(
     let txid = unwrap_or_return!(Txid::from_str(txid), error_return);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
+    let mut unconfirmed_utxos: Vec<LocalUtxo> = vec![];
+
+    if let Ok(utxos) = util::get_unconfirmed_utxos(&wallet) {
+        unconfirmed_utxos = utxos;
+    }
+
     return match unwrap_or_return!(wallet.get_tx(&txid, true), error_return) {
         //tx not found in the database
         None => error_return,
@@ -1089,6 +1138,10 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                     // add blocked utxo as unspendable
                     for outpoint in dont_spend {
                         tx_builder.add_unspendable(outpoint);
+                    }
+
+                    for local_utxo in unconfirmed_utxos {
+                        tx_builder.add_unspendable(local_utxo.outpoint);
                     }
 
                     tx_builder.add_recipient(address.script_pubkey(), amount);
