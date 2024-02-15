@@ -473,7 +473,7 @@ class _CancelTransactionProgressState
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port,
           widget.cancelTx.rawTx);
-      await Future.delayed(Duration(seconds: 500));
+      await Future.delayed(Duration(milliseconds: 500));
       await EnvoyStorage().addCancelState(RBFState(
               originalTxId: widget.originalTx.txId,
               newTxId: widget.cancelTx.txid,
@@ -484,7 +484,7 @@ class _CancelTransactionProgressState
               previousTxTimeStamp:
                   widget.originalTx.date.millisecondsSinceEpoch)
           .toJson());
-      await Future.delayed(Duration(seconds: 500));
+      await Future.delayed(Duration(milliseconds: 500));
 
       ref.read(RBFBroadCastedTxProvider.notifier).state = [
         ...ref.read(RBFBroadCastedTxProvider),

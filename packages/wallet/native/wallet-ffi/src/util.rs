@@ -8,10 +8,10 @@ use crate::{
 };
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::BatchDatabase;
-use bdk::electrum_client;
 use bdk::electrum_client::ConfigBuilder;
 use bdk::wallet::tx_builder::TxOrdering;
 use bdk::wallet::AddressIndex;
+use bdk::{electrum_client, LocalUtxo};
 use bdk::{FeeRate, TransactionDetails};
 use bip39::{Language, Mnemonic};
 use bitcoin_hashes::hex::ToHex;
@@ -184,4 +184,20 @@ pub fn generate_mnemonic() -> (Mnemonic, String) {
     let mnemonic_string = mnemonic.to_string();
 
     (mnemonic, mnemonic_string)
+}
+
+pub fn get_unconfirmed_utxos<T: BatchDatabase>(
+    wallet: &bdk::Wallet<T>,
+) -> Result<Vec<LocalUtxo>, bdk::Error> {
+    let utxos = wallet.list_unspent()?;
+    let mut unconfirmed_utxos: Vec<LocalUtxo> = vec![];
+    for utxo in utxos {
+        if let Ok(Some(tx)) = wallet.get_tx(&utxo.outpoint.txid, true) {
+            //if the transaction is confirmation_timeis None, then it is unconfirmed
+            if tx.confirmation_time.is_none() {
+                unconfirmed_utxos.push(utxo);
+            }
+        };
+    }
+    Ok(unconfirmed_utxos)
 }
