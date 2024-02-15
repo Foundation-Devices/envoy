@@ -87,7 +87,7 @@ class _TransactionsDetailsWidgetState
   void _calculateContainerHeight(timeStamp) {
     if (mounted) {
       ///ensures we only set of the height changes
-      double nextHeight = 34 + (_scrollController.position.extentTotal);
+      double nextHeight = 36 + (_scrollController.position.extentTotal);
       if (nextHeight != containerHeight)
         setState(() {
           containerHeight = nextHeight;
