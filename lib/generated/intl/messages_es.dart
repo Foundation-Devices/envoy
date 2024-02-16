@@ -97,8 +97,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy no puede conectarse con Azteco.\n\nPor favor contacta con support@azte.co o inténtalo de nuevo más tarde."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DE CUPÓN"),
-        "azteco_redeem_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Canjear"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Error al Canjear"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -294,6 +292,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Más Información"),
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
         "component_reset":
             MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Reintentar"),
