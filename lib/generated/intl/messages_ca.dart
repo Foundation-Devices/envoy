@@ -99,8 +99,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy no pot connectar amb Azteco.\n\nPoseu-vos en contacte amb support@azte.co o torneu-ho a provar més tard."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CODI DE CUPÓ"),
-        "azteco_redeem_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Bescanvia"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("No es pot Bescanviar"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -280,7 +278,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_tag":
             MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "coindetails_overlay_transactionID":
-            MessageLookupByLibrary.simpleMessage("Identificador de transacció"),
+            MessageLookupByLibrary.simpleMessage("ID de transacció"),
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplica"),
         "component_back": MessageLookupByLibrary.simpleMessage("Enrere"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel·la"),
@@ -295,6 +293,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Més informació"),
         "component_next": MessageLookupByLibrary.simpleMessage("Següent"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reinicia"),
         "component_retry":
             MessageLookupByLibrary.simpleMessage("Torna-ho a provar"),

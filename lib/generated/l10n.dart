@@ -432,16 +432,6 @@ class S {
     );
   }
 
-  /// `Redeem`
-  String get azteco_redeem_modal_cta1 {
-    return Intl.message(
-      'Redeem',
-      name: 'azteco_redeem_modal_cta1',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Unable to Redeem`
   String get azteco_redeem_modal_fail_heading {
     return Intl.message(
@@ -1419,6 +1409,16 @@ class S {
     return Intl.message(
       'No',
       name: 'component_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Redeem`
+  String get component_redeem {
+    return Intl.message(
+      'Redeem',
+      name: 'component_redeem',
       desc: '',
       args: [],
     );

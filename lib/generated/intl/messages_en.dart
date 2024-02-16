@@ -96,8 +96,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
-        "azteco_redeem_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Redeem"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Unable to Redeem"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -288,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "component_next": MessageLookupByLibrary.simpleMessage("Next"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_save": MessageLookupByLibrary.simpleMessage("Save"),

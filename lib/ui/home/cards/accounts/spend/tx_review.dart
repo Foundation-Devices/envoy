@@ -208,12 +208,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   ref.read(spendTransactionProvider).isPSBTFinalized) {
                 broadcastTx(context);
               } else {
-                await Navigator.of(_rootContext, rootNavigator: false)
+                final psbt = await Navigator.of(_rootContext,
+                        rootNavigator: false)
                     .push(MaterialPageRoute(
                         builder: (context) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: PsbtCard(transactionModel.psbt!, account),
                             )));
+                ref
+                    .read(spendTransactionProvider.notifier)
+                    .updateWithFinalPSBT(psbt);
                 await Future.delayed(Duration(milliseconds: 200));
               }
             },
