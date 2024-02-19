@@ -165,7 +165,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       //calculate max fee only if we are not setting fee
       if (!settingFee) {
-        print("starting to calculate max fee rate");
         int maxFeeRate = await account.wallet
             .getMaxFeeRate(state.sendTo, amount, dontSpendUtxos: dontSpend);
         container.read(feeChooserStateProvider.notifier).state =
@@ -175,7 +174,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                 fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
                 minFeeRate: 1,
                 maxFeeRate: maxFeeRate.clamp(2, 5000));
-        print("Max Fee END : fee rate $maxFeeRate");
+        if (kDebugMode) {
+          print("Max fee Rate $maxFeeRate");
+        }
       }
 
       ///get max fee rate that we can use on this transaction
