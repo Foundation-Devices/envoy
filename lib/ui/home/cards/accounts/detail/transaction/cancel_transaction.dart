@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
+import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
 class RBFState {
@@ -188,6 +189,20 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       print(e);
+      String message = "$e";
+      if (e is InsufficientFunds) {
+        message = S().send_keyboard_amount_insufficient_funds_info;
+      }
+      EnvoyToast(
+        backgroundColor: EnvoyColors.danger,
+        replaceExisting: true,
+        duration: Duration(seconds: 4),
+        message: message,
+        icon: Icon(
+          Icons.info_outline,
+          color: EnvoyColors.solidWhite,
+        ),
+      ).show(context);
     } finally {
       setState(() {
         _loading = false;
