@@ -6,7 +6,7 @@ use crate::{
     serialize, Address, Client, OutPoint, OutputPath, PartiallySignedTransaction, Psbt,
     Socks5Config, Txid, UtxoList,
 };
-use bdk::bitcoin::{Script};
+use bdk::bitcoin::Script;
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::BatchDatabase;
 use bdk::electrum_client::ConfigBuilder;
