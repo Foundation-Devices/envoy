@@ -3,15 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::{
-    serialize, Address, Client, OutPoint, PartiallySignedTransaction, Psbt, Socks5Config, Txid,
-    UtxoList,
+    serialize, Address, Client, OutPoint, OutputPath, PartiallySignedTransaction, Psbt,
+    Socks5Config, Txid, UtxoList,
 };
+use bdk::bitcoin::Script;
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::BatchDatabase;
 use bdk::electrum_client::ConfigBuilder;
 use bdk::wallet::tx_builder::TxOrdering;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, LocalUtxo};
+use bdk::{electrum_client, KeychainKind, LocalUtxo};
 use bdk::{FeeRate, TransactionDetails};
 use bip39::{Language, Mnemonic};
 use bitcoin_hashes::hex::ToHex;
@@ -193,11 +194,28 @@ pub fn get_unconfirmed_utxos<T: BatchDatabase>(
     let mut unconfirmed_utxos: Vec<LocalUtxo> = vec![];
     for utxo in utxos {
         if let Ok(Some(tx)) = wallet.get_tx(&utxo.outpoint.txid, true) {
-            //if the transaction is confirmation_timeis None, then it is unconfirmed
+            //if the transaction is confirmation_time is None, then it is unconfirmed
             if tx.confirmation_time.is_none() {
                 unconfirmed_utxos.push(utxo);
             }
         };
     }
     Ok(unconfirmed_utxos)
+}
+
+pub fn get_output_path_type<T: BatchDatabase>(
+    script_pubkey: &Script,
+    wallet: &bdk::Wallet<T>,
+) -> OutputPath {
+    let path = wallet.database().get_path_from_script_pubkey(script_pubkey);
+    match path {
+        Ok(path_type) => match path_type {
+            None => OutputPath::NotMine,
+            Some(keychain_path) => match keychain_path.0 {
+                KeychainKind::External => OutputPath::External,
+                KeychainKind::Internal => OutputPath::Internal,
+            },
+        },
+        Err(_) => OutputPath::NotMine,
+    }
 }
