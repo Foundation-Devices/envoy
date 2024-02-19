@@ -39,6 +39,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
 class RBFSpendScreen extends ConsumerStatefulWidget {
@@ -61,10 +62,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   void initState() {
     _psbt = widget.rbfSpendState.psbt;
     _originalTx = widget.rbfSpendState.originalTx;
-
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _checkInputsChanged();
+      ref
+          .read(spendTransactionProvider.notifier)
+          .setAmount(_originalTx.amount.abs());
     });
   }
 
@@ -200,7 +203,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 },
                                 psbtFinalized: false,
                                 hideTxDetailsDialog: true,
-                                loading: false,
+                                loading: _rebuildingTx,
                                 feeTitle: S().replaceByFee_boost_tx_boostFee,
                                 address: widget.rbfSpendState.receiveAddress,
                                 feeChooserWidget: FeeChooser(
@@ -232,12 +235,17 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  EnvoyButton(
-                                    label: S()
-                                        .replaceByFee_coindetails_overlay_modal_heading,
-                                    state: ButtonState.default_state,
-                                    onTap: () => _boostTx(context),
-                                    type: ButtonType.primary,
+                                  Opacity(
+                                    opacity: _rebuildingTx ? 0.3 : 1,
+                                    child: EnvoyButton(
+                                      label: S()
+                                          .replaceByFee_coindetails_overlay_modal_heading,
+                                      state: ButtonState.default_state,
+                                      onTap: !_rebuildingTx
+                                          ? () => _boostTx(context)
+                                          : null,
+                                      type: ButtonType.primary,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -646,6 +654,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   Future _setFee(int fee, BuildContext context, bool customFee) async {
     Account? account = ref.read(selectedAccountProvider);
+    num? existingFeeRate = ref.read(spendFeeRateProvider);
     setState(() {
       _rebuildingTx = true;
     });
@@ -661,20 +670,33 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       setState(() {
         _psbt = psbt;
       });
+      if (customFee) {
+        /// hide the fee slider
+        Navigator.of(context, rootNavigator: false).pop();
+      }
       _checkInputsChanged();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.toString()),
-      ));
+      String message = "$e";
+      if (e is InsufficientFunds) {
+        message = S().send_keyboard_amount_insufficient_funds_info;
+      }
+      EnvoyToast(
+        replaceExisting: true,
+        duration: Duration(seconds: 4),
+        message: message,
+        icon: Icon(
+          Icons.info_outline,
+          color: EnvoyColors.solidWhite,
+        ),
+      ).show(context);
+      if (existingFeeRate != null) {
+        ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
+      }
     } finally {
       setState(() {
         _rebuildingTx = false;
       });
       ref.read(spendFeeProcessing.notifier).state = false;
-    }
-    if (customFee) {
-      /// hide the fee slider
-      Navigator.pop(context);
     }
   }
 
