@@ -111,7 +111,7 @@ class _TransactionsDetailsWidgetState
           fontWeight: FontWeight.w600,
         );
 
-    final address = tx.address ?? tx.outputs?[0] ?? "";
+    final address = tx.address ?? "";
 
     bool RBFPossible =
         (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
