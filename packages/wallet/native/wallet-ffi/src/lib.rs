@@ -853,7 +853,9 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     }
 
     for utxo in unconfirmed_utxos {
-        tx_builder.add_unspendable(utxo.outpoint);
+        if utxo.outpoint.txid != txid {
+            tx_builder.add_unspendable(utxo.outpoint);
+        }
     }
 
     let psbt = tx_builder.finish();
@@ -1032,7 +1034,21 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                     max_fee_rate: 0.0,
                 };
             }
-            let mut max_fee = available_balance - amount;
+            let mut max_fee = 0;
+            if available_balance > amount {
+                #[cfg(debug_assertions)]
+                println!(
+                    "RBF: Using main balance for max fee calculation: {} ",
+                    available_balance
+                );
+                max_fee = available_balance - amount;
+                #[cfg(debug_assertions)]
+                println!("RBF: max_fee: {} ", max_fee);
+            } else if change_amount != 0 {
+                max_fee = change_amount;
+                #[cfg(debug_assertions)]
+                println!("RBF: Using change: {} ", max_fee);
+            }
 
             if max_fee == 0 {
                 return RBFfeeRates {
@@ -1318,21 +1334,7 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
             ///this is a static function we dont have a wallet context
             path: match &wallet_instance {
                 None => OutputPath::NotMine,
-                Some(wallet) => {
-                    let path = wallet
-                        .database()
-                        .get_path_from_script_pubkey(&o.script_pubkey);
-                    match path {
-                        Ok(path_type) => match path_type {
-                            None => OutputPath::NotMine,
-                            Some(keychain_path) => match keychain_path.0 {
-                                KeychainKind::External => OutputPath::External,
-                                KeychainKind::Internal => OutputPath::Internal,
-                            },
-                        },
-                        Err(_) => OutputPath::NotMine,
-                    }
-                }
+                Some(wallet) => util::get_output_path_type(&o.script_pubkey, wallet),
             },
             address: CString::new(
                 Address::from_script(&o.script_pubkey, network.into())
