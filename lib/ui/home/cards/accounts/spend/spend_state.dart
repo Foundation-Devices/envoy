@@ -129,16 +129,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
     }
 
-    ///if fee rate deducted from spend amount, we reset the amount to original
-    ///this is needed if the user lowers the fee rate
-    if (state.amount != amount && state.amount != 0) {
-      amount = state.amount;
-    }
-
     try {
       state = state.clone()
         ..sendTo = sendTo
-        ..amount = amount
         ..utxos = utxos
         ..feeRate = feeRate.toDouble()
         ..loading = true;
@@ -170,23 +163,29 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: null);
 
+      //calculate max fee only if we are not setting fee
+      if (!settingFee) {
+        print("starting to calculate max fee rate");
+        int maxFeeRate = await account.wallet
+            .getMaxFeeRate(state.sendTo, amount, dontSpendUtxos: dontSpend);
+        container.read(feeChooserStateProvider.notifier).state =
+            FeeChooserState(
+                standardFeeRate:
+                    Fees().slowRate(account.wallet.network) * 100000,
+                fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
+                minFeeRate: 1,
+                maxFeeRate: maxFeeRate.clamp(2, 5000));
+        print("Max Fee END : fee rate $maxFeeRate");
+      }
+
       ///get max fee rate that we can use on this transaction
       ///when we are sending max, this is basically infinite
-      int maxFeeRate = sendMax
-          ? 1000
-          : await account.wallet
-              .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
-
-      container.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-          standardFeeRate: Fees().slowRate(account.wallet.network) * 100000,
-          fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
-          minFeeRate: 1,
-          maxFeeRate: maxFeeRate);
 
       ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
       RawTransaction rawTransaction = await account.wallet
           .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
+
       state = state.clone()
         ..psbt = psbt
         ..loading = false
@@ -203,10 +202,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       rawTransaction.outputs.forEach((output) {
         if (output.path == TxOutputPath.NotMine) {
           foundOutput = true;
-          if (amount != output.amount) {
-            state = state.clone()..amount = amount;
-          }
-          container.read(spendAmountProvider.notifier).state = output.amount;
+          state = state.clone()..amount = output.amount;
         }
       });
 
@@ -214,19 +210,15 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       if (!foundOutput) {
         rawTransaction.outputs.forEach((output) {
           if (output.path == TxOutputPath.External) {
-            if (amount != output.amount) {
-              state = state.clone()..amount = amount;
-            }
-            container.read(spendAmountProvider.notifier).state = output.amount;
+            state = state.clone()..amount = output.amount;
           }
         });
       }
 
       if (sendMax) {
-        final amountToSpend = container.read(spendAmountProvider);
         state = state.clone()
           ..mode = SpendMode.sendMax
-          ..uneconomicSpends = (amountToSpend + psbt.fee) != amount;
+          ..uneconomicSpends = (state.amount + psbt.fee) != spendableBalance;
       }
 
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
@@ -399,6 +391,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   resetBroadcastState() {
     this.state = state.clone()..broadcastProgress = BroadcastProgress.staging;
+  }
+
+  //for RBF review screen
+  void setAmount(int amount) {
+    this.state = state.clone()..amount = amount;
   }
 }
 
