@@ -712,6 +712,7 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let address = CStr::from_ptr(send_to).to_str().unwrap();
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
 
+    let mut amount = amount;
     let must_spend = util::extract_utxo_list(must_spend);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
@@ -731,7 +732,16 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     if balance > 0 && blocked_amount < balance {
         spendable_balance = balance - blocked_amount;
     }
+
     let mut max_fee = spendable_balance - amount;
+
+    //user is trying to do a full spend,
+    //max fee user can use is = spendable balance - 573(dust limit)
+    //in order to make that tx we need to the spend amount to be 573,rest will be fee
+    if spendable_balance == amount {
+        amount = 573; //dust limit
+        max_fee = spendable_balance - amount;
+    }
 
     loop {
         match util::build_tx(
@@ -743,7 +753,15 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
             &must_spend,
             &dont_spend,
         ) {
-            Ok((psbt, _)) => {
+            Ok((mut psbt, _)) => {
+                let sign_options = SignOptions {
+                    trust_witness_utxo: true,
+                    ..Default::default()
+                };
+
+                // Always try signing
+                wallet.sign(&mut psbt, sign_options).unwrap_or(false);
+
                 match psbt.fee_rate() {
                     None => {
                         return error_return;
