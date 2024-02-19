@@ -603,19 +603,36 @@ pub unsafe extern "C" fn wallet_get_transactions(
         let address = {
             let mut ret = "".to_string();
 
-            for output in outputs_iter.clone() {
-                let is_mine = wallet.is_mine(&output.script_pubkey).unwrap_or(false);
-                if (is_mine && transaction.received > 0) || (!is_mine && transaction.sent > 0) {
-                    ret = match Address::from_script(&output.script_pubkey, wallet.network()) {
-                        Ok(a) => a,
-                        Err(_) => {
-                            continue; // keep looking
-                        }
-                    }
-                    .to_string();
+            outputs_iter
+                .clone()
+                .filter(
+                    |output| match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                        OutputPath::External => false,
+                        OutputPath::Internal => false,
+                        OutputPath::NotMine => true,
+                    },
+                )
+                .for_each(|o| {
+                    ret = Address::from_script(&o.script_pubkey, wallet.network())
+                        .unwrap()
+                        .to_string();
+                });
 
-                    break;
-                }
+            if ret.is_empty() {
+                outputs_iter
+                    .clone()
+                    .filter(|output| {
+                        match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                            OutputPath::External => true,
+                            OutputPath::Internal => false,
+                            OutputPath::NotMine => false,
+                        }
+                    })
+                    .for_each(|o| {
+                        ret = Address::from_script(&o.script_pubkey, wallet.network())
+                            .unwrap()
+                            .to_string();
+                    });
             }
 
             ret
