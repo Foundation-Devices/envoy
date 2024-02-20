@@ -18,6 +18,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,11 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     final accountTransactions =
         ref.read(transactionsProvider(widget.tag.account));
     final tx = accountTransactions
-        .firstWhere((element) => element.txId == widget.coin.utxo.txid);
+        .firstWhereOrNull((element) => element.txId == widget.coin.utxo.txid);
+    //if tx is not found in the list of transactions,
+    if (tx == null) {
+      return Container();
+    }
     final utxoAddress = tx.outputs?[widget.coin.utxo.vout] ?? "";
     final coinTag = widget.tag;
     final coin = widget.coin;
