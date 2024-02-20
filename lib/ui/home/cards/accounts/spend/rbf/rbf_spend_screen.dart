@@ -541,6 +541,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port,
           psbt.rawTx);
+      //wait for BDK to broadcast the transaction
       await Future.delayed(Duration(seconds: 5));
       try {
         /// get the raw transaction from the database
