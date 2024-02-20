@@ -1204,13 +1204,9 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                 FeeRate::from_sat_per_vb((next_block_fee_rate * 100000.0) as f32).as_sat_per_vb();
 
             if current_fee_rate.as_sat_per_vb() >= target_fee_rate {
-                target_fee_rate = current_fee_rate.as_sat_per_vb() + 1.0;
+                target_fee_rate = current_fee_rate.as_sat_per_vb() + 1.5;
             }
 
-            let mut amount = 0;
-            for out in transaction.output {
-                amount += out.value
-            }
             let mut tx_builder = wallet.build_tx();
 
             let mut utxo_list: Vec<OutPoint> = Vec::new();
@@ -1229,8 +1225,9 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                         tx_builder.add_unspendable(local_utxo.outpoint);
                     }
 
-                    tx_builder.add_recipient(address.script_pubkey(), amount);
-
+                    // drain all inputs into wallet internal address,
+                    // draining will only create one output
+                    tx_builder.drain_to(address.script_pubkey());
                     tx_builder.fee_rate(FeeRate::from_sat_per_vb(target_fee_rate));
 
                     let psbt = tx_builder.finish();
