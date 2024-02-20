@@ -119,7 +119,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
         int minRate = minFeeRate.toInt();
         int maxRate = rates.max_fee_rate.toInt();
-        int fasterFeeRate = minRate + 1  ;
+        int fasterFeeRate = minRate + 1;
+
         ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
         if (minRate == maxRate) {
           fasterFeeRate = maxRate;
