@@ -593,7 +593,15 @@ class TransactionListTile extends StatelessWidget {
           EnvoyIcons txIcon =
               transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
           if (cancelState != null) {
-            txIcon = EnvoyIcons.close;
+            if (!transaction.isConfirmed) {
+              txIcon = EnvoyIcons.close;
+            } else if (cancelState.newTxId == transaction.txId) {
+              txIcon = EnvoyIcons.close;
+            } else {
+              txIcon = transaction.amount < 0
+                  ? EnvoyIcons.spend
+                  : EnvoyIcons.receive;
+            }
           } else if (isBoosted == true) {
             txIcon = EnvoyIcons.rbf_boost;
           }
