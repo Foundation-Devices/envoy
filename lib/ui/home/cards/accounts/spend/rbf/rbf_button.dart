@@ -117,13 +117,20 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         ref.read(spendAddressProvider.notifier).state = receiveOutPut.address;
         ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
 
+        int minRate = minFeeRate.toInt();
+        int maxRate = rates.max_fee_rate.toInt();
+        int fasterFeeRate = minRate + 1  ;
+        ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
+        if (minRate == maxRate) {
+          fasterFeeRate = maxRate;
+        } else {
+          if (minRate < maxRate) {
+            fasterFeeRate = (maxRate + 1).clamp(minRate, maxRate);
+          }
+        }
         ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
           standardFeeRate: minFeeRate,
-
-          ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
-          fasterFeeRate: (minFeeRate + 1)
-              .clamp(minFeeRate.toInt(), rates.max_fee_rate.toInt())
-              .toInt(),
+          fasterFeeRate: fasterFeeRate,
           minFeeRate: rates.min_fee_rate.ceil().toInt(),
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
