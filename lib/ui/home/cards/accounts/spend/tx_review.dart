@@ -557,9 +557,6 @@ class _TransactionReviewScreenState
                 feeTitle: S().coincontrol_tx_detail_fee,
                 feeChooserWidget: FeeChooser(
                   onFeeSelect: (fee, context, bool customFee) {
-                    ref
-                        .read(spendTransactionProvider.notifier)
-                        .validate(ProviderScope.containerOf(context));
                     setFee(fee, context, customFee);
                     ref.read(userHasChangedFeesProvider.notifier).state = true;
                   },
@@ -676,25 +673,15 @@ class _TransactionReviewScreenState
     if (!this.mounted) {
       return;
     }
-    // FIXME: we need a way to stop the coin selection randomness past the send screen
-    // Sometimes this results in a max fee calculation that is no longer correct
-    // As a workaround we decrement the fee rate here until we get a valid PSBT
+    // Set the fee
     ref.read(spendFeeProcessing.notifier).state = true;
     int selectedItem = fee;
-    while (true) {
-      ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
-      bool valid = await ref
-          .read(spendTransactionProvider.notifier)
-          .validate(ProviderScope.containerOf(context), settingFee: true);
-
-      if (valid) {
-        ref.read(spendFeeProcessing.notifier).state = false;
-        break;
-      }
-      selectedItem--;
-    }
-
-    ///hide fee slider bottomsheet
+    ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
+    await ref
+        .read(spendTransactionProvider.notifier)
+        .validate(ProviderScope.containerOf(context), settingFee: true);
+    ref.read(spendFeeProcessing.notifier).state = false;
+    //hide fee slider bottom-sheet
     if (customFee) {
       Navigator.pop(context);
     }

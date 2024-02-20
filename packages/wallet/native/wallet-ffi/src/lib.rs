@@ -730,6 +730,7 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     let address = CStr::from_ptr(send_to).to_str().unwrap();
     let send_to = unwrap_or_return!(Address::from_str(address), error_return);
 
+    let mut amount = amount;
     let must_spend = util::extract_utxo_list(must_spend);
     let dont_spend = util::extract_utxo_list(dont_spend);
 
@@ -749,7 +750,16 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
     if balance > 0 && blocked_amount < balance {
         spendable_balance = balance - blocked_amount;
     }
+
     let mut max_fee = spendable_balance - amount;
+
+    //user is trying to do a full spend,
+    //max fee user can use is = spendable balance - 573(dust limit)
+    //in order to make that tx we need to the spend amount to be 573,rest will be fee
+    if spendable_balance == amount {
+        amount = 573; //dust limit
+        max_fee = spendable_balance - amount;
+    }
 
     loop {
         match util::build_tx(
@@ -761,7 +771,15 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
             &must_spend,
             &dont_spend,
         ) {
-            Ok((psbt, _)) => {
+            Ok((mut psbt, _)) => {
+                let sign_options = SignOptions {
+                    trust_witness_utxo: true,
+                    ..Default::default()
+                };
+
+                // Always try signing
+                wallet.sign(&mut psbt, sign_options).unwrap_or(false);
+
                 match psbt.fee_rate() {
                     None => {
                         return error_return;
@@ -871,7 +889,9 @@ pub unsafe extern "C" fn wallet_get_bumped_psbt(
     }
 
     for utxo in unconfirmed_utxos {
-        tx_builder.add_unspendable(utxo.outpoint);
+        if utxo.outpoint.txid != txid {
+            tx_builder.add_unspendable(utxo.outpoint);
+        }
     }
 
     let psbt = tx_builder.finish();
@@ -950,13 +970,13 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             // find min fee rate
             for outpoint in dont_spend.clone() {
                 #[cfg(debug_assertions)]
-                println!("adding do not spendutxo: {}", outpoint);
+                println!("RBF: adding do not spendutxo: {}", outpoint);
                 tx_builder.add_unspendable(outpoint);
             }
 
             for utxo in unconfirmed_utxos.clone() {
                 #[cfg(debug_assertions)]
-                println!("unconfirmed utxo: {}", utxo.outpoint);
+                println!("RBF: Unconfirmed utxo: {}", utxo.outpoint);
                 tx_builder.add_unspendable(utxo.outpoint);
                 blocked_amount += utxo.txout.value;
             }
@@ -987,11 +1007,22 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
 
             // total amount to be spent
             let mut amount = 0;
+            let mut change_amount = 0;
 
             for out in transaction.output.clone() {
                 //if output pub key not belongs to wallet
                 if !wallet.is_mine(&out.script_pubkey.clone()).unwrap_or(false) {
                     amount += out.value
+                }
+                if wallet
+                    .database()
+                    .get_path_from_script_pubkey(&out.script_pubkey.clone())
+                    .map(|path_option| path_option.filter(|path| path.0 == KeychainKind::Internal))
+                    .unwrap()
+                    .map(|path| path.0 == KeychainKind::Internal)
+                    .is_some()
+                {
+                    change_amount += out.value;
                 }
             }
 
@@ -1026,22 +1057,34 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
 
             #[cfg(debug_assertions)]
             println!(
-                "Total balance: {} \n \
-            available blance: {} \n\
-            total unconfrimed utxos: {} ",
+                "RBF: Total balance: {} \nRBF: available blance: {} \nRBF: total unconfrimed utxos: {} ",
                 balance,
                 available_balance,
                 unconfirmed_utxos.len()
             );
 
             // spend not possible if available balance is less than amount
-            if available_balance < amount || available_balance == 0 {
+            if available_balance == 0 && change_amount == 0 {
                 return RBFfeeRates {
                     min_fee_rate: -1.2,
                     max_fee_rate: 0.0,
                 };
             }
-            let mut max_fee = available_balance - amount;
+            let mut max_fee = 0;
+            if available_balance > amount {
+                #[cfg(debug_assertions)]
+                println!(
+                    "RBF: Using main balance for max fee calculation: {} ",
+                    available_balance
+                );
+                max_fee = available_balance - amount;
+                #[cfg(debug_assertions)]
+                println!("RBF: max_fee: {} ", max_fee);
+            } else if change_amount != 0 {
+                max_fee = change_amount;
+                #[cfg(debug_assertions)]
+                println!("RBF: Using change: {} ", max_fee);
+            }
 
             if max_fee == 0 {
                 return RBFfeeRates {
@@ -1090,11 +1133,18 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                     }
                     Err(e) => match e {
                         bdk::Error::InsufficientFunds { available, .. } => {
+                            #[cfg(debug_assertions)]
+                            println!("RBF: InsufficientFunds: {} ", available);
                             max_fee = available;
                             rounds += 1;
                             if rounds > 2 && max_fee > amount {
                                 if let Some(available_for_fee) = max_fee.checked_sub(amount) {
                                     max_fee = available_for_fee;
+                                    #[cfg(debug_assertions)]
+                                    println!(
+                                        "RBF: InsufficientFunds available-amount: {} ",
+                                        max_fee
+                                    );
                                 }
                             }
                         }
@@ -1320,21 +1370,7 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
             ///this is a static function we dont have a wallet context
             path: match &wallet_instance {
                 None => OutputPath::NotMine,
-                Some(wallet) => {
-                    let path = wallet
-                        .database()
-                        .get_path_from_script_pubkey(&o.script_pubkey);
-                    match path {
-                        Ok(path_type) => match path_type {
-                            None => OutputPath::NotMine,
-                            Some(keychain_path) => match keychain_path.0 {
-                                KeychainKind::External => OutputPath::External,
-                                KeychainKind::Internal => OutputPath::Internal,
-                            },
-                        },
-                        Err(_) => OutputPath::NotMine,
-                    }
-                }
+                Some(wallet) => util::get_output_path_type(&o.script_pubkey, wallet),
             },
             address: CString::new(
                 Address::from_script(&o.script_pubkey, network.into())

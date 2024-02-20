@@ -65,7 +65,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
-    int amount = ref.watch(spendAmountProvider);
+    int amount =
+        ref.watch(spendTransactionProvider.select((value) => value.amount));
     Psbt psbt = widget.psbt;
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;
