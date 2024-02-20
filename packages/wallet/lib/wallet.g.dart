@@ -21,6 +21,7 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
           (json['outputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
       inputs:
           (json['inputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      vsize: json['vsize'] as int?,
     );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
@@ -36,6 +37,7 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'inputs': instance.inputs,
       'type': _$TransactionTypeEnumMap[instance.type]!,
       'address': instance.address,
+      'vsize': instance.vsize,
     };
 
 const _$TransactionTypeEnumMap = {
