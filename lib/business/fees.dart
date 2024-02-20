@@ -28,7 +28,7 @@ final txEstimatedConfirmationTimeProvider =
   final network = txNetwork.item2;
 
   if (tx.vsize == null) {
-    return 0;
+    return 10;
   }
 
   final feeRate = tx.fee / tx.vsize!;
