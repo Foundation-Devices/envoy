@@ -536,14 +536,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      await Future.delayed(Duration(seconds: 4));
 
       final txid = await account.wallet.broadcastTx(
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port,
           psbt.rawTx);
-
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 5));
       try {
         /// get the raw transaction from the database
         final rawTx =
