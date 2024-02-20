@@ -7,7 +7,6 @@ import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
-import 'package:wallet/generated_bindings.dart' as _i3;
 import 'package:wallet/wallet.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -36,16 +35,6 @@ class _FakePsbt_0 extends _i1.SmartFake implements _i2.Psbt {
 class _FakeRawTransaction_1 extends _i1.SmartFake
     implements _i2.RawTransaction {
   _FakeRawTransaction_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeRBFfeeRates_2 extends _i1.SmartFake implements _i3.RBFfeeRates {
-  _FakeRBFfeeRates_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -397,31 +386,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
           ),
         )),
       ) as _i5.Future<_i2.RawTransaction>);
-
-  @override
-  _i5.Future<_i3.RBFfeeRates> getBumpedPSBTMaxFeeRate(
-    String? txId,
-    List<_i2.Utxo>? doNotSpend,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getBumpedPSBTMaxFeeRate,
-          [
-            txId,
-            doNotSpend,
-          ],
-        ),
-        returnValue: _i5.Future<_i3.RBFfeeRates>.value(_FakeRBFfeeRates_2(
-          this,
-          Invocation.method(
-            #getBumpedPSBTMaxFeeRate,
-            [
-              txId,
-              doNotSpend,
-            ],
-          ),
-        )),
-      ) as _i5.Future<_i3.RBFfeeRates>);
 
   @override
   _i5.Future<String> broadcastTx(
