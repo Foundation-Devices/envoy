@@ -589,7 +589,10 @@ class EnvoyStorage {
       },
     )));
     if (data != null) {
-      return RBFState.fromJson(data.value as Map<String, Object?>);
+      RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
+      if(rbf.accountId == accountId) {
+        return rbf;
+      }
     } else {
       return null;
     }
