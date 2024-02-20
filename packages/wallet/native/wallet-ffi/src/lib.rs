@@ -653,6 +653,23 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 }
             }
 
+            //possible cancel transaction that involves change address
+            if ret.is_empty() && outputs_iter.len() == 1 {
+                outputs_iter
+                    .clone()
+                    .filter(|output| {
+                        match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                            OutputPath::External => false,
+                            OutputPath::Internal => true,
+                            OutputPath::NotMine => false,
+                        }
+                    })
+                    .for_each(|o| {
+                        ret = Address::from_script(&o.script_pubkey, wallet.network())
+                            .unwrap()
+                            .to_string();
+                    });
+            }
             ret
         };
 
