@@ -34,6 +34,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as Rive;
@@ -397,8 +398,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void broadcastTx(BuildContext context) async {
-    Account? account = ref.watch(selectedAccountProvider);
-    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+    Account? account = ref.read(selectedAccountProvider);
+    TransactionModel transactionModel = ref.read(spendTransactionProvider);
 
     if (account == null || transactionModel.psbt == null) {
       return;
@@ -414,6 +415,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      addHapticFeedback();
       await Future.delayed(Duration(milliseconds: 500));
     } catch (e) {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
@@ -421,6 +423,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
       await Future.delayed(Duration(milliseconds: 800));
     }
+  }
+
+  bool hapticCalled = false;
+  void addHapticFeedback() async {
+    if (hapticCalled) return;
+    hapticCalled = true;
+    await Future.delayed(Duration(milliseconds: 700));
+    HapticFeedback.lightImpact();
+    await Future.delayed(Duration(milliseconds: 100));
+    HapticFeedback.mediumImpact();
   }
 }
 

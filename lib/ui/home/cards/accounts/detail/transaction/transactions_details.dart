@@ -111,6 +111,7 @@ class _TransactionsDetailsWidgetState
           fontWeight: FontWeight.w600,
         );
 
+    bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
     final address = tx.address ?? "";
 
     bool RBFPossible =
@@ -273,12 +274,15 @@ class _TransactionsDetailsWidgetState
                                       child: AnimatedSize(
                                         duration: Duration(milliseconds: 200),
                                         curve: Curves.easeInOut,
-                                        child: AddressWidget(
-                                          widgetKey: ValueKey<bool>(
-                                              showAddressExpanded),
-                                          address: address,
-                                          short: !showAddressExpanded,
-                                        ),
+                                        child: addressNotAvailable
+                                            ? Text("Address not available ",
+                                                style: trailingTextStyle)
+                                            : AddressWidget(
+                                                widgetKey: ValueKey<bool>(
+                                                    showAddressExpanded),
+                                                address: address,
+                                                short: !showAddressExpanded,
+                                              ),
                                       ),
                                     ),
                                   ),
@@ -461,9 +465,9 @@ class _TransactionsDetailsWidgetState
           );
 
     if (cancelState?.newTxId == tx.txId) {
-      icon = EnvoyIcon(
-        EnvoyIcons.close,
-        size: EnvoyIconSize.superSmall,
+      icon = Icon(
+        Icons.close,
+        size: 16,
       );
       feeTitle = S().replaceByFee_cancel_overlay_modal_cancelationFees;
     }
@@ -494,27 +498,39 @@ class _TransactionsDetailsWidgetState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            flex: 1,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: icon,
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-                Text(
-                  "$title",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.w600),
-                ),
-              ],
+            flex: 3,
+            child: Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 26,
+                    child: icon,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: EnvoySpacing.xs,
+                      ),
+                      child: Text(
+                        "$title",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.black, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Expanded(
+          Flexible(
+              flex: 4,
               child: Container(
-            alignment: Alignment.centerRight,
-            child: trailing,
-          )),
+                alignment: Alignment.centerRight,
+                child: trailing,
+              )),
         ],
       ),
     );
