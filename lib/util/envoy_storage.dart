@@ -592,7 +592,7 @@ class EnvoyStorage {
       RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
       if (rbf.accountId == accountId) {
         return rbf;
-      }else{
+      } else {
         return null;
       }
     } else {
