@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
@@ -375,7 +376,10 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
             Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  launchUrl(Uri.parse(
+                      "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                },
                 child: Text(
                   S().component_learnMore,
                   style: EnvoyTypography.button
