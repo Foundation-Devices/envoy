@@ -51,35 +51,29 @@ class BalanceWidget extends ConsumerWidget {
 
     List<Widget> rowItems = [];
     if (showLock) {
-      rowItems.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-        child: FittedBox(
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return CoinLockButton(
-                locked: locked,
-                gestureTapCallback: () => onLockTap?.call(),
-              );
-            },
-          ),
+      rowItems.add(FittedBox(
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return CoinLockButton(
+              locked: locked,
+              gestureTapCallback: () => onLockTap?.call(),
+            );
+          },
         ),
       ));
     }
     if (switchWidget != null) {
-      rowItems.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-        child: AnimatedOpacity(
-            opacity: locked ? 0.2 : 1,
-            duration: Duration(milliseconds: 250),
-            child: IgnorePointer(
-                ignoring: locked, child: switchWidget ?? SizedBox.shrink())),
-      ));
+      rowItems.add(AnimatedOpacity(
+          opacity: locked ? 0.2 : 1,
+          duration: Duration(milliseconds: 250),
+          child: IgnorePointer(
+              ignoring: locked, child: switchWidget ?? SizedBox.shrink())));
     }
 
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      padding: EdgeInsets.symmetric(horizontal: 4),
+      margin: EdgeInsets.only(left: EnvoySpacing.xs),
+      padding: EdgeInsets.only(left: EnvoySpacing.xs),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -396,16 +390,20 @@ class _CoinLockButtonState extends State<CoinLockButton> {
       RiveFile? riveFile = ref.watch(coinLockRiveProvider);
       return GestureDetector(
           onTap: widget.gestureTapCallback,
+          behavior: HitTestBehavior.opaque,
           child: Container(
-              child: SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: riveFile != null
-                      ? Rive.RiveAnimation.direct(
-                          riveFile,
-                          onInit: _onInit,
-                        )
-                      : SizedBox.shrink())));
+              height: 38,
+              width: 50,
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                child: riveFile != null
+                    ? Rive.RiveAnimation.direct(
+                        riveFile,
+                        onInit: _onInit,
+                      )
+                    : SizedBox.shrink(),
+              )));
     });
   }
 

@@ -63,9 +63,10 @@ class Transaction extends Comparable {
   final List<String>? inputs;
   final TransactionType type;
   final String? address;
+  final int? vsize;
 
   get isConfirmed {
-    /// TODO: find root cause of this bug
+    /// if the tx is a pending transaction, the date will be based on the time the tx was created
     /// The tx date is sometimes shows proper date even though it is not confirmed
     if (DateTime.now().millisecondsSinceEpoch - date.millisecondsSinceEpoch <
         15000) {
@@ -78,7 +79,10 @@ class Transaction extends Comparable {
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight, this.address,
-      {this.type = TransactionType.normal, this.outputs, this.inputs});
+      {this.type = TransactionType.normal,
+      this.outputs,
+      this.inputs,
+      this.vsize});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -149,6 +153,8 @@ class NativeTransaction extends Struct {
   external int inputsLen;
   external Pointer<Pointer<Uint8>> inputs;
   external Pointer<Uint8> address;
+  @Size()
+  external int vsize;
 }
 
 class NativeSeed extends Struct {
@@ -594,9 +600,6 @@ class Wallet {
       }
 
       return changed;
-    }).timeout(Duration(seconds: 30), onTimeout: () {
-      _currentlySyncing = false;
-      throw TimeoutException;
     });
   }
 
@@ -760,12 +763,19 @@ class Wallet {
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
           doNotSpendPointer);
+      if (kDebugMode) {
+        print(
+            "Fee rate min: ${feeRates.min_fee_rate} \n Fee rate max: ${feeRates.max_fee_rate}");
+      }
       if (feeRates.min_fee_rate <= 1) {
         if (feeRates.min_fee_rate == -1.1) {
           throw Exception("Transaction cannot be boosted");
         }
         if (feeRates.min_fee_rate == -1.2) {
           throw Exception("Insufficient balance to boost transaction");
+        }
+        if (feeRates.min_fee_rate == -1.5) {
+          throw Exception("Unable to boost transaction");
         }
         if (feeRates.max_fee_rate == 0.404) {
           throw Exception("Transaction not found");
@@ -884,17 +894,17 @@ class Wallet {
     for (var i = 0; i < txList.transactionsLen; i++) {
       var tx = txList.transactions.elementAt(i).ref;
       transactions.add(Transaction(
-        "",
-        tx.txid.cast<Utf8>().toDartString(),
-        DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
-        tx.fee,
-        tx.received,
-        tx.sent,
-        tx.confirmationHeight,
-        tx.address.cast<Utf8>().toDartString(),
-        outputs: _extractStringList(tx.outputs, tx.outputsLen),
-        inputs: _extractStringList(tx.inputs, tx.inputsLen),
-      ));
+          "",
+          tx.txid.cast<Utf8>().toDartString(),
+          DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
+          tx.fee,
+          tx.received,
+          tx.sent,
+          tx.confirmationHeight,
+          tx.address.cast<Utf8>().toDartString(),
+          outputs: _extractStringList(tx.outputs, tx.outputsLen),
+          inputs: _extractStringList(tx.inputs, tx.inputsLen),
+          vsize: tx.vsize));
     }
 
     return transactions;

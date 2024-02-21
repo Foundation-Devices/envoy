@@ -231,7 +231,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   ],
                 ),
               ),
-              EnvoyButton("Continue", // TODO: FIGMA
+              EnvoyButton(S().component_continue,
                   enabled: _tagController.text.isNotEmpty,
                   textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: _tagController.text.isNotEmpty

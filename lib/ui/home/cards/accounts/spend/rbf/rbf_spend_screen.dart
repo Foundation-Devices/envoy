@@ -15,6 +15,7 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
@@ -37,7 +38,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
 class RBFSpendScreen extends ConsumerStatefulWidget {
@@ -60,10 +62,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   void initState() {
     _psbt = widget.rbfSpendState.psbt;
     _originalTx = widget.rbfSpendState.originalTx;
-
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _checkInputsChanged();
+      ref
+          .read(spendTransactionProvider.notifier)
+          .setAmount(_originalTx.amount.abs());
     });
   }
 
@@ -73,11 +77,23 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     bool showProgress = broadcastProgress == BroadcastProgress.inProgress ||
         broadcastProgress == BroadcastProgress.success ||
         broadcastProgress == BroadcastProgress.failed;
+
+    Account? account = ref.watch(selectedAccountProvider);
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+
+    String subHeading =
+        (account!.wallet.hot || transactionModel.isPSBTFinalized)
+            ? S().coincontrol_tx_detail_subheading
+            : S().coincontrol_txDetail_subheading_passport;
+
+    bool canPoop =
+        !(broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
+    ProviderContainer scope = ProviderScope.containerOf(context);
+
     return PopScope(
-      canPop:
-          broadcastProgress == BroadcastProgress.inProgress || _rebuildingTx,
+      canPop: canPoop,
       onPopInvoked: (didPop) {
-        clearSpendState(ProviderScope.containerOf(context));
+        clearSpendState(scope);
       },
       child: Background(
         child: MediaQuery.removePadding(
@@ -126,7 +142,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                          "Your transaction is ready\nto be boosted",
+                                          S().replaceByFee_boost_tx_heading,
                                           textAlign: TextAlign.center,
                                           style: EnvoyTypography.heading),
                                     ),
@@ -144,7 +160,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: EnvoySpacing.small),
                                 child: Text(
-                                  "Choose a new fee below to boost your transaction.",
+                                  subHeading,
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
@@ -187,7 +203,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 },
                                 psbtFinalized: false,
                                 hideTxDetailsDialog: true,
-                                loading: false,
+                                loading: _rebuildingTx,
                                 feeTitle: S().replaceByFee_boost_tx_boostFee,
                                 address: widget.rbfSpendState.receiveAddress,
                                 feeChooserWidget: FeeChooser(
@@ -219,12 +235,17 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  EnvoyButton(
-                                    label: S()
-                                        .replaceByFee_coindetails_overlay_modal_heading,
-                                    state: ButtonState.default_state,
-                                    onTap: () => _boostTx(context),
-                                    type: ButtonType.primary,
+                                  Opacity(
+                                    opacity: _rebuildingTx ? 0.3 : 1,
+                                    child: EnvoyButton(
+                                      label: S()
+                                          .replaceByFee_coindetails_overlay_modal_heading,
+                                      state: ButtonState.default_state,
+                                      onTap: !_rebuildingTx
+                                          ? () => _boostTx(context)
+                                          : null,
+                                      type: ButtonType.primary,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -278,13 +299,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                       S().stalls_before_sending_tx_scanning_subheading;
                   if (broadcastProgress != BroadcastProgress.inProgress) {
                     if (broadcastProgress == BroadcastProgress.success) {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_heading;
+                      title = S().replaceByFee_boost_success_header;
                       subTitle = S()
                           .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
                     } else {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                      title = S().replaceByFee_boost_fail_header;
                       subTitle = S()
                           .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
                     }
@@ -421,26 +440,27 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
                       child: Text(
-                        //TODO: localize figma string
-                        "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ",
+                        S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
                         style: EnvoyTypography.info,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    TextButton(
-                        onPressed: () async {
+                    GestureDetector(
+                        onTap: () async {
                           final link =
                               "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
-                          if (await canLaunchUrlString(link)) {
-                            launchUrlString(link);
-                          }
+                          launchUrl(Uri.parse(link));
                         },
-                        child: Text(
-                          S().component_learnMore,
-                          style: EnvoyTypography.baseFont.copyWith(
-                              color: EnvoyColors.accentPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.medium1),
+                          child: Text(
+                            S().component_learnMore,
+                            style: EnvoyTypography.baseFont.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
+                          ),
                         )),
                     Padding(
                       padding:
@@ -505,7 +525,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           backgroundColor: EnvoyColors.danger,
           replaceExisting: true,
           duration: Duration(seconds: 4),
-          message: "Error: Transaction Confirmed",
+          message: "Error: Transaction Confirmed", // TODO: Figma
           icon: Icon(
             Icons.info_outline,
             color: EnvoyColors.solidWhite,
@@ -516,28 +536,36 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      await Future.delayed(Duration(seconds: 4));
 
       final txid = await account.wallet.broadcastTx(
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port,
           psbt.rawTx);
-
-      await Future.delayed(Duration(seconds: 1));
+      //wait for BDK to broadcast the transaction
+      await Future.delayed(Duration(seconds: 5));
       try {
         /// get the raw transaction from the database
         final rawTx =
             await ref.read(rawWalletTransactionProvider(_psbt.rawTx).future);
 
         Transaction originalTx = widget.rbfSpendState.originalTx;
-        await EnvoyStorage().addRBFBoost(psbt.txid, {
-          "originalTxId": originalTx.txId,
-          "account_id": account.id,
-          "previousFee": originalTx.fee,
-          "rbfFee": psbt.fee,
-          "rbfTimeStamp": DateTime.now().millisecondsSinceEpoch,
-          "previousTxTimeStamp": originalTx.date.millisecondsSinceEpoch,
-        });
+
+        await EnvoyStorage().addRBFBoost(
+          psbt.txid,
+          RBFState(
+            originalTxId: originalTx.txId,
+            newTxId: psbt.txid,
+            accountId: account.id ?? "",
+            newFee: psbt.fee,
+            oldFee: originalTx.fee,
+            previousTxTimeStamp: originalTx.date.millisecondsSinceEpoch,
+            rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+        ref.read(RBFBroadCastedTxProvider.notifier).state = [
+          ...ref.read(RBFBroadCastedTxProvider),
+          originalTx.txId
+        ];
 
         ///Copy existing or updated note to the new transaction id
         final updatedNote = ref.read(stagingTxNoteProvider);
@@ -625,6 +653,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   Future _setFee(int fee, BuildContext context, bool customFee) async {
     Account? account = ref.read(selectedAccountProvider);
+    num? existingFeeRate = ref.read(spendFeeRateProvider);
     setState(() {
       _rebuildingTx = true;
     });
@@ -640,20 +669,33 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       setState(() {
         _psbt = psbt;
       });
+      if (customFee) {
+        /// hide the fee slider
+        Navigator.of(context, rootNavigator: false).pop();
+      }
       _checkInputsChanged();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.toString()),
-      ));
+      String message = "$e";
+      if (e is InsufficientFunds) {
+        message = S().send_keyboard_amount_insufficient_funds_info;
+      }
+      EnvoyToast(
+        replaceExisting: true,
+        duration: Duration(seconds: 4),
+        message: message,
+        icon: Icon(
+          Icons.info_outline,
+          color: EnvoyColors.solidWhite,
+        ),
+      ).show(context);
+      if (existingFeeRate != null) {
+        ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
+      }
     } finally {
       setState(() {
         _rebuildingTx = false;
       });
       ref.read(spendFeeProcessing.notifier).state = false;
-    }
-    if (customFee) {
-      /// hide the fee slider
-      Navigator.pop(context);
     }
   }
 

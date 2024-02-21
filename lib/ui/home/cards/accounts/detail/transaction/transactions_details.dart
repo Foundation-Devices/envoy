@@ -33,6 +33,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/fees.dart';
+import 'package:envoy/util/tuple.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -68,10 +70,24 @@ class _TransactionsDetailsWidgetState
         Timer.periodic(Duration(milliseconds: 100), _calculateContainerHeight);
   }
 
+  String _getConfirmationTimeString(int minutes) {
+    String confirmationTime = "";
+
+    if (minutes < 60) {
+      confirmationTime = minutes.toString() + "m";
+    } else if (minutes >= 60 && minutes < 120) {
+      confirmationTime = "~1h";
+    } else {
+      confirmationTime = "~1day";
+    }
+
+    return S().coindetails_overlay_confirmationIn + " ~" + confirmationTime;
+  }
+
   void _calculateContainerHeight(timeStamp) {
     if (mounted) {
       ///ensures we only set of the height changes
-      double nextHeight = 44 + (_scrollController.position.extentTotal);
+      double nextHeight = 36 + (_scrollController.position.extentTotal);
       if (nextHeight != containerHeight)
         setState(() {
           containerHeight = nextHeight;
@@ -95,13 +111,21 @@ class _TransactionsDetailsWidgetState
           fontWeight: FontWeight.w600,
         );
 
-    final address = tx.address ?? tx.outputs?[0] ?? "";
+    bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
+    final address = tx.address ?? "";
 
-    final RBFPossible =
+    bool RBFPossible =
         (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
 
+    final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
+
+    if (cancelState?.newTxId == tx.txId) {
+      RBFPossible = false;
+    }
+    double cardRadius = 20;
+
     return GestureDetector(
-      onTapDown: (details) {
+      onTapUp: (details) {
         final RenderBox box =
             _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
         final Offset localOffset = box.globalToLocal(details.globalPosition);
@@ -109,12 +133,6 @@ class _TransactionsDetailsWidgetState
         if (!box.paintBounds.contains(localOffset)) {
           Navigator.of(context).pop();
         }
-        //
-        // if(details.globalPosition.dy > size.height){
-        //   return;
-        //   Navigator.of(context).pop();
-        // }
-        // if(details.globalPosition.dy > size.height)
       },
       child: Scaffold(
         appBar: AppBar(
@@ -155,9 +173,9 @@ class _TransactionsDetailsWidgetState
               height: containerHeight,
               duration: Duration(milliseconds: 160),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
-                    color: Colors.black, width: 2, style: BorderStyle.solid),
+                    color: Colors.black, width: 1.5, style: BorderStyle.solid),
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -168,13 +186,13 @@ class _TransactionsDetailsWidgetState
               ),
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     border: Border.all(
                         color: accountAccentColor,
-                        width: 2,
+                        width: 1.5,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     child: StripesBackground(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -183,9 +201,9 @@ class _TransactionsDetailsWidgetState
                           Container(
                             height: 36,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.xs),
+                            margin: EdgeInsets.all(EnvoySpacing.xs),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(EnvoySpacing.medium2)),
@@ -218,13 +236,11 @@ class _TransactionsDetailsWidgetState
                           ),
                           Expanded(
                               child: Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 4),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4),
+                            margin: EdgeInsets.all(EnvoySpacing.xs),
+                            padding: EdgeInsets.all(EnvoySpacing.xs),
                             decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(18)),
+                                  BorderRadius.circular(EnvoySpacing.medium1),
                               color: Colors.white,
                             ),
                             child: ListView(
@@ -249,12 +265,15 @@ class _TransactionsDetailsWidgetState
                                       child: AnimatedSize(
                                         duration: Duration(milliseconds: 200),
                                         curve: Curves.easeInOut,
-                                        child: AddressWidget(
-                                          widgetKey: ValueKey<bool>(
-                                              showAddressExpanded),
-                                          address: address,
-                                          short: !showAddressExpanded,
-                                        ),
+                                        child: addressNotAvailable
+                                            ? Text("Address not available ",
+                                                style: trailingTextStyle)
+                                            : AddressWidget(
+                                                widgetKey: ValueKey<bool>(
+                                                    showAddressExpanded),
+                                                address: address,
+                                                short: !showAddressExpanded,
+                                              ),
                                       ),
                                     ),
                                   ),
@@ -320,7 +339,12 @@ class _TransactionsDetailsWidgetState
                                 ),
                                 RBFPossible
                                     ? CoinTagListItem(
-                                        title: "Confirmation", // TODO: FIGMA
+                                        title: _getConfirmationTimeString(ref.watch(
+                                            txEstimatedConfirmationTimeProvider(
+                                                Tuple(
+                                                    tx,
+                                                    widget.account.wallet
+                                                        .network)))),
                                         icon: Icon(
                                           Icons.access_time,
                                           color: Colors.black,
@@ -423,7 +447,7 @@ class _TransactionsDetailsWidgetState
     Widget icon = isBoosted
         ? EnvoyIcon(
             EnvoyIcons.rbf_boost,
-            size: EnvoyIconSize.superSmall,
+            size: EnvoyIconSize.extraSmall,
           )
         : SvgPicture.asset(
             "assets/icons/ic_bitcoin_straight_circle.svg",
@@ -432,9 +456,9 @@ class _TransactionsDetailsWidgetState
           );
 
     if (cancelState?.newTxId == tx.txId) {
-      icon = EnvoyIcon(
-        EnvoyIcons.close,
-        size: EnvoyIconSize.superSmall,
+      icon = Icon(
+        Icons.close,
+        size: 16,
       );
       feeTitle = S().replaceByFee_cancel_overlay_modal_cancelationFees;
     }
@@ -449,7 +473,7 @@ class _TransactionsDetailsWidgetState
                 EnvoyAmount(
                     account: widget.account,
                     amountSats: tx.fee,
-                    amountWidgetStyle: AmountWidgetStyle.singleLine),
+                    amountWidgetStyle: AmountWidgetStyle.normal),
               ],
             ),
     );
@@ -462,30 +486,42 @@ class _TransactionsDetailsWidgetState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            flex: 1,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: icon,
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-                Text(
-                  "$title",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.w600),
-                ),
-              ],
+            flex: 3,
+            child: Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 26,
+                    child: icon,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: EnvoySpacing.xs,
+                      ),
+                      child: Text(
+                        "$title",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.black, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Expanded(
+          Flexible(
+              flex: 4,
               child: Container(
-            alignment: Alignment.centerRight,
-            child: trailing,
-          )),
+                alignment: Alignment.centerRight,
+                child: trailing,
+              )),
         ],
       ),
     );

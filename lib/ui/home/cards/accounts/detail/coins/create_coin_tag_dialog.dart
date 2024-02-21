@@ -7,11 +7,12 @@ import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -144,30 +145,49 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
               margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               decoration: BoxDecoration(
                   color: Color(0xffD9D9D9),
-                  borderRadius: BorderRadius.circular(8)),
-              child: TextFormField(
-                  style: TextStyle(
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small)),
+              child: Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.small),
+                  //16
+                  child: TextFormField(
+                    style: TextStyle(
                       fontSize: 14,
                       overflow: TextOverflow.fade,
-                      fontWeight: FontWeight.w500),
-                  onChanged: (value) {
-                    setState(() {
-                      value = value;
-                    });
-                  },
-                  controller: _tagController,
-                  maxLength: 30,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    // Disable the borders
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 16.0),
+                      fontWeight: FontWeight.w500,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _tagController.text = value;
+                      });
+                    },
+                    controller: _tagController,
+                    textAlign: TextAlign.center,
+                    maxLength: 30,
+                    buildCounter: (BuildContext context,
+                        {required int currentLength,
+                        required bool isFocused,
+                        required int? maxLength}) {
+                      return currentLength > 20
+                          ? Text("${_tagController.text.length}/30",
+                              style: TextStyle(
+                                  color: DefaultSelectionStyle.defaultColor))
+                          : SizedBox();
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Enter new tag i.e. Exchange",
+                      // TODO: Figma
+                      hintStyle: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textTertiary),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1,
+                          vertical: EnvoySpacing.xs),
+                    ),
                   )),
             ),
             Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -212,8 +232,8 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 enabled: _tagController.text.isNotEmpty,
                 textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: _tagController.text.isNotEmpty
-                          ? Colors.white
-                          : EnvoyColors.grey,
+                          ? EnvoyColors.textPrimaryInverse
+                          : EnvoyColors.textTertiary,
                     ),
                 type: _tagController.text.isNotEmpty
                     ? EnvoyButtonTypes.primaryModal
@@ -316,10 +336,12 @@ Widget tagItem(context, String item, Function() onTap) {
                 alignment: Alignment.center,
                 child: Text(
                   item.length > 9 ? item.substring(0, 7) + '...' : item,
+                  style: EnvoyTypography.info
+                      .copyWith(color: EnvoyColors.accentPrimary),
                 )),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: EnvoyColors.teal, width: 1),
+              border: Border.all(color: EnvoyColors.accentPrimary, width: 1),
             ),
             height: 34),
         onTap: onTap),

@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/brandmark.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -85,8 +86,9 @@ class Faq extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
             child: Text(
               S().learning_center_title_faq,
-              style:
-                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.body
+                  .copyWith(color: EnvoyColors.textPrimary)
+                  .setWeight(FontWeight.w600),
             ),
           ),
         Material(
@@ -116,6 +118,16 @@ class Faq extends ConsumerWidget {
                     ))
                 .toList(),
           ),
+        ),
+        Padding(padding: const EdgeInsets.only(top: EnvoySpacing.medium2)),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: EnvoySpacing.large2,
+            bottom: EnvoySpacing.small,
+            left: EnvoySpacing.small,
+            right: EnvoySpacing.small,
+          ),
+          child: Brandmark(logoSize: 32, style: BrandmarkStyle.endMark),
         ),
       ],
     );

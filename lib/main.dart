@@ -29,6 +29,8 @@ import 'business/scv_server.dart';
 import 'business/feed_manager.dart';
 import 'generated/l10n.dart';
 
+import 'package:timeago/timeago.dart' as timeago;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -97,6 +99,9 @@ class EnvoyApp extends StatelessWidget {
     final envoyBaseColor = Colors.transparent;
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
+
+    // timeago requires this for any language that's not english or spanish
+    timeago.setLocaleMessages('ca', timeago.CaMessages());
 
     return ProviderScope(
       child: MaterialApp.router(

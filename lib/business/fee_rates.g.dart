@@ -13,7 +13,11 @@ FeeRates _$FeeRatesFromJson(Map<String, dynamic> json) => FeeRates()
   ..mempoolEconomyRate = (json['mempoolEconomyRate'] as num).toDouble()
   ..mempoolMinimumRate = (json['mempoolMinimumRate'] as num).toDouble()
   ..electrumFastRate = (json['electrumFastRate'] as num).toDouble()
-  ..electrumSlowRate = (json['electrumSlowRate'] as num).toDouble();
+  ..electrumSlowRate = (json['electrumSlowRate'] as num).toDouble()
+  ..mempoolBlocksMedianFeeRate =
+      (json['mempoolBlocksMedianFeeRate'] as List<dynamic>)
+          .map((e) => (e as num).toDouble())
+          .toList();
 
 Map<String, dynamic> _$FeeRatesToJson(FeeRates instance) => <String, dynamic>{
       'mempoolFastestRate': instance.mempoolFastestRate,
@@ -23,4 +27,5 @@ Map<String, dynamic> _$FeeRatesToJson(FeeRates instance) => <String, dynamic>{
       'mempoolMinimumRate': instance.mempoolMinimumRate,
       'electrumFastRate': instance.electrumFastRate,
       'electrumSlowRate': instance.electrumSlowRate,
+      'mempoolBlocksMedianFeeRate': instance.mempoolBlocksMedianFeeRate,
     };

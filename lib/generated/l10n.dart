@@ -62,10 +62,10 @@ class S {
     );
   }
 
-  /// `Create New Envoy Backup`
+  /// `https://github.com/Foundation-Devices/envoy`
   String get _ {
     return Intl.message(
-      'Create New Envoy Backup',
+      'https://github.com/Foundation-Devices/envoy',
       name: '_',
       desc: '',
       args: [],
@@ -97,6 +97,16 @@ class S {
     return Intl.message(
       'Privacy Policy',
       name: 'about_privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show`
+  String get about_show {
+    return Intl.message(
+      'Show',
+      name: 'about_show',
       desc: '',
       args: [],
     );
@@ -417,16 +427,6 @@ class S {
     return Intl.message(
       'VOUCHER CODE',
       name: 'azteco_redeem_modal__voucher_code',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Redeem`
-  String get azteco_redeem_modal_cta1 {
-    return Intl.message(
-      'Redeem',
-      name: 'azteco_redeem_modal_cta1',
       desc: '',
       args: [],
     );
@@ -812,6 +812,16 @@ class S {
     );
   }
 
+  /// `Change received`
+  String get coincontrol_tx_detail_change {
+    return Intl.message(
+      'Change received',
+      name: 'coincontrol_tx_detail_change',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Send Transaction`
   String get coincontrol_tx_detail_cta1 {
     return Intl.message(
@@ -1014,6 +1024,16 @@ class S {
     );
   }
 
+  /// `No change`
+  String get coincontrol_tx_detail_no_change {
+    return Intl.message(
+      'No change',
+      name: 'coincontrol_tx_detail_no_change',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cancel Transaction`
   String get coincontrol_tx_detail_passport_cta2 {
     return Intl.message(
@@ -1124,11 +1144,71 @@ class S {
     );
   }
 
-  /// `Confirmation in`
+  /// `Confirms in`
   String get coindetails_overlay_confirmationIn {
     return Intl.message(
-      'Confirmation in',
+      'Confirms in',
       name: 'coindetails_overlay_confirmationIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `day`
+  String get coindetails_overlay_confirmationIn_day {
+    return Intl.message(
+      'day',
+      name: 'coindetails_overlay_confirmationIn_day',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `days`
+  String get coindetails_overlay_confirmationIn_days {
+    return Intl.message(
+      'days',
+      name: 'coindetails_overlay_confirmationIn_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `month`
+  String get coindetails_overlay_confirmationIn_month {
+    return Intl.message(
+      'month',
+      name: 'coindetails_overlay_confirmationIn_month',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `week`
+  String get coindetails_overlay_confirmationIn_week {
+    return Intl.message(
+      'week',
+      name: 'coindetails_overlay_confirmationIn_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `weeks`
+  String get coindetails_overlay_confirmationIn_weeks {
+    return Intl.message(
+      'weeks',
+      name: 'coindetails_overlay_confirmationIn_weeks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boost`
+  String get coindetails_overlay_confirmation_boost {
+    return Intl.message(
+      'Boost',
+      name: 'coindetails_overlay_confirmation_boost',
       desc: '',
       args: [],
     );
@@ -1179,6 +1259,16 @@ class S {
     return Intl.message(
       'Confirmed',
       name: 'coindetails_overlay_status_confirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending`
+  String get coindetails_overlay_status_pending {
+    return Intl.message(
+      'Pending',
+      name: 'coindetails_overlay_status_pending',
       desc: '',
       args: [],
     );
@@ -1319,6 +1409,16 @@ class S {
     return Intl.message(
       'No',
       name: 'component_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Redeem`
+  String get component_redeem {
+    return Intl.message(
+      'Redeem',
+      name: 'component_redeem',
       desc: '',
       args: [],
     );
@@ -2878,10 +2978,10 @@ class S {
     );
   }
 
-  /// `Biometric authentication temporarily disabled. Please wait 30 seconds and try again.`
+  /// `Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again.`
   String get launch_screen_lockedout_wait_subheading {
     return Intl.message(
-      'Biometric authentication temporarily disabled. Please wait 30 seconds and try again.',
+      'Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again.',
       name: 'launch_screen_lockedout_wait_subheading',
       desc: '',
       args: [],
@@ -2908,10 +3008,10 @@ class S {
     );
   }
 
-  /// `Search...`
+  /// `Passport`
   String get learning_center_search_input {
     return Intl.message(
-      'Search...',
+      'Passport',
       name: 'learning_center_search_input',
       desc: '',
       args: [],
@@ -3113,6 +3213,16 @@ class S {
     return Intl.message(
       'Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup.',
       name: 'magic_setup_recovery_fail_ios_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovering your Envoy wallet`
+  String get magic_setup_recovery_retry_header {
+    return Intl.message(
+      'Recovering your Envoy wallet',
+      name: 'magic_setup_recovery_retry_header',
       desc: '',
       args: [],
     );
@@ -3505,6 +3615,16 @@ class S {
     return Intl.message(
       'Envoy will ask you some questions to verify you correctly recorded your seed.',
       name: 'manual_setup_generate_seed_verify_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write Down These 24 Words`
+  String get manual_setup_generate_seed_write_words_24_heading {
+    return Intl.message(
+      'Write Down These 24 Words',
+      name: 'manual_setup_generate_seed_write_words_24_heading',
       desc: '',
       args: [],
     );
@@ -4718,6 +4838,26 @@ class S {
     );
   }
 
+  /// `Your transaction could not be boosted`
+  String get replaceByFee_boost_fail_header {
+    return Intl.message(
+      'Your transaction could not be boosted',
+      name: 'replaceByFee_boost_fail_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction has been boosted`
+  String get replaceByFee_boost_success_header {
+    return Intl.message(
+      'Your transaction has been boosted',
+      name: 'replaceByFee_boost_success_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boost Fee`
   String get replaceByFee_boost_tx_boostFee {
     return Intl.message(
@@ -4743,6 +4883,16 @@ class S {
     return Intl.message(
       'Canceling transaction',
       name: 'replaceByFee_cancel_confirm_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your transaction could not be canceled`
+  String get replaceByFee_cancel_fail_heading {
+    return Intl.message(
+      'Your transaction could not be canceled',
+      name: 'replaceByFee_cancel_fail_heading',
       desc: '',
       args: [],
     );
@@ -4788,6 +4938,26 @@ class S {
     );
   }
 
+  /// `Your transaction has been canceled`
+  String get replaceByFee_cancel_success_heading {
+    return Intl.message(
+      'Your transaction has been canceled',
+      name: 'replaceByFee_cancel_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt.`
+  String get replaceByFee_cancel_success_subheading {
+    return Intl.message(
+      'This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt.',
+      name: 'replaceByFee_cancel_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boost`
   String get replaceByFee_coindetails_overlay_boost {
     return Intl.message(
@@ -4813,6 +4983,16 @@ class S {
     return Intl.message(
       'Increase the fee attached to your transaction to speed up confirmation time.',
       name: 'replaceByFee_coindetails_overlay_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. `
+  String get replaceByFee_warning_extraUTXO_overlay_modal_subheading {
+    return Intl.message(
+      'The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ',
+      name: 'replaceByFee_warning_extraUTXO_overlay_modal_subheading',
       desc: '',
       args: [],
     );

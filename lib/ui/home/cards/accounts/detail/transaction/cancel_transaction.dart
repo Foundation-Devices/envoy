@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -15,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -28,17 +28,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:tor/tor.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
-class TxCancelState {
+class RBFState {
   final String originalTxId;
   final String newTxId;
   final String accountId;
   final num oldFee;
   final num newFee;
+  final int rbfTimeStamp;
+  final int previousTxTimeStamp;
 
-  TxCancelState(this.originalTxId, this.newTxId, this.oldFee, this.newFee,
-      this.accountId);
+  RBFState({
+    required this.originalTxId,
+    required this.newTxId,
+    required this.oldFee,
+    required this.newFee,
+    required this.accountId,
+    required this.rbfTimeStamp,
+    required this.previousTxTimeStamp,
+  });
 
   /// returns json
   Map<String, dynamic> toJson() {
@@ -47,18 +58,22 @@ class TxCancelState {
       "newTxId": newTxId,
       "oldFee": oldFee,
       "newFee": newFee,
-      "accountId": accountId
+      "accountId": accountId,
+      "rbfTimeStamp": rbfTimeStamp,
+      "previousTxTimeStamp": previousTxTimeStamp
     };
   }
 
   /// from json
-  factory TxCancelState.fromJson(Map<String, dynamic> json) {
-    return TxCancelState(
-      json["originalTxId"],
-      json["newTxId"],
-      json["oldFee"],
-      json["newFee"],
-      json["accountId"] ?? "",
+  factory RBFState.fromJson(Map<String, dynamic> json) {
+    return RBFState(
+      originalTxId: json["originalTxId"],
+      newTxId: json["newTxId"],
+      oldFee: json["oldFee"],
+      newFee: json["newFee"],
+      accountId: json["accountId"],
+      rbfTimeStamp: json["rbfTimeStamp"] ?? 0,
+      previousTxTimeStamp: json["previousTxTimeStamp"] ?? 0,
     );
   }
 }
@@ -135,7 +150,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               ),
             ),
           ),
-          SizedBox(height: EnvoySpacing.xs),
         ],
       ),
     );
@@ -175,6 +189,20 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       print(e);
+      String message = "$e";
+      if (e is InsufficientFunds) {
+        message = S().send_keyboard_amount_insufficient_funds_info;
+      }
+      EnvoyToast(
+        backgroundColor: EnvoyColors.danger,
+        replaceExisting: true,
+        duration: Duration(seconds: 4),
+        message: message,
+        icon: Icon(
+          Icons.info_outline,
+          color: EnvoyColors.solidWhite,
+        ),
+      ).show(context);
     } finally {
       setState(() {
         _loading = false;
@@ -317,29 +345,13 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                         S().replaceByFee_cancel_overlay_modal_cancelationFees,
                         style: EnvoyTypography.body,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          EnvoyAmount(
-                              account: account,
-                              amountSats: _totalFeeAmount,
-                              amountWidgetStyle: AmountWidgetStyle.singleLine),
-                          Builder(builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.xs, vertical: 2),
-                              child: Text(
-                                "${ExchangeRate().getFormattedAmount(_totalFeeAmount)}",
-                                style: EnvoyTypography.body,
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
+                      EnvoyAmount(
+                          account: account,
+                          amountSats: _totalFeeAmount,
+                          amountWidgetStyle: AmountWidgetStyle.normal),
                     ],
                   ),
-                  SizedBox(height: EnvoySpacing.small),
+                  SizedBox(height: EnvoySpacing.medium1),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -349,35 +361,24 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                         S().replaceByFee_cancel_overlay_modal_receivingAmount,
                         style: EnvoyTypography.body,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          EnvoyAmount(
-                              account: account,
-                              amountSats: _totalReturnAmount,
-                              amountWidgetStyle: AmountWidgetStyle.singleLine),
-                          Builder(builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.xs, vertical: 2),
-                              child: Text(
-                                "${ExchangeRate().getFormattedAmount(_totalReturnAmount)}",
-                                style: EnvoyTypography.body,
-                              ),
-                            );
-                          }),
-                        ],
+                      EnvoyAmount(
+                        account: account,
+                        amountSats: _totalReturnAmount,
+                        amountWidgetStyle: AmountWidgetStyle.normal,
                       )
                     ],
                   ),
+                  SizedBox(height: EnvoySpacing.medium1),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  launchUrl(Uri.parse(
+                      "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                },
                 child: Text(
                   S().component_learnMore,
                   style: EnvoyTypography.button
@@ -400,7 +401,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       backgroundColor: EnvoyColors.danger,
                       replaceExisting: true,
                       duration: Duration(seconds: 4),
-                      message: "Error: Transaction Confirmed",
+                      message: "Error: Transaction Confirmed", // TODO: Figma
                       icon: Icon(
                         Icons.info_outline,
                         color: EnvoyColors.solidWhite,
@@ -490,14 +491,23 @@ class _CancelTransactionProgressState
           Settings().electrumAddress(account.wallet.network),
           Tor.instance.port,
           widget.cancelTx.rawTx);
-      await Future.delayed(Duration(seconds: 1));
-      await EnvoyStorage().addCancelState(TxCancelState(
-              widget.originalTx.txId,
-              widget.cancelTx.txid,
-              widget.originalTx.fee,
-              widget.cancelTx.fee,
-              account.id ?? "")
+      await Future.delayed(Duration(milliseconds: 500));
+      await EnvoyStorage().addCancelState(RBFState(
+              originalTxId: widget.originalTx.txId,
+              newTxId: widget.cancelTx.txid,
+              oldFee: widget.originalTx.fee,
+              newFee: widget.cancelTx.fee,
+              accountId: account.id!,
+              rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
+              previousTxTimeStamp:
+                  widget.originalTx.date.millisecondsSinceEpoch)
           .toJson());
+      await Future.delayed(Duration(milliseconds: 500));
+
+      ref.read(RBFBroadCastedTxProvider.notifier).state = [
+        ...ref.read(RBFBroadCastedTxProvider),
+        widget.originalTx.txId
+      ];
 
       Psbt psbt = widget.cancelTx;
 
@@ -588,13 +598,11 @@ class _CancelTransactionProgressState
                               BroadcastProgress.inProgress) {
                             if (broadcastProgress ==
                                 BroadcastProgress.success) {
-                              title = S()
-                                  .stalls_before_sending_tx_scanning_broadcasting_success_heading;
-                              subTitle = S()
-                                  .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                              title = S().replaceByFee_cancel_success_heading;
+                              subTitle =
+                                  S().replaceByFee_cancel_success_subheading;
                             } else {
-                              title = S()
-                                  .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                              title = S().replaceByFee_cancel_fail_heading;
                               subTitle = S()
                                   .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
                             }

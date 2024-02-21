@@ -62,6 +62,7 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
         ));
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         if (widget.triState) {
           switch (widget.value) {
@@ -90,8 +91,10 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
         Haptics.buttonPress();
       },
       child: Container(
+        padding: EdgeInsets.only(right: 5),
+        height: 45,
+        width: 50,
         color: Colors.transparent,
-        height: 40,
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: AnimatedContainer(
@@ -108,37 +111,30 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
                 duration: Duration(milliseconds: 200),
                 child: Padding(
                   padding: const EdgeInsets.all(3.0),
-                  child: GestureDetector(
-                    child: Material(
-                      elevation: 1,
-                      shape: CircleBorder(),
-                      child: widget.triState
-                          ? SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/ic_filter_funnel.svg",
-                                    width: 10,
-                                    height: 10,
-                                    fit: BoxFit.fitHeight,
-                                    color: widget.value ==
-                                            CoinTagSwitchState.partial
+                  child: Material(
+                    elevation: 1,
+                    shape: CircleBorder(),
+                    child: widget.triState
+                        ? SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: Center(
+                              child: SvgPicture.asset(
+                                "assets/icons/ic_filter_funnel.svg",
+                                width: 10,
+                                height: 10,
+                                fit: BoxFit.fitHeight,
+                                color:
+                                    widget.value == CoinTagSwitchState.partial
                                         ? EnvoyColors.darkTeal
                                         : EnvoyColors.transparent,
-                                  ),
-                                ],
                               ),
-                            )
-                          : SizedBox(
-                              width: 18,
-                              height: 18,
                             ),
-                    ),
+                          )
+                        : SizedBox(
+                            width: 18,
+                            height: 18,
+                          ),
                   ),
                 )),
           ),

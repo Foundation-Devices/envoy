@@ -6,7 +6,6 @@ import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
@@ -42,23 +41,6 @@ class AccountsCard extends StatefulWidget {
 // Unfortunately it seems to only work with TabView
 class AccountsCardState extends State<AccountsCard>
     with AutomaticKeepAliveClientMixin {
-  _redraw() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    ExchangeRate().removeListener(_redraw);
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);

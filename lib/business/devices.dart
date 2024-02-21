@@ -62,6 +62,9 @@ class Devices extends ChangeNotifier {
     for (var currentDevice in devices) {
       // Don't add if device with same serial already present
       if (currentDevice.serial == device.serial) {
+        if (currentDevice.name != device.name) {
+          renameDevice(currentDevice, device.name);
+        }
         return;
       }
     }
