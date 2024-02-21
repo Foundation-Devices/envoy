@@ -351,7 +351,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
           child: StatefulBuilder(builder: (c, s) {
             return ListView.builder(
               //Space for the white gradient shadow at the bottom
-              padding: EdgeInsets.only(bottom: 120),
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
               physics: BouncingScrollPhysics(),
               controller: _scrollController,
               itemCount: transactions.length,
