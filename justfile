@@ -65,7 +65,13 @@ bump:
     bash bump_version.sh
 
 format:
-    bash fix_formatting.sh
+    cargo fmt && \
+    dart format .
+
+lint: format
+    reuse lint && \
+    flutter analyze && \
+    cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
 
 build-ffi:
     bash build_ffi.sh

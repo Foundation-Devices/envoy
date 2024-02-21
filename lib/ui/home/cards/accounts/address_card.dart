@@ -9,6 +9,7 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,17 +44,20 @@ class _AddressCardState extends ConsumerState<AddressCard> {
         future: widget.account.wallet.getAddress(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: Container(
-                            margin: EdgeInsets.all(12),
-                            padding: const EdgeInsets.all(6.0),
+            return Padding(
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium2,
+                  right: EnvoySpacing.medium2,
+                  top: EnvoySpacing.medium2),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
                             child: QrTab(
                                 title: widget.account.name,
                                 subtitle:
@@ -63,56 +67,61 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                   data: snapshot.data!,
                                 )),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 20),
-                          child: GestureDetector(
-                            onTap: () {
-                              _copyAddressToClipboard(context, snapshot.data!);
-                            },
-                            child: AddressWidget(
-                                address: snapshot.data!, short: false),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.medium2),
+                            child: GestureDetector(
+                              onTap: () {
+                                _copyAddressToClipboard(
+                                    context, snapshot.data!);
+                              },
+                              child: AddressWidget(
+                                address: snapshot.data!,
+                                short: false,
+                                align: TextAlign.center,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 50.0, right: 50.0, bottom: 40.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              _copyAddressToClipboard(context, snapshot.data!);
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: 50.0, right: 50.0, bottom: 40.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                _copyAddressToClipboard(
+                                    context, snapshot.data!);
+                              },
+                              icon: EnvoyIcon(
+                                icon: "ic_copy.svg",
+                                size: 21,
+                                color: EnvoyColors.darkTeal,
+                              )),
+                          EnvoyTextButton(
+                            onTap: () {
+                              GoRouter.of(context).pop();
                             },
-                            icon: EnvoyIcon(
-                              icon: "ic_copy.svg",
-                              size: 21,
-                              color: EnvoyColors.darkTeal,
-                            )),
-                        EnvoyTextButton(
-                          onTap: () {
-                            GoRouter.of(context).pop();
-                          },
-                          label: S().OK,
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Share.share("bitcoin:" + snapshot.data!);
-                            },
-                            icon: EnvoyIcon(
-                              icon: "ic_envoy_share.svg",
-                              size: 21,
-                              color: EnvoyColors.darkTeal,
-                            )),
-                      ],
+                            label: S().OK,
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                Share.share("bitcoin:" + snapshot.data!);
+                              },
+                              icon: EnvoyIcon(
+                                icon: "ic_envoy_share.svg",
+                                size: 21,
+                                color: EnvoyColors.darkTeal,
+                              )),
+                        ],
+                      ),
                     ),
-                  ),
-                ]);
+                  ]),
+            );
           } else {
             return Center(
               child: SizedBox(

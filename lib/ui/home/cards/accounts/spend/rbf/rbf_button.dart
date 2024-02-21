@@ -9,6 +9,7 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -22,6 +23,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
 
@@ -83,14 +85,20 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
     try {
       final account = ref.read(selectedAccountProvider);
-      rust.RBFfeeRates? rates =
-          await account?.wallet.getBumpedPSBTMaxFeeRate(widget.tx.txId);
-      if (rates != null && rates.min_fee_rate > 0) {
+      if (account == null) {
+        return;
+      }
+      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+
+      rust.RBFfeeRates? rates = await account.wallet
+          .getBumpedPSBTMaxFeeRate(widget.tx.txId, lockedUtxos);
+
+      if (rates.min_fee_rate > 0) {
         double minFeeRate = rates.min_fee_rate.ceil().toDouble();
-        Psbt? psbt = await account?.wallet
-            .getBumpedPSBT(widget.tx.txId, convertToFeeRate(minFeeRate));
-        final rawTxx = await account!.wallet
-            .decodeWalletRawTx(psbt!.rawTx, account.wallet.network);
+        Psbt? psbt = await account.wallet.getBumpedPSBT(
+            widget.tx.txId, convertToFeeRate(minFeeRate), lockedUtxos);
+        final rawTxx = await account.wallet
+            .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
 
         RawTransactionOutput receiveOutPut =
             rawTxx.outputs.firstWhere((element) {
@@ -109,13 +117,21 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         ref.read(spendAddressProvider.notifier).state = receiveOutPut.address;
         ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
 
+        int minRate = minFeeRate.toInt();
+        int maxRate = rates.max_fee_rate.toInt();
+        int fasterFeeRate = minRate + 1;
+
+        ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
+        if (minRate == maxRate) {
+          fasterFeeRate = maxRate;
+        } else {
+          if (minRate < maxRate) {
+            fasterFeeRate = (maxRate + 1).clamp(minRate, maxRate);
+          }
+        }
         ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
           standardFeeRate: minFeeRate,
-
-          ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
-          fasterFeeRate: (minFeeRate + 1)
-              .clamp(minFeeRate.toInt(), rates.max_fee_rate.toInt())
-              .toInt(),
+          fasterFeeRate: fasterFeeRate,
           minFeeRate: rates.min_fee_rate.ceil().toInt(),
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
@@ -130,11 +146,27 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
     } catch (e, stackTrace) {
       print(stackTrace);
+      if (e.toString().contains("Insufficient")) {
+        EnvoyToast(
+          backgroundColor: EnvoyColors.danger,
+          replaceExisting: true,
+          duration: Duration(seconds: 4),
+          message: "Error: Insufficient Funds",
+          icon: Icon(
+            Icons.info_outline,
+            color: EnvoyColors.solidWhite,
+          ),
+        ).show(context);
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
       EnvoyToast(
         backgroundColor: EnvoyColors.danger,
         replaceExisting: true,
         duration: Duration(seconds: 4),
-        message: "Error: ${e.toString()}",
+        message: "${e.toString()}",
         icon: Icon(
           Icons.info_outline,
           color: EnvoyColors.solidWhite,
@@ -160,6 +192,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         });
       },
       onTap: () {
+        if (_isLoading) return;
         _showRBFDialog(context);
       },
       onTapCancel: () {
@@ -172,13 +205,17 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           child: _isLoading
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox.square(
-                      dimension: 12,
-                      child: CircularProgressIndicator(
-                        color: EnvoyColors.solidWhite,
-                        strokeWidth: 2,
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium3),
+                      child: SizedBox.square(
+                        dimension: 12,
+                        child: CircularProgressIndicator(
+                          color: EnvoyColors.solidWhite,
+                          strokeWidth: 2,
+                        ),
                       ),
                     ),
                   ],
@@ -193,7 +230,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
                     ),
                     Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Text(
-                      "Boost",
+                      S().coindetails_overlay_confirmation_boost,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontSize: 14,
@@ -213,7 +250,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     return AnimatedContainer(
         duration: Duration(milliseconds: 200),
         height: 28,
-        width: 90,
         padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
         decoration: BoxDecoration(
             color: buttonColor,
@@ -259,6 +295,7 @@ class _RBFWarningState extends State<RBFWarning> {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
@@ -284,13 +321,19 @@ class _RBFWarningState extends State<RBFWarning> {
             textAlign: TextAlign.center,
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(
-            S().component_learnMore,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
+          GestureDetector(
+            child: Text(
+              S().component_learnMore,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: EnvoyColors.accentPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+            ),
+            onTap: () {
+              launchUrl(Uri.parse(
+                  "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+            },
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           GestureDetector(

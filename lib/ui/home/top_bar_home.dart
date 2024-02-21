@@ -18,7 +18,6 @@ import 'package:envoy/ui/routes/home_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -193,11 +192,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                       child: AnimatedSwitcher(
                           duration: _animationsDuration,
                           child: backDropEnabled || _optionsShown
-                              ? IconButton(
-                                  icon: Icon(
-                                    Icons.close,
-                                  ),
-                                  onPressed: () {
+                              ? GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
                                     if (_optionsShown) {
                                       ref
                                           .read(
@@ -213,6 +210,14 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                                       }
                                     }
                                   },
+                                  child: Container(
+                                    height: 55,
+                                    width: 55,
+                                    color: Colors.transparent,
+                                    child: Icon(
+                                      Icons.close,
+                                    ),
+                                  ),
                                 )
                               : rightAction))))
       ],
@@ -265,38 +270,52 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     switch (nextPath) {
       case ROUTE_DEVICES:
         optionsState.state = HomeShellOptions(
-            rightAction: IconButton(
-              icon: Icon(
+          rightAction: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              optionsVisibility.state = !optionsVisibility.state;
+            },
+            child: Container(
+              height: 55,
+              width: 55,
+              color: Colors.transparent,
+              child: Icon(
                 Icons.add,
               ),
-              onPressed: () {
-                optionsVisibility.state = !optionsVisibility.state;
-              },
             ),
-            optionsWidget: DevicesOptions());
+          ),
+          optionsWidget: DevicesOptions(),
+        );
         break;
       case ROUTE_PRIVACY:
         optionsState.state = null;
         break;
       case ROUTE_ACCOUNTS_HOME:
         ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-            rightAction: IconButton(
-              icon: Icon(
+          rightAction: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  if (EnvoySeed().walletDerived()) {
+                    return OnboardPassportWelcomeScreen();
+                  } else {
+                    return WelcomeScreen();
+                  }
+                },
+              ));
+            },
+            child: Container(
+              height: 55,
+              width: 55,
+              color: Colors.transparent,
+              child: Icon(
                 Icons.add,
               ),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    if (EnvoySeed().walletDerived()) {
-                      return OnboardPassportWelcomeScreen();
-                    } else {
-                      return WelcomeScreen();
-                    }
-                  },
-                ));
-              },
             ),
-            optionsWidget: Container());
+          ),
+          optionsWidget: Container(),
+        );
         break;
       case ROUTE_ACTIVITY:
         optionsState.state = null;
@@ -393,25 +412,17 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: widget.onPressed,
-        child: Container(
-          height: 42,
-          width: 42,
-          padding: const EdgeInsets.all(EnvoySpacing.small),
-          child: Center(
-            child: Container(
-              height: 24,
-              width: 24,
-              child: SizedBox.fromSize(
-                child: _menuArtBoard != null
-                    ? Rive(
-                        artboard: _menuArtBoard!,
-                        fit: BoxFit.contain,
-                      )
-                    : SizedBox.square(),
-                size: Size.square(24),
-              ),
-            ),
+        child: Center(
+          child: SizedBox.fromSize(
+            child: _menuArtBoard != null
+                ? Rive(
+                    artboard: _menuArtBoard!,
+                    fit: BoxFit.contain,
+                  )
+                : SizedBox.square(),
+            size: Size.square(24),
           ),
         ),
       ),

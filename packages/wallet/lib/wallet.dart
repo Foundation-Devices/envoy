@@ -63,9 +63,10 @@ class Transaction extends Comparable {
   final List<String>? inputs;
   final TransactionType type;
   final String? address;
+  final int? vsize;
 
   get isConfirmed {
-    /// TODO: find root cause of this bug
+    /// if the tx is a pending transaction, the date will be based on the time the tx was created
     /// The tx date is sometimes shows proper date even though it is not confirmed
     if (DateTime.now().millisecondsSinceEpoch - date.millisecondsSinceEpoch <
         15000) {
@@ -78,7 +79,10 @@ class Transaction extends Comparable {
 
   Transaction(this.memo, this.txId, this.date, this.fee, this.received,
       this.sent, this.blockHeight, this.address,
-      {this.type = TransactionType.normal, this.outputs, this.inputs});
+      {this.type = TransactionType.normal,
+      this.outputs,
+      this.inputs,
+      this.vsize});
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -149,6 +153,8 @@ class NativeTransaction extends Struct {
   external int inputsLen;
   external Pointer<Pointer<Uint8>> inputs;
   external Pointer<Uint8> address;
+  @Size()
+  external int vsize;
 }
 
 class NativeSeed extends Struct {
@@ -324,6 +330,8 @@ class RawTransactionInput {
 
   RawTransactionInput(
       {required this.previousOutputIndex, required this.previousOutputHash});
+
+  String get id => "$previousOutputHash:$previousOutputIndex";
 }
 
 /// enum positions matters, this will be mapped to [OutputPath]
@@ -592,9 +600,6 @@ class Wallet {
       }
 
       return changed;
-    }).timeout(Duration(seconds: 30), onTimeout: () {
-      _currentlySyncing = false;
-      throw TimeoutException;
     });
   }
 
@@ -700,17 +705,21 @@ class Wallet {
     });
   }
 
-  Future<Psbt> getBumpedPSBT(String txId, double feeRate) async {
+  Future<Psbt> getBumpedPSBT(
+      String txId, double feeRate, List<Utxo>? doNotSpend) async {
     final walletAddress = _self.address;
 
     return Isolate.run(() {
       final lib = load(_libName);
+      Pointer<rust.UtxoList> doNotSpendPointer =
+          _createUtxoListPointer(doNotSpend);
       final native = rust.NativeLibrary(lib);
 
       rust.Psbt psbt = native.wallet_get_bumped_psbt(
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
-          feeRate);
+          feeRate,
+          doNotSpendPointer);
 
       if (psbt.base64 == nullptr) {
         throwRustException(lib);
@@ -742,17 +751,35 @@ class Wallet {
     });
   }
 
-  Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(String txId) async {
+  Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(
+      String txId, List<Utxo>? doNotSpend) async {
     final walletAddress = _self.address;
     return Isolate.run(() {
       final lib = load(_libName);
+      Pointer<rust.UtxoList> doNotSpendPointer =
+          _createUtxoListPointer(doNotSpend);
       final native = rust.NativeLibrary(lib);
-
       RBFfeeRates feeRates = native.wallet_get_max_bumped_fee_rate(
           Pointer.fromAddress(walletAddress),
-          txId.toNativeUtf8() as Pointer<Char>);
-
+          txId.toNativeUtf8() as Pointer<Char>,
+          doNotSpendPointer);
+      if (kDebugMode) {
+        print(
+            "Fee rate min: ${feeRates.min_fee_rate} \n Fee rate max: ${feeRates.max_fee_rate}");
+      }
       if (feeRates.min_fee_rate <= 1) {
+        if (feeRates.min_fee_rate == -1.1) {
+          throw Exception("Transaction cannot be boosted");
+        }
+        if (feeRates.min_fee_rate == -1.2) {
+          throw Exception("Insufficient balance to boost transaction");
+        }
+        if (feeRates.min_fee_rate == -1.5) {
+          throw Exception("Unable to boost transaction");
+        }
+        if (feeRates.max_fee_rate == 0.404) {
+          throw Exception("Transaction not found");
+        }
         throwRustException(lib);
       }
       return feeRates;
@@ -867,17 +894,17 @@ class Wallet {
     for (var i = 0; i < txList.transactionsLen; i++) {
       var tx = txList.transactions.elementAt(i).ref;
       transactions.add(Transaction(
-        "",
-        tx.txid.cast<Utf8>().toDartString(),
-        DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
-        tx.fee,
-        tx.received,
-        tx.sent,
-        tx.confirmationHeight,
-        tx.address.cast<Utf8>().toDartString(),
-        outputs: _extractStringList(tx.outputs, tx.outputsLen),
-        inputs: _extractStringList(tx.inputs, tx.inputsLen),
-      ));
+          "",
+          tx.txid.cast<Utf8>().toDartString(),
+          DateTime.fromMillisecondsSinceEpoch(tx.confirmationTime * 1000),
+          tx.fee,
+          tx.received,
+          tx.sent,
+          tx.confirmationHeight,
+          tx.address.cast<Utf8>().toDartString(),
+          outputs: _extractStringList(tx.outputs, tx.outputsLen),
+          inputs: _extractStringList(tx.inputs, tx.inputsLen),
+          vsize: tx.vsize));
     }
 
     return transactions;
@@ -1074,5 +1101,47 @@ class Wallet {
 
     return Future(() =>
         dartFunction(_self, psbt.toNativeUtf8()).cast<Utf8>().toDartString());
+  }
+
+  Future<Psbt> cancelTx(
+      String txId, List<Utxo>? doNotSpend, double feeRate) async {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = load(_libName);
+      Pointer<rust.UtxoList> doNotSpendPointer =
+          _createUtxoListPointer(doNotSpend);
+      final native = rust.NativeLibrary(lib);
+
+      rust.Psbt psbt = native.wallet_cancel_tx(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>,
+          feeRate,
+          doNotSpendPointer);
+
+      if (psbt.base64 == nullptr) {
+        throwRustException(lib);
+      }
+      return Psbt.fromNative(psbt);
+    });
+  }
+
+  Future<String> getRawTxFromTxId(String txId) {
+    final walletAddress = _self.address;
+
+    return Isolate.run(() {
+      final lib = load(_libName);
+
+      final native = rust.NativeLibrary(lib);
+
+      final rawHex = native.wallet_get_raw_tx_from_txid(
+          Pointer.fromAddress(walletAddress),
+          txId.toNativeUtf8() as Pointer<Char>);
+
+      if (rawHex == nullptr) {
+        throwRustException(lib);
+      }
+      return rawHex.cast<Utf8>().toDartString();
+    });
   }
 }

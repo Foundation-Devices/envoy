@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 
 class AddressWidget extends StatelessWidget {
   final String address;
+  final bool short;
+  final Key? widgetKey;
+  final TextAlign? align;
+
   final TextStyle textStyleBold =
       EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
   final TextStyle textStyleNormal = EnvoyTypography.body
@@ -16,13 +20,11 @@ class AddressWidget extends StatelessWidget {
       )
       .setWeight(FontWeight.w400);
 
-  final bool short;
-  final Key? widgetKey;
-
   AddressWidget({
     required this.address,
     this.short = false,
     this.widgetKey,
+    this.align = TextAlign.left,
   });
 
   @override
@@ -33,6 +35,7 @@ class AddressWidget extends StatelessWidget {
             ? _buildShortAddressTextSpans(address)
             : _buildFullAddressTextSpans(address),
       ),
+      textAlign: align!,
     );
   }
 

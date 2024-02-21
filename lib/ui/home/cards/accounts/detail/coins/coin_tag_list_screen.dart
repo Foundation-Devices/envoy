@@ -10,6 +10,7 @@ import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
   Widget build(BuildContext context) {
     List<CoinTag> tags = ref.watch(coinsTagProvider(widget.account.id ?? ""));
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12),
+      margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(
         scrollController: _scrollController,
         child: StatefulBuilder(
@@ -88,10 +89,12 @@ class CoinItemWidget extends StatelessWidget {
     Color cardBackground = tag.untagged
         ? Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+    double cardRadius = 26;
+
     return Container(
       height: 108,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(22)),
+        borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
         border:
             Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
         gradient: LinearGradient(
@@ -104,11 +107,11 @@ class CoinItemWidget extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
             border: Border.all(
                 color: cardBackground, width: 2, style: BorderStyle.solid)),
         child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
             child: StripesBackground(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,9 +144,9 @@ class CoinItemWidget extends StatelessWidget {
                     builder: (context, ref, child) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 3, horizontal: 4),
+                            vertical: 5, horizontal: 4.5),
                         child: Container(
-                          height: 40,
+                          height: 34,
                           child: CoinTagBalanceWidget(
                             coinTag: tag,
                             isListScreen: isInListScreen,

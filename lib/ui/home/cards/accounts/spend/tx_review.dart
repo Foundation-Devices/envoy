@@ -19,6 +19,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -33,6 +34,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as Rive;
@@ -207,12 +209,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   ref.read(spendTransactionProvider).isPSBTFinalized) {
                 broadcastTx(context);
               } else {
-                await Navigator.of(_rootContext, rootNavigator: false)
+                final psbt = await Navigator.of(_rootContext,
+                        rootNavigator: false)
                     .push(MaterialPageRoute(
                         builder: (context) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: PsbtCard(transactionModel.psbt!, account),
                             )));
+                ref
+                    .read(spendTransactionProvider.notifier)
+                    .updateWithFinalPSBT(psbt);
                 await Future.delayed(Duration(milliseconds: 200));
               }
             },
@@ -392,8 +398,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void broadcastTx(BuildContext context) async {
-    Account? account = ref.watch(selectedAccountProvider);
-    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+    Account? account = ref.read(selectedAccountProvider);
+    TransactionModel transactionModel = ref.read(spendTransactionProvider);
 
     if (account == null || transactionModel.psbt == null) {
       return;
@@ -409,6 +415,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      addHapticFeedback();
       await Future.delayed(Duration(milliseconds: 500));
     } catch (e) {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
@@ -416,6 +423,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
       await Future.delayed(Duration(milliseconds: 800));
     }
+  }
+
+  bool hapticCalled = false;
+  void addHapticFeedback() async {
+    if (hapticCalled) return;
+    hapticCalled = true;
+    await Future.delayed(Duration(milliseconds: 700));
+    HapticFeedback.lightImpact();
+    await Future.delayed(Duration(milliseconds: 100));
+    HapticFeedback.mediumImpact();
   }
 }
 
@@ -480,6 +497,8 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
+    int feePercentage = ((psbt.fee / (psbt.fee + psbt.sent)) * 100).round();
+
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -525,15 +544,33 @@ class _TransactionReviewScreenState
             child: Consumer(builder: (context, ref, child) {
               return TransactionReviewCard(
                 psbt: psbt,
+                onTxDetailTap: () {
+                  if (transactionModel.psbt == null) return;
+                  Navigator.of(context, rootNavigator: true).push(
+                      PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return StagingTxDetails(
+                              psbt: transactionModel.psbt!,
+                            );
+                          },
+                          transitionDuration: Duration(milliseconds: 100),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          opaque: false,
+                          fullscreenDialog: true));
+                },
                 psbtFinalized: transactionModel.isPSBTFinalized,
                 loading: transactionModel.loading,
                 address: address,
                 feeTitle: S().coincontrol_tx_detail_fee,
                 feeChooserWidget: FeeChooser(
                   onFeeSelect: (fee, context, bool customFee) {
-                    ref
-                        .read(spendTransactionProvider.notifier)
-                        .validate(ProviderScope.containerOf(context));
                     setFee(fee, context, customFee);
                     ref.read(userHasChangedFeesProvider.notifier).state = true;
                   },
@@ -541,6 +578,12 @@ class _TransactionReviewScreenState
               );
             }),
           ),
+          if (feePercentage >= 25)
+            SliverToBoxAdapter(
+                child: Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.small),
+              child: feeOverSpendWarning(feePercentage),
+            )),
           // Special warning if we are sending max or the fee changed the TX
           if (transactionModel.mode == SpendMode.sendMax || showFeeChangeNotice)
             SliverToBoxAdapter(
@@ -611,6 +654,23 @@ class _TransactionReviewScreenState
     );
   }
 
+  Widget feeOverSpendWarning(int feePercentage) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: EnvoySpacing.small),
+          child: EnvoyIcon(EnvoyIcons.alert,
+              size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
+        ),
+        Text("Over " + feePercentage.toString() + "%",
+            // TODO: Figma
+            style:
+                EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
+      ],
+    );
+  }
+
   void editTransaction(BuildContext context) async {
     final router = GoRouter.of(context);
 
@@ -647,25 +707,18 @@ class _TransactionReviewScreenState
   }
 
   void setFee(int fee, BuildContext context, bool customFee) async {
-    // FIXME: we need a way to stop the coin selection randomness past the send screen
-    // Sometimes this results in a max fee calculation that is no longer correct
-    // As a workaround we decrement the fee rate here until we get a valid PSBT
+    if (!this.mounted) {
+      return;
+    }
+    // Set the fee
     ref.read(spendFeeProcessing.notifier).state = true;
     int selectedItem = fee;
-    while (true) {
-      ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
-      bool valid = await ref
-          .read(spendTransactionProvider.notifier)
-          .validate(ProviderScope.containerOf(context), settingFee: true);
-
-      if (valid) {
-        ref.read(spendFeeProcessing.notifier).state = false;
-        break;
-      }
-      selectedItem--;
-    }
-
-    ///hide fee slider bottomsheet
+    ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
+    await ref
+        .read(spendTransactionProvider.notifier)
+        .validate(ProviderScope.containerOf(context), settingFee: true);
+    ref.read(spendFeeProcessing.notifier).state = false;
+    //hide fee slider bottom-sheet
     if (customFee) {
       Navigator.pop(context);
     }

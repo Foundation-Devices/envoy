@@ -8,6 +8,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -19,6 +20,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -30,6 +32,7 @@ import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
@@ -38,6 +41,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/string_utils.dart';
@@ -47,9 +51,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
-import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -95,12 +96,20 @@ class _AccountCardState extends ConsumerState<AccountCard>
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return IconButton(
-                  onPressed: () {
-                    HomePageState.of(context)?.toggleOptions();
-                  },
-                  icon: Icon(
-                      menuVisible ? Icons.close : Icons.more_horiz_outlined));
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  HomePageState.of(context)?.toggleOptions();
+                },
+                child: Container(
+                  height: 55,
+                  width: 55,
+                  color: Colors.transparent,
+                  child: Icon(
+                    menuVisible ? Icons.close : Icons.more_horiz_outlined,
+                  ),
+                ),
+              );
             },
           ));
 
@@ -168,8 +177,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: EnvoySpacing.medium1,
-                    right: EnvoySpacing.medium1,
+
+                    ///proper padding to align with top sections, based on UI design
+                    left: 20,
+                    right: 20,
                     top: EnvoySpacing.small),
                 child: account.dateSynced == null
                     ? ListView.builder(
@@ -431,10 +442,6 @@ class TransactionListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
 
-    Widget txIcons = transaction.amount < 0
-        ? Icon(Icons.call_made)
-        : Icon(Icons.call_received);
-
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
@@ -450,17 +457,18 @@ class TransactionListTile extends StatelessWidget {
                   context,
                   S().coincontrol_coin_change_spendable_tate_modal_subheading,
                   S().component_continue,
-                  () {
+                  (BuildContext context) {
                     Clipboard.setData(
                         ClipboardData(text: transaction.txId)); // here
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
                           "Transaction ID copied to clipboard!"), //TODO: FIGMA
                     ));
+                    Navigator.pop(context);
                   },
                   icon: EnvoyIcons.info,
                   secondaryButtonLabel: S().component_cancel,
-                  onSecondaryButtonTap: () {
+                  onSecondaryButtonTap: (BuildContext context) {
                     Navigator.pop(context);
                   },
                   checkBoxText: S().component_dontShowAgain,
@@ -483,98 +491,84 @@ class TransactionListTile extends StatelessWidget {
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
-          child: ListTile(
-            title: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Consumer(
-                builder: (context, ref, child) {
-                  bool? isBoosted =
-                      ref.watch(isTxBoostedProvider(transaction.txId));
-                  if (isBoosted == true) {
-                    return Text("Boosted");
-                  }
-                  return transaction.amount < 0
-                      ? Text(S().activity_sent)
-                      : Text(S().activity_received);
-                },
-              ),
-            ),
-            subtitle: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: transaction.type == TransactionType.azteco
-                  ? Text(
-                      S().azteco_account_tx_history_pending_voucher,
-                      style: _transactionTextStyleInfo,
-                    )
-                  : transaction.type == TransactionType.normal &&
-                          transaction.isConfirmed
-                      ? Builder(builder: (context) {
-                          String time = timeago
-                              .format(transaction.date,
-                                  locale: activeLocale.languageCode)
-                              .capitalize();
-                          return Text(
-                            time,
+          child: Row(
+            children: [
+              transactionIcon(context),
+              Expanded(
+                child: ListTile(
+                  minLeadingWidth: 0,
+                  horizontalTitleGap: EnvoySpacing.small,
+                  title: transactionTitle(context),
+                  subtitle: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: transaction.type == TransactionType.azteco
+                        ? Text(
+                            S().azteco_account_tx_history_pending_voucher,
                             style: _transactionTextStyleInfo,
-                          );
-                        })
-                      : Text(
-                          S().receive_tx_list_awaitingConfirmation,
-                          style: _transactionTextStyleInfo,
-                        ),
-            ),
-            leading: Consumer(
-              builder: (context, ref, child) {
-                bool? isBoosted =
-                    ref.watch(isTxBoostedProvider(transaction.txId));
-                if (isBoosted == true) {
-                  return Icon(Icons.fast_forward_outlined);
-                }
-                return txIcons;
-              },
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: Settings().selectedFiat == null
-                  ? CrossAxisAlignment.center
-                  : CrossAxisAlignment.end,
-              children: [
-                // Styled as ListTile.title and ListTile.subtitle respectively
-                Consumer(
-                  builder: (context, ref, child) {
-                    bool hide =
-                        ref.watch(balanceHideStateStatusProvider(account.id));
-                    if (hide) {
-                      return SizedBox(
-                        width: 100,
-                        height: 15,
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Color(0xffEEEEEE),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return child ?? Container();
-                    }
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                          )
+                        : transaction.type == TransactionType.normal &&
+                                transaction.isConfirmed
+                            ? Builder(builder: (context) {
+                                String time = timeago
+                                    .format(transaction.date,
+                                        locale: activeLocale.languageCode)
+                                    .capitalize();
+                                return Text(
+                                  time,
+                                  style: _transactionTextStyleInfo,
+                                );
+                              })
+                            : Text(
+                                S().receive_tx_list_awaitingConfirmation,
+                                style: _transactionTextStyleInfo,
+                              ),
+                  ),
+                  contentPadding: EdgeInsets.all(0),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: Settings().selectedFiat == null
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.end,
                     children: [
-                      EnvoyAmount(
-                          account: account,
-                          amountSats: transaction.amount,
-                          amountWidgetStyle: AmountWidgetStyle.normal),
+                      // Styled as ListTile.title and ListTile.subtitle respectively
+                      Consumer(
+                        builder: (context, ref, child) {
+                          bool hide = ref.watch(
+                              balanceHideStateStatusProvider(account.id));
+                          if (hide) {
+                            return SizedBox(
+                              width: 100,
+                              height: 15,
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffEEEEEE),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return child ?? Container();
+                          }
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            EnvoyAmount(
+                                account: account,
+                                amountSats: transaction.amount,
+                                amountWidgetStyle: AmountWidgetStyle.normal),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -584,6 +578,98 @@ class TransactionListTile extends StatelessWidget {
           tx: transaction,
         );
       },
+    );
+  }
+
+  Widget transactionIcon(BuildContext context) {
+    return FittedBox(
+      alignment: Alignment.centerLeft,
+      fit: BoxFit.scaleDown,
+      child: Consumer(
+        builder: (context, ref, child) {
+          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+          final cancelState =
+              ref.watch(cancelTxStateProvider(transaction.txId));
+          EnvoyIcons txIcon =
+              transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
+          if (cancelState != null) {
+            if (!transaction.isConfirmed) {
+              txIcon = EnvoyIcons.close;
+            } else if (cancelState.newTxId == transaction.txId) {
+              txIcon = EnvoyIcons.close;
+            } else {
+              txIcon = transaction.amount < 0
+                  ? EnvoyIcons.spend
+                  : EnvoyIcons.receive;
+            }
+          } else if (isBoosted == true) {
+            txIcon = EnvoyIcons.rbf_boost;
+          }
+          return Container(
+            padding: const EdgeInsets.only(
+              top: EnvoySpacing.small,
+              bottom: EnvoySpacing.small,
+              right: EnvoySpacing.xs,
+              left: EnvoySpacing.xs,
+            ),
+            child: Transform.scale(
+              scale: 1.1,
+              child: EnvoyIcon(
+                txIcon,
+                color: newColorScheme.EnvoyColors.textTertiary,
+                size: EnvoyIconSize.normal,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget transactionTitle(BuildContext context) {
+    final txTitleStyle = Theme.of(context)
+        .textTheme
+        .bodyLarge
+        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Consumer(
+        builder: (context, ref, child) {
+          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+          String txTitle = transaction.amount < 0
+              ? S().activity_sent
+              : S().activity_received;
+          RBFState? cancelState =
+              ref.watch(cancelTxStateProvider(transaction.txId));
+          if (cancelState != null) {
+            if (cancelState.originalTxId == transaction.txId) {
+              if (!transaction.isConfirmed) {
+                txTitle = S().activity_canceling;
+              }
+            }
+            if (cancelState.newTxId == transaction.txId) {
+              if (transaction.isConfirmed) {
+                txTitle = S().activity_sent_canceled;
+              } else {
+                txTitle = S().activity_canceling;
+              }
+            }
+          } else {
+            if (isBoosted == true) {
+              if (transaction.isConfirmed) {
+                txTitle = S().activity_sent_boosted;
+              }
+              txTitle = S().activity_boosted;
+            }
+          }
+          return Text(
+            txTitle,
+            style: txTitleStyle,
+          );
+        },
+      ),
     );
   }
 }

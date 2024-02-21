@@ -120,7 +120,7 @@ class ConnectivityManager {
   restartTor() {
     // ENV-175
     if (torEnabled) {
-      Tor.instance.restart();
+      Tor.instance.start();
     }
   }
 

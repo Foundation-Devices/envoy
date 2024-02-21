@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
@@ -51,10 +51,10 @@ class ExchangeRate extends ChangeNotifier {
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";
 
-  double? _selectedCurrencyRate = 0;
+  double? _selectedCurrencyRate = null;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
-  double? _usdRate = 0;
+  double? _usdRate = null;
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
@@ -149,7 +149,10 @@ class ExchangeRate extends ChangeNotifier {
       }
 
       usdRate = await _getRateForCode("USD");
-      _usdRate = selectedRate;
+      _usdRate = usdRate;
+      if (selectedCurrencyCode == "USD") {
+        _selectedCurrencyRate = usdRate;
+      }
       notifyListeners();
     } on Exception catch (e) {
       EnvoyReport().log("connectivity", e.toString());
@@ -188,10 +191,14 @@ class ExchangeRate extends ChangeNotifier {
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
       {bool includeSymbol = true, Wallet? wallet}) {
-    if (wallet?.network == Network.Testnet ||
-        _currency == null ||
-        _selectedCurrencyRate == null) {
-      return "";
+    /// dont hide testnet fiat values on debug builds
+    if (!kDebugMode) {
+      /// hide testnet fiat values on production builds
+      if (wallet?.network == Network.Testnet ||
+          _currency == null ||
+          _selectedCurrencyRate == null) {
+        return "";
+      }
     }
 
     NumberFormat currencyFormatter =
@@ -205,7 +212,7 @@ class ExchangeRate extends ChangeNotifier {
     formattedAmount =
         formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
 
-    return (includeSymbol ? _currency!.symbol : "") + formattedAmount;
+    return (includeSymbol ? _currency?.symbol ?? '' : "") + formattedAmount;
   }
 
   String getSymbol() {

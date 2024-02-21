@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,22 +69,22 @@ class TransactionModel {
       this.mode = SpendMode.normal,
       this.uneconomicSpends = false});
 
-  static TransactionModel copy(TransactionModel mode) {
+  static TransactionModel copy(TransactionModel model) {
     return TransactionModel(
-        sendTo: mode.sendTo,
-        amount: mode.amount,
-        feeRate: mode.feeRate,
-        error: mode.error,
-        utxos: mode.utxos,
-        psbt: mode.psbt,
-        rawTransaction: mode.rawTransaction,
-        valid: mode.valid,
-        loading: mode.loading,
-        canProceed: mode.canProceed,
-        belowDustLimit: mode.belowDustLimit,
-        broadcastProgress: mode.broadcastProgress,
-        mode: mode.mode,
-        uneconomicSpends: mode.uneconomicSpends);
+        sendTo: model.sendTo,
+        amount: model.amount,
+        feeRate: model.feeRate,
+        error: model.error,
+        utxos: model.utxos,
+        psbt: model.psbt,
+        rawTransaction: model.rawTransaction,
+        valid: model.valid,
+        loading: model.loading,
+        canProceed: model.canProceed,
+        belowDustLimit: model.belowDustLimit,
+        broadcastProgress: model.broadcastProgress,
+        mode: model.mode,
+        uneconomicSpends: model.uneconomicSpends);
   }
 
   TransactionModel clone() {
@@ -100,11 +101,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   Future<bool> validate(ProviderContainer container,
       {bool settingFee = false}) async {
-    String sendTo = container.read(spendAddressProvider);
+    final String sendTo = container.read(spendAddressProvider);
+    final int spendableBalance = container.read(totalSpendableAmountProvider);
+    final num feeRate = container.read(spendFeeRateProvider);
+    final Account? account = container.read(selectedAccountProvider);
     int amount = container.read(spendAmountProvider);
-    int spendableBalance = container.read(totalSpendableAmountProvider);
-    num feeRate = container.read(spendFeeRateProvider);
-    Account? account = container.read(selectedAccountProvider);
 
     if (sendTo.isEmpty ||
         amount == 0 ||
@@ -112,16 +113,25 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         state.broadcastProgress == BroadcastProgress.inProgress) {
       return false;
     }
-
     List<Utxo> utxos = container
         .read(getSelectedCoinsProvider(account.id!))
         .map((e) => e.utxo)
         .toList();
 
+    ///If the user selected to spend max.
+    ///subsequent validation calls will stick to the original amount user entered
+    if (state.mode == SpendMode.sendMax) {
+      //if user choose new coins, we reset the mode to normal since the tx is no longer sendMax
+      if ((state.utxos ?? []).length != utxos.length) {
+        state = state.clone()..mode = SpendMode.normal;
+      } else {
+        amount = spendableBalance;
+      }
+    }
+
     try {
       state = state.clone()
         ..sendTo = sendTo
-        ..amount = amount
         ..utxos = utxos
         ..feeRate = feeRate.toDouble()
         ..loading = true;
@@ -143,6 +153,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         }
       });
 
+      //remove if there is any duplicates
+      dontSpend = dontSpend?.unique((e) => e.id).toList();
       container.read(dontSpendCoinsProvider.notifier).state = dontSpend ?? [];
 
       bool sendMax = spendableBalance == amount;
@@ -151,29 +163,30 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
           dontSpend: dontSpend, mustSpend: null);
 
-      if (sendMax) {
-        state = state.clone()
-          ..mode = SpendMode.sendMax
-          ..uneconomicSpends = (psbt.sent + psbt.fee) != amount;
+      //calculate max fee only if we are not setting fee
+      if (!settingFee) {
+        int maxFeeRate = await account.wallet
+            .getMaxFeeRate(state.sendTo, amount, dontSpendUtxos: dontSpend);
+        container.read(feeChooserStateProvider.notifier).state =
+            FeeChooserState(
+                standardFeeRate:
+                    Fees().slowRate(account.wallet.network) * 100000,
+                fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
+                minFeeRate: 1,
+                maxFeeRate: maxFeeRate.clamp(2, 5000));
+        if (kDebugMode) {
+          print("Max fee Rate $maxFeeRate");
+        }
       }
 
       ///get max fee rate that we can use on this transaction
       ///when we are sending max, this is basically infinite
-      int maxFeeRate = sendMax
-          ? 100000
-          : await account.wallet
-              .getMaxFeeRate(sendTo, amount, dontSpendUtxos: dontSpend);
-
-      container.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-          standardFeeRate: Fees().slowRate(account.wallet.network) * 100000,
-          fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
-          minFeeRate: 1,
-          maxFeeRate: maxFeeRate);
 
       ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
       /// this is used to show staging transaction details
-      RawTransaction rawTransaction =
-          await Wallet.decodeRawTx(psbt.rawTx, account.wallet.network);
+      RawTransaction rawTransaction = await account.wallet
+          .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
+
       state = state.clone()
         ..psbt = psbt
         ..loading = false
@@ -183,6 +196,31 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ///get all input that selected for the current PSBT
       final utxoSet = rawTransaction.inputs
           .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}");
+
+      /// in the case of sendMax we need, receive amount might be different from the amount we are sending
+      /// Make sure psbt is the source of truth for the amount
+      bool foundOutput = false;
+      rawTransaction.outputs.forEach((output) {
+        if (output.path == TxOutputPath.NotMine) {
+          foundOutput = true;
+          state = state.clone()..amount = output.amount;
+        }
+      });
+
+      ///if user is trying to send it themself
+      if (!foundOutput) {
+        rawTransaction.outputs.forEach((output) {
+          if (output.path == TxOutputPath.External) {
+            state = state.clone()..amount = output.amount;
+          }
+        });
+      }
+
+      if (sendMax) {
+        state = state.clone()
+          ..mode = SpendMode.sendMax
+          ..uneconomicSpends = (state.amount + psbt.fee) != spendableBalance;
+      }
 
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
       container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
@@ -214,8 +252,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_too_low_info;
     } catch (e, stackTrace) {
-      print("Error ${e}");
-      debugPrintStack(stackTrace: stackTrace);
+      if (kDebugMode) {
+        print("Error ${e}");
+        debugPrintStack(stackTrace: stackTrace);
+      }
 
       state = state.clone()
         ..loading = false
@@ -251,6 +291,14 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               state.broadcastProgress != BroadcastProgress.inProgress))) {
         return;
       }
+      final coins = ref.read(coinsProvider(account.id!));
+      final coinTags = ref.read(coinsTagProvider(account.id!));
+      final rawTx = state.rawTransaction!;
+
+      final inputCoins = rawTx.inputs.map((input) {
+        return coins.firstWhere((element) => element.id == input.id);
+      }).toList();
+
       // Increment the change index before broadcasting
       await account.wallet.getChangeAddress();
       this.state = state.clone()
@@ -290,6 +338,20 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           final tags = ref
               .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
 
+          inputCoins.forEach((coin) async {
+            final coinTag = coinTags.firstWhereOrNull((element) =>
+                element.coins_id.contains(coin.id) &&
+                element.account == account.id);
+            await EnvoyStorage().addCoinHistory(
+                coin.id,
+                InputCoinHistory(
+                    account.id!,
+                    coinTag?.name ?? S().account_details_untagged_card,
+                    psbt.txid,
+                    coin));
+          });
+
+          ///add change tag if its new and if it is not already added to the database
           if (tags.map((e) => e.id).contains(tag.id) == false &&
               tag.untagged == false) {
             await CoinRepository().addCoinTag(tag);
@@ -299,6 +361,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           int index = transaction.outputs.indexWhere((element) =>
               element.address == changeOutPut.item1 &&
               element.amount == changeOutPut.item2);
+
+          ///add change tag to the database
           if (index != -1) {
             changeOutPutTag.addCoin(Coin(
                 Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
@@ -328,6 +392,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   resetBroadcastState() {
     this.state = state.clone()..broadcastProgress = BroadcastProgress.staging;
+  }
+
+  //for RBF review screen
+  void setAmount(int amount) {
+    this.state = state.clone()..amount = amount;
   }
 }
 
@@ -617,3 +686,14 @@ Future<Psbt> getPsbt(
 
   return _returnPsbt;
 }
+
+///Will return the raw transaction for a given txId
+///this can be used as a cache mechanism to avoid decoding the same transaction multiple times
+final rawWalletTransactionProvider =
+    FutureProvider.family((ref, String rawTx) async {
+  Account? account = ref.watch(selectedAccountProvider);
+  if (account == null) {
+    return null;
+  }
+  return await account.wallet.decodeWalletRawTx(rawTx, account.wallet.network);
+});

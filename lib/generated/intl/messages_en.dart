@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
         "about_privacyPolicy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "about_show": MessageLookupByLibrary.simpleMessage("Show"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Terms of Use"),
         "account_details_filter_tags_sortBy":
@@ -71,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_received": MessageLookupByLibrary.simpleMessage("Received"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "activity_sent_boosted":
+            MessageLookupByLibrary.simpleMessage("Sent (Boosted)"),
+        "activity_sent_canceled":
             MessageLookupByLibrary.simpleMessage("Canceled"),
         "add_note_modal_heading":
             MessageLookupByLibrary.simpleMessage("Add a Note"),
@@ -81,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "android_backup_info_heading":
             MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "android_backup_info_subheading": MessageLookupByLibrary.simpleMessage(
-            "Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings.]]"),
+            "Android automatically backs up your Envoy data every 24 hours.\n\nTo ensure your first Magic Backup is complete, we recommend performing a manual backup in your device [[Settings]]."),
         "appstore_description": MessageLookupByLibrary.simpleMessage(
             "Envoy is a simple Bitcoin wallet with powerful account management and privacy features.\n\nUse Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.\n\nEnvoy offers the following features:\n\n1. Magic Backups. Get up and running with self-custody in only 60 seconds with automatic encrypted backups. Seed words optional.\n\n2. Manage your mobile wallet and Passport hardware wallet accounts in the same app.\n\n3. Send and receive Bitcoin in a zen-like interface.\n\n4. Connect your Passport hardware wallet for setup, firmware updates, and support videos. Use Envoy as your software wallet connected to your Passport.\n\n5. Fully open source and privacy preserving. Envoy optionally connects to the Internet with Tor for maximum privacy.\n\n6. Optionally connect your own Bitcoin node."),
         "azteco_account_tx_history_pending_voucher":
@@ -93,8 +96,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
-        "azteco_redeem_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Redeem"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Unable to Redeem"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -143,7 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("TAG DETAILS"),
         "coincontrol_coin_change_spendable_tate_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "\nYour transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
+                "Your transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
         "coincontrol_edit_transaction_available_balance":
             MessageLookupByLibrary.simpleMessage("Available balance"),
         "coincontrol_edit_transaction_requiredAmount":
@@ -172,6 +173,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Show details"),
         "coincontrol_tx_detail_amount_to_sent":
             MessageLookupByLibrary.simpleMessage("Amount to send"),
+        "coincontrol_tx_detail_change":
+            MessageLookupByLibrary.simpleMessage("Change received"),
         "coincontrol_tx_detail_cta1":
             MessageLookupByLibrary.simpleMessage("Send Transaction"),
         "coincontrol_tx_detail_cta2":
@@ -214,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
+        "coincontrol_tx_detail_no_change":
+            MessageLookupByLibrary.simpleMessage("No change"),
         "coincontrol_tx_detail_passport_cta2":
             MessageLookupByLibrary.simpleMessage("Cancel Transaction"),
         "coincontrol_tx_detail_passport_subheading":
@@ -236,18 +241,34 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_at": MessageLookupByLibrary.simpleMessage("at"),
         "coindetails_overlay_boostedFees":
             MessageLookupByLibrary.simpleMessage("Boosted Fee"),
-        "coindetails_overlay_confirmationIn":
+        "coindetails_overlay_confirmation":
             MessageLookupByLibrary.simpleMessage("Confirmation in"),
+        "coindetails_overlay_confirmationIn":
+            MessageLookupByLibrary.simpleMessage("Confirms in"),
+        "coindetails_overlay_confirmationIn_day":
+            MessageLookupByLibrary.simpleMessage("day"),
+        "coindetails_overlay_confirmationIn_days":
+            MessageLookupByLibrary.simpleMessage("days"),
+        "coindetails_overlay_confirmationIn_month":
+            MessageLookupByLibrary.simpleMessage("month"),
+        "coindetails_overlay_confirmationIn_week":
+            MessageLookupByLibrary.simpleMessage("week"),
+        "coindetails_overlay_confirmationIn_weeks":
+            MessageLookupByLibrary.simpleMessage("weeks"),
+        "coindetails_overlay_confirmation_boost":
+            MessageLookupByLibrary.simpleMessage("Boost"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Date"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("COIN DETAILS"),
         "coindetails_overlay_notes":
-            MessageLookupByLibrary.simpleMessage("Notes"),
+            MessageLookupByLibrary.simpleMessage("Note"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Status"),
         "coindetails_overlay_status_confirmed":
             MessageLookupByLibrary.simpleMessage("Confirmed"),
+        "coindetails_overlay_status_pending":
+            MessageLookupByLibrary.simpleMessage("Pending"),
         "coindetails_overlay_tag": MessageLookupByLibrary.simpleMessage("Tag"),
         "coindetails_overlay_transactionID":
             MessageLookupByLibrary.simpleMessage("Transaction ID"),
@@ -265,12 +286,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "component_next": MessageLookupByLibrary.simpleMessage("Next"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_save": MessageLookupByLibrary.simpleMessage("Save"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "component_tryAgain": MessageLookupByLibrary.simpleMessage("Try Again"),
-        "component_warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "component_warning": MessageLookupByLibrary.simpleMessage("WARNING"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
         "create_first_tag_modal_1_2_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -438,11 +460,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_passport_subheading": MessageLookupByLibrary.simpleMessage(
             "Insert the microSD card into Passport then head follow the instructions. \n\nEnsure Passport has adequate battery charge before carrying out this operation."),
         "envoy_fw_progress_heading": MessageLookupByLibrary.simpleMessage(
-            "Envoy is now copying the firmware onto the \nmicroSD card"),
+            "Envoy is now copying the firmware onto the\nmicroSD card"),
         "envoy_fw_progress_subheading": MessageLookupByLibrary.simpleMessage(
             "This might take few seconds. Please do not remove the microSD card."),
         "envoy_fw_success_heading": MessageLookupByLibrary.simpleMessage(
-            "Firmware was successfully copied onto the microSD card"),
+            "Firmware was successfully copied onto the\nmicroSD card"),
         "envoy_fw_success_subheading": MessageLookupByLibrary.simpleMessage(
             "Make sure to tap the Unmount SD Card button from your File Manager before removing your microSD card from your phone."),
         "envoy_fw_success_subheading_ios": MessageLookupByLibrary.simpleMessage(
@@ -472,7 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Decrypt your Backup"),
         "envoy_pp_restore_backup_password_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "To decrypt the backup file, enter the 20 digit backup code shown to you when creating the  backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead."),
+                "To decrypt the backup file, enter the 20 digit backup code shown to you when creating the backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead."),
         "envoy_pp_restore_backup_subheading": MessageLookupByLibrary.simpleMessage(
             "Use this feature to restore Passport using an encrypted microSD backup from another Passport.\n\nYou will need the password to decrypt the backup."),
         "envoy_pp_restore_backup_success_heading":
@@ -485,7 +507,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Use this feature to restore an existing 12 or 24 word seed."),
         "envoy_pp_restore_seed_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your seed has been \nsuccessfully restored"),
+                "Your seed has been successfully restored"),
         "envoy_pp_setup_intro_cta1":
             MessageLookupByLibrary.simpleMessage("Create New Seed"),
         "envoy_pp_setup_intro_cta2":
@@ -587,13 +609,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Biometric authentication temporarily disabled. Please lock and unlock your screen to re-enable."),
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Biometric authentication temporarily disabled. Please wait 30 seconds and try again."),
+                "Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Results"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Search..."),
+            MessageLookupByLibrary.simpleMessage("Passport"),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -643,6 +665,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_recovery_fail_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup."),
+        "magic_setup_recovery_retry_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Recovering your Envoy wallet"),
         "magic_setup_send_backup_to_envoy_server_heading":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
         "magic_setup_send_backup_to_envoy_server_subheading":
@@ -678,10 +703,12 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This only removes the account from Envoy."),
         "manage_account_rename_heading":
             MessageLookupByLibrary.simpleMessage("Rename Account"),
+        "manage_device_deletePassportWarning": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts."),
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage("Paired"),
         "manage_device_details_deviceSerial":
-            MessageLookupByLibrary.simpleMessage("Serial "),
+            MessageLookupByLibrary.simpleMessage("Serial"),
         "manage_device_details_heading":
             MessageLookupByLibrary.simpleMessage("DEVICE DETAILS"),
         "manage_device_details_menu_editDevice":
@@ -705,7 +732,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Your Envoy Backup File is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup."),
         "manual_setup_create_and_store_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as tags, notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
+                "Envoy has generated your encrypted backup. This backup contains useful wallet data such as Tags, Notes, accounts and settings.\n\nYou can choose to secure it on the cloud, another device, or an external storage option like a microSD card."),
         "manual_setup_generate_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Generate Seed"),
         "manual_setup_generate_seed_heading":
@@ -732,10 +759,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will ask you some questions to verify you correctly recorded your seed."),
+        "manual_setup_generate_seed_write_words_24_heading":
+            MessageLookupByLibrary.simpleMessage("Write Down These 24 Words"),
         "manual_setup_generate_seed_write_words_heading":
-            MessageLookupByLibrary.simpleMessage("Write Down these 12 Words"),
+            MessageLookupByLibrary.simpleMessage("Write Down These 12 Words"),
         "manual_setup_import_backup_CTA1":
-            MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
+            MessageLookupByLibrary.simpleMessage("Create Envoy Backup File"),
         "manual_setup_import_backup_CTA2":
             MessageLookupByLibrary.simpleMessage("Import Envoy Backup File"),
         "manual_setup_import_backup_fails_modal_heading":
@@ -760,7 +789,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_import_seed_checkbox":
             MessageLookupByLibrary.simpleMessage("My seed has a passphrase"),
         "manual_setup_import_seed_heading":
-            MessageLookupByLibrary.simpleMessage("Import your Seed"),
+            MessageLookupByLibrary.simpleMessage("Import Your Seed"),
         "manual_setup_import_seed_passport_warning":
             MessageLookupByLibrary.simpleMessage(
                 "Never import your Passport seed into the following screens."),
@@ -876,10 +905,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_backups": MessageLookupByLibrary.simpleMessage("BACKUPS"),
         "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("SETTINGS"),
-        "menu_support": MessageLookupByLibrary.simpleMessage("support"),
+        "menu_support": MessageLookupByLibrary.simpleMessage("SUPPORT"),
         "pair_existing_device_intro_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Connect Passport \nwith Envoy"),
+                "Connect Passport\nwith Envoy"),
         "pair_existing_device_intro_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "On Passport, select Manage Account > Connect Wallet > Envoy."),
@@ -965,7 +994,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Your Node is connected via Tor."),
         "privacy_setting_perfomance_heading":
-            MessageLookupByLibrary.simpleMessage("Choose your Privacy"),
+            MessageLookupByLibrary.simpleMessage("Choose Your Privacy"),
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "How would you like Envoy to connect to the Internet?"),
@@ -982,18 +1011,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_tx_list_send": MessageLookupByLibrary.simpleMessage("Send"),
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
-                "Sign into Google and restore your  backup data"),
-        "recovery_scenario_Android_instruction2":
-            MessageLookupByLibrary.simpleMessage(
-                "Install Envoy and tap “Set Up Envoy Wallet”"),
+                "Sign into Google and restore your backup data"),
         "recovery_scenario_heading":
             MessageLookupByLibrary.simpleMessage("How to Recover?"),
+        "recovery_scenario_instruction2": MessageLookupByLibrary.simpleMessage(
+            "Install Envoy and tap “Set Up Envoy Wallet”"),
         "recovery_scenario_ios_instruction1":
             MessageLookupByLibrary.simpleMessage(
                 "Sign into iCloud and restore your iCloud backup"),
-        "recovery_scenario_ios_instruction2":
-            MessageLookupByLibrary.simpleMessage(
-                "Install Envoy and tap “Set Up Envoy Wallet”"),
         "recovery_scenario_ios_instruction3":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will then automatically restore your Magic Backup"),
@@ -1001,14 +1026,22 @@ class MessageLookup extends MessageLookupByLibrary {
             "To recover your Envoy wallet, follow these simple instructions."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Boosting transaction"),
+        "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
+            "Your transaction could not be boosted"),
+        "replaceByFee_boost_success_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction has been boosted"),
         "replaceByFee_boost_tx_boostFee":
             MessageLookupByLibrary.simpleMessage("Boost Fee"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be boosted"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Canceling transaction"),
+        "replaceByFee_cancel_fail_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction could not be canceled"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Cancelation fee"),
+            MessageLookupByLibrary.simpleMessage("Cancelation Fee"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
             MessageLookupByLibrary.simpleMessage("Proceed with cancelation"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
@@ -1016,6 +1049,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet."),
+        "replaceByFee_cancel_success_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction has been canceled"),
+        "replaceByFee_cancel_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Boost"),
         "replaceByFee_coindetails_overlay_modal_heading":
@@ -1023,6 +1062,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Increase the fee attached to your transaction to speed up confirmation time."),
+        "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":
@@ -1066,8 +1108,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connect my Node"),
         "settings_show_fiat":
             MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
-        "settings_tor":
-            MessageLookupByLibrary.simpleMessage("Connect with Tor"),
         "settings_viewEnvoyLogs":
             MessageLookupByLibrary.simpleMessage("View Envoy Logs"),
         "stalls_before_sending_tx_add_note_modal_cta2":
@@ -1123,7 +1163,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "taproot_passport_dialog_reconnect":
             MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
-            "To enable a Passport Taproot account,  ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
+            "To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Retry Tor Connection"),
         "torToast_learnMore_temporarilyDisableTor":

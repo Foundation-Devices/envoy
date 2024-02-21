@@ -60,7 +60,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: EnvoySpacing.large1),
+            padding: EdgeInsets.only(bottom: EnvoySpacing.xl),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

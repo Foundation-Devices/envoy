@@ -31,6 +31,7 @@ class EnvoyButton extends StatefulWidget {
   late final ButtonType type;
   final ButtonState state;
   final icon;
+  final double height;
   final Function? onTap;
 
   EnvoyButton({
@@ -39,6 +40,7 @@ class EnvoyButton extends StatefulWidget {
     required this.state,
     this.icon,
     this.onTap,
+    this.height = 48.0,
   });
 
   @override
@@ -92,7 +94,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                     duration: Duration(milliseconds: 230),
                     opacity: widget.state == ButtonState.loading ? 1 : 0,
                     child: SizedBox.square(
-                      dimension: 42,
+                      dimension: widget.height,
                       child: Container(
                         margin: EdgeInsets.all(8),
                         child: CircularProgressIndicator(

@@ -6,6 +6,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
@@ -30,6 +31,9 @@ class SeedScreen extends StatefulWidget {
 
 class _SeedScreenState extends State<SeedScreen> {
   PageController _pageController = PageController();
+  PageController _seedDisplayPageController = PageController();
+  bool _onSecondPage = false;
+
   List<String> seedList = [];
 
   @override
@@ -148,6 +152,10 @@ class _SeedScreenState extends State<SeedScreen> {
   }
 
   Widget _buildMnemonicGrid(BuildContext context) {
+    if (seedList.isEmpty) {
+      return Container();
+    }
+
     return Column(
       children: [
         Container(
@@ -164,57 +172,84 @@ class _SeedScreenState extends State<SeedScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            body: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Text(
-                      S().manual_setup_generate_seed_write_words_heading,
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textAlign: TextAlign.center),
-                ),
-                SliverPadding(padding: EdgeInsets.all(18)),
-                SliverFillRemaining(
-                  child: Builder(builder: (context) {
-                    if (seedList.isEmpty) {
-                      return Container();
-                    }
-                    List<String> section1 = seedList.sublist(0, 6);
-                    List<String> section2 = seedList.sublist(6, 12);
-                    List<Tuple<int, String>> section1WithIndex = [];
-                    List<Tuple<int, String>> section2WithIndex = [];
-                    section1.asMap().forEach((index, element) {
-                      section1WithIndex.add(Tuple(index + 1, element));
-                    });
-                    section2.asMap().forEach((index, element) {
-                      section2WithIndex.add(Tuple(index + 7, element));
-                    });
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    seedList.length == 24
+                        ? S().manual_setup_generate_seed_write_words_24_heading
+                        : S().manual_setup_generate_seed_write_words_heading,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center),
+                Padding(padding: EdgeInsets.all(18)),
+                Expanded(
+                  child: PageView(
+                      controller: _seedDisplayPageController,
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
-                        Flexible(
-                            child: _buildMnemonicColumn(section1WithIndex)),
-                        Flexible(
-                            child: _buildMnemonicColumn(section2WithIndex)),
-                      ],
-                    );
-                  }),
+                        _buildTwoMnemonicColumns(0),
+                        if (seedList.length > 12) _buildTwoMnemonicColumns(12),
+                      ]),
                 ),
+                if (seedList.length > 12)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: DotsIndicator(
+                        pageController: _seedDisplayPageController,
+                        totalPages: 2),
+                  ),
+                OnboardingButton(
+                  onTap: () async {
+                    if (seedList.length == 12 || _onSecondPage) {
+                      await _pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.ease);
+                    } else {
+                      setState(() {
+                        _onSecondPage = true;
+                      });
+                      await _seedDisplayPageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.ease);
+                    }
+                  },
+                  label: seedList.length == 12 || _onSecondPage
+                      ? S().component_done
+                      : S().component_continue,
+                )
               ],
             ),
-            floatingActionButton: OnboardingButton(
-              onTap: () {
-                _pageController.nextPage(
-                    duration: Duration(milliseconds: 300), curve: Curves.ease);
-              },
-              label: S().component_done,
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
           ),
         ))
       ],
+    );
+  }
+
+  Widget _buildTwoMnemonicColumns(int startingIndex) {
+    List<String> section1 = seedList.sublist(startingIndex, startingIndex + 6);
+    List<String> section2 =
+        seedList.sublist(startingIndex + 6, startingIndex + 12);
+    List<Tuple<int, String>> section1WithIndex = [];
+    List<Tuple<int, String>> section2WithIndex = [];
+
+    section1.asMap().forEach((index, element) {
+      section1WithIndex.add(Tuple(startingIndex + index + 1, element));
+    });
+
+    section2.asMap().forEach((index, element) {
+      section2WithIndex.add(Tuple(startingIndex + index + 7, element));
+    });
+
+    return SingleChildScrollView(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Flexible(child: _buildMnemonicColumn(section1WithIndex)),
+          Flexible(child: _buildMnemonicColumn(section2WithIndex)),
+        ],
+      ),
     );
   }
 

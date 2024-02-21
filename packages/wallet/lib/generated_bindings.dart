@@ -308,40 +308,87 @@ class NativeLibrary {
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> txid,
     double fee_rate,
+    ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_get_bumped_psbt(
       wallet,
       txid,
       fee_rate,
+      dont_spend,
     );
   }
 
   late final _wallet_get_bumped_psbtPtr = _lookup<
       ffi.NativeFunction<
           Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('wallet_get_bumped_psbt');
+              ffi.Double, ffi.Pointer<UtxoList>)>>('wallet_get_bumped_psbt');
   late final _wallet_get_bumped_psbt = _wallet_get_bumped_psbtPtr.asFunction<
-      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double)>();
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double,
+          ffi.Pointer<UtxoList>)>();
 
   /// Returns max fee rate for the transaction, fee amount will be deducted from change output
   /// if the return max_fee_rate is negative,then RBF with current output is not possible
   RBFfeeRates wallet_get_max_bumped_fee_rate(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> txid,
+    ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_get_max_bumped_fee_rate(
       wallet,
       txid,
+      dont_spend,
     );
   }
 
   late final _wallet_get_max_bumped_fee_ratePtr = _lookup<
       ffi.NativeFunction<
-          RBFfeeRates Function(ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('wallet_get_max_bumped_fee_rate');
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<UtxoList>)>>('wallet_get_max_bumped_fee_rate');
   late final _wallet_get_max_bumped_fee_rate =
       _wallet_get_max_bumped_fee_ratePtr.asFunction<
-          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+          RBFfeeRates Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<UtxoList>)>();
+
+  Psbt wallet_cancel_tx(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+    double next_block_fee_rate,
+    ffi.Pointer<UtxoList> dont_spend,
+  ) {
+    return _wallet_cancel_tx(
+      wallet,
+      txid,
+      next_block_fee_rate,
+      dont_spend,
+    );
+  }
+
+  late final _wallet_cancel_txPtr = _lookup<
+      ffi.NativeFunction<
+          Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Double, ffi.Pointer<UtxoList>)>>('wallet_cancel_tx');
+  late final _wallet_cancel_tx = _wallet_cancel_txPtr.asFunction<
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double,
+          ffi.Pointer<UtxoList>)>();
+
+  ffi.Pointer<ffi.Char> wallet_get_raw_tx_from_txid(
+    ffi.Pointer<ffi.Char> wallet,
+    ffi.Pointer<ffi.Char> txid,
+  ) {
+    return _wallet_get_raw_tx_from_txid(
+      wallet,
+      txid,
+    );
+  }
+
+  late final _wallet_get_raw_tx_from_txidPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('wallet_get_raw_tx_from_txid');
+  late final _wallet_get_raw_tx_from_txid =
+      _wallet_get_raw_tx_from_txidPtr.asFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   Psbt wallet_decode_psbt(
     ffi.Pointer<ffi.Char> wallet,
@@ -640,6 +687,9 @@ class Transaction extends ffi.Struct {
   external ffi.Pointer<ffi.Pointer<ffi.Char>> inputs;
 
   external ffi.Pointer<ffi.Char> address;
+
+  @uintptr_t()
+  external int vsize;
 }
 
 class TransactionList extends ffi.Struct {

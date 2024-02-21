@@ -18,6 +18,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,11 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     final accountTransactions =
         ref.read(transactionsProvider(widget.tag.account));
     final tx = accountTransactions
-        .firstWhere((element) => element.txId == widget.coin.utxo.txid);
+        .firstWhereOrNull((element) => element.txId == widget.coin.utxo.txid);
+    //if tx is not found in the list of transactions,
+    if (tx == null) {
+      return Container();
+    }
     final utxoAddress = tx.outputs?[widget.coin.utxo.vout] ?? "";
     final coinTag = widget.tag;
     final coin = widget.coin;
@@ -64,6 +69,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     double height = showExpandedAddress ? 324 : 280;
     height = showExpandedTxId ? 324 : height;
 
+    double cardRadius = 26;
+
     return Container(
       padding: EdgeInsets.all(8),
       child: SingleChildScrollView(
@@ -71,8 +78,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
           height: height,
           duration: Duration(milliseconds: 300),
           decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
             border: Border.all(
                 color: Colors.black, width: 2, style: BorderStyle.solid),
             gradient: LinearGradient(
@@ -85,15 +91,13 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
           ),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+                borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
                     color: accountAccentColor,
                     width: 2,
                     style: BorderStyle.solid)),
             child: ClipRRect(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
+                borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
                 child: StripesBackground(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -103,7 +107,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                         height: 36,
                         padding: EdgeInsets.symmetric(horizontal: 4),
                         margin:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(
                               Radius.circular(EnvoySpacing.medium2)),

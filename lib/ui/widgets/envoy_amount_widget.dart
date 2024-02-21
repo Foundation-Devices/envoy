@@ -48,7 +48,7 @@ class EnvoyAmount extends StatelessWidget {
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;
     bool decimalDot = fiatDecimalSeparator == ".";
     String symbolFiat = ExchangeRate().getSymbol();
-    double fxRateFiat = ExchangeRate().selectedCurrencyRate ?? 0.0;
+    double? fxRateFiat = ExchangeRate().selectedCurrencyRate;
 
     return AmountWidget(
       amountSats: amountSats,

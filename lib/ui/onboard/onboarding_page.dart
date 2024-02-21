@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/components/address_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -96,11 +97,14 @@ class OnboardingPage extends StatelessWidget {
                             dimension: 230,
                             data: snapshot.data!,
                           ),
-                          Text(
-                            "${snapshot.data ?? ""}",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleSmall,
-                          )
+                          Container(
+                            width: 250,
+                            child: AddressWidget(
+                              address: snapshot.data!,
+                              short: false,
+                              align: TextAlign.center,
+                            ),
+                          ),
                         ],
                       ),
                     )
@@ -256,39 +260,41 @@ class OnboardingText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-      child: Column(
-        children: [
-          header != null
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    header!,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.body.copyWith(
+    return Material(
+      color: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+        child: Column(
+          children: [
+            header != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(header!,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading
+                            .copyWith(
+                                height: 1.2,
+                                fontSize: 20,
+                                color: EnvoyColors.gray1000,
+                                decoration: TextDecoration.none)
+                            .setWeight(FontWeight.w500)))
+                : SizedBox.shrink(),
+            text != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                    child: Text(
+                      text!,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.info.copyWith(
                         height: 1.2,
-                        fontSize: 20,
-                        color: EnvoyColors.gray1000,
-                        decoration: TextDecoration.none),
-                  ),
-                )
-              : SizedBox.shrink(),
-          text != null
-              ? Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-                  child: Text(
-                    text!,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info.copyWith(
-                      height: 1.2,
-                      color: newColorScheme.EnvoyColors.inactiveDark,
-                      decoration: TextDecoration.none,
+                        color: newColorScheme.EnvoyColors.inactiveDark,
+                        decoration: TextDecoration.none,
+                      ),
                     ),
-                  ),
-                )
-              : SizedBox.shrink()
-        ],
+                  )
+                : SizedBox.shrink()
+          ],
+        ),
       ),
     );
   }

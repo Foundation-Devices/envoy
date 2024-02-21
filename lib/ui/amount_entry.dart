@@ -277,7 +277,7 @@ class SpendableAmountWidget extends ConsumerWidget {
         EnvoyAmount(
           unit: sendScreenUnit,
           amountSats: totalAmount,
-          amountWidgetStyle: AmountWidgetStyle.normal,
+          amountWidgetStyle: AmountWidgetStyle.sendScreen,
           account: account,
           alignToEnd: true,
         )
