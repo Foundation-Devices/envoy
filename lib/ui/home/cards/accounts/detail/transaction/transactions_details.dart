@@ -35,6 +35,7 @@ import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/util/tuple.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -106,10 +107,8 @@ class _TransactionsDetailsWidgetState
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
     final accountAccentColor = widget.account.color;
-    final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: EnvoyColors.textPrimary,
-          fontWeight: FontWeight.w600,
-        );
+    final trailingTextStyle =
+        EnvoyTypography.info.copyWith(color: EnvoyColors.textPrimary);
 
     bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
     final address = tx.address ?? "";
@@ -267,6 +266,7 @@ class _TransactionsDetailsWidgetState
                                         curve: Curves.easeInOut,
                                         child: addressNotAvailable
                                             ? Text("Address not available ",
+                                                // TODO: Figma
                                                 style: trailingTextStyle)
                                             : AddressWidget(
                                                 widgetKey: ValueKey<bool>(
@@ -301,7 +301,10 @@ class _TransactionsDetailsWidgetState
                                         builder: (context, value, child) {
                                           return SelectableText(
                                             "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
-                                            style: trailingTextStyle,
+                                            style: EnvoyTypography.info
+                                                .copyWith(
+                                                    color: EnvoyColors
+                                                        .textSecondary),
                                             textAlign: TextAlign.end,
                                             minLines: 1,
                                             maxLines: 4,
@@ -393,8 +396,10 @@ class _TransactionsDetailsWidgetState
                                           child: Text("$note",
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
-                                              style: trailingTextStyle
-                                                  ?.copyWith(fontSize: 12),
+                                              style: EnvoyTypography.body
+                                                  .copyWith(
+                                                      color: EnvoyColors
+                                                          .textPrimary),
                                               textAlign: TextAlign.end),
                                         ),
                                         Padding(
@@ -491,14 +496,15 @@ class _TransactionsDetailsWidgetState
   Widget CoinTagListItem(
       {required String title, required Widget icon, required Widget trailing}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            flex: 3,
+            flex: 4,
             child: Container(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -516,8 +522,8 @@ class _TransactionsDetailsWidgetState
                       ),
                       child: Text(
                         "$title",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.black, fontWeight: FontWeight.w600),
+                        style: EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.textPrimary),
                       ),
                     ),
                   ),
