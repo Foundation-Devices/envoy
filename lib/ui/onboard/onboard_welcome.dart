@@ -6,8 +6,10 @@ import 'dart:math';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_privacy_setup.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
@@ -72,11 +74,22 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       child: EnvoyPatternScaffold(
-        appBar: AppBar(
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-        ),
+        appBar: Navigator.canPop(context)
+            ? PreferredSize(
+                preferredSize: AppBar().preferredSize,
+                child: AppBar(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  leading: CupertinoNavigationBarBackButton(
+                    color: EnvoyColors.textPrimaryInverse,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+              )
+            : PreferredSize(
+                preferredSize: Size.fromHeight(0),
+                child: SizedBox(),
+              ),
         header: GestureDetector(
           onTap: () {
             registerEscapeTap(EscapeHatchTap.logo);
