@@ -422,6 +422,15 @@ class _TransactionsDetailsWidgetState
                                     ),
                                   ),
                                 ),
+                                if (tx.pullPaymentId != null ||
+                                    tx.type == TransactionType.btcPay)
+                                  CoinTagListItem(
+                                    title: S().coindetails_overlay_paymentID,
+                                    icon: EnvoyIcon(EnvoyIcons.btcPay,
+                                        size: EnvoyIconSize.extraSmall),
+                                    trailing: Text(tx.pullPaymentId ?? tx.txId,
+                                        style: trailingTextStyle),
+                                  ),
                                 RBFPossible
                                     ? CancelTxButton(
                                         transaction: tx,

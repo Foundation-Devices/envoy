@@ -20,12 +20,19 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(tagName) =>
+  static String m0(period) =>
+      "Este cupón caducó el [[period]]. \n\n\nPonte en contacto con el emisor si tienes alguna pregunta relacionada con el cupón.";
+
+  static String m1(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "Balance": MessageLookupByLibrary.simpleMessage("200.000"),
+        "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
+        "Label": MessageLookupByLibrary.simpleMessage("Label"),
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
+        "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
         "_": MessageLookupByLibrary.simpleMessage("USD"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versión de Aplicación"),
@@ -97,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy no puede conectarse con Azteco.\n\nPor favor contacta con support@azte.co o inténtalo de nuevo más tarde."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DE CUPÓN"),
+        "azteco_redeem_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Canjear"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Error al Canjear"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -128,6 +137,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
+        "btcpay_connection_modal_expired_subheading": m0,
+        "btcpay_connection_modal_fail_heading":
+            MessageLookupByLibrary.simpleMessage("Cupón Caducado"),
+        "btcpay_connection_modal_fail_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy no puede conectarse con la tienda BTCPay del emisor.\n\nPonte en contacto con el emisor o vuelve a intentarlo más tarde."),
+        "btcpay_connection_modal_onchainOnly_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "El cupón escaneado no se creó con soporte onchain.\n\nPonte en contacto con el creador del cupón."),
+        "btcpay_redeem_modal_description":
+            MessageLookupByLibrary.simpleMessage("Descripción:"),
+        "btcpay_redeem_modal_name":
+            MessageLookupByLibrary.simpleMessage("Nombre:"),
+        "btcpay_redeem_modal_title":
+            MessageLookupByLibrary.simpleMessage("Título:"),
         "card_coin_locked":
             MessageLookupByLibrary.simpleMessage("Moneda Bloqueada"),
         "card_coin_selected":
@@ -265,8 +289,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Fecha"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALLES DE MONEDA"),
+        "coindetails_overlay_noBoostNoFunds_heading":
+            MessageLookupByLibrary.simpleMessage("Cannot Boost Transaction"),
+        "coindetails_overlay_noBoostNoFunds_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Nota"),
+        "coindetails_overlay_paymentID":
+            MessageLookupByLibrary.simpleMessage("ID de pago"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Estado"),
         "coindetails_overlay_status_confirmed":
@@ -289,7 +320,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No volver a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
         "component_learnMore":
-            MessageLookupByLibrary.simpleMessage("Más Información"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
@@ -338,7 +369,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ver Más Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Asegura tus Bitcoin con Passport."),
-        "empty_tag_modal_subheading": m0,
+        "empty_tag_modal_subheading": m1,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Acepto"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor, revise y acepte los Términos de Uso de Passport"),
@@ -1051,10 +1082,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "A continuación, Envoy restaurará automáticamente tu Copia de Seguridad Mágica"),
         "recovery_scenario_subheading": MessageLookupByLibrary.simpleMessage(
             "Para recuperar tu Cartera Envoy, sigue estas sencillas instrucciones."),
+        "replaceByFee_boost_chosenFeeAddCoinsWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "La tasa elegida sólo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá ninguna moneda bloqueada."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Impulsando transacción"),
         "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
             "Tu transacción no ha podido ser impulsada"),
+        "replaceByFee_boost_reviewCoinSelection":
+            MessageLookupByLibrary.simpleMessage(
+                "Revisar Selección de Monedas"),
         "replaceByFee_boost_success_header":
             MessageLookupByLibrary.simpleMessage(
                 "Tu transacción ha sido impulsada"),
@@ -1089,6 +1126,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Aumenta la tasa asociada a tu transacción para acelerar el tiempo de confirmación."),
+        "replaceByFee_edit_transaction_requiredAmount":
+            MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas."),
@@ -1158,6 +1197,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Esto puede tardar unos segundos"),
+        "tagDetails_EditTagName":
+            MessageLookupByLibrary.simpleMessage("Edit Tag Name"),
         "tagSelection_example1": MessageLookupByLibrary.simpleMessage("Gastos"),
         "tagSelection_example2":
             MessageLookupByLibrary.simpleMessage("Personal"),

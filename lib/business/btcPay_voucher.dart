@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -13,6 +15,8 @@ import 'package:envoy/business/account.dart';
 
 enum BtcPayVoucherRedeemResult { Success, Timeout, VoucherInvalid }
 
+enum BtcPayVoucherErrorType { Invalid, Expired, OnChain }
+
 class BtcPayVoucher {
   String id = "";
   String name = "";
@@ -21,7 +25,11 @@ class BtcPayVoucher {
   String? amount;
   String? currency;
   bool? autoApproveClaims;
-  String? errorMessage;
+  String errorMessage = "";
+  int? amountSats;
+  BtcPayVoucherErrorType errorType = BtcPayVoucherErrorType.Invalid;
+  String link = "";
+  DateTime? expiresAt;
 
   BtcPayVoucher(String url) {
     id = getPullPaymentIdFromUrl(url);
@@ -36,6 +44,34 @@ class BtcPayVoucher {
   String getUrifromUrl(String url) {
     Uri uri = Uri.parse(url);
     return uri.host;
+  }
+
+  int? getAmountInSats() {
+    if (amount == null) return null;
+    if (currency == "SATS") {
+      try {
+        return int.parse(amount!);
+      } catch (e) {
+        return null;
+      }
+    }
+    if (currency == "BTC") {
+      try {
+        double btc = double.parse(amount!);
+        int satoshis = (btc * 100000000).toInt();
+        return satoshis;
+      } catch (e) {
+        return null;
+      }
+    }
+    if (currency == Settings().selectedFiat) {
+      try {
+        return ExchangeRate().convertFiatStringToSats(amount!);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
   }
 
   static bool isVoucher(String url) {
@@ -59,11 +95,16 @@ class BtcPayVoucher {
       case 200:
         {
           final json = jsonDecode(response.body);
+          id = json['id'];
           amount = json['amount'] ?? null;
           currency = json['currency'] ?? null;
           autoApproveClaims = json['autoApproveClaims'] ?? null;
           name = json['name'] ?? null;
           description = json['description'] ?? null;
+          link = json['viewLink'] ?? "";
+          amountSats = getAmountInSats();
+          int? unixTimestamp = json['expiresAt'] ?? null;
+          expiresAt = convertUnixTimestampToDateTime(unixTimestamp);
           return BtcPayVoucherRedeemResult.Success;
         }
 
@@ -96,7 +137,7 @@ class BtcPayVoucher {
           },
           body: requestBody);
     } on TimeoutException {
-      return BtcPayVoucherRedeemResult.Timeout;
+      return BtcPayVoucherRedeemResult.VoucherInvalid;
     }
 
     switch (response.statusCode) {
@@ -108,7 +149,13 @@ class BtcPayVoucher {
       case 400 || 422:
         {
           final json = jsonDecode(response.body);
-          errorMessage = json[0]['message'] ?? "oops";
+          errorMessage = json[0]['message'] ?? "";
+          errorMessage = errorMessage.toLowerCase();
+          if (errorMessage.contains("onchain"))
+            errorType = BtcPayVoucherErrorType.OnChain;
+
+          if (errorMessage.contains("expired"))
+            errorType = BtcPayVoucherErrorType.Expired;
 
           return BtcPayVoucherRedeemResult.VoucherInvalid;
         }
@@ -122,22 +169,17 @@ class BtcPayVoucher {
   }
 }
 
-void addPendingTx(String address, Account account) {
-  EnvoyStorage().addPendingTx(address, account.id ?? "", DateTime.now(),
+void addPendingTx(String pullPaymentId, String address, Account account) {
+  EnvoyStorage().addPendingTx(pullPaymentId, account.id ?? "", DateTime.now(),
       TransactionType.btcPay, 0, 0, address);
+  EnvoyStorage().addTxNote("BTCPay voucher", address); // TODO: FIGMA
 }
 
-btcPaySync(Account account) async {
-  final pendingBtcPayTxs =
-      await EnvoyStorage().getPendingTxs(account.id!, TransactionType.btcPay);
-
-  if (pendingBtcPayTxs.isEmpty) return;
-
-  for (var pendingBtcPayTx in pendingBtcPayTxs) {
-    account.wallet.transactions
-        .where((tx) => tx.outputs!.contains(pendingBtcPayTx.address))
-        .forEach((actualBtcPayTx) {
-      EnvoyStorage().deletePendingTx(pendingBtcPayTx.address!);
-    });
-  }
+DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {
+  if (unixTimestamp == null) return null;
+  int milliseconds = unixTimestamp * 1000;
+  DateTime dateTime =
+      DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true);
+  DateTime localDateTime = dateTime.toLocal();
+  return localDateTime;
 }

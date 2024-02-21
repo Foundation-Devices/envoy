@@ -3,11 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class BtcPayRedeemModalSuccess extends StatefulWidget {
   const BtcPayRedeemModalSuccess({Key? key}) : super(key: key);
@@ -20,14 +19,13 @@ class _BtcPayRedeemModalSuccess extends State<BtcPayRedeemModalSuccess> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 4 * 4, vertical: 4 * 4),
+      child: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
@@ -35,38 +33,32 @@ class _BtcPayRedeemModalSuccess extends State<BtcPayRedeemModalSuccess> {
                 },
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8 * 4),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                EnvoyIcon(
-                  EnvoyIcons.info,
-                  size: EnvoyIconSize.big,
-                  color: EnvoyColors.accentPrimary,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5 * 4),
-                  child: Text(
-                    "Voucher Redeemed",
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.subheading,
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-              ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+              child: Image.asset("assets/trophy_icon.png",
+                  scale: 1.0, width: 128, height: 128, fit: BoxFit.contain),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7 * 4, vertical: 6 * 4),
-            child: Column(
+            Text(
+              S().azteco_redeem_modal_success_heading,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.subheading,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: Text(
+                S().azteco_redeem_modal_success_subheading,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.info,
+              ),
+            ),
+            Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 2 * 4),
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
                   child: EnvoyButton(
                     S().component_continue,
+                    borderRadius: BorderRadius.circular(EnvoySpacing.small),
                     type: EnvoyButtonTypes.primaryModal,
                     onTap: () {
                       Navigator.of(context).pop();
@@ -75,8 +67,8 @@ class _BtcPayRedeemModalSuccess extends State<BtcPayRedeemModalSuccess> {
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -6,8 +6,13 @@ import 'package:envoy/business/btcPay_voucher.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/business/locale.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class BtcPayFail extends StatelessWidget {
   BtcPayFail({Key? key, required this.voucher}) : super(key: key);
@@ -15,16 +20,14 @@ class BtcPayFail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("err");
     return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 4 * 4, vertical: 4 * 4),
+      child: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
@@ -32,55 +35,85 @@ class BtcPayFail extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8 * 4),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                EnvoyIcon(EnvoyIcons.alert,
-                    size: EnvoyIconSize.big, color: EnvoyColors.danger),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5 * 4),
-                  child: Text(
-                    "Can not reedem voucher",
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.subheading,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5 * 4),
-                  child: Text(
-                    voucher.errorMessage ?? "Pull payment not found",
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info
-                        .copyWith(color: EnvoyColors.danger),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-              ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+              child: EnvoyIcon(EnvoyIcons.alert,
+                  size: EnvoyIconSize.big, color: EnvoyColors.danger),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7 * 4, vertical: 6 * 4),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2 * 4),
-                  child: EnvoyButton(
-                    "Close",
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ],
+            getMainErrorMessage(
+                voucher.errorType, voucher.expiresAt, voucher.link),
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+              child: EnvoyButton(
+                S().component_continue,
+                type: EnvoyButtonTypes.primaryModal,
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
+
+Widget getMainErrorMessage(
+    BtcPayVoucherErrorType errorType, DateTime? dateTime, String link) {
+  switch (errorType) {
+    case BtcPayVoucherErrorType.Invalid:
+      return errorMesage(
+        S().azteco_connection_modal_fail_heading,
+        S().btcpay_connection_modal_fail_subheading,
+      );
+
+    case BtcPayVoucherErrorType.Expired:
+      return errorMesage(
+          S().btcpay_connection_modal_fail_heading,
+          S().btcpay_connection_modal_expired_subheading(
+              DateFormat.yMd(currentLocale)
+                  .format(dateTime ?? DateTime.now())));
+
+    case BtcPayVoucherErrorType.OnChain:
+      return errorMesage(S().azteco_redeem_modal_fail_heading,
+          S().btcpay_connection_modal_onchainOnly_subheading,
+          link: link);
+  }
+}
+
+Column errorMesage(String title, String subheading, {String? link}) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        title,
+        style: EnvoyTypography.subheading,
+        textAlign: TextAlign.center,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+        child: Text(
+          subheading,
+          style: EnvoyTypography.info,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      if (link != null)
+        Padding(
+          padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+          child: GestureDetector(
+              onTap: () {
+                launchUrl(Uri.parse(link));
+              },
+              child: Text(
+                S().component_learnMore,
+                style: EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.accentPrimary),
+              )),
+        ),
+    ],
+  );
 }

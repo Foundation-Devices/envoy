@@ -506,27 +506,7 @@ class TransactionListTile extends StatelessWidget {
                   subtitle: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
-                    child: transaction.type == TransactionType.azteco
-                        ? Text(
-                            S().azteco_account_tx_history_pending_voucher,
-                            style: _transactionTextStyleInfo,
-                          )
-                        : transaction.type == TransactionType.normal &&
-                                transaction.isConfirmed
-                            ? Builder(builder: (context) {
-                                String time = timeago
-                                    .format(transaction.date,
-                                        locale: activeLocale.languageCode)
-                                    .capitalize();
-                                return Text(
-                                  time,
-                                  style: _transactionTextStyleInfo,
-                                );
-                              })
-                            : Text(
-                                S().receive_tx_list_awaitingConfirmation,
-                                style: _transactionTextStyleInfo,
-                              ),
+                    child: txSubtitle(activeLocale),
                   ),
                   contentPadding: EdgeInsets.all(0),
                   trailing: Column(
@@ -583,6 +563,36 @@ class TransactionListTile extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget txSubtitle(Locale activeLocale) {
+    if (transaction.type == TransactionType.azteco)
+      return Text(
+        S().azteco_account_tx_history_pending_voucher,
+        style: _transactionTextStyleInfo,
+      );
+
+    if (transaction.type == TransactionType.btcPay)
+      return Text(
+        "Pending BTCPay Voucher", // TODO: Figma
+        style: _transactionTextStyleInfo,
+      );
+
+    if (transaction.type == TransactionType.normal && transaction.isConfirmed)
+      return Builder(builder: (context) {
+        String time = timeago
+            .format(transaction.date, locale: activeLocale.languageCode)
+            .capitalize();
+        return Text(
+          time,
+          style: _transactionTextStyleInfo,
+        );
+      });
+    else
+      return Text(
+        S().receive_tx_list_awaitingConfirmation,
+        style: _transactionTextStyleInfo,
+      );
   }
 
   Widget transactionIcon(BuildContext context) {

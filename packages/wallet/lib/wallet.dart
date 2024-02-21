@@ -64,6 +64,7 @@ class Transaction extends Comparable {
   final TransactionType type;
   final String? address;
   final int? vsize;
+  String? pullPaymentId;
 
   get isConfirmed {
     /// if the tx is a pending transaction, the date will be based on the time the tx was created
@@ -77,12 +78,21 @@ class Transaction extends Comparable {
 
   int get amount => received - sent;
 
-  Transaction(this.memo, this.txId, this.date, this.fee, this.received,
-      this.sent, this.blockHeight, this.address,
-      {this.type = TransactionType.normal,
-      this.outputs,
-      this.inputs,
-      this.vsize});
+  Transaction(
+    this.memo,
+    this.txId,
+    this.date,
+    this.fee,
+    this.received,
+    this.sent,
+    this.blockHeight,
+    this.address, {
+    this.type = TransactionType.normal,
+    this.outputs,
+    this.inputs,
+    this.vsize,
+    this.pullPaymentId,
+  });
 
   // Serialisation
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -125,6 +135,10 @@ class Transaction extends Comparable {
     }
 
     return other.date.compareTo(date);
+  }
+
+  void setPullPaymentId(String? newPullPaymentId) {
+    pullPaymentId = newPullPaymentId;
   }
 }
 

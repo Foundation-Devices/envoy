@@ -7,11 +7,12 @@ import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_info.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_fail.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading_payout.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_reedem_success.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class BtcPayDialog extends StatelessWidget {
   final BtcPayVoucher voucher;
@@ -23,7 +24,7 @@ class BtcPayDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final PageController controller = PageController();
     return Container(
-      width: MediaQuery.of(context).size.width * 0.75,
+      width: MediaQuery.of(context).size.width * 0.85,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius:
@@ -34,7 +35,11 @@ class BtcPayDialog extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         children: [
           BtcPayLoadingModal(voucher: voucher, controller: controller),
-          BtcPayInfo(voucher: voucher, controller: controller),
+          BtcPayInfo(
+            voucher: voucher,
+            controller: controller,
+            account: account,
+          ),
           BtcPayLoadingPayout(
               voucher: voucher, controller: controller, account: account),
           BtcPayFail(
@@ -49,14 +54,14 @@ class BtcPayDialog extends StatelessWidget {
 
 Container loadingSpinner(BuildContext context) {
   return Container(
-    height: MediaQuery.of(context).size.width * 0.75,
+    height: MediaQuery.of(context).size.width * 0.85,
     child: Center(
       child: SizedBox(
-        height: 60,
-        width: 60,
+        height: EnvoySpacing.xl,
+        width: EnvoySpacing.xl,
         child: CircularProgressIndicator(
-          color: EnvoyColors.teal,
-          backgroundColor: EnvoyColors.greyLoadingSpinner,
+          color: EnvoyColors.tealLight,
+          backgroundColor: EnvoyColors.gray100,
           strokeWidth: 4.71,
         ),
       ),

@@ -234,10 +234,9 @@ Future prunePendingTransactions(
           .addTxNote("BTCPay voucher", actualBtcPayTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
+      actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
     });
   }
-
-
 
   //prune pending transactions
   // this includes pending dummy transactions and RBF pending transactions
