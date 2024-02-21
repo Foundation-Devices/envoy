@@ -50,13 +50,61 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  // skipped getter for the '\$' key
+
+  // skipped getter for the '0.12 345 678' key
+
+  // skipped getter for the '30,493.93' key
+
   // skipped getter for the ':' key
+
+  /// `200,000`
+  String get Balance {
+    return Intl.message(
+      '200,000',
+      name: 'Balance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boost`
+  String get Boost {
+    return Intl.message(
+      'Boost',
+      name: 'Boost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Informational text' key
+
+  /// `Label`
+  String get Label {
+    return Intl.message(
+      'Label',
+      name: 'Label',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `OK`
   String get OK {
     return Intl.message(
       'OK',
       name: 'OK',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `$50.31`
+  String get Secondary {
+    return Intl.message(
+      '\$50.31',
+      name: 'Secondary',
       desc: '',
       args: [],
     );
@@ -432,6 +480,16 @@ class S {
     );
   }
 
+  /// `Redeem`
+  String get azteco_redeem_modal_cta1 {
+    return Intl.message(
+      'Redeem',
+      name: 'azteco_redeem_modal_cta1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unable to Redeem`
   String get azteco_redeem_modal_fail_heading {
     return Intl.message(
@@ -582,6 +640,76 @@ class S {
     );
   }
 
+  /// `This voucher expired on {period}.\n\n\nPlease contact the issuer with any voucher-related questions.`
+  String btcpay_connection_modal_expired_subheading(Object period) {
+    return Intl.message(
+      'This voucher expired on $period.\n\n\nPlease contact the issuer with any voucher-related questions.',
+      name: 'btcpay_connection_modal_expired_subheading',
+      desc: '',
+      args: [period],
+    );
+  }
+
+  /// `Voucher Expired`
+  String get btcpay_connection_modal_fail_heading {
+    return Intl.message(
+      'Voucher Expired',
+      name: 'btcpay_connection_modal_fail_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is unable to connect with the issuer's BTCPay store.\n\nPlease contact the issuer or try again later.`
+  String get btcpay_connection_modal_fail_subheading {
+    return Intl.message(
+      'Envoy is unable to connect with the issuer\'s BTCPay store.\n\nPlease contact the issuer or try again later.',
+      name: 'btcpay_connection_modal_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.`
+  String get btcpay_connection_modal_onchainOnly_subheading {
+    return Intl.message(
+      'The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.',
+      name: 'btcpay_connection_modal_onchainOnly_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description:`
+  String get btcpay_redeem_modal_description {
+    return Intl.message(
+      'Description:',
+      name: 'btcpay_redeem_modal_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name:`
+  String get btcpay_redeem_modal_name {
+    return Intl.message(
+      'Name:',
+      name: 'btcpay_redeem_modal_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Title:`
+  String get btcpay_redeem_modal_title {
+    return Intl.message(
+      'Title:',
+      name: 'btcpay_redeem_modal_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Coin Locked`
   String get card_coin_locked {
     return Intl.message(
@@ -712,10 +840,10 @@ class S {
     );
   }
 
-  /// `Selected amount`
+  /// `Selected Amount`
   String get coincontrol_edit_transaction_selectedAmount {
     return Intl.message(
-      'Selected amount',
+      'Selected Amount',
       name: 'coincontrol_edit_transaction_selectedAmount',
       desc: '',
       args: [],
@@ -954,10 +1082,10 @@ class S {
     );
   }
 
-  /// `Updating your fee may have changed\nyour coin selection. Please review.`
+  /// ` Updating your fee may have changed\nyour coin selection. Please review.`
   String get coincontrol_tx_detail_feeChange_information {
     return Intl.message(
-      'Updating your fee may have changed\nyour coin selection. Please review.',
+      ' Updating your fee may have changed\nyour coin selection. Please review.',
       name: 'coincontrol_tx_detail_feeChange_information',
       desc: '',
       args: [],
@@ -1214,40 +1342,70 @@ class S {
     );
   }
 
-  /// `Date`
+  /// `Boosted Fees`
   String get coindetails_overlay_date {
     return Intl.message(
-      'Date',
+      'Boosted Fees',
       name: 'coindetails_overlay_date',
       desc: '',
       args: [],
     );
   }
 
-  /// `COIN DETAILS`
+  /// `transaction details`
   String get coindetails_overlay_heading {
     return Intl.message(
-      'COIN DETAILS',
+      'transaction details',
       name: 'coindetails_overlay_heading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Note`
+  /// `Cannot Boost Transaction`
+  String get coindetails_overlay_noBoostNoFunds_heading {
+    return Intl.message(
+      'Cannot Boost Transaction',
+      name: 'coindetails_overlay_noBoostNoFunds_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again.`
+  String get coindetails_overlay_noBoostNoFunds_subheading {
+    return Intl.message(
+      'This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again.',
+      name: 'coindetails_overlay_noBoostNoFunds_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
   String get coindetails_overlay_notes {
     return Intl.message(
-      'Note',
+      'Notes',
       name: 'coindetails_overlay_notes',
       desc: '',
       args: [],
     );
   }
 
-  /// `Status`
+  /// `Payment ID`
+  String get coindetails_overlay_paymentID {
+    return Intl.message(
+      'Payment ID',
+      name: 'coindetails_overlay_paymentID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmation in ~0.5h`
   String get coindetails_overlay_status {
     return Intl.message(
-      'Status',
+      'Confirmation in ~0.5h',
       name: 'coindetails_overlay_status',
       desc: '',
       args: [],
@@ -4288,6 +4446,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'nd doesn\'t leave a bi' key
+
   /// `Connect Passport\nwith Envoy`
   String get pair_existing_device_intro_heading {
     return Intl.message(
@@ -4828,6 +4988,16 @@ class S {
     );
   }
 
+  /// `The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. `
+  String get replaceByFee_boost_chosenFeeAddCoinsWarning {
+    return Intl.message(
+      'The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ',
+      name: 'replaceByFee_boost_chosenFeeAddCoinsWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boosting transaction`
   String get replaceByFee_boost_confirm_heading {
     return Intl.message(
@@ -4843,6 +5013,16 @@ class S {
     return Intl.message(
       'Your transaction could not be boosted',
       name: 'replaceByFee_boost_fail_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review Coin Selection`
+  String get replaceByFee_boost_reviewCoinSelection {
+    return Intl.message(
+      'Review Coin Selection',
+      name: 'replaceByFee_boost_reviewCoinSelection',
       desc: '',
       args: [],
     );
@@ -4983,6 +5163,16 @@ class S {
     return Intl.message(
       'Increase the fee attached to your transaction to speed up confirmation time.',
       name: 'replaceByFee_coindetails_overlay_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required to Boost`
+  String get replaceByFee_edit_transaction_requiredAmount {
+    return Intl.message(
+      'Required to Boost',
+      name: 'replaceByFee_edit_transaction_requiredAmount',
       desc: '',
       args: [],
     );
@@ -5293,6 +5483,16 @@ class S {
     return Intl.message(
       'This might a take few seconds',
       name: 'stalls_before_sending_tx_scanning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Tag Name`
+  String get tagDetails_EditTagName {
+    return Intl.message(
+      'Edit Tag Name',
+      name: 'tagDetails_EditTagName',
       desc: '',
       args: [],
     );

@@ -7,8 +7,10 @@ import 'dart:io';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
+import 'package:envoy/business/btcPay_voucher.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
@@ -33,7 +35,8 @@ enum ScannerType {
   tx,
   nodeUrl,
   seed,
-  azteco
+  azteco,
+  btcPay,
 }
 
 final SnackBar invalidAddressSnackbar = SnackBar(
@@ -230,6 +233,15 @@ class _ScannerPageState extends State<ScannerPage> {
         _navigator.pop();
         showEnvoyDialog(
             context: context, dialog: AztecoDialog(voucher, widget.account!));
+        return;
+      }
+    }
+    if (widget._acceptableTypes.contains(ScannerType.btcPay)) {
+      if (BtcPayVoucher.isVoucher(code)) {
+        final voucher = BtcPayVoucher(code);
+        Navigator.of(context).pop();
+        showEnvoyDialog(
+            context: context, dialog: BtcPayDialog(voucher, widget.account!));
         return;
       }
     }
