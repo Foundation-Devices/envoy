@@ -96,12 +96,20 @@ class _AccountCardState extends ConsumerState<AccountCard>
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return IconButton(
-                  onPressed: () {
-                    HomePageState.of(context)?.toggleOptions();
-                  },
-                  icon: Icon(
-                      menuVisible ? Icons.close : Icons.more_horiz_outlined));
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  HomePageState.of(context)?.toggleOptions();
+                },
+                child: Container(
+                  height: 55,
+                  width: 55,
+                  color: Colors.transparent,
+                  child: Icon(
+                    menuVisible ? Icons.close : Icons.more_horiz_outlined,
+                  ),
+                ),
+              );
             },
           ));
 
@@ -343,7 +351,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
           child: StatefulBuilder(builder: (c, s) {
             return ListView.builder(
               //Space for the white gradient shadow at the bottom
-              padding: EdgeInsets.only(bottom: 120),
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
               physics: BouncingScrollPhysics(),
               controller: _scrollController,
               itemCount: transactions.length,
@@ -585,7 +593,15 @@ class TransactionListTile extends StatelessWidget {
           EnvoyIcons txIcon =
               transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
           if (cancelState != null) {
-            txIcon = EnvoyIcons.close;
+            if (!transaction.isConfirmed) {
+              txIcon = EnvoyIcons.close;
+            } else if (cancelState.newTxId == transaction.txId) {
+              txIcon = EnvoyIcons.close;
+            } else {
+              txIcon = transaction.amount < 0
+                  ? EnvoyIcons.spend
+                  : EnvoyIcons.receive;
+            }
           } else if (isBoosted == true) {
             txIcon = EnvoyIcons.rbf_boost;
           }
@@ -625,7 +641,7 @@ class TransactionListTile extends StatelessWidget {
           String txTitle = transaction.amount < 0
               ? S().activity_sent
               : S().activity_received;
-          TxCancelState? cancelState =
+          RBFState? cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
           if (cancelState != null) {
             if (cancelState.originalTxId == transaction.txId) {

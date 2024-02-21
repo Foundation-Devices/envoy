@@ -26,12 +26,14 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "_": MessageLookupByLibrary.simpleMessage("Create New Envoy Backup"),
+        "_": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
         "about_privacyPolicy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "about_show": MessageLookupByLibrary.simpleMessage("Show"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Terms of Use"),
         "account_details_filter_tags_sortBy":
@@ -94,8 +96,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
-        "azteco_redeem_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Redeem"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Unable to Redeem"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -173,6 +173,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Show details"),
         "coincontrol_tx_detail_amount_to_sent":
             MessageLookupByLibrary.simpleMessage("Amount to send"),
+        "coincontrol_tx_detail_change":
+            MessageLookupByLibrary.simpleMessage("Change received"),
         "coincontrol_tx_detail_cta1":
             MessageLookupByLibrary.simpleMessage("Send Transaction"),
         "coincontrol_tx_detail_cta2":
@@ -215,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Some smaller coins have been excluded from this transaction. At the chosen fee rate, they cost more to include than they are worth."),
+        "coincontrol_tx_detail_no_change":
+            MessageLookupByLibrary.simpleMessage("No change"),
         "coincontrol_tx_detail_passport_cta2":
             MessageLookupByLibrary.simpleMessage("Cancel Transaction"),
         "coincontrol_tx_detail_passport_subheading":
@@ -240,7 +244,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_confirmation":
             MessageLookupByLibrary.simpleMessage("Confirmation in"),
         "coindetails_overlay_confirmationIn":
-            MessageLookupByLibrary.simpleMessage("Confirmation in"),
+            MessageLookupByLibrary.simpleMessage("Confirms in"),
+        "coindetails_overlay_confirmationIn_day":
+            MessageLookupByLibrary.simpleMessage("day"),
+        "coindetails_overlay_confirmationIn_days":
+            MessageLookupByLibrary.simpleMessage("days"),
+        "coindetails_overlay_confirmationIn_month":
+            MessageLookupByLibrary.simpleMessage("month"),
+        "coindetails_overlay_confirmationIn_week":
+            MessageLookupByLibrary.simpleMessage("week"),
+        "coindetails_overlay_confirmationIn_weeks":
+            MessageLookupByLibrary.simpleMessage("weeks"),
+        "coindetails_overlay_confirmation_boost":
+            MessageLookupByLibrary.simpleMessage("Boost"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Date"),
         "coindetails_overlay_heading":
@@ -251,6 +267,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Status"),
         "coindetails_overlay_status_confirmed":
             MessageLookupByLibrary.simpleMessage("Confirmed"),
+        "coindetails_overlay_status_pending":
+            MessageLookupByLibrary.simpleMessage("Pending"),
         "coindetails_overlay_tag": MessageLookupByLibrary.simpleMessage("Tag"),
         "coindetails_overlay_transactionID":
             MessageLookupByLibrary.simpleMessage("Transaction ID"),
@@ -268,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "component_next": MessageLookupByLibrary.simpleMessage("Next"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_save": MessageLookupByLibrary.simpleMessage("Save"),
@@ -590,13 +609,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Biometric authentication temporarily disabled. Please lock and unlock your screen to re-enable."),
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Biometric authentication temporarily disabled. Please wait 30 seconds and try again."),
+                "Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Results"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Search..."),
+            MessageLookupByLibrary.simpleMessage("Passport"),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -646,6 +665,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_recovery_fail_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Apple account and that you’ve restored your latest iCloud backup."),
+        "magic_setup_recovery_retry_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Recovering your Envoy wallet"),
         "magic_setup_send_backup_to_envoy_server_heading":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
         "magic_setup_send_backup_to_envoy_server_subheading":
@@ -737,6 +759,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy will ask you some questions to verify you correctly recorded your seed."),
+        "manual_setup_generate_seed_write_words_24_heading":
+            MessageLookupByLibrary.simpleMessage("Write Down These 24 Words"),
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Write Down These 12 Words"),
         "manual_setup_import_backup_CTA1":
@@ -1002,12 +1026,20 @@ class MessageLookup extends MessageLookupByLibrary {
             "To recover your Envoy wallet, follow these simple instructions."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Boosting transaction"),
+        "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
+            "Your transaction could not be boosted"),
+        "replaceByFee_boost_success_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction has been boosted"),
         "replaceByFee_boost_tx_boostFee":
             MessageLookupByLibrary.simpleMessage("Boost Fee"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be boosted"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Canceling transaction"),
+        "replaceByFee_cancel_fail_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction could not be canceled"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
             MessageLookupByLibrary.simpleMessage("Cancelation Fee"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
@@ -1017,6 +1049,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet."),
+        "replaceByFee_cancel_success_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your transaction has been canceled"),
+        "replaceByFee_cancel_success_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Boost"),
         "replaceByFee_coindetails_overlay_modal_heading":
@@ -1024,6 +1062,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Increase the fee attached to your transaction to speed up confirmation time."),
+        "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_amount_enter_valid_address":

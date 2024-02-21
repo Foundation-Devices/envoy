@@ -169,7 +169,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     setState(() {
       Set<int> _randomIndexes = Set();
       while (_randomIndexes.length < 4) {
-        _randomIndexes.add(random.nextInt(12));
+        _randomIndexes.add(random.nextInt(widget.seed.length));
       }
       List<int> _seedIndexes = _randomIndexes.toList();
       _puzzleOptions = List.generate(4, (index) {

@@ -199,8 +199,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                         height: EnvoySpacing.medium1,
                       ),
                       Text(
-                        "Are you sure you want to disconnect Passport? This will remove the device from Envoy alongside any connected accounts.",
-                        // TODO: FIGMA
+                        S().manage_device_deletePassportWarning,
                         style: EnvoyTypography.info,
                         textAlign: TextAlign.center,
                       ),

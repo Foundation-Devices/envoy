@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -21,7 +20,6 @@ import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
@@ -126,21 +124,6 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
-  pendingSync(Account account) async {
-    final pendingTxs = await EnvoyStorage()
-        .getPendingTxs(account.id!, TransactionType.pending);
-
-    if (pendingTxs.isEmpty) return;
-
-    for (var pendingTx in pendingTxs) {
-      account.wallet.transactions.where((tx) {
-        return tx.txId == pendingTx.txId;
-      }).forEach((txToRemove) {
-        EnvoyStorage().deletePendingTx(pendingTx.txId);
-      });
-    }
-  }
-
   Future<Account> _syncAccount(Account account) async {
     bool? changed = null;
     int port = Settings().getPort(account.wallet.network);
@@ -171,9 +154,6 @@ class AccountManager extends ChangeNotifier {
 
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
-
-      aztecoSync(account);
-      pendingSync(account);
     }
     ;
 
@@ -239,12 +219,18 @@ class AccountManager extends ChangeNotifier {
       int alreadyPairedAccountsCount = 0;
 
       newAccountsLoop:
-      for (var newAccount in newAccounts) {
+      for (var (index, newAccount) in newAccounts.indexed) {
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {
+            if (account.name != newAccount.name) {
+              renameAccount(account, newAccount.name);
+            }
             // Don't add this one
             alreadyPairedAccountsCount++;
+
+            // But add the existing one to the list in case user wants to verify address again
+            newAccounts[index] = account;
             continue newAccountsLoop;
           }
         }
@@ -301,6 +287,9 @@ class AccountManager extends ChangeNotifier {
     // Check if account already present
     for (var account in accounts) {
       if (account.wallet.name == json["xpub"].toString()) {
+        if (account.name != json["acct_name"].toString()) {
+          renameAccount(account, json["acct_name"].toString());
+        }
         throw AccountAlreadyPaired();
       }
     }

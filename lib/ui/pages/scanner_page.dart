@@ -372,22 +372,25 @@ class _ScannerPageState extends State<ScannerPage> {
     return false;
   }
 
-  void _binaryValidated(Binary binary) {
-    AccountManager().addPassportAccounts(binary).catchError((_) {
+  void _binaryValidated(Binary binary) async {
+    Account? pairedAccount = null;
+    try {
+      pairedAccount = await AccountManager().addPassportAccounts(binary);
+    } on AccountAlreadyPaired catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
       ));
-      return null;
-    }, test: (e) => e is AccountAlreadyPaired).then((account) {
-      if (account == null) {
-        OnboardingPage.popUntilHome(context);
-      } else {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          return SingleWalletPairSuccessPage(account.wallet);
-        }));
-      }
-    });
+      return;
+    }
+
+    if (pairedAccount == null) {
+      OnboardingPage.popUntilHome(context);
+    } else {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) {
+        return SingleWalletPairSuccessPage(pairedAccount!.wallet);
+      }));
+    }
   }
 }
 

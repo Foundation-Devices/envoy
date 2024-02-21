@@ -109,7 +109,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
                   Padding(
                     padding: const EdgeInsets.only(top: 4 * 4),
                     child: EnvoyButton(
-                      S().azteco_redeem_modal_cta1,
+                      S().component_redeem,
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {
                         widget.controller.nextPage(

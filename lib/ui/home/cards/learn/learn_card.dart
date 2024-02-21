@@ -66,6 +66,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                   Container(
                     width: MediaQuery.of(context).size.width -
                         (EnvoySpacing.medium2 + EnvoySpacing.xl),
+                    height: EnvoySpacing.medium3,
                     child: EnvoySearch(
                         filterSearchResults: (text) {
                           setState(() {
@@ -95,20 +96,20 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           });
                     },
                     child: Container(
-                        height: EnvoySpacing.large1,
-                        width: EnvoySpacing.large1,
+                        height: EnvoySpacing.medium3,
+                        width: EnvoySpacing.medium3,
                         decoration: BoxDecoration(
                             color: learnFilterState.contains(LearnFilters.All)
                                 ? EnvoyColors.surface2
                                 : EnvoyColors.accentPrimary,
                             shape: BoxShape.circle),
                         child: Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.small),
+                          padding: const EdgeInsets.all(EnvoySpacing.xs),
                           child: EnvoyIcon(
                             EnvoyIcons.filter,
                             color: learnFilterState.contains(LearnFilters.All)
                                 ? EnvoyColors.textTertiary
-                                : EnvoyColors.textPrimaryInverse,
+                                : EnvoyColors.accentPrimary,
                           ),
                         )),
                   ),
@@ -169,7 +170,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     ),
                   ),
                   Container(
-                      height: 250.0,
+                      height: 270.0,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: blogs.length,
