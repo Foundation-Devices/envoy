@@ -15,6 +15,7 @@
         android:localeConfig="@xml/locales_config"
         android:requestLegacyExternalStorage="true"
         android:restoreAnyVersion="true"
+        tools:replace="android:allowBackup"
         tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"

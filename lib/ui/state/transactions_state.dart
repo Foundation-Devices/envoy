@@ -206,6 +206,10 @@ Future prunePendingTransactions(
       .where((element) => element.type == TransactionType.btcPay)
       .toList();
 
+  List<Transaction> ramp = newTxList
+      .where((element) => element.type == TransactionType.ramp)
+      .toList();
+
   if (pending.isEmpty) return;
 
   //prune azteco transactions
@@ -235,6 +239,19 @@ Future prunePendingTransactions(
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
       actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
+    });
+  }
+  for (var pendingTx in ramp) {
+    transactions
+        .where((tx) => tx.outputs!.contains(pendingTx.address))
+        .forEach((actualRampTx) {
+      if (kDebugMode) {
+        print("Pruning Ramp tx: ${actualRampTx.txId}");
+      }
+      EnvoyStorage()
+          .addTxNote("Ramp transaction", actualRampTx.txId); // TODO: FIGMA
+      EnvoyStorage().deleteTxNote(pendingTx.address!);
+      EnvoyStorage().deletePendingTx(pendingTx.address!);
     });
   }
 
