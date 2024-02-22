@@ -15,6 +15,7 @@ import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -181,8 +182,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     builder: (context, value, child) {
                                       return SelectableText(
                                         "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
-                                        style: trailingTextStyle?.copyWith(
-                                            color: EnvoyColors.accentPrimary),
+                                        style: EnvoyTypography.info.copyWith(
+                                            color: EnvoyColors.textSecondary),
                                         textAlign: TextAlign.end,
                                         maxLines: 4,
                                         minLines: 1,
