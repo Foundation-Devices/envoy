@@ -58,64 +58,53 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-          width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 520),
-          padding: EdgeInsets.all(EnvoySpacing.small),
-          child: Stack(
-            fit: StackFit.passthrough,
-            children: [
-              Align(
-                alignment: Alignment(1.0, -1.0),
-                child: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                  Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 68,
-                    width: 68,
-                  ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                  Text(
-                    S().change_output_from_multiple_tags_modal_heading,
-                    style: EnvoyTypography.body.copyWith(
-                      fontSize: 20,
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                  Expanded(
-                      child: Container(
-                    child: PageTransitionSwitcher(
-                      duration: Duration(milliseconds: 300),
-                      transitionBuilder:
-                          (child, animation, secondaryAnimation) {
-                        return SharedAxisTransition(
-                          animation: animation,
-                          secondaryAnimation: secondaryAnimation,
-                          fillColor: Colors.transparent,
-                          transitionType: SharedAxisTransitionType.vertical,
-                          child: child,
-                        );
-                      },
-                      child: !showTagForm
-                          ? _tagSubtitle(context)
-                          : _tagWidget(context),
-                    ),
-                  ))
-                ],
-              ),
-            ],
-          )),
+    return Container(
+      width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+      padding: EdgeInsets.all(EnvoySpacing.small),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Align(
+            alignment: Alignment(1.0, -1.0),
+            child: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Image.asset(
+            "assets/exclamation_icon.png",
+            height: 68,
+            width: 68,
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Text(
+            S().change_output_from_multiple_tags_modal_heading,
+            style: EnvoyTypography.body.copyWith(
+              fontSize: 20,
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Container(
+            child: PageTransitionSwitcher(
+              duration: Duration(milliseconds: 300),
+              transitionBuilder: (child, animation, secondaryAnimation) {
+                return SharedAxisTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  fillColor: Colors.transparent,
+                  transitionType: SharedAxisTransitionType.vertical,
+                  child: child,
+                );
+              },
+              child: !showTagForm ? _tagSubtitle(context) : _tagWidget(context),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -285,6 +274,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               textAlign: TextAlign.center,
             ),
           ),
+          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
