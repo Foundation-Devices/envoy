@@ -70,7 +70,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
   }
 }
 
-class CoinItemWidget extends StatelessWidget {
+class CoinItemWidget extends ConsumerWidget {
   final CoinTag tag;
   final bool isInListScreen;
 
@@ -78,7 +78,7 @@ class CoinItemWidget extends StatelessWidget {
       {super.key, required this.tag, this.isInListScreen = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     TextStyle _textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
@@ -90,9 +90,10 @@ class CoinItemWidget extends StatelessWidget {
         ? Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
     double cardRadius = 26;
+    double extraSpace = getMessage(tag, ref).length < 50 ? 0.0 : 14.0;
 
     return Container(
-      height: 108,
+      height: 108 + extraSpace,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
         border:
