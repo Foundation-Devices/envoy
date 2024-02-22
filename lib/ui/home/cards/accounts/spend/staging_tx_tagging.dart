@@ -61,7 +61,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
     return SingleChildScrollView(
       child: Container(
           width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 520),
+          height: (MediaQuery.of(context).size.height * 0.55).clamp(270, 420),
           padding: EdgeInsets.all(EnvoySpacing.small),
           child: Stack(
             fit: StackFit.passthrough,
