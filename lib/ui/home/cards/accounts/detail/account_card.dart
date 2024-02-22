@@ -51,6 +51,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/ramp_widget_test.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -163,6 +164,20 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     HomePageAccountsState(HomePageAccountsNavigationState.list);
               }),
             ),
+            if (account.wallet.network != Network.Testnet && rampApiKey != "")
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => runRamp(account)),
+                      );
+                    },
+                    child: Text("Buy Bitcoin via Ramp")),
+              ),
             AnimatedSwitcher(
               duration: Duration(milliseconds: 200),
               child: (transactions.isNotEmpty || txFiltersEnabled)
@@ -575,6 +590,11 @@ class TransactionListTile extends StatelessWidget {
     if (transaction.type == TransactionType.btcPay)
       return Text(
         "Pending BTCPay Voucher", // TODO: Figma
+        style: _transactionTextStyleInfo,
+      );
+    if (transaction.type == TransactionType.ramp)
+      return Text(
+        "Pending Ramp transaction", // TODO: Figma
         style: _transactionTextStyleInfo,
       );
 

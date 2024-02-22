@@ -24,7 +24,7 @@ const dustAmount = 546;
 
 enum Network { Mainnet, Testnet, Signet, Regtest }
 
-enum TransactionType { normal, azteco, pending, btcPay }
+enum TransactionType { normal, azteco, pending, btcPay, ramp }
 
 enum WalletType { witnessPublicKeyHash, taproot, superWallet }
 

@@ -395,11 +395,43 @@ packages:
       url: "https://github.com/foundation-devices/flutter_html.git"
     source: git
     version: "3.0.0-beta.2"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      sha256: e76db45e04af231d3b2b1832bb5a624ad895b64fec3d0ca35a514daa19f16743
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.0.0"
+  flutter_local_notifications_linux:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_linux
+      sha256: "6af440e3962eeab8459602c309d7d4ab9e62f05d5cfe58195a28f846a0b5d523"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      sha256: "5ec1feac5f7f7d9266759488bc5f76416152baba9aa1b26fe572246caa00d1ab"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_platform_widgets:
+    dependency: "direct main"
+    description:
+      name: flutter_platform_widgets
+      sha256: "4970c211af1dad0a161e6379d04de2cace80283da0439f2f87d31a541f9b2b84"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.2"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -998,6 +1030,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  ramp_flutter:
+    dependency: "direct main"
+    description:
+      name: ramp_flutter
+      sha256: "7ef189f4e84882ad3c1cb4fd4553fc1a5ccde30ab71a8c0cf5b31659471e2374"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   rive:
     dependency: "direct main"
     description:
@@ -1316,6 +1356,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.6.0"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      sha256: "57b35f6e8ef731f18529695bffc62f92c6189fac2e52c12d478dec1931afb66e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.0"
   timing:
     dependency: transitive
     description:
@@ -1519,10 +1567,10 @@ packages:
     dependency: transitive
     description:
       name: xdg_directories
-      sha256: "589ada45ba9e39405c198fe34eb0f607cddb2108527e658136120892beac46d2"
+      sha256: bd512f03919aac5f1313eb8249f223bacf4927031bf60b02601f81f687689e86
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "0.2.0+3"
   xml:
     dependency: transitive
     description:
