@@ -35,7 +35,6 @@ use std::ptr::null_mut;
 
 use crate::electrum_client::Client;
 use crate::miniscript::Segwitv0;
-use crate::util::get_address_string;
 use bdk::bitcoin::hashes::hex::ToHex;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
@@ -91,7 +90,7 @@ pub enum WalletType {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy)]
 pub enum OutputPath {
     External,
     Internal,
@@ -608,8 +607,11 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 outputs_iter
                     .clone()
                     .filter(|output| {
-                        util::get_output_path_type(&output.script_pubkey, &wallet)
-                            == OutputPath::External
+                        match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                            OutputPath::External => true,
+                            OutputPath::Internal => false,
+                            OutputPath::NotMine => false,
+                        }
                     })
                     .for_each(|o| {
                         ret = Address::from_script(&o.script_pubkey, wallet.network())
@@ -621,22 +623,32 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 outputs_iter
                     .clone()
                     .filter(|output| {
-                        util::get_output_path_type(&output.script_pubkey, &wallet)
-                            == OutputPath::NotMine
+                        match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                            OutputPath::External => false,
+                            OutputPath::Internal => false,
+                            OutputPath::NotMine => true,
+                        }
                     })
                     .for_each(|o| {
-                        ret = get_address_string(&o.script_pubkey, wallet.network());
+                        ret = Address::from_script(&o.script_pubkey, wallet.network())
+                            .unwrap()
+                            .to_string();
                     });
                 // if the address is empty, then check for self transfer
                 if ret.is_empty() {
                     outputs_iter
                         .clone()
                         .filter(|output| {
-                            util::get_output_path_type(&output.script_pubkey, &wallet)
-                                == OutputPath::External
+                            match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                                OutputPath::External => true,
+                                OutputPath::Internal => false,
+                                OutputPath::NotMine => false,
+                            }
                         })
                         .for_each(|o| {
-                            ret = get_address_string(&o.script_pubkey, wallet.network());
+                            ret = Address::from_script(&o.script_pubkey, wallet.network())
+                                .unwrap()
+                                .to_string();
                         });
                 }
             }
@@ -646,11 +658,16 @@ pub unsafe extern "C" fn wallet_get_transactions(
                 outputs_iter
                     .clone()
                     .filter(|output| {
-                        util::get_output_path_type(&output.script_pubkey, &wallet)
-                            == OutputPath::Internal
+                        match util::get_output_path_type(&output.script_pubkey, &wallet) {
+                            OutputPath::External => false,
+                            OutputPath::Internal => true,
+                            OutputPath::NotMine => false,
+                        }
                     })
                     .for_each(|o| {
-                        ret = get_address_string(&o.script_pubkey, wallet.network());
+                        ret = Address::from_script(&o.script_pubkey, wallet.network())
+                            .unwrap()
+                            .to_string();
                     });
             }
             ret
@@ -658,9 +675,14 @@ pub unsafe extern "C" fn wallet_get_transactions(
 
         let outputs: Vec<_> = outputs_iter
             .map(|o| {
-                CString::new(get_address_string(&o.script_pubkey, wallet.network()))
-                    .unwrap()
-                    .into_raw() as *const c_char
+                CString::new(
+                    match Address::from_script(&o.script_pubkey, wallet.network()) {
+                        Ok(a) => a.to_string(),
+                        Err(_) => "".to_string(), // These are OP_RETURNS
+                    },
+                )
+                .unwrap()
+                .into_raw() as *const c_char
             })
             .collect();
 
