@@ -295,8 +295,8 @@ class _SeedScreenState extends State<SeedScreen> {
                 Expanded(
                     child: Column(
                   children: [
-                    Icon(EnvoyIcons.exclamation_warning,
-                        color: EnvoyColors.darkCopper, size: 56),
+                    // Icon(EnvoyIcons.exclamation_warning,
+                    //     color: EnvoyColors.darkCopper, size: 56),
                     Padding(padding: EdgeInsets.all(12)),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),

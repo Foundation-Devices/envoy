@@ -210,7 +210,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 120),
-                    height: _showFullAddress ? 56 : 44,
+                    height: _showFullAddress ? 57 : 44,
                     child: _whiteContainer(
                       child: SingleChildScrollView(
                         child: AnimatedSize(

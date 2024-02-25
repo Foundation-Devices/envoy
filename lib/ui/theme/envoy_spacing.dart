@@ -10,6 +10,6 @@ class EnvoySpacing {
   static const double medium3 = 32;
   static const double large1 = 40;
   static const double large2 = 48;
-  static const double large3 = 56;
+  static const double large3 = 57;
   static const double xl = 64;
 }
