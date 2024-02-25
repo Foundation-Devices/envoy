@@ -54,7 +54,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
     bool _inEditMode = ref.watch(spendEditModeProvider);
 
-    Widget rightAction = _homeShellState?.rightAction ?? SizedBox.shrink();
+    Widget rightAction = _homeShellState?.rightAction ??
+        SizedBox(
+          height: 55,
+          width: 55,
+        );
     HomePageBackgroundState homePageDropState =
         ref.watch(homePageBackgroundProvider);
     String path = ref.watch(routePathProvider);
