@@ -47,8 +47,8 @@ class _AztecoRedeemModalFail extends State<AztecoRedeemModalFail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Image.asset("assets/exclamation_triangle.png",
-                //     scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
+                Image.asset("assets/exclamation_triangle.png",
+                    scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
                 Padding(
                   padding: const EdgeInsets.only(top: 5 * 4),
                   child: Text(

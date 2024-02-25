@@ -44,8 +44,8 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Image.asset("assets/trophy_icon.png",
-                //     scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
+                Image.asset("assets/trophy_icon.png",
+                    scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
                 Padding(
                   padding: const EdgeInsets.only(top: 5 * 4),
                   child: Text(

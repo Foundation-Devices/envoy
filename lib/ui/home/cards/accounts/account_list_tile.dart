@@ -144,23 +144,23 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Flexible(
-                            //   child: Column(
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       Text(
-                            //         account.name,
-                            //         style: _textStyleWallet,
-                            //       ),
-                            //       Text(
-                            //         Devices()
-                            //             .getDeviceName(account.deviceSerial),
-                            //         style: _textStyleWalletName,
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
+                            Flexible(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    account.name,
+                                    style: _textStyleWallet,
+                                  ),
+                                  Text(
+                                    Devices()
+                                        .getDeviceName(account.deviceSerial),
+                                    style: _textStyleWalletName,
+                                  ),
+                                ],
+                              ),
+                            ),
                             AccountBadge(account: account),
                           ],
                         ),
