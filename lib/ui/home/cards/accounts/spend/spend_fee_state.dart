@@ -72,7 +72,6 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   }
 
   Network network = account.wallet.network;
-  // Network network = Network.Mainnet;
 
   //with in 10 minutes
   double feeRateFast = Fees().fees[network]!.mempoolFastestRate;

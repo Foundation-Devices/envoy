@@ -76,9 +76,9 @@ class _TransactionsDetailsWidgetState
     if (minutes < 60) {
       confirmationTime = minutes.toString() + "m";
     } else if (minutes >= 60 && minutes < 120) {
-      confirmationTime = "~1h";
+      confirmationTime = "1h";
     } else {
-      confirmationTime = "~1day";
+      confirmationTime = "1 day"; // TODO: Figma
     }
 
     return S().coindetails_overlay_confirmationIn + " ~" + confirmationTime;
@@ -348,6 +348,7 @@ class _TransactionsDetailsWidgetState
                                 ),
                                 RBFPossible
                                     ? CoinTagListItem(
+                                        color: EnvoyColors.textTertiary,
                                         title: _getConfirmationTimeString(ref.watch(
                                             txEstimatedConfirmationTimeProvider(
                                                 Tuple(
@@ -356,7 +357,7 @@ class _TransactionsDetailsWidgetState
                                                         .network)))),
                                         icon: Icon(
                                           Icons.access_time,
-                                          color: Colors.black,
+                                          color: EnvoyColors.textTertiary,
                                           size: 16,
                                         ),
                                         trailing: TxRBFButton(
@@ -489,13 +490,16 @@ class _TransactionsDetailsWidgetState
   }
 
   Widget CoinTagListItem(
-      {required String title, required Widget icon, required Widget trailing}) {
+      {required String title,
+      required Widget icon,
+      required Widget trailing,
+      Color? color}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             flex: 3,
@@ -516,8 +520,8 @@ class _TransactionsDetailsWidgetState
                       ),
                       child: Text(
                         "$title",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.black, fontWeight: FontWeight.w600),
+                        style: EnvoyTypography.body
+                            .copyWith(color: color ?? EnvoyColors.textPrimary),
                       ),
                     ),
                   ),
