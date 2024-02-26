@@ -397,7 +397,7 @@ class _TransactionsDetailsWidgetState
                                     trailing: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
-                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Expanded(
@@ -499,43 +499,36 @@ class _TransactionsDetailsWidgetState
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
-            flex: 3,
-            child: Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 26,
-                    child: icon,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: EnvoySpacing.xs,
-                      ),
-                      child: Text(
-                        "$title",
-                        style: EnvoyTypography.body
-                            .copyWith(color: color ?? EnvoyColors.textPrimary),
-                      ),
+            flex: 4,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 26,
+                  child: icon,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: EnvoySpacing.xs,
+                    ),
+                    child: Text(
+                      "$title",
+                      style: EnvoyTypography.body
+                          .copyWith(color: color ?? EnvoyColors.textPrimary),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          Flexible(
-              flex: 4,
-              child: Container(
-                alignment: Alignment.centerRight,
-                child: trailing,
-              )),
+          Flexible(flex: 4, child: trailing),
         ],
       ),
     );
