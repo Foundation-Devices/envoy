@@ -299,22 +299,26 @@ class _TransactionsDetailsWidgetState
                                             end: showTxIdExpanded ? 1 : 0),
                                         duration: Duration(milliseconds: 200),
                                         builder: (context, value, child) {
-                                          return SelectableText(
-                                            "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
-                                            style: EnvoyTypography.info
-                                                .copyWith(
-                                                    color: EnvoyColors
-                                                        .textSecondary),
-                                            textAlign: TextAlign.end,
-                                            minLines: 1,
-                                            maxLines: 4,
-                                            onTap: () {
-                                              setState(() {
-                                                showTxIdExpanded =
-                                                    !showTxIdExpanded;
-                                                showAddressExpanded = false;
-                                              });
-                                            },
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: EnvoySpacing.small),
+                                            child: SelectableText(
+                                              "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
+                                              style: EnvoyTypography.info
+                                                  .copyWith(
+                                                      color: EnvoyColors
+                                                          .textPrimary),
+                                              textAlign: TextAlign.end,
+                                              minLines: 1,
+                                              maxLines: 4,
+                                              onTap: () {
+                                                setState(() {
+                                                  showTxIdExpanded =
+                                                      !showTxIdExpanded;
+                                                  showAddressExpanded = false;
+                                                });
+                                              },
+                                            ),
                                           );
                                         },
                                       )),
@@ -505,18 +509,18 @@ class _TransactionsDetailsWidgetState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            flex: 4,
+            flex: 5,
             child: Container(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 26,
+                  Padding(
+                    padding: const EdgeInsets.only(left: EnvoySpacing.xs),
                     child: icon,
                   ),
                   Expanded(
@@ -536,7 +540,7 @@ class _TransactionsDetailsWidgetState
             ),
           ),
           Flexible(
-              flex: 4,
+              flex: 6,
               child: Container(
                 alignment: Alignment.centerRight,
                 child: trailing,
