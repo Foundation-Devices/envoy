@@ -20,14 +20,16 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(tagName) =>
+  static String m0(period) =>
+      "This voucher expired on ${period}.\n\n\nPlease contact the issuer with any voucher-related questions.";
+
+  static String m1(tagName) =>
       "Your ${tagName} tag is now empty. Would you like to delete it?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "_": MessageLookupByLibrary.simpleMessage(
-            "https://github.com/Foundation-Devices/envoy"),
+        "_": MessageLookupByLibrary.simpleMessage("Add Node"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -96,6 +98,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
+        "azteco_redeem_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Redeem"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Unable to Redeem"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -125,6 +129,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Learn"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
+        "btcpay_connection_modal_expired_subheading": m0,
+        "btcpay_connection_modal_fail_heading":
+            MessageLookupByLibrary.simpleMessage("Voucher Expired"),
+        "btcpay_connection_modal_fail_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is unable to connect with the issuer\'s BTCPay store.\n\nPlease contact the issuer or try again later."),
+        "btcpay_connection_modal_onchainOnly_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator."),
+        "btcpay_redeem_modal_description":
+            MessageLookupByLibrary.simpleMessage("Description:"),
+        "btcpay_redeem_modal_name":
+            MessageLookupByLibrary.simpleMessage("Name:"),
+        "btcpay_redeem_modal_title":
+            MessageLookupByLibrary.simpleMessage("Title:"),
         "card_coin_locked": MessageLookupByLibrary.simpleMessage("Coin Locked"),
         "card_coin_selected":
             MessageLookupByLibrary.simpleMessage("Coin Selected"),
@@ -150,7 +169,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Required Amount"),
         "coincontrol_edit_transaction_selectedAmount":
-            MessageLookupByLibrary.simpleMessage("Selected amount"),
+            MessageLookupByLibrary.simpleMessage("Selected Amount"),
         "coincontrol_lock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Lock"),
         "coincontrol_lock_coin_modal_subheading":
@@ -203,7 +222,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Fee"),
         "coincontrol_tx_detail_feeChange_information":
             MessageLookupByLibrary.simpleMessage(
-                "Updating your fee may have changed\nyour coin selection. Please review."),
+                " Updating your fee may have changed\nyour coin selection. Please review."),
         "coincontrol_tx_detail_fee_custom":
             MessageLookupByLibrary.simpleMessage("Custom"),
         "coincontrol_tx_detail_fee_faster":
@@ -261,8 +280,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Date"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("COIN DETAILS"),
+        "coindetails_overlay_noBoostNoFunds_heading":
+            MessageLookupByLibrary.simpleMessage("Cannot Boost Transaction"),
+        "coindetails_overlay_noBoostNoFunds_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Note"),
+        "coindetails_overlay_paymentID":
+            MessageLookupByLibrary.simpleMessage("Payment ID"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Status"),
         "coindetails_overlay_status_confirmed":
@@ -329,7 +355,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Watch Later"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Secure your Bitcoin with Passport."),
-        "empty_tag_modal_subheading": m0,
+        "empty_tag_modal_subheading": m1,
         "envoy_account_tos_cta":
             MessageLookupByLibrary.simpleMessage("I Accept"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
@@ -639,12 +665,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_generate_envoy_key_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain."),
-        "magic_setup_generate_wallet_modal_android_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account."),
-        "magic_setup_generate_wallet_modal_ios_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account."),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -971,9 +991,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "privacy_privacyMode_improvedPrivacy":
-            MessageLookupByLibrary.simpleMessage("Improved\nPrivacy"),
+            MessageLookupByLibrary.simpleMessage("Improved Privacy"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Privacy mode"),
+        "privacy_privacyMode_torSuggestionOff":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
             "Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable."),
         "privacy_setting_add_node_modal_heading":
@@ -998,8 +1021,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "How would you like Envoy to connect to the Internet?"),
-        "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_qr_code_heading":
@@ -1024,10 +1045,15 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy will then automatically restore your Magic Backup"),
         "recovery_scenario_subheading": MessageLookupByLibrary.simpleMessage(
             "To recover your Envoy wallet, follow these simple instructions."),
+        "replaceByFee_boost_chosenFeeAddCoinsWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Boosting transaction"),
         "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
             "Your transaction could not be boosted"),
+        "replaceByFee_boost_reviewCoinSelection":
+            MessageLookupByLibrary.simpleMessage("Review Coin Selection"),
         "replaceByFee_boost_success_header":
             MessageLookupByLibrary.simpleMessage(
                 "Your transaction has been boosted"),
@@ -1062,6 +1088,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Increase the fee attached to your transaction to speed up confirmation time."),
+        "replaceByFee_edit_transaction_requiredAmount":
+            MessageLookupByLibrary.simpleMessage("Required to Boost"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
@@ -1132,6 +1160,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This might a take few seconds"),
+        "tagDetails_EditTagName":
+            MessageLookupByLibrary.simpleMessage("Edit Tag Name"),
         "tagSelection_example1":
             MessageLookupByLibrary.simpleMessage("Expenses"),
         "tagSelection_example2":

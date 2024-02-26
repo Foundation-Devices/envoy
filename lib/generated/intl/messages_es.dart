@@ -20,7 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(tagName) =>
+  static String m0(period) =>
+      "Este cupón caducó el ${period}. \n\n\nPonte en contacto con el emisor si tienes alguna pregunta relacionada con el cupón.";
+
+  static String m1(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -97,6 +100,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy no puede conectarse con Azteco.\n\nPor favor contacta con support@azte.co o inténtalo de nuevo más tarde."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DE CUPÓN"),
+        "azteco_redeem_modal_cta1":
+            MessageLookupByLibrary.simpleMessage("Canjear"),
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Error al Canjear"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
@@ -128,6 +133,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
+        "btcpay_connection_modal_expired_subheading": m0,
+        "btcpay_connection_modal_fail_heading":
+            MessageLookupByLibrary.simpleMessage("Cupón Caducado"),
+        "btcpay_connection_modal_fail_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy no puede conectarse con la tienda BTCPay del emisor.\n\nPonte en contacto con el emisor o vuelve a intentarlo más tarde."),
+        "btcpay_connection_modal_onchainOnly_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "El cupón escaneado no se creó con soporte onchain.\n\nPonte en contacto con el creador del cupón."),
+        "btcpay_redeem_modal_description":
+            MessageLookupByLibrary.simpleMessage("Descripción:"),
+        "btcpay_redeem_modal_name":
+            MessageLookupByLibrary.simpleMessage("Nombre:"),
+        "btcpay_redeem_modal_title":
+            MessageLookupByLibrary.simpleMessage("Título:"),
         "card_coin_locked":
             MessageLookupByLibrary.simpleMessage("Moneda Bloqueada"),
         "card_coin_selected":
@@ -265,8 +285,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Fecha"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALLES DE MONEDA"),
+        "coindetails_overlay_noBoostNoFunds_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Error al Impuslar Transacción"),
+        "coindetails_overlay_noBoostNoFunds_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Esto se debe a que no hay suficientes monedas confirmadas o desbloqueadas de donde elegir. \n\nDeja que las monedas pendientes se confirmen o desbloquea algunas monedas e inténtalo de nuevo."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Nota"),
+        "coindetails_overlay_paymentID":
+            MessageLookupByLibrary.simpleMessage("ID de pago"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Estado"),
         "coindetails_overlay_status_confirmed":
@@ -289,7 +317,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No volver a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
         "component_learnMore":
-            MessageLookupByLibrary.simpleMessage("Más Información"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
@@ -338,7 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ver Más Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Asegura tus Bitcoin con Passport."),
-        "empty_tag_modal_subheading": m0,
+        "empty_tag_modal_subheading": m1,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Acepto"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor, revise y acepte los Términos de Uso de Passport"),
@@ -650,12 +678,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_generate_envoy_key_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy está creando una semilla de cartera Bitcoin de forma segura, que se almacenará encriptada de extremo a extremo en tu llavero iCloud."),
-        "magic_setup_generate_wallet_modal_android_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "ADVERTENCIA\n\nAl crear una nueva Copia de Seguridad Mágica, se borrará cualquier Copia de Seguridad Mágica existente asociada a tu cuenta de Google."),
-        "magic_setup_generate_wallet_modal_ios_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "ADVERTENCIA\n\nAl crear una nueva Copia de Seguridad Mágica, se borrará cualquier Copia de Seguridad Mágica existente asociada a tu cuenta de iCloud."),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Restaurar con código QR"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -1003,6 +1025,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mejor Privacidad"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Modo de privacidad"),
+        "privacy_privacyMode_torSuggestionOff":
+            MessageLookupByLibrary.simpleMessage(
+                "La conexión de Envoy será más estable con Tor [[DESACTIVADO]]. Recomendado para nuevos usuarios."),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
             "Tor se [[ACTIVARÁ]] para mejorar la privacidad. Es posible que la conexión de Envoy no sea del todo estable."),
         "privacy_setting_add_node_modal_heading":
@@ -1027,8 +1052,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "¿Cómo te gustaría que Envoy se conectase a Internet?"),
-        "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "La conexión de Envoy será más estable con Tor [[DESACTIVADO]]. Recomendado para nuevos usuarios."),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Usar Dirección Taproot"),
         "receive_qr_code_heading":
@@ -1051,10 +1074,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "A continuación, Envoy restaurará automáticamente tu Copia de Seguridad Mágica"),
         "recovery_scenario_subheading": MessageLookupByLibrary.simpleMessage(
             "Para recuperar tu Cartera Envoy, sigue estas sencillas instrucciones."),
+        "replaceByFee_boost_chosenFeeAddCoinsWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "La tasa elegida sólo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá ninguna moneda bloqueada."),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Impulsando transacción"),
         "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
             "Tu transacción no ha podido ser impulsada"),
+        "replaceByFee_boost_reviewCoinSelection":
+            MessageLookupByLibrary.simpleMessage(
+                "Revisar Selección de Monedas"),
         "replaceByFee_boost_success_header":
             MessageLookupByLibrary.simpleMessage(
                 "Tu transacción ha sido impulsada"),
@@ -1089,6 +1118,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_coindetails_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Aumenta la tasa asociada a tu transacción para acelerar el tiempo de confirmación."),
+        "replaceByFee_edit_transaction_requiredAmount":
+            MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas."),
@@ -1158,6 +1189,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Esto puede tardar unos segundos"),
+        "tagDetails_EditTagName":
+            MessageLookupByLibrary.simpleMessage("Editar Nombre de Etiqueta"),
         "tagSelection_example1": MessageLookupByLibrary.simpleMessage("Gastos"),
         "tagSelection_example2":
             MessageLookupByLibrary.simpleMessage("Personal"),
@@ -1184,9 +1217,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "taproot_passport_dialog_heading":
             MessageLookupByLibrary.simpleMessage("Taproot en Passport"),
         "taproot_passport_dialog_later":
-            MessageLookupByLibrary.simpleMessage("Hacerlo Después"),
+            MessageLookupByLibrary.simpleMessage("Hazlo Más Tarde"),
         "taproot_passport_dialog_reconnect":
-            MessageLookupByLibrary.simpleMessage("Volver a conectar Passport"),
+            MessageLookupByLibrary.simpleMessage("Volver a Conectar Passport"),
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "Para habilitar una cuenta de Taproot en Passport, asegúrate de que estás ejecutando el firmware 2.3.0 o posterior y vuelve a conectar tu Passport."),
         "torToast_learnMore_retryTorConnection":
