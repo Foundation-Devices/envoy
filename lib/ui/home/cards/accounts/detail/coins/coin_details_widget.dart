@@ -40,6 +40,7 @@ class CoinDetailsWidget extends ConsumerStatefulWidget {
 class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
   bool showExpandedAddress = false;
   bool showExpandedTxId = false;
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -128,9 +129,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           borderRadius: BorderRadius.all(Radius.circular(18)),
                           color: Colors.white,
                         ),
-                        child: Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          runAlignment: WrapAlignment.spaceBetween,
+                        child: ListView(
+                          controller: _scrollController,
                           children: [
                             CoinTagListItem(
                               title: S().coindetails_overlay_address,
@@ -180,20 +180,24 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                         end: showExpandedTxId ? 1 : 0),
                                     duration: Duration(milliseconds: 200),
                                     builder: (context, value, child) {
-                                      return SelectableText(
-                                        "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
-                                        style: EnvoyTypography.info.copyWith(
-                                            color: EnvoyColors.textSecondary),
-                                        textAlign: TextAlign.end,
-                                        maxLines: 4,
-                                        minLines: 1,
-                                        onTap: () {
-                                          setState(() {
-                                            showExpandedTxId =
-                                                !showExpandedTxId;
-                                            showExpandedAddress = false;
-                                          });
-                                        },
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: SelectableText(
+                                          "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
+                                          style: EnvoyTypography.info.copyWith(
+                                              color: EnvoyColors.textPrimary),
+                                          textAlign: TextAlign.end,
+                                          maxLines: 4,
+                                          minLines: 1,
+                                          onTap: () {
+                                            setState(() {
+                                              showExpandedTxId =
+                                                  !showExpandedTxId;
+                                              showExpandedAddress = false;
+                                            });
+                                          },
+                                        ),
                                       );
                                     },
                                   )),
@@ -301,36 +305,50 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
   }
 
   Widget CoinTagListItem(
-      {required String title, required Widget icon, required Widget trailing}) {
+      {required String title,
+      required Widget icon,
+      required Widget trailing,
+      Color? color}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            flex: 1,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: icon,
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-                Text(
-                  "$title",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.w600),
-                ),
-              ],
+            flex: 5,
+            child: Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                    child: icon,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                      child: Text(
+                        "$title",
+                        style: EnvoyTypography.body
+                            .copyWith(color: color ?? EnvoyColors.textPrimary),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Expanded(
+          Flexible(
+              flex: 6,
               child: Container(
-            alignment: Alignment.centerRight,
-            child: trailing,
-          )),
+                alignment: Alignment.centerRight,
+                child: trailing,
+              )),
         ],
       ),
     );
