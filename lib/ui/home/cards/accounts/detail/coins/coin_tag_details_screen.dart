@@ -199,7 +199,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     final tag = widget.coinTag;
     final maxContainerHeight = MediaQuery.of(context).size.height * 0.50;
     double totalTagHeight = tag.coins.length == 1 ? 98 : 108;
-    double extraSpace = getMessage(tag, ref).length < 50 ? 0.0 : 14.0;
+    double textHeight =
+        (EnvoyTypography.info.height ?? 1.3) * EnvoyTypography.info.fontSize!;
+    double extraSpace = getMessage(tag, ref).length < 50 ? 0.0 : textHeight;
     double coinListHeight =
         (tag.coins.length * 38).toDouble().clamp(34, maxContainerHeight);
     if (widget.showCoins) {
