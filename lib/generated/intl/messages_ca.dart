@@ -28,13 +28,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "Balance": MessageLookupByLibrary.simpleMessage("200,000"),
-        "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
-        "Label": MessageLookupByLibrary.simpleMessage("Label"),
         "OK": MessageLookupByLibrary.simpleMessage("D\'ACORD"),
-        "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
-        "_": MessageLookupByLibrary.simpleMessage(
-            "https://github.com/Foundation-Devices/envoy"),
+        "_": MessageLookupByLibrary.simpleMessage("Add Node"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -181,7 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Import Requerit"),
         "coincontrol_edit_transaction_selectedAmount":
-            MessageLookupByLibrary.simpleMessage("Quantitat seleccionada"),
+            MessageLookupByLibrary.simpleMessage("Quantitat Seleccionada"),
         "coincontrol_lock_coin_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Bloqueja"),
         "coincontrol_lock_coin_modal_subheading":
@@ -687,12 +682,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_generate_envoy_key_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy està creant una clau segura per a la cartera de Bitcoin, que s\'emmagatzemarà encriptada d\'extrem a extrem en el teu Clauer d\'iCloud."),
-        "magic_setup_generate_wallet_modal_android_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account."),
-        "magic_setup_generate_wallet_modal_ios_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account."),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Recuperació amb codi QR"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -767,7 +756,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Canvia el nom del teu Passport"),
         "manualToggleOnSeed_toastHeading_failedText":
             MessageLookupByLibrary.simpleMessage(
-                "No es pot fer una còpia de seguretat. Siusplau, intenta-ho més tard."),
+                "No es pot fer còpia de seguretat. Intenta-ho més tard."),
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
                 "Això descartarà qualsevol canvi de selecció de monedes. Vols continuar?"),
@@ -1037,9 +1026,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Millor\nRendiment"),
         "privacy_privacyMode_improvedPrivacy":
-            MessageLookupByLibrary.simpleMessage("Privacitat\nMillorada"),
+            MessageLookupByLibrary.simpleMessage("Privacitat Millorada"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Mode de Privacitat"),
+        "privacy_privacyMode_torSuggestionOff":
+            MessageLookupByLibrary.simpleMessage(
+                "La connexió d\'Envoy serà fiable amb Tor activat [[APAGAT]]. Suggerit per a nous usuaris."),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
             "Tor s\'activarà [[ACTIVAT]] per millorar la privacitat. És possible que la connexió d\'Envoy no sigui eficient."),
         "privacy_setting_add_node_modal_heading":
@@ -1064,8 +1056,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Com t\'agradaria que Envoy es connectés a Internet?"),
-        "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "La connexió d\'Envoy serà fiable amb Tor activat [[APAGAT]]. Suggerit per a nous usuaris."),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage(
                 "Utilitzeu una Adreça Taproot"),
@@ -1102,7 +1092,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "La teva transacció s\'ha acelerat"),
         "replaceByFee_boost_tx_boostFee":
-            MessageLookupByLibrary.simpleMessage("Acelerar Transacció"),
+            MessageLookupByLibrary.simpleMessage("Impulsar la Transacción"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "La vostra transacció està a punt per ser impulsada"),
         "replaceByFee_cancel_confirm_heading":

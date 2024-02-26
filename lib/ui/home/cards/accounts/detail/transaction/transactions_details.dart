@@ -394,7 +394,7 @@ class _TransactionsDetailsWidgetState
                                     trailing: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
-                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Expanded(
@@ -535,16 +535,11 @@ class _TransactionsDetailsWidgetState
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          Flexible(
-              flex: 6,
-              child: Container(
-                alignment: Alignment.centerRight,
-                child: trailing,
-              )),
+          Flexible(flex: 4, child: trailing),
         ],
       ),
     );

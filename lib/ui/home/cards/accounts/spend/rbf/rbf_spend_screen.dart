@@ -35,6 +35,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:url_launcher/url_launcher.dart';
@@ -66,7 +67,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _checkInputsChanged();
       ref
           .read(spendTransactionProvider.notifier)
-          .setAmount(_originalTx.amount.abs());
+          .setAmount(_originalTx.amount.abs() - _originalTx.fee);
     });
   }
 
@@ -621,21 +622,22 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         }
       } catch (e) {}
       clearSpendState(ProviderScope.containerOf(context));
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
 
       String receiverAddress = widget.rbfSpendState.receiveAddress;
+
       await EnvoyStorage().addPendingTx(
         psbt.txid,
         account.id!,
         DateTime.now(),
         TransactionType.pending,
-        psbt.fee,
+        (_originalTx.amount.abs() - _originalTx.fee) + psbt.fee,
         psbt.fee,
         receiverAddress,
       );
-
+      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
+      _stateMachineController?.findInput<bool>("happy")?.change(true);
+      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      addHapticFeedback();
       await Future.delayed(Duration(milliseconds: 300));
       setState(() {
         broadcastProgress = BroadcastProgress.success;
@@ -649,6 +651,16 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         broadcastProgress = BroadcastProgress.failed;
       });
     }
+  }
+
+  bool hapticCalled = false;
+  void addHapticFeedback() async {
+    if (hapticCalled) return;
+    hapticCalled = true;
+    await Future.delayed(Duration(milliseconds: 700));
+    HapticFeedback.lightImpact();
+    await Future.delayed(Duration(milliseconds: 100));
+    HapticFeedback.mediumImpact();
   }
 
   Future _setFee(int fee, BuildContext context, bool customFee) async {

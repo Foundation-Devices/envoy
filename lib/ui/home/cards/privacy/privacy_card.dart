@@ -123,13 +123,13 @@ class PrivacyCardState extends State<PrivacyCard> {
                       ),
                       LinkText(
                           textAlign: TextAlign.start,
-                          text: _betterPerformance == true
-                              ? S().privacy_setting_perfomance_tor_off
+                          text: _betterPerformance
+                              ? S().privacy_privacyMode_torSuggestionOff
                               : S().privacy_privacyMode_torSuggestionOn,
                           textStyle: EnvoyTypography.info
                               .copyWith(color: EnvoyColors.textSecondary),
                           linkStyle: EnvoyTypography.info.copyWith(
-                              color: _betterPerformance == true
+                              color: _betterPerformance
                                   ? EnvoyColors.accentSecondary
                                   : EnvoyColors.accentPrimary)),
                       buildDivider(),

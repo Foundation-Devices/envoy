@@ -6,7 +6,7 @@ use crate::{
     serialize, Address, Client, OutPoint, OutputPath, PartiallySignedTransaction, Psbt,
     Socks5Config, Txid, UtxoList,
 };
-use bdk::bitcoin::Script;
+use bdk::bitcoin::{Network, Script};
 use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
 use bdk::database::BatchDatabase;
 use bdk::electrum_client::ConfigBuilder;
@@ -217,5 +217,12 @@ pub fn get_output_path_type<T: BatchDatabase>(
             },
         },
         Err(_) => OutputPath::NotMine,
+    }
+}
+
+pub fn get_address_string(script_pubkey: &Script, network: Network) -> String {
+    match Address::from_script(script_pubkey, network) {
+        Ok(a) => a.to_string(),
+        Err(_) => "".to_string(), // These are OP_RETURNS
     }
 }

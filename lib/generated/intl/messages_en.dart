@@ -28,13 +28,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "Balance": MessageLookupByLibrary.simpleMessage("200,000"),
-        "Boost": MessageLookupByLibrary.simpleMessage("Boost"),
-        "Label": MessageLookupByLibrary.simpleMessage("Label"),
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "Secondary": MessageLookupByLibrary.simpleMessage("\$50.31"),
-        "_": MessageLookupByLibrary.simpleMessage(
-            "https://github.com/Foundation-Devices/envoy"),
+        "_": MessageLookupByLibrary.simpleMessage("Add Node"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -282,20 +277,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_confirmation_boost":
             MessageLookupByLibrary.simpleMessage("Boost"),
         "coindetails_overlay_date":
-            MessageLookupByLibrary.simpleMessage("Boosted Fees"),
+            MessageLookupByLibrary.simpleMessage("Date"),
         "coindetails_overlay_heading":
-            MessageLookupByLibrary.simpleMessage("transaction details"),
+            MessageLookupByLibrary.simpleMessage("COIN DETAILS"),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage("Cannot Boost Transaction"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again."),
         "coindetails_overlay_notes":
-            MessageLookupByLibrary.simpleMessage("Notes"),
+            MessageLookupByLibrary.simpleMessage("Note"),
         "coindetails_overlay_paymentID":
             MessageLookupByLibrary.simpleMessage("Payment ID"),
         "coindetails_overlay_status":
-            MessageLookupByLibrary.simpleMessage("Confirmation in ~0.5h"),
+            MessageLookupByLibrary.simpleMessage("Status"),
         "coindetails_overlay_status_confirmed":
             MessageLookupByLibrary.simpleMessage("Confirmed"),
         "coindetails_overlay_status_pending":
@@ -670,12 +665,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_generate_envoy_key_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain."),
-        "magic_setup_generate_wallet_modal_android_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account."),
-        "magic_setup_generate_wallet_modal_ios_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account."),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -1002,9 +991,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
         "privacy_privacyMode_improvedPrivacy":
-            MessageLookupByLibrary.simpleMessage("Improved\nPrivacy"),
+            MessageLookupByLibrary.simpleMessage("Improved Privacy"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Privacy mode"),
+        "privacy_privacyMode_torSuggestionOff":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "privacy_privacyMode_torSuggestionOn": MessageLookupByLibrary.simpleMessage(
             "Tor will be turned [[ON]] for improved privacy. Envoy’s connection may be unreliable."),
         "privacy_setting_add_node_modal_heading":
@@ -1029,8 +1021,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "How would you like Envoy to connect to the Internet?"),
-        "privacy_setting_perfomance_tor_off": MessageLookupByLibrary.simpleMessage(
-            "Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users."),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_qr_code_heading":
