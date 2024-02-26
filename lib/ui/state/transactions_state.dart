@@ -273,10 +273,11 @@ Future prunePendingTransactions(
       final boostState = ref.read(RBFTxStateProvider(pendingTx.txId)).value;
       final rbfState = cancelTxState ?? boostState;
       if (rbfState != null) {
-        //check if the RBFed tx is not present, this means RBF failed. so we remove the pending RBF tx
-        final rbfTx = transactions
-            .firstWhereOrNull((element) => element.txId == rbfState.newTxId);
-        if (rbfTx == null) {
+        //check if the RBF failed and the original tx is confirmed, if so, remove the pending RBF tx
+        final rbfTx = transactions.firstWhereOrNull((element) =>
+            element.txId == rbfState.originalTxId && element.isConfirmed);
+
+        if (rbfTx != null && rbfState.newTxId == pendingTx.txId) {
           if (kDebugMode) {
             print("Pruning orphan RBF tx : ${pendingTx.txId} ");
           }
