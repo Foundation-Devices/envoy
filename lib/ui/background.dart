@@ -108,7 +108,6 @@ class StripesBackground extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SizedBox(
-          height: constraints.minHeight,
           width: constraints.maxWidth,
           child: CustomPaint(
             isComplex: true,
