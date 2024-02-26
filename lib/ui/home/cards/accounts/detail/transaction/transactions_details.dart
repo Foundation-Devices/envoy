@@ -35,6 +35,7 @@ import 'package:intl/intl.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/util/tuple.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
