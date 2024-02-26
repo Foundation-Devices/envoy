@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
@@ -54,22 +53,6 @@ class _TransactionsDetailsWidgetState
   bool showTxIdExpanded = false;
   bool showAddressExpanded = false;
   GlobalKey _detailWidgetKey = GlobalKey();
-  ScrollController _scrollController = ScrollController();
-  Timer? _timer;
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //Calculate height periodically
-    _timer =
-        Timer.periodic(Duration(milliseconds: 100), _calculateContainerHeight);
-  }
 
   String _getConfirmationTimeString(int minutes) {
     String confirmationTime = "";
@@ -84,19 +67,6 @@ class _TransactionsDetailsWidgetState
 
     return S().coindetails_overlay_confirmationIn + " ~" + confirmationTime;
   }
-
-  void _calculateContainerHeight(timeStamp) {
-    if (mounted) {
-      ///ensures we only set of the height changes
-      double nextHeight = 36 + (_scrollController.position.extentTotal);
-      if (nextHeight != containerHeight)
-        setState(() {
-          containerHeight = nextHeight;
-        });
-    }
-  }
-
-  double containerHeight = 280;
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +139,6 @@ class _TransactionsDetailsWidgetState
                 horizontal: EnvoySpacing.medium2,
                 vertical: EnvoySpacing.medium2),
             child: AnimatedContainer(
-              height: containerHeight,
               duration: Duration(milliseconds: 160),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
@@ -184,6 +153,7 @@ class _TransactionsDetailsWidgetState
                     ]),
               ),
               child: Container(
+                //height: 500,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     border: Border.all(
@@ -194,7 +164,7 @@ class _TransactionsDetailsWidgetState
                     borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     child: StripesBackground(
                       child: Column(
-                        mainAxisSize: MainAxisSize.max,
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
@@ -233,8 +203,7 @@ class _TransactionsDetailsWidgetState
                                     amountWidgetStyle:
                                         AmountWidgetStyle.singleLine),
                           ),
-                          Expanded(
-                              child: Container(
+                          Container(
                             margin: EdgeInsets.all(EnvoySpacing.xs),
                             padding: EdgeInsets.all(EnvoySpacing.xs),
                             decoration: BoxDecoration(
@@ -243,7 +212,7 @@ class _TransactionsDetailsWidgetState
                               color: Colors.white,
                             ),
                             child: ListView(
-                              controller: _scrollController,
+                              shrinkWrap: true,
                               children: [
                                 CoinTagListItem(
                                   title: S().coindetails_overlay_address,
@@ -439,7 +408,7 @@ class _TransactionsDetailsWidgetState
                                     : SizedBox.shrink(),
                               ],
                             ),
-                          )),
+                          ),
                         ],
                       ),
                     )),
