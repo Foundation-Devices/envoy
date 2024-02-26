@@ -161,7 +161,6 @@ class _TransactionsDetailsWidgetState
                     ]),
               ),
               child: Container(
-                //height: 500,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                     border: Border.all(
@@ -212,195 +211,219 @@ class _TransactionsDetailsWidgetState
                                     amountWidgetStyle:
                                         AmountWidgetStyle.singleLine),
                           ),
-                          Container(
-                            margin: EdgeInsets.all(EnvoySpacing.xs),
-                            padding: EdgeInsets.all(EnvoySpacing.xs),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(cardRadius - 4),
-                              color: Colors.white,
-                            ),
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: [
-                                CoinTagListItem(
-                                  title: S().coindetails_overlay_address,
-                                  icon: SvgPicture.asset(
-                                    "assets/icons/ic_spend.svg",
-                                    color: Colors.black,
-                                    height: 14,
-                                  ),
-                                  trailing: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        showAddressExpanded =
-                                            !showAddressExpanded;
-                                        showTxIdExpanded = false;
-                                      });
-                                    },
-                                    child: SingleChildScrollView(
-                                      child: AnimatedSize(
-                                        duration: Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                        child: addressNotAvailable
-                                            ? Text("Address not available ",
-                                                style: trailingTextStyle)
-                                            : AddressWidget(
-                                                widgetKey: ValueKey<bool>(
-                                                    showAddressExpanded),
-                                                address: address,
-                                                short: !showAddressExpanded,
-                                              ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                CoinTagListItem(
-                                  title: S().coindetails_overlay_transactionID,
-                                  icon: Icon(
-                                    CupertinoIcons.compass,
-                                    size: 16,
-                                    color: Colors.black,
-                                  ),
-                                  trailing: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          showTxIdExpanded = !showTxIdExpanded;
-                                          showAddressExpanded = false;
-                                        });
-                                      },
-                                      child: TweenAnimationBuilder(
-                                        curve: EnvoyEasing.easeInOut,
-                                        tween: Tween<double>(
-                                            begin: 0,
-                                            end: showTxIdExpanded ? 1 : 0),
-                                        duration: Duration(milliseconds: 200),
-                                        builder: (context, value, child) {
-                                          return SelectableText(
-                                            "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
-                                            style: trailingTextStyle,
-                                            textAlign: TextAlign.end,
-                                            minLines: 1,
-                                            maxLines: 4,
-                                            onTap: () {
-                                              setState(() {
-                                                showTxIdExpanded =
-                                                    !showTxIdExpanded;
-                                                showAddressExpanded = false;
-                                              });
-                                            },
-                                          );
-                                        },
-                                      )),
-                                ),
-                                CoinTagListItem(
-                                  title: S().coindetails_overlay_date,
-                                  icon: Icon(
-                                    Icons.calendar_today_outlined,
-                                    size: 16,
-                                    color: Colors.black,
-                                  ),
-                                  trailing: Text(
-                                      getTransactionDateAndTimeString(tx),
-                                      style: trailingTextStyle),
-                                ),
-                                CoinTagListItem(
-                                  title: S().coindetails_overlay_status,
-                                  icon: SvgPicture.asset(
-                                    "assets/icons/ic_status_icon.svg",
-                                    color: Colors.black,
-                                    height: 14,
-                                  ),
-                                  trailing: Text(getTransactionStatusString(tx),
-                                      style: trailingTextStyle),
-                                ),
-                                RBFPossible
-                                    ? CoinTagListItem(
-                                        color: EnvoyColors.textTertiary,
-                                        title: _getConfirmationTimeString(ref.watch(
-                                            txEstimatedConfirmationTimeProvider(
-                                                Tuple(
-                                                    tx,
-                                                    widget.account.wallet
-                                                        .network)))),
-                                        icon: Icon(
-                                          Icons.access_time,
-                                          color: EnvoyColors.textTertiary,
-                                          size: 16,
-                                        ),
-                                        trailing: TxRBFButton(
-                                          tx: tx,
-                                        ),
-                                      )
-                                    : Container(),
-                                _renderFeeWidget(context, tx),
-                                GestureDetector(
-                                  onTap: () {
-                                    showEnvoyDialog(
-                                        context: context,
-                                        dialog: TxNoteDialog(
-                                          txId: tx.txId,
-                                          noteTitle: S().add_note_modal_heading,
-                                          noteHintText:
-                                              S().add_note_modal_ie_text_field,
-                                          noteSubTitle:
-                                              S().add_note_modal_subheading,
-                                          onAdd: (note) {
-                                            EnvoyStorage()
-                                                .addTxNote(note, tx.txId);
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                        alignment: Alignment(0.0, -0.8));
-                                  },
-                                  child: CoinTagListItem(
-                                    title: S()
-                                        .coincontrol_tx_history_tx_detail_note,
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.all(EnvoySpacing.xs),
+                              padding: EdgeInsets.all(EnvoySpacing.xs),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(EnvoySpacing.medium1),
+                                color: Colors.white,
+                              ),
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: [
+                                  CoinTagListItem(
+                                    title: S().coindetails_overlay_address,
                                     icon: SvgPicture.asset(
-                                      "assets/icons/ic_notes.svg",
+                                      "assets/icons/ic_spend.svg",
                                       color: Colors.black,
                                       height: 14,
                                     ),
-                                    trailing: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Expanded(
-                                          child: Text("$note",
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              style: trailingTextStyle
-                                                  ?.copyWith(fontSize: 12),
-                                              textAlign: TextAlign.end),
+                                    trailing: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          showAddressExpanded =
+                                              !showAddressExpanded;
+                                          showTxIdExpanded = false;
+                                        });
+                                      },
+                                      child: SingleChildScrollView(
+                                        child: AnimatedSize(
+                                          duration: Duration(milliseconds: 200),
+                                          curve: Curves.easeInOut,
+                                          child: addressNotAvailable
+                                              ? Text("Address not available ",
+                                                  // TODO: Figma
+                                                  style: trailingTextStyle)
+                                              : AddressWidget(
+                                                  widgetKey: ValueKey<bool>(
+                                                      showAddressExpanded),
+                                                  address: address,
+                                                  short: !showAddressExpanded,
+                                                ),
                                         ),
-                                        Padding(
-                                            padding: EdgeInsets.all(
-                                                EnvoySpacing.xs)),
-                                        note.trim().isNotEmpty
-                                            ? SvgPicture.asset(
-                                                note.trim().isNotEmpty
-                                                    ? "assets/icons/ic_edit_note.svg"
-                                                    : "assets/icons/ic_notes.svg",
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                height: 14,
-                                              )
-                                            : Icon(Icons.add_circle_rounded,
-                                                color:
-                                                    EnvoyColors.accentPrimary,
-                                                size: 16),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                RBFPossible
-                                    ? CancelTxButton(
-                                        transaction: tx,
-                                      )
-                                    : SizedBox.shrink(),
-                              ],
+                                  CoinTagListItem(
+                                    title:
+                                        S().coindetails_overlay_transactionID,
+                                    icon: Icon(
+                                      CupertinoIcons.compass,
+                                      size: 16,
+                                      color: Colors.black,
+                                    ),
+                                    trailing: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            showTxIdExpanded =
+                                                !showTxIdExpanded;
+                                            showAddressExpanded = false;
+                                          });
+                                        },
+                                        child: TweenAnimationBuilder(
+                                          curve: EnvoyEasing.easeInOut,
+                                          tween: Tween<double>(
+                                              begin: 0,
+                                              end: showTxIdExpanded ? 1 : 0),
+                                          duration: Duration(milliseconds: 200),
+                                          builder: (context, value, child) {
+                                            return SelectableText(
+                                              "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
+                                              style: EnvoyTypography.info
+                                                  .copyWith(
+                                                      color: EnvoyColors
+                                                          .textSecondary),
+                                              textAlign: TextAlign.end,
+                                              minLines: 1,
+                                              maxLines: 4,
+                                              onTap: () {
+                                                setState(() {
+                                                  showTxIdExpanded =
+                                                      !showTxIdExpanded;
+                                                  showAddressExpanded = false;
+                                                });
+                                              },
+                                            );
+                                          },
+                                        )),
+                                  ),
+                                  CoinTagListItem(
+                                    title: S().coindetails_overlay_date,
+                                    icon: Icon(
+                                      Icons.calendar_today_outlined,
+                                      size: 16,
+                                      color: Colors.black,
+                                    ),
+                                    trailing: Text(
+                                        getTransactionDateAndTimeString(tx),
+                                        style: trailingTextStyle),
+                                  ),
+                                  CoinTagListItem(
+                                    title: S().coindetails_overlay_status,
+                                    icon: SvgPicture.asset(
+                                      "assets/icons/ic_status_icon.svg",
+                                      color: Colors.black,
+                                      height: 14,
+                                    ),
+                                    trailing: Text(
+                                        getTransactionStatusString(tx),
+                                        style: trailingTextStyle),
+                                  ),
+                                  RBFPossible
+                                      ? CoinTagListItem(
+                                          color: EnvoyColors.textTertiary,
+                                          title: _getConfirmationTimeString(
+                                              ref.watch(
+                                                  txEstimatedConfirmationTimeProvider(
+                                                      Tuple(
+                                                          tx,
+                                                          widget.account.wallet
+                                                              .network)))),
+                                          icon: Icon(
+                                            Icons.access_time,
+                                            color: EnvoyColors.textTertiary,
+                                            size: 16,
+                                          ),
+                                          trailing: TxRBFButton(
+                                            tx: tx,
+                                          ),
+                                        )
+                                      : Container(),
+                                  _renderFeeWidget(context, tx),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showEnvoyDialog(
+                                          context: context,
+                                          dialog: TxNoteDialog(
+                                            txId: tx.txId,
+                                            noteTitle:
+                                                S().add_note_modal_heading,
+                                            noteHintText: S()
+                                                .add_note_modal_ie_text_field,
+                                            noteSubTitle:
+                                                S().add_note_modal_subheading,
+                                            onAdd: (note) {
+                                              EnvoyStorage()
+                                                  .addTxNote(note, tx.txId);
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          alignment: Alignment(0.0, -0.8));
+                                    },
+                                    child: CoinTagListItem(
+                                      title: S()
+                                          .coincontrol_tx_history_tx_detail_note,
+                                      icon: SvgPicture.asset(
+                                        "assets/icons/ic_notes.svg",
+                                        color: Colors.black,
+                                        height: 14,
+                                      ),
+                                      trailing: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Expanded(
+                                            child: Text("$note",
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: EnvoyTypography.body
+                                                    .copyWith(
+                                                        color: EnvoyColors
+                                                            .textPrimary),
+                                                textAlign: TextAlign.end),
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.all(
+                                                  EnvoySpacing.xs)),
+                                          note.trim().isNotEmpty
+                                              ? SvgPicture.asset(
+                                                  note.trim().isNotEmpty
+                                                      ? "assets/icons/ic_edit_note.svg"
+                                                      : "assets/icons/ic_notes.svg",
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  height: 14,
+                                                )
+                                              : Icon(Icons.add_circle_rounded,
+                                                  color:
+                                                      EnvoyColors.accentPrimary,
+                                                  size: 16),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  if (tx.pullPaymentId != null ||
+                                      tx.type == TransactionType.btcPay)
+                                    CoinTagListItem(
+                                      title: S().coindetails_overlay_paymentID,
+                                      icon: EnvoyIcon(EnvoyIcons.btcPay,
+                                          size: EnvoyIconSize.extraSmall),
+                                      trailing: Text(
+                                          tx.pullPaymentId ?? tx.txId,
+                                          style: trailingTextStyle),
+                                    ),
+                                  RBFPossible
+                                      ? CancelTxButton(
+                                          transaction: tx,
+                                        )
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
                             ),
                           ),
                         ],
