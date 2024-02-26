@@ -12,6 +12,7 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
@@ -421,17 +422,10 @@ class CoinSubTitleText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    TextStyle _textStyleTagSubtitle =
-        Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            );
-
     String message = getMessage(tag, ref);
     return Text(
       message,
-      style: _textStyleTagSubtitle,
+      style: EnvoyTypography.info.copyWith(color: Colors.white),
     );
   }
 }
