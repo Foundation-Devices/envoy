@@ -50,45 +50,7 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  // skipped getter for the '\$' key
-
-  // skipped getter for the '0.12 345 678' key
-
-  // skipped getter for the '30,493.93' key
-
   // skipped getter for the ':' key
-
-  /// `200,000`
-  String get Balance {
-    return Intl.message(
-      '200,000',
-      name: 'Balance',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Boost`
-  String get Boost {
-    return Intl.message(
-      'Boost',
-      name: 'Boost',
-      desc: '',
-      args: [],
-    );
-  }
-
-  // skipped getter for the 'Informational text' key
-
-  /// `Label`
-  String get Label {
-    return Intl.message(
-      'Label',
-      name: 'Label',
-      desc: '',
-      args: [],
-    );
-  }
 
   /// `OK`
   String get OK {
@@ -100,20 +62,10 @@ class S {
     );
   }
 
-  /// `$50.31`
-  String get Secondary {
-    return Intl.message(
-      '\$50.31',
-      name: 'Secondary',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `https://github.com/Foundation-Devices/envoy`
+  /// `Add Node`
   String get _ {
     return Intl.message(
-      'https://github.com/Foundation-Devices/envoy',
+      'Add Node',
       name: '_',
       desc: '',
       args: [],
@@ -1342,20 +1294,20 @@ class S {
     );
   }
 
-  /// `Boosted Fees`
+  /// `Date`
   String get coindetails_overlay_date {
     return Intl.message(
-      'Boosted Fees',
+      'Date',
       name: 'coindetails_overlay_date',
       desc: '',
       args: [],
     );
   }
 
-  /// `transaction details`
+  /// `COIN DETAILS`
   String get coindetails_overlay_heading {
     return Intl.message(
-      'transaction details',
+      'COIN DETAILS',
       name: 'coindetails_overlay_heading',
       desc: '',
       args: [],
@@ -1382,10 +1334,10 @@ class S {
     );
   }
 
-  /// `Notes`
+  /// `Note`
   String get coindetails_overlay_notes {
     return Intl.message(
-      'Notes',
+      'Note',
       name: 'coindetails_overlay_notes',
       desc: '',
       args: [],
@@ -1402,10 +1354,10 @@ class S {
     );
   }
 
-  /// `Confirmation in ~0.5h`
+  /// `Status`
   String get coindetails_overlay_status {
     return Intl.message(
-      'Confirmation in ~0.5h',
+      'Status',
       name: 'coindetails_overlay_status',
       desc: '',
       args: [],
@@ -3276,26 +3228,6 @@ class S {
     );
   }
 
-  /// `WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account.`
-  String get magic_setup_generate_wallet_modal_android_subheading {
-    return Intl.message(
-      'WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your Google account.',
-      name: 'magic_setup_generate_wallet_modal_android_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account.`
-  String get magic_setup_generate_wallet_modal_ios_subheading {
-    return Intl.message(
-      'WARNING\n\nCreating a new Magic Backup will erase any existing Magic Backup associated with your iCloud account.',
-      name: 'magic_setup_generate_wallet_modal_ios_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Recover with QR Code`
   String get magic_setup_recovery_fail_Android_CTA2 {
     return Intl.message(
@@ -4446,8 +4378,6 @@ class S {
     );
   }
 
-  // skipped getter for the 'nd doesn\'t leave a bi' key
-
   /// `Connect Passport\nwith Envoy`
   String get pair_existing_device_intro_heading {
     return Intl.message(
@@ -4748,10 +4678,10 @@ class S {
     );
   }
 
-  /// `Improved\nPrivacy`
+  /// `Improved Privacy`
   String get privacy_privacyMode_improvedPrivacy {
     return Intl.message(
-      'Improved\nPrivacy',
+      'Improved Privacy',
       name: 'privacy_privacyMode_improvedPrivacy',
       desc: '',
       args: [],
@@ -4763,6 +4693,16 @@ class S {
     return Intl.message(
       'Privacy mode',
       name: 'privacy_privacyMode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
+  String get privacy_privacyMode_torSuggestionOff {
+    return Intl.message(
+      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
+      name: 'privacy_privacyMode_torSuggestionOff',
       desc: '',
       args: [],
     );
@@ -4863,16 +4803,6 @@ class S {
     return Intl.message(
       'How would you like Envoy to connect to the Internet?',
       name: 'privacy_setting_perfomance_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.`
-  String get privacy_setting_perfomance_tor_off {
-    return Intl.message(
-      'Envoy’s connection will be reliable with Tor turned [[OFF]]. Suggested for new users.',
-      name: 'privacy_setting_perfomance_tor_off',
       desc: '',
       args: [],
     );
@@ -5867,6 +5797,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ca'),
       Locale.fromSubtags(languageCode: 'es'),
+      Locale.fromSubtags(languageCode: 'ko-KR'),
     ];
   }
 

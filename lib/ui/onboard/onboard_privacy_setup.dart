@@ -141,13 +141,13 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                       ref.watch(privacyOnboardSelectionProvider);
                   return _betterPerformance
                       ? LinkText(
-                          text: S().privacy_setting_perfomance_tor_off,
+                          text: S().privacy_privacyMode_torSuggestionOff,
                           linkStyle: _messageStyle?.copyWith(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
                               color: EnvoyColors.listAccountTileColors[0]))
                       : LinkText(
-                          text: S().privacy_setting_perfomance_tor_off,
+                          text: S().privacy_privacyMode_torSuggestionOn,
                           linkStyle: _messageStyle?.copyWith(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
