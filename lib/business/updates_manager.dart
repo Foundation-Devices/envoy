@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:io';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -34,6 +35,15 @@ class UpdatesManager {
     print("Instance of UpdatesManager created!");
 
     // Go fetch the latest from Server
+    _fetchUpdates();
+
+    // Check once an hour
+    Timer.periodic(Duration(hours: 1), (_) {
+      _fetchUpdates();
+    });
+  }
+
+  void _fetchUpdates() {
     Server()
         .fetchFirmwareUpdateInfo(0) // Gen1
         .then((fw) => _processFw(fw))
