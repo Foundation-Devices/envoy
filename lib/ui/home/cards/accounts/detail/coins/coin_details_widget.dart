@@ -21,6 +21,7 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
@@ -39,7 +40,6 @@ class CoinDetailsWidget extends ConsumerStatefulWidget {
 class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
   bool showExpandedAddress = false;
   bool showExpandedTxId = false;
-  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,237 +63,223 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
       accountAccentColor = Color(0xff808080);
     }
 
-    double height = showExpandedAddress ? 324 : 280;
-    height = showExpandedTxId ? 324 : height;
-
     double cardRadius = 26;
 
     return Container(
       padding: EdgeInsets.all(8),
-      child: SingleChildScrollView(
-        child: AnimatedContainer(
-          height: height,
-          duration: Duration(milliseconds: 300),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+          border: Border.all(
+              color: Colors.black, width: 2, style: BorderStyle.solid),
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                accountAccentColor,
+                Colors.black,
+              ]),
+        ),
+        child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
-            border: Border.all(
-                color: Colors.black, width: 2, style: BorderStyle.solid),
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  accountAccentColor,
-                  Colors.black,
-                ]),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
-                border: Border.all(
-                    color: accountAccentColor,
-                    width: 2,
-                    style: BorderStyle.solid)),
-            child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
-                child: StripesBackground(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 36,
-                        padding: EdgeInsets.symmetric(horizontal: 4),
-                        margin:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(EnvoySpacing.medium2)),
-                          color: Colors.white,
-                        ),
-                        child: CoinBalanceWidget(
-                          coin: coin,
-                        ),
+              borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+              border: Border.all(
+                  color: accountAccentColor,
+                  width: 2,
+                  style: BorderStyle.solid)),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
+              child: StripesBackground(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 36,
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium2)),
+                        color: Colors.white,
                       ),
-                      Expanded(
-                          child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(18)),
-                          color: Colors.white,
-                        ),
-                        child: ListView(
-                          controller: _scrollController,
-                          children: [
-                            CoinTagListItem(
-                              title: S().coindetails_overlay_address,
-                              icon: SvgPicture.asset(
-                                "assets/icons/ic_spend.svg",
-                                color: Colors.black,
-                                height: 14,
-                              ),
-                              trailing: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    showExpandedAddress = !showExpandedAddress;
-                                    showExpandedTxId = false;
-                                  });
-                                },
-                                child: SingleChildScrollView(
-                                  child: AnimatedSize(
-                                    duration: Duration(milliseconds: 200),
-                                    curve: Curves.easeInOut,
-                                    child: AddressWidget(
-                                      widgetKey:
-                                          ValueKey<bool>(showExpandedAddress),
-                                      address: utxoAddress,
-                                      short: !showExpandedAddress,
-                                    ),
+                      child: CoinBalanceWidget(
+                        coin: coin,
+                      ),
+                    ),
+                    Flexible(
+                        child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(18)),
+                        color: Colors.white,
+                      ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          CoinTagListItem(
+                            title: S().coindetails_overlay_address,
+                            icon: SvgPicture.asset(
+                              "assets/icons/ic_spend.svg",
+                              color: Colors.black,
+                              height: 14,
+                            ),
+                            trailing: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showExpandedAddress = !showExpandedAddress;
+                                  showExpandedTxId = false;
+                                });
+                              },
+                              child: SingleChildScrollView(
+                                child: AnimatedSize(
+                                  duration: Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                  child: AddressWidget(
+                                    widgetKey:
+                                        ValueKey<bool>(showExpandedAddress),
+                                    address: utxoAddress,
+                                    short: !showExpandedAddress,
                                   ),
                                 ),
                               ),
                             ),
-                            CoinTagListItem(
-                              title: S().coindetails_overlay_transactionID,
-                              icon: Icon(
-                                CupertinoIcons.compass,
-                                size: 16,
-                                color: Colors.black,
-                              ),
-                              trailing: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      showExpandedTxId = !showExpandedTxId;
-                                      showExpandedAddress = false;
-                                    });
+                          ),
+                          CoinTagListItem(
+                            title: S().coindetails_overlay_transactionID,
+                            icon: Icon(
+                              CupertinoIcons.compass,
+                              size: 16,
+                              color: Colors.black,
+                            ),
+                            trailing: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    showExpandedTxId = !showExpandedTxId;
+                                    showExpandedAddress = false;
+                                  });
+                                },
+                                child: TweenAnimationBuilder(
+                                  tween: Tween<double>(
+                                      begin: 0, end: showExpandedTxId ? 1 : 0),
+                                  duration: Duration(milliseconds: 200),
+                                  builder: (context, value, child) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.small),
+                                      child: SelectableText(
+                                        "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
+                                        style: EnvoyTypography.info
+                                            .copyWith(color: Colors.black),
+                                        textAlign: TextAlign.end,
+                                        maxLines: 4,
+                                        minLines: 1,
+                                        onTap: () {
+                                          setState(() {
+                                            showExpandedTxId =
+                                                !showExpandedTxId;
+                                            showExpandedAddress = false;
+                                          });
+                                        },
+                                      ),
+                                    );
                                   },
-                                  child: TweenAnimationBuilder(
-                                    tween: Tween<double>(
-                                        begin: 0,
-                                        end: showExpandedTxId ? 1 : 0),
-                                    duration: Duration(milliseconds: 200),
-                                    builder: (context, value, child) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: EnvoySpacing.small),
-                                        child: SelectableText(
-                                          "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
-                                          style: EnvoyTypography.info.copyWith(
-                                              color: EnvoyColors.textPrimary),
-                                          textAlign: TextAlign.end,
-                                          maxLines: 4,
-                                          minLines: 1,
-                                          onTap: () {
-                                            setState(() {
-                                              showExpandedTxId =
-                                                  !showExpandedTxId;
-                                              showExpandedAddress = false;
-                                            });
-                                          },
-                                        ),
-                                      );
+                                )),
+                          ),
+                          CoinTagListItem(
+                            title: S().coindetails_overlay_date,
+                            icon: Icon(
+                              Icons.calendar_today_outlined,
+                              size: 16,
+                              color: Colors.black,
+                            ),
+                            trailing: Text(getTransactionDateAndTimeString(tx),
+                                style: trailingTextStyle),
+                          ),
+                          CoinTagListItem(
+                            title: S().coindetails_overlay_tag,
+                            icon: SvgPicture.asset(
+                              "assets/icons/ic_tag.svg",
+                              color: Colors.black,
+                              height: 16,
+                            ),
+                            trailing: Text("${coinTag.name}",
+                                style: trailingTextStyle),
+                          ),
+                          CoinTagListItem(
+                            title: S().coindetails_overlay_status,
+                            icon: SvgPicture.asset(
+                              "assets/icons/ic_status_icon.svg",
+                              color: Colors.black,
+                              height: 14,
+                            ),
+                            trailing: Text(getTransactionStatusString(tx),
+                                style: trailingTextStyle),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showEnvoyDialog(
+                                  context: context,
+                                  useRootNavigator: true,
+                                  dialog: TxNoteDialog(
+                                    txId: tx.txId,
+                                    noteTitle: S().add_note_modal_heading,
+                                    noteHintText:
+                                        S().add_note_modal_ie_text_field,
+                                    noteSubTitle: S().add_note_modal_subheading,
+                                    onAdd: (note) async {
+                                      await EnvoyStorage()
+                                          .addTxNote(note, tx.txId);
+                                      Navigator.of(context).pop();
                                     },
-                                  )),
-                            ),
-                            CoinTagListItem(
-                              title: S().coindetails_overlay_date,
-                              icon: Icon(
-                                Icons.calendar_today_outlined,
-                                size: 16,
-                                color: Colors.black,
-                              ),
-                              trailing: Text(
-                                  getTransactionDateAndTimeString(tx),
-                                  style: trailingTextStyle),
-                            ),
-                            CoinTagListItem(
-                              title: S().coindetails_overlay_tag,
+                                  ),
+                                  alignment: Alignment(0.0, -0.8));
+                            },
+                            child: CoinTagListItem(
+                              title: S().coindetails_overlay_notes,
                               icon: SvgPicture.asset(
-                                "assets/icons/ic_tag.svg",
-                                color: Colors.black,
-                                height: 16,
-                              ),
-                              trailing: Text("${coinTag.name}",
-                                  style: trailingTextStyle),
-                            ),
-                            CoinTagListItem(
-                              title: S().coindetails_overlay_status,
-                              icon: SvgPicture.asset(
-                                "assets/icons/ic_status_icon.svg",
+                                "assets/icons/ic_notes.svg",
                                 color: Colors.black,
                                 height: 14,
                               ),
-                              trailing: Text(getTransactionStatusString(tx),
-                                  style: trailingTextStyle),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showEnvoyDialog(
-                                    context: context,
-                                    useRootNavigator: true,
-                                    dialog: TxNoteDialog(
-                                      txId: tx.txId,
-                                      noteTitle: S().add_note_modal_heading,
-                                      noteHintText:
-                                          S().add_note_modal_ie_text_field,
-                                      noteSubTitle:
-                                          S().add_note_modal_subheading,
-                                      onAdd: (note) async {
-                                        await EnvoyStorage()
-                                            .addTxNote(note, tx.txId);
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    alignment: Alignment(0.0, -0.8));
-                              },
-                              child: CoinTagListItem(
-                                title: S().coindetails_overlay_notes,
-                                icon: SvgPicture.asset(
-                                  "assets/icons/ic_notes.svg",
-                                  color: Colors.black,
-                                  height: 14,
-                                ),
-                                trailing: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      child: Text("$note",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: trailingTextStyle?.copyWith(
-                                              fontSize: 12),
-                                          textAlign: TextAlign.end),
-                                    ),
-                                    Padding(
-                                        padding:
-                                            EdgeInsets.all(EnvoySpacing.xs)),
-                                    note.trim().isNotEmpty
-                                        ? SvgPicture.asset(
-                                            note.trim().isNotEmpty
-                                                ? "assets/icons/ic_edit_note.svg"
-                                                : "assets/icons/ic_notes.svg",
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            height: 14,
-                                          )
-                                        : Icon(Icons.add_circle_rounded,
-                                            color: EnvoyColors.accentPrimary,
-                                            size: 16),
-                                  ],
-                                ),
+                              trailing: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: Text("$note",
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: trailingTextStyle?.copyWith(
+                                            fontSize: 12),
+                                        textAlign: TextAlign.end),
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.all(EnvoySpacing.xs)),
+                                  note.trim().isNotEmpty
+                                      ? SvgPicture.asset(
+                                          note.trim().isNotEmpty
+                                              ? "assets/icons/ic_edit_note.svg"
+                                              : "assets/icons/ic_notes.svg",
+                                          color: Theme.of(context).primaryColor,
+                                          height: 14,
+                                        )
+                                      : Icon(Icons.add_circle_rounded,
+                                          color: EnvoyColors.accentPrimary,
+                                          size: 16),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      )),
-                    ],
-                  ),
-                )),
-          ),
+                          ),
+                        ],
+                      ),
+                    )),
+                  ],
+                ),
+              )),
         ),
       ),
     );
@@ -310,13 +296,13 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             flex: 5,
             child: Container(
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

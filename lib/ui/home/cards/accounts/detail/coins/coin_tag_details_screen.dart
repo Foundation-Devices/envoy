@@ -41,7 +41,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   bool _menuVisible = false;
   double _menuHeight = 80;
   Coin? _selectedCoin = null;
-  ScrollController scrollController = ScrollController();
   GlobalKey _detailWidgetKey = GlobalKey();
 
   @override
@@ -233,7 +232,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       ///sets up top margin for scroller
       mainAxisMargin: -100,
       thickness: 6,
-      controller: scrollController,
       trackRadius: Radius.circular(EnvoySpacing.medium1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
@@ -323,8 +321,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   child: Container(
                                                     height: coinListHeight,
                                                     child: ListView.builder(
-                                                      controller:
-                                                          scrollController,
                                                       physics:
                                                           BouncingScrollPhysics(),
                                                       itemCount:
