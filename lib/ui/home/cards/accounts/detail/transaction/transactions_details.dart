@@ -163,7 +163,7 @@ class _TransactionsDetailsWidgetState
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.all(Radius.circular(cardRadius - 2)),
+                        BorderRadius.all(Radius.circular(cardRadius - 3)),
                     border: Border.all(
                         color: accountAccentColor,
                         width: 2,
@@ -223,6 +223,7 @@ class _TransactionsDetailsWidgetState
                               ),
                               child: ListView(
                                 shrinkWrap: true,
+                                padding: EdgeInsets.all(0),
                                 children: [
                                   CoinTagListItem(
                                     title: S().coindetails_overlay_address,
