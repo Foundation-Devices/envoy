@@ -151,7 +151,7 @@ class _TransactionsDetailsWidgetState
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
-                    color: Colors.black, width: 1.5, style: BorderStyle.solid),
+                    color: Colors.black, width: 2, style: BorderStyle.solid),
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -162,14 +162,15 @@ class _TransactionsDetailsWidgetState
               ),
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(cardRadius - 2)),
                     border: Border.all(
                         color: accountAccentColor,
-                        width: 1.5,
+                        width: 2,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
                     borderRadius:
-                        BorderRadius.all(Radius.circular(cardRadius - 1.5)),
+                        BorderRadius.all(Radius.circular(cardRadius - 2)),
                     child: StripesBackground(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -406,16 +407,6 @@ class _TransactionsDetailsWidgetState
                                       ),
                                     ),
                                   ),
-                                  if (tx.pullPaymentId != null ||
-                                      tx.type == TransactionType.btcPay)
-                                    CoinTagListItem(
-                                      title: S().coindetails_overlay_paymentID,
-                                      icon: EnvoyIcon(EnvoyIcons.btcPay,
-                                          size: EnvoyIconSize.extraSmall),
-                                      trailing: Text(
-                                          tx.pullPaymentId ?? tx.txId,
-                                          style: trailingTextStyle),
-                                    ),
                                   RBFPossible
                                       ? CancelTxButton(
                                           transaction: tx,
