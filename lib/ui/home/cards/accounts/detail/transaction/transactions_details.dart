@@ -274,8 +274,7 @@ class _TransactionsDetailsWidgetState
                                               "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
                                               style: EnvoyTypography.info
                                                   .copyWith(
-                                                      color: EnvoyColors
-                                                          .textSecondary),
+                                                      color: Colors.black),
                                               textAlign: TextAlign.end,
                                               minLines: 1,
                                               maxLines: 4,
