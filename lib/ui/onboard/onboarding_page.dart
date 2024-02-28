@@ -180,7 +180,8 @@ class OnboardingPage extends StatelessWidget {
                     children: [
                       leftFunction != null
                           ? Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding:
+                                  const EdgeInsets.all(EnvoySpacing.medium1),
                               child: GestureDetector(
                                   onTap: () {
                                     leftFunction!(context);
@@ -191,7 +192,8 @@ class OnboardingPage extends StatelessWidget {
                           : SizedBox.shrink(),
                       rightFunction != null
                           ? Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding:
+                                  const EdgeInsets.all(EnvoySpacing.medium1),
                               child: GestureDetector(
                                   onTap: () {
                                     rightFunction!(context);
@@ -210,41 +212,41 @@ class OnboardingPage extends StatelessWidget {
                     child: clipArt != null ? clipArt! : _determineQr(),
                   ),
                 ),
-              Flexible(
-                child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...?text]),
-              ),
             ]),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                navigationDots != 0
-                    ? Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: DotsIndicator(
-                          decorator: DotsDecorator(
-                              size: Size.square(5.0),
-                              activeSize: Size.square(5.0),
-                              spacing: EdgeInsets.symmetric(horizontal: 5)),
-                          dotsCount: navigationDots,
-                          position: navigationDotsIndex.toDouble(),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: helperTextAbove ?? SizedBox.shrink(),
+          Column(
+            children: [
+              Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [...?text]),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    navigationDots != 0
+                        ? DotsIndicator(
+                            decorator: DotsDecorator(
+                                size: Size.square(5.0),
+                                activeSize: Size.square(5.0),
+                                spacing: EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.xs)),
+                            dotsCount: navigationDots,
+                            position: navigationDotsIndex.toDouble(),
+                          )
+                        : SizedBox.shrink(),
+                    Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.small),
+                      child: helperTextAbove ?? SizedBox.shrink(),
+                    ),
+                    ...?buttons,
+                    helperTextBelow ?? SizedBox.shrink()
+                  ],
                 ),
-                ...?buttons,
-                helperTextBelow ?? SizedBox.shrink()
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

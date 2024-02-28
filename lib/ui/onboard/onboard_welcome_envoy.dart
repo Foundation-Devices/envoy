@@ -88,79 +88,84 @@ class _OnboardEnvoyWelcomeScreenState
                   right: EnvoySpacing.medium1,
                   left: EnvoySpacing.medium1,
                   top: EnvoySpacing.medium1),
-              child: SizedBox.expand(
+              child: Flexible(
+                child: SingleChildScrollView(
                   child: Container(
-                height: max(MediaQuery.of(context).size.height * 0.38, 800),
-                margin: EdgeInsets.symmetric(
-                    vertical: EnvoySpacing.large1,
-                    horizontal: EnvoySpacing.medium1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(height: EnvoySpacing.small),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
-                      child: Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              S().envoy_welcome_screen_heading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.body.copyWith(
-                                fontSize: 20,
-                                color: EnvoyColors.gray1000,
-                                decoration: TextDecoration.none,
-                              ),
+                    margin: EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.large2,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(height: EnvoySpacing.medium1),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
+                          child: Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  S().envoy_welcome_screen_heading,
+                                  textAlign: TextAlign.center,
+                                  style: EnvoyTypography.body.copyWith(
+                                    fontSize: 20,
+                                    color: EnvoyColors.gray1000,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.all(EnvoySpacing.xs)),
+                                LinkText(
+                                  text: S().envoy_welcome_screen_subheading,
+                                  textStyle: EnvoyTypography.body.copyWith(
+                                    color: EnvoyColors.inactiveDark,
+                                  ),
+                                  linkStyle: EnvoyTypography.body.copyWith(
+                                    color: EnvoyColors.inactiveDark,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                            LinkText(
-                              text: S().envoy_welcome_screen_subheading,
-                              textStyle: EnvoyTypography.body.copyWith(
-                                color: EnvoyColors.inactiveDark,
-                              ),
-                              linkStyle: EnvoyTypography.body.copyWith(
-                                color: EnvoyColors.inactiveDark,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                      child: Column(
-                        children: [
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          EnvoyButton(
-                            S().envoy_welcome_screen_cta2,
-                            type: EnvoyButtonTypes.secondary,
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return ManualSetup();
-                              }));
-                            },
+                        Padding(
+                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                              EnvoyButton(
+                                S().envoy_welcome_screen_cta2,
+                                type: EnvoyButtonTypes.secondary,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return ManualSetup();
+                                  }));
+                                },
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              EnvoyButton(
+                                S().envoy_welcome_screen_cta1,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return MagicSetupTutorial();
+                                  }));
+                                },
+                              ),
+                            ],
                           ),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                          EnvoyButton(
-                            S().envoy_welcome_screen_cta1,
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return MagicSetupTutorial();
-                              }));
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ))),
+              )),
         ),
       ),
     );

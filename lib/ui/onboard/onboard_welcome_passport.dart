@@ -159,102 +159,111 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
           context,
           Padding(
               padding: const EdgeInsets.only(
-                  right: EnvoySpacing.medium1,
-                  left: EnvoySpacing.medium1,
-                  top: EnvoySpacing.medium1,
-                  bottom: EnvoySpacing.large2),
-              child: SizedBox.expand(
+                right: EnvoySpacing.medium1,
+                left: EnvoySpacing.medium1,
+                top: EnvoySpacing.medium1,
+              ),
+              child: Flexible(
+                child: SingleChildScrollView(
                   child: Container(
-                height: max(MediaQuery.of(context).size.height * 0.38, 300),
-                margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-                padding: EdgeInsets.only(top: EnvoySpacing.large1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(),
-                    Column(
+                    margin: EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.large1,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                S().passport_welcome_screen_heading,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.body.copyWith(
-                                  fontSize: 20,
-                                  color: EnvoyColors.gray1000,
-                                  decoration: TextDecoration.none,
-                                ),
+                        SizedBox(height: EnvoySpacing.small),
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.medium1),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    S().passport_welcome_screen_heading,
+                                    textAlign: TextAlign.center,
+                                    style: EnvoyTypography.body.copyWith(
+                                      fontSize: 20,
+                                      color: EnvoyColors.gray1000,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  Padding(
+                                      padding:
+                                          EdgeInsets.all(EnvoySpacing.small)),
+                                  Text(
+                                    S().passport_welcome_screen_subheading,
+                                    style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.inactiveDark,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                  padding: EdgeInsets.all(EnvoySpacing.small)),
-                              Text(
-                                S().passport_welcome_screen_subheading,
-                                style: EnvoyTypography.info.copyWith(
-                                  color: EnvoyColors.inactiveDark,
-                                  decoration: TextDecoration.none,
-                                ),
-                                textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: EnvoySpacing.medium3),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.medium1),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                      padding: EdgeInsets.all(EnvoySpacing.xs)),
+                                  LinkText(
+                                    text: S().passport_welcome_screen_cta3,
+                                    textStyle: EnvoyTypography.button.copyWith(
+                                      color: EnvoyColors.inactiveDark,
+                                    ),
+                                    linkStyle: EnvoyTypography.button.copyWith(
+                                        color: EnvoyColors.accentPrimary),
+                                    onTap: () {
+                                      launchUrl(Uri.parse(
+                                          "https://foundationdevices.com/passport"));
+                                    },
+                                  ),
+                                  Padding(
+                                      padding:
+                                          EdgeInsets.all(EnvoySpacing.medium1)),
+                                  EnvoyButton(
+                                    S().passport_welcome_screen_cta2,
+                                    type: EnvoyButtonTypes.secondary,
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return SingleImportPpIntroPage();
+                                      }));
+                                    },
+                                  ),
+                                  Padding(
+                                      padding:
+                                          EdgeInsets.all(EnvoySpacing.small)),
+                                  EnvoyButton(
+                                    S().passport_welcome_screen_cta1,
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return TouPage();
+                                      }));
+                                    },
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: EnvoySpacing.medium3),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                              LinkText(
-                                text: S().passport_welcome_screen_cta3,
-                                textStyle: EnvoyTypography.button.copyWith(
-                                  color: EnvoyColors.inactiveDark,
-                                ),
-                                linkStyle: EnvoyTypography.button
-                                    .copyWith(color: EnvoyColors.accentPrimary),
-                                onTap: () {
-                                  launchUrl(Uri.parse(
-                                      "https://foundationdevices.com/passport"));
-                                },
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.all(EnvoySpacing.small)),
-                              EnvoyButton(
-                                S().passport_welcome_screen_cta2,
-                                type: EnvoyButtonTypes.secondary,
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return SingleImportPpIntroPage();
-                                  }));
-                                },
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.all(EnvoySpacing.small)),
-                              EnvoyButton(
-                                S().passport_welcome_screen_cta1,
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return TouPage();
-                                  }));
-                                },
-                              )
-                            ],
-                          ),
-                        ),
+                            ),
+                          ],
+                        )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
-              ))),
+              )),
         ),
       ),
     );
