@@ -555,14 +555,31 @@ class EnvoyStorage {
   }
 
   Future<RBFState?> getRBFBoostState(String txId, String accountId) async {
-    Map<dynamic, dynamic>? data = (await rbfBoostStore.record(txId).get(_db));
+    RecordSnapshot? data =
+        await rbfBoostStore.findFirst(_db, finder: Finder(filter: Filter.custom(
+      (record) {
+        final data = record.value;
+        if (data != null && data is Map) {
+          if (data["originalTxId"] == txId) {
+            return true;
+          }
+          if (data["newTxId"] == txId) {
+            return true;
+          }
+        }
+        return false;
+      },
+    )));
     if (data != null) {
-      final rbfState = RBFState.fromJson(data as Map<String, Object?>);
-      if (rbfState.accountId == accountId) {
-        return rbfState;
+      RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
+      if (rbf.accountId == accountId) {
+        return rbf;
+      } else {
+        return null;
       }
+    } else {
+      return null;
     }
-    return null;
   }
 
   Future addCancelState(Map<String, dynamic> payload) async {
