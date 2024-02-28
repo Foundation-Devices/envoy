@@ -56,10 +56,34 @@ class TxRBFButton extends ConsumerStatefulWidget {
 class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   bool _isPressed = false;
   bool _isLoading = false;
+  bool _canBoost = false;
 
   @override
   void initState() {
     super.initState();
+    _checkIfCanBoost();
+  }
+
+  Future<void> _checkIfCanBoost() async {
+    try {
+      final account = ref.read(selectedAccountProvider);
+      if (account == null) {
+        return;
+      }
+      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+
+      rust.RBFfeeRates? rates = await account.wallet
+          .getBumpedPSBTMaxFeeRate(widget.tx.txId, lockedUtxos);
+
+      if (rates.min_fee_rate > 0) {
+        setState(() {
+          _canBoost = true;
+        });
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future _checkRBF(BuildContext context) async {
@@ -72,6 +96,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         replaceExisting: true,
         duration: Duration(seconds: 4),
         message: "Error: Transaction Confirmed",
+        // TODO: Figma
         icon: Icon(
           Icons.info_outline,
           color: EnvoyColors.solidWhite,
@@ -117,13 +142,21 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         ref.read(spendAddressProvider.notifier).state = receiveOutPut.address;
         ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
 
+        int minRate = minFeeRate.toInt();
+        int maxRate = rates.max_fee_rate.toInt();
+        int fasterFeeRate = minRate + 1;
+
+        ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
+        if (minRate == maxRate) {
+          fasterFeeRate = maxRate;
+        } else {
+          if (minRate < maxRate) {
+            fasterFeeRate = (maxRate + 1).clamp(minRate, maxRate);
+          }
+        }
         ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
           standardFeeRate: minFeeRate,
-
-          ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
-          fasterFeeRate: (minFeeRate + 1)
-              .clamp(minFeeRate.toInt(), rates.max_fee_rate.toInt())
-              .toInt(),
+          fasterFeeRate: fasterFeeRate,
           minFeeRate: rates.min_fee_rate.ceil().toInt(),
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
@@ -138,22 +171,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
     } catch (e, stackTrace) {
       print(stackTrace);
-      if (e.toString().contains("Insufficient")) {
-        EnvoyToast(
-          backgroundColor: EnvoyColors.danger,
-          replaceExisting: true,
-          duration: Duration(seconds: 4),
-          message: "Error: Insufficient Funds",
-          icon: Icon(
-            Icons.info_outline,
-            color: EnvoyColors.solidWhite,
-          ),
-        ).show(context);
-        setState(() {
-          _isLoading = false;
-        });
-        return;
-      }
       EnvoyToast(
         backgroundColor: EnvoyColors.danger,
         replaceExisting: true,
@@ -184,7 +201,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         });
       },
       onTap: () {
-        if (_isLoading) return;
+        if (_isLoading || !_canBoost) return;
         _showRBFDialog(context);
       },
       onTapCancel: () {
@@ -193,7 +210,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         });
       },
       child: _buildButtonContainer(
-          active: !_isLoading,
+          active: _canBoost,
           child: _isLoading
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -237,8 +254,12 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     required Widget child,
     bool active = true,
   }) {
-    Color buttonColor =
-        _isPressed ? EnvoyColors.teal500.withOpacity(0.8) : EnvoyColors.teal500;
+    Color buttonColor = active
+        ? (_isPressed
+            ? EnvoyColors.teal500.withOpacity(0.8)
+            : EnvoyColors.teal500)
+        : Colors.grey;
+
     return AnimatedContainer(
         duration: Duration(milliseconds: 200),
         height: 28,

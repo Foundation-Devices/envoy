@@ -10,18 +10,22 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_details_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/easing.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -224,9 +228,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       thumbColor: Colors.white38,
       thumbVisibility: totalTagHeight >= maxContainerHeight,
 
-      ///to show scroller outside of the main container widget
-      padding: EdgeInsets.only(top: 200, right: 24, left: 2),
-
       interactive: true,
 
       ///sets up top margin for scroller
@@ -333,10 +334,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                           splashColor: Colors
                                                               .transparent,
                                                           onTap: () {
-                                                            setState(() {
-                                                              _selectedCoin =
-                                                                  coin;
-                                                            });
+                                                            selectCoin(
+                                                                context, coin);
                                                           },
                                                           child: SizedBox(
                                                             height: 38,
@@ -423,9 +422,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     return GestureDetector(
       onTap: () {
         if (tag.coins.length == 1) {
-          setState(() {
-            _selectedCoin = tag.coins.first;
-          });
+          selectCoin(context, tag.coins.first);
         }
       },
       child: Consumer(
@@ -695,6 +692,29 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         },
       ),
     );
+  }
+
+  void selectCoin(BuildContext context, Coin coin) {
+    final selectedAccount = ref.read(selectedAccountProvider);
+    final transactions = ref.read(transactionsProvider(selectedAccount!.id));
+    final tx = transactions
+        .firstWhereOrNull((element) => element.txId == coin.utxo.txid);
+    if (tx != null) {
+      setState(() {
+        _selectedCoin = coin;
+      });
+    } else {
+      EnvoyToast(
+        backgroundColor: EnvoyColors.danger,
+        replaceExisting: true,
+        duration: Duration(seconds: 4),
+        message: "Error: Transaction Not found",
+        icon: Icon(
+          Icons.info_outline,
+          color: Colors.white,
+        ),
+      ).show(context);
+    }
   }
 }
 

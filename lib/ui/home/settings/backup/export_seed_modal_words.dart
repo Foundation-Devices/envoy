@@ -193,7 +193,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
             children: [
-              Text("${word.item1}.", style: textTheme),
+              Text("${word.item1}. ", style: textTheme),
               Flexible(
                   child: Text(
                 "${word.item2}",

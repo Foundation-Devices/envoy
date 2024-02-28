@@ -483,7 +483,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              "Recovering your Envoy wallet", //TODO: FIGMA
+              S().magic_setup_recovery_retry_header,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),

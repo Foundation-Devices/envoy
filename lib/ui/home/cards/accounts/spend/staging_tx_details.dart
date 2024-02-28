@@ -463,9 +463,14 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                   alignment:
                                                                       Alignment
                                                                           .centerRight,
-                                                                  child: totalChangeAmount == 0
-                                                                      ? Text(S()
-                                                                          .coincontrol_tx_detail_no_change)
+                                                                  child: totalChangeAmount ==
+                                                                          0
+                                                                      ? Text(
+                                                                          S().coincontrol_tx_detail_no_change,
+                                                                          style: EnvoyTypography
+                                                                              .body
+                                                                              .copyWith(color: EnvoyColors.textTertiary),
+                                                                        )
                                                                       : EnvoyAmount(
                                                                           unit:
                                                                               formatUnit,

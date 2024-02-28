@@ -497,6 +497,8 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
+    int feePercentage = ((psbt.fee / (psbt.fee + psbt.sent)) * 100).round();
+
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -576,6 +578,12 @@ class _TransactionReviewScreenState
               );
             }),
           ),
+          if (feePercentage >= 25)
+            SliverToBoxAdapter(
+                child: Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.small),
+              child: feeOverSpendWarning(feePercentage),
+            )),
           // Special warning if we are sending max or the fee changed the TX
           if (transactionModel.mode == SpendMode.sendMax || showFeeChangeNotice)
             SliverToBoxAdapter(
@@ -643,6 +651,23 @@ class _TransactionReviewScreenState
           ),
         ),
       ),
+    );
+  }
+
+  Widget feeOverSpendWarning(int feePercentage) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: EnvoySpacing.small),
+          child: EnvoyIcon(EnvoyIcons.alert,
+              size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
+        ),
+        Text("Over " + feePercentage.toString() + "%",
+            // TODO: Figma
+            style:
+                EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
+      ],
     );
   }
 
@@ -748,7 +773,10 @@ class _DiscardTransactionDialogState
               GoRouter.of(context).pop(true);
               await Future.delayed(Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
-              context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+              GoRouter.of(context)
+                  .pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
+              await Future.delayed(Duration(milliseconds: 50));
+              GoRouter.of(context).pop();
             },
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
