@@ -157,7 +157,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           return OnboardPageBackground(
             child: Container(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
@@ -526,7 +526,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   Widget _backupNotFound(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(

@@ -106,7 +106,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 backgroundColor: Colors.transparent,
                 appBar: widget.appBar,
                 body: Align(
-                  alignment: Alignment.topCenter,
+                  alignment: Alignment.center,
                   child: this.widget.header,
                 ),
                 bottomNavigationBar: Container(

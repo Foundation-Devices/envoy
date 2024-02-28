@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
   const WalletSetupSuccess({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
         child: Material(
             child: Container(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Transform.scale(
@@ -53,15 +54,19 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(44.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2,
+                        horizontal: EnvoySpacing.medium1),
                     child: Column(
                       children: [
                         Text(
                           S().wallet_setup_success_heading,
                           style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 36),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.medium3),
                           child: Text(
                             S().wallet_setup_success_subheading,
                             style: Theme.of(context)
@@ -75,7 +80,8 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
                     child: Consumer(
                       builder: (context, ref, child) {
                         return OnboardingButton(
