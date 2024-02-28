@@ -117,6 +117,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       ),
                       child: ListView(
                         shrinkWrap: true,
+                        padding: EdgeInsets.zero,
                         children: [
                           CoinTagListItem(
                             title: S().coindetails_overlay_address,
