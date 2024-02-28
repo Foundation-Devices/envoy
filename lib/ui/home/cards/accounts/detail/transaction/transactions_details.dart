@@ -77,8 +77,10 @@ class _TransactionsDetailsWidgetState
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
     final accountAccentColor = widget.account.color;
-    final trailingTextStyle =
-        EnvoyTypography.info.copyWith(color: EnvoyColors.textPrimary);
+    final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: EnvoyColors.textPrimary,
+          fontWeight: FontWeight.w600,
+        );
 
     bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
     final address = tx.address ?? "";
@@ -91,10 +93,10 @@ class _TransactionsDetailsWidgetState
     if (cancelState?.newTxId == tx.txId) {
       RBFPossible = false;
     }
-    double cardRadius = 20;
+    double cardRadius = 26;
 
     return GestureDetector(
-      onTapUp: (details) {
+      onTapDown: (details) {
         final RenderBox box =
             _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
         final Offset localOffset = box.globalToLocal(details.globalPosition);
@@ -102,6 +104,12 @@ class _TransactionsDetailsWidgetState
         if (!box.paintBounds.contains(localOffset)) {
           Navigator.of(context).pop();
         }
+        //
+        // if(details.globalPosition.dy > size.height){
+        //   return;
+        //   Navigator.of(context).pop();
+        // }
+        // if(details.globalPosition.dy > size.height)
       },
       child: Scaffold(
         appBar: AppBar(
@@ -143,7 +151,7 @@ class _TransactionsDetailsWidgetState
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
-                    color: Colors.black, width: 1.5, style: BorderStyle.solid),
+                    color: Colors.black, width: 2, style: BorderStyle.solid),
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -154,13 +162,15 @@ class _TransactionsDetailsWidgetState
               ),
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(cardRadius - 3)),
                     border: Border.all(
                         color: accountAccentColor,
-                        width: 1.5,
+                        width: 2,
                         style: BorderStyle.solid)),
                 child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(cardRadius - 2)),
                     child: StripesBackground(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -169,9 +179,9 @@ class _TransactionsDetailsWidgetState
                           Container(
                             height: 36,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.xs),
-                            margin: EdgeInsets.all(EnvoySpacing.xs),
+                            padding: EdgeInsets.symmetric(horizontal: 4),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 4),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(EnvoySpacing.medium2)),
@@ -213,6 +223,7 @@ class _TransactionsDetailsWidgetState
                               ),
                               child: ListView(
                                 shrinkWrap: true,
+                                padding: EdgeInsets.all(0),
                                 children: [
                                   CoinTagListItem(
                                     title: S().coindetails_overlay_address,
@@ -397,16 +408,6 @@ class _TransactionsDetailsWidgetState
                                       ),
                                     ),
                                   ),
-                                  if (tx.pullPaymentId != null ||
-                                      tx.type == TransactionType.btcPay)
-                                    CoinTagListItem(
-                                      title: S().coindetails_overlay_paymentID,
-                                      icon: EnvoyIcon(EnvoyIcons.btcPay,
-                                          size: EnvoyIconSize.extraSmall),
-                                      trailing: Text(
-                                          tx.pullPaymentId ?? tx.txId,
-                                          style: trailingTextStyle),
-                                    ),
                                   RBFPossible
                                       ? CancelTxButton(
                                           transaction: tx,
@@ -476,8 +477,7 @@ class _TransactionsDetailsWidgetState
       required Widget trailing,
       Color? color}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,

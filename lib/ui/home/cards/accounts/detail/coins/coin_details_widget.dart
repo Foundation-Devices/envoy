@@ -19,10 +19,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
@@ -49,11 +47,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     final accountTransactions =
         ref.read(transactionsProvider(widget.tag.account));
     final tx = accountTransactions
-        .firstWhereOrNull((element) => element.txId == widget.coin.utxo.txid);
-    //if tx is not found in the list of transactions,
-    if (tx == null) {
-      return Container();
-    }
+        .firstWhere((element) => element.txId == widget.coin.utxo.txid);
     final utxoAddress = tx.outputs?[widget.coin.utxo.vout] ?? "";
     final coinTag = widget.tag;
     final coin = widget.coin;
@@ -123,6 +117,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       ),
                       child: ListView(
                         shrinkWrap: true,
+                        padding: EdgeInsets.zero,
                         children: [
                           CoinTagListItem(
                             title: S().coindetails_overlay_address,
