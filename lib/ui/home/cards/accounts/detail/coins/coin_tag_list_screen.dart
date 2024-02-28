@@ -41,7 +41,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
             return ListView.builder(
               physics: BouncingScrollPhysics(),
               //accommodate bottom nav bar spacing
-              padding: EdgeInsets.only(bottom: 120),
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
               controller: _scrollController,
               itemCount: tags.length,
               itemBuilder: (BuildContext context, int index) {

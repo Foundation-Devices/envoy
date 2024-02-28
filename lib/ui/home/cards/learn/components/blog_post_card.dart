@@ -98,6 +98,8 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                       widget.blog.title,
                       style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.textPrimary),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: EnvoySpacing.xs),
                     Row(

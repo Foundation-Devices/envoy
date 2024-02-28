@@ -16,6 +16,7 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -103,7 +104,11 @@ class _SendCardState extends ConsumerState<SendCard>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.only(
+                        top: EnvoySpacing.medium3,
+                        bottom: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2,
+                        right: EnvoySpacing.medium2),
                     child: new AddressEntry(
                         account: account!,
                         initalAddress: _addressText,

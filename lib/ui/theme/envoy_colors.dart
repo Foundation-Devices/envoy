@@ -24,6 +24,7 @@ class EnvoyColors {
   static const Color apple500 = Color(0xff3fde4a);
   static const Color sunglow500 = Color(0xffffbb33);
   static const Color chilli500 = Color(0xffe23912);
+  static const Color tealLight = Color(0xFF00BDCD);
 
   static const Color textPrimary = gray1000;
   static const Color textSecondary = gray800;

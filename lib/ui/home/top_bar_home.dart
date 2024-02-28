@@ -165,24 +165,25 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         ),
       ),
       title: Stack(fit: StackFit.loose, alignment: Alignment.center, children: [
-        AnimatedSwitcher(
-            duration: _animationsDuration,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
-            child: FittedBox(
-              key: ValueKey<String>(title),
-              fit: BoxFit.fitWidth,
-              child: Text(
-                title.toUpperCase(),
-              ),
-            )),
+        Center(
+          child: AnimatedSwitcher(
+              duration: _animationsDuration,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: FittedBox(
+                key: ValueKey<String>(title),
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  title.toUpperCase(),
+                ),
+              )),
+        ),
         SizedBox(height: 50, child: IndicatorShield())
       ]),
-      centerTitle: true,
       actions: [
 // Right action
         if (!_inEditMode)
