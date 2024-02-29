@@ -163,8 +163,8 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                 left: EnvoySpacing.medium1,
                 top: EnvoySpacing.medium1,
               ),
-              child: Flexible(
-                child: SingleChildScrollView(
+              child: SingleChildScrollView(
+                child: Flexible(
                   child: Container(
                     margin: EdgeInsets.symmetric(
                       vertical: EnvoySpacing.large1,

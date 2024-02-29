@@ -139,7 +139,8 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                         ...stepsHeadings.map((heading) {
                           return Container(
                             padding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 14),
+                                vertical: EnvoySpacing.xs,
+                                horizontal: EnvoySpacing.small),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -150,8 +151,11 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 24, horizontal: 22),
+                                  padding: const EdgeInsets.only(
+                                    top: EnvoySpacing.medium1,
+                                    left: EnvoySpacing.medium1,
+                                    right: EnvoySpacing.medium1,
+                                  ),
                                   child: Text(
                                     stepSubHeadings[
                                         stepsHeadings.indexOf(heading)],
@@ -247,6 +251,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
+                  constraints: BoxConstraints.tight(Size.fromHeight(240)),
                   child: Image.asset(
                     "assets/exclamation_icon.png",
                     height: 180,
@@ -256,15 +261,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 ),
                 Flexible(
                   child: SingleChildScrollView(
-                    child: Container(
-                      height: 420,
-
-                      /// ///////////////////////////////////////////////////////////////////////
                       child: isAndroid
                           ? _androidBackUPInfo(context)
-                          : _recoverStepsInfo(context),
-                    ),
-                  ),
+                          : _recoverStepsInfo(context)),
                 )
               ],
             ),
@@ -275,7 +274,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
 
   _recoverStepsInfo(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(EnvoySpacing.xs),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -291,7 +289,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2)),
                 Text(
                   S().recovery_scenario_subheading,
                   textAlign: TextAlign.center,
@@ -300,7 +300,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       .bodySmall
                       ?.copyWith(fontSize: 13),
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium3)),
                 ListTile(
                   minLeadingWidth: 20,
                   dense: true,
@@ -389,7 +391,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               ],
             ),
           ),
-          Spacer(),
+          Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
@@ -418,7 +422,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
 
   _androidBackUPInfo(BuildContext context) {
     return Container(
-        //padding: EdgeInsets.all(EnvoySpacing.small),
         child: PageTransitionSwitcher(
       reverse: _androidBackupInfoPage == 1,
       duration: Duration(milliseconds: 600),
@@ -438,18 +441,18 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
       child: _androidBackupInfoPage == 0
           ? Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                 Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       S().android_backup_info_heading,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium3)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.medium1),
@@ -468,10 +471,13 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                     ),
                   ],
                 ),
-                Spacer(),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium3)),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1),
+                    horizontal: EnvoySpacing.small,
+                  ),
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
