@@ -1078,7 +1078,19 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
             } else if change_amount != 0 {
                 max_fee = change_amount;
                 #[cfg(debug_assertions)]
-                println!("RBF: Using change: {} ", max_fee);
+                println!("RBF: max_fee Using change: {} ", max_fee);
+            } else if available_balance < amount {
+                //if the amount is greater than available balance,
+                // then use available balance as max fee, this intended to fail
+                // so we can get the available from the error
+                max_fee = available_balance;
+                #[cfg(debug_assertions)]
+                println!("RBF: max_fee Using available balance: {} ", max_fee);
+            } else if min_fee_rate != 0.0 {
+                return RBFfeeRates {
+                    min_fee_rate,
+                    max_fee_rate: min_fee_rate,
+                };
             }
 
             if max_fee == 0 {
