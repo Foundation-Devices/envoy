@@ -47,3 +47,34 @@ String parseNodeUrl(String nodeUrl) {
 
   return nodeUrl;
 }
+
+bool isPrivateAddress(String ipAddress) {
+  if (ipAddress.startsWith(TCP_PREFIX) || ipAddress.startsWith(SSL_PREFIX)) {
+    ipAddress = ipAddress.substring(TCP_PREFIX.length);
+  }
+
+  List<String> parts = ipAddress.split('.');
+
+  if (parts.length != 4) {
+    // IP address should have four parts separated by dots
+    return false;
+  }
+
+  try {
+    int part1 = int.parse(parts[0]);
+    int part2 = int.parse(parts[1]);
+
+    // Check if the first two parts are within the private address ranges
+    if ((part1 == 10) ||
+        (part1 == 172 && part2 >= 16 && part2 <= 31) ||
+        (part1 == 192 && part2 == 168)) {
+      return true;
+    }
+  } catch (e) {
+    // Parsing error
+    return false;
+  }
+
+  // Not a private address
+  return false;
+}

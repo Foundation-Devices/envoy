@@ -53,7 +53,7 @@ class _AboutPageState extends State<AboutPage> {
               children: [
                 AboutText(S().about_openSourceLicences),
                 AboutButton(
-                  "Show", //TODO: FIGMA
+                  S().about_show,
                   onTap: () {
                     showLicensePage(
                         context: context,
@@ -78,7 +78,7 @@ class _AboutPageState extends State<AboutPage> {
               children: [
                 AboutText(S().about_termsOfUse),
                 AboutButton(
-                  "Show", //TODO: FIGMA
+                  S().about_show,
                   onTap: () {
                     launchUrlString("https://foundationdevices.com/terms/");
                   },
@@ -89,9 +89,9 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText(S().about_privacyPolicy), //TODO: FIGMA
+                AboutText(S().about_privacyPolicy),
                 AboutButton(
-                  "Show", //TODO: FIGMA
+                  S().about_show,
                   onTap: () {
                     launchUrlString("https://foundationdevices.com/privacy/");
                   },

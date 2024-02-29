@@ -240,6 +240,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SettingText(
+                      "Allow LAN addresses over clearnet"), // TODO: Need design for this
+                  SettingToggle(
+                    s.allowLANOverClearnet,
+                    s.setLANPermission,
+                  ),
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(marginBetweenItems)),
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
