@@ -80,6 +80,10 @@ final filteredTransactionsProvider =
 
 //We keep a cache of RBFed transactions so that we can remove the original tx from the list unless they are confirmed
 final RBFBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
+final walletTransactionsProvider =
+    Provider.family<List<Transaction>, String?>((ref, String? accountId) {
+  return ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+});
 
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -87,9 +91,17 @@ final transactionsProvider =
       ref.watch(pendingTransactionsProvider(accountId));
   List<Transaction> transactions = [];
   List<Transaction> walletTransactions =
-      ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+      ref.watch(walletTransactionsProvider(accountId));
   transactions.addAll(walletTransactions);
-  transactions.addAll(pendingTransactions);
+  //avoid duplicates
+  pendingTransactions.forEach((pending) {
+    final tx = transactions
+        .firstWhereOrNull((element) => element.txId == pending.txId);
+    final rbfOriginals = ref.watch(RBFBroadCastedTxProvider);
+    if (tx == null && !rbfOriginals.contains(pending.txId)) {
+      transactions.add(pending);
+    }
+  });
 
   ref.watch(RBFBroadCastedTxProvider).forEach((txId) {
     final tx = transactions.firstWhereOrNull((element) => element.txId == txId);
@@ -99,9 +111,17 @@ final transactionsProvider =
   });
   //listen to transactions changes, prune pending transactions if needed
   //we use provider to retrieve all types of transactions,
-  //in this way less database calls are made, since provider will cache the result
+  //in this way less database calls are made,
+  //since provider will cache the result
   ref.listenSelf((previous, next) {
-    prunePendingTransactions(ref, next);
+    List<Transaction> pendingTransactions =
+        ref.read(pendingTransactionsProvider(accountId));
+    List<Transaction> walletTransactions =
+        ref.read(walletTransactionsProvider(accountId));
+    prunePendingTransactions(ref, [
+      ...pendingTransactions,
+      ...walletTransactions,
+    ]);
   });
 
   return transactions;
@@ -147,7 +167,11 @@ final isTxBoostedProvider = Provider.family<bool?, String>(
     return ref.watch(RBFTxStateProvider(param)).when(
           data: (data) {
             if (data != null) {
-              return true;
+              if (data.newTxId == param) {
+                return true;
+              } else {
+                return false;
+              }
             }
             return null;
           },
