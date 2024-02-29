@@ -286,6 +286,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             text: S().filter_sortBy_oldest,
             checked: _sortState == TransactionSortTypes.oldestFirst,
             onTap: () {
+              Haptics.selectionClick();
               setState(() {
                 _sortState = TransactionSortTypes.oldestFirst;
               });
