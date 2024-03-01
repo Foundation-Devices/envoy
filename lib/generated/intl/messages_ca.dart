@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ca';
 
   static String m0(period) =>
-      "This voucher expired on ${period}.\n\n\nPlease contact the issuer with any voucher-related questions.";
+      "Aquest val va caducar el dia {període} . Si us plau, poseu-vos en contacte amb l\'emissor amb qualsevol pregunta relacionada amb el val.";
 
   static String m1(tagName) =>
       "La teva etiqueta ${tagName} està buida. Vols eliminar-la?";
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "OK": MessageLookupByLibrary.simpleMessage("D\'ACORD"),
-        "_": MessageLookupByLibrary.simpleMessage("Add Node"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -136,19 +136,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacitat"),
         "btcpay_connection_modal_expired_subheading": m0,
         "btcpay_connection_modal_fail_heading":
-            MessageLookupByLibrary.simpleMessage("Voucher Expired"),
+            MessageLookupByLibrary.simpleMessage("Val de descompte caducat"),
         "btcpay_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is unable to connect with the issuer\'s BTCPay store.\n\nPlease contact the issuer or try again later."),
+                "Envoy no es pot connectar amb la botiga BTCPay de l\'emissor. Poseu-vos en contacte amb l\'emissor o torneu-ho a provar més tard."),
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator."),
+                "El val escanejat no s\'ha creat amb suport onchain. Poseu-vos en contacte amb el creador del val."),
         "btcpay_redeem_modal_description":
-            MessageLookupByLibrary.simpleMessage("Description:"),
+            MessageLookupByLibrary.simpleMessage("Descripció:"),
         "btcpay_redeem_modal_name":
-            MessageLookupByLibrary.simpleMessage("Name:"),
+            MessageLookupByLibrary.simpleMessage("Nom:"),
         "btcpay_redeem_modal_title":
-            MessageLookupByLibrary.simpleMessage("Title:"),
+            MessageLookupByLibrary.simpleMessage("Títol:"),
         "card_coin_locked":
             MessageLookupByLibrary.simpleMessage("Moneda Bloquejada"),
         "card_coin_selected":
@@ -287,14 +287,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALLS DE LA MONEDA"),
         "coindetails_overlay_noBoostNoFunds_heading":
-            MessageLookupByLibrary.simpleMessage("Cannot Boost Transaction"),
+            MessageLookupByLibrary.simpleMessage(
+                "No es pot augmentar la transacció"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again."),
+                "Això es deu al fet que no hi ha prou monedes confirmades o desbloquejades per triar. Permet que les monedes pendents confirmin o desbloquegin algunes i torneu-ho a provar."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Notes"),
         "coindetails_overlay_paymentID":
-            MessageLookupByLibrary.simpleMessage("Payment ID"),
+            MessageLookupByLibrary.simpleMessage("ID de pagament"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Estat"),
         "coindetails_overlay_status_confirmed":
@@ -1081,18 +1082,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Per recuperar la teva cartera d\'Envoy, segueix aquestes instruccions senzilles."),
         "replaceByFee_boost_chosenFeeAddCoinsWarning":
             MessageLookupByLibrary.simpleMessage(
-                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
+                "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. "),
         "replaceByFee_boost_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Aumenta la transacció"),
         "replaceByFee_boost_fail_header": MessageLookupByLibrary.simpleMessage(
             "No s\'ha pogut acelerar la teva transacció"),
         "replaceByFee_boost_reviewCoinSelection":
-            MessageLookupByLibrary.simpleMessage("Review Coin Selection"),
+            MessageLookupByLibrary.simpleMessage(
+                "Revisa la selecció de monedes"),
         "replaceByFee_boost_success_header":
             MessageLookupByLibrary.simpleMessage(
                 "La teva transacció s\'ha acelerat"),
         "replaceByFee_boost_tx_boostFee":
-            MessageLookupByLibrary.simpleMessage("Impulsar la Transacción"),
+            MessageLookupByLibrary.simpleMessage("Tarifa d\'Augment"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "La vostra transacció està a punt per ser impulsada"),
         "replaceByFee_cancel_confirm_heading":
@@ -1102,7 +1104,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "No s\'ha pogut cancel·lar la teva transacció"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Quota de Cancel·lació"),
+            MessageLookupByLibrary.simpleMessage("Quota de cancel·lació"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
             MessageLookupByLibrary.simpleMessage(
                 "Continueu amb la cancel·lació"),
@@ -1125,12 +1127,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Augmenteu la tarifa adjunta a la vostra transacció per accelerar el temps de confirmació."),
         "replaceByFee_edit_transaction_requiredAmount":
-            MessageLookupByLibrary.simpleMessage("Required to Boost"),
+            MessageLookupByLibrary.simpleMessage("Necessari per Augmentar"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. "),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
+        "send_keyboard_address_loading":
+            MessageLookupByLibrary.simpleMessage("Carregant…"),
         "send_keyboard_amount_enter_valid_address":
             MessageLookupByLibrary.simpleMessage(
                 "Introdueix una adreça vàlida"),
@@ -1196,8 +1200,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Això pot trigar uns quants segons"),
-        "tagDetails_EditTagName":
-            MessageLookupByLibrary.simpleMessage("Edit Tag Name"),
+        "tagDetails_EditTagName": MessageLookupByLibrary.simpleMessage(
+            "Editar el nom de l\'etiqueta"),
         "tagSelection_example1":
             MessageLookupByLibrary.simpleMessage("Despeses"),
         "tagSelection_example2":

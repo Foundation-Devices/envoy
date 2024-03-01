@@ -62,10 +62,10 @@ class S {
     );
   }
 
-  /// `Add Node`
+  /// `Secondary action`
   String get _ {
     return Intl.message(
-      'Add Node',
+      'Secondary action',
       name: '_',
       desc: '',
       args: [],
@@ -5008,20 +5008,20 @@ class S {
     );
   }
 
-  /// `Cancelation Fee`
+  /// `Cancellation fee`
   String get replaceByFee_cancel_overlay_modal_cancelationFees {
     return Intl.message(
-      'Cancelation Fee',
+      'Cancellation fee',
       name: 'replaceByFee_cancel_overlay_modal_cancelationFees',
       desc: '',
       args: [],
     );
   }
 
-  /// `Proceed with cancelation`
+  /// `Proceed with cancellation`
   String get replaceByFee_cancel_overlay_modal_proceedWithCancelation {
     return Intl.message(
-      'Proceed with cancelation',
+      'Proceed with cancellation',
       name: 'replaceByFee_cancel_overlay_modal_proceedWithCancelation',
       desc: '',
       args: [],
@@ -5123,6 +5123,16 @@ class S {
     return Intl.message(
       'Confirm',
       name: 'send_keyboard_address_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading...`
+  String get send_keyboard_address_loading {
+    return Intl.message(
+      'Loading...',
+      name: 'send_keyboard_address_loading',
       desc: '',
       args: [],
     );
@@ -5408,10 +5418,10 @@ class S {
     );
   }
 
-  /// `This might a take few seconds`
+  /// `This might take a few seconds`
   String get stalls_before_sending_tx_scanning_subheading {
     return Intl.message(
-      'This might a take few seconds',
+      'This might take a few seconds',
       name: 'stalls_before_sending_tx_scanning_subheading',
       desc: '',
       args: [],
