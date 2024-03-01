@@ -18,7 +18,6 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
@@ -305,10 +304,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..broadcastProgress = BroadcastProgress.inProgress;
       Psbt psbt = state.psbt!;
       //Broadcast transaction
+      int port = Settings().getPort(account.wallet.network);
       await account.wallet.broadcastTx(
-          Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port,
-          psbt.rawTx);
+          Settings().electrumAddress(account.wallet.network), port, psbt.rawTx);
 
       await EnvoyStorage().addPendingTx(
           psbt.txid,

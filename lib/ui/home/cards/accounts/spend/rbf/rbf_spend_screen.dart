@@ -38,7 +38,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
-import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
@@ -527,6 +526,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           replaceExisting: true,
           duration: Duration(seconds: 4),
           message: "Error: Transaction Confirmed",
+          // TODO: Figma
           icon: Icon(
             Icons.info_outline,
             color: EnvoyColors.solidWhite,
@@ -538,12 +538,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
 
+      int port = Settings().getPort(account.wallet.network);
       final txid = await account.wallet.broadcastTx(
-          Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port,
-          psbt.rawTx);
+          Settings().electrumAddress(account.wallet.network), port, psbt.rawTx);
       //wait for BDK to broadcast the transaction
       await Future.delayed(Duration(seconds: 5));
+
       try {
         /// get the raw transaction from the database
         final rawTx =

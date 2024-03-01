@@ -233,6 +233,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   int? _lastHapticIndex;
 
   bool _disableHaptic = false;
+  bool _initializationFinished = false;
   FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
@@ -261,6 +262,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
               duration: Duration(milliseconds: 60), curve: Curves.easeInOut)
           .then((value) {
         _disableHaptic = false;
+        _initializationFinished = true;
       });
     }
   }
@@ -447,6 +449,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     setState(() {
       selectedItem = widget.fees[index].toInt();
     });
-    ref.read(spendFeeRateBlockEstimationProvider.notifier).state = selectedItem;
+    if (_initializationFinished)
+      ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
+          selectedItem;
   }
 }

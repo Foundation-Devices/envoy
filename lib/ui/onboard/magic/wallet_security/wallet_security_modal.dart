@@ -12,6 +12,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:collection/collection.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class WalletSecurityModal extends StatefulWidget {
   final Function onLastStep;
@@ -99,7 +100,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
                     child: IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
@@ -117,45 +119,133 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                           children: [
                             ...stepHeadings.mapIndexed((i, e) {
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 22),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.medium1),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
                                       height: 180,
                                       child: stepIllustration[i],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 22, vertical: 12),
-                                      child: Text(
-                                        stepHeadings[i],
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 22, vertical: 14),
-                                      child: AnimatedSwitcher(
-                                        duration: Duration(milliseconds: 400),
-                                        child: LinkText(
-                                          text: stepSubHeadings[i],
-                                          linkStyle: EnvoyTypography.button
-                                              .copyWith(
-                                                  color: EnvoyColors
-                                                      .accentPrimary),
-                                          onTap: () {
-                                            launchUrl(Uri.parse(Platform
-                                                    .isAndroid
-                                                ? "https://developer.android.com/guide/topics/data/autobackup"
-                                                : "https://support.apple.com/en-us/HT202303"));
-                                          },
+                                    Flexible(
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: EnvoySpacing
+                                                            .small)),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          EnvoySpacing.medium1),
+                                              child: Text(
+                                                stepHeadings[i],
+                                                textAlign: TextAlign.center,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge,
+                                              ),
+                                            ),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: EnvoySpacing
+                                                            .small)),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          EnvoySpacing.medium1),
+                                              child: AnimatedSwitcher(
+                                                duration:
+                                                    Duration(milliseconds: 400),
+                                                child: LinkText(
+                                                  text: stepSubHeadings[i],
+                                                  linkStyle: EnvoyTypography
+                                                      .button
+                                                      .copyWith(
+                                                          color: EnvoyColors
+                                                              .accentPrimary),
+                                                  onTap: () {
+                                                    launchUrl(Uri.parse(Platform
+                                                            .isAndroid
+                                                        ? "https://developer.android.com/guide/topics/data/autobackup"
+                                                        : "https://support.apple.com/en-us/HT202303"));
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: EnvoySpacing
+                                                            .medium2)),
+                                            DotsIndicator(
+                                              totalPages: stepHeadings.length,
+                                              pageController: _pageController,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      EnvoySpacing.medium1,
+                                                  vertical:
+                                                      EnvoySpacing.medium2),
+                                              child: Column(
+                                                children: [
+                                                  AnimatedCrossFade(
+                                                      firstChild: EnvoyButton(
+                                                        (_pageController.hasClients
+                                                                    ? _pageController
+                                                                        .page
+                                                                        ?.toInt()
+                                                                    : 0) ==
+                                                                stepHeadings
+                                                                    .length
+                                                            ? S()
+                                                                .manual_setup_create_and_store_backup_modal_CTA
+                                                            : S()
+                                                                .component_continue,
+                                                        type: EnvoyButtonTypes
+                                                            .primaryModal,
+                                                        onTap: () {
+                                                          int currentPage =
+                                                              _pageController
+                                                                      .page
+                                                                      ?.toInt() ??
+                                                                  0;
+                                                          if (stepHeadings
+                                                                  .length ==
+                                                              currentPage + 1) {
+                                                            widget.onLastStep();
+                                                          } else {
+                                                            _pageController.nextPage(
+                                                                duration: Duration(
+                                                                    milliseconds:
+                                                                        600),
+                                                                curve: Curves
+                                                                    .easeInOut);
+                                                          }
+                                                        },
+                                                      ),
+                                                      secondChild: SizedBox(),
+                                                      crossFadeState:
+                                                          CrossFadeState
+                                                              .showFirst,
+                                                      duration: Duration(
+                                                          milliseconds: 400))
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -166,46 +256,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                           ],
                         ),
                       ),
-                      DotsIndicator(
-                        totalPages: stepHeadings.length,
-                        pageController: _pageController,
-                      ),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 10.0, bottom: 14),
-                      child: Column(
-                        children: [
-                          AnimatedCrossFade(
-                              firstChild: EnvoyButton(
-                                (_pageController.hasClients
-                                            ? _pageController.page?.toInt()
-                                            : 0) ==
-                                        stepHeadings.length
-                                    ? S()
-                                        .manual_setup_create_and_store_backup_modal_CTA
-                                    : S().component_continue,
-                                type: EnvoyButtonTypes.primaryModal,
-                                onTap: () {
-                                  int currentPage =
-                                      _pageController.page?.toInt() ?? 0;
-                                  if (stepHeadings.length == currentPage + 1) {
-                                    widget.onLastStep();
-                                  } else {
-                                    _pageController.nextPage(
-                                        duration: Duration(milliseconds: 600),
-                                        curve: Curves.easeInOut);
-                                  }
-                                },
-                              ),
-                              secondChild: SizedBox(),
-                              crossFadeState: CrossFadeState.showFirst,
-                              duration: Duration(milliseconds: 400))
-                        ],
-                      )),
                 ),
               ],
             ),
