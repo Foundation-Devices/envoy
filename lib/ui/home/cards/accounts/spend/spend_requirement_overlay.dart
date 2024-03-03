@@ -7,6 +7,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -21,6 +22,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -425,21 +427,11 @@ class SpendRequirementOverlayState
                                                 .titleSmall,
                                           ),
                                           Spacer(),
-                                          SizedBox.square(
-                                              dimension: 12,
-                                              child: SvgPicture.asset(
-                                                Settings().displayUnit ==
-                                                        DisplayUnit.btc
-                                                    ? "assets/icons/ic_bitcoin_straight.svg"
-                                                    : "assets/icons/ic_sats.svg",
-                                                color: Color(0xff808080),
-                                              )),
-                                          Text(
-                                            "${getFormattedAmount(totalSelectedAmount, trailingZeroes: true)}",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall,
-                                          ),
+                                          EnvoyAmount(
+                                              amountSats: totalSelectedAmount,
+                                              amountWidgetStyle:
+                                                  AmountWidgetStyle.sendScreen,
+                                              account: widget.account)
                                         ]);
                                         return Row(
                                           mainAxisSize: MainAxisSize.max,
