@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "_": MessageLookupByLibrary.simpleMessage("Add Node"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -1067,9 +1067,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Your transaction could not be canceled"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Cancelation Fee"),
+            MessageLookupByLibrary.simpleMessage("Cancellation fee"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
-            MessageLookupByLibrary.simpleMessage("Proceed with cancelation"),
+            MessageLookupByLibrary.simpleMessage("Proceed with cancellation"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
             MessageLookupByLibrary.simpleMessage("Receiving amount"),
         "replaceByFee_cancel_overlay_modal_subheading":
@@ -1095,6 +1095,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
+        "send_keyboard_address_loading":
+            MessageLookupByLibrary.simpleMessage("Loading..."),
         "send_keyboard_amount_enter_valid_address":
             MessageLookupByLibrary.simpleMessage("Enter valid address"),
         "send_keyboard_amount_insufficient_funds_info":
@@ -1159,7 +1161,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sending transaction"),
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This might a take few seconds"),
+                "This might take a few seconds"),
         "tagDetails_EditTagName":
             MessageLookupByLibrary.simpleMessage("Edit Tag Name"),
         "tagSelection_example1":

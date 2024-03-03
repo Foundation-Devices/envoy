@@ -1097,7 +1097,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Tu transacción no ha podido ser cancelada"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Tasa de Cancelación"),
+            MessageLookupByLibrary.simpleMessage("Tasa de cancelación"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
             MessageLookupByLibrary.simpleMessage("Proceder con cancelación"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
@@ -1125,6 +1125,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas."),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
+        "send_keyboard_address_loading":
+            MessageLookupByLibrary.simpleMessage("Cargando…"),
         "send_keyboard_amount_enter_valid_address":
             MessageLookupByLibrary.simpleMessage(
                 "Introduce una dirección válida"),
