@@ -81,7 +81,6 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           opacity: _getOpacity(),
           child: AnimatedContainer(
             duration: _animationsDuration,
-            padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
             decoration: BoxDecoration(
               color: _getBackgroundColor(),
               borderRadius: BorderRadius.circular(EnvoySpacing.small),

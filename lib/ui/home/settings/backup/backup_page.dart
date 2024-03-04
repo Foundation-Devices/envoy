@@ -20,6 +20,7 @@ import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
   @override
@@ -338,7 +339,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
         dialog: Container(
           width: MediaQuery.of(context).size.width * 0.8,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -355,8 +357,10 @@ class _BackupPageState extends ConsumerState<BackupPage>
                     ),
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(8)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
                       "assets/exclamation_icon.png",
@@ -364,29 +368,35 @@ class _BackupPageState extends ConsumerState<BackupPage>
                       width: 64,
                     ),
                     Padding(padding: EdgeInsets.all(8)),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 200),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                          S().manual_toggle_on_seed_backup_now_modal_heading,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ),
-                    Padding(padding: EdgeInsets.all(6)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                        S().manual_toggle_on_seed_backup_now_modal_subheading,
-                        style: Theme.of(context).textTheme.bodySmall,
-                        textAlign: TextAlign.center,
+                    SingleChildScrollView(
+                      child: Flexible(
+                        child: Column(
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(maxWidth: 200),
+                              padding: const EdgeInsets.all(EnvoySpacing.small),
+                              child: Text(
+                                  S().manual_toggle_on_seed_backup_now_modal_heading,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleLarge),
+                            ),
+                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                            Padding(
+                              padding: const EdgeInsets.all(EnvoySpacing.small),
+                              child: Text(
+                                S().manual_toggle_on_seed_backup_now_modal_subheading,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          ],
+                        ),
                       ),
                     ),
-                    Padding(padding: EdgeInsets.all(5)),
                   ],
                 ),
-                Padding(padding: EdgeInsets.all(8)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                 OnboardingButton(
                     type: EnvoyButtonTypes.primaryModal,
                     label: S().component_continue,
@@ -394,7 +404,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                       Navigator.pop(context);
                       createBackup();
                     }),
-                Padding(padding: EdgeInsets.all(12)),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               ],
             ),
           ),

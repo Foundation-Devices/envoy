@@ -225,7 +225,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
               ),
             ],
           ),
-          padding: const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 35.0),
+          padding: const EdgeInsets.only(
+              left: EnvoySpacing.large1,
+              right: EnvoySpacing.large1,
+              bottom: EnvoySpacing.medium3),
           child: Row(
             children: [
               Expanded(

@@ -91,8 +91,11 @@ class SingleImportPpIntroPage extends StatelessWidget {
                         ),
                       ),
                       Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.medium2)),
+                      Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
+                            horizontal: EnvoySpacing.medium2),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.end,
