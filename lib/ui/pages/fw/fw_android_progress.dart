@@ -81,18 +81,24 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                 });
               },
               children: [
-                OnboardingText(
-                  header: S().envoy_fw_progress_heading,
-                  text: S().envoy_fw_progress_subheading,
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_progress_heading,
+                    text: S().envoy_fw_progress_subheading,
+                  ),
                 ),
-                OnboardingText(
-                  header: S().envoy_fw_success_heading,
-                  text: S().envoy_fw_success_subheading,
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_success_heading,
+                    text: S().envoy_fw_success_subheading,
+                  ),
                 ),
                 Column(
                   children: [
-                    OnboardingText(
-                      header: S().envoy_fw_fail_heading,
+                    SingleChildScrollView(
+                      child: OnboardingText(
+                        header: S().envoy_fw_fail_heading,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),

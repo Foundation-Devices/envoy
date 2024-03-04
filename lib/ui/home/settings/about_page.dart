@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 //import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -51,7 +52,7 @@ class _AboutPageState extends State<AboutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AboutText(S().about_openSourceLicences),
+                Flexible(child: AboutText(S().about_openSourceLicences)),
                 AboutButton(
                   S().about_show,
                   onTap: () {
@@ -118,6 +119,8 @@ class AboutText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: dark ? Colors.white38 : Colors.white,
           fontSize: 15.0,
@@ -143,7 +146,7 @@ class AboutButton extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(15.0))),
           child: Center(
               child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
             child: Text(
               label,
               style: TextStyle(

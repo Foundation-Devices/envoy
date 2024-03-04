@@ -24,11 +24,15 @@ class FwPassportPage extends StatelessWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       text: [
-        OnboardingText(
-          header: S().envoy_fw_passport_heading,
-          text: onboarding
-              ? S().envoy_fw_passport_subheading
-              : S().envoy_fw_passport_onboarded_subheading,
+        Flexible(
+          child: SingleChildScrollView(
+            child: OnboardingText(
+              header: S().envoy_fw_passport_heading,
+              text: onboarding
+                  ? S().envoy_fw_passport_subheading
+                  : S().envoy_fw_passport_onboarded_subheading,
+            ),
+          ),
         )
       ],
       navigationDots: 6,

@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class VerifySeedPuzzleWidget extends StatefulWidget {
   final List<String> seed;
@@ -39,111 +40,110 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     if (answers.isEmpty) {
       return Container();
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(Icons.chevron_left, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: IconButton(
+            icon: Icon(Icons.chevron_left, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Text(
-                      S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textAlign: TextAlign.center),
-                ),
-                SliverPadding(padding: EdgeInsets.all(8)),
-                SliverToBoxAdapter(
-                  child: Text(
-                      "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
-                      style: Theme.of(context).textTheme.titleSmall,
-                      textAlign: TextAlign.center),
-                ),
-                SliverPadding(padding: EdgeInsets.all(12)),
-                SliverFillRemaining(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: PageView(
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: _pageController,
-                          children: _puzzleOptions.map((e) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: PuzzleWidget(
-                                puzzle: e,
-                                seedIndex: widget.seed.indexOf(
-                                    answers[_puzzleOptions.indexOf(e)]),
-                                answer: answers[_puzzleOptions.indexOf(e)],
-                                onAnswered: (answer) async {
-                                  if (answer ==
-                                      answers[_puzzleOptions.indexOf(e)]) {
-                                    if (answers.last == answer) {
-                                      setState(() {
-                                        _finishedAnswers = true;
-                                      });
-                                      return;
-                                    }
-                                    await Future.delayed(
-                                        Duration(milliseconds: 600));
-                                    _pageController.animateToPage(
-                                        _puzzleOptions.indexOf(e) + 1,
-                                        duration: Duration(milliseconds: 300),
-                                        curve: Curves.ease);
-                                  } else {
-                                    widget.onVerificationFinished(false);
+        ),
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Text(
+                    S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center),
+              ),
+              SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              SliverToBoxAdapter(
+                child: Text(
+                    "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
+                    style: Theme.of(context).textTheme.titleSmall,
+                    textAlign: TextAlign.center),
+              ),
+              SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              SliverFillRemaining(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: PageView(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _pageController,
+                        children: _puzzleOptions.map((e) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.small),
+                            child: PuzzleWidget(
+                              puzzle: e,
+                              seedIndex: widget.seed
+                                  .indexOf(answers[_puzzleOptions.indexOf(e)]),
+                              answer: answers[_puzzleOptions.indexOf(e)],
+                              onAnswered: (answer) async {
+                                if (answer ==
+                                    answers[_puzzleOptions.indexOf(e)]) {
+                                  if (answers.last == answer) {
+                                    setState(() {
+                                      _finishedAnswers = true;
+                                    });
+                                    return;
                                   }
-                                },
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                                  await Future.delayed(
+                                      Duration(milliseconds: 600));
+                                  _pageController.animateToPage(
+                                      _puzzleOptions.indexOf(e) + 1,
+                                      duration: Duration(milliseconds: 300),
+                                      curve: Curves.ease);
+                                } else {
+                                  widget.onVerificationFinished(false);
+                                }
+                              },
+                            ),
+                          );
+                        }).toList(),
                       ),
-                      Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: DotsIndicator(
-                              pageController: _pageController,
-                              totalPages: _puzzleOptions.length)),
-                      Padding(padding: EdgeInsets.all(6)),
-                      !_finishedAnswers
-                          ? Text(
-                              S()
-                                  .manual_setup_generate_seed_verify_seed_again_quiz_infotext,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w400))
-                          : Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 0),
-                              child: OnboardingButton(
-                                  label: S().component_continue,
-                                  onTap: () {
-                                    widget.onVerificationFinished(true);
-                                  })),
-                      Padding(padding: EdgeInsets.all(6)),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ))
-        ],
-      ),
+                    ),
+                    Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                        child: DotsIndicator(
+                            pageController: _pageController,
+                            totalPages: _puzzleOptions.length)),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    !_finishedAnswers
+                        ? Text(
+                            S()
+                                .manual_setup_generate_seed_verify_seed_again_quiz_infotext,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w400))
+                        : Padding(
+                            padding:
+                                EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                            child: OnboardingButton(
+                                label: S().component_continue,
+                                onTap: () {
+                                  widget.onVerificationFinished(true);
+                                })),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ))
+      ],
     );
   }
 
@@ -223,8 +223,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               ],
             ),
           ),
-          Container(
-            height: 200,
+          Flexible(
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
