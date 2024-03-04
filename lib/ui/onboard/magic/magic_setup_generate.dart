@@ -110,6 +110,8 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {},
       child: OnboardPageBackground(
         child: Material(
             child: CustomScrollView(
