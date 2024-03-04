@@ -1048,7 +1048,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
 
             let balance = get_total_balance(wallet.get_balance().unwrap());
 
-            let available_balance = balance - blocked_amount;
+            let available_balance = balance.saturating_sub(blocked_amount);
 
             #[cfg(debug_assertions)]
             println!(
@@ -1139,6 +1139,31 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
                         };
                     }
                     Err(e) => match e {
+                        bdk::Error::FeeTooLow { .. } => {
+                            #[cfg(debug_assertions)]
+                            println!("RBF: FeeTooLow: {} ", e);
+                            if change_amount != 0 {
+                                max_fee = change_amount;
+                                #[cfg(debug_assertions)]
+                                println!("RBF:FeeTooLow max_fee Using change: {} ", max_fee);
+                            } else if available_balance < amount {
+                                //if the amount is greater than available balance,
+                                // then use available balance as max fee, this intended to fail
+                                // so we can get the available from the error
+                                max_fee = available_balance;
+                                #[cfg(debug_assertions)]
+                                println!(
+                                    "RBF:FeeTooLow  max_fee Using available balance: {} ",
+                                    max_fee
+                                );
+                            } else if min_fee_rate != 0.0 {
+                                return RBFfeeRates {
+                                    min_fee_rate,
+                                    max_fee_rate: min_fee_rate,
+                                };
+                            }
+                            rounds += 1;
+                        }
                         bdk::Error::InsufficientFunds { available, .. } => {
                             #[cfg(debug_assertions)]
                             println!("RBF: InsufficientFunds: {} ", available);

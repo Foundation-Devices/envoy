@@ -20,6 +20,7 @@ class FeeRates {
   double electrumFastRate = 0;
   double electrumSlowRate = 0;
 
+  @JsonKey(defaultValue: [])
   List<double> mempoolBlocksMedianFeeRate = [];
 
   // Generated
