@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -83,8 +85,18 @@ class HomePageState extends ConsumerState<HomePage>
 
   final _animationsDuration = Duration(milliseconds: 350);
 
+  Timer? _torWarningTimer;
+  bool _torWarningDisplayedMoreThan5minAgo = true;
+
+  void _resetTorWarningTimer() {
+    _torWarningTimer = Timer.periodic(Duration(minutes: 5), (_) async {
+      _torWarningDisplayedMoreThan5minAgo = true;
+    });
+  }
+
   void initState() {
     super.initState();
+    _resetTorWarningTimer();
 
     Future.delayed(Duration(milliseconds: 10), () {
       ///register for back button press
@@ -95,8 +107,10 @@ class HomePageState extends ConsumerState<HomePage>
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
-        if (Settings().usingTor) {
+        if (_torWarningDisplayedMoreThan5minAgo && Settings().usingTor) {
           _notifyAboutTor();
+          _torWarningDisplayedMoreThan5minAgo = false;
+          _resetTorWarningTimer();
         }
       }
     });
@@ -206,6 +220,7 @@ class HomePageState extends ConsumerState<HomePage>
 
   @override
   void dispose() {
+    _torWarningTimer?.cancel();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
     super.dispose();
   }

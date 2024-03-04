@@ -34,9 +34,6 @@ class ConnectivityManager {
 
   DateTime? torTemporarilyDisabledTimeStamp;
 
-  Timer? _torWarningTimer;
-  bool _torWarningDisplayedMoreThan5minAgo = true;
-
   final StreamController<ConnectivityManagerEvent> events =
       StreamController.broadcast();
 
@@ -73,12 +70,9 @@ class ConnectivityManager {
       // Nudge listeners
       events.add(ConnectivityManagerEvent.TorStatusChange);
     });
-
-    _resetTorWarningTimer();
   }
 
   void dispose() {
-    _torWarningTimer?.cancel();
     events.close();
   }
 
@@ -108,12 +102,7 @@ class ConnectivityManager {
     if (torEnabled && !nguConnected && !electrumConnected) {
       restartTor();
       EnvoyReport().log("tor", "Both Electrum and NGU unreachable through Tor");
-
-      if (_torWarningDisplayedMoreThan5minAgo) {
-        events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
-        _torWarningDisplayedMoreThan5minAgo = false;
-        _resetTorWarningTimer();
-      }
+      events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
     }
   }
 
@@ -122,11 +111,5 @@ class ConnectivityManager {
     if (torEnabled) {
       Tor.instance.start();
     }
-  }
-
-  void _resetTorWarningTimer() {
-    _torWarningTimer = Timer.periodic(Duration(minutes: 5), (_) async {
-      _torWarningDisplayedMoreThan5minAgo = true;
-    });
   }
 }
