@@ -74,8 +74,7 @@ class IndicatorShieldState extends State<IndicatorShield>
       // No shield
       return SizedBox.shrink(key: UniqueKey());
     } else {
-      if (!ConnectivityManager().usingDefaultServer &&
-          !ConnectivityManager().electrumConnected) {
+      if (!ConnectivityManager().electrumConnected) {
         return Image.asset(
           "assets/indicator_shield_red.png",
           key: UniqueKey(),
