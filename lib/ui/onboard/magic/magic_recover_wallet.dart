@@ -68,6 +68,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _tryAutomaticRecovery() async {
+    ref.read(triedAutomaticRecovery.notifier).state = true;
     await Future.delayed(Duration(seconds: 1));
     var success = false;
     try {
