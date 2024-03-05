@@ -15,6 +15,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
@@ -235,13 +236,12 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 24,
+            vertical: EnvoySpacing.medium2,
           ),
           child: SpendableAmountWidget(widget.account!),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: EnvoySpacing.small),
           child: numpad,
         ),
       ],
@@ -261,7 +261,7 @@ class SpendableAmountWidget extends ConsumerWidget {
     final isCoinsSelected = ref.watch(isCoinsSelectedProvider);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(

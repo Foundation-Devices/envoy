@@ -32,9 +32,13 @@ class FwIosInstructionsPage extends ConsumerWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       text: [
-        OnboardingText(
-          header: S().envoy_fw_ios_instructions_heading,
-          text: S().envoy_fw_ios_instructions_subheading,
+        Flexible(
+          child: SingleChildScrollView(
+            child: OnboardingText(
+              header: S().envoy_fw_ios_instructions_heading,
+              text: S().envoy_fw_ios_instructions_subheading,
+            ),
+          ),
         )
       ],
       navigationDots: 6,

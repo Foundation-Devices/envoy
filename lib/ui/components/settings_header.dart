@@ -27,28 +27,27 @@ class SettingsHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            EnvoyIcon(icon),
-            SizedBox(
-              width: EnvoySpacing.small,
-            ),
-            Container(
-              width: 160,
-              child: Text(
+        Flexible(
+          flex: 3,
+          child: Row(
+            children: [
+              EnvoyIcon(icon),
+              SizedBox(
+                width: EnvoySpacing.small,
+              ),
+              Text(
                 title,
                 style: EnvoyTypography.body,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        SizedBox(),
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 140,
+        Flexible(
+          flex: 2,
+          child: GestureDetector(
+            onTap: onTap,
             child: Text(
               linkText,
               style: EnvoyTypography.button

@@ -15,14 +15,12 @@ import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
   @override
@@ -340,57 +338,74 @@ class _BackupPageState extends ConsumerState<BackupPage>
         dismissible: false,
         dialog: Container(
           width: MediaQuery.of(context).size.width * 0.8,
-          child: Flexible(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(EnvoySpacing.medium3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                    Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: 64,
+                      width: 64,
+                    ),
+                    Padding(padding: EdgeInsets.all(8)),
+                    SingleChildScrollView(
+                      child: Flexible(
+                        child: Column(
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(maxWidth: 200),
+                              padding: const EdgeInsets.all(EnvoySpacing.small),
+                              child: Text(
+                                  S().manual_toggle_on_seed_backup_now_modal_heading,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleLarge),
+                            ),
+                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                            Padding(
+                              padding: const EdgeInsets.all(EnvoySpacing.small),
+                              child: Text(
+                                S().manual_toggle_on_seed_backup_now_modal_subheading,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          ],
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium2),
-                      child: Image.asset(
-                        "assets/exclamation_icon.png",
-                        height: 64,
-                        width: 64,
-                      ),
-                    ),
-                    Text(
-                      S().manual_toggle_on_seed_backup_now_modal_heading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.body.copyWith(fontSize: 20),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium2),
-                      child: Text(
-                        S().manual_toggle_on_seed_backup_now_modal_subheading,
-                        style: EnvoyTypography.info.copyWith(
-                            color: newColors.EnvoyColors.textTertiary),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    OnboardingButton(
-                        type: EnvoyButtonTypes.primaryModal,
-                        label: S().component_continue,
-                        onTap: () {
-                          Navigator.pop(context);
-                          createBackup();
-                        }),
                   ],
                 ),
-              ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                OnboardingButton(
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.pop(context);
+                      createBackup();
+                    }),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              ],
             ),
           ),
         ));
