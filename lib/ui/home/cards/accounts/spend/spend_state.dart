@@ -322,10 +322,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
       RawTransaction? transaction = ref.read(rawTransactionProvider);
 
-      if (note != null) {
-        await EnvoyStorage().addTxNote(note, psbt.txid);
-      }
-
+      await EnvoyStorage().addTxNote(note, psbt.txid);
+    
       try {
         /// add change output to selected/default tag
         if (transaction != null &&

@@ -99,7 +99,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   List<Tuple<CoinTag, Coin>>? spendingTagSet =
                       ref.read(spendInputTagsProvider);
                   List<CoinTag> spendingTags = spendingTagSet
-                          ?.map((e) => e.item1)
+                          .map((e) => e.item1)
                           .toList()
                           .unique((element) => element.id)
                           .toList() ??

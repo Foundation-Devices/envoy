@@ -700,10 +700,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           color: EnvoyColors.solidWhite,
         ),
       ).show(context);
-      if (existingFeeRate != null) {
-        ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
-      }
-    } finally {
+      ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
+        } finally {
       setState(() {
         _rebuildingTx = false;
       });

@@ -165,17 +165,17 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
     switch (status) {
       case AnimationStatus.completed:
         currentStatus = EnvoyToastRouteStatus.SHOWING;
-        if (_onStatusChanged != null) _onStatusChanged!(currentStatus);
+        if (_onStatusChanged != null) _onStatusChanged(currentStatus);
         if (overlayEntries.isNotEmpty) overlayEntries.first.opaque = opaque;
 
         break;
       case AnimationStatus.forward:
         currentStatus = EnvoyToastRouteStatus.IS_APPEARING;
-        if (_onStatusChanged != null) _onStatusChanged!(currentStatus);
+        if (_onStatusChanged != null) _onStatusChanged(currentStatus);
         break;
       case AnimationStatus.reverse:
         currentStatus = EnvoyToastRouteStatus.IS_HIDING;
-        if (_onStatusChanged != null) _onStatusChanged!(currentStatus);
+        if (_onStatusChanged != null) _onStatusChanged(currentStatus);
         if (overlayEntries.isNotEmpty) overlayEntries.first.opaque = false;
         break;
       case AnimationStatus.dismissed:
@@ -185,7 +185,7 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
         // back gesture drives this animation to the dismissed status before
         // popping the navigator.
         currentStatus = EnvoyToastRouteStatus.DISMISSED;
-        if (_onStatusChanged != null) _onStatusChanged!(currentStatus);
+        if (_onStatusChanged != null) _onStatusChanged(currentStatus);
 
         if (!isCurrent) {
           navigator!.finalizeRoute(this);
