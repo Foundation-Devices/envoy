@@ -37,10 +37,11 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<bool?>(sdFwUploadProgressProvider, (_, newState) {
+    ref.listen<bool?>(sdFwUploadProgressProvider, (_, newState) async {
       if (newState == null) return;
       indeterminate?.change(false);
       if (newState) {
+        await Future.delayed(Duration(seconds: 5));
         happy?.change(true);
       } else {
         happy?.change(false);
