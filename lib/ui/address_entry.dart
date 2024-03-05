@@ -80,6 +80,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                 onChanged: (value) async {
                   widget.onAddressChanged?.call(value);
                 },
+                textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   // Disable the borders
                   border: InputBorder.none,
