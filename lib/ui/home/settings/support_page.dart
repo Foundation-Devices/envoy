@@ -71,7 +71,7 @@ class MenuOption extends StatelessWidget {
     return Row(children: [
       Expanded(flex: 3, child: SizedBox.shrink()),
       Expanded(
-        flex: 4,
+        flex: 6,
         child: GestureDetector(
           onTap: onTap,
           child: Text(

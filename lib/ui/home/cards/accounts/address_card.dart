@@ -87,7 +87,9 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          left: 50.0, right: 50.0, bottom: 40.0),
+                          left: EnvoySpacing.large2,
+                          right: EnvoySpacing.large2,
+                          bottom: EnvoySpacing.large1),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,

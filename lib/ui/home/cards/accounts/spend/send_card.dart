@@ -188,7 +188,7 @@ class _SendCardState extends ConsumerState<SendCard>
                             }
                           }
                           if (tx.loading) {
-                            buttonText = "Loading..."; //TODO: Figma
+                            buttonText = S().send_keyboard_address_loading;
                           }
 
                           return EnvoyTextButton(

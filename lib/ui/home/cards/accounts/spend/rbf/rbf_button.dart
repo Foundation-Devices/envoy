@@ -26,6 +26,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class RBFSpendState {
   Psbt psbt;
@@ -171,16 +172,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
     } catch (e, stackTrace) {
       print(stackTrace);
-      EnvoyToast(
-        backgroundColor: EnvoyColors.danger,
-        replaceExisting: true,
-        duration: Duration(seconds: 4),
-        message: "${e.toString()}",
-        icon: Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
-      ).show(context);
+      showNoBoostNoFundsDialog(context);
       setState(() {
         _isLoading = false;
       });
@@ -394,4 +386,80 @@ class _RBFWarningState extends State<RBFWarning> {
       ),
     );
   }
+}
+
+void showNoBoostNoFundsDialog(BuildContext context) {
+  showEnvoyDialog(
+      context: context,
+      dialog: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium3),
+                  child: EnvoyIcon(
+                    EnvoyIcons.alert,
+                    size: EnvoyIconSize.big,
+                    color: EnvoyColors.danger,
+                  ),
+                ),
+                Text(
+                  S().coindetails_overlay_noBoostNoFunds_heading,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.subheading,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium1),
+                  child: Text(
+                    S().coindetails_overlay_noBoostNoFunds_subheading,
+                    style: EnvoyTypography.info
+                        .copyWith(color: EnvoyColors.textSecondary),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                GestureDetector(
+                  child: Text(
+                    S().component_learnMore,
+                    style: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  onTap: () {
+                    launchUrl(Uri.parse(
+                        "https://docs.foundationdevices.com/en/troubleshooting#why-cant-envoy-boost-or-cancel-my-transaction"));
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                  child: EnvoyButton(
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    type: ButtonType.primary,
+                    state: ButtonState.default_state,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
 }

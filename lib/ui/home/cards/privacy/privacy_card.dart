@@ -208,8 +208,8 @@ class PrivacyCardState extends State<PrivacyCard> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      width: 275,
+                                    Flexible(
+                                      flex: 4,
                                       child: Text(
                                         S().privacy_applicationLock_unlock,
                                         style: EnvoyTypography.body.copyWith(
@@ -218,31 +218,33 @@ class PrivacyCardState extends State<PrivacyCard> {
                                         ),
                                       ),
                                     ),
-                                    EnvoyToggle(
-                                      value: _useLocalAuth,
-                                      onChanged: (bool value) async {
-                                        try {
-                                          bool authSuccess =
-                                              await _auth.authenticate(
-                                            options: AuthenticationOptions(
-                                              biometricOnly: false,
-                                            ),
-                                            localizedReason:
-                                                "Authenticate to Enable Biometrics", // TODO: Figma
-                                          );
+                                    Flexible(
+                                      flex: 1,
+                                      child: EnvoyToggle(
+                                        value: _useLocalAuth,
+                                        onChanged: (bool value) async {
+                                          try {
+                                            bool authSuccess =
+                                                await _auth.authenticate(
+                                              options: AuthenticationOptions(
+                                                biometricOnly: false,
+                                              ),
+                                              localizedReason:
+                                                  "Authenticate to Enable Biometrics", // TODO: Figma
+                                            );
 
-                                          if (authSuccess) {
-                                            LocalStorage()
-                                                .prefs
-                                                .setBool("useLocalAuth", value);
-                                            setState(() {
-                                              _useLocalAuth = value;
-                                            });
+                                            if (authSuccess) {
+                                              LocalStorage().prefs.setBool(
+                                                  "useLocalAuth", value);
+                                              setState(() {
+                                                _useLocalAuth = value;
+                                              });
+                                            }
+                                          } catch (e) {
+                                            print(e);
                                           }
-                                        } catch (e) {
-                                          print(e);
-                                        }
-                                      },
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),

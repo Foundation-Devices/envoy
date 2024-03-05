@@ -28,7 +28,7 @@ class FwAndroidProgressPage extends ConsumerStatefulWidget {
 }
 
 class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
-  bool done = false;
+  bool? done;
   int currentDotIndex = 3;
   int navigationDots = 6;
 
@@ -39,9 +39,10 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
     final fwInfo = ref.watch(firmwareStreamProvider(widget.deviceId));
     ref.listen<bool?>(
       sdFwUploadProgressProvider,
-      (previous, next) {
+      (previous, next) async {
         if (next is bool) {
           if (next) {
+            await Future.delayed(Duration(seconds: 5));
             _instructionPageController.animateToPage(1,
                 duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
           } else {
@@ -50,7 +51,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
           }
           setState(() {
             done = next;
-            if (done) {
+            if (done!) {
               Devices().markDeviceUpdated(
                   widget.deviceId, fwInfo.value!.storedVersion);
             }
@@ -81,18 +82,24 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                 });
               },
               children: [
-                OnboardingText(
-                  header: S().envoy_fw_progress_heading,
-                  text: S().envoy_fw_progress_subheading,
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_progress_heading,
+                    text: S().envoy_fw_progress_subheading,
+                  ),
                 ),
-                OnboardingText(
-                  header: S().envoy_fw_success_heading,
-                  text: S().envoy_fw_success_subheading,
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_success_heading,
+                    text: S().envoy_fw_success_subheading,
+                  ),
                 ),
                 Column(
                   children: [
-                    OnboardingText(
-                      header: S().envoy_fw_fail_heading,
+                    SingleChildScrollView(
+                      child: OnboardingText(
+                        header: S().envoy_fw_fail_heading,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -114,21 +121,22 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       navigationDots: navigationDots,
       navigationDotsIndex: currentDotIndex,
       buttons: [
-        OnboardingButton(
-            label: done ? S().component_continue : S().component_tryAgain,
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(builder: (context) {
-                if (done)
-                  return FwPassportPage(
-                    onboarding: widget.onboarding,
-                  );
-                else
-                  return FwIntroPage(
-                    deviceId: widget.deviceId,
-                  );
-              }));
-            })
+        if (done != null)
+          OnboardingButton(
+              label: done! ? S().component_continue : S().component_tryAgain,
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) {
+                  if (done!)
+                    return FwPassportPage(
+                      onboarding: widget.onboarding,
+                    );
+                  else
+                    return FwIntroPage(
+                      deviceId: widget.deviceId,
+                    );
+                }));
+              })
       ],
     );
   }
