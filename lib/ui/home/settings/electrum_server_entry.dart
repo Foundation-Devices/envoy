@@ -13,6 +13,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/components/text_field.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/business/settings.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
@@ -113,8 +114,10 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
     setState(() {
       _state = ElectrumServerEntryState.pending;
     });
+    int port =
+        Settings().turnOffTorForThisCase(address) ? -1 : Tor.instance.port;
 
-    Wallet.getServerFeatures(address, Tor.instance.port).then((features) {
+    Wallet.getServerFeatures(address, port).then((features) {
       ConnectivityManager().electrumSuccess();
       if (this.mounted) {
         setState(() {

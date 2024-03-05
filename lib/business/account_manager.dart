@@ -22,7 +22,6 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
-import 'package:tor/tor.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 
@@ -127,11 +126,11 @@ class AccountManager extends ChangeNotifier {
 
   Future<Account> _syncAccount(Account account) async {
     bool? changed = null;
+    int port = Settings().getPort(account.wallet.network);
 
     try {
-      changed = await account.wallet.sync(
-          Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port);
+      changed = await account.wallet
+          .sync(Settings().electrumAddress(account.wallet.network), port);
     } on Exception catch (e) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {
@@ -224,6 +223,9 @@ class AccountManager extends ChangeNotifier {
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {
+            if (account.name != newAccount.name) {
+              renameAccount(account, newAccount.name);
+            }
             // Don't add this one
             alreadyPairedAccountsCount++;
 
@@ -285,6 +287,9 @@ class AccountManager extends ChangeNotifier {
     // Check if account already present
     for (var account in accounts) {
       if (account.wallet.name == json["xpub"].toString()) {
+        if (account.name != json["acct_name"].toString()) {
+          renameAccount(account, json["acct_name"].toString());
+        }
         throw AccountAlreadyPaired();
       }
     }

@@ -27,7 +27,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
-import 'package:tor/tor.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
@@ -150,7 +150,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               ),
             ),
           ),
-          SizedBox(height: EnvoySpacing.xs),
         ],
       ),
     );
@@ -403,6 +402,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       replaceExisting: true,
                       duration: Duration(seconds: 4),
                       message: "Error: Transaction Confirmed",
+                      // TODO: Figma
                       icon: Icon(
                         Icons.info_outline,
                         color: EnvoyColors.solidWhite,
@@ -487,10 +487,11 @@ class _CancelTransactionProgressState
     if (account == null) {
       return;
     }
+    int port = Settings().getPort(account.wallet.network);
     try {
       await account.wallet.broadcastTx(
           Settings().electrumAddress(account.wallet.network),
-          Tor.instance.port,
+          port,
           widget.cancelTx.rawTx);
       await Future.delayed(Duration(milliseconds: 500));
       await EnvoyStorage().addCancelState(RBFState(

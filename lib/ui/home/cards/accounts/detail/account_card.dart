@@ -51,6 +51,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/ramp_widget_test.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -163,6 +164,20 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     HomePageAccountsState(HomePageAccountsNavigationState.list);
               }),
             ),
+            if (account.wallet.network != Network.Testnet && rampApiKey != "")
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => runRamp(account)),
+                      );
+                    },
+                    child: Text("Buy Bitcoin via Ramp")),
+              ),
             AnimatedSwitcher(
               duration: Duration(milliseconds: 200),
               child: (transactions.isNotEmpty || txFiltersEnabled)
@@ -256,7 +271,11 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           return MediaQuery.removePadding(
                             context: context,
                             child: ScannerPage(
-                              [ScannerType.address, ScannerType.azteco],
+                              [
+                                ScannerType.address,
+                                ScannerType.azteco,
+                                ScannerType.btcPay
+                              ],
                               account: account,
                               onAddressValidated: (address, amount) {
                                 // Navigator.pop(context);
@@ -353,7 +372,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
           child: StatefulBuilder(builder: (c, s) {
             return ListView.builder(
               //Space for the white gradient shadow at the bottom
-              padding: EdgeInsets.only(bottom: 120),
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
               physics: BouncingScrollPhysics(),
               controller: _scrollController,
               itemCount: transactions.length,
@@ -504,27 +523,7 @@ class TransactionListTile extends StatelessWidget {
                   subtitle: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
-                    child: transaction.type == TransactionType.azteco
-                        ? Text(
-                            S().azteco_account_tx_history_pending_voucher,
-                            style: _transactionTextStyleInfo,
-                          )
-                        : transaction.type == TransactionType.normal &&
-                                transaction.isConfirmed
-                            ? Builder(builder: (context) {
-                                String time = timeago
-                                    .format(transaction.date,
-                                        locale: activeLocale.languageCode)
-                                    .capitalize();
-                                return Text(
-                                  time,
-                                  style: _transactionTextStyleInfo,
-                                );
-                              })
-                            : Text(
-                                S().receive_tx_list_awaitingConfirmation,
-                                style: _transactionTextStyleInfo,
-                              ),
+                    child: txSubtitle(activeLocale),
                   ),
                   contentPadding: EdgeInsets.all(0),
                   trailing: Column(
@@ -581,6 +580,41 @@ class TransactionListTile extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget txSubtitle(Locale activeLocale) {
+    if (transaction.type == TransactionType.azteco)
+      return Text(
+        S().azteco_account_tx_history_pending_voucher,
+        style: _transactionTextStyleInfo,
+      );
+
+    if (transaction.type == TransactionType.btcPay)
+      return Text(
+        "Pending BTCPay Voucher", // TODO: Figma
+        style: _transactionTextStyleInfo,
+      );
+    if (transaction.type == TransactionType.ramp)
+      return Text(
+        "Pending Ramp transaction", // TODO: Figma
+        style: _transactionTextStyleInfo,
+      );
+
+    if (transaction.type == TransactionType.normal && transaction.isConfirmed)
+      return Builder(builder: (context) {
+        String time = timeago
+            .format(transaction.date, locale: activeLocale.languageCode)
+            .capitalize();
+        return Text(
+          time,
+          style: _transactionTextStyleInfo,
+        );
+      });
+    else
+      return Text(
+        S().receive_tx_list_awaitingConfirmation,
+        style: _transactionTextStyleInfo,
+      );
   }
 
   Widget transactionIcon(BuildContext context) {

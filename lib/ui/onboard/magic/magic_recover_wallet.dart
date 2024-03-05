@@ -155,13 +155,15 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         color: Colors.transparent,
         child: Builder(builder: (context) {
           return OnboardPageBackground(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    child: Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -198,33 +200,40 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         ),
                       ],
                     ),
-                  ),
-                  Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Container(
-                        height: 180,
-                        child: Transform.scale(
-                          scale: 1.6,
-                          child: RiveAnimation.asset(
-                            "assets/envoy_loader.riv",
-                            fit: BoxFit.contain,
-                            onInit: _onRiveInit,
-                          ),
+                    Container(
+                      constraints: BoxConstraints.tight(Size.fromHeight(240)),
+                      child: Transform.scale(
+                        scale: 1.2,
+                        child: RiveAnimation.asset(
+                          "assets/envoy_loader.riv",
+                          fit: BoxFit.contain,
+                          onInit: _onRiveInit,
                         ),
                       ),
-                      Expanded(
-                        child: AnimatedSwitcher(
+                    ),
+                  ],
+                ),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Padding(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         vertical: EnvoySpacing.medium1)),
+                        AnimatedSwitcher(
                             duration: Duration(milliseconds: 800),
                             child: getMainWidget()),
-                      ),
-                    ],
-                  )),
-                  getBottomButtons() ?? SizedBox(),
-                ],
-              ),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.medium3)),
+                        getBottomButtons() ?? SizedBox(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         }),
@@ -483,7 +492,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              "Recovering your Envoy wallet", //TODO: FIGMA
+              S().magic_setup_recovery_retry_header,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
@@ -526,7 +535,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   Widget _backupNotFound(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
@@ -580,20 +589,20 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   Widget _seedNotFound(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
           child: Text(
             S().magic_setup_recovery_fail_heading,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        Padding(padding: EdgeInsets.all(28)),
+        Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
           child: Text(
             Platform.isAndroid
                 ? S().magic_setup_recovery_fail_Android_subheading
