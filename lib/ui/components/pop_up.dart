@@ -120,14 +120,14 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
     }
     return Container(
       width: MediaQuery.of(context).size.width * 0.75,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),
         ),
         color: EnvoyColors.textPrimaryInverse,
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
             vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -14,7 +14,7 @@ Widget EnvoyScaffoldShieldScrollView(BuildContext context, Widget child) {
           height: MediaQuery.of(context).size.height * 0.53,
           child: Container(
               padding: EdgeInsets.only(bottom: _shieldBottom),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color(0x0),
                 Color(0xff686868),
@@ -74,7 +74,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   void didChangeDependencies() {
-    if (this.widget.animate == false) {
+    if (widget.animate == false) {
       controller?.stop(canceled: false);
     }
     super.didChangeDependencies();
@@ -96,14 +96,14 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
               gradientRadius: animation?.value ?? 0.8,
               gradientHeight: widget.gradientHeight),
         )),
-        this.widget.child != null
-            ? this.widget.child!
+        widget.child != null
+            ? widget.child!
             : Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: widget.appBar,
                 body: Align(
                   alignment: Alignment.center,
-                  child: this.widget.header,
+                  child: widget.header,
                 ),
                 bottomNavigationBar: Container(
                   width: double.infinity,
@@ -111,7 +111,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                       .clamp(350, 580),
                   child: Container(
                     padding: EdgeInsets.only(bottom: shieldBottom),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
                           Color(0x0),
@@ -195,25 +195,25 @@ class GradientPainter extends CustomPainter {
     final paint = Paint()
       ..shader = RadialGradient(
         colors: [
-          Color(0xff965C4B),
-          Color(0xffD68B6E),
-          Color(0xcfd68b6e),
-          Color(0xffF0BBA4).withOpacity(0.4),
-          Color(0xffF0BBA4).withOpacity(0.1),
-          Color(0xffF0BBA4).withOpacity(0.002),
+          const Color(0xff965C4B),
+          const Color(0xffD68B6E),
+          const Color(0xcfd68b6e),
+          const Color(0xffF0BBA4).withOpacity(0.4),
+          const Color(0xffF0BBA4).withOpacity(0.1),
+          const Color(0xffF0BBA4).withOpacity(0.002),
         ],
       ).createShader(Rect.fromCircle(
-          center: new Offset(size.width / 2, size.height / gradientHeight),
+          center: Offset(size.width / 2, size.height / gradientHeight),
           radius: min(size.width, size.width * gradientRadius)));
 
-    final rxect = new Rect.fromPoints(
-        new Offset(0, -size.height), new Offset(size.width, size.height));
+    final rxect = Rect.fromPoints(
+        Offset(0, -size.height), Offset(size.width, size.height));
     canvas.drawRRect(RRect.fromRectXY(rxect, 0, 0), paint);
 
     canvas.drawPath(
         Path()
-          ..addRect(Rect.fromPoints(new Offset(size.width / 2, -size.height),
-              new Offset(size.width, size.height)))
+          ..addRect(Rect.fromPoints(Offset(size.width / 2, -size.height),
+              Offset(size.width, size.height)))
           ..fillType = PathFillType.evenOdd,
         Paint()
           ..color = Colors.black.withAlpha(50)
@@ -223,7 +223,7 @@ class GradientPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant GradientPainter oldDelegate) {
-    return oldDelegate.gradientRadius != this.gradientRadius;
+    return oldDelegate.gradientRadius != gradientRadius;
   }
 
   static double convertRadiusToSigma(double radius) {

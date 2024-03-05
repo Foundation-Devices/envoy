@@ -57,11 +57,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         escapeHatchTaps.clear();
         try {
           await EnvoySeed().removeSeedFromNonSecure();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA
           ));
         } on Exception catch (_) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
           ));
         }
@@ -87,7 +87,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   ),
                 ),
               )
-            : PreferredSize(
+            : const PreferredSize(
                 preferredSize: Size.fromHeight(0),
                 child: SizedBox(),
               ),
@@ -95,7 +95,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           onTap: () {
             registerEscapeTap(EscapeHatchTap.logo);
           },
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.25,
             child: Image.asset(
               "assets/envoy_logo_with_title.png",
@@ -111,14 +111,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           child: SingleChildScrollView(
             child: Flexible(
               child: Container(
-                margin: EdgeInsets.symmetric(
+                margin: const EdgeInsets.symmetric(
                   vertical: EnvoySpacing.small,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(height: EnvoySpacing.small),
+                    const SizedBox(height: EnvoySpacing.small),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.medium1),
@@ -131,7 +131,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             style: Theme.of(context).textTheme.titleLarge,
                             textAlign: TextAlign.center,
                           ),
-                          Padding(
+                          const Padding(
                               padding: EdgeInsets.all(EnvoySpacing.medium1)),
                           GestureDetector(
                             onTap: () {
@@ -150,7 +150,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: EnvoySpacing.medium3),
+                    const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.medium1),
@@ -169,20 +169,21 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           .prefs
                                           .getBool(PREFS_ONBOARDED) ==
                                       null) {
-                                    return OnboardPrivacySetup(
+                                    return const OnboardPrivacySetup(
                                         setUpEnvoyWallet: false);
                                   }
                                   return LocalStorage()
                                           .prefs
                                           .getBool(PREFS_ONBOARDED)!
-                                      ? OnboardPassportWelcomeScreen()
-                                      : OnboardPrivacySetup(
+                                      ? const OnboardPassportWelcomeScreen()
+                                      : const OnboardPrivacySetup(
                                           setUpEnvoyWallet: false);
                                 },
                               ));
                             },
                           ),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                          const Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.small)),
                           EnvoyButton(
                             S().welcome_screen_ctA1,
                             onTap: () {
@@ -193,14 +194,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           .prefs
                                           .getBool(PREFS_ONBOARDED) ==
                                       null) {
-                                    return OnboardPrivacySetup(
+                                    return const OnboardPrivacySetup(
                                         setUpEnvoyWallet: true);
                                   }
                                   return LocalStorage()
                                           .prefs
                                           .getBool(PREFS_ONBOARDED)!
-                                      ? OnboardEnvoyWelcomeScreen()
-                                      : OnboardPrivacySetup(
+                                      ? const OnboardEnvoyWelcomeScreen()
+                                      : const OnboardPrivacySetup(
                                           setUpEnvoyWallet: true);
                                 },
                               ));

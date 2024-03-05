@@ -42,7 +42,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
     TextStyle? _textStyle = widget.textStyle;
     if (widget.textStyle == null) {
       Color textColor = EnvoyColors.darkTeal;
-      switch (this.widget.type) {
+      switch (widget.type) {
         case EnvoyButtonTypes.primary:
           textColor = Colors.white;
           break;
@@ -64,7 +64,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           );
     }
     return AnimatedScale(
-      duration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 200),
       scale: isPressed ? 0.97 : 1.0,
       curve: Curves.easeIn,
       child: GestureDetector(
@@ -98,53 +98,53 @@ class _EnvoyButtonState extends State<EnvoyButton> {
   }
 
   BoxDecoration _getBoxDecoration() {
-    switch (this.widget.type) {
+    switch (widget.type) {
       case EnvoyButtonTypes.primary:
         {
           if (widget.readOnly == true) {
             return BoxDecoration(
                 color: EnvoyColors.grey85,
-                borderRadius: this.widget.borderRadius ??
-                    BorderRadius.all(Radius.circular(13.0)));
+                borderRadius: widget.borderRadius ??
+                    const BorderRadius.all(Radius.circular(13.0)));
           }
           var gradientColors = [EnvoyColors.teal, EnvoyColors.darkTeal];
           return BoxDecoration(
-              color: this.widget.backgroundColor,
+              color: widget.backgroundColor,
               gradient: widget.backgroundColor == null
                   ? LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: gradientColors)
                   : null,
-              borderRadius: this.widget.borderRadius ??
-                  BorderRadius.all(Radius.circular(13.0)));
+              borderRadius: widget.borderRadius ??
+                  const BorderRadius.all(Radius.circular(13.0)));
         }
       case EnvoyButtonTypes.secondary:
         {
           return BoxDecoration(
-              color: this.widget.backgroundColor ?? EnvoyColors.grey15,
-              borderRadius: this.widget.borderRadius ??
-                  BorderRadius.all(Radius.circular(13.0)));
+              color: widget.backgroundColor ?? EnvoyColors.grey15,
+              borderRadius: widget.borderRadius ??
+                  const BorderRadius.all(Radius.circular(13.0)));
         }
 
       case EnvoyButtonTypes.tertiary:
         return BoxDecoration(
-            color: this.widget.backgroundColor,
-            borderRadius: this.widget.borderRadius ??
-                BorderRadius.all(Radius.circular(13.0)));
+            color: widget.backgroundColor,
+            borderRadius: widget.borderRadius ??
+                const BorderRadius.all(Radius.circular(13.0)));
 
       case EnvoyButtonTypes.primaryModal:
         {
           if (widget.readOnly == true) {
             return BoxDecoration(
                 color: EnvoyColors.grey85,
-                borderRadius: this.widget.borderRadius ??
-                    BorderRadius.all(Radius.circular(13.0)));
+                borderRadius: widget.borderRadius ??
+                    const BorderRadius.all(Radius.circular(13.0)));
           }
           return BoxDecoration(
               color: EnvoyColors.darkTeal,
-              borderRadius: this.widget.borderRadius ??
-                  BorderRadius.all(Radius.circular(13.0)));
+              borderRadius: widget.borderRadius ??
+                  const BorderRadius.all(Radius.circular(13.0)));
         }
     }
   }

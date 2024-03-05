@@ -29,15 +29,14 @@ class BtcPayFail extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
               child: EnvoyIcon(EnvoyIcons.alert,
                   size: EnvoyIconSize.big, color: EnvoyColors.danger),
             ),
@@ -64,20 +63,20 @@ class BtcPayFail extends StatelessWidget {
 Widget getMainErrorMessage(
     BtcPayVoucherErrorType errorType, DateTime? dateTime, String link) {
   switch (errorType) {
-    case BtcPayVoucherErrorType.Invalid:
+    case BtcPayVoucherErrorType.invalid:
       return errorMesage(
         S().azteco_connection_modal_fail_heading,
         S().btcpay_connection_modal_fail_subheading,
       );
 
-    case BtcPayVoucherErrorType.Expired:
+    case BtcPayVoucherErrorType.expired:
       return errorMesage(
           S().btcpay_connection_modal_fail_heading,
           S().btcpay_connection_modal_expired_subheading(
               DateFormat.yMd(currentLocale)
                   .format(dateTime ?? DateTime.now())));
 
-    case BtcPayVoucherErrorType.OnChain:
+    case BtcPayVoucherErrorType.onChain:
       return errorMesage(S().azteco_redeem_modal_fail_heading,
           S().btcpay_connection_modal_onchainOnly_subheading,
           link: link);

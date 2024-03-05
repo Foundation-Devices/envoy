@@ -46,7 +46,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
       child: Container(
           height: 250,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
             border: Border.all(
                 color: Colors.black, width: 2, style: BorderStyle.solid),
             gradient: LinearGradient(
@@ -63,15 +63,15 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
           ),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+                borderRadius: const BorderRadius.all(
+                    Radius.circular(EnvoySpacing.medium1)),
                 border: Border.all(
                     color: widget.device.color,
                     width: 2,
                     style: BorderStyle.solid)),
             child: ClipRRect(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+                borderRadius: const BorderRadius.all(
+                    Radius.circular(EnvoySpacing.medium1)),
                 child: Stack(
                   children: [
                     Positioned.fill(
@@ -85,7 +85,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                       children: [
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
@@ -152,7 +152,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(),
+                                    const SizedBox(),
                                     Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -184,7 +184,8 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       borderRadius:
-                                                          BorderRadius.all(
+                                                          const BorderRadius
+                                                              .all(
                                                               Radius.circular(
                                                                   10)),
                                                       color: Colors.black
@@ -209,11 +210,11 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                               fwShouldUpdate
                                                                   .value!)
                                                             Padding(
-                                                              padding: EdgeInsets
+                                                              padding: const EdgeInsets
                                                                   .symmetric(
-                                                                      horizontal:
-                                                                          EnvoySpacing
-                                                                              .xs),
+                                                                  horizontal:
+                                                                      EnvoySpacing
+                                                                          .xs),
                                                               child: Container(
                                                                 height: 8.0,
                                                                 width: 8.0,
@@ -226,8 +227,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                               ),
                                                             ),
                                                           Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
                                                                     horizontal:
                                                                         3.0),
                                                             child: SvgPicture.asset(
@@ -235,7 +237,8 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                           ),
                                                           Padding(
                                                             padding:
-                                                                EdgeInsets.only(
+                                                                const EdgeInsets
+                                                                    .only(
                                                                     right: 2.0),
                                                             child: Text(
                                                               fwInfo.hasValue &&

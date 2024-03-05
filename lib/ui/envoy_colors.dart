@@ -50,12 +50,12 @@ class EnvoyColors {
   static const Color danger = Color(0xFFBB6E5A);
 
   static List<Color> listAccountTileColors = [
-    Color(0xFFBF755F),
-    Color(0xFF009DB9),
-    Color(0xFF007A7A),
-    Color(0xFFD68B6E),
-    Color(0xFF00A5B2),
-    Color(0xFF2E9483),
+    const Color(0xFFBF755F),
+    const Color(0xFF009DB9),
+    const Color(0xFF007A7A),
+    const Color(0xFFD68B6E),
+    const Color(0xFF00A5B2),
+    const Color(0xFF2E9483),
     // Color(0xFF8A4F38),
     // Color(0xFF007A7A),
     // Color(0xFF004747),

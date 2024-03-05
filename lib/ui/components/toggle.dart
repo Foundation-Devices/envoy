@@ -17,7 +17,7 @@ class EnvoyToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: 31.0,
         width: 51.0,
         child: FittedBox(

@@ -51,10 +51,10 @@ class ExchangeRate extends ChangeNotifier {
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";
 
-  double? _selectedCurrencyRate = null;
+  double? _selectedCurrencyRate;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
-  double? _usdRate = null;
+  double? _usdRate;
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
@@ -79,7 +79,7 @@ class ExchangeRate extends ChangeNotifier {
     restore();
 
     // Refresh from time to time
-    Timer.periodic(Duration(seconds: 30), (_) {
+    Timer.periodic(const Duration(seconds: 30), (_) {
       _getRate();
     });
   }
@@ -138,8 +138,8 @@ class ExchangeRate extends ChangeNotifier {
 
   _getRate() async {
     String selectedCurrencyCode = _currency?.code ?? ("USD");
-    double? selectedRate = null;
-    double? usdRate = null;
+    double? selectedRate;
+    double? usdRate;
 
     try {
       if (selectedCurrencyCode != "USD") {
@@ -168,11 +168,10 @@ class ExchangeRate extends ChangeNotifier {
 
   Future<double> _getRateForCode(String currencyCode) async {
     try {
-      final response =
-          await _http.get(_serverAddress + '/price/' + currencyCode);
+      final response = await _http.get('$_serverAddress/price/$currencyCode');
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        var rate = json['reply']['BTC' + currencyCode]["last"];
+        var rate = json['reply']['BTC$currencyCode']["last"];
         ConnectivityManager().nguSuccess();
         return rate.toDouble();
       } else {

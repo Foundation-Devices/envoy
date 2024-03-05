@@ -36,7 +36,7 @@ class _BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
     BtcPayVoucherRedeemResult result =
         await widget.voucher.createPayout(address);
 
-    if (result == BtcPayVoucherRedeemResult.Success) {
+    if (result == BtcPayVoucherRedeemResult.success) {
       {
         addPendingTx(widget.voucher.id, address, widget.account);
         widget.controller.jumpToPage(4);

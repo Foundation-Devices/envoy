@@ -32,7 +32,7 @@ class _BtcPayLoadingModalState extends State<BtcPayLoadingModal> {
     BtcPayVoucherRedeemResult result = await widget.voucher.getinfo();
     print(result);
 
-    if (result == BtcPayVoucherRedeemResult.Success) {
+    if (result == BtcPayVoucherRedeemResult.success) {
       {
         widget.controller.jumpToPage(1);
       }

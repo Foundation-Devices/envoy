@@ -119,9 +119,9 @@ class Faq extends ConsumerWidget {
                 .toList(),
           ),
         ),
-        Padding(padding: const EdgeInsets.only(top: EnvoySpacing.medium2)),
-        Padding(
-          padding: const EdgeInsets.only(
+        const Padding(padding: EdgeInsets.only(top: EnvoySpacing.medium2)),
+        const Padding(
+          padding: EdgeInsets.only(
             top: EnvoySpacing.large2,
             bottom: EnvoySpacing.small,
             left: EnvoySpacing.small,
@@ -196,7 +196,8 @@ class FaqItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: EnvoySpacing.small), //EnvoySpacing.small)
+      padding:
+          const EdgeInsets.only(top: EnvoySpacing.small), //EnvoySpacing.small)
       child: ClipRRect(
         borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
         child: Container(
@@ -226,7 +227,7 @@ class FaqItemWidget extends StatelessWidget {
                   ],
                 ),
                 if (isExpanded)
-                  SizedBox(
+                  const SizedBox(
                     height: EnvoySpacing.small,
                   ),
                 if (isExpanded)

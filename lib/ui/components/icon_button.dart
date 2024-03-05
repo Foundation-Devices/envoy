@@ -33,7 +33,7 @@ class EnvoyIconButton extends StatefulWidget {
 
 class _EnvoyIconButtonState extends State<EnvoyIconButton> {
   bool isPressed = false;
-  final _animationsDuration = Duration(milliseconds: 200);
+  final _animationsDuration = const Duration(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class _EnvoyIconButtonState extends State<EnvoyIconButton> {
               borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                   horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.xs),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

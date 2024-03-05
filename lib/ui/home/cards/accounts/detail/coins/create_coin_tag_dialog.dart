@@ -43,17 +43,19 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
       height: 428,
-      padding: EdgeInsets.all(EnvoySpacing.small),
+      padding: const EdgeInsets.all(EnvoySpacing.small),
       child: EnvoyScaffold(
           resizeToAvoidBottomInset: false,
+          removeAppBarPadding: true,
+          extendBody: true,
           child: Stack(
             fit: StackFit.passthrough,
             children: [
               Align(
-                alignment: Alignment(1.00, -1.02),
+                alignment: const Alignment(1.00, -1.02),
                 child: IconButton(
-                  icon: Icon(Icons.close),
-                  padding: EdgeInsets.all(12),
+                  icon: const Icon(Icons.close),
+                  padding: const EdgeInsets.all(12),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -63,13 +65,13 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Image.asset(
                     "assets/exclamation_icon.png",
                     height: 68,
                     width: 68,
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   Text(
                     S().change_output_from_multiple_tags_modal_heading,
                     style: Theme.of(context)
@@ -77,14 +79,12 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                         .titleMedium
                         ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   _tagWidget(context),
                 ],
               ),
             ],
-          ),
-          removeAppBarPadding: true,
-          extendBody: true),
+          )),
     );
   }
 
@@ -142,15 +142,16 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               decoration: BoxDecoration(
-                  color: Color(0xffD9D9D9),
+                  color: const Color(0xffD9D9D9),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Padding(
                   padding: const EdgeInsets.only(top: EnvoySpacing.small),
                   //16
                   child: TextFormField(
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       overflow: TextOverflow.fade,
                       fontWeight: FontWeight.w500,
@@ -169,9 +170,9 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                         required int? maxLength}) {
                       return currentLength > 20
                           ? Text("${_tagController.text.length}/30",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: DefaultSelectionStyle.defaultColor))
-                          : SizedBox();
+                          : const SizedBox();
                     },
                     decoration: InputDecoration(
                       hintText: "Enter new tag i.e. Exchange",
@@ -190,14 +191,14 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                     ),
                   )),
             ),
-            Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             tags.length != 0
                 ? Text(S().create_second_tag_modal_2_2_mostUsed)
                 : Text(S().create_first_tag_modal_2_2_suggest),
             Container(
-              margin: EdgeInsets.symmetric(
+              margin: const EdgeInsets.symmetric(
                   vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.xs),
-              constraints: BoxConstraints(maxHeight: 64),
+              constraints: const BoxConstraints(maxHeight: 64),
               child: Column(
                 children: [
                   Flexible(
@@ -210,7 +211,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                       children: [...firsRowWidget],
                     ),
                   )),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Flexible(
                       child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -224,9 +225,10 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               child: EnvoyButton(
                 S().component_continue,
                 enabled: _tagController.text.isNotEmpty,
@@ -241,7 +243,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                 onTap: () => tagSelected(context, ref),
               ),
             ),
-            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           ],
         );
       },
@@ -291,29 +293,29 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
 
       await CoinRepository().updateCoinTag(targetTag);
 
-      Set<CoinTag> coinsRemovedTags = Set();
+      Set<CoinTag> coinsRemovedTags = {};
 
-      tags.forEach((tag) {
+      for (var tag in tags) {
         /// no need to remove coins to the tag that we just added
-        if (tag.id != targetTag?.id) {
-          selectedCoins.forEach((element) {
+        if (tag.id != targetTag.id) {
+          for (var element in selectedCoins) {
             if (tag.coins_id.contains(element.id)) {
               tag.removeCoin(element);
               coinsRemovedTags.add(tag);
             }
-          });
+          }
         }
-      });
+      }
 
       coinsRemovedTags.forEach((element) async {
         if (!element.untagged) {
-          await Future.delayed(Duration(milliseconds: 10));
+          await Future.delayed(const Duration(milliseconds: 10));
           await CoinRepository().updateCoinTag(element);
         }
       });
       final _ = ref.refresh(accountsProvider);
       //Wait for the refresh to propagate
-      await Future.delayed(Duration(milliseconds: 180));
+      await Future.delayed(const Duration(milliseconds: 180));
 
       //Reset the selection
       Haptics.lightImpact();
@@ -330,9 +332,11 @@ Widget tagItem(context, String item, Function() onTap) {
     padding: const EdgeInsets.symmetric(horizontal: 4),
     child: InkWell(
         borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
         child: Container(
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
                 alignment: Alignment.center,
                 child: Text(
                   item.length > 9 ? item.substring(0, 7) + '...' : item,
@@ -343,8 +347,7 @@ Widget tagItem(context, String item, Function() onTap) {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: EnvoyColors.accentPrimary, width: 1),
             ),
-            height: 34),
-        onTap: onTap),
+            height: 34)),
   );
 }
 

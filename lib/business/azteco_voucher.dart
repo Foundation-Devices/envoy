@@ -49,7 +49,7 @@ class AztecoVoucher {
 
     HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-    Response? response = null;
+    Response? response;
 
     try {
       response = await _http.get(url);

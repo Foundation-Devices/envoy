@@ -314,9 +314,9 @@ class CryptoHdKey extends CborObject {
   String get path {
     String keypathString = "";
     for (var index in keypath!) {
-      keypathString = keypathString + "/" + index.key.toString();
+      keypathString = "$keypathString/${index.key}";
       if (index.hardened) {
-        keypathString = keypathString + "h";
+        keypathString = "${keypathString}h";
       }
     }
     return keypathString;

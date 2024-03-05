@@ -31,8 +31,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 class OnboardPrivacySetup extends ConsumerStatefulWidget {
   final bool setUpEnvoyWallet;
 
-  const OnboardPrivacySetup({Key? key, required this.setUpEnvoyWallet})
-      : super(key: key);
+  const OnboardPrivacySetup({super.key, required this.setUpEnvoyWallet});
 
   @override
   ConsumerState<OnboardPrivacySetup> createState() =>
@@ -49,7 +48,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
     return EnvoyPatternScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: CupertinoNavigationBarBackButton(
+        leading: const CupertinoNavigationBarBackButton(
           color: Colors.white,
         ),
         actions: [
@@ -62,7 +61,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   showEnvoyDialog(
                       context: context,
                       cardColor: Colors.transparent,
-                      dialog: NodeSetupDialog(),
+                      dialog: const NodeSetupDialog(),
                       alignment: Alignment.topCenter);
                 },
                 label: Text(
@@ -80,11 +79,12 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
           )
         ],
       ),
-      header: PrivacyShieldAnimated(),
+      header: const PrivacyShieldAnimated(),
       shield: SingleChildScrollView(
         child: Flexible(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+            margin:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,14 +114,16 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                          const Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.small)),
                           Text(
                             heading,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                          Container(
+                          const Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.small)),
+                          SizedBox(
                             width: 250,
                             child: Text(
                               subheading,
@@ -136,9 +138,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 ),
                 Container(
                   child: Container(
-                      child: PrivacyOptionSelect(),
-                      padding:
-                          EdgeInsets.symmetric(vertical: EnvoySpacing.small)),
+                      child: const PrivacyOptionSelect(),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small)),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -190,7 +192,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      OnboardPassportWelcomeScreen(),
+                                      const OnboardPassportWelcomeScreen(),
                                 ));
                           } else {
                             //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
@@ -200,13 +202,13 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            MagicRecoverWallet()));
+                                            const MagicRecoverWallet()));
                               } else {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          OnboardEnvoyWelcomeScreen(),
+                                          const OnboardEnvoyWelcomeScreen(),
                                     ));
                               }
                             } catch (e) {
@@ -214,7 +216,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        OnboardEnvoyWelcomeScreen(),
+                                        const OnboardEnvoyWelcomeScreen(),
                                   ));
                             }
                           }
@@ -233,7 +235,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
 }
 
 class NodeSetupDialog extends ConsumerStatefulWidget {
-  const NodeSetupDialog({Key? key}) : super(key: key);
+  const NodeSetupDialog({super.key});
 
   @override
   ConsumerState<NodeSetupDialog> createState() => _NodeSetupDialogState();
@@ -260,11 +262,11 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.all(12)),
+          const Padding(padding: EdgeInsets.all(12)),
           Container(
             height: 320,
             width: MediaQuery.of(context).size.width * 0.9,
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -282,7 +284,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(Icons.close)),
+                          icon: const Icon(Icons.close)),
                     ),
                     Text(
                       S().privacy_setting_add_node_modal_heading,
@@ -296,7 +298,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                           border: nodeConnectionState.error == null
                               ? Border.all(color: Colors.transparent)
                               : Border.all(color: EnvoyColors.danger, width: 1),
-                          color: Color(0xd231f20),
+                          color: const Color(0xd231f20),
                         ),
                         child: Opacity(
                           opacity: nodeConnectionState.isConnecting ? 0.4 : 1,
@@ -331,9 +333,10 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                       fillColor: Colors.transparent,
                                       border: InputBorder.none,
                                       contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 8),
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 8),
                                       hintText: S().privacy_node_nodeAddress,
-                                      hintStyle: TextStyle(height: 1.3)),
+                                      hintStyle: const TextStyle(height: 1.3)),
                                 ),
                               ),
                               Row(
@@ -351,13 +354,13 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                             }
                                           });
                                         },
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.paste,
                                           color: EnvoyColors.teal,
                                         ),
                                       )),
                                   GestureDetector(
-                                    child: Icon(Icons.qr_code,
+                                    child: const Icon(Icons.qr_code,
                                         color: EnvoyColors.teal),
                                     onTap: () {
                                       Navigator.of(context).push(
@@ -378,7 +381,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: 28,
                       child: Builder(
                         builder: (context) {
@@ -392,7 +395,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                 Container(
                                   width: 16,
                                   height: 16,
-                                  margin: EdgeInsets.only(right: 8),
+                                  margin: const EdgeInsets.only(right: 8),
                                   child: CircularProgressIndicator(
                                     color: EnvoyColors.teal,
                                     backgroundColor: Colors.grey[200],
@@ -417,12 +420,12 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                         borderRadius: BorderRadius.circular(16),
                                         border:
                                             Border.all(color: Colors.black)),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.check_outlined,
                                       color: EnvoyColors.teal,
                                       size: 16,
                                     )),
-                                Padding(padding: EdgeInsets.all(4)),
+                                const Padding(padding: EdgeInsets.all(4)),
                                 Text(
                                     "Connected to ${nodeConnectionState.electrumServerFeatures?.serverVersion}"), // TODO: FIGMA
                               ],
@@ -435,12 +438,12 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Icon(
+                                const Icon(
                                   EnvoyIcons.exclamation_warning,
                                   size: 18,
                                   color: EnvoyColors.danger,
                                 ),
-                                Padding(padding: EdgeInsets.all(4)),
+                                const Padding(padding: EdgeInsets.all(4)),
                                 Text(
                                   S().privacy_setting_connecting_node_fails_modal_failed,
                                   textAlign: TextAlign.center,
@@ -501,7 +504,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
 }
 
 class PrivacyOptionSelect extends ConsumerStatefulWidget {
-  const PrivacyOptionSelect({Key? key}) : super(key: key);
+  const PrivacyOptionSelect({super.key});
 
   @override
   ConsumerState<PrivacyOptionSelect> createState() =>
@@ -584,13 +587,13 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
+                  SizedBox(
                     height: 45,
                     width: 45,
                     child: icon,
                   ),
-                  Padding(padding: EdgeInsets.all(4)),
-                  Container(
+                  const Padding(padding: EdgeInsets.all(4)),
+                  SizedBox(
                     width: 80,
                     child: Text(
                       text,
@@ -627,14 +630,14 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
+                  SizedBox(
                     height: 45,
                     width: 45,
                     child: _performanceArtBoard == null
                         ? Container()
                         : Rive.Rive(artboard: _performanceArtBoard!),
                   ),
-                  Padding(padding: EdgeInsets.all(4)),
+                  const Padding(padding: EdgeInsets.all(4)),
                   Text(
                     S().privacy_privacyMode_betterPerformance,
                     style: Theme.of(context)
@@ -646,7 +649,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 ],
               )),
         ),
-        Padding(padding: EdgeInsets.all(8)),
+        const Padding(padding: EdgeInsets.all(8)),
         GestureDetector(
           onTap: () async {
             setState(() {
@@ -665,7 +668,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
+                  SizedBox(
                     height: 45,
                     width: 45,
                     child: _privacyIconArtBoard == null
@@ -674,8 +677,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                             artboard: _privacyIconArtBoard!,
                           ),
                   ),
-                  Padding(padding: EdgeInsets.all(2)),
-                  Container(
+                  const Padding(padding: EdgeInsets.all(2)),
+                  SizedBox(
                     width: 80,
                     child: Text(
                       S().privacy_privacyMode_improvedPrivacy,
@@ -695,21 +698,21 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 
   Widget _buildToggleContainer(bool active, Widget child) {
     return AnimatedOpacity(
-      duration: Duration(milliseconds: 340),
+      duration: const Duration(milliseconds: 340),
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 340),
-        constraints: BoxConstraints.tightFor(width: 100, height: 100),
+        duration: const Duration(milliseconds: 340),
+        constraints: const BoxConstraints.tightFor(width: 100, height: 100),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: RoundedRectangleBorder(
+            borderRadius: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))
                 .borderRadius,
             border: Border.all(
                 color: active ? EnvoyColors.teal : Colors.transparent,
                 width: 3),
             gradient: active
-                ? LinearGradient(
+                ? const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [Color(0xffFFFFFF), Color(0xffD9D9D9)])
@@ -747,7 +750,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       _improvedPerformanceController?.findInput<bool>("enable")?.change(true);
       if (!_betterPerformance &&
           ref.read(nodeConnectionStateProvider).isConnected) {
-        Future.delayed(Duration(milliseconds: 100)).then((value) {
+        Future.delayed(const Duration(milliseconds: 100)).then((value) {
           _privacyIconController?.findInput<bool>("toggle")?.change(true);
         });
       }
@@ -758,7 +761,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 }
 
 class PrivacyShieldAnimated extends StatefulWidget {
-  const PrivacyShieldAnimated({Key? key}) : super(key: key);
+  const PrivacyShieldAnimated({super.key});
 
   @override
   State<PrivacyShieldAnimated> createState() => _PrivacyShieldAnimatedState();
@@ -774,8 +777,8 @@ class _PrivacyShieldAnimatedState extends State<PrivacyShieldAnimated>
     controller = AnimationController(
         duration: const Duration(milliseconds: 1200), vsync: this);
     animation = Tween(
-      begin: Offset(0.0, .02),
-      end: Offset(0.01, 0),
+      begin: const Offset(0.0, .02),
+      end: const Offset(0.01, 0),
     ).animate(CurvedAnimation(
       parent: controller!,
       curve: Curves.easeInOut,

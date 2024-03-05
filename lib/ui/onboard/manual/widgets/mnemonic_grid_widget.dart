@@ -33,18 +33,18 @@ class MnemonicEntryGrid extends StatefulWidget {
 class MnemonicEntryGridState extends State<MnemonicEntryGrid>
     with TickerProviderStateMixin {
   AnimationController? _animationController;
-  double _suggestionOverlayHeight = 50;
+  final double _suggestionOverlayHeight = 50;
   OverlayEntry? _overlayEntry;
-  List<TextEditingController> _controllers = [];
-  List<FocusNode> _focusNodes = [];
+  final List<TextEditingController> _controllers = [];
+  final List<FocusNode> _focusNodes = [];
   List<String> _seedWords = [];
   Animation<double>? _animation;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int currentPage = 0;
   FocusNode? _currentFocusNode;
   bool _showNextPage = false;
-  ScrollController _scrollControllerPage1 = ScrollController();
-  ScrollController _scrollControllerPage2 = ScrollController();
+  final ScrollController _scrollControllerPage1 = ScrollController();
+  final ScrollController _scrollControllerPage2 = ScrollController();
 
   @override
   void initState() {
@@ -87,7 +87,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: 8),
+          margin: const EdgeInsets.only(top: 8),
           child: DotsIndicator(
             totalPages: 2,
             pageController: _pageController,
@@ -99,7 +99,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   showPage(int page) {
     _pageController.animateToPage(page,
-        duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
   Widget _buildMnemonicView(int page, BuildContext context) {
@@ -155,7 +155,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
             child: Container(
               height: 40,
               width: 140,
-              margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
               child: MnemonicInput(
                   controller: _controllers[index],
                   onWordDetected: (focusNode, controller, word) {
@@ -168,7 +168,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                     if (_showNextPage) {
                       _pageController
                           .nextPage(
-                              duration: Duration(milliseconds: 300),
+                              duration: const Duration(milliseconds: 300),
                               curve: Curves.easeIn)
                           .then((value) {
                         _currentFocusNode = _focusNodes[12];
@@ -221,7 +221,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           child: FadeTransition(
             opacity: _animation!,
             child: AnimatedOpacity(
-              duration: Duration(milliseconds: 250),
+              duration: const Duration(milliseconds: 250),
               opacity: bottom == 0 ? 0 : 1,
               child: Container(
                 color: Colors.white,
@@ -262,8 +262,8 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                       if (_showNextPage) {
                                         _pageController
                                             .nextPage(
-                                                duration:
-                                                    Duration(milliseconds: 300),
+                                                duration: const Duration(
+                                                    milliseconds: 300),
                                                 curve: Curves.easeIn)
                                             .then((value) {
                                           _currentFocusNode = _focusNodes[12];
@@ -274,8 +274,8 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 8),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8),
                                       child: Chip(
                                         label: Text("$e"),
                                       ),
@@ -316,11 +316,13 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           _showOverlay(context, i);
           if ((i >= 4 && i <= 6) || (i >= 10 && i <= 12)) {
             _scrollControllerPage1.animateTo(200,
-                duration: Duration(milliseconds: 200), curve: Curves.ease);
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease);
           }
           if ((i >= 16 && i <= 18) || (i >= 22 && i <= 24)) {
             _scrollControllerPage2.animateTo(180,
-                duration: Duration(milliseconds: 200), curve: Curves.ease);
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease);
           }
           if (i == 11 && widget.seedLength == SeedLength.MNEMONIC_24) {
             _showNextPage = true;
@@ -391,7 +393,7 @@ class _DotsIndicatorState extends State<DotsIndicator> {
   Widget _buildDot(bool isActive) {
     return Container(
       width: 8,
-      margin: EdgeInsets.symmetric(horizontal: 2),
+      margin: const EdgeInsets.symmetric(horizontal: 2),
       height: 8,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -481,8 +483,8 @@ class _MnemonicInputState extends State<MnemonicInput> {
             if (!widget.readOnly) widget.focusNode.requestFocus();
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            constraints: BoxConstraints(maxHeight: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            constraints: const BoxConstraints(maxHeight: 40),
             decoration: BoxDecoration(
                 color: Colors.grey[300],
                 border: Border.all(width: 1, color: borderColor),
@@ -522,7 +524,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
                             cursorColor: Theme.of(context).primaryColor,
                             backgroundCursorColor: Colors.grey),
                         Container(
-                          margin: EdgeInsets.only(top: 14),
+                          margin: const EdgeInsets.only(top: 14),
                           child: Divider(
                             thickness: 1,
                             color: (_hasFocus || hasContent)

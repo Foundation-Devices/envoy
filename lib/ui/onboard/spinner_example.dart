@@ -65,17 +65,17 @@ class _RiveExampleAnimationState extends State<RiveExample> {
                     key = UniqueKey();
                   });
                 },
-                child: Text("Indeterminate")),
+                child: const Text("Indeterminate")),
             ElevatedButton(
                 onPressed: () {
                   happy?.change(true);
                 },
-                child: Text("Happy")),
+                child: const Text("Happy")),
             ElevatedButton(
                 onPressed: () {
                   unhappy?.change(true);
                 },
-                child: Text("Unhappy")),
+                child: const Text("Unhappy")),
           ],
         )
       ],

@@ -188,7 +188,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                             );
                                           },
                                           transitionDuration:
-                                              Duration(milliseconds: 100),
+                                              const Duration(milliseconds: 100),
                                           transitionsBuilder: (context,
                                               animation,
                                               secondaryAnimation,
@@ -218,7 +218,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         ],
                       ),
                       bottom: ClipRRect(
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8),
                           topRight: Radius.circular(7),
                         ),
@@ -229,7 +229,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: EnvoySpacing.xs)
-                                  .add(EdgeInsets.only(
+                                  .add(const EdgeInsets.only(
                                       bottom: EnvoySpacing.large1)),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -266,7 +266,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   Widget _buildBroadcastProgress() {
     return Padding(
-      key: Key("progress"),
+      key: const Key("progress"),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -290,7 +290,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 ),
               ),
             ),
-            SliverPadding(padding: EdgeInsets.all(28)),
+            const SliverPadding(padding: EdgeInsets.all(28)),
             SliverToBoxAdapter(
               child: Builder(
                 builder: (context) {
@@ -318,7 +318,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.all(18)),
+                        const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
@@ -334,7 +334,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             SliverFillRemaining(
                 hasScrollBody: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 44),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
                   child: _ctaButtons(context),
                 ))
           ],
@@ -346,7 +347,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   Widget _ctaButtons(BuildContext context) {
     if (broadcastProgress == BroadcastProgress.inProgress ||
         broadcastProgress == BroadcastProgress.staging) {
-      return SizedBox();
+      return const SizedBox();
     }
     if (broadcastProgress == BroadcastProgress.success) {
       return Column(
@@ -405,23 +406,22 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           dialog: Builder(builder: (context) {
             return Container(
               width: MediaQuery.of(context).size.width * 0.75,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(EnvoySpacing.medium2),
                 ),
                 color: EnvoyColors.textPrimaryInverse,
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                     vertical: EnvoySpacing.medium3,
                     horizontal: EnvoySpacing.medium2),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
                       child: EnvoyIcon(
                         EnvoyIcons.alert,
                         size: EnvoyIconSize.big,
@@ -524,10 +524,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         EnvoyToast(
           backgroundColor: EnvoyColors.danger,
           replaceExisting: true,
-          duration: Duration(seconds: 4),
+          duration: const Duration(seconds: 4),
           message: "Error: Transaction Confirmed",
           // TODO: Figma
-          icon: Icon(
+          icon: const Icon(
             Icons.info_outline,
             color: EnvoyColors.solidWhite,
           ),
@@ -542,7 +542,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       final txid = await account.wallet.broadcastTx(
           Settings().electrumAddress(account.wallet.network), port, psbt.rawTx);
       //wait for BDK to broadcast the transaction
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
 
       try {
         /// get the raw transaction from the database
@@ -584,21 +584,21 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           if (tags.map((e) => e.id).contains(tag.id) == false &&
               tag.untagged == false) {
             await CoinRepository().addCoinTag(tag);
-            await Future.delayed(Duration(milliseconds: 100));
+            await Future.delayed(const Duration(milliseconds: 100));
           }
         } else {
           ///if user already selected a change output tag to original transaction then find it and add it to the new transaction
           CoinTag? foundAnExistingChangeTag = null;
 
           /// Find any change tag present in the original transaction
-          tags.forEach((tag) {
-            tag.coins_id.forEach((existingId) {
+          for (var tag in tags) {
+            for (var existingId in tag.coins_id) {
               /// check with original tx to see if any change output tag is present
               if (existingId.contains(widget.rbfSpendState.originalTx.txId)) {
                 foundAnExistingChangeTag = tag;
               }
-            });
-          });
+            }
+          }
           tag = foundAnExistingChangeTag;
         }
 
@@ -615,7 +615,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               tag?.coins_id.add(coin.id);
               await CoinRepository().updateCoinTag(tag!);
               final _ = ref.refresh(accountsProvider);
-              await Future.delayed(Duration(seconds: 1));
+              await Future.delayed(const Duration(seconds: 1));
               final __ = ref.refresh(coinsTagProvider(account.id!));
             }
           });
@@ -638,7 +638,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       addHapticFeedback();
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       setState(() {
         broadcastProgress = BroadcastProgress.success;
       });
@@ -646,7 +646,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
-      await Future.delayed(Duration(milliseconds: 800));
+      await Future.delayed(const Duration(milliseconds: 800));
       setState(() {
         broadcastProgress = BroadcastProgress.failed;
       });
@@ -657,9 +657,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   void addHapticFeedback() async {
     if (hapticCalled) return;
     hapticCalled = true;
-    await Future.delayed(Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 700));
     HapticFeedback.lightImpact();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     HapticFeedback.mediumImpact();
   }
 
@@ -693,9 +693,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       EnvoyToast(
         replaceExisting: true,
-        duration: Duration(seconds: 4),
+        duration: const Duration(seconds: 4),
         message: message,
-        icon: Icon(
+        icon: const Icon(
           Icons.info_outline,
           color: EnvoyColors.solidWhite,
         ),
@@ -721,7 +721,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           Positioned(
             top: _topAppBarOffset,
             left: 5,
-            bottom: BottomAppBar().height ?? 20 + 8,
+            bottom: const BottomAppBar().height ?? 20 + 8,
             right: 5,
             child: Shield(child: child),
           )

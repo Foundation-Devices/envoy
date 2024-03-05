@@ -29,7 +29,7 @@ main(args) async {
   }
 
   List<String> excludedKeys = [];
-  textKeys.keys.forEach((element) {
+  for (var element in textKeys.keys) {
     bool foundUsage = false;
     libDirectory.listSync(recursive: true).forEach((file) {
       if (file is File && file.path.endsWith(".dart")) {
@@ -54,10 +54,14 @@ main(args) async {
         excludedKeys.add(element);
       }
     }
-  });
+  }
 
-  print(
-      "Excluded: ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
+  if (kDebugMode) {
+    print(
+        "Excluded: ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
+  }
 
-  print("Excluded keys:\n ${excludedKeys.join("\n")}");
+  if (kDebugMode) {
+    print("Excluded keys:\n ${excludedKeys.join("\n")}");
+  }
 }

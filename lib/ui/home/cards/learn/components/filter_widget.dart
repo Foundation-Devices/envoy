@@ -35,22 +35,18 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             fontWeight: FontWeight.w600,
             fontSize: 14);
 
-    if (_sortState == null) {
-      _sortState = learnSortState;
-    }
-    if (_filterState == null) {
-      _filterState = learnFilterState;
-    }
+    _sortState ??= learnSortState;
+    _filterState ??= learnFilterState;
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium1,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -76,7 +72,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Container(
             height: 34,
             child: ListView(
@@ -104,7 +100,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
                       ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
@@ -126,7 +122,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
                       ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
@@ -148,7 +144,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
                       ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
@@ -170,11 +166,11 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(S().account_details_filter_tags_sortBy,
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
@@ -197,7 +193,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -213,7 +209,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               }
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );

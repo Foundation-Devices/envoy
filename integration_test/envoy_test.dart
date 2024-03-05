@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -87,29 +88,29 @@ void main() {
       final continueButtonFinder = find.text('Continue');
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       final enableMagicButtonFinder = find.text('Enable Magic Backups');
       expect(enableMagicButtonFinder, findsOneWidget);
       await tester.tap(enableMagicButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       // video
       final createMagicButtonFinder = find.text('Create Magic Backup');
       expect(createMagicButtonFinder, findsOneWidget);
       await tester.tap(createMagicButtonFinder);
-      await tester.pump(Duration(milliseconds: 1500));
+      await tester.pump(const Duration(milliseconds: 1500));
 
       await tester.pumpAndSettle();
 
       // animations
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       final devicesButton = find.text('Devices');
       await tester.tap(devicesButton);
@@ -248,7 +249,7 @@ Future<void> resetEnvoyData() async {
   final appSupportDir = await getApplicationSupportDirectory();
 
   // Database
-  final String dbName = 'envoy.db';
+  const String dbName = 'envoy.db';
   final appDocumentDir = await getApplicationDocumentsDirectory();
   final dbFile = File(join(appDocumentDir.path, dbName));
 
@@ -359,7 +360,7 @@ class Passport {
     // final directoryToDelete = '$currentPath/passport2/simulator/work';
     // Directory(directoryToDelete).deleteSync();
 
-    final fileToDelete = 'spi_flash.bin';
+    const fileToDelete = 'spi_flash.bin';
     try {
       File(passportPath + "/" + fileToDelete).deleteSync();
     } on Exception catch (e) {
@@ -413,7 +414,9 @@ class Passport {
       'video4linux2',
       qrScannerDevice,
     ]).then((ffmpeg) {
-      print("v4l devices created!");
+      if (kDebugMode) {
+        print("v4l devices created!");
+      }
       ffmpeg.stdout.listen((event) {
         print(event);
       });
@@ -437,7 +440,7 @@ class Passport {
   Future<void> sendFrameToPassport(
       ScreenshotController screenshotController, String camPipePath) async {
     final currentPath = Directory.current.path;
-    final screenshotFileName = "screenshot.png";
+    const screenshotFileName = "screenshot.png";
     await screenshotController.captureAndSave(currentPath,
         fileName: screenshotFileName);
 

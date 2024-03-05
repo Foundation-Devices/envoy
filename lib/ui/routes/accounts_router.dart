@@ -30,25 +30,23 @@ import 'package:go_router/go_router.dart';
 const ROUTE_ACCOUNTS_HOME = '/account';
 
 const _ACCOUNT_DETAIL = 'details';
-const ROUTE_ACCOUNT_DETAIL = '${ROUTE_ACCOUNTS_HOME}/${_ACCOUNT_DETAIL}';
+const ROUTE_ACCOUNT_DETAIL = '$ROUTE_ACCOUNTS_HOME/$_ACCOUNT_DETAIL';
 
 const _ACCOUNT_RECEIVE = 'receive';
-const ROUTE_ACCOUNT_RECEIVE = '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_RECEIVE}';
+const ROUTE_ACCOUNT_RECEIVE = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_RECEIVE';
 
 const _ACCOUNT_DESCRIPTOR = 'desc';
-const ROUTE_ACCOUNT_DESCRIPTOR =
-    '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_DESCRIPTOR}';
+const ROUTE_ACCOUNT_DESCRIPTOR = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_DESCRIPTOR';
 
 const _ACCOUNT_SEND = 'send';
-const ROUTE_ACCOUNT_SEND = '${ROUTE_ACCOUNT_DETAIL}/${_ACCOUNT_SEND}';
+const ROUTE_ACCOUNT_SEND = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SEND';
 
 const _ACCOUNT_SEND_CONFIRM = 'confirm';
-const ROUTE_ACCOUNT_SEND_CONFIRM =
-    '${ROUTE_ACCOUNT_SEND}/${_ACCOUNT_SEND_CONFIRM}';
+const ROUTE_ACCOUNT_SEND_CONFIRM = '$ROUTE_ACCOUNT_SEND/$_ACCOUNT_SEND_CONFIRM';
 
 const _ACCOUNT_SEND_REVIEW = 'review';
 const ROUTE_ACCOUNT_SEND_REVIEW =
-    '${ROUTE_ACCOUNT_SEND_CONFIRM}/${_ACCOUNT_SEND_REVIEW}';
+    '$ROUTE_ACCOUNT_SEND_CONFIRM/$_ACCOUNT_SEND_REVIEW';
 
 /// simple wrapper to add page animation
 Page wrapWithVerticalAxisAnimation(
@@ -86,7 +84,7 @@ final accountsRouter = StatefulShellBranch(
                         .read(coinSelectionStateProvider)
                         .isNotEmpty ||
                     isInEdit) {
-                  await Future.delayed(Duration(milliseconds: 50));
+                  await Future.delayed(const Duration(milliseconds: 50));
                   providerContainer.read(hideBottomNavProvider.notifier).state =
                       false;
 
@@ -106,8 +104,9 @@ final accountsRouter = StatefulShellBranch(
                       /// if we are exiting the send screen, we need to clear the spend state
                       /// but only if we are not in edit mode
                       if (!ProviderScope.containerOf(context)
-                          .read(spendEditModeProvider))
+                          .read(spendEditModeProvider)) {
                         clearSpendState(ProviderScope.containerOf(context));
+                      }
                       return true;
                     },
                     pageBuilder: (context, state) {
@@ -139,7 +138,7 @@ final accountsRouter = StatefulShellBranch(
                           } else {
                             final exit = await showEnvoyDialog(
                                 context: context,
-                                dialog: DiscardTransactionDialog());
+                                dialog: const DiscardTransactionDialog());
                             if (exit) {
                               providerContainer
                                   .read(coinSelectionStateProvider.notifier)
@@ -163,9 +162,10 @@ final accountsRouter = StatefulShellBranch(
                               /// if we are exiting the send screen, we need to clear the spend state
                               /// but only if we are not in edit mode
                               if (!ProviderScope.containerOf(context)
-                                  .read(spendEditModeProvider))
+                                  .read(spendEditModeProvider)) {
                                 clearSpendState(
                                     ProviderScope.containerOf(context));
+                              }
                               return true;
                             },
                             path: _ACCOUNT_SEND_REVIEW,

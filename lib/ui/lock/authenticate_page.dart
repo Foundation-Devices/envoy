@@ -25,7 +25,7 @@ class AuthenticateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: true,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
@@ -52,7 +52,7 @@ class AuthenticateApp extends StatelessWidget {
           brightness: Brightness.light,
           scaffoldBackgroundColor: Colors.transparent,
         ),
-        home: Builder(builder: (c) => AuthenticatePage()));
+        home: Builder(builder: (c) => const AuthenticatePage()));
   }
 }
 
@@ -84,7 +84,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     if (availableBiometrics.isNotEmpty) {
       try {
         final bool didAuthenticate = await auth.authenticate(
-            options: AuthenticationOptions(
+            options: const AuthenticationOptions(
               biometricOnly: true,
               stickyAuth: true,
             ),
@@ -93,7 +93,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
           if (Platform.isIOS) {
-            await Future.delayed(Duration(milliseconds: 800));
+            await Future.delayed(const Duration(milliseconds: 800));
           }
           runApp(EnvoyApp());
           return;
@@ -161,7 +161,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     } else {
       ///Authenticate without biometrics
       final bool didAuthenticate = await auth.authenticate(
-          options: AuthenticationOptions(
+          options: const AuthenticationOptions(
             biometricOnly: false,
             stickyAuth: true,
           ),
@@ -202,9 +202,9 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               child: Container(
                 height: 310,
                 width: MediaQuery.of(context).size.width * .8,
-                padding: EdgeInsets.all(EnvoySpacing.medium2)
+                padding: const EdgeInsets.all(EnvoySpacing.medium2)
                     .add(EdgeInsets.only(top: -6)),
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   minHeight: 270,
                 ),
                 child: Column(
@@ -222,9 +222,9 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                           size: EnvoyIconSize.big,
                           color: EnvoyColors.accentPrimary,
                         ),
-                        SizedBox(height: EnvoySpacing.medium2),
+                        const SizedBox(height: EnvoySpacing.medium2),
                         ListTile(
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                           title: Text(title,
                               style: EnvoyTypography.subheading
                                   .copyWith(color: EnvoyColors.textPrimary),
@@ -242,11 +242,12 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                     ctaTapCallback != null
                         ? EnvoyButton(
                             ctaButtonTitle,
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
                             type: EnvoyButtonTypes.primaryModal,
                             onTap: ctaTapCallback,
                           )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),

@@ -29,7 +29,7 @@ const String TAPROOT_WALLET_DERIVED_PREFS = "taproot_wallet_derived";
 const String LAST_BACKUP_PREFS = "last_backup";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
 const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
-    LOCAL_SECRET_FILE_NAME + ".backup_timestamp";
+    "$LOCAL_SECRET_FILE_NAME.backup_timestamp";
 
 const int SECRET_LENGTH_BYTES = 16;
 
@@ -53,11 +53,8 @@ class EnvoySeed {
 
   static String encryptedBackupFileExtension = "mla";
   static String encryptedBackupFileName = "envoy_backup";
-  static String encryptedBackupFilePath = LocalStorage().appDocumentsDir.path +
-      "/" +
-      encryptedBackupFileName +
-      "." +
-      encryptedBackupFileExtension;
+  static String encryptedBackupFilePath =
+      "${LocalStorage().appDocumentsDir.path}/$encryptedBackupFileName.$encryptedBackupFileExtension";
 
   static Map<WalletType, String> hotWalletDerivedPrefsString = {
     WalletType.witnessPublicKeyHash: WALLET_DERIVED_PREFS,

@@ -58,14 +58,14 @@ class _TransactionsDetailsWidgetState
     String confirmationTime = "";
 
     if (minutes < 60) {
-      confirmationTime = minutes.toString() + "m";
+      confirmationTime = "${minutes}m";
     } else if (minutes >= 60 && minutes < 120) {
       confirmationTime = "1h";
     } else {
       confirmationTime = "1 day"; // TODO: Figma
     }
 
-    return S().coindetails_overlay_confirmationIn + " ~" + confirmationTime;
+    return "${S().coindetails_overlay_confirmationIn} ~$confirmationTime";
   }
 
   @override
@@ -143,11 +143,11 @@ class _TransactionsDetailsWidgetState
         ),
         body: Container(
             key: _detailWidgetKey,
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
                 horizontal: EnvoySpacing.medium2,
                 vertical: EnvoySpacing.medium2),
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 160),
+              duration: const Duration(milliseconds: 160),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
                 border: Border.all(
@@ -179,16 +179,16 @@ class _TransactionsDetailsWidgetState
                           Container(
                             height: 36,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            margin: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            margin: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
+                            decoration: const BoxDecoration(
+                              borderRadius: const BorderRadius.all(
                                   Radius.circular(EnvoySpacing.medium2)),
                               color: Colors.white,
                             ),
                             child: hideBalance
-                                ? Row(
+                                ? const Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
@@ -214,8 +214,8 @@ class _TransactionsDetailsWidgetState
                           ),
                           Flexible(
                             child: Container(
-                              margin: EdgeInsets.all(EnvoySpacing.xs),
-                              padding: EdgeInsets.all(EnvoySpacing.xs),
+                              margin: const EdgeInsets.all(EnvoySpacing.xs),
+                              padding: const EdgeInsets.all(EnvoySpacing.xs),
                               decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.circular(EnvoySpacing.medium1),
@@ -223,7 +223,7 @@ class _TransactionsDetailsWidgetState
                               ),
                               child: ListView(
                                 shrinkWrap: true,
-                                padding: EdgeInsets.all(0),
+                                padding: const EdgeInsets.all(0),
                                 children: [
                                   CoinTagListItem(
                                     title: S().coindetails_overlay_address,
@@ -242,7 +242,8 @@ class _TransactionsDetailsWidgetState
                                       },
                                       child: SingleChildScrollView(
                                         child: AnimatedSize(
-                                          duration: Duration(milliseconds: 200),
+                                          duration:
+                                              const Duration(milliseconds: 200),
                                           curve: Curves.easeInOut,
                                           child: addressNotAvailable
                                               ? Text("Address not available ",
@@ -261,7 +262,7 @@ class _TransactionsDetailsWidgetState
                                   CoinTagListItem(
                                     title:
                                         S().coindetails_overlay_transactionID,
-                                    icon: Icon(
+                                    icon: const Icon(
                                       CupertinoIcons.compass,
                                       size: 16,
                                       color: Colors.black,
@@ -279,10 +280,15 @@ class _TransactionsDetailsWidgetState
                                           tween: Tween<double>(
                                               begin: 0,
                                               end: showTxIdExpanded ? 1 : 0),
-                                          duration: Duration(milliseconds: 200),
+                                          duration:
+                                              const Duration(milliseconds: 200),
                                           builder: (context, value, child) {
                                             return SelectableText(
-                                              "${truncateWithEllipsisInCenter(tx.txId, lerpDouble(16, tx.txId.length, value)!.toInt())}",
+                                              truncateWithEllipsisInCenter(
+                                                  tx.txId,
+                                                  lerpDouble(16, tx.txId.length,
+                                                          value)!
+                                                      .toInt()),
                                               style: EnvoyTypography.info
                                                   .copyWith(
                                                       color: Colors.black),
@@ -302,7 +308,7 @@ class _TransactionsDetailsWidgetState
                                   ),
                                   CoinTagListItem(
                                     title: S().coindetails_overlay_date,
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.calendar_today_outlined,
                                       size: 16,
                                       color: Colors.black,
@@ -332,7 +338,7 @@ class _TransactionsDetailsWidgetState
                                                           tx,
                                                           widget.account.wallet
                                                               .network)))),
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.access_time,
                                             color: EnvoyColors.textTertiary,
                                             size: 16,
@@ -361,7 +367,8 @@ class _TransactionsDetailsWidgetState
                                               Navigator.pop(context);
                                             },
                                           ),
-                                          alignment: Alignment(0.0, -0.8));
+                                          alignment:
+                                              const Alignment(0.0, -0.8));
                                     },
                                     child: CoinTagListItem(
                                       title: S()
@@ -379,7 +386,7 @@ class _TransactionsDetailsWidgetState
                                             MainAxisAlignment.end,
                                         children: [
                                           Expanded(
-                                            child: Text("$note",
+                                            child: Text(note,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: EnvoyTypography.body
@@ -388,7 +395,7 @@ class _TransactionsDetailsWidgetState
                                                             .textPrimary),
                                                 textAlign: TextAlign.end),
                                           ),
-                                          Padding(
+                                          const Padding(
                                               padding: EdgeInsets.all(
                                                   EnvoySpacing.xs)),
                                           note.trim().isNotEmpty
@@ -400,7 +407,8 @@ class _TransactionsDetailsWidgetState
                                                       .primaryColor,
                                                   height: 14,
                                                 )
-                                              : Icon(Icons.add_circle_rounded,
+                                              : const Icon(
+                                                  Icons.add_circle_rounded,
                                                   color:
                                                       EnvoyColors.accentPrimary,
                                                   size: 16),
@@ -412,7 +420,7 @@ class _TransactionsDetailsWidgetState
                                       ? CancelTxButton(
                                           transaction: tx,
                                         )
-                                      : SizedBox.shrink(),
+                                      : const SizedBox.shrink(),
                                 ],
                               ),
                             ),
@@ -448,7 +456,7 @@ class _TransactionsDetailsWidgetState
           );
 
     if (cancelState?.newTxId == tx.txId) {
-      icon = Icon(
+      icon = const Icon(
         Icons.close,
         size: 16,
       );
@@ -458,7 +466,7 @@ class _TransactionsDetailsWidgetState
       title: feeTitle,
       icon: icon,
       trailing: hideBalance
-          ? LoaderGhost(width: 74, animate: false, height: 16)
+          ? const LoaderGhost(width: 74, animate: false, height: 16)
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -500,7 +508,7 @@ class _TransactionsDetailsWidgetState
                       left: EnvoySpacing.xs,
                     ),
                     child: Text(
-                      "$title",
+                      title,
                       style: EnvoyTypography.body
                           .copyWith(color: color ?? EnvoyColors.textPrimary),
                     ),
@@ -521,11 +529,7 @@ String getTransactionDateAndTimeString(Transaction transaction) {
     return S().activity_pending;
   }
   final String transactionDateInfo =
-      DateFormat.yMd(currentLocale).format(transaction.date) +
-          " " +
-          S().coindetails_overlay_at +
-          " " +
-          DateFormat.Hm(currentLocale).format(transaction.date);
+      "${DateFormat.yMd(currentLocale).format(transaction.date)} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(transaction.date)}";
   return transactionDateInfo;
 }
 

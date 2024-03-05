@@ -50,10 +50,10 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.width * 0.75,
-      child: Center(
-        child: SizedBox(
+      child: const Center(
+        child: const SizedBox(
           height: 60,
           width: 60,
           child: CircularProgressIndicator(

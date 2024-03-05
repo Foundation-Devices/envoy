@@ -83,7 +83,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(EnvoySpacing.small),
+          padding: const EdgeInsets.all(EnvoySpacing.small),
           child: DropdownButton<EnvoyDropdownOption>(
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
@@ -164,8 +164,8 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                 );
               },
             ).toList(),
-            icon: Padding(
-              padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+            icon: const Padding(
+              padding: EdgeInsets.only(left: EnvoySpacing.medium1),
               child: EnvoyIcon(
                 EnvoyIcons.chevron_down,
                 color: EnvoyColors.textPrimary,

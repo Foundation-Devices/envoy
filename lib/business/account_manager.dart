@@ -155,7 +155,6 @@ class AccountManager extends ChangeNotifier {
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
     }
-    ;
 
     return account;
   }
@@ -238,7 +237,6 @@ class AccountManager extends ChangeNotifier {
         _initWallet(newAccount.wallet);
         addAccount(newAccount);
       }
-      ;
 
       if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
@@ -347,8 +345,8 @@ class AccountManager extends ChangeNotifier {
 
     var partialDescriptor = "$scriptType([$xfp$derivation]$xpub";
 
-    var externalDescriptor = partialDescriptor + "/0/*)";
-    var internalDescriptor = partialDescriptor + "/1/*)";
+    var externalDescriptor = "$partialDescriptor/0/*)";
+    var internalDescriptor = "$partialDescriptor/1/*)";
 
     var wallet = await _getWallet(xpub, externalDescriptor, internalDescriptor);
     return wallet;
@@ -461,7 +459,6 @@ class AccountManager extends ChangeNotifier {
 
       Notifications().deleteFromAccount(accountToDelete);
     }
-    ;
   }
 
   deleteDeviceAccounts(Device device) {

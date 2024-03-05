@@ -38,11 +38,11 @@ class NodeConnectionState {
 }
 
 class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
-  NodeConnectionStateNotifier(NodeConnectionState state) : super(state);
+  NodeConnectionStateNotifier(super.state);
 
   Future validateServer(String address, bool torRequired) async {
     try {
-      this.state = NodeConnectionState(isConnected: false, isConnecting: true);
+      state = NodeConnectionState(isConnected: false, isConnecting: true);
       Tor tor = Tor.instance;
       Settings().setTorEnabled(torRequired);
       if (torRequired) {
@@ -59,7 +59,7 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
       Settings().setCustomElectrumAddress(address);
       ConnectivityManager().electrumSuccess();
       Haptics.mediumImpact();
-      this.state = NodeConnectionState(
+      state = NodeConnectionState(
           isConnected: true,
           isConnecting: false,
           electrumServerFeatures: features);
@@ -69,13 +69,13 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
       if (e is InvalidPort) {
         print("Your port is invalid");
       }
-      this.state = NodeConnectionState(
+      state = NodeConnectionState(
           isConnected: false, isConnecting: false, error: "${e}");
       print(e);
     }
   }
 
   reset() {
-    this.state = NodeConnectionState.getDefault();
+    state = NodeConnectionState.getDefault();
   }
 }

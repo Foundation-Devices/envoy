@@ -49,7 +49,7 @@ class EnvoyButton extends StatefulWidget {
 
 class _EnvoyButtonState extends State<EnvoyButton> {
   bool isPressed = false;
-  final _animationsDuration = Duration(milliseconds: 200);
+  final _animationsDuration = const Duration(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +90,13 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                 alignment: Alignment.center,
                 children: [
                   AnimatedOpacity(
-                    duration: Duration(milliseconds: 230),
+                    duration: const Duration(milliseconds: 230),
                     opacity: widget.state == ButtonState.loading ? 1 : 0,
                     child: SizedBox.square(
                       dimension: widget.height,
                       child: Container(
-                        margin: EdgeInsets.all(8),
-                        child: CircularProgressIndicator(
+                        margin: const EdgeInsets.all(8),
+                        child: const CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 1,
                           strokeCap: StrokeCap.round,
@@ -105,10 +105,10 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                     ),
                   ),
                   AnimatedOpacity(
-                    duration: Duration(milliseconds: 180),
+                    duration: const Duration(milliseconds: 180),
                     opacity: widget.state == ButtonState.loading ? 0 : 1,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.xs,
                           vertical: EnvoySpacing.small),
                       child: Row(

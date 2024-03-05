@@ -46,7 +46,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
         children: [
           ClipRRect(
             borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
             child: GestureDetector(
               onTap: () {
                 widget.blog.read = true;
@@ -101,7 +101,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: EnvoySpacing.xs),
+                    const SizedBox(height: EnvoySpacing.xs),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -115,7 +115,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )
-                              : Text("")
+                              : const Text("")
                         ]),
                   ],
                 ),
@@ -154,7 +154,7 @@ class _BlogPostCardState extends State<BlogPostCard> {
         ),
         child: ShaderMask(
           shaderCallback: (Rect rect) {
-            return LinearGradient(
+            return const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
@@ -225,7 +225,7 @@ class _BlogPostCardState extends State<BlogPostCard> {
                     child: Container(
                         height: 60,
                         width: 60,
-                        child: CircularProgressIndicator()),
+                        child: const CircularProgressIndicator()),
                   );
                 }
               },

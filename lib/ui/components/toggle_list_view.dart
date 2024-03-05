@@ -65,10 +65,10 @@ class _EnvoyListToggleState extends State<EnvoyListToggle> {
             ),
           ),
           AnimatedAlign(
-            duration: Duration(milliseconds: 150),
+            duration: const Duration(milliseconds: 150),
             alignment: isEnabled ? Alignment.centerRight : Alignment.centerLeft,
             child: Padding(
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               child: Container(
                 width: toggleWidth,
                 decoration: BoxDecoration(

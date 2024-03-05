@@ -75,8 +75,8 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                     ? Border.all(color: EnvoyColors.danger)
                     : Border.all(color: EnvoyColors.accentPrimary))
                 : Border.all(color: Colors.transparent),
-            borderRadius: BorderRadius.all(
-              Radius.circular(EnvoySpacing.small),
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(EnvoySpacing.small),
             ),
           ),
           child: Row(
@@ -116,12 +116,12 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
               if (widget.additionalButtons)
                 Row(
                   children: [
-                    SizedBox(width: EnvoySpacing.medium1),
+                    const SizedBox(width: EnvoySpacing.medium1),
                     if (widget.isLoading ?? false)
                       Container(
                         width: EnvoySpacing.medium1,
                         height: EnvoySpacing.medium1,
-                        child: CircularProgressIndicator(
+                        child: const CircularProgressIndicator(
                           strokeWidth: 1.5,
                           color: EnvoyColors.textPrimary,
                         ),
@@ -130,7 +130,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                       padding:
                           const EdgeInsets.only(left: EnvoySpacing.medium1),
                       child: GestureDetector(
-                        child: EnvoyIcon(EnvoyIcons.scan),
+                        child: const EnvoyIcon(EnvoyIcons.scan),
                         onTap: () {
                           widget.onQrScan!();
                         },
@@ -140,7 +140,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                       padding:
                           const EdgeInsets.only(left: EnvoySpacing.medium1),
                       child: GestureDetector(
-                        child: EnvoyIcon(EnvoyIcons.clipboard),
+                        child: const EnvoyIcon(EnvoyIcons.clipboard),
                         onTap: () async {
                           final cdata =
                               await Clipboard.getData(Clipboard.kTextPlain);

@@ -38,7 +38,7 @@ class Device {
 
 class Devices extends ChangeNotifier {
   List<Device> devices = [];
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
 
   static const String DEVICES_PREFS = "devices";
   static final Devices _instance = Devices._internal();

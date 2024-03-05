@@ -50,7 +50,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   @override
   void initState() {
-    Future.delayed(Duration(milliseconds: 100)).then((_) {
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
       if (!ref.read(triedAutomaticRecovery) &&
           !ref.read(successfulManualRecovery) &&
           !ref.read(successfulSetupWallet)) {
@@ -69,11 +69,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   void _tryAutomaticRecovery() async {
     ref.read(triedAutomaticRecovery.notifier).state = true;
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     var success = false;
     try {
       success = await EnvoySeed().restoreData();
-      if (mounted)
+      if (mounted) {
         setState(() {
           if (success) {
             _magicRecoverWalletState = MagicRecoveryWalletState.success;
@@ -81,28 +81,33 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
           }
         });
+      }
     } on BackupNotFound {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
         });
+      }
     } on SeedNotFound {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
         });
+      }
     } on ServerUnreachable {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _magicRecoverWalletState =
               MagicRecoveryWalletState.serverNotReachable;
         });
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _magicRecoverWalletState =
               MagicRecoveryWalletState.unableToDecryptBackup;
         });
+      }
     } finally {
       if (success) {
         _setHappyState();
@@ -191,17 +196,18 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                             homePageBackgroundProvider.notifier)
                                         .state = HomePageBackgroundState.hidden;
                                     await Future.delayed(
-                                        Duration(milliseconds: 200));
+                                        const Duration(milliseconds: 200));
                                     OnboardingPage.popUntilHome(context);
                                   },
-                                  icon: Icon(Icons.close)),
+                                  icon: const Icon(Icons.close)),
                             );
                           },
                         ),
                       ],
                     ),
                     Container(
-                      constraints: BoxConstraints.tight(Size.fromHeight(240)),
+                      constraints:
+                          BoxConstraints.tight(const Size.fromHeight(240)),
                       child: Transform.scale(
                         scale: 1.2,
                         child: RiveAnimation.asset(
@@ -223,12 +229,12 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         //     padding: const EdgeInsets.symmetric(
                         //         vertical: EnvoySpacing.medium1)),
                         AnimatedSwitcher(
-                            duration: Duration(milliseconds: 800),
+                            duration: const Duration(milliseconds: 800),
                             child: getMainWidget()),
-                        Padding(
-                            padding: const EdgeInsets.symmetric(
+                        const Padding(
+                            padding: EdgeInsets.symmetric(
                                 vertical: EnvoySpacing.medium3)),
-                        getBottomButtons() ?? SizedBox(),
+                        getBottomButtons() ?? const SizedBox(),
                       ],
                     ),
                   ),
@@ -259,7 +265,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         _magicRecoverWalletState == MagicRecoveryWalletState.failure) {
       return _seedNotFound(context);
     }
-    return SizedBox();
+    return const SizedBox();
   }
 
   Widget? getBottomButtons() {
@@ -274,7 +280,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               child: OnboardingButton(
                 label: S().component_continue,
                 onTap: () async {
-                  await Future.delayed(Duration(milliseconds: 200));
+                  await Future.delayed(const Duration(milliseconds: 200));
                   OnboardingPage.popUntilHome(context);
                 },
               ));
@@ -374,7 +380,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        WalletSetupSuccess())).then((_) {
+                                        const WalletSetupSuccess())).then((_) {
                               //Try automatic recovery if the user press back button
                               if (mounted) {
                                 _tryAutomaticRecovery();
@@ -546,7 +552,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        Padding(padding: EdgeInsets.all(28)),
+        const Padding(padding: EdgeInsets.all(28)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
@@ -573,7 +579,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        Padding(padding: EdgeInsets.all(28)),
+        const Padding(padding: EdgeInsets.all(28)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
@@ -600,7 +606,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
           child: Text(
@@ -639,7 +645,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 18),
                     child: IconButton(
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -654,7 +660,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       height: 80,
                       width: 80,
                     ),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 0, horizontal: 0),
@@ -673,7 +679,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         style: EnvoyTypography.info,
                       ),
                     ),
-                    Padding(padding: EdgeInsets.all(2)),
+                    const Padding(padding: EdgeInsets.all(2)),
                   ],
                 ),
                 OnboardingButton(
@@ -682,7 +688,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     onTap: () async {
                       Navigator.maybePop(context);
                     }),
-                Padding(padding: EdgeInsets.all(2)),
+                const Padding(padding: EdgeInsets.all(2)),
                 Consumer(
                   builder: (context, ref, child) {
                     return OnboardingButton(
@@ -696,7 +702,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(12)),
+                const Padding(padding: EdgeInsets.all(12)),
               ],
             ),
           ),

@@ -30,7 +30,7 @@ class AztecoDialog extends StatelessWidget {
       ),
       child: ExpandablePageView(
         controller: controller,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           AztecoRedeemModal(voucher: voucher, controller: controller),
           AztecoLoadingModal(
@@ -39,7 +39,7 @@ class AztecoDialog extends StatelessWidget {
             account: account,
           ),
           AztecoRedeemModalFail(controller: controller),
-          AztecoRedeemModalSuccess(),
+          const AztecoRedeemModalSuccess(),
           AztecoConnectionModalFail(controller: controller),
         ],
       ),

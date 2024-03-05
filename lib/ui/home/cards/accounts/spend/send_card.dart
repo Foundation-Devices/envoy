@@ -109,7 +109,7 @@ class _SendCardState extends ConsumerState<SendCard>
                         bottom: EnvoySpacing.medium2,
                         left: EnvoySpacing.medium2,
                         right: EnvoySpacing.medium2),
-                    child: new AddressEntry(
+                    child: AddressEntry(
                         account: account!,
                         initalAddress: _addressText,
                         controller: _controller,

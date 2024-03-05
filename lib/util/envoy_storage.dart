@@ -318,10 +318,11 @@ class EnvoyStorage {
   }
 
   Future<String?> getTxNote(String txId) async {
-    if (await txNotesStore.record(txId).exists(_db))
+    if (await txNotesStore.record(txId).exists(_db)) {
       return txNotesStore.record(txId).get(_db);
-    else
+    } else {
       return null;
+    }
   }
 
   Future<bool> deleteTxNote(String txId) async {
@@ -448,10 +449,11 @@ class EnvoyStorage {
   }
 
   Future<Map?>? getExchangeRate() async {
-    if (await exchangeRateStore.record(exchangeRateKey).exists(_db))
+    if (await exchangeRateStore.record(exchangeRateKey).exists(_db)) {
       return exchangeRateStore.record(exchangeRateKey).get(_db);
-    else
+    } else {
       return null;
+    }
   }
 
   Future<bool> clearVideosStore() async {

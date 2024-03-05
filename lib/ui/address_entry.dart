@@ -73,7 +73,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
             child: TextFormField(
                 enabled: widget.canEdit,
                 controller: widget.controller,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     overflow: TextOverflow.fade,
                     fontWeight: FontWeight.w500),
@@ -89,14 +89,14 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
                   prefixIcon: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
                       child: Text(S().send_keyboard_to)),
                   isDense: true,
-                  prefixIconConstraints: BoxConstraints(
+                  prefixIconConstraints: const BoxConstraints(
                     minWidth: 18,
                     minHeight: 12,
                   ),
-                  suffixIconConstraints: BoxConstraints(
+                  suffixIconConstraints: const BoxConstraints(
                     minWidth: 24,
                     minHeight: 24,
                   ),
@@ -109,8 +109,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
                                     vertical: 4, horizontal: 4),
                                 child: Icon(
                                   Icons.paste,
@@ -123,7 +123,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                   ClipboardData? cdata =
                                       await Clipboard.getData(
                                           Clipboard.kTextPlain);
-                                  String? textCopied = cdata?.text ?? null;
+                                  String? textCopied = cdata?.text;
                                   var decodedInfo = await BitcoinParser.parse(
                                       textCopied!,
                                       fiatExchangeRate:
@@ -139,15 +139,15 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                   ClipboardData? cdata =
                                       await Clipboard.getData(
                                           Clipboard.kTextPlain);
-                                  String? text = cdata?.text ?? null;
+                                  String? text = cdata?.text;
                                   widget.controller?.text = text!;
                                   validate(text!);
                                 }
                               },
                             ),
                             InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
                                     vertical: 4, horizontal: 4),
                                 child: Icon(
                                   EnvoyIcons.qr_scan,

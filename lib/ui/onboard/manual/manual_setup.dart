@@ -55,7 +55,7 @@ class _ManualSetupState extends State<ManualSetup> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.only(bottom: 6)),
+            const Padding(padding: EdgeInsets.only(bottom: 6)),
             Text(
               S().manual_setup_tutorial_heading,
               textAlign: TextAlign.center,
@@ -77,7 +77,7 @@ class _ManualSetupState extends State<ManualSetup> {
                       _playerKey.currentState?.pause();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return SeedIntroScreen(
+                        return const SeedIntroScreen(
                           mode: SeedIntroScreenType.import,
                         );
                       }));
@@ -90,11 +90,11 @@ class _ManualSetupState extends State<ManualSetup> {
                           _playerKey.currentState?.pause();
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return SeedIntroScreen(
+                            return const SeedIntroScreen(
                                 mode: SeedIntroScreenType.generate);
                           }));
                         })
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ],
             )
           ],
@@ -145,7 +145,7 @@ class SeedIntroScreen extends StatelessWidget {
             ),
             IconButton(
               color: Colors.black,
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 OnboardingPage.popUntilHome(context);
               },
@@ -172,7 +172,7 @@ class SeedIntroScreen extends StatelessWidget {
                             width: 250,
                             height: 250,
                           ),
-                    padding: EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.only(bottom: 6),
                   )),
                   Container(
                     padding: const EdgeInsets.all(5.0),
@@ -187,7 +187,7 @@ class SeedIntroScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.only(bottom: 20)),
+                        const Padding(padding: EdgeInsets.only(bottom: 20)),
                         Text(
                           mode == SeedIntroScreenType.generate ||
                                   mode == SeedIntroScreenType.verify
@@ -199,7 +199,7 @@ class SeedIntroScreen extends StatelessWidget {
                               .bodySmall!
                               .copyWith(fontSize: 13),
                         ),
-                        Padding(padding: EdgeInsets.only(top: 24)),
+                        const Padding(padding: EdgeInsets.only(top: 24)),
                         if (mode == SeedIntroScreenType.import)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -218,7 +218,7 @@ class SeedIntroScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Padding(padding: EdgeInsets.only(bottom: 20)),
+                  const Padding(padding: EdgeInsets.only(bottom: 20)),
                   mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? OnboardingButton(
@@ -248,7 +248,7 @@ class SeedIntroScreen extends StatelessWidget {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
-                                      return ManualSetupImportSeed(
+                                      return const ManualSetupImportSeed(
                                         seedLength: SeedLength.MNEMONIC_12,
                                       );
                                     });
@@ -262,7 +262,7 @@ class SeedIntroScreen extends StatelessWidget {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
-                                      return ManualSetupImportSeed(
+                                      return const ManualSetupImportSeed(
                                         seedLength: SeedLength.MNEMONIC_24,
                                       );
                                     });
@@ -291,8 +291,7 @@ class SeedIntroScreen extends StatelessWidget {
                                       }
 
                                       if (kDebugMode) {
-                                        print(
-                                            "isValid ${isValid} ${seedWords}");
+                                        print("isValid $isValid $seedWords");
                                       }
                                       //TODO: Passphrase
 

@@ -18,7 +18,7 @@ class IndicatorShield extends StatefulWidget {
 class IndicatorShieldState extends State<IndicatorShield>
     with SingleTickerProviderStateMixin {
   late StreamSubscription _connectivityStream;
-  Widget _currentShield = SizedBox.shrink();
+  Widget _currentShield = const SizedBox.shrink();
   late AnimationController _circuitEstablishingAnimationController;
   late Animation<double> _circuitEstablishingAnimation;
 
@@ -26,7 +26,7 @@ class IndicatorShieldState extends State<IndicatorShield>
   initState() {
     super.initState();
     _circuitEstablishingAnimationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
 
     _circuitEstablishingAnimation = _circuitEstablishingAnimationController
         .drive(Tween(begin: 1.0, end: 0.5));
@@ -105,7 +105,7 @@ class IndicatorShieldState extends State<IndicatorShield>
               ? 1.0
               : _circuitEstablishingAnimation.value,
           child: AnimatedSwitcher(
-              duration: Duration(seconds: 1), child: _currentShield));
+              duration: const Duration(seconds: 1), child: _currentShield));
     });
   }
 }

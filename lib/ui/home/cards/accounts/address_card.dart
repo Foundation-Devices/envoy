@@ -32,7 +32,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_qr_code_heading;
     });
@@ -86,7 +86,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: EnvoySpacing.large2,
                           right: EnvoySpacing.large2,
                           bottom: EnvoySpacing.large1),
@@ -125,8 +125,8 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                   ]),
             );
           } else {
-            return Center(
-              child: SizedBox(
+            return const Center(
+              child: const SizedBox(
                 height: 100,
                 width: 100,
                 child: CircularProgressIndicator(
@@ -143,7 +143,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     String? text = cdata?.text ?? null;
     if (text != address) {
       Clipboard.setData(ClipboardData(text: address));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Address copied to clipboard!"), //TODO: FIGMA
       ));
     }

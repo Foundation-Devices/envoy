@@ -39,11 +39,11 @@ enum ScannerType {
   btcPay,
 }
 
-final SnackBar invalidAddressSnackbar = SnackBar(
+const SnackBar invalidAddressSnackbar = SnackBar(
   content: Text("Not a valid address"), // TODO: FIGMA
 );
 
-final SnackBar invalidSeedSnackbar = SnackBar(
+const SnackBar invalidSeedSnackbar = SnackBar(
   content: Text("Not a valid seed"), // TODO: FIGMA
 );
 
@@ -59,7 +59,8 @@ class ScannerPage extends StatefulWidget {
   final Function(String, int)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
-      {this.account,
+      {super.key,
+      this.account,
       this.challengeToValidate,
       this.onTxParsed,
       this.onSeedValidated,
@@ -158,7 +159,7 @@ class _ScannerPageState extends State<ScannerPage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.close_rounded,
                 size: 25,
                 color: Colors.white54,
@@ -199,7 +200,7 @@ class _ScannerPageState extends State<ScannerPage> {
                       _onQRViewCreated(controller, context),
                 );
               } else {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             }),
         ViewFinder(),
@@ -317,7 +318,7 @@ class _ScannerPageState extends State<ScannerPage> {
           _binaryValidated(_urDecoder.decoded as Binary);
         } else {
           // Tell the user to use testnet
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Please use Testnet"), // TODO: FIGMA
           ));
         }
@@ -329,7 +330,7 @@ class _ScannerPageState extends State<ScannerPage> {
     if ((_snackbarTimer == null || !_snackbarTimer!.isActive) &&
         _progress == 0.0) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      _snackbarTimer = Timer(Duration(seconds: 5), () {});
+      _snackbarTimer = Timer(const Duration(seconds: 5), () {});
     }
   }
 
@@ -385,11 +386,11 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void _binaryValidated(Binary binary) async {
-    Account? pairedAccount = null;
+    Account? pairedAccount;
     try {
       pairedAccount = await AccountManager().addPassportAccounts(binary);
     } on AccountAlreadyPaired catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
       ));
       return;
@@ -407,10 +408,12 @@ class _ScannerPageState extends State<ScannerPage> {
 }
 
 class ViewFinder extends StatelessWidget {
+  const ViewFinder({super.key});
+
   @override
   Widget build(BuildContext context) {
     final stroke = Padding(
-        padding: EdgeInsets.all(65),
+        padding: const EdgeInsets.all(65),
         child: SvgPicture.asset("assets/viewfinder_stroke.svg"));
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Row(

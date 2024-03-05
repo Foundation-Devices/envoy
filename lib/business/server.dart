@@ -15,9 +15,7 @@ class Server {
   String _serverAddress = Settings().envoyServerAddress;
 
   Server({this.http}) {
-    if (http == null) {
-      http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
-    }
+    http ??= HttpTor(Tor.instance, EnvoyScheduler().parallel);
   }
 
   Future<FirmwareUpdate> fetchFirmwareUpdateInfo(int deviceId) async {

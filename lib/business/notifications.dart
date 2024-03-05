@@ -107,8 +107,8 @@ class Notifications {
   }
 
   _checkForNotificationsToAdd() async {
-    bool _notificationsAdded = false;
-    bool _newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
+    bool notificationsAdded = false;
+    bool newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
 
     for (var account in AccountManager().accounts) {
       for (var tx in account.wallet.transactions) {
@@ -131,7 +131,7 @@ class Notifications {
                 tx.txId,
                 amount: tx.amount,
                 accountId: account.id));
-            _notificationsAdded = true;
+            notificationsAdded = true;
           }
         }
       }
@@ -139,19 +139,19 @@ class Notifications {
 
     for (var device in Devices().devices) {
       final version = Devices().getDeviceFirmwareVersion(device.serial);
-      bool _fwUpdateAvailable =
+      bool fwUpdateAvailable =
           await UpdatesManager().shouldUpdate(version, device.type);
       final newVersion =
           await UpdatesManager().getStoredFwVersionString(device.type.index);
       for (var notification in notifications) {
         if (notification.id == device.type.toString().split('.').last) {
           if (notification.body == newVersion!) {
-            _fwUpdateAvailable = false;
+            fwUpdateAvailable = false;
           }
         }
       }
 
-      if (_fwUpdateAvailable) {
+      if (fwUpdateAvailable) {
         add(EnvoyNotification(
           "Firmware", // TODO: FIGMA
           DateTime.now(),
@@ -159,11 +159,11 @@ class Notifications {
           newVersion!,
           device.type.toString().split('.').last,
         ));
-        _notificationsAdded = true;
+        notificationsAdded = true;
       }
     }
 
-    if (_newEnvoyVersionAvailable) {
+    if (newEnvoyVersionAvailable) {
       var latestEnvoyVersion = await fetchLatestEnvoyVersionFromGit();
       bool skip = false;
       for (var notification in notifications) {
@@ -181,11 +181,11 @@ class Notifications {
           latestEnvoyVersion,
           EnvoyNotificationType.envoyUpdate.name,
         ));
-        _notificationsAdded = true;
+        notificationsAdded = true;
       }
     }
 
-    if (_notificationsAdded) {
+    if (notificationsAdded) {
       lastUpdated = DateTime.now();
     }
   }
@@ -239,8 +239,9 @@ class Notifications {
         notificationToRestore = addMissingAccountId(notificationToRestore);
 
         // Only add tx notifications that link to an account
-        if (!_shouldBeRemoved(notificationToRestore))
+        if (!_shouldBeRemoved(notificationToRestore)) {
           add(notificationToRestore);
+        }
       }
     }
 
@@ -302,8 +303,9 @@ class Notifications {
       if (data.containsKey('tag_name')) {
         final version = data['tag_name'];
         return version;
-      } else
+      } else {
         throw Exception("Couldn't find tag_name in GitHub response");
+      }
     } else {
       throw Exception("Couldn't reach GitHub");
     }

@@ -56,7 +56,8 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: Icon(Icons.chevron_left, color: Colors.black),
+                        icon:
+                            const Icon(Icons.chevron_left, color: Colors.black),
                         onPressed: () async {
                           if (await handleBackPress(context)) {
                             Navigator.pop(context);
@@ -72,7 +73,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         )),
                     Expanded(
                         child: Container(
-                      margin: EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(top: 8),
                       height: MediaQuery.of(context).size.height * 0.59,
                       child: MnemonicEntryGrid(
                           key: _mnemonicEntryGridKey,
@@ -91,7 +92,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                 )),
                 Column(
                   children: [
-                    Padding(padding: EdgeInsets.all(2)),
+                    const Padding(padding: EdgeInsets.all(2)),
                     // SFT-1749: disable passphrases for beta
                     // InkWell(
                     //   onTap: () {
@@ -131,7 +132,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                     //   ),
                     // ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: IgnorePointer(
                           ignoring: finishSeedEntries == false,
                           child: Opacity(
@@ -198,7 +199,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
 
   Widget _buildPassphraseWarning(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(minWidth: 300, minHeight: 420),
+      constraints: const BoxConstraints(minWidth: 300, minHeight: 420),
       child: SingleChildScrollView(
         child: Container(
           constraints: BoxConstraints(
@@ -209,7 +210,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   mainAxisSize: MainAxisSize.max,
@@ -220,7 +221,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () {
                             Navigator.of(context).pop();
                             setState(() {
@@ -230,12 +231,12 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         ),
                       ),
                     ),
-                    Icon(EnvoyIcons.exclamation_warning,
+                    const Icon(EnvoyIcons.exclamation_warning,
                         color: EnvoyColors.darkCopper, size: 60),
-                    Padding(padding: EdgeInsets.all(4)),
+                    const Padding(padding: EdgeInsets.all(4)),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -247,13 +248,13 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                               text: S()
                                   .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,
                               textStyle: EnvoyTypography.info,
-                              linkStyle: TextStyle(
+                              linkStyle: const TextStyle(
                                   decoration: TextDecoration.underline),
                               onTap: () {
                                 launchUrl(Uri.parse(
                                     "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
                               }),
-                          Padding(padding: EdgeInsets.all(8)),
+                          const Padding(padding: EdgeInsets.all(8)),
                           Text(
                             S().manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading,
                             textAlign: TextAlign.center,
@@ -265,7 +266,8 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                 child: EnvoyButton(
                   S().component_continue,
                   type: EnvoyButtonTypes.primaryModal,

@@ -43,8 +43,9 @@ class BitcoinRequest {
 class Bip21 {
   static BitcoinRequest decode(String uri, [String? urnScheme]) {
     urnScheme = urnScheme ?? "bitcoin";
-    if (uri.indexOf(urnScheme) != 0 || uri[urnScheme.length] != ":")
+    if (uri.indexOf(urnScheme) != 0 || uri[urnScheme.length] != ":") {
       throw ("Invalid BIP21 URI");
+    }
 
     int split = uri.indexOf("?");
     Map<String, String> uriOptions = Uri.parse(uri).queryParameters;
@@ -59,8 +60,9 @@ class Bip21 {
 
     if (uriOptions["amount"] != null) {
       String? amountString = uriOptions["amount"];
-      if (amountString!.indexOf(",") != -1)
+      if (amountString!.indexOf(",") != -1) {
         throw ("Invalid amount: commas are invalid");
+      }
       double? amount = double.tryParse(amountString);
       if (amount == null || amount.isNaN) {
         amount = 0;

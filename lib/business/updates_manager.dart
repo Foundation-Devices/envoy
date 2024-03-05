@@ -48,14 +48,14 @@ class UpdatesManager {
         .fetchFirmwareUpdateInfo(0) // Gen1
         .then((fw) => _processFw(fw))
         .catchError((e) {
-      print("Couldn't fetch firmware: " + e.toString());
+      print("Couldn't fetch firmware: $e");
     });
 
     Server()
         .fetchFirmwareUpdateInfo(1) // Gen2
         .then((fw) => _processFw(fw))
         .catchError((e) {
-      print("Couldn't fetch firmware: " + e.toString());
+      print("Couldn't fetch firmware: $e");
     });
   }
 
@@ -79,7 +79,7 @@ class UpdatesManager {
       }
 
       final fileName =
-          fw.version + (fw.deviceId == 0 ? "-founders" : "") + "-passport.bin";
+          "${fw.version}${fw.deviceId == 0 ? "-founders" : ""}-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
       es.addNewFirmware(fw.deviceId, fw.version, fileName);
     }
@@ -98,9 +98,8 @@ class UpdatesManager {
       String? storedFwVersion = await getStoredFwVersionString(deviceId);
 
       if (storedFwVersion != null) {
-        final fileName = storedFwVersion +
-            (deviceId == 0 ? "-founders" : "") +
-            "-passport.bin";
+        final fileName =
+            "$storedFwVersion${deviceId == 0 ? "-founders" : ""}-passport.bin";
         var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
         es.addNewFirmware(deviceId, storedFwVersion, fileName);
         return newFile;

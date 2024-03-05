@@ -45,7 +45,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         Container(
           alignment: Alignment.centerLeft,
           child: IconButton(
-            icon: Icon(Icons.chevron_left, color: Colors.black),
+            icon: const Icon(Icons.chevron_left, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -62,14 +62,14 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
               ),
-              SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
               SliverToBoxAdapter(
                 child: Text(
                     "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center),
               ),
-              SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
               SliverFillRemaining(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +78,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                   children: [
                     Expanded(
                       child: PageView(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         controller: _pageController,
                         children: _puzzleOptions.map((e) {
                           return Padding(
@@ -99,10 +99,11 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                                     return;
                                   }
                                   await Future.delayed(
-                                      Duration(milliseconds: 600));
+                                      const Duration(milliseconds: 600));
                                   _pageController.animateToPage(
                                       _puzzleOptions.indexOf(e) + 1,
-                                      duration: Duration(milliseconds: 300),
+                                      duration:
+                                          const Duration(milliseconds: 300),
                                       curve: Curves.ease);
                                 } else {
                                   widget.onVerificationFinished(false);
@@ -114,12 +115,12 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                       ),
                     ),
                     Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.small),
                         child: DotsIndicator(
                             pageController: _pageController,
                             totalPages: _puzzleOptions.length)),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     !_finishedAnswers
                         ? Text(
                             S()
@@ -129,14 +130,14 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                                 .bodySmall
                                 ?.copyWith(fontWeight: FontWeight.w400))
                         : Padding(
-                            padding:
-                                EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.xs),
                             child: OnboardingButton(
                                 label: S().component_continue,
                                 onTap: () {
                                   widget.onVerificationFinished(true);
                                 })),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   ],
                 ),
               )
@@ -225,13 +226,13 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
           ),
           Flexible(
             child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 2,
                   crossAxisSpacing: 20.0,
                 ),
                 itemBuilder: (context, index) {
-                  final TextStyle textTheme = TextStyle(
+                  final TextStyle textTheme = const TextStyle(
                       fontSize: 15,
                       color: Colors.black87,
                       fontWeight: FontWeight.bold);
@@ -249,12 +250,12 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                       children: [
                         Container(
                           height: 80,
-                          margin: EdgeInsets.symmetric(vertical: 0),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          margin: const EdgeInsets.symmetric(vertical: 0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 6),
                           alignment: Alignment.center,
-                          constraints:
-                              BoxConstraints(maxWidth: 200, maxHeight: 40),
+                          constraints: const BoxConstraints(
+                              maxWidth: 200, maxHeight: 40),
                           decoration: BoxDecoration(
                               color: Colors.grey[300],
                               borderRadius: BorderRadius.circular(8)),
@@ -274,19 +275,19 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
 
   Widget _buildAnswerStatus(bool? correctSelection) {
     if (correctSelection == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return correctSelection
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.check,
                 size: 14,
                 color: EnvoyColors.teal,
               ),
-              Padding(padding: EdgeInsets.all(4)),
+              const Padding(padding: EdgeInsets.all(4)),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_success_correct,
                 style: Theme.of(context)
@@ -300,9 +301,9 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(EnvoyIcons.exclamation_warning,
+              const Icon(EnvoyIcons.exclamation_warning,
                   color: EnvoyColors.brown, size: 14),
-              Padding(padding: EdgeInsets.all(4)),
+              const Padding(padding: EdgeInsets.all(4)),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
                 style: Theme.of(context)
@@ -330,9 +331,9 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
     final TextStyle textTheme = TextStyle(color: textColor, fontSize: 16);
     return Container(
       height: 40,
-      margin: EdgeInsets.symmetric(vertical: 12),
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      constraints: BoxConstraints(maxWidth: 140, maxHeight: 38),
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      constraints: const BoxConstraints(maxWidth: 140, maxHeight: 38),
       decoration: BoxDecoration(
           color: Colors.grey[300],
           border: Border.all(width: 1, color: borderColor),
@@ -347,7 +348,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 children: [
                   Text("${chosenAnswer ?? ""}", style: textTheme),
                   Container(
-                    margin: EdgeInsets.only(top: 14),
+                    margin: const EdgeInsets.only(top: 14),
                     child: Divider(
                       thickness: 1,
                       color: chosenAnswer == null

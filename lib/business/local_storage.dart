@@ -79,39 +79,39 @@ class LocalStorage {
   }
 
   Future<File> saveFile(String name, String content) async {
-    return File(appSupportDir.path + '/' + name).writeAsString(content);
+    return File('${appSupportDir.path}/$name').writeAsString(content);
   }
 
   Future<String> readFile(String name) async {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file.readAsStringSync();
   }
 
   Future<void> deleteFile(String name) async {
-    await File(appSupportDir.path + '/' + name).delete();
+    await File('${appSupportDir.path}/$name').delete();
   }
 
   Future<File> saveFileBytes(String name, List<int> content) async {
-    return File(appSupportDir.path + '/' + name).writeAsBytes(content);
+    return File('${appSupportDir.path}/$name').writeAsBytes(content);
   }
 
   File saveFileBytesSync(String name, List<int> content) {
-    var file = File(appSupportDir.path + '/' + name)..writeAsBytesSync(content);
+    var file = File('${appSupportDir.path}/$name')..writeAsBytesSync(content);
     return file;
   }
 
   Future<List<int>> readFileBytes(String name) async {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file.readAsBytes();
   }
 
   File openFileBytes(String name) {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file;
   }
 
   Future<bool> fileExists(String name) async {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file.exists();
   }
 }

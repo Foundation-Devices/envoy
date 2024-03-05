@@ -64,15 +64,15 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         );
 
     if (coinTag.untagged) {
-      accountAccentColor = Color(0xff808080);
+      accountAccentColor = const Color(0xff808080);
     }
 
     double cardRadius = 26;
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
           border: Border.all(
@@ -101,9 +101,10 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   children: [
                     Container(
                       height: 36,
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 4),
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(
                             Radius.circular(EnvoySpacing.medium2)),
                         color: Colors.white,
@@ -114,9 +115,11 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                     ),
                     Flexible(
                         child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                      decoration: BoxDecoration(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 4),
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(18)),
                         color: Colors.white,
                       ),
@@ -140,7 +143,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                               },
                               child: SingleChildScrollView(
                                 child: AnimatedSize(
-                                  duration: Duration(milliseconds: 200),
+                                  duration: const Duration(milliseconds: 200),
                                   curve: Curves.easeInOut,
                                   child: AddressWidget(
                                     widgetKey:
@@ -154,7 +157,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           ),
                           CoinTagListItem(
                             title: S().coindetails_overlay_transactionID,
-                            icon: Icon(
+                            icon: const Icon(
                               CupertinoIcons.compass,
                               size: 16,
                               color: Colors.black,
@@ -169,13 +172,20 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 child: TweenAnimationBuilder(
                                   tween: Tween<double>(
                                       begin: 0, end: showExpandedTxId ? 1 : 0),
-                                  duration: Duration(milliseconds: 200),
+                                  duration: const Duration(milliseconds: 200),
                                   builder: (context, value, child) {
                                     return Padding(
                                       padding: const EdgeInsets.only(
                                           left: EnvoySpacing.small),
                                       child: SelectableText(
-                                        "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
+                                        truncateWithEllipsisInCenter(
+                                            widget.coin.utxo.txid,
+                                            lerpDouble(
+                                                    16,
+                                                    widget
+                                                        .coin.utxo.txid.length,
+                                                    value)!
+                                                .toInt()),
                                         style: EnvoyTypography.info
                                             .copyWith(color: Colors.black),
                                         textAlign: TextAlign.end,
@@ -195,7 +205,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           ),
                           CoinTagListItem(
                             title: S().coindetails_overlay_date,
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.calendar_today_outlined,
                               size: 16,
                               color: Colors.black,
@@ -210,8 +220,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                               color: Colors.black,
                               height: 16,
                             ),
-                            trailing: Text("${coinTag.name}",
-                                style: trailingTextStyle),
+                            trailing:
+                                Text(coinTag.name, style: trailingTextStyle),
                           ),
                           CoinTagListItem(
                             title: S().coindetails_overlay_status,
@@ -240,7 +250,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                       Navigator.of(context).pop();
                                     },
                                   ),
-                                  alignment: Alignment(0.0, -0.8));
+                                  alignment: const Alignment(0.0, -0.8));
                             },
                             child: CoinTagListItem(
                               title: S().coindetails_overlay_notes,
@@ -255,14 +265,14 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Expanded(
-                                    child: Text("$note",
+                                    child: Text(note,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: trailingTextStyle?.copyWith(
                                             fontSize: 12),
                                         textAlign: TextAlign.end),
                                   ),
-                                  Padding(
+                                  const Padding(
                                       padding: EdgeInsets.all(EnvoySpacing.xs)),
                                   note.trim().isNotEmpty
                                       ? SvgPicture.asset(
@@ -272,7 +282,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                           color: Theme.of(context).primaryColor,
                                           height: 14,
                                         )
-                                      : Icon(Icons.add_circle_rounded,
+                                      : const Icon(Icons.add_circle_rounded,
                                           color: EnvoyColors.accentPrimary,
                                           size: 16),
                                 ],
@@ -319,7 +329,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: EnvoySpacing.xs),
                       child: Text(
-                        "$title",
+                        title,
                         style: EnvoyTypography.body
                             .copyWith(color: color ?? EnvoyColors.textPrimary),
                       ),

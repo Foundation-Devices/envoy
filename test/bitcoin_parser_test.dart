@@ -21,7 +21,7 @@ void main() async {
         "bitcoin:bc1qj9cjncwvsg02fqkjrh7p3umujyvn2a80ty3mwn?amount=5&label=Fund%20Bisq%20wallet";
 
     var parsed = await BitcoinParser.parse(pasted);
-    Future.delayed(Duration(seconds: 2));
+    Future.delayed(const Duration(seconds: 2));
 
     expect(parsed.address, "bc1qj9cjncwvsg02fqkjrh7p3umujyvn2a80ty3mwn");
     expect(parsed.amountSats, 500000000);
@@ -34,8 +34,8 @@ void main() async {
 
     var parsed = await BitcoinParser.parse(pasted);
 
-    expect(await parsed.address, null);
-    expect(await parsed.amountSats, null);
+    expect(parsed.address, null);
+    expect(parsed.amountSats, null);
   });
 
   test("Test string with \$", () async {
@@ -285,9 +285,9 @@ void main() async {
 }
 
 Wallet getWallet(Directory dir) {
-  final seed =
+  const seed =
       "copper december enlist body dove discover cross help evidence fall rich clean";
-  final path = "m/84'/0'/0'";
+  const path = "m/84'/0'/0'";
 
   var walletsDir =
       dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";

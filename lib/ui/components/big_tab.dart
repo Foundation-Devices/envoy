@@ -52,7 +52,7 @@ class _BigTabState extends State<BigTab> {
             borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -60,11 +60,11 @@ class _BigTabState extends State<BigTab> {
                   widget.icon,
                   color: iconColor,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: EnvoySpacing.small,
                 ),
                 Container(
-                  constraints: BoxConstraints(
+                  constraints: const BoxConstraints(
                     maxWidth: 100.0, // Set your desired maximum width here
                   ),
                   child: Column(

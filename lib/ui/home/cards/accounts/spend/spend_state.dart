@@ -199,20 +199,20 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       /// in the case of sendMax we need, receive amount might be different from the amount we are sending
       /// Make sure psbt is the source of truth for the amount
       bool foundOutput = false;
-      rawTransaction.outputs.forEach((output) {
+      for (var output in rawTransaction.outputs) {
         if (output.path == TxOutputPath.NotMine) {
           foundOutput = true;
           state = state.clone()..amount = output.amount;
         }
-      });
+      }
 
       ///if user is trying to send it themself
       if (!foundOutput) {
-        rawTransaction.outputs.forEach((output) {
+        for (var output in rawTransaction.outputs) {
           if (output.path == TxOutputPath.External) {
             state = state.clone()..amount = output.amount;
           }
-        });
+        }
       }
 
       if (sendMax) {
@@ -300,8 +300,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       // Increment the change index before broadcasting
       await account.wallet.getChangeAddress();
-      this.state = state.clone()
-        ..broadcastProgress = BroadcastProgress.inProgress;
+      state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
       Psbt psbt = state.psbt!;
       //Broadcast transaction
       int port = Settings().getPort(account.wallet.network);
@@ -351,7 +350,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           if (tags.map((e) => e.id).contains(tag.id) == false &&
               tag.untagged == false) {
             await CoinRepository().addCoinTag(tag);
-            await Future.delayed(Duration(milliseconds: 100));
+            await Future.delayed(const Duration(milliseconds: 100));
           }
 
           int index = transaction.outputs.indexWhere((element) =>
@@ -365,7 +364,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                 account: account.id!));
             await CoinRepository().updateCoinTag(changeOutPutTag);
             final _ = ref.refresh(accountsProvider);
-            await Future.delayed(Duration(seconds: 1));
+            await Future.delayed(const Duration(seconds: 1));
             await ref.refresh(coinsTagProvider(account.id!));
           }
         }
@@ -375,24 +374,24 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ref.read(spendEditModeProvider.notifier).state = false;
 
       /// wait for bdk to update the transaction list and utxos list
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       /// clear staging transaction states
-      this.state = state.clone()..broadcastProgress = BroadcastProgress.success;
+      state = state.clone()..broadcastProgress = BroadcastProgress.success;
       return true;
     } catch (e) {
-      this.state = state.clone()..broadcastProgress = BroadcastProgress.failed;
-      throw e;
+      state = state.clone()..broadcastProgress = BroadcastProgress.failed;
+      rethrow;
     }
   }
 
   resetBroadcastState() {
-    this.state = state.clone()..broadcastProgress = BroadcastProgress.staging;
+    state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 
   //for RBF review screen
   void setAmount(int amount) {
-    this.state = state.clone()..amount = amount;
+    state = state.clone()..amount = amount;
   }
 }
 
@@ -513,13 +512,13 @@ final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
       .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
       .toList();
   List<Tuple<CoinTag, Coin>> items = [];
-  coinTags.forEach((coinTag) {
-    coinTag.coins.forEach((coin) {
+  for (var coinTag in coinTags) {
+    for (var coin in coinTag.coins) {
       if (inputs.contains(coin.id)) {
         items.add(Tuple(coinTag, coin));
       }
-    });
-  });
+    }
+  }
   return items;
 });
 
@@ -538,9 +537,9 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
       .toList();
   if (selectedUtxos.isNotEmpty) {
     int amount = 0;
-    selectedUtxos.forEach((element) {
+    for (var element in selectedUtxos) {
       amount = amount + element.value;
-    });
+    }
     return amount;
   }
   final lockedCoinsIds = await CoinRepository().getBlockedCoins();
@@ -654,20 +653,20 @@ void clearSpendState(ProviderContainer ref) {
 Future<Psbt> getPsbt(
     double feeRate, Account account, String initialAddress, int amount,
     {List<Utxo>? dontSpend, List<Utxo>? mustSpend}) async {
-  Psbt _returnPsbt = Psbt(0, 0, 0, "", "", "");
+  Psbt returnPsbt = Psbt(0, 0, 0, "", "", "");
 
   try {
-    _returnPsbt = await account.wallet.createPsbt(
+    returnPsbt = await account.wallet.createPsbt(
         initialAddress, amount, feeRate,
         dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
   } on InsufficientFunds catch (e) {
     // TODO: figure out why this can happen
-    if (e.available < 0) throw e;
+    if (e.available < 0) rethrow;
 
     // Get another one with correct amount
     var fee = e.needed - e.available;
     try {
-      _returnPsbt = await account.wallet.createPsbt(
+      returnPsbt = await account.wallet.createPsbt(
           initialAddress, amount - fee, feeRate,
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
     } on InsufficientFunds catch (e) {
@@ -676,11 +675,11 @@ Future<Psbt> getPsbt(
           " Needed: " +
           e.needed.toString());
 
-      throw e;
+      rethrow;
     }
   }
 
-  return _returnPsbt;
+  return returnPsbt;
 }
 
 ///Will return the raw transaction for a given txId

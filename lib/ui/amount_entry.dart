@@ -320,7 +320,7 @@ class _NumpadState extends State<Numpad> {
       shrinkWrap: true,
       // For some reason GridView has a default padding
       padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         ...(List.generate(9, (index) {
           String digit = (index + 1).toString();
@@ -342,7 +342,7 @@ class _NumpadState extends State<Numpad> {
                   widget.events.sink.add(NumpadEvents.dot);
                 },
               )
-            : SizedBox.shrink(),
+            : const SizedBox.shrink(),
         NumpadButton(
           NumpadButtonType.text,
           text: "0",
@@ -407,9 +407,9 @@ class NumpadButton extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
 
       child: Padding(
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: EnvoyColors.border2,
           ),
@@ -427,12 +427,12 @@ class NumpadButton extends StatelessWidget {
                   ),
                 );
               case NumpadButtonType.backspace:
-                return Padding(
-                    padding: const EdgeInsets.only(right: 3, top: 2),
+                return const Padding(
+                    padding: EdgeInsets.only(right: 3, top: 2),
                     child: EnvoyIcon(EnvoyIcons.delete,
                         color: EnvoyColors.accentPrimary));
               case NumpadButtonType.clipboard:
-                return EnvoyIcon(
+                return const EnvoyIcon(
                   EnvoyIcons.clipboard,
                   color: EnvoyColors.accentPrimary,
                 );

@@ -29,14 +29,14 @@ void showRestoreFailedDialog(BuildContext context) {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(8)),
+              const Padding(padding: EdgeInsets.all(8)),
               Column(
                 children: [
                   Image.asset(
@@ -44,7 +44,7 @@ void showRestoreFailedDialog(BuildContext context) {
                     height: 80,
                     width: 80,
                   ),
-                  Padding(padding: EdgeInsets.all(4)),
+                  const Padding(padding: EdgeInsets.all(4)),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -61,7 +61,7 @@ void showRestoreFailedDialog(BuildContext context) {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Padding(padding: EdgeInsets.all(2)),
+                  const Padding(padding: EdgeInsets.all(2)),
                 ],
               ),
               OnboardingButton(
@@ -70,7 +70,7 @@ void showRestoreFailedDialog(BuildContext context) {
                   onTap: () {
                     Navigator.pop(context);
                   }),
-              Padding(padding: EdgeInsets.all(12)),
+              const Padding(padding: EdgeInsets.all(12)),
             ],
           ),
         ),
@@ -93,7 +93,7 @@ Future<void> openBackupFile(BuildContext context) async {
     }
     if (success) {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return WalletSetupSuccess();
+        return const WalletSetupSuccess();
       }));
     } else {
       showRestoreFailedDialog(context);

@@ -95,10 +95,10 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       EnvoyToast(
         backgroundColor: EnvoyColors.danger,
         replaceExisting: true,
-        duration: Duration(seconds: 4),
+        duration: const Duration(seconds: 4),
         message: "Error: Transaction Confirmed",
         // TODO: Figma
-        icon: Icon(
+        icon: const Icon(
           Icons.info_outline,
           color: EnvoyColors.solidWhite,
         ),
@@ -204,7 +204,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       child: _buildButtonContainer(
           active: _canBoost,
           child: _isLoading
-              ? Row(
+              ? const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -225,11 +225,11 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.fast_forward_outlined,
                       color: Colors.white,
                     ),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Text(
                       S().coindetails_overlay_confirmation_boost,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -253,9 +253,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         : Colors.grey;
 
     return AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         height: 28,
-        padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
         decoration: BoxDecoration(
             color: buttonColor,
             borderRadius: BorderRadius.circular(EnvoySpacing.small)),
@@ -302,8 +302,8 @@ class _RBFWarningState extends State<RBFWarning> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+          const Padding(
+            padding: EdgeInsets.only(bottom: EnvoySpacing.medium1),
             child: EnvoyIcon(
               EnvoyIcons.info,
               size: EnvoyIconSize.big,
@@ -317,7 +317,7 @@ class _RBFWarningState extends State<RBFWarning> {
                 .titleMedium
                 ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             S().replaceByFee_coindetails_overlay_modal_subheading,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -325,7 +325,7 @@ class _RBFWarningState extends State<RBFWarning> {
                 ),
             textAlign: TextAlign.center,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           GestureDetector(
             child: Text(
               S().component_learnMore,
@@ -340,7 +340,7 @@ class _RBFWarningState extends State<RBFWarning> {
                   "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           GestureDetector(
             onTap: () {
               setState(() {
@@ -365,13 +365,14 @@ class _RBFWarningState extends State<RBFWarning> {
                 Text(
                   S().component_dontShowAgain,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: dismissed ? Colors.black : Color(0xff808080),
+                        color:
+                            dismissed ? Colors.black : const Color(0xff808080),
                       ),
                 ),
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
               label: S().component_continue,
               onTap: () {
@@ -403,15 +404,14 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                 Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium3),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
                   child: EnvoyIcon(
                     EnvoyIcons.alert,
                     size: EnvoyIconSize.big,

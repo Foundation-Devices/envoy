@@ -11,7 +11,7 @@ class PpNewSeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("pp_new_seed"),
+      key: const Key("pp_new_seed"),
       clipArt: Image.asset("assets/pp_new_seed.png"),
       text: [
         OnboardingText(

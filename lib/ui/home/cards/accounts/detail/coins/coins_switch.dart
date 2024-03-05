@@ -32,8 +32,8 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
   Widget build(BuildContext context) {
     Alignment knobAlign = Alignment.centerLeft;
 
-    Color gradientEnd = Color(0xFFC8C8C8);
-    Color gradientStart = Color(0xFFC8C8C8);
+    Color gradientEnd = const Color(0xFFC8C8C8);
+    Color gradientStart = const Color(0xFFC8C8C8);
 
     switch (widget.value) {
       case CoinTagSwitchState.on:
@@ -43,12 +43,12 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
         break;
       case CoinTagSwitchState.partial:
         gradientEnd = EnvoyColors.darkTeal;
-        gradientStart = Color(0xFFC8C8C8);
+        gradientStart = const Color(0xFFC8C8C8);
         knobAlign = Alignment.center;
         break;
       case CoinTagSwitchState.off:
-        gradientEnd = Color(0xFFC8C8C8);
-        gradientStart = Color(0xFFC8C8C8);
+        gradientEnd = const Color(0xFFC8C8C8);
+        gradientStart = const Color(0xFFC8C8C8);
         knobAlign = Alignment.centerLeft;
         break;
     }
@@ -91,14 +91,14 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
         Haptics.buttonPress();
       },
       child: Container(
-        padding: EdgeInsets.only(right: 5),
+        padding: const EdgeInsets.only(right: 5),
         height: 45,
         width: 50,
         color: Colors.transparent,
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 200),
             curve: Curves.decelerate,
             width: 48,
             decoration: boxDecoration,
@@ -108,12 +108,12 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
                         widget.value == CoinTagSwitchState.partial)
                     ? Curves.decelerate
                     : Curves.easeIn,
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 child: Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Material(
                     elevation: 1,
-                    shape: CircleBorder(),
+                    shape: const CircleBorder(),
                     child: widget.triState
                         ? SizedBox(
                             width: 18,
@@ -131,7 +131,7 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
                               ),
                             ),
                           )
-                        : SizedBox(
+                        : const SizedBox(
                             width: 18,
                             height: 18,
                           ),

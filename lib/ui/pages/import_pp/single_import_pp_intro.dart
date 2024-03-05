@@ -53,7 +53,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: Offset(0, 110),
+          offset: const Offset(0, 110),
           child: Image.asset(
             "assets/pp_setup_intro.png",
             alignment: Alignment.bottomCenter,
@@ -71,12 +71,13 @@ class SingleImportPpIntroPage extends StatelessWidget {
               child: SingleChildScrollView(
                   child: Flexible(
                 child: Container(
-                  margin: EdgeInsets.symmetric(vertical: EnvoySpacing.large1),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.large1),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(height: EnvoySpacing.small),
+                      const SizedBox(height: EnvoySpacing.small),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.medium1),
@@ -90,8 +91,8 @@ class SingleImportPpIntroPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
+                      const Padding(
+                          padding: EdgeInsets.symmetric(
                               vertical: EnvoySpacing.medium2)),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -104,7 +105,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                               padding:
                                   const EdgeInsets.all(EnvoySpacing.medium2),
                               child: DotsIndicator(
-                                decorator: DotsDecorator(
+                                decorator: const DotsDecorator(
                                     size: Size.square(EnvoySpacing.xs),
                                     activeSize: Size.square(EnvoySpacing.xs),
                                     spacing: EdgeInsets.symmetric(

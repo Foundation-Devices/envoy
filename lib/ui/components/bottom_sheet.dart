@@ -28,7 +28,7 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
     builder: (context) => BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(EnvoySpacing.medium2),
           ),
@@ -44,8 +44,8 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               if (enableDrag)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
                   child: HomeIndicator(),
                 ),
               if (icon != null)

@@ -32,7 +32,7 @@ class BtcPayDialog extends StatelessWidget {
       ),
       child: ExpandablePageView(
         controller: controller,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           BtcPayLoadingModal(voucher: voucher, controller: controller),
           BtcPayInfo(
@@ -45,7 +45,7 @@ class BtcPayDialog extends StatelessWidget {
           BtcPayFail(
             voucher: voucher,
           ),
-          BtcPayRedeemModalSuccess(),
+          const BtcPayRedeemModalSuccess(),
         ],
       ),
     );
@@ -55,7 +55,7 @@ class BtcPayDialog extends StatelessWidget {
 Container loadingSpinner(BuildContext context) {
   return Container(
     height: MediaQuery.of(context).size.width * 0.85,
-    child: Center(
+    child: const Center(
       child: SizedBox(
         height: EnvoySpacing.xl,
         width: EnvoySpacing.xl,

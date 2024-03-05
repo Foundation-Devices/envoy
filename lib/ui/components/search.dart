@@ -56,8 +56,8 @@ class _EnvoySearchState extends State<EnvoySearch> {
         border: _focus.hasFocus
             ? Border.all(color: EnvoyColors.accentPrimary)
             : Border.all(color: Colors.transparent),
-        borderRadius: BorderRadius.all(
-          Radius.circular(EnvoySpacing.medium3),
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(EnvoySpacing.medium3),
         ),
       ),
       child: TextFormField(
@@ -77,14 +77,14 @@ class _EnvoySearchState extends State<EnvoySearch> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             alignLabelWithHint: true,
             isDense: true,
-            contentPadding: EdgeInsets.only(bottom: 14),
+            contentPadding: const EdgeInsets.only(bottom: 14),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
             focusedErrorBorder: InputBorder.none,
-            icon: EnvoyIcon(
+            icon: const EnvoyIcon(
               EnvoyIcons.search,
               size: EnvoyIconSize.small,
               color: EnvoyColors.textTertiary,
@@ -93,7 +93,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
                 ? Padding(
                     padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
                     child: GestureDetector(
-                      child: EnvoyIcon(EnvoyIcons.remove),
+                      child: const EnvoyIcon(EnvoyIcons.remove),
                       onTap: () async {
                         setState(() {
                           widget.controller.text = "";
@@ -101,7 +101,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
                       },
                     ),
                   )
-                : SizedBox()),
+                : const SizedBox()),
       ),
     );
   }

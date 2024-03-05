@@ -61,9 +61,9 @@ final learnVideosProvider =
   if (learnFilterState.isEmpty) {
     allVideos = [];
   }
-  if (searchText == null || searchText == "")
+  if (searchText == null || searchText == "") {
     return allVideos;
-  else {
+  } else {
     var videos = allVideos
         .where((element) =>
             element.title.toLowerCase().contains(searchText.toLowerCase()))
@@ -100,9 +100,9 @@ final learnBlogsProvider =
   if (learnFilterState.isEmpty) {
     allBlogs = [];
   }
-  if (searchText == null || searchText == "")
+  if (searchText == null || searchText == "") {
     return allBlogs;
-  else {
+  } else {
     var blogs = allBlogs
         .where((element) =>
             element.title.toLowerCase().contains(searchText.toLowerCase()))

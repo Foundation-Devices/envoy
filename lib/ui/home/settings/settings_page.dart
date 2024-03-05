@@ -37,7 +37,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  final _animationsDuration = Duration(milliseconds: 200);
+  final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
 
   final LocalAuthentication auth = LocalAuthentication();
@@ -139,7 +139,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EnvoyLogsScreen(),
+                            builder: (context) => const EnvoyLogsScreen(),
                           ));
                     },
                     child: Container(
@@ -154,7 +154,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return _DevOptions();
+                                    return const _DevOptions();
                                   },
                                 );
                               }),
@@ -168,7 +168,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           SliverToBoxAdapter(
               child: ExpansionTile(
-            tilePadding: EdgeInsets.all(0),
+            tilePadding: const EdgeInsets.all(0),
             onExpansionChanged: (value) {
               setState(() {
                 _advancedVisible = value;
@@ -178,7 +178,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(S().settings_advanced,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -186,16 +186,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 AnimatedRotation(
                   duration: _animationsDuration,
                   turns: _advancedVisible ? 0.0 : 0.5,
-                  child: Icon(
+                  child: const Icon(
                     Icons.keyboard_arrow_up_sharp,
                     color: Colors.white,
                   ),
                 )
               ],
             ),
-            trailing: SizedBox(),
+            trailing: const SizedBox(),
             controlAffinity: ListTileControlAffinity.platform,
-            childrenPadding: EdgeInsets.only(left: 8),
+            childrenPadding: const EdgeInsets.only(left: 8),
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,7 +204,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SettingToggle(s.showTestnetAccounts, s.setShowTestnetAccounts,
                       onEnabled: () {
                     showEnvoyDialog(
-                        context: context, dialog: TestnetInfoModal());
+                        context: context, dialog: const TestnetInfoModal());
                   }),
                 ],
               ),
@@ -227,7 +227,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      SingleImportPpIntroPage()));
+                                      const SingleImportPpIntroPage()));
                         },
                         icon: EnvoyIcons.info,
                         secondaryButtonLabel: S().taproot_passport_dialog_later,
@@ -244,7 +244,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Flexible(
+                  const Flexible(
                     flex: 5,
                     child: SettingText("Allow LAN addresses over clearnet",
                         // TODO: Need design for this
@@ -260,19 +260,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SettingText(S().settings_viewEnvoyLogs, onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EnvoyLogsScreen(),
-                          ));
-                    }),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SettingText(S().settings_viewEnvoyLogs, onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EnvoyLogsScreen(),
+                        ));
+                  }),
+                ],
               ),
             ],
           )),
@@ -291,7 +289,7 @@ class _DevOptions extends StatelessWidget {
     bool loading = false;
     return AlertDialog(
       backgroundColor: Colors.white,
-      title: Text("Developer options"), // TODO: FIGMA
+      title: const Text("Developer options"), // TODO: FIGMA
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -300,29 +298,29 @@ class _DevOptions extends StatelessWidget {
                 EnvoyStorage().clearDismissedStatesStore();
                 Navigator.pop(context);
               },
-              child: Text("Clear Prompt states")), // TODO: FIGMA
+              child: const Text("Clear Prompt states")), // TODO: FIGMA
           TextButton(
               onPressed: () {
                 EnvoyStorage().clearPendingStore();
                 Navigator.pop(context);
               },
-              child: Text("Clear Azteco states")), // TODO: FIGMA
+              child: const Text("Clear Azteco states")), // TODO: FIGMA
           TextButton(
               onPressed: () {
                 EnvoyReport().clearAll();
                 Navigator.pop(context);
               },
-              child: Text("Clear Envoy Logs")), // TODO: FIGMA
+              child: const Text("Clear Envoy Logs")), // TODO: FIGMA
           TextButton(
               onPressed: () {
                 EnvoyStorage().clear();
                 Navigator.pop(context);
               },
-              child: Text("Clear Envoy Preferences")), // TODO: FIGMA
+              child: const Text("Clear Envoy Preferences")), // TODO: FIGMA
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
@@ -345,7 +343,7 @@ class _DevOptions extends StatelessWidget {
                       print(e);
                     }
                   },
-                  child: Text("Wipe Envoy Wallet")); // TODO: FIGMA
+                  child: const Text("Wipe Envoy Wallet")); // TODO: FIGMA
             },
           )
         ],
@@ -373,7 +371,7 @@ class TestnetInfoModal extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -381,7 +379,7 @@ class TestnetInfoModal extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36),
+            padding: const EdgeInsets.symmetric(horizontal: 36),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -399,7 +397,7 @@ class TestnetInfoModal extends StatelessWidget {
                     style: textStyle,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(4)),
                 Padding(
                     padding: const EdgeInsets.only(top: 18.0),
                     child: LinkText(
@@ -411,12 +409,12 @@ class TestnetInfoModal extends StatelessWidget {
                           launchUrlString(
                               "https://www.youtube.com/watch?v=nRGFAHlYIeU");
                         })),
-                Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(4)),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36, vertical: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
             child: Column(
               children: [
                 Padding(

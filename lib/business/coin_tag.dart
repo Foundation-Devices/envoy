@@ -50,7 +50,7 @@ class CoinTag {
       coins.fold(0, (prevVal, element) => prevVal + element.utxo.value);
 
   bool get isAllCoinsLocked =>
-      this.numOfCoins == 0 ? false : this.numOfCoins == this.numOfLockedCoins;
+      numOfCoins == 0 ? false : numOfCoins == numOfLockedCoins;
 
   List<Coin> get selectableCoins =>
       coins.where((element) => !element.locked).toList();
@@ -82,7 +82,7 @@ class CoinTag {
   void addCoins(List<Coin> coins) => coins.forEach(addCoin);
 
   toJsonCoin() {
-    return this.coins.map((e) => e.id);
+    return coins.map((e) => e.id);
   }
 
   Account? getAccount() {

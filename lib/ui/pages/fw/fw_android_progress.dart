@@ -42,12 +42,14 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       (previous, next) async {
         if (next is bool) {
           if (next) {
-            await Future.delayed(Duration(seconds: 5));
+            await Future.delayed(const Duration(seconds: 5));
             _instructionPageController.animateToPage(1,
-                duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut);
           } else {
             _instructionPageController.animateToPage(2,
-                duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut);
           }
           setState(() {
             done = next;
@@ -69,11 +71,11 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_progress"),
+      key: const Key("fw_progress"),
       text: [
         Expanded(
           child: PageView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: _instructionPageController,
               onPageChanged: (index) {
                 setState(() {
@@ -117,7 +119,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
               ]),
         ),
       ],
-      clipArt: SdCardSpinner(),
+      clipArt: const SdCardSpinner(),
       navigationDots: navigationDots,
       navigationDotsIndex: currentDotIndex,
       buttons: [

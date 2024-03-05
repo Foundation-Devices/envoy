@@ -30,7 +30,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -62,7 +62,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
                       : EnvoyColors.surface1,
                 ),
                 child: widget.isChecked
-                    ? EnvoyIcon(
+                    ? const EnvoyIcon(
                         EnvoyIcons.check,
                         color: EnvoyColors.textPrimaryInverse,
                         size: EnvoyIconSize.small,
@@ -127,7 +127,7 @@ class _DialogCheckBoxState extends State<DialogCheckBox> {
                     : EnvoyColors.surface1,
               ),
               child: widget.isChecked
-                  ? EnvoyIcon(
+                  ? const EnvoyIcon(
                       EnvoyIcons.check,
                       color: EnvoyColors.textPrimaryInverse,
                       size: EnvoyIconSize.small,

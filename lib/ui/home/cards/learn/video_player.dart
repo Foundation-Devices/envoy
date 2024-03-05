@@ -82,7 +82,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   void initState() {
     super.initState();
 
-    _showTorExplainerTimer = Timer(Duration(milliseconds: 300), () {
+    _showTorExplainerTimer = Timer(const Duration(milliseconds: 300), () {
       setFullScreenLandscapeMode();
       if (ConnectivityManager().torEnabled) {
         setState(() {
@@ -141,7 +141,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         _visibleTimeline = true;
       });
       _showTimelineTimer = Timer(const Duration(seconds: 5), () {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             _visibleTimeline = false;
           });
@@ -168,7 +168,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void periodicallyUpdatePosition() {
-    _updatePositionTimer = Timer.periodic(Duration(seconds: 1), (_) async {
+    _updatePositionTimer =
+        Timer.periodic(const Duration(seconds: 1), (_) async {
       _controller!.getPosition().then((value) {
         setState(() {
           _playerProgress = value.inSeconds.toDouble();
@@ -178,7 +179,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void periodicallyHideBar() {
-    _hideTopBarTimer = Timer.periodic(Duration(seconds: 5), (_) async {
+    _hideTopBarTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
       restoreSystemUIOverlays();
     });
   }
@@ -212,7 +213,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
         setPortraitMode();
 
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
       },
       child: Material(
           color: Colors.black,
@@ -230,7 +231,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                         duration: const Duration(milliseconds: 50),
                         reverseDuration: const Duration(milliseconds: 200),
                         child: !_isPlaying
-                            ? Icon(
+                            ? const Icon(
                                 Icons.play_arrow,
                                 color: Colors.white,
                                 size: 100.0,
@@ -301,7 +302,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                   .setMediaFromFile(streamFile,
                                       hwAcc: HwAcc.full)
                                   .then((_) {
-                                Future.delayed(Duration(milliseconds: 250))
+                                Future.delayed(
+                                        const Duration(milliseconds: 250))
                                     .then((_) {
                                   _controller!
                                       .setPosition(newValue /
@@ -333,7 +335,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: AnimatedOpacity(
-                              duration: Duration(milliseconds: 1000),
+                              duration: const Duration(milliseconds: 1000),
                               opacity: _showTorExplainer ? 1.0 : 0.0,
                               child: Text(
                                 ConnectivityManager().torEnabled &&
@@ -342,7 +344,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                     ? "Connecting to the Tor Network" // TODO: FIGMA
                                     : "Envoy is loading your video over the Tor Network",
                                 // TODO: FIGMA
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white70,
                                 ),
                               ),
@@ -359,7 +361,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                   top: 20,
                   left: 20,
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_back,
                       color: Colors.white70,
                     ),
@@ -374,7 +376,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
                       setPortraitMode();
 
-                      await Future.delayed(Duration(milliseconds: 300));
+                      await Future.delayed(const Duration(milliseconds: 300));
                       Navigator.of(context).pop();
                     },
                   )),
@@ -382,7 +384,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
             Positioned.fill(
               child: IgnorePointer(
                 child: AnimatedOpacity(
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   opacity: _curtains ? 1.0 : 0.0,
                   child: Container(
                     color: Colors.black,

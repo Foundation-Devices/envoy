@@ -33,15 +33,15 @@ class _CoinsListState extends ConsumerState<CoinsList> {
   Widget build(BuildContext context) {
     List<CoinTag> tags = ref.watch(coinsTagProvider(widget.account.id ?? ""));
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+      margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(
         scrollController: _scrollController,
         child: StatefulBuilder(
           builder: (context, setState) {
             return ListView.builder(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               //accommodate bottom nav bar spacing
-              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
               controller: _scrollController,
               itemCount: tags.length,
               itemBuilder: (BuildContext context, int index) {
@@ -88,7 +88,7 @@ class CoinItemWidget extends ConsumerWidget {
             );
 
     Color cardBackground = tag.untagged
-        ? Color(0xff808080)
+        ? const Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
     double cardRadius = 26;
     double textHeight =

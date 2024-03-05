@@ -15,7 +15,7 @@ class SettingToggle extends StatefulWidget {
   final Function()? onEnabled;
 
   SettingToggle(this.getter, this.setter,
-      {this.delay = 0, this.enabled = true, this.onEnabled});
+      {super.key, this.delay = 0, this.enabled = true, this.onEnabled});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();

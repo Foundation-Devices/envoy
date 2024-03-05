@@ -52,7 +52,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.only(bottom: 6)),
+            const Padding(padding: EdgeInsets.only(bottom: 6)),
             Text(
               S().magic_setup_tutorial_heading,
               textAlign: TextAlign.center,
@@ -88,7 +88,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                       _playerKey.currentState?.pause();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return MagicRecoverWallet();
+                        return const MagicRecoverWallet();
                       }));
                     }),
                 OnboardingButton(
@@ -101,7 +101,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                       _playerKey.currentState?.pause();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return MagicSetupGenerate();
+                        return const MagicSetupGenerate();
                       }));
                       // showCreateWarning(context);
                     }),

@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:envoy/business/settings.dart';
 import 'dart:io';
 
-final _platformChannel = MethodChannel('envoy');
-final _screenSecureMethod = "make_screen_secure";
+const _platformChannel = MethodChannel('envoy');
+const _screenSecureMethod = "make_screen_secure";
 
 Future enableSecureScreen() async {
   if (!Settings().allowScreenshots() && !Platform.isLinux) {
@@ -17,7 +17,7 @@ Future enableSecureScreen() async {
 
 Future disableSecureScreen() async {
   if (!Settings().allowScreenshots() && !Platform.isLinux) {
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     await _platformChannel.invokeMethod(_screenSecureMethod, {"secure": false});
   }
 }

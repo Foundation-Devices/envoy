@@ -142,7 +142,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                         },
                         icon: EnvoyIcons.node,
                       ),
-                      SizedBox(height: EnvoySpacing.medium2),
+                      const SizedBox(height: EnvoySpacing.medium2),
                       EnvoyDropdown(
                         initialIndex:
                             ConnectivityManager().usingDefaultServer ? 0 : 1,
@@ -179,10 +179,10 @@ class PrivacyCardState extends State<PrivacyCard> {
                           future: _auth.isDeviceSupported(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
-                              return SizedBox();
+                              return const SizedBox();
                             }
                             if (snapshot.hasData && snapshot.data! == false) {
-                              return SizedBox();
+                              return const SizedBox();
                             }
 
                             return Column(
@@ -192,7 +192,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                   children: [
                                     EnvoyIcon(EnvoyIcons.biometrics,
                                         size: EnvoyIconSize.normal),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: EnvoySpacing.small,
                                     ),
                                     Text(
@@ -202,7 +202,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: EnvoySpacing.medium2),
+                                const SizedBox(height: EnvoySpacing.medium2),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -225,7 +225,8 @@ class PrivacyCardState extends State<PrivacyCard> {
                                           try {
                                             bool authSuccess =
                                                 await _auth.authenticate(
-                                              options: AuthenticationOptions(
+                                              options:
+                                                  const AuthenticationOptions(
                                                 biometricOnly: false,
                                               ),
                                               localizedReason:
@@ -269,8 +270,8 @@ class PrivacyCardState extends State<PrivacyCard> {
   }
 
   Padding buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
       child: Divider(
         height: 2,
         color: EnvoyColors.border1,

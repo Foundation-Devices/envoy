@@ -60,37 +60,37 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      padding: EdgeInsets.all(EnvoySpacing.small),
+      padding: const EdgeInsets.all(EnvoySpacing.small),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Align(
-            alignment: Alignment(1.0, -1.0),
+            alignment: const Alignment(1.0, -1.0),
             child: IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Image.asset(
             "assets/exclamation_icon.png",
             height: 68,
             width: 68,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             S().change_output_from_multiple_tags_modal_heading,
             style: EnvoyTypography.body.copyWith(
               fontSize: 20,
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Container(
             child: PageTransitionSwitcher(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               transitionBuilder: (child, animation, secondaryAnimation) {
                 return SharedAxisTransition(
                   animation: animation,
@@ -164,13 +164,14 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+                margin: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1),
                 decoration: BoxDecoration(
-                    color: Color(0xffD9D9D9),
+                    color: const Color(0xffD9D9D9),
                     borderRadius: BorderRadius.circular(8)),
                 child: TextFormField(
                     maxLength: 30,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 14,
                         overflow: TextOverflow.fade,
                         fontWeight: FontWeight.w500),
@@ -181,7 +182,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                     },
                     controller: _tagController,
                     textAlign: TextAlign.center,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       // Disable the borders
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -189,17 +190,18 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 16.0),
                     )),
               ),
-              Padding(padding: EdgeInsets.all(8)),
+              const Padding(padding: EdgeInsets.all(8)),
               tags.length != 0
-                  ? Text("Most Used")
-                  : Text("Suggestions"), // TODO: FIGMA
+                  ? const Text("Most Used")
+                  : const Text("Suggestions"), // TODO: FIGMA
               Container(
-                margin: EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
-                constraints: BoxConstraints(maxHeight: 64),
+                margin:
+                    const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+                constraints: const BoxConstraints(maxHeight: 64),
                 child: Column(
                   children: [
                     Flexible(
@@ -209,7 +211,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [...firsRowWidget],
                     )),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Flexible(
                         child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -260,7 +262,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
 
   _tagSubtitle(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+      margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -274,7 +276,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               textAlign: TextAlign.center,
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -283,7 +285,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   type: EnvoyButtonTypes.tertiary, onTap: () async {
                 widget.onEditTransaction();
               }),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(S().component_continue,
                   enabled: true,
                   borderRadius: BorderRadius.circular(6),
@@ -295,7 +297,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   showTagForm = !showTagForm;
                 });
               }),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             ],
           )
         ],

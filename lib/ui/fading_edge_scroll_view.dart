@@ -70,13 +70,13 @@ class FadingEdgeScrollView extends StatefulWidget {
 
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: controller,
       scrollDirection: Axis.vertical,
       reverse: false,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -96,13 +96,13 @@ class FadingEdgeScrollView extends StatefulWidget {
 
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: controller,
       scrollDirection: child.scrollDirection,
       reverse: child.reverse,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -117,13 +117,13 @@ class FadingEdgeScrollView extends StatefulWidget {
   }) {
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: child.controller,
       scrollDirection: child.scrollDirection,
       reverse: child.reverse,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -143,13 +143,13 @@ class FadingEdgeScrollView extends StatefulWidget {
 
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: controller,
       scrollDirection: Axis.vertical,
       reverse: false,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -281,8 +281,8 @@ class _FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
         bounds.shift(Offset(-bounds.left, -bounds.top)),
         textDirection: Directionality.of(context),
       ),
-      child: widget.child,
       blendMode: BlendMode.dstIn,
+      child: widget.child,
     );
   }
 

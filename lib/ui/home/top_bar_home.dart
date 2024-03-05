@@ -33,7 +33,7 @@ class HomeAppBar extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomeAppBarState();
 }
 
-final _animationsDuration = Duration(milliseconds: 350);
+final _animationsDuration = const Duration(milliseconds: 350);
 
 class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
@@ -41,7 +41,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       _setOptionWidgetsForTabWidgets(
           GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
     });
@@ -55,7 +55,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool _inEditMode = ref.watch(spendEditModeProvider);
 
     Widget rightAction = _homeShellState?.rightAction ??
-        SizedBox(
+        const SizedBox(
           height: 55,
           width: 55,
         );
@@ -219,7 +219,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                                     height: 55,
                                     width: 55,
                                     color: Colors.transparent,
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.close,
                                     ),
                                   ),
@@ -284,7 +284,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               height: 55,
               width: 55,
               color: Colors.transparent,
-              child: Icon(
+              child: const Icon(
                 Icons.add,
               ),
             ),
@@ -303,9 +303,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   if (EnvoySeed().walletDerived()) {
-                    return OnboardPassportWelcomeScreen();
+                    return const OnboardPassportWelcomeScreen();
                   } else {
-                    return WelcomeScreen();
+                    return const WelcomeScreen();
                   }
                 },
               ));
@@ -314,7 +314,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               height: 55,
               width: 55,
               color: Colors.transparent,
-              child: Icon(
+              child: const Icon(
                 Icons.add,
               ),
             ),
@@ -426,8 +426,8 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
                     artboard: _menuArtBoard!,
                     fit: BoxFit.contain,
                   )
-                : SizedBox.square(),
-            size: Size.square(24),
+                : const SizedBox.square(),
+            size: const Size.square(24),
           ),
         ),
       ),

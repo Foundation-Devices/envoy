@@ -41,8 +41,8 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -55,13 +55,13 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(padding: EdgeInsets.all(8)),
+                      const Padding(padding: EdgeInsets.all(8)),
                       Text(
                         S().manual_setup_import_backup_CTA2,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(12)),
+                      const Padding(padding: EdgeInsets.all(12)),
                       Text(
                         S().manual_setup_import_backup_subheading,
                         textAlign: TextAlign.center,
@@ -73,8 +73,8 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -95,7 +95,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return ManualSetupCreateAndStoreBackup();
+                            return const ManualSetupCreateAndStoreBackup();
                           }));
                         }),
                   ],
@@ -165,7 +165,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Center(
+            child: const Center(
               child: SizedBox(
                 height: 60,
                 width: 60,
@@ -191,11 +191,11 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
   if (success) {
     Settings().syncToCloud = true;
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return WalletSetupSuccess();
+      return const WalletSetupSuccess();
     }));
   } else
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return ManualSetup();
+      return const ManualSetup();
     }));
 }
 
@@ -204,8 +204,10 @@ Future<void> recoverManually(
   bool success = await EnvoySeed().create(seedList);
 
   if (success) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ManualSetupImportBackup()));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const ManualSetupImportBackup()));
   } else
     showInvalidSeedDialog(
       context: context,

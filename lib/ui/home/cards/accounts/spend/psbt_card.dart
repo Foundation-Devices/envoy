@@ -33,7 +33,7 @@ class PsbtCard extends StatelessWidget {
       topBarLeading: Padding(
         padding: const EdgeInsets.all(12),
         child: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.close,
             color: Colors.black,
           ),
@@ -73,7 +73,8 @@ class PsbtCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
+              padding:
+                  const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,7 +82,8 @@ class PsbtCard extends StatelessWidget {
                   IconButton(
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: psbt.base64));
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           content:
                               Text("PSBT copied to clipboard!"), //TODO: FIGMA
                         ));
@@ -98,7 +100,7 @@ class PsbtCard extends StatelessWidget {
                             builder: (context, ref, child) {
                               return IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(
+                                icon: const Icon(
                                   EnvoyIcons.qr_scan,
                                   size: 30,
                                   color: EnvoyColors.darkTeal,

@@ -33,7 +33,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
 
     //margin on right is diff 8 compare to left, filter icon uses icon button that has touch target padding
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20),
+      margin: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
           Row(
@@ -46,7 +46,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                       if (ref.read(coinSelectionStateProvider).isNotEmpty) {
                         ref.read(coinSelectionStateProvider.notifier).reset();
                         //wait for coin selection bottom-sheet to close
-                        await Future.delayed(Duration(milliseconds: 240));
+                        await Future.delayed(const Duration(milliseconds: 240));
                       }
                     }
                     ref.read(accountToggleStateProvider.notifier).state =
@@ -68,11 +68,11 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                       bool isInEditMode = ref.watch(spendEditModeProvider);
                       bool hide = isCoinSelectionActive || isInEditMode;
                       return AnimatedOpacity(
-                        duration: Duration(milliseconds: 100),
+                        duration: const Duration(milliseconds: 100),
                         opacity: hide ? 0 : 1,
                         child: AnimatedSlide(
-                          duration: Duration(milliseconds: 200),
-                          offset: hide ? Offset(0, 1.2) : Offset.zero,
+                          duration: const Duration(milliseconds: 200),
+                          offset: hide ? const Offset(0, 1.2) : Offset.zero,
                           child: child,
                         ),
                       );
@@ -96,7 +96,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                 barrierColor: Colors.black.withOpacity(0.2),
                                 enableDrag: true,
                                 isScrollControlled: true,
-                                shape: RoundedRectangleBorder(
+                                shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                     topLeft:
                                         Radius.circular(EnvoySpacing.medium1),
@@ -108,13 +108,13 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                 builder: (context) {
                                   return toggleState == AccountToggleState.Tx
                                       ? TxFilterWidget()
-                                      : CoinTagsFilterWidget();
+                                      : const CoinTagsFilterWidget();
                                 });
                           },
                           child: Container(
                             width: 32,
                             height: 32,
-                            padding: EdgeInsets.all(EnvoySpacing.small),
+                            padding: const EdgeInsets.all(EnvoySpacing.small),
                             decoration: BoxDecoration(
                                 color: enabled
                                     ? Theme.of(context).primaryColor
@@ -167,21 +167,17 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             fontWeight: FontWeight.w600,
             fontSize: 14);
 
-    if (_sortState == null) {
-      _sortState = txSortState;
-    }
-    if (_filterState == null) {
-      _filterState = txFilterState;
-    }
+    _sortState ??= txSortState;
+    _filterState ??= txFilterState;
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium1,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -195,18 +191,18 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                     _filterState = Set()..addAll(TransactionFilters.values);
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
                 ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
+                ),
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Row(
             children: [
               EnvoyFilterChip(
@@ -227,7 +223,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                   });
                 },
               ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyFilterChip(
                 icon: Icons.call_received,
                 selected: _filterState?.contains(TransactionFilters.Received) ??
@@ -248,7 +244,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -261,13 +257,13 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                     _sortState = TransactionSortTypes.newestFirst;
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
+                ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
                 ),
               )
             ],
@@ -312,7 +308,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -327,7 +323,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               }
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );
@@ -349,9 +345,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
   Widget build(BuildContext context) {
     final coinSort = ref.watch(coinTagSortStateProvider);
 
-    if (_sortState == null) {
-      _sortState = coinSort;
-    }
+    _sortState ??= coinSort;
     final titleStyle = Theme.of(context)
         .textTheme
         .titleMedium
@@ -365,13 +359,13 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             fontSize: 14);
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium1,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -385,18 +379,18 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
                     _sortState = CoinTagSortTypes.sortByTagNameAsc;
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
                 ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
+                ),
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           CheckBoxFilterItem(
             text: S().filter_sortBy_aToZ,
             checked: _sortState == CoinTagSortTypes.sortByTagNameAsc,
@@ -436,7 +430,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -448,7 +442,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
               }
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );
@@ -470,7 +464,7 @@ class CheckBoxFilterItem extends StatelessWidget {
       onTap: onTap,
       splashFactory: NoSplash.splashFactory,
       child: Container(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: EnvoySpacing.medium1,
         ),
         child: Row(
@@ -479,20 +473,20 @@ class CheckBoxFilterItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Transform.translate(
-              offset: Offset(0, 1.6),
+              offset: const Offset(0, 1.6),
               child: checked
                   ? Icon(
                       CupertinoIcons.checkmark_alt_circle_fill,
                       color: Theme.of(context).primaryColor,
                       size: 24,
                     )
-                  : Icon(
+                  : const Icon(
                       CupertinoIcons.circle,
                       color: newColorScheme.EnvoyColors.surface2,
                       size: 24,
                     ),
             ),
-            Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Text(
               text,
               style: EnvoyTypography.body
@@ -525,7 +519,7 @@ class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
   String value = "Tx"; // TODO: FIGMA
 
-  final Duration _duration = Duration(milliseconds: 150);
+  final Duration _duration = const Duration(milliseconds: 150);
   late AnimationController _animationController;
   late Animation<Alignment> _slidingSegmentAnimation;
   late Animation<Color?> _textColorAnimation;
@@ -613,11 +607,13 @@ class _SlidingToggleState extends State<SlidingToggle>
       });
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (value == "Tx") // TODO: FIGMA
+      if (value == "Tx") {
+        // TODO: FIGMA
         _animationController.reverse();
-      else
+      } else {
         _animationController.animateTo(1.0,
-            duration: Duration(milliseconds: 0));
+            duration: const Duration(milliseconds: 0));
+      }
     });
   }
 
@@ -633,14 +629,16 @@ class _SlidingToggleState extends State<SlidingToggle>
             if (_animationController.isAnimating) {
               _animationController.stop();
             }
-            if (value == "Tx") // TODO: FIGMA
+            if (value == "Tx") {
+              // TODO: FIGMA
               _animationController.reverse();
-            else
+            } else {
               _animationController.forward();
+            }
             widget.onChange(value);
           },
           child: Container(
-            constraints: BoxConstraints.tight(Size(120, 34)),
+            constraints: BoxConstraints.tight(const Size(120, 34)),
             child: Container(
               decoration: BoxDecoration(
                   color: newColorScheme.EnvoyColors.solidWhite,
@@ -653,7 +651,7 @@ class _SlidingToggleState extends State<SlidingToggle>
                     child: FractionallySizedBox(
                       widthFactor: 0.75,
                       child: Container(
-                        margin: EdgeInsets.all(2),
+                        margin: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                             color: newColorScheme.EnvoyColors.accentPrimary,
                             borderRadius:
@@ -671,8 +669,8 @@ class _SlidingToggleState extends State<SlidingToggle>
                   ),
                   AlignTransition(
                     alignment: Tween(
-                            begin: Alignment(.85, 0.0),
-                            end: Alignment(-.2, 0.0))
+                            begin: const Alignment(.85, 0.0),
+                            end: const Alignment(-.2, 0.0))
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
@@ -685,8 +683,8 @@ class _SlidingToggleState extends State<SlidingToggle>
                   ),
                   AlignTransition(
                       alignment: Tween(
-                              begin: Alignment(-.12, 0.0),
-                              end: Alignment(.45, 0))
+                              begin: const Alignment(-.12, 0.0),
+                              end: const Alignment(.45, 0))
                           .animate(CurvedAnimation(
                               parent: _animationController,
                               curve: Curves.easeInOutCubic)),
@@ -697,7 +695,7 @@ class _SlidingToggleState extends State<SlidingToggle>
                             _text,
                             key: ValueKey(_text),
                             //prevent unnecessary overflows, container size is fixed
-                            textScaler: TextScaler.linear(1),
+                            textScaler: const TextScaler.linear(1),
                             textAlign: TextAlign.start,
                             style: textTheme,
                           ),

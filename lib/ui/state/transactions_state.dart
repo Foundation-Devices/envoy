@@ -94,14 +94,14 @@ final transactionsProvider =
       ref.watch(walletTransactionsProvider(accountId));
   transactions.addAll(walletTransactions);
   //avoid duplicates
-  pendingTransactions.forEach((pending) {
+  for (var pending in pendingTransactions) {
     final tx = transactions
         .firstWhereOrNull((element) => element.txId == pending.txId);
     final rbfOriginals = ref.watch(RBFBroadCastedTxProvider);
     if (tx == null && !rbfOriginals.contains(pending.txId)) {
       transactions.add(pending);
     }
-  });
+  }
 
   ref.watch(RBFBroadCastedTxProvider).forEach((txId) {
     final tx = transactions.firstWhereOrNull((element) => element.txId == txId);

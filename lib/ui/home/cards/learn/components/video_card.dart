@@ -48,7 +48,8 @@ class _VideoCardState extends ConsumerState<VideoCard> {
     final bool _isVideoWatched =
         ref.watch(watchedVideoStreamProvider(widget.video.id)).value ?? false;
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+      borderRadius:
+          const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
       child: SizedBox(
         width: videoContainerWidth,
         child: Column(
@@ -70,16 +71,16 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                     future: widget.video.thumbnail,
                     builder: (context, snapshot) {
                       return !snapshot.hasData || snapshot.data == null
-                          ? Container(
+                          ? SizedBox(
                               height: videoImageHeight,
-                              child: Center(
+                              child: const Center(
                                   child: Icon(
                                 Icons.play_arrow,
                                 color: EnvoyColors.textPrimaryInverse,
                                 size: 40,
                               )),
                             )
-                          : Container(
+                          : SizedBox(
                               height: videoImageHeight,
                               width: videoContainerWidth,
                               child: Image.memory(
@@ -95,7 +96,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                   right: 0,
                   child: Center(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                           Radius.circular(EnvoySpacing.medium1)),
                       child: Container(
                         height: 50,
@@ -105,7 +106,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                     ),
                   ),
                 ),
-                Positioned(
+                const Positioned(
                   top: 0,
                   bottom: 0,
                   left: 0,
@@ -125,7 +126,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                               EnvoyColors.textPrimaryInverse.withOpacity(0.5),
                         ),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
               ]),
             ),
             Container(
@@ -148,7 +149,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                     ),
-                    SizedBox(height: EnvoySpacing.xs),
+                    const SizedBox(height: EnvoySpacing.xs),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -167,7 +168,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )
-                              : Text("")
+                              : const Text("")
                         ]),
                   ],
                 ),

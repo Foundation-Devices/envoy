@@ -28,7 +28,7 @@ class PpSetupIntroPage extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back_ios_rounded, size: 20),
+              child: const Icon(Icons.arrow_back_ios_rounded, size: 20),
             ),
           ),
           automaticallyImplyLeading: false,
@@ -39,7 +39,7 @@ class PpSetupIntroPage extends StatelessWidget {
                   onTap: () {
                     OnboardingPage.popUntilHome(context);
                   },
-                  child: Icon(Icons.close_rounded)),
+                  child: const Icon(Icons.close_rounded)),
             )
           ],
         ),
@@ -47,7 +47,7 @@ class PpSetupIntroPage extends StatelessWidget {
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: Offset(0, 100),
+          offset: const Offset(0, 100),
           child: Image.asset(
             "assets/pp_setup_intro.png",
             alignment: Alignment.bottomCenter,
@@ -71,14 +71,15 @@ class PpSetupIntroPage extends StatelessWidget {
                             horizontal: EnvoySpacing.medium1),
                         child: Column(
                           children: [
-                            Padding(
-                                padding: EdgeInsets.all(EnvoySpacing.small)),
+                            const Padding(
+                                padding:
+                                    const EdgeInsets.all(EnvoySpacing.small)),
                             Text(
                               S().envoy_pp_setup_intro_heading,
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            Padding(
+                            const Padding(
                                 padding: EdgeInsets.all(EnvoySpacing.small)),
                             Text(
                               S().envoy_pp_setup_intro_subheading,
@@ -101,9 +102,8 @@ class PpSetupIntroPage extends StatelessWidget {
                                 return PpRestoreBackupPage();
                               }));
                             }),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.small),
+                            const Padding(
+                              padding: EdgeInsets.only(top: EnvoySpacing.small),
                             ),
                             EnvoyButton(
                                 type: EnvoyButtonTypes.secondary,
@@ -113,9 +113,8 @@ class PpSetupIntroPage extends StatelessWidget {
                                 return PpRestoreSeedPage();
                               }));
                             }),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.small),
+                            const Padding(
+                              padding: EdgeInsets.only(top: EnvoySpacing.small),
                             ),
                             EnvoyButton(S().envoy_pp_setup_intro_cta1,
                                 onTap: () {

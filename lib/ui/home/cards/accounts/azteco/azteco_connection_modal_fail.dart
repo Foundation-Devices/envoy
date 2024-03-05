@@ -31,7 +31,7 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
                   horizontal: EnvoySpacing.medium1,
                   vertical: EnvoySpacing.medium1),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -39,7 +39,8 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,7 +70,7 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
                 horizontal: EnvoySpacing.medium1,
                 vertical: EnvoySpacing.medium2),
             child: EnvoyButton(

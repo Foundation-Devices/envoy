@@ -36,7 +36,7 @@ class _TorWarningState extends State<TorWarning> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -44,12 +44,12 @@ class _TorWarningState extends State<TorWarning> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+            padding: const EdgeInsets.symmetric(horizontal: 48),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(EnvoyIcons.exclamation_warning,
+                const Icon(EnvoyIcons.exclamation_warning,
                     color: EnvoyColors.accentSecondary, size: 84),
                 Padding(
                     padding: const EdgeInsets.only(top: 18.0),
@@ -65,12 +65,12 @@ class _TorWarningState extends State<TorWarning> {
                             mode: LaunchMode.externalApplication);
                       },
                     )),
-                Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(4)),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 28),
             child: Column(
               //Temporarily Disable Tor
               children: [

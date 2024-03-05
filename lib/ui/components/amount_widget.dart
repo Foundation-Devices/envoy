@@ -29,9 +29,9 @@ class AmountWidget extends StatelessWidget {
     required this.amountSats,
     required this.primaryUnit,
     this.style = AmountWidgetStyle.normal,
-    this.secondaryUnit = null,
+    this.secondaryUnit,
     this.symbolFiat = "",
-    this.fxRateFiat = null,
+    this.fxRateFiat,
     this.decimalDot = true,
     this.badgeColor,
     this.alignToEnd = true,
@@ -158,7 +158,7 @@ class PrimaryAmountWidget extends StatelessWidget {
     this.decimalDot = true,
     this.fiatDecimals = 2,
     this.symbolFiat = "",
-    this.fxRateFiat = null,
+    this.fxRateFiat,
     this.style = PrimaryAmountWidgetStyle.normal,
     this.badgeColor,
     this.sendScreen = false,
@@ -253,7 +253,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       required this.unit,
       required this.amountSats,
       this.symbolFiat = "",
-      this.fxRateFiat = null,
+      this.fxRateFiat,
       this.decimalDot = true,
       this.style = SecondaryAmountWidgetStyle.normal,
       this.badgeColor});
@@ -435,8 +435,9 @@ List<TextSpan> buildTextSpansWithSpaces(bool isAmountBtcUnder1,
       }
     }
   }
-  if (negativeAmount)
+  if (negativeAmount) {
     textSpansWithSpaces.insert(0, _createTextSpan('-', textStyleSpace!));
+  }
 
   return textSpansWithSpaces;
 }
@@ -466,8 +467,9 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
 
   // Reverse the list to get the original order
   textSpans = textSpans.reversed.toList();
-  if (negativeAmount)
+  if (negativeAmount) {
     textSpans.insert(0, _createTextSpan("-", textStyleBlack!));
+  }
 
   return changeDecimalMark(
       AmountDisplayUnit.sat,
@@ -494,12 +496,12 @@ List<TextSpan> buildPrimaryFiatTextSpans(
   if (amountValue >= 1000000000) {
     // Convert to billions and round to 1 decimal point
     double valueInBillion = amountValue / 1000000000.0;
-    String formattedValue = valueInBillion.toStringAsFixed(1) + ' B';
+    String formattedValue = '${valueInBillion.toStringAsFixed(1)} B';
     textSpans.add(_createTextSpan(formattedValue, textStyleBlack!));
   } else if (amountValue >= 1000000) {
     // Convert to millions and round to 1 decimal point
     double valueInMillion = amountValue / 1000000.0;
-    String formattedValue = valueInMillion.toStringAsFixed(1) + ' M';
+    String formattedValue = '${valueInMillion.toStringAsFixed(1)} M';
     textSpans.add(_createTextSpan(formattedValue, textStyleBlack!));
   } else {
     // Display the original amount
@@ -600,8 +602,8 @@ String formatAmountWithCommas(double amount, bool trailingZeroes) {
   }
 
   // Join the integer and decimal parts
-  String formattedAmount = integerDigits.join('') +
-      (decimalPart.isNotEmpty ? '.' + decimalPart : '');
+  String formattedAmount =
+      integerDigits.join('') + (decimalPart.isNotEmpty ? '.$decimalPart' : '');
 
   // Add trailing zeroes if specified and btcAmount is less than 999
   if (trailingZeroes && amount < 1000) {
@@ -692,8 +694,9 @@ Widget getTestnetSatsIcon(Color badgeColor,
 
 Widget displayTestnetIcon(AmountDisplayUnit unit, Color color,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
-  if (unit == AmountDisplayUnit.btc)
+  if (unit == AmountDisplayUnit.btc) {
     return getTestnetBtcIcon(color, iconSize: iconSize, iconColor: iconColor);
-  else
+  } else {
     return getTestnetSatsIcon(color, iconSize: iconSize, iconColor: iconColor);
+  }
 }

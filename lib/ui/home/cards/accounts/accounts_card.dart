@@ -84,7 +84,7 @@ class AccountsCardState extends State<AccountsCard>
 class AccountsList extends ConsumerStatefulWidget {
   final Widget? child;
 
-  AccountsList({this.child}) : super(key: UniqueKey()) {}
+  AccountsList({this.child}) : super(key: UniqueKey());
 
   final GlobalKey _listKey = GlobalKey();
 
@@ -158,7 +158,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       child: ReorderableListView(
           key: widget._listKey,
           footer: Opacity(
-            child: AccountPrompts(),
+            child: const AccountPrompts(),
             opacity: _onReOrderStart ? 0.0 : 1.0,
           ),
           shrinkWrap: true,
@@ -341,14 +341,14 @@ void showSecurityDialog(BuildContext context) {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -357,9 +357,9 @@ void showSecurityDialog(BuildContext context) {
                     height: 60,
                     width: 60,
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                   Container(
-                    constraints: BoxConstraints(maxWidth: 200),
+                    constraints: const BoxConstraints(maxWidth: 200),
                     padding: const EdgeInsets.symmetric(
                         vertical: EnvoySpacing.small, horizontal: 12),
                     child: Text(S().wallet_security_modal__heading,
@@ -397,7 +397,7 @@ void showSecurityDialog(BuildContext context) {
                       },
                     );
                   }),
-              Padding(padding: EdgeInsets.all(12)),
+              const Padding(padding: EdgeInsets.all(12)),
             ],
           ),
         ),

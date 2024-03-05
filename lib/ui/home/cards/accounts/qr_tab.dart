@@ -27,7 +27,7 @@ class QrTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           border: Border.all(
               color: Colors.black, width: 2, style: BorderStyle.solid),
           gradient: LinearGradient(
@@ -44,11 +44,11 @@ class QrTab extends StatelessWidget {
         ),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
               border: Border.all(
                   color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
               child: Stack(children: [
                 Positioned.fill(
                   child: CustomPaint(
@@ -99,14 +99,14 @@ class QrTab extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Flexible(
                       child: Container(
                         width: double.infinity,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
+                                const BorderRadius.all(Radius.circular(16))),
                         child: AspectRatio(
                           aspectRatio: 1.0,
                           child: Align(

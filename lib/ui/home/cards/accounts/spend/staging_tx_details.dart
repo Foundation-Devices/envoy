@@ -107,11 +107,11 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         final coinHistory = await EnvoyStorage()
             .getCoinHistoryByTransactionId(widget.previousTransaction!.txId);
         coinHistory?.forEach((element) {
-          rawTransaction.inputs.forEach((input) {
+          for (var input in rawTransaction.inputs) {
             if (input.id == element.coin.id) {
               inputTagData.add(Tuple(element.tagName, element.coin.amount));
             }
-          });
+          }
         });
 
         /// if the RBF tx include any other inputs, then find tags belongs to that inputs
@@ -136,15 +136,15 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
       }
 
       /// find change output tag
-      tags.forEach((tag) {
+      for (var tag in tags) {
         String id = "";
         if (widget.previousTransaction != null) {
-          id = "${widget.previousTransaction!.txId}";
-          tag.coins_id.forEach((element) {
+          id = widget.previousTransaction!.txId;
+          for (var element in tag.coins_id) {
             if (element.contains(id)) {
               changeOutputTag = tag;
             }
-          });
+          }
         } else {
           id =
               "${widget.psbt.txid}:${rawTransaction.outputs.indexOf(receiveOutPut)}";
@@ -152,7 +152,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
             changeOutputTag = tag;
           }
         }
-      });
+      }
 
       final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id!));
       if (userSelectedCoins.length != 0) {}
@@ -206,7 +206,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -233,10 +233,10 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
               appBar: AppBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
-                leading: SizedBox.shrink(),
+                leading: const SizedBox.shrink(),
                 actions: [
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: EnvoyColors.textPrimaryInverse,
                     ),
@@ -273,12 +273,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.all(EnvoySpacing.small),
+                        padding: const EdgeInsets.all(EnvoySpacing.small),
                         child: AnimatedContainer(
                           height: 275,
-                          duration: Duration(milliseconds: 250),
+                          duration: const Duration(milliseconds: 250),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                                 Radius.circular(EnvoySpacing.medium2)),
                             border: Border.all(
                                 color: EnvoyColors.textPrimary,
@@ -294,14 +294,14 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           ),
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                     Radius.circular(EnvoySpacing.medium2)),
                                 border: Border.all(
                                     color: accountAccentColor,
                                     width: 2,
                                     style: BorderStyle.solid)),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                     Radius.circular(EnvoySpacing.medium2)),
                                 child: StripesBackground(
                                   child: Column(
@@ -311,12 +311,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                     children: [
                                       Container(
                                         height: 36,
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: EnvoySpacing.small),
-                                        margin: EdgeInsets.symmetric(
+                                        margin: const EdgeInsets.symmetric(
                                             vertical: EnvoySpacing.xs,
                                             horizontal: EnvoySpacing.xs),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(
                                                   EnvoySpacing.medium2)),
@@ -331,13 +331,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                       ),
                                       Expanded(
                                           child: Container(
-                                        margin: EdgeInsets.symmetric(
+                                        margin: const EdgeInsets.symmetric(
                                             vertical: EnvoySpacing.xs,
                                             horizontal: EnvoySpacing.xs),
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: EnvoySpacing.small,
                                             vertical: EnvoySpacing.small),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(
                                                   EnvoySpacing.medium1)),
@@ -362,7 +362,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       width: 16,
                                                       height: 16,
                                                     ),
-                                                    Padding(
+                                                    const Padding(
                                                         padding: EdgeInsets.only(
                                                             left: EnvoySpacing
                                                                 .small)),
@@ -391,12 +391,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 }))
                                               ],
                                             ),
-                                            Padding(
+                                            const Padding(
                                                 padding: EdgeInsets.all(
                                                     EnvoySpacing.xs)),
                                             Container(
                                               height: 24,
-                                              margin: EdgeInsets.only(
+                                              margin: const EdgeInsets.only(
                                                   left: EnvoySpacing.medium2),
                                               child: ListView(
                                                 scrollDirection:
@@ -406,7 +406,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 }).toList(),
                                               ),
                                             ),
-                                            Padding(
+                                            const Padding(
                                                 padding: EdgeInsets.all(
                                                     EnvoySpacing.xs)),
                                             Row(
@@ -419,11 +419,11 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Icon(
+                                                      const Icon(
                                                         Icons.compare_arrows,
                                                         size: 16,
                                                       ),
-                                                      Padding(
+                                                      const Padding(
                                                           padding: EdgeInsets.only(
                                                               left: EnvoySpacing
                                                                   .small)),
@@ -442,9 +442,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                 .end,
                                                         children: [
                                                           loading
-                                                              ? Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
+                                                              ? const Padding(
+                                                                  padding: EdgeInsets.symmetric(
                                                                       horizontal:
                                                                           EnvoySpacing
                                                                               .xs),
@@ -486,12 +485,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                     }),
                                                   )
                                                 ]),
-                                            Padding(
+                                            const Padding(
                                                 padding: EdgeInsets.all(
                                                     EnvoySpacing.xs)),
                                             Container(
                                               height: 24,
-                                              margin: EdgeInsets.only(
+                                              margin: const EdgeInsets.only(
                                                   left: EnvoySpacing.medium2),
                                               child: ListView(
                                                 scrollDirection:
@@ -557,7 +556,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                   ///pop review
                                                                   router.pop();
                                                                   await Future.delayed(
-                                                                      Duration(
+                                                                      const Duration(
                                                                           milliseconds:
                                                                               100));
 
@@ -572,7 +571,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               ),
                                                             ),
                                                             alignment:
-                                                                Alignment(
+                                                                const Alignment(
                                                                     0.0, -.6));
                                                       },
                                                       child: _coinTag(
@@ -584,7 +583,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 ],
                                               ),
                                             ),
-                                            Padding(
+                                            const Padding(
                                                 padding: EdgeInsets.all(
                                                     EnvoySpacing.small)),
                                             GestureDetector(
@@ -610,12 +609,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                       value: ref.read(
                                                           stagingTxNoteProvider),
                                                     ),
-                                                    alignment:
-                                                        Alignment(0.0, -0.5));
+                                                    alignment: const Alignment(
+                                                        0.0, -0.5));
                                               },
                                               child: Container(
                                                 color: Colors.transparent,
-                                                padding: EdgeInsets.all(
+                                                padding: const EdgeInsets.all(
                                                     EnvoySpacing.xs),
                                                 child: Row(
                                                   mainAxisAlignment:
@@ -644,7 +643,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                               height: 14,
                                                             ),
                                                           ),
-                                                          Padding(
+                                                          const Padding(
                                                               padding:
                                                                   EdgeInsets.all(
                                                                       EnvoySpacing
@@ -680,7 +679,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                 .end,
                                                         children: [
                                                           Expanded(
-                                                            child: Text("$note",
+                                                            child: Text(note,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
@@ -701,7 +700,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                     TextAlign
                                                                         .end),
                                                           ),
-                                                          Padding(
+                                                          const Padding(
                                                               padding:
                                                                   EdgeInsets.all(
                                                                       EnvoySpacing
@@ -719,7 +718,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                       .primaryColor,
                                                                   height: 14,
                                                                 )
-                                                              : Icon(
+                                                              : const Icon(
                                                                   Icons
                                                                       .add_circle_rounded,
                                                                   color: EnvoyColors
@@ -732,7 +731,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 ),
                                               ),
                                             ),
-                                            Padding(
+                                            const Padding(
                                                 padding: EdgeInsets.all(
                                                     EnvoySpacing.xs)),
                                           ],
@@ -745,9 +744,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         ),
                       ),
                       if (uneconomicSpends) ...[
-                        Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                          child: EnvoyIcon(
+                        const Padding(
+                          padding: EdgeInsets.all(EnvoySpacing.medium1),
+                          child: const EnvoyIcon(
                             EnvoyIcons.info,
                             size: EnvoyIconSize.big,
                             color: EnvoyColors.solidWhite,
@@ -800,7 +799,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
           fontWeight: FontWeight.w400,
         );
     return Container(
-      margin: EdgeInsets.only(right: EnvoySpacing.small),
+      margin: const EdgeInsets.only(right: EnvoySpacing.small),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -809,9 +808,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
             color: EnvoyColors.accentPrimary,
             height: 12,
           ),
-          Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
           Text(
-            "${title}",
+            title,
             style: _titleStyle,
           )
         ],

@@ -21,12 +21,12 @@ class EmptyAccountsCard extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              Color.fromRGBO(255, 255, 255, 0.7),
+            colorFilter: const ColorFilter.mode(
+              const Color.fromRGBO(255, 255, 255, 0.7),
               BlendMode.hardLight,
             ),
             child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
+              colorFilter: const ColorFilter.mode(
                 Colors.grey,
                 BlendMode.saturation,
               ),
@@ -63,7 +63,7 @@ class EmptyAccountsCard extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true)
                         .push(MaterialPageRoute(builder: (context) {
-                      return WelcomeScreen();
+                      return const WelcomeScreen();
                     }));
                   },
                 ),

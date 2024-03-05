@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,15 +55,16 @@ class EnvoyIcon extends StatelessWidget {
   final EnvoyIconSize size; // Use the enum type here
   final Color? color;
 
-  EnvoyIcon(this.icon, {this.color, this.size = EnvoyIconSize.normal});
+  const EnvoyIcon(this.icon,
+      {super.key, this.color, this.size = EnvoyIconSize.normal});
 
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      "assets/components/icons/${this.icon.name}.svg",
+      "assets/components/icons/${icon.name}.svg",
       width: size.toDouble,
       height: size.toDouble,
-      color: this.color,
+      color: color,
     );
   }
 }
@@ -73,8 +76,11 @@ class TestnetIcon extends StatelessWidget {
   final Color? badgeColor;
   final Color? iconColor;
 
-  TestnetIcon(this.icon,
-      {this.badgeColor, this.size = EnvoyIconSize.normal, this.iconColor});
+  const TestnetIcon(this.icon,
+      {super.key,
+      this.badgeColor,
+      this.size = EnvoyIconSize.normal,
+      this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -83,14 +89,14 @@ class TestnetIcon extends StatelessWidget {
         "assets/components/icons/testnet_badge.svg",
         width: size.toDouble / 2,
         height: size.toDouble / 2,
-        color: this.badgeColor,
+        color: badgeColor,
       ),
       Padding(
         padding: EdgeInsets.only(
           left: size.toDouble / 5,
         ),
         child: SvgPicture.asset(
-          "assets/components/icons/${this.icon.name}.svg",
+          "assets/components/icons/${icon.name}.svg",
           width: size.toDouble,
           height: size.toDouble,
           color: iconColor,

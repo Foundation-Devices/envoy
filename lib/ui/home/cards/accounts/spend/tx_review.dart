@@ -66,7 +66,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.close,
                     color: EnvoyColors.textPrimary,
                   ),
@@ -74,7 +74,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     GoRouter.of(context).pop();
                   },
                 )),
-            body: Center(
+            body: const Center(
               child: Text("Unable to build transaction"), //TODO: figma
             )),
       );
@@ -91,7 +91,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       },
       child: transactionModel.broadcastProgress == BroadcastProgress.staging
           ? Padding(
-              key: Key("review"),
+              key: const Key("review"),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
@@ -146,10 +146,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           noteTitle: S().add_note_modal_heading,
                           value: ref.read(stagingTxNoteProvider),
                         ),
-                        alignment: Alignment(0.0, -0.5));
+                        alignment: const Alignment(0.0, -0.5));
 
                     ///wait for the dialog to pop
-                    await Future.delayed(Duration(milliseconds: 200));
+                    await Future.delayed(const Duration(milliseconds: 200));
                   }
 
                   Tuple<String, int>? changeOutPut =
@@ -180,7 +180,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       ref
                           .read(spendTransactionProvider.notifier)
                           .updateWithFinalPSBT(psbt);
-                      await Future.delayed(Duration(milliseconds: 200));
+                      await Future.delayed(const Duration(milliseconds: 200));
                     }
                   }
                 },
@@ -219,12 +219,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 ref
                     .read(spendTransactionProvider.notifier)
                     .updateWithFinalPSBT(psbt);
-                await Future.delayed(Duration(milliseconds: 200));
+                await Future.delayed(const Duration(milliseconds: 200));
               }
             },
           ),
         ),
-        alignment: Alignment(0.0, -.6));
+        alignment: const Alignment(0.0, -.6));
   }
 
   Rive.StateMachineController? _stateMachineController;
@@ -232,7 +232,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   Widget _buildBroadcastProgress() {
     final spendState = ref.watch(spendTransactionProvider);
     return Padding(
-      key: Key("progress"),
+      key: const Key("progress"),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -257,7 +257,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 ),
               ),
             ),
-            SliverPadding(padding: EdgeInsets.all(28)),
+            const SliverPadding(padding: EdgeInsets.all(28)),
             SliverToBoxAdapter(
               child: Builder(
                 builder: (context) {
@@ -289,7 +289,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.all(18)),
+                        const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
@@ -305,7 +305,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
             SliverFillRemaining(
                 hasScrollBody: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 44),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
                   child: _ctaButtons(context),
                 ))
           ],
@@ -317,7 +318,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   Widget _ctaButtons(BuildContext context) {
     final spendState = ref.watch(spendTransactionProvider);
     if (spendState.broadcastProgress == BroadcastProgress.inProgress) {
-      return SizedBox();
+      return const SizedBox();
     }
     if (spendState.broadcastProgress == BroadcastProgress.success) {
       return Column(
@@ -348,7 +349,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             broadcastTx(context);
           },
         ),
-        Padding(padding: EdgeInsets.all(6)),
+        const Padding(padding: EdgeInsets.all(6)),
         EnvoyButton(
           enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
           S().coincontrol_txDetail_ReviewTransaction,
@@ -391,7 +392,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
     ///pop review
     router.pop();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     ///pop spend form
     router.pop();
@@ -416,12 +417,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       addHapticFeedback();
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
     } catch (e) {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
-      await Future.delayed(Duration(milliseconds: 800));
+      await Future.delayed(const Duration(milliseconds: 800));
     }
   }
 
@@ -429,9 +430,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
   void addHapticFeedback() async {
     if (hapticCalled) return;
     hapticCalled = true;
-    await Future.delayed(Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 700));
     HapticFeedback.lightImpact();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     HapticFeedback.mediumImpact();
   }
 }
@@ -482,7 +483,7 @@ class _TransactionReviewScreenState
 
     if (account == null || transactionModel.psbt == null) {
       return Container(
-          child: Center(
+          child: const Center(
         child: Text("Unable to build transaction"), //TODO: figma
       ));
     }
@@ -559,7 +560,7 @@ class _TransactionReviewScreenState
                                       );
                                     },
                                     transitionDuration:
-                                        Duration(milliseconds: 100),
+                                        const Duration(milliseconds: 100),
                                     transitionsBuilder: (context, animation,
                                         secondaryAnimation, child) {
                                       return FadeTransition(
@@ -621,7 +622,7 @@ class _TransactionReviewScreenState
         ),
       ),
       bottom: ClipRRect(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           topRight: Radius.circular(7),
         ),
@@ -632,7 +633,7 @@ class _TransactionReviewScreenState
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
-              ).add(EdgeInsets.only(bottom: EnvoySpacing.large1)),
+              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -647,7 +648,7 @@ class _TransactionReviewScreenState
                         editTransaction(context);
                       },
                     ),
-                  Padding(padding: EdgeInsets.all(6)),
+                  const Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
                     readOnly: transactionModel.loading,
                     (account.wallet.hot || transactionModel.isPSBTFinalized)
@@ -714,14 +715,14 @@ class _TransactionReviewScreenState
 
     ///pop review
     router.pop();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     ///pop spend form
     router.pop();
   }
 
   void setFee(int fee, BuildContext context, bool customFee) async {
-    if (!this.mounted) {
+    if (!mounted) {
       return;
     }
     // Set the fee
@@ -754,8 +755,8 @@ class _DiscardTransactionDialogState
     Account? account = ref.watch(selectedAccountProvider);
 
     return Container(
-      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
-      constraints: BoxConstraints(
+      padding: const EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      constraints: const BoxConstraints(
         minHeight: 300,
         maxWidth: 280,
       ),
@@ -764,36 +765,36 @@ class _DiscardTransactionDialogState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Icon(
+          const Icon(
             Icons.warning_amber_rounded,
             color: EnvoyColors.accentSecondary,
             size: 42,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(S().manage_account_remove_heading,
               style: Theme.of(context).textTheme.titleSmall),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             S().coincontrol_tx_detail_passport_subheading,
             style: Theme.of(context).textTheme.titleSmall,
             textAlign: TextAlign.center,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
               resetFeeChangeNoticeUserInteractionProviders(ref);
               GoRouter.of(context).pop(true);
-              await Future.delayed(Duration(milliseconds: 50));
+              await Future.delayed(const Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
               GoRouter.of(context)
                   .pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
-              await Future.delayed(Duration(milliseconds: 50));
+              await Future.delayed(const Duration(milliseconds: 50));
               GoRouter.of(context).pop();
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().coincontrol_txDetail_ReviewTransaction,
             type: EnvoyButtonTypes.primaryModal,
@@ -864,13 +865,13 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
     return Container(
       width: 280,
       height: 380,
-      padding: EdgeInsets.all(EnvoySpacing.small),
+      padding: const EdgeInsets.all(EnvoySpacing.small),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
                 top: EnvoySpacing.medium1),
@@ -892,10 +893,10 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: EnvoySpacing.xs),
+                  margin: const EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Color(0xffD9D9D9),
+                        color: const Color(0xffD9D9D9),
                         borderRadius:
                             BorderRadius.circular(EnvoySpacing.small)),
                     child: TextFormField(
@@ -908,7 +909,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                           .textTheme
                           .bodySmall
                           ?.copyWith(fontSize: 14),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(EnvoySpacing.small),
                         border: InputBorder.none,
                         counter: SizedBox.shrink(),
@@ -930,7 +931,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
         bottomNavigationBar: Container(
           height: 180,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: EnvoySpacing.medium1,
             vertical: EnvoySpacing.small,
           ),
@@ -961,13 +962,15 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                     Text(
                       S().component_dontShowAgain,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: dismissed ? Colors.black : Color(0xff808080),
+                            color: dismissed
+                                ? Colors.black
+                                : const Color(0xff808080),
                           ),
                     ),
                   ],
                 ),
               ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
                   onTap: () {
                 Navigator.of(context).pop(false);
@@ -976,7 +979,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                       .addPromptState(DismissiblePrompt.addTxNoteWarning);
                 }
               }, type: EnvoyButtonTypes.tertiary),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(
                 S().component_save,
                 onTap: () {

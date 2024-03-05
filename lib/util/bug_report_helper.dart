@@ -48,7 +48,7 @@ class EnvoyReport {
   }
 
   writeReport(FlutterErrorDetails? details) {
-    Map<String, String?> report = Map();
+    Map<String, String?> report = {};
     if (details != null) {
       report["exception"] = details.exceptionAsString();
       report["lib"] = details.library;
@@ -68,7 +68,7 @@ class EnvoyReport {
   }
 
   log(String category, String message) {
-    Map<String, String?> report = Map();
+    Map<String, String?> report = {};
     report["category"] = category;
     report["message"] = message;
     report["time"] = DateTime.now().toIso8601String();
@@ -134,20 +134,20 @@ class EnvoyReport {
         String lib = (element["lib"] ?? "None") as String;
         String time = (element["time"] ?? "") as String;
 
-        log = "\nTime       : ${time} \n"
-            "Category    : ${category} \n"
-            "Message     : ${message} \n"
-            "Library     : ${lib} \n"
-            "Exception   : ${exception} \n"
+        log = "\nTime       : $time \n"
+            "Category    : $category \n"
+            "Message     : $message \n"
+            "Library     : $lib \n"
+            "Exception   : $exception \n"
             ""
-            "Stack Trace : ${stackTrace} \n"
+            "Stack Trace : $stackTrace \n"
             "";
       } catch (e) {
         print(e);
       }
       if (log.isNotEmpty)
         logs =
-            "$logs\n" + List.generate(20, (index) => "-").join("") + "\n${log}";
+            "$logs\n" + List.generate(20, (index) => "-").join("") + "\n$log";
     });
     return logs;
   }

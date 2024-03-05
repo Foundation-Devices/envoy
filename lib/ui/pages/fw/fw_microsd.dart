@@ -75,6 +75,7 @@ class FwMicrosdPage extends ConsumerWidget {
               } catch (e) {
                 print("SD: error " + e.toString());
                 if (Platform.isIOS) // TODO: this needs to be smarter
+                  // ignore: curly_braces_in_flow_control_structures
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwIosInstructionsPage(

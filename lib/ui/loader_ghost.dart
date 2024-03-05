@@ -34,7 +34,7 @@ class _LoaderGhostState extends State<LoaderGhost>
   initState() {
     super.initState();
     _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
 
     _animation = _animationController
         .drive(Tween(begin: 0.3, end: widget.animate ? 0.1 : 0.3));
@@ -82,9 +82,10 @@ class _LoaderGhostState extends State<LoaderGhost>
                     child: Container(
                       width: widget.width - 5,
                       height: 10,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.grey,
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
                 ),
@@ -92,7 +93,7 @@ class _LoaderGhostState extends State<LoaderGhost>
             : Container(
                 width: widget.width,
                 height: widget.height,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(20))),
               ));

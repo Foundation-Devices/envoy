@@ -19,12 +19,14 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/home/home_state.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
+  const SettingsMenu({super.key});
+
   @override
   ConsumerState<SettingsMenu> createState() => _SettingsMenuState();
 }
 
 class _SettingsMenuState extends ConsumerState<SettingsMenu> {
-  Widget _currentPage = SettingsMenuWidget();
+  Widget _currentPage = const SettingsMenuWidget();
 
   void _goBackToMenu() {
     ref.read(homePageBackgroundProvider.notifier).state =
@@ -39,7 +41,7 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
     });
 
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
       child: _currentPage,
     );
   }
@@ -55,10 +57,10 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
       switch (state) {
         case HomePageBackgroundState.menu:
           setState(() {
-            _currentPage = SettingsMenuWidget();
+            _currentPage = const SettingsMenuWidget();
             HomePageNotification(
-                leftFunction: null, title: S().menu_heading.toUpperCase())
-              ..dispatch(context);
+                    leftFunction: null, title: S().menu_heading.toUpperCase())
+                .dispatch(context);
             ref.read(homePageTitleProvider.notifier).state =
                 S().menu_heading.toUpperCase();
           });
@@ -66,24 +68,21 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
         case HomePageBackgroundState.settings:
           setState(() {
             _currentPage = SettingsPage();
-            HomePageNotification(leftFunction: _goBackToMenu)
-              ..dispatch(context);
+            HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state = S().menu_settings;
           });
           break;
         case HomePageBackgroundState.backups:
           setState(() {
             _currentPage = BackupPage();
-            HomePageNotification(leftFunction: _goBackToMenu)
-              ..dispatch(context);
+            HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state = S().menu_backups;
           });
           break;
         case HomePageBackgroundState.support:
           setState(() {
             _currentPage = SupportPage();
-            HomePageNotification(leftFunction: _goBackToMenu)
-              ..dispatch(context);
+            HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state =
                 S().menu_support.toUpperCase();
           });
@@ -91,8 +90,7 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
         case HomePageBackgroundState.about:
           setState(() {
             _currentPage = AboutPage();
-            HomePageNotification(leftFunction: _goBackToMenu)
-              ..dispatch(context);
+            HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state = S().menu_about;
           });
           break;
@@ -104,7 +102,7 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
 }
 
 class SettingsMenuWidget extends ConsumerWidget {
-  SettingsMenuWidget();
+  const SettingsMenuWidget({super.key});
 
   @override
   Widget build(context, ref) {
@@ -120,7 +118,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(height: 9),
+                  const SizedBox(height: 9),
                   MenuOption(
                     label: S().menu_settings.toUpperCase(),
                     onTap: () {
@@ -134,14 +132,14 @@ class SettingsMenuWidget extends ConsumerWidget {
                         background.state = HomePageBackgroundState.backups;
                       },
                     ),
-                  SizedBox(height: 0),
+                  const SizedBox(height: 0),
                   MenuOption(
                     label: S().menu_support.toUpperCase(),
                     onTap: () {
                       background.state = HomePageBackgroundState.support;
                     },
                   ),
-                  SizedBox(height: 0),
+                  const SizedBox(height: 0),
                   MenuOption(
                     label: S().menu_about.toUpperCase(),
                     onTap: () {
@@ -215,13 +213,13 @@ class MenuOption extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.only(top: 25, bottom: 25),
-        margin: EdgeInsets.only(left: 18),
+        margin: const EdgeInsets.only(left: 18),
         child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                constraints: BoxConstraints(minWidth: 142),
+                constraints: const BoxConstraints(minWidth: 142),
                 child: Text(
                   label.toUpperCase(),
                   textAlign: TextAlign.center,
@@ -233,7 +231,7 @@ class MenuOption extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.centerLeft,
-                child: Icon(
+                child: const Icon(
                   Icons.arrow_forward_ios,
                   color: EnvoyColors.textPrimaryInverse,
                   size: 16,

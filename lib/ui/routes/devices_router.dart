@@ -12,7 +12,7 @@ import 'package:go_router/go_router.dart';
 const ROUTE_DEVICES = '/devices';
 
 const _DEVICE_DETAIL = 'details';
-const ROUTE_DEVICE_DETAIL = '${ROUTE_DEVICES}/${_DEVICE_DETAIL}';
+const ROUTE_DEVICE_DETAIL = '$ROUTE_DEVICES/$_DEVICE_DETAIL';
 
 final devicesRouter =
     StatefulShellBranch(restorationScopeId: 'devicesScopeId', routes: [

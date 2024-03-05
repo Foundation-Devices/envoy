@@ -40,11 +40,9 @@ class Coin {
   Map<String, dynamic> toJson() => _$CoinToJson(this);
 }
 
-/**
- * Extension that adds id getter to Wallet.Utxo
- * Utxo is a freezed class, so we can't add the getter directly to
- * the class
- */
+/// Extension that adds id getter to Wallet.Utxo
+/// Utxo is a freezed class, so we can't add the getter directly to
+/// the class
 extension utxoExtension on Utxo {
   get id => '$txid:$vout';
 }

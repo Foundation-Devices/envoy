@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 // https://github.com/material-foundation/flutter-packages/issues/35
 extension WeightBugWorkaroung on TextStyle {
   TextStyle setWeight(FontWeight weight) {
-    return this.copyWith(
+    return copyWith(
       fontFamily: GoogleFonts.montserrat(fontWeight: weight).fontFamily,
     );
   }

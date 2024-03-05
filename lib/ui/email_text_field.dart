@@ -7,8 +7,8 @@ import 'package:email_validator/email_validator.dart';
 
 class EmailTextField extends StatefulWidget {
   const EmailTextField({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _EmailTextFieldState createState() => _EmailTextFieldState();

@@ -44,7 +44,7 @@ class AppBackgroundState extends State<AppBackground> {
               child: Opacity(
                   opacity: 0.92,
                   child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           gradient: RadialGradient(
                     radius: 0.5,
                     colors: [

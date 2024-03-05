@@ -57,12 +57,14 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       length--;
     }
 
-    if (currentIndex < length - 1)
+    if (currentIndex < length - 1) {
       ref.read(sendScreenUnitProvider.notifier).state =
           AmountDisplayUnit.values[currentIndex + 1];
-    if (currentIndex >= length - 1)
+    }
+    if (currentIndex >= length - 1) {
       ref.read(sendScreenUnitProvider.notifier).state =
           AmountDisplayUnit.values[0];
+    }
   }
 
   @override

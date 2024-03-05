@@ -24,14 +24,14 @@ class FwIosSuccessPage extends StatelessWidget {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_ios_success"),
+      key: const Key("fw_ios_success"),
       text: [
         OnboardingText(
           header: S().envoy_fw_success_heading,
           text: S().envoy_fw_success_subheading_ios,
         ),
       ],
-      clipArt: RiveAnimation.asset(
+      clipArt: const RiveAnimation.asset(
         "assets/envoy_loader.riv",
         fit: BoxFit.contain,
         animations: ["happy"],

@@ -23,8 +23,8 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.black,
-        title: Text("Logs"), // TODO: FIGMA
-        leading: CupertinoNavigationBarBackButton(
+        title: const Text("Logs"), // TODO: FIGMA
+        leading: const CupertinoNavigationBarBackButton(
           color: Colors.white,
         ),
         actions: [
@@ -36,9 +36,9 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                   EnvoyToast(
                     backgroundColor: Colors.lightBlue,
                     replaceExisting: true,
-                    duration: Duration(milliseconds: 2000),
+                    duration: const Duration(milliseconds: 2000),
                     message: "Logs copied to clipboard", // TODO: FIGMA
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.copy,
                       color: EnvoyColors.teal,
                     ),
@@ -47,12 +47,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                   print(e);
                 }
               },
-              icon: Icon(Icons.copy)),
+              icon: const Icon(Icons.copy)),
           IconButton(
               onPressed: () async {
                 EnvoyReport().share();
               },
-              icon: Icon(Icons.ios_share))
+              icon: const Icon(Icons.ios_share))
         ],
         centerTitle: true,
       ),
@@ -62,7 +62,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
           if (snapshot.hasData) {
             List<Map>? logs = snapshot.data;
             if (logs?.length == 0) {
-              return Center(child: Text("No logs found")); // TODO: FIGMA
+              return const Center(child: Text("No logs found")); // TODO: FIGMA
             }
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -83,7 +83,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                           children: [
                             SelectableText.rich(
                               TextSpan(children: [
-                                TextSpan(
+                                const TextSpan(
                                     text: "Time : ", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
@@ -91,12 +91,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "${time}\n",
-                                    style: TextStyle(
+                                    text: "$time\n",
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,
                                     )),
-                                TextSpan(
+                                const TextSpan(
                                     text: "Category : ", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
@@ -104,12 +104,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "${category}\n",
-                                    style: TextStyle(
+                                    text: "$category\n",
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,
                                     )),
-                                TextSpan(
+                                const TextSpan(
                                     text: "Message : ", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
@@ -117,12 +117,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "${message}\n",
-                                    style: TextStyle(
+                                    text: "$message\n",
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,
                                     )),
-                                TextSpan(
+                                const TextSpan(
                                     text: "Library : ", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
@@ -130,12 +130,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "${lib}\n",
-                                    style: TextStyle(
+                                    text: "$lib\n",
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,
                                     )),
-                                TextSpan(
+                                const TextSpan(
                                     text: "\nException\n\n", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
@@ -143,12 +143,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 TextSpan(
-                                    text: "${exception}\n",
-                                    style: TextStyle(
+                                    text: "$exception\n",
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,
                                     )),
-                                TextSpan(
+                                const TextSpan(
                                     text: "\nStack Trace\n\n", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
@@ -157,12 +157,12 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                                     )),
                                 TextSpan(
                                     text: "$stackTrace \n",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Colors.black,
                                     ))
                               ]),
-                              scrollPhysics: ClampingScrollPhysics(),
+                              scrollPhysics: const ClampingScrollPhysics(),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -174,7 +174,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                               // overflow: TextOverflow.ellipsis,
                               // softWrap: true,
                             ),
-                            Divider(
+                            const Divider(
                               color: Colors.black,
                               thickness: 1,
                             ),

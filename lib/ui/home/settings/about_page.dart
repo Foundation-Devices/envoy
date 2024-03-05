@@ -43,12 +43,12 @@ class _AboutPageState extends State<AboutPage> {
                           dark: true,
                         );
                       } else {
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       }
                     }),
               ],
             ),
-            Divider(),
+            const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -73,7 +73,7 @@ class _AboutPageState extends State<AboutPage> {
                 )
               ],
             ),
-            Divider(),
+            const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -86,7 +86,7 @@ class _AboutPageState extends State<AboutPage> {
                 )
               ],
             ),
-            Divider(),
+            const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -113,8 +113,8 @@ class AboutText extends StatelessWidget {
   const AboutText(
     this.label, {
     this.dark = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -141,15 +141,15 @@ class AboutButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
           height: 25.0,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: EnvoyColors.darkTeal,
-              borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))),
           child: Center(
               child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14.0,
                 fontWeight: FontWeight.w500,

@@ -72,7 +72,7 @@ class ScvServer {
       return storedChallenge!;
     }
 
-    final response = await http.get(serverAddress + '/challenge');
+    final response = await http.get('$serverAddress/challenge');
 
     if (response.statusCode == 200) {
       Challenge challenge = Challenge.fromJson(jsonDecode(response.body));
@@ -97,7 +97,7 @@ class ScvServer {
     };
 
     // TODO: parametrise the Passport batch?
-    final response = await http.post(serverAddress + '/validate?batch=2',
+    final response = await http.post('$serverAddress/validate?batch=2',
         body: jsonEncode(request),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=utf-8'

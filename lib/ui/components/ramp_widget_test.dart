@@ -120,7 +120,7 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Tap the button below to be redirected to the Ramp app",
                   textAlign: TextAlign.center,
                 ),
@@ -137,7 +137,7 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
             ),
           );
         } else {
-          return Center(
+          return const Center(
             child: SizedBox(
               height: 60,
               width: 60,

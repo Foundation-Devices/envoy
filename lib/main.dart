@@ -37,7 +37,7 @@ Future<void> main() async {
   await initSingletons();
 
   if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
-    runApp(AuthenticateApp());
+    runApp(const AuthenticateApp());
   } else {
     runApp(EnvoyApp());
   }
@@ -85,7 +85,7 @@ class EnvoyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: true,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
@@ -95,8 +95,8 @@ class EnvoyApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
         overlays: [SystemUiOverlay.top]);
 
-    final envoyAccentColor = EnvoyColors.darkTeal;
-    final envoyBaseColor = Colors.transparent;
+    const envoyAccentColor = EnvoyColors.darkTeal;
+    const envoyBaseColor = Colors.transparent;
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
@@ -117,7 +117,7 @@ class EnvoyApp extends StatelessWidget {
         themeMode: ThemeMode.light,
         theme: ThemeData(
             textTheme: envoyTextTheme,
-            pageTransitionsTheme: PageTransitionsTheme(builders: {
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
               TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
               TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
