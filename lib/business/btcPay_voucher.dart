@@ -96,14 +96,14 @@ class BtcPayVoucher {
         {
           final json = jsonDecode(response.body);
           id = json['id'];
-          amount = json['amount'] ?? null;
-          currency = json['currency'] ?? null;
-          autoApproveClaims = json['autoApproveClaims'] ?? null;
-          name = json['name'] ?? null;
-          description = json['description'] ?? null;
+          amount = json['amount'];
+          currency = json['currency'];
+          autoApproveClaims = json['autoApproveClaims'];
+          name = json['name'];
+          description = json['description'];
           link = json['viewLink'] ?? "";
           amountSats = getAmountInSats();
-          int? unixTimestamp = json['expiresAt'] ?? null;
+          int? unixTimestamp = json['expiresAt'];
           expiresAt = convertUnixTimestampToDateTime(unixTimestamp);
           return BtcPayVoucherRedeemResult.Success;
         }
@@ -151,11 +151,13 @@ class BtcPayVoucher {
           final json = jsonDecode(response.body);
           errorMessage = json[0]['message'] ?? "";
           errorMessage = errorMessage.toLowerCase();
-          if (errorMessage.contains("onchain"))
+          if (errorMessage.contains("onchain")) {
             errorType = BtcPayVoucherErrorType.OnChain;
+          }
 
-          if (errorMessage.contains("expired"))
+          if (errorMessage.contains("expired")) {
             errorType = BtcPayVoucherErrorType.Expired;
+          }
 
           return BtcPayVoucherRedeemResult.VoucherInvalid;
         }

@@ -82,7 +82,7 @@ void main() {
       final setUpButtonFinder = find.text('Set Up Envoy Wallet');
       expect(setUpButtonFinder, findsOneWidget);
       await tester.tap(setUpButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       final continueButtonFinder = find.text('Continue');
       expect(continueButtonFinder, findsOneWidget);
@@ -340,10 +340,10 @@ class Passport {
       workingDirectory: passportPath,
     ).then((simulator) async {
       simulator.stdout.listen((event) {
-        print("simulator: " + utf8.decode(event));
+        print("simulator: ${utf8.decode(event)}");
       });
       simulator.stderr.listen((event) {
-        print("simulator ERR:" + utf8.decode(event));
+        print("simulator ERR: ${utf8.decode(event)}");
       });
       await Future.delayed(const Duration(seconds: 2), () {});
 
@@ -381,7 +381,7 @@ class Passport {
   }
 
   void displayOled(String oledV4lDeviceDuplicate) {
-    Process.start('ffplay', ['$oledV4lDeviceDuplicate'],
+    Process.start('ffplay', [oledV4lDeviceDuplicate],
         environment: {"DISPLAY": ":0"}).then((ffplay) {
       print("ffplay started!");
       // ffplay.stderr.listen((event) {

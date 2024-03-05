@@ -32,7 +32,7 @@ class PrivacyCardState extends State<PrivacyCard> {
   bool _showPersonalNodeTextField = false;
   bool _betterPerformance = !Settings().torEnabled();
 
-  bool _useLocalAuth = false;
+  bool? _useLocalAuth = false;
   final ScrollController _scrollController = ScrollController();
   final LocalAuthentication _auth = LocalAuthentication();
 
@@ -40,9 +40,8 @@ class PrivacyCardState extends State<PrivacyCard> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
       setState(() {
-        _useLocalAuth = value;
+        _useLocalAuth = LocalStorage().prefs.getBool("useLocalAuth");
       });
     });
   }
@@ -221,7 +220,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                     Flexible(
                                       flex: 1,
                                       child: EnvoyToggle(
-                                        value: _useLocalAuth,
+                                        value: _useLocalAuth ?? false,
                                         onChanged: (bool value) async {
                                           try {
                                             bool authSuccess =

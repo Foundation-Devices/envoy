@@ -42,7 +42,6 @@ class EnvoyAmount extends StatelessWidget {
       mainUnit = unit!;
     }
 
-    String? selectedFiat = Settings().selectedFiat;
     bool showFiat = badgeColor == null;
     AmountDisplayUnit primaryUnit = mainUnit;
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;

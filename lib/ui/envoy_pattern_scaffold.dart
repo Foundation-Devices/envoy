@@ -82,23 +82,19 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   Widget build(BuildContext context) {
-    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+    double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
         SizedBox.expand(
-            child: Container(
-          child: CustomPaint(
-            size: const Size(double.infinity, double.infinity),
-            painter: StripePainter(stripeCount: 428),
-          ),
+            child: CustomPaint(
+          size: const Size(double.infinity, double.infinity),
+          painter: StripePainter(stripeCount: 428),
         )),
         SizedBox.expand(
-            child: Container(
-          child: CustomPaint(
-            painter: GradientPainter(
-                gradientRadius: animation?.value ?? 0.8,
-                gradientHeight: widget.gradientHeight),
-          ),
+            child: CustomPaint(
+          painter: GradientPainter(
+              gradientRadius: animation?.value ?? 0.8,
+              gradientHeight: widget.gradientHeight),
         )),
         this.widget.child != null
             ? this.widget.child!
@@ -114,7 +110,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                   height: (MediaQuery.of(context).size.height * 0.5)
                       .clamp(350, 580),
                   child: Container(
-                    padding: EdgeInsets.only(bottom: _shieldBottom),
+                    padding: EdgeInsets.only(bottom: shieldBottom),
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
@@ -146,8 +142,8 @@ class StripePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     //stripes Pattern rect.
-    final rect = new Rect.fromPoints(new Offset(size.width / 2, -size.height),
-        new Offset(size.width, size.height));
+    final rect = Rect.fromPoints(
+        Offset(size.width / 2, -size.height), Offset(size.width, size.height));
 
     canvas.save();
     canvas.clipRect(rect);

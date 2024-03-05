@@ -246,7 +246,7 @@ class Settings extends ChangeNotifier {
         NumberFormat.simpleCurrency(locale: Intl.getCurrentLocale())
             .currencyName;
 
-    if (supportedFiat.contains(FiatCurrency(currencyCode, ""))) {
+    if (supportedFiat.contains(FiatCurrency(currencyCode!, ""))) {
       return currencyCode;
     }
 

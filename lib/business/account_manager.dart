@@ -29,7 +29,7 @@ class AccountAlreadyPaired implements Exception {}
 
 class AccountManager extends ChangeNotifier {
   List<Account> accounts = [];
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
@@ -42,7 +42,7 @@ class AccountManager extends ChangeNotifier {
   static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
   static String walletsDirectory =
-      LocalStorage().appDocumentsDir.path + "/wallets/";
+      "${LocalStorage().appDocumentsDir.path}/wallets/";
 
   factory AccountManager() {
     return _instance;
@@ -63,7 +63,7 @@ class AccountManager extends ChangeNotifier {
       _syncBlocked = true;
 
       // Rate limit syncs
-      Timer(Duration(seconds: 5), () {
+      Timer(const Duration(seconds: 5), () {
         _syncBlocked = false;
       });
 
@@ -125,7 +125,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   Future<Account> _syncAccount(Account account) async {
-    bool? changed = null;
+    bool? changed;
     int port = Settings().getPort(account.wallet.network);
 
     try {
@@ -137,7 +137,7 @@ class AccountManager extends ChangeNotifier {
         ConnectivityManager().electrumFailure();
       }
 
-      EnvoyReport().log("wallet", "Couldn't sync: ${e}");
+      EnvoyReport().log("wallet", "Couldn't sync: $e");
     }
 
     if (changed != null) {
@@ -269,7 +269,7 @@ class AccountManager extends ChangeNotifier {
     int accountNumber = json["acct_num"];
 
     List<Account> accounts = [];
-    wallets.forEach((wallet) {
+    for (var wallet in wallets) {
       accounts.add(Account(
           wallet: wallet,
           name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
@@ -278,7 +278,7 @@ class AccountManager extends ChangeNotifier {
           number: accountNumber,
           id: Account.generateNewId(),
           dateSynced: null));
-    });
+    }
 
     return accounts;
   }
@@ -421,7 +421,9 @@ class AccountManager extends ChangeNotifier {
   }
 
   void addAccounts(List<Account> accounts) {
-    accounts.forEach((Account account) => addAccount(account));
+    for (var account in accounts) {
+      addAccount(account);
+    }
   }
 
   void addAccount(Account account) {

@@ -33,15 +33,24 @@ List<FaqEntry> extractFaqs() {
   for (;;) {
     String? question =
         getTranslationByKey("envoy_faq_question_${index.toString()}");
+    if (question == null) {
+      break;
+    }
 
     String? answer =
         getTranslationByKey("envoy_faq_answer_${index.toString()}");
+    if (answer == null) {
+      break;
+    }
 
     List<String> links = [];
     int linkIndex = 1;
     for (;;) {
       String? link = getTranslationByKey(
           "envoy_faq_link_${index.toString()}_${linkIndex.toString()}");
+      if (link == null) {
+        break;
+      }
       links.add(link);
       linkIndex++;
     }

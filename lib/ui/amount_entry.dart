@@ -63,7 +63,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
     String? text = cdata?.text ?? null;
-    var decodedInfo = await BitcoinParser.parse(text,
+    var decodedInfo = await BitcoinParser.parse(text!,
         fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
         wallet: widget.account?.wallet,
         selectedFiat: Settings().selectedFiat,

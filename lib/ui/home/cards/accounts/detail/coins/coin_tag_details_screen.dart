@@ -323,7 +323,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                     height: coinListHeight,
                                                     child: ListView.builder(
                                                       physics:
-                                                          BouncingScrollPhysics(),
+                                                          const BouncingScrollPhysics(),
                                                       itemCount:
                                                           tag.coins.length,
                                                       itemBuilder:

@@ -125,7 +125,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                           Clipboard.kTextPlain);
                                   String? textCopied = cdata?.text ?? null;
                                   var decodedInfo = await BitcoinParser.parse(
-                                      textCopied,
+                                      textCopied!,
                                       fiatExchangeRate:
                                           ExchangeRate().selectedCurrencyRate,
                                       wallet: widget.account.wallet,
@@ -140,9 +140,9 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                       await Clipboard.getData(
                                           Clipboard.kTextPlain);
                                   String? text = cdata?.text ?? null;
-                                  widget.controller?.text = text;
-                                  validate(text);
-                                                                }
+                                  widget.controller?.text = text!;
+                                  validate(text!);
+                                }
                               },
                             ),
                             InkWell(

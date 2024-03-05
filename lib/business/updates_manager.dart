@@ -89,7 +89,7 @@ class UpdatesManager {
     var storedInfo = await es.getStoredFirmware(deviceId);
 
     String? storedPath = storedInfo?.path;
-    File file = ls.openFileBytes(storedPath);
+    File file = ls.openFileBytes(storedPath!);
 
     // Migration
     if (!file.path.endsWith("-passport.bin") ||

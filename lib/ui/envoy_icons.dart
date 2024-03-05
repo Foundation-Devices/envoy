@@ -26,10 +26,10 @@ class EnvoyIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      "assets/icons/${this.icon}",
-      width: this.size,
-      height: this.size,
-      color: this.color,
+      "assets/icons/$icon",
+      width: size,
+      height: size,
+      color: color,
     );
   }
 }
