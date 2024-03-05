@@ -28,6 +28,9 @@ class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
       _OnboardEnvoyWelcomeScreenState();
 }
 
+//global variable to prevent welcome screen initState being called when navigating
+bool _checkedMagicBackUpInWelcomeScreen = false;
+
 class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
   @override
@@ -172,10 +175,13 @@ class _OnboardEnvoyWelcomeScreenState
   void initState() {
     if (mounted) {
       Future.delayed(Duration(milliseconds: 100)).then((value) async {
-        ///while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
+        //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
         if (!ref.read(triedAutomaticRecovery) &&
-            !ref.read(successfulSetupWallet)) {
+            !ref.read(successfulSetupWallet) &&
+            !_checkedMagicBackUpInWelcomeScreen) {
           try {
+            _checkedMagicBackUpInWelcomeScreen = true;
+            //make sure automatic recovery only once
             if (await EnvoySeed().get() != null) {
               Navigator.push(
                   context,
