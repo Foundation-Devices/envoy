@@ -560,6 +560,7 @@ class SpendRequirementOverlayState
               : S().component_cancel,
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
+            final router =  GoRouter.of(context);
             ref
                 .read(coinSelectionStateProvider.notifier)
                 .addAll(walletSelection.toList());
@@ -573,7 +574,7 @@ class SpendRequirementOverlayState
             hideSpendRequirementOverlay();
             await Future.delayed(const Duration(milliseconds: 120));
             ref.read(spendEditModeProvider.notifier).state = false;
-            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND_CONFIRM);
+            router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
           },
         );
       },

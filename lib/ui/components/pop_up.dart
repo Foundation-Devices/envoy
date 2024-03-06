@@ -180,7 +180,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 child: EnvoyButton(
                     label: widget.secondaryButtonLabel!,
                     type: ButtonType.secondary,
-                    state: ButtonState.default_state,
+                    state: ButtonState.defaultState,
                     onTap: () {
                       if (widget.onSecondaryButtonTap != null) {
                         widget.onSecondaryButtonTap!(context);
@@ -190,7 +190,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             EnvoyButton(
                 label: widget.primaryButtonLabel,
                 type: ButtonType.primary,
-                state: ButtonState.default_state,
+                state: ButtonState.defaultState,
                 onTap: () {
                   widget.onPrimaryButtonTap?.call(context);
                 }),

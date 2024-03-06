@@ -86,11 +86,13 @@ class ScannerPage extends StatefulWidget {
   ScannerPage.scv(Challenge challengeToValidate)
       : this([ScannerType.scv], challengeToValidate: challengeToValidate);
 
+  //TODO: fix scanner widget with proper widget convention
   @override
-  State<StatefulWidget> createState() => _ScannerPageState(_urDecoder);
+  // ignore: no_logic_in_create_state
+  State<StatefulWidget> createState() => ScannerPageState(_urDecoder);
 }
 
-class _ScannerPageState extends State<ScannerPage> {
+class ScannerPageState extends State<ScannerPage> {
   late UniformResourceReader _urDecoder;
   bool _processing = false;
 
@@ -106,7 +108,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
   Timer? _snackbarTimer;
 
-  _ScannerPageState(UniformResourceReader urDecoder) {
+  ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
   }
 
@@ -230,11 +232,11 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   _onDetect(String code, BuildContext context) async {
-    final _navigator = Navigator.of(context);
+    final NavigatorState navigator = Navigator.of(context);
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
-        _navigator.pop();
+        navigator.pop();
         showEnvoyDialog(
             context: context, dialog: AztecoDialog(voucher, widget.account!));
         return;
@@ -256,7 +258,7 @@ class _ScannerPageState extends State<ScannerPage> {
       // TODO: account for passphrases (when we reenable that feature)
       if ((seedLength == 12 || seedLength == 24) && Wallet.validateSeed(code)) {
         widget.onSeedValidated!(code);
-        _navigator.pop();
+        navigator.pop();
         return;
       }
       showSnackbar(invalidSeedSnackbar);
@@ -288,7 +290,7 @@ class _ScannerPageState extends State<ScannerPage> {
         showSnackbar(invalidAddressSnackbar);
       } else {
         widget.onAddressValidated!(address, amount);
-        _navigator.pop();
+        navigator.pop();
         return;
       }
     }
@@ -297,7 +299,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
     if (widget._acceptableTypes.contains(ScannerType.nodeUrl)) {
       widget.onNodeUrlParsed!(scannedData);
-      _navigator.pop();
+      navigator.pop();
       return;
     }
 
@@ -314,7 +316,7 @@ class _ScannerPageState extends State<ScannerPage> {
         await widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
 
         ///popping this page
-        _navigator.pop();
+        navigator.pop();
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded) &&
             _urDecoder.decoded is Binary) {

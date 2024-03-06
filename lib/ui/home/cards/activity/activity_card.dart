@@ -44,15 +44,15 @@ class ActivityCardState extends State<ActivityCard> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
 
-    return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
+    return const AnimatedSwitcher(
+        duration: Duration(milliseconds: 250),
         child: TopLevelActivityCard());
   }
 }
 
 //ignore: must_be_immutable
 class TopLevelActivityCard extends ConsumerWidget {
-  TopLevelActivityCard({super.key});
+  const TopLevelActivityCard({super.key});
 
   @override
   Widget build(context, ref) {

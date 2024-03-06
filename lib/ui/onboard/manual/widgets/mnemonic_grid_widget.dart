@@ -7,8 +7,8 @@ import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
 
 enum SeedLength {
-  MNEMONIC_12,
-  MNEMONIC_24,
+  mnemonic_12,
+  mnemonic_24,
 }
 
 /// A grid of text fields for entering mnemonic seed phrases.
@@ -46,10 +46,10 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
   @override
   void initState() {
     _seedWords = List.generate(
-        widget.seedLength == SeedLength.MNEMONIC_12 ? 12 : 24, (index) => "");
+        widget.seedLength == SeedLength.mnemonic_12 ? 12 : 24, (index) => "");
     _initFocusManager();
     for (int i = 0;
-        i < (widget.seedLength == SeedLength.MNEMONIC_12 ? 12 : 24);
+        i < (widget.seedLength == SeedLength.mnemonic_12 ? 12 : 24);
         i++) {
       _controllers.add(TextEditingController());
       _focusNodes.add(FocusNode());
@@ -69,7 +69,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.seedLength == SeedLength.MNEMONIC_12) {
+    if (widget.seedLength == SeedLength.mnemonic_12) {
       return _buildMnemonicView(1, context);
     }
     return Column(
@@ -194,16 +194,16 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
     }
     OverlayState? overlayState = Overlay.of(context);
     var value = "";
-    var _suggestions = [];
+    var suggestions = [];
     TextEditingController controller = _controllers[index];
     controller.addListener(() {
       overlayState.setState(() {
         value = controller.text;
         if (value.length >= 3) {
-          _suggestions =
-              seed_en.where((element) => element.startsWith(value)).toList();
+          suggestions =
+              seedEn.where((element) => element.startsWith(value)).toList();
         } else {
-          _suggestions = [];
+          suggestions = [];
         }
       });
     });
@@ -236,12 +236,12 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                         child: Flex(
                           direction: Axis.horizontal,
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: _suggestions
+                          children: suggestions
                               .map((e) => InkWell(
                                     onTap: () {
-                                      int index = _suggestions.indexOf(e);
+                                      int index = suggestions.indexOf(e);
                                       controller.value = TextEditingValue(
-                                        text: _suggestions[index],
+                                        text: suggestions[index],
                                       );
                                       if (_currentFocusNode?.hasFocus == true) {
                                         if (index != _focusNodes.length - 1) {
@@ -321,7 +321,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.ease);
           }
-          if (i == 11 && widget.seedLength == SeedLength.MNEMONIC_24) {
+          if (i == 11 && widget.seedLength == SeedLength.mnemonic_24) {
             _showNextPage = true;
           }
           break;
@@ -441,7 +441,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
         if (widget.controller.text.isEmpty) {
           widget.onWordAdded("");
         } else {
-          if (seed_en.contains(widget.controller.text)) {
+          if (seedEn.contains(widget.controller.text)) {
             widget.onWordAdded(widget.controller.text);
           }
         }
@@ -464,7 +464,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
       borderColor = Theme.of(context).primaryColor;
     }
 
-    if (hasContent && !seed_en.contains(widget.controller.text)) {
+    if (hasContent && !seedEn.contains(widget.controller.text)) {
       borderColor = Colors.red;
       textColor = Colors.red;
     }
@@ -503,7 +503,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
                           onChanged: (value) {
                             //Check words that start with the entered value
                             //this will reduce unnecessary suggestions like "fat" for "fatigue"
-                            List<String> matches = seed_en
+                            List<String> matches = seedEn
                                 .where((element) =>
                                     element.startsWith(value.toLowerCase()))
                                 .toList();

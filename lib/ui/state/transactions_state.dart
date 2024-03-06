@@ -80,7 +80,7 @@ final filteredTransactionsProvider =
 });
 
 //We keep a cache of RBFed transactions so that we can remove the original tx from the list unless they are confirmed
-final RBFBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
+final rbfBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
 final walletTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   return ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
@@ -98,13 +98,13 @@ final transactionsProvider =
   for (var pending in pendingTransactions) {
     final tx = transactions
         .firstWhereOrNull((element) => element.txId == pending.txId);
-    final rbfOriginals = ref.watch(RBFBroadCastedTxProvider);
+    final rbfOriginals = ref.watch(rbfBroadCastedTxProvider);
     if (tx == null && !rbfOriginals.contains(pending.txId)) {
       transactions.add(pending);
     }
   }
 
-  ref.watch(RBFBroadCastedTxProvider).forEach((txId) {
+  ref.watch(rbfBroadCastedTxProvider).forEach((txId) {
     final tx = transactions.firstWhereOrNull((element) => element.txId == txId);
     if (tx != null && !tx.isConfirmed) {
       transactions.remove(tx);
@@ -153,7 +153,7 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
   },
 );
 
-final RBFTxStateProvider = FutureProvider.family<RBFState?, String>(
+final rbfTxStateProvider = FutureProvider.family<RBFState?, String>(
   (ref, param) {
     final account = ref.watch(selectedAccountProvider);
     if (account == null) {
@@ -165,7 +165,7 @@ final RBFTxStateProvider = FutureProvider.family<RBFState?, String>(
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
   (ref, param) {
-    return ref.watch(RBFTxStateProvider(param)).when(
+    return ref.watch(rbfTxStateProvider(param)).when(
           data: (data) {
             if (data != null) {
               if (data.newTxId == param) {
@@ -287,7 +287,7 @@ Future prunePendingTransactions(
     //in case of a failed RBF we dont want to remove the pending RBF tx
     if (!deleted) {
       final cancelTxState = ref.read(cancelTxStateProvider(pendingTx.txId));
-      final boostState = ref.read(RBFTxStateProvider(pendingTx.txId)).value;
+      final boostState = ref.read(rbfTxStateProvider(pendingTx.txId)).value;
       final rbfState = cancelTxState ?? boostState;
       if (rbfState != null) {
         //check if the RBF failed and the original tx is confirmed, if so, remove the pending RBF tx

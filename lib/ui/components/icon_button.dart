@@ -9,7 +9,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/haptics.dart';
 
 enum ButtonState {
-  default_state,
+  defaultState,
   active,
   disabled,
 }
@@ -18,14 +18,13 @@ class EnvoyIconButton extends StatefulWidget {
   final ButtonState state;
   final Function? onTap;
   final EnvoyIcons? icon;
-  final Key? key;
 
   const EnvoyIconButton({
     required this.onTap,
-    this.state = ButtonState.default_state,
+    this.state = ButtonState.defaultState,
     this.icon,
-    this.key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   EnvoyIconButtonState createState() => EnvoyIconButtonState();
@@ -101,7 +100,7 @@ class EnvoyIconButtonState extends State<EnvoyIconButton> {
       return EnvoyColors.accentPrimary;
     } else if (widget.state == ButtonState.active) {
       return EnvoyColors.accentPrimary;
-    } else if (widget.state == ButtonState.default_state) {
+    } else if (widget.state == ButtonState.defaultState) {
       return EnvoyColors.surface2;
     }
 
@@ -115,7 +114,7 @@ class EnvoyIconButtonState extends State<EnvoyIconButton> {
       return EnvoyColors.textPrimaryInverse;
     } else if (widget.state == ButtonState.active) {
       return EnvoyColors.textPrimaryInverse;
-    } else if (widget.state == ButtonState.default_state) {
+    } else if (widget.state == ButtonState.defaultState) {
       return EnvoyColors.textTertiary;
     }
 

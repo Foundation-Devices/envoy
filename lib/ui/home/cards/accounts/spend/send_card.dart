@@ -94,7 +94,7 @@ class _SendCardState extends ConsumerState<SendCard>
   Widget build(BuildContext context) {
     super.build(context);
     account = ref.read(selectedAccountProvider);
-    String _addressText = ref.read(spendAddressProvider);
+    String addressText = ref.read(spendAddressProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -112,7 +112,7 @@ class _SendCardState extends ConsumerState<SendCard>
                         right: EnvoySpacing.medium2),
                     child: AddressEntry(
                         account: account!,
-                        initalAddress: _addressText,
+                        initalAddress: addressText,
                         controller: _controller,
                         onPaste: _onPaste,
                         onAmountChanged: (amount) {

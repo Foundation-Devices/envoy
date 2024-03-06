@@ -167,7 +167,7 @@ void showInvalidSeedDialog({required BuildContext context}) {
                           },
                           icon: const Icon(Icons.close))),
                 ),
-                const Icon(EnvoyIcons.exclamation_warning,
+                const Icon(EnvoyIcons.exclamationWarning,
                     color: EnvoyColors.darkCopper, size: 58),
                 const Padding(padding: EdgeInsets.all(8)),
                 Padding(

@@ -49,12 +49,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    HomeShellOptions? _homeShellState = ref.watch(homeShellOptionsProvider);
-    bool _modalShown = ref.watch(hideBottomNavProvider);
-    bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
-    bool _inEditMode = ref.watch(spendEditModeProvider);
+    HomeShellOptions? homeShellState = ref.watch(homeShellOptionsProvider);
+    bool modalShown = ref.watch(hideBottomNavProvider);
+    bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
+    bool inEditMode = ref.watch(spendEditModeProvider);
 
-    Widget rightAction = _homeShellState?.rightAction ??
+    Widget rightAction = homeShellState?.rightAction ??
         const SizedBox(
           height: 55,
           width: 55,
@@ -138,7 +138,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       backgroundColor: Colors.transparent,
       leading: AnimatedOpacity(
         duration: _animationsDuration,
-        opacity: (_optionsShown || _inEditMode) ? 0.0 : 1.0,
+        opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
         child: HamburgerMenu(
           iconState: state,
           onPressed: () {
@@ -186,21 +186,21 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       ]),
       actions: [
 // Right action
-        if (!_inEditMode)
+        if (!inEditMode)
           AnimatedSwitcher(
               duration: _animationsDuration,
               child: AbsorbPointer(
-                  absorbing: backDropEnabled || _modalShown,
+                  absorbing: backDropEnabled || modalShown,
                   child: AnimatedOpacity(
-                      opacity: backDropEnabled || _modalShown ? 0.0 : 1.0,
+                      opacity: backDropEnabled || modalShown ? 0.0 : 1.0,
                       duration: _animationsDuration,
                       child: AnimatedSwitcher(
                           duration: _animationsDuration,
-                          child: backDropEnabled || _optionsShown
+                          child: backDropEnabled || optionsShown
                               ? GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    if (_optionsShown) {
+                                    if (optionsShown) {
                                       ref
                                           .read(
                                               homePageOptionsVisibilityProvider

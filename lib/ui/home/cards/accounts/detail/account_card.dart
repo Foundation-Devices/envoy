@@ -265,7 +265,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   child: IconButton(
                     padding: EdgeInsets.zero,
                     icon: const Icon(
-                      old_icons.EnvoyIcons.qr_scan,
+                      old_icons.EnvoyIcons.qrScan,
                       size: 30,
                       color: EnvoyColors.darkTeal,
                     ),

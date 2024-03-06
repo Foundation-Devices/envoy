@@ -151,7 +151,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                 padding: EdgeInsets.symmetric(
                                     vertical: 4, horizontal: 4),
                                 child: Icon(
-                                  EnvoyIcons.qr_scan,
+                                  EnvoyIcons.qrScan,
                                   size: 20,
                                   color: EnvoyColors.accentPrimary,
                                 ),

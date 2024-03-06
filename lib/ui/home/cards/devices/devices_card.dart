@@ -286,7 +286,7 @@ class DeviceEmptyVideo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle _ctaTextStyle = const TextStyle(
+    var ctaTextStyle = const TextStyle(
         color: Colors.white,
         fontFamily: 'Montserrat',
         fontStyle: FontStyle.normal,
@@ -311,7 +311,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     S().bottomNav_learn.toUpperCase(),
-                    style: _ctaTextStyle.copyWith(
+                    style: ctaTextStyle.copyWith(
                         fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                 ),
@@ -360,7 +360,7 @@ class DeviceEmptyVideo extends StatelessWidget {
             children: [
               GestureDetector(
                 child: Text(S().devices_empty_modal_video_cta2,
-                    style: _ctaTextStyle),
+                    style: ctaTextStyle),
                 onTap: () {
                   Navigator.of(context).pop();
                 },
@@ -369,7 +369,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                 child: Text(
                   S().devices_empty_modal_video_cta1,
                   style:
-                      _ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
+                      ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
                   launchUrlString("https://foundationdevices.com/passport/");

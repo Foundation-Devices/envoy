@@ -38,7 +38,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
@@ -96,7 +96,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       onPopInvoked: (didPop) {
         clearSpendState(scope);
       },
-      child: Background(
+      child: background(
         child: MediaQuery.removePadding(
           removeTop: true,
           removeBottom: true,
@@ -144,7 +144,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     child: EnvoyButton(
                                       label: S()
                                           .replaceByFee_coindetails_overlay_modal_heading,
-                                      state: ButtonState.default_state,
+                                      state: ButtonState.defaultState,
                                       onTap: !_rebuildingTx
                                           ? () => _boostTx(context)
                                           : null,
@@ -263,7 +263,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     );
   }
 
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
 
   Widget _buildBroadcastProgress() {
     return Padding(
@@ -276,12 +276,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 260,
-                child: Rive.RiveAnimation.asset(
+                child: rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
                     _stateMachineController =
-                        Rive.StateMachineController.fromArtboard(
+                        rive.StateMachineController.fromArtboard(
                             artboard, 'STM');
                     artboard.addController(_stateMachineController!);
                     _stateMachineController
@@ -362,7 +362,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               Navigator.pop(context);
             },
             type: ButtonType.primary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
           ),
         ],
       );
@@ -379,7 +379,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               });
             },
             type: ButtonType.secondary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
           ),
         ],
       );
@@ -469,7 +469,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                       child: EnvoyButton(
                           label: S().component_back,
                           type: ButtonType.secondary,
-                          state: ButtonState.default_state,
+                          state: ButtonState.defaultState,
                           onTap: () {
                             //hide dialog
                             Navigator.pop(context);
@@ -480,7 +480,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     EnvoyButton(
                         label: S().component_continue,
                         type: ButtonType.primary,
-                        state: ButtonState.default_state,
+                        state: ButtonState.defaultState,
                         onTap: () {
                           warningShown = true;
                           Navigator.pop(context);
@@ -503,7 +503,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     } else {
       final psbt = await Navigator.of(context, rootNavigator: false).push(
           MaterialPageRoute(
-              builder: (context) => Background(
+              builder: (context) => background(
                   child: PsbtCard(_psbt, account), context: context)));
       broadcastTx(account, psbt);
     }
@@ -564,8 +564,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
           ),
         );
-        ref.read(RBFBroadCastedTxProvider.notifier).state = [
-          ...ref.read(RBFBroadCastedTxProvider),
+        ref.read(rbfBroadCastedTxProvider.notifier).state = [
+          ...ref.read(rbfBroadCastedTxProvider),
           originalTx.txId
         ];
 
@@ -615,6 +615,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                   account: account.id!);
               tag.coinsId.add(coin.id);
               await CoinRepository().updateCoinTag(tag);
+              // ignore: unused_result
               ref.refresh(accountsProvider);
               await Future.delayed(const Duration(seconds: 1));
               final _ = ref.refresh(coinsTagProvider(account.id!));
@@ -712,9 +713,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
   }
 
-  Widget Background({required Widget child, required BuildContext context}) {
-    double _appBarHeight = AppBar().preferredSize.height;
-    double _topAppBarOffset = _appBarHeight + 10;
+  Widget background({required Widget child, required BuildContext context}) {
+    double appBarHeight = AppBar().preferredSize.height;
+    double topAppBarOffset = appBarHeight + 10;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -722,7 +723,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         children: [
           const AppBackground(),
           Positioned(
-            top: _topAppBarOffset,
+            top: topAppBarOffset,
             left: 5,
             bottom: const BottomAppBar().height ?? 20 + 8,
             right: 5,

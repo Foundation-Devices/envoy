@@ -37,7 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
@@ -95,7 +95,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
-                  BuildContext _rootContext = context;
+                  BuildContext rootContext = context;
                   List<Tuple<CoinTag, Coin>>? spendingTagSet =
                       ref.read(spendInputTagsProvider);
                   List<CoinTag> spendingTags = spendingTagSet
@@ -163,14 +163,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       hasManyTagsAsInput &&
                       hasChangeOutPutPresent) {
                     await showTagDialog(
-                        context, account, _rootContext, transactionModel);
+                        context, account, rootContext, transactionModel);
                   } else {
                     if (account.wallet.hot ||
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
                       broadcastTx(context);
                     } else {
                       final psbt =
-                          await Navigator.of(_rootContext, rootNavigator: false)
+                          await Navigator.of(rootContext, rootNavigator: false)
                               .push(MaterialPageRoute(
                                   builder: (context) => Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -191,7 +191,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   Future<void> showTagDialog(BuildContext context, Account account,
-      BuildContext _rootContext, TransactionModel transactionModel) async {
+      BuildContext rootContext, TransactionModel transactionModel) async {
     await showEnvoyDialog(
         useRootNavigator: true,
         context: context,
@@ -209,7 +209,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   ref.read(spendTransactionProvider).isPSBTFinalized) {
                 broadcastTx(context);
               } else {
-                final psbt = await Navigator.of(_rootContext,
+                final psbt = await Navigator.of(rootContext,
                         rootNavigator: false)
                     .push(MaterialPageRoute(
                         builder: (context) => Padding(
@@ -227,7 +227,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         alignment: const Alignment(0.0, -.6));
   }
 
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
 
   Widget _buildBroadcastProgress() {
     final spendState = ref.watch(spendTransactionProvider);
@@ -241,12 +241,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 260,
-                child: Rive.RiveAnimation.asset(
+                child: rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
                     _stateMachineController =
-                        Rive.StateMachineController.fromArtboard(
+                        rive.StateMachineController.fromArtboard(
                             artboard, 'STM');
                     artboard.addController(_stateMachineController!);
                     _stateMachineController
@@ -783,14 +783,15 @@ class _DiscardTransactionDialogState
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
+              final router =   GoRouter.of(context);
               resetFeeChangeNoticeUserInteractionProviders(ref);
-              GoRouter.of(context).pop(true);
+              router.pop(true);
               await Future.delayed(const Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
-              GoRouter.of(context)
+              router
                   .pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
               await Future.delayed(const Duration(milliseconds: 50));
-              GoRouter.of(context).pop();
+              router.pop();
             },
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),

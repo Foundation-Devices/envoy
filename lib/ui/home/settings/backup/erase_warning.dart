@@ -20,7 +20,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -339,7 +339,7 @@ class EraseProgress extends ConsumerStatefulWidget {
 }
 
 class _EraseProgressState extends ConsumerState<EraseProgress> {
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
 
   bool _deleteInProgress = true;
 
@@ -355,12 +355,12 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 260,
-                child: Rive.RiveAnimation.asset(
+                child: rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
                     _stateMachineController =
-                        Rive.StateMachineController.fromArtboard(
+                        rive.StateMachineController.fromArtboard(
                             artboard, 'STM');
                     artboard.addController(_stateMachineController!);
                     _stateMachineController

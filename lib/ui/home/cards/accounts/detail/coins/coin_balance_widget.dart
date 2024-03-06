@@ -19,7 +19,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
@@ -372,8 +372,8 @@ class CoinLockButton extends StatefulWidget {
 }
 
 class _CoinLockButtonState extends State<CoinLockButton> {
-  Rive.StateMachineController? _controller;
-  late Rive.RiveFile riveFile;
+  rive.StateMachineController? _controller;
+  late rive.RiveFile riveFile;
 
   void _onInit(Artboard art) {
     var ctrl = StateMachineController.fromArtboard(art, 'CoinStateMachine')
@@ -398,7 +398,7 @@ class _CoinLockButtonState extends State<CoinLockButton> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
                 child: riveFile != null
-                    ? Rive.RiveAnimation.direct(
+                    ? rive.RiveAnimation.direct(
                         riveFile,
                         onInit: _onInit,
                       )

@@ -101,7 +101,7 @@ class PsbtCard extends StatelessWidget {
                               return IconButton(
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(
-                                  EnvoyIcons.qr_scan,
+                                  EnvoyIcons.qrScan,
                                   size: 30,
                                   color: EnvoyColors.darkTeal,
                                 ),

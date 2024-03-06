@@ -20,7 +20,7 @@ class ChooseTagForStagingTx extends ConsumerStatefulWidget {
   final String accountId;
   final Function onTagUpdate;
   final Function onEditTransaction;
-  final hasMultipleTagsInput;
+  final bool hasMultipleTagsInput;
 
   const ChooseTagForStagingTx(
       {super.key,

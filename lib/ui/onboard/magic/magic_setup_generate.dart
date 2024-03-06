@@ -226,7 +226,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
   @override
   Widget build(BuildContext context) {
     bool isAndroid = Platform.isAndroid;
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
       canPop: false,
       onPopInvoked: (_) async {
@@ -255,7 +255,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               children: [
                 Container(
                   constraints: BoxConstraints.tight(const Size.fromHeight(240)),
-                  height: _iphoneSE ? 220 : 250,
+                  height: iphoneSE ? 220 : 250,
                   child: Image.asset(
                     "assets/exclamation_icon.png",
                     height: 180,

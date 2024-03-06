@@ -383,7 +383,7 @@ class _RBFWarningState extends State<RBFWarning> {
               widget.onConfirm();
             },
             type: ButtonType.primary,
-            state: ButtonState.default_state),
+            state: ButtonState.defaultState),
       ],
     );
   }
@@ -454,7 +454,7 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                       Navigator.pop(context);
                     },
                     type: ButtonType.primary,
-                    state: ButtonState.default_state,
+                    state: ButtonState.defaultState,
                   ),
                 ),
               ],

@@ -27,7 +27,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
@@ -396,7 +396,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
 
                 ///wrap to the text and padding...
                 height: 0,
-                state: ButtonState.default_state,
+                state: ButtonState.defaultState,
                 onTap: () async {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   if (widget.originalTx.isConfirmed) {
@@ -468,7 +468,7 @@ class CancelTransactionProgress extends ConsumerStatefulWidget {
 
 class _CancelTransactionProgressState
     extends ConsumerState<CancelTransactionProgress> {
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
   BroadcastProgress broadcastProgress = BroadcastProgress.staging;
 
   @override
@@ -509,8 +509,8 @@ class _CancelTransactionProgressState
           .toJson());
       await Future.delayed(const Duration(milliseconds: 500));
 
-      ref.read(RBFBroadCastedTxProvider.notifier).state = [
-        ...ref.read(RBFBroadCastedTxProvider),
+      ref.read(rbfBroadCastedTxProvider.notifier).state = [
+        ...ref.read(rbfBroadCastedTxProvider),
         widget.originalTx.txId
       ];
 
@@ -576,12 +576,12 @@ class _CancelTransactionProgressState
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: 260,
-                        child: Rive.RiveAnimation.asset(
+                        child: rive.RiveAnimation.asset(
                           "assets/envoy_loader.riv",
                           fit: BoxFit.contain,
                           onInit: (artboard) {
                             _stateMachineController =
-                                Rive.StateMachineController.fromArtboard(
+                                rive.StateMachineController.fromArtboard(
                                     artboard, 'STM');
                             artboard.addController(_stateMachineController!);
                             _stateMachineController
@@ -672,7 +672,7 @@ class _CancelTransactionProgressState
               });
             },
             type: ButtonType.primary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
           ),
         ],
       );
@@ -687,7 +687,7 @@ class _CancelTransactionProgressState
               Navigator.pop(context);
             },
             type: ButtonType.secondary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
           ),
         ],
       );

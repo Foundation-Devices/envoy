@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as DesignSystem;
+import 'package:envoy/ui/theme/envoy_colors.dart' as design_system;
 
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +88,7 @@ class QrTab extends StatelessWidget {
                             Text(
                               title,
                               style: EnvoyTypography.body.copyWith(
-                                  color: DesignSystem.EnvoyColors.solidWhite),
+                                  color: design_system.EnvoyColors.solidWhite),
                             ),
                             Text(
                               subtitle,

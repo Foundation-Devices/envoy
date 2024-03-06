@@ -85,13 +85,13 @@ class _TransactionsDetailsWidgetState
     bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
     final address = tx.address ?? "";
 
-    bool RBFPossible =
+    bool rbfPossible =
         (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 
     if (cancelState?.newTxId == tx.txId) {
-      RBFPossible = false;
+      rbfPossible = false;
     }
     double cardRadius = 26;
 
@@ -328,7 +328,7 @@ class _TransactionsDetailsWidgetState
                                         getTransactionStatusString(tx),
                                         style: trailingTextStyle),
                                   ),
-                                  RBFPossible
+                                  rbfPossible
                                       ? coinTagListItem(
                                           color: EnvoyColors.textTertiary,
                                           title: _getConfirmationTimeString(
@@ -416,7 +416,7 @@ class _TransactionsDetailsWidgetState
                                       ),
                                     ),
                                   ),
-                                  RBFPossible
+                                  rbfPossible
                                       ? CancelTxButton(
                                           transaction: tx,
                                         )

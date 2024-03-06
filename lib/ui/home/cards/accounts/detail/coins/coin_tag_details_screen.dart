@@ -19,7 +19,7 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -420,7 +420,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget singleCoinWidget(BuildContext context) {
     CoinTag tag = widget.coinTag;
-    TextStyle _textStyleWallet =
+    TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
               fontSize: 16,
@@ -451,7 +451,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     children: [
                       Text(
                         widget.coinTag.name,
-                        style: _textStyleWallet,
+                        style: textStyleWallet,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -528,7 +528,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget _coinHeader(BuildContext context) {
     CoinTag tag = widget.coinTag;
-    TextStyle _textStyleWallet =
+    TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
               fontSize: 16,
@@ -560,7 +560,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                         children: [
                           Text(
                             widget.coinTag.name,
-                            style: _textStyleWallet,
+                            style: textStyleWallet,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -606,6 +606,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               onSecondaryButtonTap: () async {
                 await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
+                // ignore: unused_result
                 ref.refresh(coinsProvider(widget.coinTag.account));
                 Navigator.pop(context);
                 _menuVisible = false;
@@ -617,6 +618,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   _deleteEmptyTag(BuildContext context) {
+    final navigator =  Navigator.of(context);
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,
@@ -628,15 +630,16 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               primaryButtonText: S().component_back,
               secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
-                Navigator.pop(context);
+                navigator.pop();
               },
               onSecondaryButtonTap: () async {
                 await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
-                final __ = ref.refresh(coinsProvider(widget.coinTag.account));
-                Navigator.pop(context);
+                // ignore: unused_result
+                ref.refresh(coinsProvider(widget.coinTag.account));
+                navigator.pop();
                 _menuVisible = false;
-                Navigator.pop(context);
+                navigator.pop();
               });
         },
       ),
@@ -774,7 +777,7 @@ class DeleteTagDialog extends StatelessWidget {
                 dialogSubheading,
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.info
-                    .copyWith(color: newColors.EnvoyColors.textPrimary),
+                    .copyWith(color: new_colors.EnvoyColors.textPrimary),
               ),
             ),
             EnvoyButton(

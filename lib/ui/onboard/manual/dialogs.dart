@@ -79,7 +79,9 @@ void showRestoreFailedDialog(BuildContext context) {
   );
 }
 
-Future<void> openBackupFile(BuildContext context) async {
+Future<void> openBackupFile(BuildContext buildContext) async {
+  final navigator =   Navigator.of(buildContext);
+  final context  = buildContext;
   var result = await FilePicker.platform.pickFiles();
 
   if (result != null) {
@@ -92,7 +94,7 @@ Future<void> openBackupFile(BuildContext context) async {
       success = false;
     }
     if (success) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      navigator.push(MaterialPageRoute(builder: (context) {
         return const WalletSetupSuccess();
       }));
     } else {

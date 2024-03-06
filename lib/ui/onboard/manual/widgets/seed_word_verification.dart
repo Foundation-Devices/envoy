@@ -166,7 +166,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
   createPuzzles() {
     Random random = Random();
     List<String> filteredSeed =
-        seed_en.where((element) => !widget.seed.contains(element)).toList();
+        seedEn.where((element) => !widget.seed.contains(element)).toList();
     setState(() {
       Set<int> randomIndexes = {};
       while (randomIndexes.length < 4) {
@@ -298,7 +298,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(EnvoyIcons.exclamation_warning,
+              const Icon(EnvoyIcons.exclamationWarning,
                   color: EnvoyColors.brown, size: 14),
               const Padding(padding: EdgeInsets.all(4)),
               Text(

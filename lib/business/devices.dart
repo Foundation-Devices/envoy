@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+// ignore_for_file: constant_identifier_names
 import 'dart:ui';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';

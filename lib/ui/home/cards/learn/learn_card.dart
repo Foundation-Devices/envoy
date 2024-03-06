@@ -101,7 +101,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                         height: EnvoySpacing.medium3,
                         width: EnvoySpacing.medium3,
                         decoration: BoxDecoration(
-                            color: learnFilterState.contains(LearnFilters.All)
+                            color: learnFilterState.contains(LearnFilters.all)
                                 ? EnvoyColors.surface2
                                 : EnvoyColors.accentPrimary,
                             shape: BoxShape.circle),
@@ -109,7 +109,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           padding: const EdgeInsets.all(EnvoySpacing.xs),
                           child: EnvoyIcon(
                             EnvoyIcons.filter,
-                            color: learnFilterState.contains(LearnFilters.All)
+                            color: learnFilterState.contains(LearnFilters.all)
                                 ? EnvoyColors.textTertiary
                                 : EnvoyColors.accentPrimary,
                           ),
@@ -121,7 +121,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
             const SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.Videos) &&
+            if (learnFilterState.contains(LearnFilters.videos) &&
                 videos.isNotEmpty)
               SliverToBoxAdapter(
                   child: Column(
@@ -156,7 +156,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
             const SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.Blogs) &&
+            if (learnFilterState.contains(LearnFilters.blogs) &&
                 blogs.isNotEmpty)
               SliverToBoxAdapter(
                   child: Column(
@@ -194,7 +194,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
             const SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.FAQs))
+            if (learnFilterState.contains(LearnFilters.faqs))
               SliverToBoxAdapter(
                 child: Faq(searchText: widget.controller.text),
               ),

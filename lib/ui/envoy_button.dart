@@ -40,7 +40,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle? _textStyle = widget.textStyle;
+    TextStyle? textStyle = widget.textStyle;
     if (widget.textStyle == null) {
       Color textColor = EnvoyColors.darkTeal;
       switch (widget.type) {
@@ -57,7 +57,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           textColor = Colors.white;
           break;
       }
-      _textStyle = Theme.of(context).textTheme.bodySmall!.copyWith(
+      textStyle = Theme.of(context).textTheme.bodySmall!.copyWith(
             color: textColor,
             fontSize: 14.0,
             fontWeight: widget.fontWeight ?? FontWeight.w700,
@@ -90,7 +90,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             child: Center(
                 child: Text(
               widget.label,
-              style: _textStyle,
+              style: textStyle,
               textAlign: TextAlign.center,
             ))),
       ),

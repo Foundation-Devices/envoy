@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';

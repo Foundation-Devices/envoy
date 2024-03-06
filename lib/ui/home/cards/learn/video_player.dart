@@ -91,7 +91,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       }
     });
 
-    final Completer _completer = Completer();
+    final Completer completer = Completer();
 
     getApplicationDocumentsDirectory().then((dir) {
       streamFile = File("${dir.path}/stream.mp4");
@@ -117,7 +117,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                 aspectRatio: 16 / 9,
               );
 
-              _completer.complete();
+              completer.complete();
               periodicallyUpdatePosition();
               showTimeline();
               periodicallyHideBar();
@@ -132,7 +132,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       });
     });
 
-    _initializeVideoPlayerFuture = Future.wait([_completer.future]);
+    _initializeVideoPlayerFuture = Future.wait([completer.future]);
   }
 
   void showTimeline() {

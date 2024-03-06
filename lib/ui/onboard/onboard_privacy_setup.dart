@@ -23,7 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:tor/tor.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -42,7 +42,7 @@ class OnboardPrivacySetup extends ConsumerStatefulWidget {
 class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
   @override
   Widget build(BuildContext context) {
-    TextStyle? _messageStyle = Theme.of(context)
+    TextStyle? messageStyle = Theme.of(context)
         .textTheme
         .bodyMedium
         ?.copyWith(fontSize: 11, fontWeight: FontWeight.w500);
@@ -147,18 +147,18 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                       horizontal: EnvoySpacing.medium3),
                   child: Consumer(
                     builder: (context, ref, child) {
-                      bool _betterPerformance =
+                      bool betterPerformance0 =
                           ref.watch(privacyOnboardSelectionProvider);
-                      return _betterPerformance
+                      return betterPerformance0
                           ? LinkText(
                               text: S().privacy_privacyMode_torSuggestionOff,
-                              linkStyle: _messageStyle?.copyWith(
+                              linkStyle: messageStyle?.copyWith(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w900,
                                   color: EnvoyColors.listAccountTileColors[0]))
                           : LinkText(
                               text: S().privacy_privacyMode_torSuggestionOn,
-                              linkStyle: _messageStyle?.copyWith(
+                              linkStyle: messageStyle?.copyWith(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w900,
                                   color: EnvoyColors.listAccountTileColors[1]));
@@ -438,7 +438,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 const Icon(
-                                  EnvoyIcons.exclamation_warning,
+                                  EnvoyIcons.exclamationWarning,
                                   size: 18,
                                   color: EnvoyColors.danger,
                                 ),
@@ -511,9 +511,9 @@ class PrivacyOptionSelect extends ConsumerStatefulWidget {
 }
 
 class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
-  Rive.StateMachineController? _improvedPerformanceController;
-  Rive.StateMachineController? _privacyIconController;
-  Rive.Artboard? _privacyIconArtBoard, _performanceArtBoard;
+  rive.StateMachineController? _improvedPerformanceController;
+  rive.StateMachineController? _privacyIconController;
+  rive.Artboard? _privacyIconArtBoard, _performanceArtBoard;
 
   @override
   void initState() {
@@ -564,14 +564,14 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
     if (nodeConnectionState.isConnected) {
       Widget icon = _performanceArtBoard == null
           ? Container()
-          : Rive.Rive(artboard: _performanceArtBoard!);
+          : rive.Rive(artboard: _performanceArtBoard!);
       String text = S().privacy_privacyMode_betterPerformance;
 
       if ((isTorRequired) || !_betterPerformance) {
         text = S().privacy_privacyMode_improvedPrivacy;
         icon = _privacyIconArtBoard == null
             ? Container()
-            : Rive.Rive(
+            : rive.Rive(
                 artboard: _privacyIconArtBoard!,
               );
       }
@@ -634,7 +634,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                     width: 45,
                     child: _performanceArtBoard == null
                         ? Container()
-                        : Rive.Rive(artboard: _performanceArtBoard!),
+                        : rive.Rive(artboard: _performanceArtBoard!),
                   ),
                   const Padding(padding: EdgeInsets.all(4)),
                   Text(
@@ -672,7 +672,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                     width: 45,
                     child: _privacyIconArtBoard == null
                         ? Container()
-                        : Rive.Rive(
+                        : rive.Rive(
                             artboard: _privacyIconArtBoard!,
                           ),
                   ),
@@ -726,9 +726,9 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
     try {
       ByteData privacyIcon =
           await rootBundle.load('assets/animated_privacy_icon.riv');
-      final file = Rive.RiveFile.import(privacyIcon);
+      final file = rive.RiveFile.import(privacyIcon);
       _privacyIconController =
-          Rive.StateMachineController.fromArtboard(file.mainArtboard, 'sm');
+          rive.StateMachineController.fromArtboard(file.mainArtboard, 'sm');
       if (_privacyIconController != null) {
         file.mainArtboard.addController(_privacyIconController!);
       }
@@ -736,8 +736,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 
       ByteData performanceIcon =
           await rootBundle.load('assets/animated_odometer.riv');
-      final performanceIconFile = Rive.RiveFile.import(performanceIcon);
-      _improvedPerformanceController = Rive.StateMachineController.fromArtboard(
+      final performanceIconFile = rive.RiveFile.import(performanceIcon);
+      _improvedPerformanceController = rive.StateMachineController.fromArtboard(
           performanceIconFile.mainArtboard, 'sm');
       if (_improvedPerformanceController != null) {
         performanceIconFile.mainArtboard

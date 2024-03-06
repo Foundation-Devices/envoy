@@ -51,8 +51,8 @@ final learnVideosProvider =
 
       break;
   }
-  if (learnFilterState.contains(LearnFilters.All) ||
-      learnFilterState.contains(LearnFilters.Videos)) {
+  if (learnFilterState.contains(LearnFilters.all) ||
+      learnFilterState.contains(LearnFilters.videos)) {
     //do nothing
   } else {
     allVideos = [];
@@ -90,8 +90,8 @@ final learnBlogsProvider =
       });
       break;
   }
-  if (learnFilterState.contains(LearnFilters.All) ||
-      learnFilterState.contains(LearnFilters.Blogs)) {
+  if (learnFilterState.contains(LearnFilters.all) ||
+      learnFilterState.contains(LearnFilters.blogs)) {
     //do nothing
   } else {
     allBlogs = [];

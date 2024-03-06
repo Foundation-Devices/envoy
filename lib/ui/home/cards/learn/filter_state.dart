@@ -4,7 +4,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum LearnFilters { All, Videos, FAQs, Blogs }
+enum LearnFilters { all, videos, faqs, blogs }
 
 enum LearnSortTypes {
   newestFirst,

@@ -88,7 +88,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
     var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
 
-    final _bottomOffset = MediaQuery.of(context).padding.bottom;
+    final bottomOffset = MediaQuery.of(context).padding.bottom;
     final Locale activeLocale = Localizations.localeOf(context);
 
     return Container(
@@ -306,7 +306,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: _bottomOffset + 30.0),
+                      padding: EdgeInsets.only(bottom: bottomOffset + 30.0),
                       child: EnvoyButton(
                         S().backups_erase_wallets_and_backups,
                         textStyle: const TextStyle(

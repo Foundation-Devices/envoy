@@ -15,7 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:html/parser.dart' as htmlParser;
+import 'package:html/parser.dart' as html_parser;
 import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -37,7 +37,7 @@ class BlogPostWidget extends ConsumerStatefulWidget {
 class _BlogPostState extends ConsumerState<BlogPostWidget> {
   @override
   Widget build(BuildContext context) {
-    final bool _isBlogRead =
+    final bool isBlogRead =
         ref.watch(readBlogStreamProvider(widget.blog.id)).value ?? false;
     return SizedBox(
       width: containerWidth,
@@ -70,7 +70,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                               height: blogThumbnailHeight,
                               width: containerWidth,
                               child: Opacity(
-                                opacity: _isBlogRead ? 0.3 : 1.0,
+                                opacity: isBlogRead ? 0.3 : 1.0,
                                 child: Image.memory(
                                   Uint8List.fromList(snapshot.data!),
                                   fit: BoxFit.fitWidth,
@@ -108,7 +108,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                             DateFormat('MMMM dd, yyyy', currentLocale)
                                 .format(widget.blog.publicationDate),
                           ),
-                          _isBlogRead
+                          isBlogRead
                               ? Text(
                                   S().learningcenter_status_read,
                                   style: EnvoyTypography.info.copyWith(
@@ -169,7 +169,7 @@ class BlogPostCardState extends State<BlogPostCard> {
           child: SingleChildScrollView(
             child: FutureBuilder<String>(
               future: Future(() async {
-                final document = htmlParser.parse(widget.blog.description);
+                final document = html_parser.parse(widget.blog.description);
                 final imageTags = document.getElementsByTagName('img');
                 final torClient =
                     HttpTor(Tor.instance, EnvoyScheduler().parallel);

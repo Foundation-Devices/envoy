@@ -99,7 +99,7 @@ class BtcPayInfo extends StatelessWidget {
           child: EnvoyButton(
             label: S().component_back,
             type: ButtonType.secondary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
             onTap: () {
               Navigator.of(context).pop();
             },
@@ -110,7 +110,7 @@ class BtcPayInfo extends StatelessWidget {
           child: EnvoyButton(
             label: S().component_redeem,
             type: ButtonType.primary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
             onTap: () {
               controller.jumpToPage(2);
             },

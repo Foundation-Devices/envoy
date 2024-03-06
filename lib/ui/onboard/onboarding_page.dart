@@ -17,7 +17,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/components/address_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -117,11 +117,11 @@ class OnboardingPage extends StatelessWidget {
                           fit: BoxFit.contain,
                           animations: const ["indeterminate"],
                           onInit: (artboard) {
-                            var _stateMachineController =
+                            var stateMachineController =
                                 StateMachineController.fromArtboard(
                                     artboard, 'STM');
-                            artboard.addController(_stateMachineController!);
-                            _stateMachineController
+                            artboard.addController(stateMachineController!);
+                            stateMachineController
                                 .findInput<bool>("indeterminate")
                                 ?.change(true);
                           },
@@ -291,7 +291,7 @@ class OnboardingText extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.info.copyWith(
                         height: 1.2,
-                        color: newColorScheme.EnvoyColors.inactiveDark,
+                        color: new_color_scheme.EnvoyColors.inactiveDark,
                         decoration: TextDecoration.none,
                       ),
                     ),

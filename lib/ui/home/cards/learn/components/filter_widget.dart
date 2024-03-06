@@ -82,20 +82,20 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               children: [
                 EnvoyFilterChip(
                   text: S().learning_center_filter_all,
-                  selected: _filterState?.contains(LearnFilters.All) ?? false,
+                  selected: _filterState?.contains(LearnFilters.all) ?? false,
                   onTap: () {
                     final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
-                      newState.remove(LearnFilters.All);
-                      newState.remove(LearnFilters.Videos);
-                      newState.remove(LearnFilters.Blogs);
-                      newState.remove(LearnFilters.FAQs);
+                    if (_filterState!.contains(LearnFilters.all)) {
+                      newState.remove(LearnFilters.all);
+                      newState.remove(LearnFilters.videos);
+                      newState.remove(LearnFilters.blogs);
+                      newState.remove(LearnFilters.faqs);
                     } else {
-                      newState.add(LearnFilters.All);
-                      newState.add(LearnFilters.Videos);
-                      newState.add(LearnFilters.Blogs);
-                      newState.add(LearnFilters.FAQs);
+                      newState.add(LearnFilters.all);
+                      newState.add(LearnFilters.videos);
+                      newState.add(LearnFilters.blogs);
+                      newState.add(LearnFilters.faqs);
                     }
                     setState(() {
                       _filterState = newState;
@@ -105,19 +105,19 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
-                      ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                      ((_filterState?.contains(LearnFilters.videos) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.all) ?? true)),
                   text: S().learning_center_title_video,
                   onTap: () {
                     final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
+                    if (_filterState!.contains(LearnFilters.all)) {
                       newState.removeAll(_filterState!);
                     }
-                    if (newState.contains(LearnFilters.Videos)) {
-                      newState.remove(LearnFilters.Videos);
+                    if (newState.contains(LearnFilters.videos)) {
+                      newState.remove(LearnFilters.videos);
                     } else {
-                      newState.add(LearnFilters.Videos);
+                      newState.add(LearnFilters.videos);
                     }
                     setState(() {
                       _filterState = newState;
@@ -127,19 +127,19 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
-                      ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                      ((_filterState?.contains(LearnFilters.faqs) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.all) ?? true)),
                   text: S().learning_center_title_faq,
                   onTap: () {
                     final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
+                    if (_filterState!.contains(LearnFilters.all)) {
                       newState.removeAll(_filterState!);
                     }
-                    if (newState.contains(LearnFilters.FAQs)) {
-                      newState.remove(LearnFilters.FAQs);
+                    if (newState.contains(LearnFilters.faqs)) {
+                      newState.remove(LearnFilters.faqs);
                     } else {
-                      newState.add(LearnFilters.FAQs);
+                      newState.add(LearnFilters.faqs);
                     }
                     setState(() {
                       _filterState = newState;
@@ -149,19 +149,19 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
-                      ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                      ((_filterState?.contains(LearnFilters.blogs) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.all) ?? true)),
                   text: S().learning_center_title_blog,
                   onTap: () {
                     final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
+                    if (_filterState!.contains(LearnFilters.all)) {
                       newState.removeAll(_filterState!);
                     }
-                    if (newState.contains(LearnFilters.Blogs)) {
-                      newState.remove(LearnFilters.Blogs);
+                    if (newState.contains(LearnFilters.blogs)) {
+                      newState.remove(LearnFilters.blogs);
                     } else {
-                      newState.add(LearnFilters.Blogs);
+                      newState.add(LearnFilters.blogs);
                     }
                     setState(() {
                       _filterState = newState;

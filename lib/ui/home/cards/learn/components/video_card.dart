@@ -45,7 +45,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
 
   @override
   Widget build(BuildContext context) {
-    final bool _isVideoWatched =
+    final isVideoWatched =
         ref.watch(watchedVideoStreamProvider(widget.video.id)).value ?? false;
     return ClipRRect(
       borderRadius:
@@ -119,7 +119,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                     ),
                   ),
                 ),
-                _isVideoWatched
+                isVideoWatched
                     ? Positioned.fill(
                         child: Container(
                           color:
@@ -160,7 +160,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                             style: EnvoyTypography.info
                                 .copyWith(color: EnvoyColors.textSecondary),
                           ),
-                          _isVideoWatched
+                          isVideoWatched
                               ? Text(
                                   S().learningcenter_status_watched,
                                   style: EnvoyTypography.info.copyWith(

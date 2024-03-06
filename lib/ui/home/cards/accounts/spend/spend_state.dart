@@ -363,7 +363,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             await CoinRepository().updateCoinTag(changeOutPutTag);
             final _ = ref.refresh(accountsProvider);
             await Future.delayed(const Duration(seconds: 1));
-            await ref.refresh(coinsTagProvider(account.id!));
+            ref.refresh(coinsTagProvider(account.id!));
           }
         }
       } catch (e) {

@@ -127,7 +127,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         children: [
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_address,
                             icon: SvgPicture.asset(
                               "assets/icons/ic_spend.svg",
@@ -155,7 +155,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                               ),
                             ),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_transactionID,
                             icon: const Icon(
                               CupertinoIcons.compass,
@@ -203,7 +203,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   },
                                 )),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_date,
                             icon: const Icon(
                               Icons.calendar_today_outlined,
@@ -213,7 +213,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                             trailing: Text(getTransactionDateAndTimeString(tx),
                                 style: trailingTextStyle),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_tag,
                             icon: SvgPicture.asset(
                               "assets/icons/ic_tag.svg",
@@ -223,7 +223,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                             trailing:
                                 Text(coinTag.name, style: trailingTextStyle),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_status,
                             icon: SvgPicture.asset(
                               "assets/icons/ic_status_icon.svg",
@@ -252,7 +252,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   ),
                                   alignment: const Alignment(0.0, -0.8));
                             },
-                            child: CoinTagListItem(
+                            child: coinTagListItem(
                               title: S().coindetails_overlay_notes,
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_notes.svg",
@@ -300,7 +300,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     );
   }
 
-  Widget CoinTagListItem(
+  Widget coinTagListItem(
       {required String title,
       required Widget icon,
       required Widget trailing,

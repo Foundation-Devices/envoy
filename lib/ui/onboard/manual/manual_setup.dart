@@ -249,7 +249,7 @@ class SeedIntroScreen extends StatelessWidget {
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
                                       return const ManualSetupImportSeed(
-                                        seedLength: SeedLength.MNEMONIC_12,
+                                        seedLength: SeedLength.mnemonic_12,
                                       );
                                     });
                                   }));
@@ -263,7 +263,7 @@ class SeedIntroScreen extends StatelessWidget {
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
                                       return const ManualSetupImportSeed(
-                                        seedLength: SeedLength.MNEMONIC_24,
+                                        seedLength: SeedLength.mnemonic_24,
                                       );
                                     });
                                   }));
@@ -280,7 +280,7 @@ class SeedIntroScreen extends StatelessWidget {
                                       List<String> seedWords =
                                           result.split(" ");
                                       bool isValid = seedWords
-                                          .map((e) => seed_en.contains(e))
+                                          .map((e) => seedEn.contains(e))
                                           .reduce((value, element) =>
                                               value && element);
                                       if (!isValid) {

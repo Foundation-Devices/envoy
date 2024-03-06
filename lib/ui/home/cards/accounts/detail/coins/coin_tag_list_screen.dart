@@ -80,7 +80,7 @@ class CoinItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    TextStyle _textStyleWallet =
+    TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
               fontSize: 16,
@@ -133,7 +133,7 @@ class CoinItemWidget extends ConsumerWidget {
                             children: [
                               Text(
                                 tag.name,
-                                style: _textStyleWallet,
+                                style: textStyleWallet,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),

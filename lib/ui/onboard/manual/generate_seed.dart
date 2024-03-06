@@ -132,10 +132,10 @@ class _SeedScreenState extends State<SeedScreen> {
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
-                    var _stateMachineController =
+                    var stateMachineController =
                         StateMachineController.fromArtboard(artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
+                    artboard.addController(stateMachineController!);
+                    stateMachineController
                         .findInput<bool>("indeterminate")
                         ?.change(true);
                   },
@@ -295,7 +295,7 @@ class _SeedScreenState extends State<SeedScreen> {
                 Expanded(
                     child: Column(
                   children: [
-                    const Icon(EnvoyIcons.exclamation_warning,
+                    const Icon(EnvoyIcons.exclamationWarning,
                         color: EnvoyColors.darkCopper, size: 56),
                     const Padding(padding: EdgeInsets.all(12)),
                     Padding(

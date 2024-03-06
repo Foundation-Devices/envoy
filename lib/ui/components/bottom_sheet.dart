@@ -68,7 +68,7 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
               EnvoyButton(
                   label: primaryButtonLabel,
                   type: ButtonType.primary,
-                  state: ButtonState.default_state,
+                  state: ButtonState.defaultState,
                   onTap: () {
                     onPrimaryButtonTap();
                     Navigator.pop(context);
@@ -79,7 +79,7 @@ void showEnvoyBottomSheet(BuildContext context, String title, String content,
                   child: EnvoyButton(
                       label: secondaryButtonLabel,
                       type: ButtonType.secondary,
-                      state: ButtonState.default_state,
+                      state: ButtonState.defaultState,
                       onTap: () {
                         if (onSecondaryButtonTap != null) {
                           onSecondaryButtonTap();

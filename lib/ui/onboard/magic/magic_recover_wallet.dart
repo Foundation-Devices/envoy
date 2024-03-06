@@ -342,7 +342,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       MagicRecoveryWalletState.seedNotFound;
                 });
                 await Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_c) {
+                    .push(MaterialPageRoute(builder: (c) {
                   return ScannerPage(
                     const [ScannerType.seed],
                     onSeedValidated: (seed) async {

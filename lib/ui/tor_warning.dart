@@ -49,7 +49,7 @@ class _TorWarningState extends State<TorWarning> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(EnvoyIcons.exclamation_warning,
+                const Icon(EnvoyIcons.exclamationWarning,
                     color: EnvoyColors.accentSecondary, size: 84),
                 Padding(
                     padding: const EdgeInsets.only(top: 18.0),

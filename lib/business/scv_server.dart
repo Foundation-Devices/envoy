@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+// ignore_for_file: constant_identifier_names
 library envoy.scv_server;
 
 import 'dart:convert';

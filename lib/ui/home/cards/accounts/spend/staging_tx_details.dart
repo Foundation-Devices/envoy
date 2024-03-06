@@ -793,7 +793,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
   }
 
   Widget _coinTag(String title) {
-    TextStyle _titleStyle = Theme.of(context).textTheme.titleSmall!.copyWith(
+    TextStyle titleStyle = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: EnvoyColors.accentPrimary,
           fontSize: 12,
           fontWeight: FontWeight.w400,
@@ -811,7 +811,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
           const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
           Text(
             title,
-            style: _titleStyle,
+            style: titleStyle,
           )
         ],
       ),

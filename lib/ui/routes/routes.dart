@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+// ignore_for_file: constant_identifier_names
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';

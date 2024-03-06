@@ -63,14 +63,14 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle _textStyleWallet =
+    TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             );
 
-    TextStyle _textStyleWalletName =
+    TextStyle textStyleWalletName =
         Theme.of(context).textTheme.titleSmall!.copyWith(
               color: Colors.white,
               fontSize: 12,
@@ -151,12 +151,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 children: [
                                   Text(
                                     account.name,
-                                    style: _textStyleWallet,
+                                    style: textStyleWallet,
                                   ),
                                   Text(
                                     Devices()
                                         .getDeviceName(account.deviceSerial),
-                                    style: _textStyleWalletName,
+                                    style: textStyleWalletName,
                                   ),
                                 ],
                               ),

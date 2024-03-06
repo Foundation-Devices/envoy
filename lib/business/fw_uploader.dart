@@ -27,21 +27,21 @@ class FwUploader {
   String _sdCardPath =
       "/private/var/mobile/Library/LiveFiles/com.apple.filesystems.userfsd/PASSPORT-SD/";
 
-  static const String LAST_SD_CARD_PATH_PREFS = "last_sd_card_path";
+  static const String lastSDCardPathPrefs = "last_sd_card_path";
 
   static const platform = MethodChannel('envoy');
 
   FwUploader(this.fw) {
     // Get the last used SD CARD path
-    if (EnvoyStorage().containsKey(LAST_SD_CARD_PATH_PREFS)) {
-      _sdCardPath = EnvoyStorage().getString(LAST_SD_CARD_PATH_PREFS)!;
+    if (EnvoyStorage().containsKey(lastSDCardPathPrefs)) {
+      _sdCardPath = EnvoyStorage().getString(lastSDCardPathPrefs)!;
     }
 
     // Android
     if (Platform.isAndroid) {
       platform.invokeMethod('get_sd_card_path').then((value) {
         _sdCardPath = value;
-        EnvoyStorage().setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
+        EnvoyStorage().setString(lastSDCardPathPrefs, _sdCardPath);
       });
     }
   }
@@ -50,7 +50,7 @@ class FwUploader {
     final result = await platform.invokeMethod('prompt_folder_access');
     if (result != null && result is String) {
       _sdCardPath = result.substring(7);
-      EnvoyStorage().setString(LAST_SD_CARD_PATH_PREFS, _sdCardPath);
+      EnvoyStorage().setString(lastSDCardPathPrefs, _sdCardPath);
     }
 
     return result;

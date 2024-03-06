@@ -18,7 +18,7 @@ enum ButtonType {
 }
 
 enum ButtonState {
-  default_state,
+  defaultState,
   loading,
   hover,
   focus,

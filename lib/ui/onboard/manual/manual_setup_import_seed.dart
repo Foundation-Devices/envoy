@@ -81,7 +81,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                           onSeedWordAdded: (List<String> words) {
                             currentWords = words;
                             bool isValid = currentWords
-                                .map((e) => seed_en.contains(e))
+                                .map((e) => seedEn.contains(e))
                                 .reduce((value, element) => value && element);
                             setState(() {
                               finishSeedEntries = isValid;
@@ -230,7 +230,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         ),
                       ),
                     ),
-                    const Icon(EnvoyIcons.exclamation_warning,
+                    const Icon(EnvoyIcons.exclamationWarning,
                         color: EnvoyColors.darkCopper, size: 60),
                     const Padding(padding: EdgeInsets.all(4)),
                     Padding(

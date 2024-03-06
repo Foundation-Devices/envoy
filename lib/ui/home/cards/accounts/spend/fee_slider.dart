@@ -426,14 +426,14 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   child: EnvoyButton(
                       label: S().coincontrol_tx_detail_custom_fee_cta,
                       onTap: () {
-                        if (processingFee != ButtonState.loading) {
+                        if (!processingFee) {
                           widget.onFeeSelect(selectedItem);
                         }
                       },
                       type: ButtonType.primary,
                       state: processingFee
                           ? ButtonState.loading
-                          : ButtonState.default_state),
+                          : ButtonState.defaultState),
                 ),
                 const Padding(padding: EdgeInsets.only(bottom: 8)),
               ],
