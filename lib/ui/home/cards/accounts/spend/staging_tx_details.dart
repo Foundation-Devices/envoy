@@ -117,7 +117,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         /// if the RBF tx include any other inputs, then find tags belongs to that inputs
         rawTransaction.inputs.forEach((input) async {
           final id = input.id;
-          final tag = tags.firstWhereOrNull((tag) => tag.coins_id.contains(id));
+          final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
           if (tag != null) {
             final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
             if (coin != null) inputTagData.add(Tuple(tag.name, coin.amount));
@@ -127,7 +127,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         /// find inputs that belongs to the tags
         rawTransaction.inputs.forEach((input) async {
           final id = input.id;
-          final tag = tags.firstWhereOrNull((tag) => tag.coins_id.contains(id));
+          final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
           if (tag != null) {
             final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
             inputTagData.add(Tuple(tag.name, coin?.amount ?? 0));
@@ -140,7 +140,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         String id = "";
         if (widget.previousTransaction != null) {
           id = widget.previousTransaction!.txId;
-          for (var element in tag.coins_id) {
+          for (var element in tag.coinsId) {
             if (element.contains(id)) {
               changeOutputTag = tag;
             }
@@ -148,7 +148,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         } else {
           id =
               "${widget.psbt.txid}:${rawTransaction.outputs.indexOf(receiveOutPut)}";
-          if (tag.coins_id.contains(id)) {
+          if (tag.coinsId.contains(id)) {
             changeOutputTag = tag;
           }
         }

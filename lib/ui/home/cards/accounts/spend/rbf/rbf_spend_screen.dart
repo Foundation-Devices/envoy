@@ -592,7 +592,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
           /// Find any change tag present in the original transaction
           for (var tag in tags) {
-            for (var existingId in tag.coins_id) {
+            for (var existingId in tag.coinsId) {
               /// check with original tx to see if any change output tag is present
               if (existingId.contains(widget.rbfSpendState.originalTx.txId)) {
                 foundAnExistingChangeTag = tag;
@@ -612,7 +612,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                       vout: rawTx.outputs.indexOf(element),
                       value: element.amount),
                   account: account.id!);
-              tag?.coins_id.add(coin.id);
+              tag?.coinsId.add(coin.id);
               await CoinRepository().updateCoinTag(tag!);
               final _ = ref.refresh(accountsProvider);
               await Future.delayed(const Duration(seconds: 1));

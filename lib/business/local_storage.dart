@@ -8,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LocalStorage {
-  final secureStorage = new FlutterSecureStorage();
+  final secureStorage = const FlutterSecureStorage();
   final EnvoyStorage prefs = EnvoyStorage();
   late final Directory appSupportDir;
   late final Directory appDocumentsDir;

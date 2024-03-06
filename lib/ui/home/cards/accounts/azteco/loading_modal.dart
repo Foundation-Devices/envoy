@@ -35,15 +35,15 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
     String address = await widget.account.wallet.getAddress();
     AztecoVoucherRedeemResult result = await widget.voucher.redeem(address);
     switch (result) {
-      case AztecoVoucherRedeemResult.Success:
+      case AztecoVoucherRedeemResult.success:
         {
           addPendingTx(address, widget.account);
           widget.controller.jumpToPage(3);
         }
 
-      case AztecoVoucherRedeemResult.Timeout:
+      case AztecoVoucherRedeemResult.timeout:
         widget.controller.jumpToPage(4);
-      case AztecoVoucherRedeemResult.VoucherInvalid:
+      case AztecoVoucherRedeemResult.voucherInvalid:
         widget.controller.jumpToPage(2);
     }
   }

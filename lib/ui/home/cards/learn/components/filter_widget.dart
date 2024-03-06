@@ -58,7 +58,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               TextButton(
                 onPressed: () {
                   setState(() {
-                    _filterState = Set()..addAll(LearnFilters.values);
+                    _filterState = {}..addAll(LearnFilters.values);
                   });
                 },
                 child: Text(
@@ -82,7 +82,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                   text: S().learning_center_filter_all,
                   selected: _filterState?.contains(LearnFilters.All) ?? false,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
                     if (_filterState!.contains(LearnFilters.All)) {
                       newState.remove(LearnFilters.All);
@@ -107,7 +107,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                           !(_filterState?.contains(LearnFilters.All) ?? true)),
                   text: S().learning_center_title_video,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
                     if (_filterState!.contains(LearnFilters.All)) {
                       newState.removeAll(_filterState!);
@@ -129,7 +129,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                           !(_filterState?.contains(LearnFilters.All) ?? true)),
                   text: S().learning_center_title_faq,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
                     if (_filterState!.contains(LearnFilters.All)) {
                       newState.removeAll(_filterState!);
@@ -151,7 +151,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                           !(_filterState?.contains(LearnFilters.All) ?? true)),
                   text: S().learning_center_title_blog,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
                     if (_filterState!.contains(LearnFilters.All)) {
                       newState.removeAll(_filterState!);

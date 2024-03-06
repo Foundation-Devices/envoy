@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
-import 'package:envoy/business/btcPay_voucher.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';

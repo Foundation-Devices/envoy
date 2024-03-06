@@ -303,7 +303,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
             ? null
             : Consumer(
                 builder: (context, ref, child) {
-                  final coins = coinTag.coins_id;
+                  final coins = coinTag.coinsId;
                   final selectedItems = ref
                       .watch(coinSelectionStateProvider)
                       .where(
@@ -432,7 +432,7 @@ class CoinSubTitleText extends ConsumerWidget {
 String getMessage(CoinTag tag, WidgetRef ref) {
   final selections = ref.watch(coinSelectionStateProvider);
   final selectedCoins =
-      selections.where((element) => tag.coins_id.contains(element));
+      selections.where((element) => tag.coinsId.contains(element));
   final lockedCoins = tag.coins.where((element) => element.locked);
   final availableCoins = tag.numOfCoins - lockedCoins.length;
   String selectionMessage =

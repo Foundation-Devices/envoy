@@ -17,10 +17,10 @@ enum ButtonState {
 class EnvoyIconButton extends StatefulWidget {
   final ButtonState state;
   final Function? onTap;
-  final icon;
+  final EnvoyIcons? icon;
   final Key? key;
 
-  EnvoyIconButton({
+  const EnvoyIconButton({
     required this.onTap,
     this.state = ButtonState.default_state,
     this.icon,
@@ -81,7 +81,7 @@ class _EnvoyIconButtonState extends State<EnvoyIconButton> {
                 children: [
                   if (widget.icon != null)
                     EnvoyIcon(
-                      widget.icon,
+                      widget.icon!,
                       size: EnvoyIconSize.small,
                       color: _getMainColor(),
                     ),

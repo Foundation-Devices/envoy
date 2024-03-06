@@ -179,62 +179,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                             margin: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.xs + 2,
                                 vertical: EnvoySpacing.xs),
-                            child: Container(
-                              child: Consumer(
-                                builder: (context, ref, child) {
-                                  final hide = ref.watch(
-                                      balanceHideStateStatusProvider(
-                                          account.id));
-                                  if (hide || account.dateSynced == null) {
-                                    return Container(
-                                      decoration: ShapeDecoration(
-                                        color: const Color(0xFFF8F8F8),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              cardRadius + 8),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(
-                                              width: 200,
-                                              height: 20,
-                                              child: Container(
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color:
-                                                              Color(0xffEEEEEE),
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          22)))),
-                                            ),
-                                            SizedBox(
-                                                width: 50,
-                                                height: 15,
-                                                child: Container(
-                                                    width: double.infinity,
-                                                    height: double.infinity,
-                                                    decoration: const BoxDecoration(
-                                                        color:
-                                                            Color(0xffEEEEEE),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    22)))))
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                final hide = ref.watch(
+                                    balanceHideStateStatusProvider(
+                                        account.id));
+                                if (hide || account.dateSynced == null) {
                                   return Container(
                                     decoration: ShapeDecoration(
                                       color: const Color(0xFFF8F8F8),
@@ -246,15 +196,63 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
-                                      child: EnvoyAmount(
-                                          account: widget.account,
-                                          amountSats: balance,
-                                          amountWidgetStyle:
-                                              AmountWidgetStyle.singleLine),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: 200,
+                                            height: 20,
+                                            child: Container(
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                                decoration:
+                                                    const BoxDecoration(
+                                                        color:
+                                                            Color(0xffEEEEEE),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(Radius
+                                                                    .circular(
+                                                                        22)))),
+                                          ),
+                                          SizedBox(
+                                              width: 50,
+                                              height: 15,
+                                              child: Container(
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                  decoration: const BoxDecoration(
+                                                      color:
+                                                          Color(0xffEEEEEE),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  22)))))
+                                        ],
+                                      ),
                                     ),
                                   );
-                                },
-                              ),
+                                }
+                                return Container(
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFFF8F8F8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          cardRadius + 8),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: EnvoyAmount(
+                                        account: widget.account,
+                                        amountSats: balance,
+                                        amountWidgetStyle:
+                                            AmountWidgetStyle.singleLine),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],

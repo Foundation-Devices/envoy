@@ -39,25 +39,23 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: SlidingToggle(
-                  onChange: (value) async {
-                    if (value == "Tx") {
-                      if (ref.read(coinSelectionStateProvider).isNotEmpty) {
-                        ref.read(coinSelectionStateProvider.notifier).reset();
-                        //wait for coin selection bottom-sheet to close
-                        await Future.delayed(const Duration(milliseconds: 240));
-                      }
+              SlidingToggle(
+                onChange: (value) async {
+                  if (value == "Tx") {
+                    if (ref.read(coinSelectionStateProvider).isNotEmpty) {
+                      ref.read(coinSelectionStateProvider.notifier).reset();
+                      //wait for coin selection bottom-sheet to close
+                      await Future.delayed(const Duration(milliseconds: 240));
                     }
-                    ref.read(accountToggleStateProvider.notifier).state =
-                        toggleState == AccountToggleState.Tx
-                            ? AccountToggleState.Coins
-                            : AccountToggleState.Tx;
-                  },
-                  value: toggleState == AccountToggleState.Tx
-                      ? "Tx"
-                      : "Coins", // TODO: FIGMA
-                ),
+                  }
+                  ref.read(accountToggleStateProvider.notifier).state =
+                      toggleState == AccountToggleState.Tx
+                          ? AccountToggleState.Coins
+                          : AccountToggleState.Tx;
+                },
+                value: toggleState == AccountToggleState.Tx
+                    ? "Tx"
+                    : "Coins", // TODO: FIGMA
               ),
               Flexible(
                   flex: 1,

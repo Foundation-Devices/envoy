@@ -21,7 +21,7 @@ import 'package:envoy/ui/components/address_widget.dart';
 class AddressCard extends ConsumerStatefulWidget {
   final Account account;
 
-  AddressCard(this.account) : super(key: UniqueKey()) {}
+  AddressCard(this.account) : super(key: UniqueKey());
 
   @override
   ConsumerState<AddressCard> createState() => _AddressCardState();
@@ -139,11 +139,12 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   }
 
   void _copyAddressToClipboard(BuildContext context, String address) async {
+    final scaffold = ScaffoldMessenger.of(context);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-    String? text = cdata?.text ?? null;
+    String? text = cdata?.text;
     if (text != address) {
       Clipboard.setData(ClipboardData(text: address));
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      scaffold.showSnackBar(const SnackBar(
         content: Text("Address copied to clipboard!"), //TODO: FIGMA
       ));
     }

@@ -118,7 +118,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                 );
               }).toList();
             },
-            underline: Container(height: 0, width: 0),
+            underline: const SizedBox.shrink(),
             // _selected index becomes -1 for some reason
             value: widget.options[_selectedIndex],
             isExpanded: true,

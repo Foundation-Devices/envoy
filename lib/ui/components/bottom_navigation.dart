@@ -21,10 +21,10 @@ class EnvoyBottomNavigation extends ConsumerStatefulWidget {
       {super.key, this.onIndexChanged, this.initialIndex = 2});
 
   @override
-  _EnvoyBottomNavigationState createState() => _EnvoyBottomNavigationState();
+  EnvoyBottomNavigationState createState() => EnvoyBottomNavigationState();
 }
 
-class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
+class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   int _selectedIndex = 2;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;

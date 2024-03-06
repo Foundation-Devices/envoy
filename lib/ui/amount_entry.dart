@@ -62,7 +62,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     var unit = ref.read(sendScreenUnitProvider);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
-    String? text = cdata?.text ?? null;
+    String? text = cdata?.text;
     var decodedInfo = await BitcoinParser.parse(text!,
         fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
         wallet: widget.account?.wallet,
@@ -102,7 +102,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         case NumpadEvents.backspace:
           {
             setState(() {
-              if (_enteredAmount.length > 0) {
+              if (_enteredAmount.isNotEmpty) {
                 _enteredAmount =
                     _enteredAmount.substring(0, _enteredAmount.length - 1);
               }
@@ -297,9 +297,7 @@ class Numpad extends StatefulWidget {
   late final AmountDisplayUnit amountDisplayUnit;
   final bool isAmountZero;
 
-  Numpad(AmountDisplayUnit amountDisplayUnit, {required this.isAmountZero}) {
-    this.amountDisplayUnit = amountDisplayUnit;
-  }
+  Numpad(this.amountDisplayUnit, {super.key, required this.isAmountZero});
 
   @override
   State<Numpad> createState() => _NumpadState();

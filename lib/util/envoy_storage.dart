@@ -435,14 +435,14 @@ class EnvoyStorage {
   }
 
   Future<bool> setString(String key, String value) async {
-    final record = await preferencesStore.record(key);
+    final record = preferencesStore.record(key);
     await record.put(_db, value);
     _updatePreferencesCache(_db);
     return true;
   }
 
   Future<bool> setExchangeRate(Map<dynamic, dynamic> data) async {
-    final record = await exchangeRateStore.record(exchangeRateKey);
+    final record = exchangeRateStore.record(exchangeRateKey);
     await record.put(_db, data);
 
     return true;

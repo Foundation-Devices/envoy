@@ -8,7 +8,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
-import 'package:envoy/ui/envoy_colors.dart' as LegacyColors;
+import 'package:envoy/ui/envoy_colors.dart' as old_colors;
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
@@ -44,7 +44,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
   @override
   Widget build(BuildContext context) {
     Color accountAccentColor = widget.tag.getAccount()?.color ??
-        LegacyColors.EnvoyColors.listAccountTileColors[0];
+        old_colors.EnvoyColors.listAccountTileColors[0];
     final accountTransactions =
         ref.read(transactionsProvider(widget.tag.account));
     final tx = accountTransactions

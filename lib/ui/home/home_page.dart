@@ -107,7 +107,7 @@ class HomePageState extends ConsumerState<HomePage>
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
-      if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
+      if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
         if (_torWarningDisplayedMoreThan5minAgo && Settings().usingTor) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;

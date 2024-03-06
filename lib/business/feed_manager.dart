@@ -89,7 +89,7 @@ class FeedManager {
   List<Video> _parseVideos(List<dynamic> videos) {
     List<Video> currentVideos = [];
 
-    videos.forEach((video) {
+    for (var video in videos) {
       var downloads = video["download"];
 
       Map<int, String> contentMap = {};
@@ -131,7 +131,7 @@ class FeedManager {
         tags,
         thumbnailUrl: (video["pictures"])["sizes"][3]["link"],
       ));
-    });
+    }
 
     return currentVideos;
   }
@@ -244,8 +244,8 @@ class FeedManager {
   }
 
   storeBlogPosts() {
-    for (var BlogPost in blogs) {
-      EnvoyStorage().insertBlogPost(BlogPost);
+    for (var blog in blogs) {
+      EnvoyStorage().insertBlogPost(blog);
     }
   }
 }

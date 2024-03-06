@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -180,7 +182,9 @@ class EnvoySeed {
         await _storeLastBackupTimestamp();
       } else if (!Settings().syncToCloud && success) {
         await _storeLastBackupTimestamp();
-      } else if (cloud && !success) backupCompletedStream.sink.add(false);
+      } else if (cloud && !success) {
+        backupCompletedStream.sink.add(false);
+      }
     });
   }
 
@@ -262,7 +266,7 @@ class EnvoySeed {
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
-  Future<bool> restoreData({String? seed = null, String? filePath}) async {
+  Future<bool> restoreData({String? seed, String? filePath}) async {
     // Try to get seed from device
     try {
       if (seed == null) {
@@ -282,7 +286,7 @@ class EnvoySeed {
           return processRecoveryData(seed!, data);
         });
       } catch (e) {
-        throw e;
+        rethrow;
       }
     } else {
       try {

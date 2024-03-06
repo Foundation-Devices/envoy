@@ -273,7 +273,7 @@ class SecondaryAmountWidget extends StatelessWidget {
           ? EnvoyColors.textPrimary
           : EnvoyColors.accentPrimary,
     );
-    final iconColor = style == PrimaryAmountWidgetStyle.normal
+    final iconColor = style == SecondaryAmountWidgetStyle.normal
         ? EnvoyColors.textPrimary
         : EnvoyColors.accentPrimary;
 
@@ -372,7 +372,6 @@ List<TextSpan> buildPrimaryBtcTextSpans(int amountSats, bool decimalDot,
       }
     }
   }
-  ;
 
   return changeDecimalMark(
       AmountDisplayUnit.btc,

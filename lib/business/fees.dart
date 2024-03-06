@@ -116,7 +116,7 @@ class Fees {
     _getRates();
 
     // Refresh from time to time
-    Timer.periodic(Duration(minutes: 5), (_) {
+    Timer.periodic(const Duration(minutes: 5), (_) {
       _getRates();
     });
   }

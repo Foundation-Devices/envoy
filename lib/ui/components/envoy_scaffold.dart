@@ -4,11 +4,10 @@
 
 import 'package:flutter/material.dart';
 
-/**
- * A scaffold that provides a consistent look and feel for the app.
- * EnvoyScaffold is a wrapper around [Scaffold] that provides a scrollable body for content,
- * along with options to pass in a custom [AppBar] and a bottom widget that sticks to the bottom.
- * */
+/// A scaffold that provides a consistent look and feel for the app.
+/// EnvoyScaffold is a wrapper around [Scaffold] that provides a scrollable body for content,
+/// along with options to pass in a custom [AppBar] and a bottom widget that sticks to the bottom.
+///
 class EnvoyScaffold extends StatelessWidget {
   /// [child] - the content of the scaffold; if the child doesn't fit in the viewport, it will be scrolled using CustomScrollView.
   /// [topBarLeading] and [topBarActions] - the content of the app bar.

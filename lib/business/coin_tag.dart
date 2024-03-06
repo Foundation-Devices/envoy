@@ -31,7 +31,7 @@ class CoinTag {
   List<Coin> coins = [];
 
   @JsonKey(name: 'coins_id')
-  Set<String> coins_id = Set();
+  Set<String> coinsId = {};
 
   CoinTag(
       {required this.id,
@@ -71,12 +71,12 @@ class CoinTag {
 
   void addCoin(Coin coin) {
     coins.add(coin);
-    coins_id.add(coin.id);
+    coinsId.add(coin.id);
   }
 
   void removeCoin(Coin coin) {
     coins.remove(coin);
-    coins_id.remove(coin.id);
+    coinsId.remove(coin.id);
   }
 
   void addCoins(List<Coin> coins) => coins.forEach(addCoin);
@@ -92,12 +92,12 @@ class CoinTag {
   }
 
   static generateNewId() {
-    return Uuid().v4();
+    return const Uuid().v4();
   }
 
   void updateLockState(bool bool) {
-    coins.forEach((element) {
-      element.setLock(bool);
-    });
+    for (var coin in coins) {
+      coin.setLock(bool);
+    }
   }
 }

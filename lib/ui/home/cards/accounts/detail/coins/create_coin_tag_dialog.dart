@@ -192,7 +192,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   )),
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-            tags.length != 0
+            tags.isNotEmpty
                 ? Text(S().create_second_tag_modal_2_2_mostUsed)
                 : Text(S().create_first_tag_modal_2_2_suggest),
             Container(
@@ -273,7 +273,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
 
       final tags = ref.read(coinsTagProvider(widget.accountId));
 
-      if (targetTag?.coins_id.containsAll(selections) == true) {
+      if (targetTag?.coinsId.containsAll(selections) == true) {
         widget.onTagUpdate();
         return;
       }
@@ -299,7 +299,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
         /// no need to remove coins to the tag that we just added
         if (tag.id != targetTag.id) {
           for (var element in selectedCoins) {
-            if (tag.coins_id.contains(element.id)) {
+            if (tag.coinsId.contains(element.id)) {
               tag.removeCoin(element);
               coinsRemovedTags.add(tag);
             }

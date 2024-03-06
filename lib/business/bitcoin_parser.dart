@@ -166,11 +166,11 @@ class BitcoinParser {
       }
       var copiedInBtc = copiedStringParsed;
 
-      var amountInWalletBtc;
+      int amountInWalletBtc;
       if (wallet == null) {
         amountInWalletBtc = 0;
       } else {
-        amountInWalletBtc = (wallet.balance / 100000000);
+        amountInWalletBtc = wallet.balance ~/ 100000000;
       }
 
       if (copiedInBtc < amountInWalletBtc) {

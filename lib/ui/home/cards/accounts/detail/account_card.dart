@@ -13,7 +13,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
-import 'package:envoy/ui/envoy_icons.dart' as oldIcons;
+import 'package:envoy/ui/envoy_icons.dart' as old_icons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -265,7 +265,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   child: IconButton(
                     padding: EdgeInsets.zero,
                     icon: const Icon(
-                      oldIcons.EnvoyIcons.qr_scan,
+                      old_icons.EnvoyIcons.qr_scan,
                       size: 30,
                       color: EnvoyColors.darkTeal,
                     ),

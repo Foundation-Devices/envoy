@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+// TODO: replace with next gen EnvoyIcons from components
 class EnvoyIcons {
   static const IconData accounts = IconData(0xE903, fontFamily: 'EnvoyIcons');
   static const IconData devices = IconData(0xE906, fontFamily: 'EnvoyIcons');

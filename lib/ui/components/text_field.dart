@@ -144,7 +144,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                         onTap: () async {
                           final cdata =
                               await Clipboard.getData(Clipboard.kTextPlain);
-                          final text = cdata?.text ?? null;
+                          final text = cdata?.text;
                           if (text != null) {
                             widget.controller.text = text;
                           }

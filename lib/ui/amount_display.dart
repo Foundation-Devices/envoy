@@ -33,8 +33,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.inputMode = false,
       this.onLongPress,
       required this.account,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
     displayedAmount = getDisplayAmount(amountSats!, unit);

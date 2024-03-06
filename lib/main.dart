@@ -1,3 +1,4 @@
+// ignore_for_file: missing_provider_scope
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -77,6 +78,8 @@ Future<void> initSingletons() async {
 }
 
 class EnvoyApp extends StatelessWidget {
+  const EnvoyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Portrait mode only outside of video player
@@ -105,7 +108,7 @@ class EnvoyApp extends StatelessWidget {
 
     return ProviderScope(
       child: MaterialApp.router(
-        localizationsDelegates: [
+        localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

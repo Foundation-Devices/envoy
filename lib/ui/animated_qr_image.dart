@@ -66,7 +66,7 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
 
   void startTimer() {
     var duration = Duration(milliseconds: 1000 ~/ widget.refreshRate);
-    _timer = new Timer.periodic(duration, (Timer timer) {
+    _timer = Timer.periodic(duration, (Timer timer) {
       setState(() {});
     });
   }
@@ -78,6 +78,7 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
     widget.onLoad(context);
   }
 
+  @override
   void dispose() {
     _timer.cancel();
     super.dispose();

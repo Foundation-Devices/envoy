@@ -152,7 +152,7 @@ class CryptoRequest extends UniformResourceWriter {
     generateUuid();
   }
 
-  CryptoRequest.specificUuid(List<int> uuid) : uuid = uuid {
+  CryptoRequest.specificUuid(this.uuid) {
     cborEncoder = inst.encoder;
     _writeTlMapKey();
     tlMap.writeTag(37);
@@ -201,10 +201,7 @@ class CryptoRequest extends UniformResourceWriter {
 
     var buffer = inst.output.getData().cast<int>();
 
-    if (_urEncoder == null) {
-      _urEncoder =
-          Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
-    }
+    _urEncoder ??= Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
 
     return _urEncoder!.nextPart();
   }

@@ -22,10 +22,10 @@ class BigTab extends StatefulWidget {
   });
 
   @override
-  _BigTabState createState() => _BigTabState();
+  BigTabState createState() => BigTabState();
 }
 
-class _BigTabState extends State<BigTab> {
+class BigTabState extends State<BigTab> {
   @override
   Widget build(BuildContext context) {
     Color iconColor =

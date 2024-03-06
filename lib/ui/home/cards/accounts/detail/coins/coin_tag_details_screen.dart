@@ -43,9 +43,9 @@ class CoinTagDetailsScreen extends ConsumerStatefulWidget {
 
 class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   bool _menuVisible = false;
-  double _menuHeight = 80;
-  Coin? _selectedCoin = null;
-  GlobalKey _detailWidgetKey = GlobalKey();
+  final double _menuHeight = 80;
+  Coin? _selectedCoin;
+  final GlobalKey _detailWidgetKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -501,10 +501,11 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             ),
           ),
           onTap: () {
-            if (tag.coins.isEmpty)
+            if (tag.coins.isEmpty) {
               _deleteEmptyTag(context);
-            else
+            } else {
               _deleteTag(context);
+            }
           },
         ),
       ];

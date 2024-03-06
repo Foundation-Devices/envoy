@@ -16,7 +16,7 @@ Widget EnvoyScaffoldShieldScrollView(BuildContext context, Widget child) {
               padding: EdgeInsets.only(bottom: _shieldBottom),
               decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
-                Color(0x0),
+                Color(0x00000000),
                 Color(0xff686868),
                 Color(0xffFFFFFF),
               ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
@@ -114,7 +114,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                     decoration: const BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
-                          Color(0x0),
+                          Color(0x00000000),
                           Color(0xff686868),
                           Color(0xffFFFFFF),
                         ],

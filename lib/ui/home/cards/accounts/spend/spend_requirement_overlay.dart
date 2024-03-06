@@ -600,7 +600,7 @@ class SpendRequirementOverlayState
 
             /// check if selected coins are only part of untagged coins
             selection.toList().forEach((selectionId) {
-              if (!untagged.coins_id.contains(selectionId)) {
+              if (!untagged.coinsId.contains(selectionId)) {
                 isCoinsOnlyPartOfUntagged = false;
               }
             });

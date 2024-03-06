@@ -224,7 +224,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
       container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
         ///if current inputs are part of a single tag, use that tag as change output tag
-        if (element.coins_id.containsAll(utxoSet)) {
+        if (element.coinsId.containsAll(utxoSet)) {
           container.read(stagingTxChangeOutPutTagProvider.notifier).state =
               element;
         }
@@ -335,7 +335,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
           inputCoins.forEach((coin) async {
             final coinTag = coinTags.firstWhereOrNull((element) =>
-                element.coins_id.contains(coin.id) &&
+                element.coinsId.contains(coin.id) &&
                 element.account == account.id);
             await EnvoyStorage().addCoinHistory(
                 coin.id,

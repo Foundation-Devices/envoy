@@ -11,9 +11,9 @@ import 'package:envoy/business/scheduler.dart';
 import 'dart:async';
 
 enum AztecoVoucherRedeemResult {
-  Success,
-  Timeout,
-  VoucherInvalid // Able to reach server but problem with voucher
+  success,
+  timeout,
+  voucherInvalid // Able to reach server but problem with voucher
 }
 
 class AztecoVoucher {
@@ -54,20 +54,20 @@ class AztecoVoucher {
     try {
       response = await _http.get(url);
     } on TimeoutException {
-      return AztecoVoucherRedeemResult.Timeout;
+      return AztecoVoucherRedeemResult.timeout;
     }
 
     switch (response.statusCode) {
       case 200:
         // Request succeeded, parse the response
-        return AztecoVoucherRedeemResult.Success;
+        return AztecoVoucherRedeemResult.success;
 
       default:
         // Request failed
         break;
     }
 
-    return AztecoVoucherRedeemResult.VoucherInvalid;
+    return AztecoVoucherRedeemResult.voucherInvalid;
   }
 
   String getRedeemUrl(String address) {

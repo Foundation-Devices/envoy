@@ -60,7 +60,7 @@ class Bip21 {
 
     if (uriOptions["amount"] != null) {
       String? amountString = uriOptions["amount"];
-      if (amountString!.indexOf(",") != -1) {
+      if (amountString!.contains(",")) {
         throw ("Invalid amount: commas are invalid");
       }
       double? amount = double.tryParse(amountString);

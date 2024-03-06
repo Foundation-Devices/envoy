@@ -4,6 +4,8 @@ PODS:
   - file_saver (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
   - flutter_vlc_player (3.0.3):
@@ -20,11 +22,15 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - permission_handler_apple (9.0.4):
+  - permission_handler_apple (9.1.1):
     - Flutter
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
+  - Ramp (4.0.1)
+  - ramp_flutter (1.0.1):
+    - Flutter
+    - Ramp
   - rive_common (0.0.1):
     - Flutter
   - share_plus (0.0.1):
@@ -43,6 +49,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - Flutter (from `Flutter`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_vlc_player (from `.symlinks/plugins/flutter_vlc_player/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
@@ -51,6 +58,8 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
+  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
+  - ramp_flutter (from `.symlinks/plugins/ramp_flutter/ios`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -70,6 +79,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_saver/ios"
   Flutter:
     :path: Flutter
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_vlc_player:
@@ -86,6 +97,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
+  Ramp:
+    :git: https://github.com/RampNetwork/ramp-sdk-ios
+    :tag: 4.0.1
+  ramp_flutter:
+    :path: ".symlinks/plugins/ramp_flutter/ios"
   rive_common:
     :path: ".symlinks/plugins/rive_common/ios"
   share_plus:
@@ -99,27 +115,35 @@ EXTERNAL SOURCES:
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
+CHECKOUT OPTIONS:
+  Ramp:
+    :git: https://github.com/RampNetwork/ramp-sdk-ios
+    :tag: 4.0.1
+
 SPEC CHECKSUMS:
   file_picker: 1d63c4949e05e386da864365f8c13e1e64787675
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_vlc_player: a0bd756da5d2456f6d26963976616185a65ec677
   integration_test: 13825b8a9334a850581300559b8839134b124670
   local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
   MobileVLCKit: 144d5f565512d1147d63b0fa1379231b3fd66535
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
+  package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
+  ramp_flutter: 412e68fa0ee3196fc043f83555534574796edf2f
   rive_common: 8a159d68033a8b073e5853acc50f03aa486a2888
-  share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
-  shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
+  share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
+  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
-  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
 
-PODFILE CHECKSUM: 2b24e370d86e71942e95dee86eac403a61accec4
+PODFILE CHECKSUM: dbcfe0eb16baa2f26e442d8dc652993159052923
 
 COCOAPODS: 1.12.1

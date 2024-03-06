@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -58,8 +60,8 @@ class ExchangeRate extends ChangeNotifier {
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
-  HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
-  String _serverAddress = Settings().nguServerAddress;
+  final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  final String _serverAddress = Settings().nguServerAddress;
 
   static final ExchangeRate _instance = ExchangeRate._internal();
 
@@ -159,10 +161,7 @@ class ExchangeRate extends ChangeNotifier {
       return;
     }
 
-    if (selectedRate == null) {
-      selectedRate = usdRate;
-    }
-
+    selectedRate ??= usdRate;
     _storeRate(selectedRate, selectedCurrencyCode, usdRate);
   }
 

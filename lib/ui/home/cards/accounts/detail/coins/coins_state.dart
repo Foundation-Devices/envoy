@@ -61,23 +61,21 @@ class CoinStateNotifier extends StateNotifier<Set<String>> {
 
 final coinSelectionStateProvider =
     StateNotifierProvider<CoinStateNotifier, Set<String>>(
-  (ref) => CoinStateNotifier(Set()),
+  (ref) => CoinStateNotifier({}),
 );
 
 final coinSelectionFromWallet =
     StateNotifierProvider<CoinStateNotifier, Set<String>>(
-  (ref) => CoinStateNotifier(Set()),
+  (ref) => CoinStateNotifier({}),
 );
 
 final isCoinSelectedProvider = Provider.family<bool, String>(
     (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));
 
-/**
- * Provider for [Coin] list for specific account
- * @param accountId [Account.id]
- * @return list of coins
- * any changes to account or utxo block state will re calculate the list
- */
+/// Provider for [Coin] list for specific account
+/// @param accountId [Account.id]
+/// @return list of coins
+/// any changes to account or utxo block state will re calculate the list
 final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
   //Watch for any account changes
   final accounts = ref.watch(accountsProvider);
@@ -114,9 +112,9 @@ final coinsTagProvider =
   for (var tag in tags) {
     //filter coins that are associated with the tag
     final coinsAssociated =
-        coins.where((coin) => tag.coins_id.contains(coin.id)).toList();
+        coins.where((coin) => tag.coinsId.contains(coin.id)).toList();
     tag.coins = coinsAssociated;
-    coins.removeWhere((element) => tag.coins_id.contains(element.id));
+    coins.removeWhere((element) => tag.coinsId.contains(element.id));
   }
   //add coins that are not associated with any tag
   if (coins.isNotEmpty) {

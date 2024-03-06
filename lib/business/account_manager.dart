@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -380,7 +382,7 @@ class AccountManager extends ChangeNotifier {
 
   _startPeriodicSync() {
     // Sync periodically
-    _syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
       syncAll();
     });
   }
@@ -481,13 +483,13 @@ class AccountManager extends ChangeNotifier {
     //sync might interfere with reordering so making a copy will prevent moving the same account
     try {
       final visibleAccountsIds = accountFromListView.map((e) => e.id);
-      final _accountCopy = [
+      final accountCopy = [
         ...accounts.where((element) => visibleAccountsIds.contains(element.id))
       ];
 
       //accounts that are not visible in the list (testnet). the move should not affect them,
       //so they are added to the end of the list
-      final _accountsThatNotVisible = [
+      final accountsThatNotVisible = [
         ...accounts.where((element) => !visibleAccountsIds.contains(element.id))
       ];
       //moving down, the list is shifted so the index is off by one
@@ -496,15 +498,15 @@ class AccountManager extends ChangeNotifier {
       }
       try {
         //Check if the items are not the same to prevent unnecessary duplication
-        if (_accountCopy[newIndex].id == _accountCopy[oldIndex].id) {
+        if (accountCopy[newIndex].id == accountCopy[oldIndex].id) {
           return;
         }
       } catch (_) {}
-      var movedAccount = _accountCopy.removeAt(oldIndex);
-      _accountCopy.insert(newIndex, movedAccount);
+      var movedAccount = accountCopy.removeAt(oldIndex);
+      accountCopy.insert(newIndex, movedAccount);
 
       // updated accounts with new order, testnet accounts are added to the end of the list if they are not visible
-      accounts = [..._accountCopy, ..._accountsThatNotVisible];
+      accounts = [...accountCopy, ...accountsThatNotVisible];
       notifyListeners();
       await storeAccounts();
     } catch (e) {
