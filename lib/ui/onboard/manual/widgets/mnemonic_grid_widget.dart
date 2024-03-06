@@ -11,20 +11,17 @@ enum SeedLength {
   MNEMONIC_24,
 }
 
-/**
- * A grid of text fields for entering mnemonic seed phrases.
- */
+/// A grid of text fields for entering mnemonic seed phrases.
 class MnemonicEntryGrid extends StatefulWidget {
   final SeedLength seedLength;
   final List<String>? seedInput;
   final Function(List<String>) onSeedWordAdded;
 
-  MnemonicEntryGrid(
-      {Key? key,
+  const MnemonicEntryGrid(
+      {super.key,
       required this.seedLength,
       this.seedInput,
-      required this.onSeedWordAdded})
-      : super(key: key);
+      required this.onSeedWordAdded});
 
   @override
   State<MnemonicEntryGrid> createState() => MnemonicEntryGridState();

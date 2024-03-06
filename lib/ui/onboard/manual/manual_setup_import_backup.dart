@@ -110,7 +110,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
 }
 
 class RecoverFromSeedLoader extends StatefulWidget {
-  RecoverFromSeedLoader({Key? key, required this.seed}) : super(key: key);
+  const RecoverFromSeedLoader({super.key, required this.seed});
 
   final String seed;
 

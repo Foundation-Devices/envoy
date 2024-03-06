@@ -29,7 +29,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget {
-  AccountsCard({
+  const AccountsCard({
     Key? key,
   }) : super(key: key);
 

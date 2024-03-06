@@ -212,9 +212,8 @@ class MagicRecoveryInfo extends ConsumerStatefulWidget {
   final bool skipSuccessScreen;
   final GestureTapCallback? onContinue;
 
-  MagicRecoveryInfo(
-      {Key? key, this.skipSuccessScreen = false, this.onContinue = null})
-      : super(key: key);
+  const MagicRecoveryInfo(
+      {super.key, this.skipSuccessScreen = false, this.onContinue});
 
   @override
   ConsumerState<MagicRecoveryInfo> createState() => _MagicRecoveryInfoState();

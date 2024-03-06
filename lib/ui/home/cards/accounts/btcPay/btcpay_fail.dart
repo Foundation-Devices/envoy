@@ -15,7 +15,7 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class BtcPayFail extends StatelessWidget {
-  BtcPayFail({Key? key, required this.voucher}) : super(key: key);
+  const BtcPayFail({super.key, required this.voucher});
   final BtcPayVoucher voucher;
 
   @override

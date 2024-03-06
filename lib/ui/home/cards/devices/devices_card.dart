@@ -23,9 +23,9 @@ import 'package:envoy/ui/home/home_page.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
-  DevicesCard({
-    Key? key,
-  }) : super(key: key);
+  const DevicesCard({
+    super.key,
+  });
 
   @override
   ConsumerState createState() => DevicesCardState();
@@ -280,7 +280,7 @@ class GhostDevice extends StatelessWidget {
 }
 
 class DeviceEmptyVideo extends StatelessWidget {
-  DeviceEmptyVideo({
+  const DeviceEmptyVideo({
     Key? key,
   }) : super(key: key);
 

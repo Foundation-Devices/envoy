@@ -25,7 +25,7 @@ class AmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final bool alignToEnd;
 
-  AmountWidget({
+  const AmountWidget({
     super.key,
     required this.amountSats,
     required this.primaryUnit,
@@ -249,7 +249,7 @@ class SecondaryAmountWidget extends StatelessWidget {
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
 
-  SecondaryAmountWidget(
+  const SecondaryAmountWidget(
       {super.key,
       required this.unit,
       required this.amountSats,

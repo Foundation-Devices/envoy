@@ -19,7 +19,7 @@ import 'package:envoy/business/scheduler.dart';
 class FullScreenVideoPlayer extends StatefulWidget {
   final Video video;
 
-  FullScreenVideoPlayer(this.video, {Key? key}) : super(key: key);
+  const FullScreenVideoPlayer(this.video, {super.key});
 
   @override
   State<FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();

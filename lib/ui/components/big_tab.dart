@@ -14,7 +14,7 @@ class BigTab extends StatefulWidget {
   final bool isActive;
   final ValueChanged<bool?>? onSelect;
 
-  BigTab({
+  const BigTab({
     super.key,
     required this.label,
     required this.icon,

@@ -13,12 +13,11 @@ class BtcPayLoadingPayout extends StatefulWidget {
   final PageController controller;
   final Account account;
 
-  BtcPayLoadingPayout(
-      {Key? key,
+  const BtcPayLoadingPayout(
+      {super.key,
       required this.voucher,
       required this.controller,
-      required this.account})
-      : super(key: key);
+      required this.account});
 
   @override
   _BtcPayLoadingPayoutState createState() => _BtcPayLoadingPayoutState();

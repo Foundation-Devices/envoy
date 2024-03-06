@@ -25,11 +25,11 @@ class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
   final Account account;
 
-  AccountListTile(
+  const AccountListTile(
     this.account, {
-    Key? key,
+    super.key,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<AccountListTile> createState() => _AccountListTileState();

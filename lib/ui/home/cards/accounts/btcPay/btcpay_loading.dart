@@ -12,7 +12,7 @@ class BtcPayLoadingModal extends StatefulWidget {
   final BtcPayVoucher voucher;
   final PageController controller;
 
-  BtcPayLoadingModal({
+  const BtcPayLoadingModal({
     Key? key,
     required this.voucher,
     required this.controller,

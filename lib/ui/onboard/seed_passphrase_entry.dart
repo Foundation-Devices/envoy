@@ -15,9 +15,8 @@ class SeedPassphraseEntry extends StatefulWidget {
   final Function(String passphrase) onPassphraseEntered;
   final bool recovering;
 
-  SeedPassphraseEntry(
-      {Key? key, required this.onPassphraseEntered, this.recovering = false})
-      : super(key: key);
+  const SeedPassphraseEntry(
+      {super.key, required this.onPassphraseEntered, this.recovering = false});
 
   @override
   State<SeedPassphraseEntry> createState() => _SeedPassphraseEntryState();

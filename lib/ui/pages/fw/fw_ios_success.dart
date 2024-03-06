@@ -11,7 +11,7 @@ import 'package:rive/rive.dart';
 class FwIosSuccessPage extends StatelessWidget {
   final bool onboarding;
 
-  FwIosSuccessPage({super.key, required this.onboarding});
+  const FwIosSuccessPage({super.key, required this.onboarding});
 
   @override
   Widget build(BuildContext context) {

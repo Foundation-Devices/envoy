@@ -132,8 +132,8 @@ class ExpandablePageView extends StatefulWidget {
   /// This property defaults to true and must not be null.
   final bool padEnds;
 
-  ExpandablePageView({
-    required List<Widget> children,
+  const ExpandablePageView({
+    required List<Widget> this.children,
     this.controller,
     this.onPageChanged,
     this.reverse = false,
@@ -151,14 +151,12 @@ class ExpandablePageView extends StatefulWidget {
     this.scrollBehavior,
     this.scrollDirection = Axis.horizontal,
     this.padEnds = true,
-    Key? key,
+    super.key,
   })  : assert(estimatedPageSize >= 0.0),
-        children = children,
         itemBuilder = null,
-        itemCount = null,
-        super(key: key);
+        itemCount = null;
 
-  ExpandablePageView.builder({
+  const ExpandablePageView.builder({
     required int this.itemCount,
     required WidgetBuilder this.itemBuilder,
     this.controller,
@@ -178,10 +176,9 @@ class ExpandablePageView extends StatefulWidget {
     this.scrollBehavior,
     this.scrollDirection = Axis.horizontal,
     this.padEnds = true,
-    Key? key,
+    super.key,
   })  : assert(estimatedPageSize >= 0.0),
-        children = null,
-        super(key: key);
+        children = null;
 
   @override
   _ExpandablePageViewState createState() => _ExpandablePageViewState();

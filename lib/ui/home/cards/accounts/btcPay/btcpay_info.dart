@@ -17,12 +17,12 @@ class BtcPayInfo extends StatelessWidget {
   final PageController controller;
   final Account account;
 
-  BtcPayInfo({
-    Key? key,
+  const BtcPayInfo({
+    super.key,
     required this.voucher,
     required this.controller,
     required this.account,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -64,7 +64,7 @@ class OnboardingPage extends StatelessWidget {
     popUntilGoRoute(context);
   }
 
-  OnboardingPage({
+  const OnboardingPage({
     super.key,
     this.qrCode,
     this.clipArt,
@@ -343,7 +343,7 @@ class LinkText extends StatelessWidget {
   final TextStyle? textStyle;
   final TextStyle? linkStyle;
 
-  LinkText(
+  const LinkText(
       {super.key, required this.text,
       this.onTap,
       this.textStyle,

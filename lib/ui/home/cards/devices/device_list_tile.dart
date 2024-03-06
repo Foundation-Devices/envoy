@@ -24,12 +24,12 @@ class DeviceListTile extends ConsumerStatefulWidget {
   final Device device;
   final bool ghostDevice;
 
-  DeviceListTile(
+  const DeviceListTile(
     this.device, {
-    Key? key,
+    super.key,
     required this.onTap,
     this.ghostDevice = false,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<DeviceListTile> createState() => _DeviceListTileState();

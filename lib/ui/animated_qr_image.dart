@@ -50,7 +50,7 @@ class AnimatedQrImage extends StatefulWidget {
         urType, Uint8List.fromList(completeMessage), maxFragmentLength);
   }
 
-  AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
+  const AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
       {super.key, this.refreshRate = 5, this.size, this.urEncoder})
       : cryptoRequest = request;
 

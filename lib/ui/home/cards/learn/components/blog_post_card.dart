@@ -129,7 +129,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
 }
 
 class BlogPostCard extends StatefulWidget {
-  BlogPostCard({
+  const BlogPostCard({
     Key? key,
     required this.blog,
   }) : super(key: key);

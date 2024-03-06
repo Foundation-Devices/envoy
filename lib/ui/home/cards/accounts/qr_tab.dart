@@ -17,7 +17,7 @@ class QrTab extends StatelessWidget {
   final Account account;
   final Widget qr;
 
-  QrTab(
+  const QrTab(
       {super.key, required this.account,
       required this.title,
       required this.subtitle,

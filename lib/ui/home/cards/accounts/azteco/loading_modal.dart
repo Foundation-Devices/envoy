@@ -13,7 +13,7 @@ class AztecoLoadingModal extends StatefulWidget {
   final PageController controller;
   final Account account;
 
-  AztecoLoadingModal(
+  const AztecoLoadingModal(
       {Key? key,
       required this.voucher,
       required this.controller,
