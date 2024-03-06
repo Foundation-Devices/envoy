@@ -23,7 +23,7 @@ import 'package:envoy/ui/envoy_button.dart';
 class SeedScreen extends StatefulWidget {
   final bool generate;
 
-  const SeedScreen({Key? key, this.generate = true}) : super(key: key);
+  const SeedScreen({super.key, this.generate = true});
 
   @override
   State<SeedScreen> createState() => _SeedScreenState();

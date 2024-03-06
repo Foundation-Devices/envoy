@@ -24,7 +24,7 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'manual_setup_import_backup.dart';
 
 class ManualSetup extends StatefulWidget {
-  const ManualSetup({Key? key}) : super(key: key);
+  const ManualSetup({super.key});
 
   @override
   State<ManualSetup> createState() => _ManualSetupState();
@@ -38,6 +38,22 @@ class _ManualSetupState extends State<ManualSetup> {
     return OnboardPageBackground(
         child: EnvoyScaffold(
       removeAppBarPadding: true,
+      topBarLeading: CupertinoNavigationBarBackButton(
+        color: Colors.black,
+        onPressed: () => Navigator.pop(context),
+      ),
+      topBarActions: [
+        TextButton(
+          child: Text(S().component_skip,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black)),
+          onPressed: () {
+            OnboardingPage.popUntilHome(context);
+          },
+        ),
+      ],
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -101,22 +117,6 @@ class _ManualSetupState extends State<ManualSetup> {
           ],
         ),
       ),
-      topBarLeading: CupertinoNavigationBarBackButton(
-        color: Colors.black,
-        onPressed: () => Navigator.pop(context),
-      ),
-      topBarActions: [
-        TextButton(
-          child: Text(S().component_skip,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black)),
-          onPressed: () {
-            OnboardingPage.popUntilHome(context);
-          },
-        ),
-      ],
     ));
   }
 }
@@ -130,7 +130,7 @@ enum SeedIntroScreenType {
 class SeedIntroScreen extends StatelessWidget {
   final SeedIntroScreenType mode;
 
-  const SeedIntroScreen({Key? key, required this.mode}) : super(key: key);
+  const SeedIntroScreen({super.key, required this.mode});
 
   @override
   Widget build(BuildContext context) {

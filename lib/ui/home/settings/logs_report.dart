@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EnvoyLogsScreen extends StatefulWidget {
-  const EnvoyLogsScreen({Key? key}) : super(key: key);
+  const EnvoyLogsScreen({super.key});
 
   @override
   State<EnvoyLogsScreen> createState() => _EnvoyLogsScreenState();

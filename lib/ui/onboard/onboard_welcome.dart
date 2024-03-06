@@ -32,7 +32,7 @@ const List<EscapeHatchTap> secretCombination = [
 ];
 
 class WelcomeScreen extends ConsumerStatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();

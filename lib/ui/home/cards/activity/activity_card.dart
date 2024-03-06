@@ -164,8 +164,8 @@ class ActivityGhostListTile extends StatelessWidget {
 
   const ActivityGhostListTile({
     this.animate = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

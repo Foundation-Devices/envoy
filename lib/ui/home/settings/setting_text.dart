@@ -12,11 +12,11 @@ class SettingText extends StatelessWidget {
 
   const SettingText(
     this.label, {
-    Key? key,
+    super.key,
     this.onTap,
     this.color = Colors.white,
     this.maxLines = 1,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

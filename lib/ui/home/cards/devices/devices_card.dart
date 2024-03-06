@@ -215,8 +215,8 @@ class DevicesOptions extends ConsumerWidget {
 
 class GhostDevice extends StatelessWidget {
   GhostDevice({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final device = Device(
       "Primary",
@@ -281,8 +281,8 @@ class GhostDevice extends StatelessWidget {
 
 class DeviceEmptyVideo extends StatelessWidget {
   const DeviceEmptyVideo({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

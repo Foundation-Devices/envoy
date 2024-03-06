@@ -349,8 +349,7 @@ class DotsIndicator extends StatefulWidget {
   final int totalPages;
 
   const DotsIndicator(
-      {Key? key, required this.pageController, required this.totalPages})
-      : super(key: key);
+      {super.key, required this.pageController, required this.totalPages});
 
   @override
   State<DotsIndicator> createState() => _DotsIndicatorState();
@@ -411,15 +410,14 @@ class MnemonicInput extends StatefulWidget {
   final int index;
 
   const MnemonicInput(
-      {Key? key,
+      {super.key,
       required this.controller,
       required this.onWordDetected,
       required this.focusNode,
       required this.index,
       this.readOnly = false,
       this.active = false,
-      required this.onWordAdded})
-      : super(key: key);
+      required this.onWordAdded});
 
   @override
   State<MnemonicInput> createState() => _MnemonicInputState();

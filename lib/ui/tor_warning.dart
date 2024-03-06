@@ -13,7 +13,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class TorWarning extends StatefulWidget {
-  const TorWarning({Key? key}) : super(key: key);
+  const TorWarning({super.key});
 
   @override
   State<TorWarning> createState() => _TorWarningState();

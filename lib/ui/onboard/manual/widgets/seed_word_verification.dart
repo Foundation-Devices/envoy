@@ -19,8 +19,7 @@ class VerifySeedPuzzleWidget extends StatefulWidget {
   final Function(bool verified) onVerificationFinished;
 
   const VerifySeedPuzzleWidget(
-      {Key? key, required this.seed, required this.onVerificationFinished})
-      : super(key: key);
+      {super.key, required this.seed, required this.onVerificationFinished});
 
   @override
   State<VerifySeedPuzzleWidget> createState() => _VerifySeedPuzzleWidgetState();
@@ -192,12 +191,11 @@ class PuzzleWidget extends StatefulWidget {
   final int seedIndex;
 
   const PuzzleWidget(
-      {Key? key,
+      {super.key,
       required this.puzzle,
       required this.onAnswered,
       required this.answer,
-      required this.seedIndex})
-      : super(key: key);
+      required this.seedIndex});
 
   @override
   State<PuzzleWidget> createState() => _PuzzleWidgetState();

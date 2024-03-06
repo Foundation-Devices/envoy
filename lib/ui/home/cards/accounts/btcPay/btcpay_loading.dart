@@ -13,16 +13,16 @@ class BtcPayLoadingModal extends StatefulWidget {
   final PageController controller;
 
   const BtcPayLoadingModal({
-    Key? key,
+    super.key,
     required this.voucher,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
-  _BtcPayLoadingModalState createState() => _BtcPayLoadingModalState();
+  BtcPayLoadingModalState createState() => BtcPayLoadingModalState();
 }
 
-class _BtcPayLoadingModalState extends State<BtcPayLoadingModal> {
+class BtcPayLoadingModalState extends State<BtcPayLoadingModal> {
   @override
   void initState() {
     super.initState();

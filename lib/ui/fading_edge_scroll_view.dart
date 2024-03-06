@@ -41,7 +41,7 @@ class FadingEdgeScrollView extends StatefulWidget {
   final bool shouldDisposeScrollController;
 
   const FadingEdgeScrollView._internal({
-    Key? key,
+    super.key,
     required this.child,
     required this.scrollController,
     required this.reverse,
@@ -50,8 +50,7 @@ class FadingEdgeScrollView extends StatefulWidget {
     required this.gradientFractionOnEnd,
     required this.shouldDisposeScrollController,
   })  : assert(gradientFractionOnStart >= 0 && gradientFractionOnStart <= 1),
-        assert(gradientFractionOnEnd >= 0 && gradientFractionOnEnd <= 1),
-        super(key: key);
+        assert(gradientFractionOnEnd >= 0 && gradientFractionOnEnd <= 1);
 
   /// Constructor for creating [FadingEdgeScrollView] with [ScrollView] as child
   /// child must have [ScrollView.controller] set

@@ -12,7 +12,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
-  const WalletSetupSuccess({Key? key}) : super(key: key);
+  const WalletSetupSuccess({super.key});
 
   @override
   ConsumerState<WalletSetupSuccess> createState() => _WalletSetupSuccessState();

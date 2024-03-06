@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class AztecoRedeemModalSuccess extends StatefulWidget {
-  const AztecoRedeemModalSuccess({Key? key}) : super(key: key);
+  const AztecoRedeemModalSuccess({super.key});
 
   @override
   State<AztecoRedeemModalSuccess> createState() => _AztecoRedeemModalSuccess();

@@ -20,11 +20,11 @@ class WalletSecurityModal extends StatefulWidget {
   final Function? onDenyBackup;
 
   const WalletSecurityModal({
-    Key? key,
+    super.key,
     required this.onLastStep,
     this.onDenyBackup,
     this.onConfirmBackup,
-  }) : super(key: key);
+  });
 
   @override
   State<WalletSecurityModal> createState() => _WalletSecurityModalState();

@@ -30,8 +30,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget {
   const AccountsCard({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<AccountsCard> createState() => AccountsCardState();

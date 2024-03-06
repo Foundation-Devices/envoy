@@ -21,7 +21,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
-  const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
+  const OnboardEnvoyWelcomeScreen({super.key});
 
   @override
   ConsumerState<OnboardEnvoyWelcomeScreen> createState() =>

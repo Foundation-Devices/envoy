@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+//TODO: Reimplement AnimatedQrImage to follow proper widget conventions.
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -13,6 +16,7 @@ import 'package:ur/ur.dart';
 
 class AnimatedQrImage extends StatefulWidget {
   // We can either iterate over a 'raw' UrEncoder (to send binary messages)...
+
   late final UrEncoder? urEncoder;
 
   // ...or a CryptoRequest object that has its own encoder within
@@ -28,7 +32,7 @@ class AnimatedQrImage extends StatefulWidget {
       this.size,
       this.cryptoRequest,
       String urType = "bytes",
-      bool binaryCborTag = false}) {
+      bool binaryCborTag = false, this.urEncoder}) {
     List<int> tag = [];
     if (binaryCborTag) {
       // https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md#canonical-cbor
@@ -50,7 +54,7 @@ class AnimatedQrImage extends StatefulWidget {
         urType, Uint8List.fromList(completeMessage), maxFragmentLength);
   }
 
-  const AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
+   AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
       {super.key, this.refreshRate = 5, this.size, this.urEncoder})
       : cryptoRequest = request;
 

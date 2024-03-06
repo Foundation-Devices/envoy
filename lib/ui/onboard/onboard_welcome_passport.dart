@@ -18,7 +18,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
-  const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);
+  const OnboardPassportWelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -285,7 +285,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 }
 
 class _DevOptions extends StatelessWidget {
-  const _DevOptions({Key? key}) : super(key: key);
+  const _DevOptions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -356,7 +356,7 @@ class _DevOptions extends StatelessWidget {
 }
 
 class TestnetInfoModal extends StatelessWidget {
-  const TestnetInfoModal({Key? key}) : super(key: key);
+  const TestnetInfoModal({super.key});
 
   @override
   Widget build(BuildContext context) {

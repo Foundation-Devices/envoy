@@ -21,7 +21,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class AuthenticateApp extends StatelessWidget {
-  const AuthenticateApp({Key? key}) : super(key: key);
+  const AuthenticateApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class AuthenticateApp extends StatelessWidget {
 }
 
 class AuthenticatePage extends StatefulWidget {
-  const AuthenticatePage({Key? key}) : super(key: key);
+  const AuthenticatePage({super.key});
 
   @override
   State<AuthenticatePage> createState() => _AuthenticatePageState();

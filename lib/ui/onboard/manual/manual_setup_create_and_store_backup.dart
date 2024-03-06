@@ -16,7 +16,7 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
-  const ManualSetupCreateAndStoreBackup({Key? key}) : super(key: key);
+  const ManualSetupCreateAndStoreBackup({super.key});
 
   @override
   ConsumerState<ManualSetupCreateAndStoreBackup> createState() =>
@@ -106,8 +106,8 @@ class _ManualSetupCreateAndStoreBackupState
 
 class BackupWarningModal extends ConsumerWidget {
   const BackupWarningModal({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

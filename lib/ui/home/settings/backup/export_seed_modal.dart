@@ -13,7 +13,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal_qr_code.dart';
 
 class ExportSeedModal extends StatefulWidget {
-  const ExportSeedModal({Key? key}) : super(key: key);
+  const ExportSeedModal({super.key});
 
   @override
   State<ExportSeedModal> createState() => _ExportSeedModalState();

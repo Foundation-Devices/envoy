@@ -12,10 +12,10 @@ enum BrandmarkStyle {
 
 class Brandmark extends StatelessWidget {
   const Brandmark({
-    Key? key,
+    super.key,
     required this.logoSize,
     required this.style,
-  }) : super(key: key);
+  });
 
   final double logoSize;
   final BrandmarkStyle style;

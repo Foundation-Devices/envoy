@@ -12,12 +12,11 @@ class LoaderGhost extends StatefulWidget {
   final bool animate;
 
   const LoaderGhost(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.height,
       this.diagonal = false,
-      this.animate = true})
-      : super(key: key);
+      this.animate = true});
 
   @override
   State<LoaderGhost> createState() => _LoaderGhostState();

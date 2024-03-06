@@ -21,9 +21,9 @@ class VideoCard extends ConsumerStatefulWidget {
   final Video video;
 
   const VideoCard({
-    Key? key,
+    super.key,
     required this.video,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<VideoCard> createState() => _VideoCardState();

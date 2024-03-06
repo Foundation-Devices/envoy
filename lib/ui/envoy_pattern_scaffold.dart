@@ -32,14 +32,13 @@ class EnvoyPatternScaffold extends StatefulWidget {
   final double gradientHeight;
 
   const EnvoyPatternScaffold(
-      {Key? key,
+      {super.key,
       this.animate = true,
       this.child,
       this.appBar,
       this.shield,
       this.header,
-      this.gradientHeight = 1.5})
-      : super(key: key);
+      this.gradientHeight = 1.5});
 
   @override
   State<EnvoyPatternScaffold> createState() => _EnvoyPatternScaffoldState();

@@ -20,7 +20,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
-  const MagicSetupTutorial({Key? key}) : super(key: key);
+  const MagicSetupTutorial({super.key});
 
   @override
   State<MagicSetupTutorial> createState() => _MagicSetupTutorialState();

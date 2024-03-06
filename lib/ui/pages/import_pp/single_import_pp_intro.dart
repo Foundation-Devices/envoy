@@ -15,8 +15,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 class SingleImportPpIntroPage extends StatelessWidget {
   final bool isExistingDevice;
 
-  const SingleImportPpIntroPage({Key? key, this.isExistingDevice = true})
-      : super(key: key);
+  const SingleImportPpIntroPage({super.key, this.isExistingDevice = true});
 
   @override
   Widget build(BuildContext context) {

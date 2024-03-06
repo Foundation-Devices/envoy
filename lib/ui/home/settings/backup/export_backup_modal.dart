@@ -10,7 +10,7 @@ import 'package:envoy/business/envoy_seed.dart';
 class ExportBackupModal extends StatefulWidget {
   final Function? onExport;
 
-  const ExportBackupModal({Key? key, this.onExport = null}) : super(key: key);
+  const ExportBackupModal({super.key, this.onExport = null});
 
   @override
   State<ExportBackupModal> createState() => _ExportBackupModalState();

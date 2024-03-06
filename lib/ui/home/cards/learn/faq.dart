@@ -66,18 +66,19 @@ class Faq extends ConsumerWidget {
   final String? searchText;
 
   const Faq({
-    Key? key,
+    super.key,
     this.searchText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(context, ref) {
     var faqs = ref.watch(faqsProvider);
-    if (searchText != null || searchText != "")
+    if (searchText != null || searchText != "") {
       faqs = faqs
           .where((entry) =>
               entry.question.toLowerCase().contains(searchText!.toLowerCase()))
           .toList();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

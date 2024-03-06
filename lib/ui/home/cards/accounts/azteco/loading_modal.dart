@@ -14,17 +14,16 @@ class AztecoLoadingModal extends StatefulWidget {
   final Account account;
 
   const AztecoLoadingModal(
-      {Key? key,
+      {super.key,
       required this.voucher,
       required this.controller,
-      required this.account})
-      : super(key: key);
+      required this.account});
 
   @override
-  _AztecoLoadingModalState createState() => _AztecoLoadingModalState();
+  AztecoLoadingModalState createState() => AztecoLoadingModalState();
 }
 
-class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
+class AztecoLoadingModalState extends State<AztecoLoadingModal> {
   @override
   void initState() {
     super.initState();

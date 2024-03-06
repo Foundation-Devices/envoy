@@ -21,8 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ManualSetupImportSeed extends ConsumerStatefulWidget {
   final SeedLength seedLength;
 
-  const ManualSetupImportSeed({Key? key, required this.seedLength})
-      : super(key: key);
+  const ManualSetupImportSeed({super.key, required this.seedLength});
 
   @override
   ConsumerState<ManualSetupImportSeed> createState() =>

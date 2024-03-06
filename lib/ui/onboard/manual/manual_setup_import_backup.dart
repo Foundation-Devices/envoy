@@ -21,7 +21,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
-  const ManualSetupImportBackup({Key? key}) : super(key: key);
+  const ManualSetupImportBackup({super.key});
 
   @override
   State<ManualSetupImportBackup> createState() =>

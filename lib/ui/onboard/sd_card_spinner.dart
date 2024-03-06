@@ -8,7 +8,7 @@ import 'package:rive/rive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SdCardSpinner extends ConsumerStatefulWidget {
-  const SdCardSpinner({Key? key}) : super(key: key);
+  const SdCardSpinner({super.key});
 
   @override
   ConsumerState<SdCardSpinner> createState() => _SdCardSpinnerState();

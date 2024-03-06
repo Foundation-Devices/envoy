@@ -18,11 +18,10 @@ class CardSwipeWrapper extends ConsumerStatefulWidget {
   final Account account;
 
   const CardSwipeWrapper(
-      {Key? key,
+      {super.key,
       required this.child,
       required this.height,
-      required this.account})
-      : super(key: key);
+      required this.account});
 
   @override
   ConsumerState<CardSwipeWrapper> createState() => _CardSwipeWrapperState();

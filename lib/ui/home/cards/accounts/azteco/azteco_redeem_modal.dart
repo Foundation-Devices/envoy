@@ -13,8 +13,7 @@ class AztecoRedeemModal extends StatefulWidget {
   final PageController controller;
 
   const AztecoRedeemModal(
-      {Key? key, required this.voucher, required this.controller})
-      : super(key: key);
+      {super.key, required this.voucher, required this.controller});
 
   @override
   State<AztecoRedeemModal> createState() => _AztecoRedeemModalState();

@@ -9,19 +9,18 @@ import 'package:flutter/material.dart';
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
 
-  const OnboardPageBackground({Key? key, required this.child})
-      : super(key: key);
+  const OnboardPageBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    double _shieldTop = MediaQuery.of(context).padding.top + 6.0;
-    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+    double shieldTop = MediaQuery.of(context).padding.top + 6.0;
+    double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
         AppBackground(),
         Padding(
           padding: EdgeInsets.only(
-              right: 5.0, left: 5.0, top: _shieldTop, bottom: _shieldBottom),
+              right: 5.0, left: 5.0, top: shieldTop, bottom: shieldBottom),
           child: Hero(
             tag: "shield",
             transitionOnUserGestures: true,

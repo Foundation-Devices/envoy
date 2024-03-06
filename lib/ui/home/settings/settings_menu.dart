@@ -201,10 +201,10 @@ class MenuOption extends StatelessWidget {
   final Function() onTap;
 
   const MenuOption({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

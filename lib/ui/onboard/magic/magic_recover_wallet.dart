@@ -26,7 +26,7 @@ import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
-  const MagicRecoverWallet({Key? key}) : super(key: key);
+  const MagicRecoverWallet({super.key});
 
   @override
   ConsumerState<MagicRecoverWallet> createState() => _MagicRecoverWalletState();

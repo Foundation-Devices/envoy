@@ -20,7 +20,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
-  const MagicSetupGenerate({Key? key}) : super(key: key);
+  const MagicSetupGenerate({super.key});
 
   @override
   State<MagicSetupGenerate> createState() => _MagicSetupGenerateState();

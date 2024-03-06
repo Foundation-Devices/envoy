@@ -10,8 +10,7 @@ import 'package:flutter/material.dart';
 class AztecoConnectionModalFail extends StatefulWidget {
   final PageController controller;
 
-  const AztecoConnectionModalFail({Key? key, required this.controller})
-      : super(key: key);
+  const AztecoConnectionModalFail({super.key, required this.controller});
 
   @override
   State<AztecoConnectionModalFail> createState() => _AztecoRedeemModalFail();

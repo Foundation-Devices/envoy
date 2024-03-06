@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class BtcPayRedeemModalSuccess extends StatefulWidget {
-  const BtcPayRedeemModalSuccess({Key? key}) : super(key: key);
+  const BtcPayRedeemModalSuccess({super.key});
 
   @override
   State<BtcPayRedeemModalSuccess> createState() => _BtcPayRedeemModalSuccess();

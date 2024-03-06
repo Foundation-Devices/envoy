@@ -28,7 +28,7 @@ enum ButtonState {
 
 class EnvoyButton extends StatefulWidget {
   final String label;
-  late final ButtonType type;
+  final ButtonType type;
   final ButtonState state;
   final icon;
   final double height;
@@ -44,10 +44,10 @@ class EnvoyButton extends StatefulWidget {
   });
 
   @override
-  _EnvoyButtonState createState() => _EnvoyButtonState();
+  EnvoyButtonState createState() => EnvoyButtonState();
 }
 
-class _EnvoyButtonState extends State<EnvoyButton> {
+class EnvoyButtonState extends State<EnvoyButton> {
   bool isPressed = false;
   final _animationsDuration = const Duration(milliseconds: 200);
 
