@@ -39,7 +39,7 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   @override
   Widget build(BuildContext context) {
     ref.listen<List<String>>(routeMatchListProvider, (previous, next) {
-      homeTabRoutes.forEach((homeRoute) {
+      for (var homeRoute in homeTabRoutes) {
         if (next.contains(homeRoute)) {
           if (homeTabRoutes.indexOf(homeRoute) != _selectedIndex) {
             setState(() {
@@ -47,7 +47,7 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
             });
           }
         }
-      });
+      }
     });
     return Padding(
       padding: const EdgeInsets.only(bottom: EnvoySpacing.small),

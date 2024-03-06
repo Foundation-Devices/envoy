@@ -18,10 +18,10 @@ class LearnFilterWidget extends ConsumerStatefulWidget {
   const LearnFilterWidget({super.key});
 
   @override
-  _LearnFilterWidgetState createState() => _LearnFilterWidgetState();
+  LearnFilterWidgetState createState() => LearnFilterWidgetState();
 }
 
-class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
+class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
   LearnSortTypes? _sortState;
   Set<LearnFilters>? _filterState;
 

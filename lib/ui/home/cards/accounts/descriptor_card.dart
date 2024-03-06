@@ -22,7 +22,7 @@ import 'package:share_plus/share_plus.dart';
 class DescriptorCard extends ConsumerStatefulWidget {
   final Account account;
 
-  DescriptorCard(this.account) : super(key: UniqueKey()) {}
+  DescriptorCard(this.account) : super(key: UniqueKey());
 
   @override
   ConsumerState<DescriptorCard> createState() => _DescriptorCardState();

@@ -299,7 +299,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                           border: nodeConnectionState.error == null
                               ? Border.all(color: Colors.transparent)
                               : Border.all(color: EnvoyColors.danger, width: 1),
-                          color: const Color(0xd231f20),
+                          color: const Color(0x0d231f20),
                         ),
                         child: Opacity(
                           opacity: nodeConnectionState.isConnecting ? 0.4 : 1,

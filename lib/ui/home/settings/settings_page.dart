@@ -285,7 +285,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 }
 
 class _DevOptions extends StatelessWidget {
-  const _DevOptions({super.key});
+  const _DevOptions();
 
   @override
   Widget build(BuildContext context) {

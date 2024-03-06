@@ -144,14 +144,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       List locked = await CoinRepository().getBlockedCoins();
 
-      account.wallet.utxos.forEach((utxo) async {
+       for(var utxo in account.wallet.utxos) {
         if (locked.contains(utxo.id)) {
-          if (dontSpend == null) {
-            dontSpend = [];
-          }
-          dontSpend?.add(utxo);
+          dontSpend ??= [];
+          dontSpend.add(utxo);
         }
-      });
+      }
 
       //remove if there is any duplicates
       dontSpend = dontSpend?.unique((e) => e.id).toList();
@@ -332,7 +330,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           final tags = ref
               .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
 
-          inputCoins.forEach((coin) async {
+          for(var coin in inputCoins)  {
             final coinTag = coinTags.firstWhereOrNull((element) =>
                 element.coinsId.contains(coin.id) &&
                 element.account == account.id);
@@ -343,7 +341,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                     coinTag?.name ?? S().account_details_untagged_card,
                     psbt.txid,
                     coin));
-          });
+          }
 
           ///add change tag if its new and if it is not already added to the database
           if (tags.map((e) => e.id).contains(tag.id) == false &&
@@ -367,7 +365,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             await ref.refresh(coinsTagProvider(account.id!));
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        kPrint(e);
+      }
       ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
       ref.read(stagingTxNoteProvider.notifier).state = null;
       ref.read(spendEditModeProvider.notifier).state = false;

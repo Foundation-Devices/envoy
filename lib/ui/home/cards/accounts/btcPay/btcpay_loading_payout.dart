@@ -20,10 +20,10 @@ class BtcPayLoadingPayout extends StatefulWidget {
       required this.account});
 
   @override
-  _BtcPayLoadingPayoutState createState() => _BtcPayLoadingPayoutState();
+  BtcPayLoadingPayoutState createState() => BtcPayLoadingPayoutState();
 }
 
-class _BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
+class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
   @override
   void initState() {
     super.initState();

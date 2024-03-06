@@ -24,7 +24,7 @@ class PsbtCard extends StatelessWidget {
   final Psbt psbt;
   final Account account;
 
-  PsbtCard(this.psbt, this.account) : super(key: UniqueKey()) {}
+  PsbtCard(this.psbt, this.account) : super(key: UniqueKey());
 
   @override
   Widget build(BuildContext context) {

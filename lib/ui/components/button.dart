@@ -30,7 +30,7 @@ class EnvoyButton extends StatefulWidget {
   final String label;
   final ButtonType type;
   final ButtonState state;
-  final icon;
+  final EnvoyIcons? icon;
   final double height;
   final Function? onTap;
 
@@ -119,7 +119,7 @@ class EnvoyButtonState extends State<EnvoyButton> {
                               padding: const EdgeInsets.only(
                                   right: EnvoySpacing.small),
                               child: EnvoyIcon(
-                                widget.icon,
+                                widget.icon!,
                                 size: EnvoyIconSize.small,
                                 color: _getMainColor(),
                               ),

@@ -33,6 +33,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -604,23 +605,25 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
         ///move new change output to tags based on user selection or from the original selection
         if (rawTx != null && tag != null) {
-          rawTx.outputs.forEach((element) async {
-            if (element.path == TxOutputPath.Internal) {
+          for (var output in  rawTx.outputs ){
+            if (output.path == TxOutputPath.Internal) {
               final coin = Coin(
                   Utxo(
                       txid: psbt.txid,
-                      vout: rawTx.outputs.indexOf(element),
-                      value: element.amount),
+                      vout: rawTx.outputs.indexOf(output),
+                      value: output.amount),
                   account: account.id!);
-              tag?.coinsId.add(coin.id);
-              await CoinRepository().updateCoinTag(tag!);
+              tag.coinsId.add(coin.id);
+              await CoinRepository().updateCoinTag(tag);
               final _ = ref.refresh(accountsProvider);
               await Future.delayed(const Duration(seconds: 1));
               final __ = ref.refresh(coinsTagProvider(account.id!));
             }
-          });
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        kPrint(e);
+      }
       clearSpendState(ProviderScope.containerOf(context));
 
       String receiverAddress = widget.rbfSpendState.receiveAddress;

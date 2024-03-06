@@ -19,6 +19,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -144,7 +145,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     if (EnvoySeed().walletDerived()) {
       try {
         EnvoySeed().delete();
-      } catch (exception) {}
+      } catch (exception) {
+        kPrint(exception);
+      }
       return true;
     }
     return true;

@@ -22,10 +22,10 @@ class CustomCheckBox extends StatefulWidget {
   });
 
   @override
-  _CustomCheckBoxState createState() => _CustomCheckBoxState();
+  CustomCheckBoxState createState() => CustomCheckBoxState();
 }
 
-class _CustomCheckBoxState extends State<CustomCheckBox> {
+class CustomCheckBoxState extends State<CustomCheckBox> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -90,10 +90,10 @@ class DialogCheckBox extends StatefulWidget {
   });
 
   @override
-  _DialogCheckBoxState createState() => _DialogCheckBoxState();
+  DialogCheckBoxState createState() => DialogCheckBoxState();
 }
 
-class _DialogCheckBoxState extends State<DialogCheckBox> {
+class DialogCheckBoxState extends State<DialogCheckBox> {
   @override
   Widget build(BuildContext context) {
     return Row(

@@ -77,7 +77,7 @@ class DevicesCardState extends ConsumerState<DevicesCard>
 
 //ignore: must_be_immutable
 class DevicesList extends StatefulWidget {
-  DevicesList() : super(key: UniqueKey()) {}
+  DevicesList() : super(key: UniqueKey());
 
   @override
   State<DevicesList> createState() => _DevicesListState();

@@ -115,24 +115,24 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         });
 
         /// if the RBF tx include any other inputs, then find tags belongs to that inputs
-        rawTransaction.inputs.forEach((input) async {
+        for(var input in rawTransaction.inputs){
           final id = input.id;
           final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
           if (tag != null) {
             final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
             if (coin != null) inputTagData.add(Tuple(tag.name, coin.amount));
           }
-        });
+        }
       } else {
         /// find inputs that belongs to the tags
-        rawTransaction.inputs.forEach((input) async {
+        for(var input in   rawTransaction.inputs) {
           final id = input.id;
           final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
           if (tag != null) {
             final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
             inputTagData.add(Tuple(tag.name, coin?.amount ?? 0));
           }
-        });
+        }
       }
 
       /// find change output tag

@@ -17,6 +17,7 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as Rive;
@@ -436,7 +437,9 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
             HomePageTabState.accounts;
         ref.read(homePageTitleProvider.notifier).state = "";
       }
-    } catch (e) {}
+    } catch (e) {
+      kPrint(e);
+    }
   }
 }
 

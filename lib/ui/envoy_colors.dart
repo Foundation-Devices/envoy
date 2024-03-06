@@ -38,7 +38,7 @@ class EnvoyColors {
   static const Color grey15 = Color(0x26C0C0C0);
   static const Color grey22 = Color(0x38C0C0C0);
   static const Color grey85 = Color(0xD9C0C0C0);
-  static const Color greyLoadingSpinner = Color(0xD9D9D9);
+  static const Color greyLoadingSpinner = Color(0x00d9d9d9);
 
   static const Color darkTeal = Color(0xFF009DB9);
   static const Color teal = Color(0xFF00BDCD);

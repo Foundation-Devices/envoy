@@ -19,9 +19,9 @@ class HideStateNotifier extends ChangeNotifier {
     LocalStorage().readSecure("balance_hidden").then((value) {
       if (value != null) {
         List<dynamic> savedState = jsonDecode(value);
-        savedState.forEach((element) {
-          if (element is String) amountHiddenAccounts.add(element);
-        });
+        for (var state in savedState) {
+          if (state is String) amountHiddenAccounts.add(state);
+        }
         notifyListeners();
       }
     });

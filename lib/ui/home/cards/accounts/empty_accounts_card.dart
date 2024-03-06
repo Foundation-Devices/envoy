@@ -12,7 +12,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class EmptyAccountsCard extends StatelessWidget {
-  EmptyAccountsCard() : super(key: UniqueKey()) {}
+  EmptyAccountsCard() : super(key: UniqueKey());
 
   @override
   Widget build(BuildContext context) {

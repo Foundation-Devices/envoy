@@ -21,7 +21,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
-  SendCard() : super(key: UniqueKey()) {}
+  SendCard() : super(key: UniqueKey());
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();

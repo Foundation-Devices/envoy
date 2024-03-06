@@ -127,14 +127,14 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           List<String> firstRowContent = List.generate(3, (index) => "");
           List<String> secondRowContent = List.generate(3, (index) => "");
 
-          suggestions.forEach((element) {
-            int index = suggestions.indexOf(element);
+          for (var suggestion in suggestions) {
+            int index = suggestions.indexOf(suggestion);
             if (index < 3) {
-              firstRowContent[index] = element;
+              firstRowContent[index] = suggestion;
             } else {
-              secondRowContent[index - 3] = element;
+              secondRowContent[index - 3] = suggestion;
             }
-          });
+          }
           firstRowContent =
               firstRowContent.where((element) => element.isNotEmpty).toList();
           secondRowContent =

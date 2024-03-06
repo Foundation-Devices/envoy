@@ -52,7 +52,7 @@ class ActivityCardState extends State<ActivityCard> {
 
 //ignore: must_be_immutable
 class TopLevelActivityCard extends ConsumerWidget {
-  TopLevelActivityCard({super.key}) {}
+  TopLevelActivityCard({super.key});
 
   @override
   Widget build(context, ref) {

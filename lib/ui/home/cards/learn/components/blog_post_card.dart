@@ -136,10 +136,10 @@ class BlogPostCard extends StatefulWidget {
   final BlogPost blog;
 
   @override
-  _BlogPostCardState createState() => _BlogPostCardState();
+  BlogPostCardState createState() => BlogPostCardState();
 }
 
-class _BlogPostCardState extends State<BlogPostCard> {
+class BlogPostCardState extends State<BlogPostCard> {
   double topGradientEnd = 0.0;
 
   @override

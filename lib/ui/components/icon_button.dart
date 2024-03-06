@@ -28,10 +28,10 @@ class EnvoyIconButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EnvoyIconButtonState createState() => _EnvoyIconButtonState();
+  EnvoyIconButtonState createState() => EnvoyIconButtonState();
 }
 
-class _EnvoyIconButtonState extends State<EnvoyIconButton> {
+class EnvoyIconButtonState extends State<EnvoyIconButton> {
   bool isPressed = false;
   final _animationsDuration = const Duration(milliseconds: 200);
 

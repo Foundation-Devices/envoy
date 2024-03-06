@@ -43,11 +43,11 @@ class IndexedTransitionSwitcher extends StatefulWidget {
   final bool reverse;
 
   @override
-  _IndexedTransitionSwitcherState createState() =>
-      _IndexedTransitionSwitcherState();
+  IndexedTransitionSwitcherState createState() =>
+      IndexedTransitionSwitcherState();
 }
 
-class _IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
+class IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
     with TickerProviderStateMixin {
   late List<_ChildEntry> _childEntries;
 

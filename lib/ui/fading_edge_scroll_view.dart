@@ -153,10 +153,10 @@ class FadingEdgeScrollView extends StatefulWidget {
   }
 
   @override
-  _FadingEdgeScrollViewState createState() => _FadingEdgeScrollViewState();
+  FadingEdgeScrollViewState createState() => FadingEdgeScrollViewState();
 }
 
-class _FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
+class FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
     with WidgetsBindingObserver {
   late ScrollController _controller;
   bool? _isScrolledToStart;

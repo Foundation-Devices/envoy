@@ -57,7 +57,7 @@ import 'package:envoy/ui/components/ramp_widget_test.dart';
 class AccountCard extends ConsumerStatefulWidget {
   final bool showUtxoPage;
 
-  AccountCard({this.showUtxoPage = false}) : super(key: UniqueKey()) {}
+  AccountCard({this.showUtxoPage = false}) : super(key: UniqueKey());
 
   // @override
   // String? title = S().manage_account_address_heading.toUpperCase();

@@ -16,7 +16,6 @@ import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';

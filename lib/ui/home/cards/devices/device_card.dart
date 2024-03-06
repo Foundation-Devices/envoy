@@ -26,7 +26,7 @@ import 'package:timeago/timeago.dart' as timeago;
 class DeviceCard extends ConsumerStatefulWidget {
   final Device device;
 
-  DeviceCard(this.device) : super(key: UniqueKey()) {}
+  DeviceCard(this.device) : super(key: UniqueKey());
 
   @override
   ConsumerState<DeviceCard> createState() => _DeviceCardState();
