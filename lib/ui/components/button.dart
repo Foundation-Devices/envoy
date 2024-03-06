@@ -34,7 +34,7 @@ class EnvoyButton extends StatefulWidget {
   final double height;
   final Function? onTap;
 
-  EnvoyButton({
+  EnvoyButton({super.key,
     required this.label,
     required this.type,
     required this.state,

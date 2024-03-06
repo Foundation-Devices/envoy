@@ -12,7 +12,7 @@ import 'package:flutter/widgets.dart';
 class IndexedTransitionSwitcher extends StatefulWidget {
   /// Creates an [IndexedTransitionSwitcher].
   const IndexedTransitionSwitcher(
-      {required this.index,
+      {super.key, required this.index,
       required this.children,
       required this.transitionBuilder,
       this.reverse = false,

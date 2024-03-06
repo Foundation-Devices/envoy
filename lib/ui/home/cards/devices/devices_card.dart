@@ -172,7 +172,7 @@ class _DevicesListState extends State<DevicesList> {
 }
 
 class DevicesOptions extends ConsumerWidget {
-  DevicesOptions();
+  const DevicesOptions({super.key});
 
   @override
   Widget build(context, ref) {

@@ -218,7 +218,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 }
 
 class AccountPrompts extends ConsumerWidget {
-  const AccountPrompts();
+  const AccountPrompts({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

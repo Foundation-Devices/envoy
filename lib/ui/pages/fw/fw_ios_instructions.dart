@@ -17,7 +17,8 @@ class FwIosInstructionsPage extends ConsumerWidget {
   bool onboarding;
   int deviceId;
 
-  FwIosInstructionsPage({this.onboarding = true, this.deviceId = 1});
+
+  FwIosInstructionsPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(context, ref) {

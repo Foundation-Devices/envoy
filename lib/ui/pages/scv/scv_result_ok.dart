@@ -10,7 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 //ignore: must_be_immutable
 class ScvResultOkPage extends StatelessWidget {
   bool mustUpdateFirmware;
-  ScvResultOkPage({this.mustUpdateFirmware = true});
+  ScvResultOkPage({super.key, this.mustUpdateFirmware = true});
 
   @override
   Widget build(BuildContext context) {

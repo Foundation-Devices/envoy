@@ -24,6 +24,8 @@ import 'package:envoy/ui/routes/home_router.dart';
 class LearnCard extends ConsumerStatefulWidget {
   final TextEditingController controller = TextEditingController();
 
+  LearnCard({super.key});
+
   @override
   ConsumerState<LearnCard> createState() => _LearnCardState();
 }

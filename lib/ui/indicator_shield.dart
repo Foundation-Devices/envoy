@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/settings.dart';
 
 class IndicatorShield extends StatefulWidget {
+  const IndicatorShield({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return IndicatorShieldState();

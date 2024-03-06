@@ -141,6 +141,8 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
 }
 
 class TxFilterWidget extends ConsumerStatefulWidget {
+  const TxFilterWidget({super.key});
+
   @override
   ConsumerState<TxFilterWidget> createState() => _TxFilterWidgetState();
 }
@@ -454,7 +456,7 @@ class CheckBoxFilterItem extends StatelessWidget {
   final GestureTapCallback onTap;
 
   CheckBoxFilterItem(
-      {required this.checked, required this.text, required this.onTap});
+      {super.key, required this.checked, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

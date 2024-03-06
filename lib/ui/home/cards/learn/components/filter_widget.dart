@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LearnFilterWidget extends ConsumerStatefulWidget {
+  const LearnFilterWidget({super.key});
+
   @override
   _LearnFilterWidgetState createState() => _LearnFilterWidgetState();
 }

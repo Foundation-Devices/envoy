@@ -417,7 +417,7 @@ class _CoinLockButtonState extends State<CoinLockButton> {
 class CoinSubTitleText extends ConsumerWidget {
   final CoinTag tag;
 
-  CoinSubTitleText(this.tag);
+  const CoinSubTitleText(this.tag, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

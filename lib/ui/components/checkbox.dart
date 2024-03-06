@@ -14,7 +14,7 @@ class CustomCheckBox extends StatefulWidget {
   final bool isRadio;
   final ValueChanged<bool?>? onChanged;
 
-  CustomCheckBox({
+  const CustomCheckBox({super.key,
     required this.label,
     required this.isChecked,
     this.isRadio = false,
@@ -82,7 +82,7 @@ class DialogCheckBox extends StatefulWidget {
   final bool isRadio;
   final ValueChanged<bool?>? onChanged;
 
-  DialogCheckBox({
+  DialogCheckBox({super.key,
     required this.label,
     required this.isChecked,
     this.isRadio = false,

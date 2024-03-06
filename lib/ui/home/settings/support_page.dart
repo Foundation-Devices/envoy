@@ -7,6 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class SupportPage extends StatelessWidget {
+  const SupportPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(

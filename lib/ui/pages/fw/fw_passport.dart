@@ -11,7 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 class FwPassportPage extends StatelessWidget {
   bool onboarding;
 
-  FwPassportPage({this.onboarding = true});
+  FwPassportPage({super.key, this.onboarding = true});
 
   @override
   Widget build(BuildContext context) {

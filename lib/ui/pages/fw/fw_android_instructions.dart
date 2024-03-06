@@ -14,7 +14,7 @@ class FwAndroidInstructionsPage extends StatelessWidget {
   bool onboarding;
   int deviceId;
 
-  FwAndroidInstructionsPage({this.onboarding = true, this.deviceId = 1});
+  FwAndroidInstructionsPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(BuildContext context) {

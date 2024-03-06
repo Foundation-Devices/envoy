@@ -25,6 +25,8 @@ import 'dart:io';
 
 //ignore: must_be_immutable
 class PrivacyCard extends StatefulWidget {
+  const PrivacyCard({super.key});
+
   @override
   State<PrivacyCard> createState() => PrivacyCardState();
 }

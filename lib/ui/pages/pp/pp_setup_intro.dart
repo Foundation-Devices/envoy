@@ -13,6 +13,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class PpSetupIntroPage extends StatelessWidget {
+  const PpSetupIntroPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(

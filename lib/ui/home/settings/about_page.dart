@@ -135,7 +135,7 @@ class AboutButton extends StatelessWidget {
   final String label;
   final Function()? onTap;
 
-  AboutButton(this.label, {this.onTap});
+  AboutButton(this.label, {super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {

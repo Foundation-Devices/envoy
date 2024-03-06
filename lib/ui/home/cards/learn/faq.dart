@@ -138,7 +138,7 @@ class FaqBodyText extends StatelessWidget {
   final String text;
   final List<dynamic> links;
 
-  const FaqBodyText(this.text, {required this.links});
+  const FaqBodyText(this.text, {super.key, required this.links});
 
   @override
   Widget build(BuildContext context) {

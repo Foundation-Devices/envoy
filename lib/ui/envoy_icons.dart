@@ -22,7 +22,7 @@ class EnvoyIcon extends StatelessWidget {
   final double size;
   final Color? color;
 
-  EnvoyIcon({required this.icon, this.color, this.size = 24});
+  const EnvoyIcon({super.key, required this.icon, this.color, this.size = 24});
 
   @override
   Widget build(BuildContext context) {

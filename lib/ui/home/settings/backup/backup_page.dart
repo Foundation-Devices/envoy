@@ -23,6 +23,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
+  const BackupPage({super.key});
+
   @override
   ConsumerState<BackupPage> createState() => _BackupPageState();
 }

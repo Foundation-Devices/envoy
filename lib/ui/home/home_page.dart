@@ -60,7 +60,7 @@ class HomePageNotification extends Notification {
 class HomePage extends ConsumerStatefulWidget {
   final StatefulNavigationShell mainNavigationShell;
 
-  HomePage({required this.mainNavigationShell});
+  const HomePage({super.key, required this.mainNavigationShell});
 
   @override
   ConsumerState<HomePage> createState() => HomePageState();

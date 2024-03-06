@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'dart:async';
 import 'dart:io';
 import 'package:envoy/business/account_manager.dart';

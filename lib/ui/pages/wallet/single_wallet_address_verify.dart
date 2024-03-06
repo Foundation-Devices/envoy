@@ -10,7 +10,7 @@ import 'package:wallet/wallet.dart';
 
 class SingleWalletAddressVerifyPage extends StatelessWidget {
   final Wallet pairedWallet;
-  SingleWalletAddressVerifyPage(this.pairedWallet);
+  const SingleWalletAddressVerifyPage(this.pairedWallet, {super.key});
 
   @override
   Widget build(BuildContext context) {

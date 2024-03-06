@@ -15,7 +15,7 @@ class FwIntroPage extends StatelessWidget {
   bool onboarding;
   int deviceId;
 
-  FwIntroPage({this.onboarding = true, this.deviceId = 1});
+  FwIntroPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class PpNewSeedBackupPage extends StatelessWidget {
+  const PpNewSeedBackupPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(

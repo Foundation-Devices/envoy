@@ -18,7 +18,10 @@ class BtcPayDialog extends StatelessWidget {
   final BtcPayVoucher voucher;
   final Account account;
 
-  BtcPayDialog(this.voucher, this.account);
+  BtcPayDialog(this.voucher, this.account, {super.key}) {
+    // TODO: implement BtcPayDialog
+    throw UnimplementedError();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -108,7 +108,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 class DeviceOptions extends ConsumerStatefulWidget {
   final Device device;
 
-  DeviceOptions(this.device);
+  DeviceOptions(this.device, {super.key});
 
   @override
   ConsumerState<DeviceOptions> createState() => _DeviceOptionsState();

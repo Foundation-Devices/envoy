@@ -310,7 +310,7 @@ class ActionText extends StatelessWidget {
   final Function() action;
 
   const ActionText(
-      {required this.header, required this.text, required this.action});
+      {super.key, required this.header, required this.text, required this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +344,7 @@ class LinkText extends StatelessWidget {
   final TextStyle? linkStyle;
 
   LinkText(
-      {required this.text,
+      {super.key, required this.text,
       this.onTap,
       this.textStyle,
       this.linkStyle,

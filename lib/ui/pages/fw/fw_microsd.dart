@@ -21,7 +21,7 @@ class FwMicrosdPage extends ConsumerWidget {
   final bool onboarding;
   final int deviceId;
 
-  FwMicrosdPage({this.onboarding = true, this.deviceId = 1});
+  const FwMicrosdPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(context, ref) {

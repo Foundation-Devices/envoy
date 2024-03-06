@@ -376,7 +376,7 @@ class OverflowPage extends StatelessWidget {
   final Alignment alignment;
   final Axis scrollDirection;
 
-  const OverflowPage({
+  const OverflowPage({super.key,
     required this.onSizeChange,
     required this.child,
     required this.alignment,

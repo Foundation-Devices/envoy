@@ -16,6 +16,8 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/business/locale.dart';
 
 class ActivityCard extends StatefulWidget {
+  const ActivityCard({super.key});
+
   @override
   State<ActivityCard> createState() => ActivityCardState();
 }
@@ -50,7 +52,7 @@ class ActivityCardState extends State<ActivityCard> {
 
 //ignore: must_be_immutable
 class TopLevelActivityCard extends ConsumerWidget {
-  TopLevelActivityCard() {}
+  TopLevelActivityCard({super.key}) {}
 
   @override
   Widget build(context, ref) {

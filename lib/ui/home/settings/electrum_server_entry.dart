@@ -21,7 +21,7 @@ class ElectrumServerEntry extends StatefulWidget {
   final Function(String) setter;
   final String Function() getter;
 
-  ElectrumServerEntry(this.getter, this.setter);
+  const ElectrumServerEntry(this.getter, this.setter, {super.key});
 
   @override
   State<ElectrumServerEntry> createState() => _ElectrumServerEntryState();
