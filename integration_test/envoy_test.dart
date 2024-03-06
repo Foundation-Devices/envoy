@@ -5,7 +5,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/main.dart';
-import 'package:flutter/foundation.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -259,7 +259,7 @@ Future<void> resetEnvoyData() async {
     // Delete the database file
     await dbFile.delete();
   } catch (e) {
-    print('Error deleting app data: $e');
+    kPrint('Error deleting app data: $e');
   }
 }
 
@@ -317,7 +317,7 @@ class Passport {
           ":$passportPath/simulator/sim_modules:$passportPath/ports/stm32/boards/Passport/modules:$passportPath/extmod"
     };
 
-    print("Command: " +
+    kPrint("Command: " +
         "MICROPYPATH=" +
         env["MICROPYPATH"]! +
         " " +
@@ -341,10 +341,10 @@ class Passport {
       workingDirectory: passportPath,
     ).then((simulator) async {
       simulator.stdout.listen((event) {
-        print("simulator: ${utf8.decode(event)}");
+        kPrint("simulator: ${utf8.decode(event)}");
       });
       simulator.stderr.listen((event) {
-        print("simulator ERR: ${utf8.decode(event)}");
+        kPrint("simulator ERR: ${utf8.decode(event)}");
       });
       await Future.delayed(const Duration(seconds: 2), () {});
 
@@ -364,7 +364,7 @@ class Passport {
     try {
       File("$passportPath/$fileToDelete").deleteSync();
     } on Exception catch (e) {
-      print("Couldn't reset Passport: $e");
+      kPrint("Couldn't reset Passport: $e");
     }
   }
 
@@ -384,7 +384,7 @@ class Passport {
   void displayOled(String oledV4lDeviceDuplicate) {
     Process.start('ffplay', [oledV4lDeviceDuplicate],
         environment: {"DISPLAY": ":0"}).then((ffplay) {
-      print("ffplay started!");
+      kPrint("ffplay started!");
       // ffplay.stderr.listen((event) {
       //   print("ffplay: " + utf8.decode(event));
       // });
@@ -414,14 +414,12 @@ class Passport {
       'video4linux2',
       qrScannerDevice,
     ]).then((ffmpeg) {
-      if (kDebugMode) {
-        print("v4l devices created!");
-      }
+      kPrint("v4l devices created!");
       ffmpeg.stdout.listen((event) {
-        print(event);
+        kPrint(event);
       });
       ffmpeg.stderr.listen((event) {
-        print("ffmpeg :${utf8.decode(event)}");
+        kPrint("ffmpeg :${utf8.decode(event)}");
       });
     });
   }
@@ -468,16 +466,16 @@ class Passport {
       return false;
     }
 
-    print(process.stdout + "CAPTURE: ");
+    kPrint(process.stdout + "CAPTURE: ");
 
     for (final text in texts) {
       if (process.stdout.contains(text)) {
-        print('This screen contains: $text');
+        kPrint('This screen contains: $text');
         return true;
       }
     }
 
-    print('This screen does not contain: $texts');
+    kPrint('This screen does not contain: $texts');
     return false;
   }
 

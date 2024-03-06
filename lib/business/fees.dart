@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
