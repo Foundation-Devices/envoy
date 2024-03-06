@@ -125,7 +125,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Container(
+                    const SizedBox(
                       height: 100,
                       child: IndicatorShield(),
                     ),
@@ -186,7 +186,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                             ),
                           )),
                     )
-                  : CoinTagDetails(context),
+                  : coinTagDetails(context),
             ),
           ),
         ),
@@ -194,7 +194,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  Widget CoinTagDetails(BuildContext context) {
+  Widget coinTagDetails(BuildContext context) {
     final tag = widget.coinTag;
     final maxContainerHeight = MediaQuery.of(context).size.height * 0.50;
     double totalTagHeight = tag.coins.length == 1 ? 98 : 108;
@@ -223,7 +223,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       ///only show header of the tag
       totalTagHeight = 108;
     }
-    final cardRadius = 24.0;
+    const cardRadius = 24.0;
     return RawScrollbar(
       thumbColor: Colors.white38,
       thumbVisibility: totalTagHeight >= maxContainerHeight,
@@ -275,7 +275,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       key: _detailWidgetKey,
                       decoration: BoxDecoration(
                         borderRadius:
-                            BorderRadius.all(Radius.circular(cardRadius)),
+                            const BorderRadius.all(Radius.circular(cardRadius)),
                         border: Border.all(
                             color: Colors.black,
                             width: 2,
@@ -291,13 +291,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.all(Radius.circular(cardRadius)),
+                                const BorderRadius.all(Radius.circular(cardRadius)),
                             border: Border.all(
                                 color: border,
                                 width: 2,
                                 style: BorderStyle.solid)),
                         child: ClipRRect(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                                 Radius.circular(cardRadius - 2)),
                             child: StripesBackground(
                               child: tag.coins.length == 1
@@ -314,14 +314,14 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                       .symmetric(
                                                       vertical: 4,
                                                       horizontal: 4),
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   cardRadius -
                                                                       5.5))),
-                                                  child: Container(
+                                                  child: SizedBox(
                                                     height: coinListHeight,
                                                     child: ListView.builder(
                                                       physics:
@@ -606,7 +606,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               onSecondaryButtonTap: () async {
                 await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
-                final __ = ref.refresh(coinsProvider(widget.coinTag.account));
+                ref.refresh(coinsProvider(widget.coinTag.account));
                 Navigator.pop(context);
                 _menuVisible = false;
                 Navigator.pop(context);

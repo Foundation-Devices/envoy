@@ -91,7 +91,7 @@ class TouPage extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return ScvIntroPage();
+                    return const ScvIntroPage();
                   }));
                 },
               ),

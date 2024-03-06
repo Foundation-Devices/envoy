@@ -80,7 +80,7 @@ class Notifications {
   StreamController<List<EnvoyNotification>> streamController =
       StreamController();
   List<EnvoyNotification> notifications = [];
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
 
   static const String NOTIFICATIONS_PREFS = "notifications";
 

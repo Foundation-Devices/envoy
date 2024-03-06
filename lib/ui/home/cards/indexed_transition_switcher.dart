@@ -58,7 +58,7 @@ class IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
   }
 
   void _createChildEntries() {
-    this._childEntries = widget.children
+    _childEntries = widget.children
         .asMap()
         .entries
         .map((entry) => _createPageEntry(entry.key, entry.value))

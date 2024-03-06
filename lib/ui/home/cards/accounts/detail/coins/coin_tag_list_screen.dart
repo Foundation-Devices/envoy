@@ -27,7 +27,7 @@ class CoinsList extends ConsumerStatefulWidget {
 }
 
 class _CoinsListState extends ConsumerState<CoinsList> {
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {

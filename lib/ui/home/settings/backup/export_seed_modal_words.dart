@@ -178,7 +178,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    final TextStyle textTheme = const TextStyle(
+    const TextStyle textTheme = TextStyle(
         overflow: TextOverflow.fade,
         fontSize: 15,
         color: Colors.black87,
@@ -197,7 +197,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
               Text("${word.item1}. ", style: textTheme),
               Flexible(
                   child: Text(
-                "${word.item2}",
+                word.item2,
                 style: textTheme,
                 maxLines: 1,
                 softWrap: false,

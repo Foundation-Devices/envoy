@@ -36,10 +36,10 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   bool _showTorExplainer = false;
   bool _isPlaying = true;
 
-  int _playThreshold = 2000000; // Download 2 mb before even trying
+  final int _playThreshold = 2000000; // Download 2 mb before even trying
   int _downloaded = 0;
 
-  int _desiredResolution = 540;
+  final int _desiredResolution = 540;
 
   double _playerProgress = 0;
 
@@ -91,10 +91,10 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       }
     });
 
-    final Completer _completer = new Completer();
+    final Completer _completer = Completer();
 
     getApplicationDocumentsDirectory().then((dir) {
-      streamFile = File(dir.path + "/stream.mp4");
+      streamFile = File("${dir.path}/stream.mp4");
       HttpTor(Tor.instance, EnvoyScheduler().parallel)
           .getFile(streamFile.path, _getDownloadLink())
           .then((download) {

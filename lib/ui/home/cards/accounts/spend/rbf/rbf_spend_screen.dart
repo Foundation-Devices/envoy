@@ -121,6 +121,42 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                       extendBody: true,
                       extendBodyBehindAppBar: true,
                       removeAppBarPadding: true,
+                      bottom: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(7),
+                        ),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                          child: Container(
+                            color: Colors.white12,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: EnvoySpacing.xs)
+                                  .add(const EdgeInsets.only(
+                                      bottom: EnvoySpacing.large1)),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Opacity(
+                                    opacity: _rebuildingTx ? 0.3 : 1,
+                                    child: EnvoyButton(
+                                      label: S()
+                                          .replaceByFee_coindetails_overlay_modal_heading,
+                                      state: ButtonState.default_state,
+                                      onTap: !_rebuildingTx
+                                          ? () => _boostTx(context)
+                                          : null,
+                                      type: ButtonType.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       child: CustomScrollView(
                         slivers: [
                           SliverToBoxAdapter(
@@ -218,42 +254,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                           ),
                         ],
                       ),
-                      bottom: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(7),
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                          child: Container(
-                            color: Colors.white12,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: EnvoySpacing.xs)
-                                  .add(const EdgeInsets.only(
-                                      bottom: EnvoySpacing.large1)),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Opacity(
-                                    opacity: _rebuildingTx ? 0.3 : 1,
-                                    child: EnvoyButton(
-                                      label: S()
-                                          .replaceByFee_coindetails_overlay_modal_heading,
-                                      state: ButtonState.default_state,
-                                      onTap: !_rebuildingTx
-                                          ? () => _boostTx(context)
-                                          : null,
-                                      type: ButtonType.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
             ),
           ),
@@ -274,7 +274,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
+              child: SizedBox(
                 height: 260,
                 child: Rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
@@ -448,7 +448,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     ),
                     GestureDetector(
                         onTap: () async {
-                          final link =
+                          const link =
                               "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
                           launchUrl(Uri.parse(link));
                         },
@@ -589,7 +589,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           }
         } else {
           ///if user already selected a change output tag to original transaction then find it and add it to the new transaction
-          CoinTag? foundAnExistingChangeTag = null;
+          CoinTag? foundAnExistingChangeTag;
 
           /// Find any change tag present in the original transaction
           for (var tag in tags) {
@@ -615,9 +615,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                   account: account.id!);
               tag.coinsId.add(coin.id);
               await CoinRepository().updateCoinTag(tag);
-              final _ = ref.refresh(accountsProvider);
+              ref.refresh(accountsProvider);
               await Future.delayed(const Duration(seconds: 1));
-              final __ = ref.refresh(coinsTagProvider(account.id!));
+              final _ = ref.refresh(coinsTagProvider(account.id!));
             }
           }
         }
@@ -720,7 +720,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          AppBackground(),
+          const AppBackground(),
           Positioned(
             top: _topAppBarOffset,
             left: 5,

@@ -19,7 +19,7 @@ class ScvServer {
   static HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   static String serverAddress = "https://validate.foundationdevices.com";
 
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
   Challenge? storedChallenge;
 

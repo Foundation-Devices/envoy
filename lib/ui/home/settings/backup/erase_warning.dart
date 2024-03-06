@@ -35,7 +35,7 @@ class EraseWalletsAndBackupsWarning extends StatefulWidget {
 
 class _EraseWalletsAndBackupsWarningState
     extends State<EraseWalletsAndBackupsWarning> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {

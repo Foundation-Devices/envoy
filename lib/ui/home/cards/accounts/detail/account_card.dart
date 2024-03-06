@@ -36,7 +36,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -275,7 +275,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           return MediaQuery.removePadding(
                             context: context,
                             child: ScannerPage(
-                              [
+                              const [
                                 ScannerType.address,
                                 ScannerType.azteco,
                                 ScannerType.btcPay
@@ -381,10 +381,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
               controller: _scrollController,
               itemCount: transactions.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  child: TransactionListTile(
-                      transaction: transactions[index], account: account),
-                );
+                return TransactionListTile(
+                    transaction: transactions[index], account: account);
               },
             );
           }));
@@ -460,7 +458,7 @@ class TransactionListTile extends StatelessWidget {
 
   final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
     fontWeight: FontWeight.w400,
-    color: newColorScheme.EnvoyColors.txInfo,
+    color: new_color_scheme.EnvoyColors.txInfo,
   );
 
   @override
@@ -661,7 +659,7 @@ class TransactionListTile extends StatelessWidget {
               scale: 1.1,
               child: EnvoyIcon(
                 txIcon,
-                color: newColorScheme.EnvoyColors.textTertiary,
+                color: new_color_scheme.EnvoyColors.textTertiary,
                 size: EnvoyIconSize.normal,
               ),
             ),

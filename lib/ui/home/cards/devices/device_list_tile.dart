@@ -52,7 +52,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: [
+                stops: const [
                   0.6,
                   1.0
                 ],
@@ -106,7 +106,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                             ),
                           ),
                         ),
-                        Container(
+                        SizedBox(
                             height: 75,
                             child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -244,10 +244,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                               fwInfo.hasValue &&
                                                                       fwInfo.value !=
                                                                           null
-                                                                  ? ("FW " + // TODO: FIGMA
-                                                                      fwInfo
+                                                                  ? ("FW ${fwInfo
                                                                           .value!
-                                                                          .storedVersion)
+                                                                          .storedVersion}")
                                                                   : "Loading",
                                                               // TODO: FIGMA
                                                               style: Theme.of(

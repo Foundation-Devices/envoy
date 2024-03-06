@@ -92,7 +92,7 @@ class FwUploader {
     kPrint("SD: trying to access folder");
     _accessFolder();
 
-    kPrint("SD: trying to copy file to " + _sdCardPath);
+    kPrint("SD: trying to copy file to $_sdCardPath");
     fw.copySync(_sdCardPath + basename(fw.path));
   }
 

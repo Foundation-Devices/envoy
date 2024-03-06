@@ -315,28 +315,26 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         children: [
           Flexible(
             flex: 5,
-            child: Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                  child: icon,
+                ),
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.only(left: EnvoySpacing.xs),
-                    child: icon,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: EnvoySpacing.xs),
-                      child: Text(
-                        title,
-                        style: EnvoyTypography.body
-                            .copyWith(color: color ?? EnvoyColors.textPrimary),
-                      ),
+                    child: Text(
+                      title,
+                      style: EnvoyTypography.body
+                          .copyWith(color: color ?? EnvoyColors.textPrimary),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Flexible(

@@ -104,9 +104,11 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                 ),
                                 showDragHandle: true,
                                 builder: (context) {
-                                  return toggleState == AccountToggleState.tx
-                                      ? TxFilterWidget()
-                                      : const CoinTagsFilterWidget();
+                                  if (toggleState == AccountToggleState.tx) {
+                                    return const TxFilterWidget();
+                                  } else {
+                                    return const CoinTagsFilterWidget();
+                                  }
                                 });
                           },
                           child: Container(

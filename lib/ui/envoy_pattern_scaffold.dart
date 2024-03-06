@@ -6,14 +6,14 @@ import 'dart:math';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
 
-Widget EnvoyScaffoldShieldScrollView(BuildContext context, Widget child) {
-  double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
+  double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
   return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.53,
           child: Container(
-              padding: EdgeInsets.only(bottom: _shieldBottom),
+              padding: EdgeInsets.only(bottom: shieldBottom),
               decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color(0x00000000),
@@ -104,7 +104,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                   alignment: Alignment.center,
                   child: widget.header,
                 ),
-                bottomNavigationBar: Container(
+                bottomNavigationBar: SizedBox(
                   width: double.infinity,
                   height: (MediaQuery.of(context).size.height * 0.5)
                       .clamp(350, 580),

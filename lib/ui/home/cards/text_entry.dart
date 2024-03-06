@@ -26,11 +26,11 @@ class TextEntry extends StatelessWidget {
           child: TextFormField(
               focusNode: focusNode,
               controller: _controller,
-              maxLength: this.maxLength,
+              maxLength: maxLength,
               validator: (value) {
                 return null;
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 // Disable the borders
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,

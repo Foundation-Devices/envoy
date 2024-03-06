@@ -26,7 +26,7 @@ class _BtcPayRedeemModalSuccess extends State<BtcPayRedeemModalSuccess> {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },

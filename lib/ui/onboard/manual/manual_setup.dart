@@ -30,7 +30,7 @@ class ManualSetup extends StatefulWidget {
 }
 
 class _ManualSetupState extends State<ManualSetup> {
-  GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
+  final GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +160,7 @@ class SeedIntroScreen extends StatelessWidget {
                 children: [
                   Flexible(
                       child: Container(
+                    padding: const EdgeInsets.only(bottom: 6),
                     child: mode == SeedIntroScreenType.generate ||
                             mode == SeedIntroScreenType.verify
                         ? Image.asset(
@@ -172,7 +173,6 @@ class SeedIntroScreen extends StatelessWidget {
                             width: 250,
                             height: 250,
                           ),
-                    padding: const EdgeInsets.only(bottom: 6),
                   )),
                   Container(
                     padding: const EdgeInsets.all(5.0),
@@ -275,7 +275,7 @@ class SeedIntroScreen extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return ScannerPage([ScannerType.seed],
+                                    return ScannerPage(const [ScannerType.seed],
                                         onSeedValidated: (result) async {
                                       List<String> seedWords =
                                           result.split(" ");

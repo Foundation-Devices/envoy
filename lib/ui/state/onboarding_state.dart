@@ -71,7 +71,7 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
         kPrint("Your port is invalid");
       }
       state = NodeConnectionState(
-          isConnected: false, isConnecting: false, error: "${e}");
+          isConnected: false, isConnecting: false, error: "$e");
       kPrint(e);
     }
   }

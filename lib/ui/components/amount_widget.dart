@@ -262,7 +262,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (unit == AmountDisplayUnit.fiat && fxRateFiat == null) {
-      return LoaderGhost(
+      return const LoaderGhost(
         width: 30,
         height: 15,
         animate: true,

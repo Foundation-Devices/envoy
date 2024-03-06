@@ -99,7 +99,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                 _copyAddressToClipboard(
                                     context, snapshot.data!);
                               },
-                              icon: EnvoyIcon(
+                              icon: const EnvoyIcon(
                                 icon: "ic_copy.svg",
                                 size: 21,
                                 color: EnvoyColors.darkTeal,
@@ -112,9 +112,9 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                           ),
                           IconButton(
                               onPressed: () {
-                                Share.share("bitcoin:" + snapshot.data!);
+                                Share.share("bitcoin:${snapshot.data!}");
                               },
-                              icon: EnvoyIcon(
+                              icon: const EnvoyIcon(
                                 icon: "ic_envoy_share.svg",
                                 size: 21,
                                 color: EnvoyColors.darkTeal,

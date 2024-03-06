@@ -20,7 +20,7 @@ class FwIntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("fw_intro"),
+      key: const Key("fw_intro"),
       rightFunction: (_) {
         onboarding
             ? OnboardingPage.popUntilHome(context)

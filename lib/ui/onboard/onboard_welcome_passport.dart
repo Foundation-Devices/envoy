@@ -34,7 +34,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-              child: Container(
+              child: SizedBox(
                 width: 380,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -155,7 +155,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.8,
           ),
         ),
-        bottomNavigationBar: EnvoyScaffoldShieldScrollView(
+        bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
               padding: const EdgeInsets.only(
@@ -250,7 +250,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
-                                        return TouPage();
+                                        return const TouPage();
                                       }));
                                     },
                                   )

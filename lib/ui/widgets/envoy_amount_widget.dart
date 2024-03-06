@@ -18,7 +18,7 @@ class EnvoyAmount extends StatelessWidget {
     required this.amountWidgetStyle,
     required this.account,
     this.alignToEnd = true,
-    this.unit = null,
+    this.unit,
   });
 
   final int amountSats;

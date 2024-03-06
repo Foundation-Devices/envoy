@@ -230,9 +230,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
     bool hideSwitch = (coinTag.isAllCoinsLocked && isListScreen) ||
         (coinTag.totalAmount == 0);
 
-    final cardRadius = 26.0;
+    const cardRadius = 26.0;
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(cardRadius))),
       child: BalanceWidget(
@@ -311,7 +311,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                       )
                       .toList();
                   CoinTagSwitchState coinTagSwitchState =
-                      selectedItems.length == 0
+                      selectedItems.isEmpty
                           ? CoinTagSwitchState.off
                           : CoinTagSwitchState.partial;
                   if (selectedItems.length == coinTag.numOfCoins) {

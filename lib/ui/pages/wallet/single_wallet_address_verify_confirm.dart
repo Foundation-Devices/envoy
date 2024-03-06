@@ -14,7 +14,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("single_wallet_verify_confirm"),
+      key: const Key("single_wallet_verify_confirm"),
       clipArt: Image.asset("assets/address_verify.png"),
       text: [
         Flexible(

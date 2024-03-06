@@ -344,7 +344,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 await Navigator.of(context)
                     .push(MaterialPageRoute(builder: (_c) {
                   return ScannerPage(
-                    [ScannerType.seed],
+                    const [ScannerType.seed],
                     onSeedValidated: (seed) async {
                       try {
                         _setIndeterminateState();
@@ -352,23 +352,23 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                           _magicRecoverWalletState =
                               MagicRecoveryWalletState.recovering;
                         });
-                        String? passphrase = null;
+                        String? passphrase;
                         List<String> seedList = seed.split(" ");
                         if (seedList.length == 13 || seedList.length == 25) {
                           seedList.removeLast();
-                          String _passphrase = await showEnvoyDialog(
-                              dialog: Container(
+                          String typedPassword = await showEnvoyDialog(
+                              dialog: SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.85,
                                   height: 330,
                                   child: SeedPassphraseEntry(
                                       onPassphraseEntered: (value) {
-                                    passphrase = value;
+                                        passphrase = value;
                                     Navigator.maybePop(context);
                                   })),
                               context: context);
                           setState(() {
-                            passphrase = _passphrase;
+                            passphrase = typedPassword;
                           });
                         }
                         await EnvoySeed()
@@ -514,31 +514,29 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   // Might have use for this in the future?
   //ignore: unused_element
   Widget _successMessage(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                S().wallet_setup_success_heading,
-                style: Theme.of(context).textTheme.titleLarge,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              S().wallet_setup_success_heading,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 36),
+              child: Text(
+                S().wallet_setup_success_subheading,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontSize: 12),
+                textAlign: TextAlign.center,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 36),
-                child: Text(
-                  S().wallet_setup_success_subheading,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 12),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ]),
-      ),
+            ),
+          ]),
     );
   }
 
@@ -635,7 +633,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     showEnvoyDialog(
         context: context,
         dismissible: false,
-        dialog: Container(
+        dialog: SizedBox(
           width: MediaQuery.of(context).size.width * 0.75,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),

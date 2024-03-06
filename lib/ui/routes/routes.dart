@@ -43,7 +43,7 @@ final GoRouter mainRouter = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: ROUTE_SPLASH,
-      builder: (context, state) => WelcomeScreen(),
+      builder: (context, state) => const WelcomeScreen(),
     ),
     homeRouter,
     GoRoute(

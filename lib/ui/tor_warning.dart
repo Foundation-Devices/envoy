@@ -26,7 +26,7 @@ class _TorWarningState extends State<TorWarning> {
           fontWeight: FontWeight.w500,
         );
 
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
         mainAxisSize: MainAxisSize.min,

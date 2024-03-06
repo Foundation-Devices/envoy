@@ -30,9 +30,9 @@ class SendCard extends ConsumerStatefulWidget {
 class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
   Account? account;
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
-  var _amountEntry = AmountEntry();
+  var _amountEntry = const AmountEntry();
 
   Future<void> _onPaste(ParseResult parsed) async {
     setState(() {
@@ -59,7 +59,7 @@ class _SendCardState extends ConsumerState<SendCard>
       onPaste: _onPaste,
       account: ref.read(selectedAccountProvider),
     );
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
@@ -98,7 +98,7 @@ class _SendCardState extends ConsumerState<SendCard>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Container(
+        return SizedBox(
           height: constraints.maxHeight,
           child: SingleChildScrollView(
             child: Column(
@@ -203,9 +203,10 @@ class _SendCardState extends ConsumerState<SendCard>
                                         .read(spendTransactionProvider.notifier)
                                         .validate(
                                             ProviderScope.containerOf(context));
-                                    if (valid)
+                                    if (valid) {
                                       GoRouter.of(context)
                                           .push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                                    }
                                   } catch (e) {
                                     kPrint(e);
                                   }

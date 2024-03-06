@@ -33,7 +33,7 @@ class HomeAppBar extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomeAppBarState();
 }
 
-final _animationsDuration = const Duration(milliseconds: 350);
+const _animationsDuration = Duration(milliseconds: 350);
 
 class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
@@ -182,7 +182,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ),
               )),
         ),
-        SizedBox(height: 50, child: IndicatorShield())
+        const SizedBox(height: 50, child: IndicatorShield())
       ]),
       actions: [
 // Right action
@@ -244,7 +244,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   }
 
   String _getTitle(String path, String defaultTitle) {
-    if (defaultTitle.length != 0) return defaultTitle;
+    if (defaultTitle.isNotEmpty) return defaultTitle;
     switch (path) {
       case ROUTE_DEVICES:
         return S().bottomNav_devices;
@@ -289,7 +289,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               ),
             ),
           ),
-          optionsWidget: DevicesOptions(),
+          optionsWidget: const DevicesOptions(),
         );
         break;
       case ROUTE_PRIVACY:
@@ -421,13 +421,13 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         onTap: widget.onPressed,
         child: Center(
           child: SizedBox.fromSize(
+            size: const Size.square(24),
             child: _menuArtBoard != null
                 ? Rive(
                     artboard: _menuArtBoard!,
                     fit: BoxFit.contain,
                   )
                 : const SizedBox.square(),
-            size: const Size.square(24),
           ),
         ),
       ),

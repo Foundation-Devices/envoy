@@ -13,7 +13,7 @@ class ScvIntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("scv_intro"),
+      key: const Key("scv_intro"),
       clipArt: Center(child: Image.asset("assets/shield_inspect.png")),
       text: [
         OnboardingText(

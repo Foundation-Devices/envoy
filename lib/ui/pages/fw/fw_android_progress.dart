@@ -32,7 +32,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   int currentDotIndex = 3;
   int navigationDots = 6;
 
-  PageController _instructionPageController = PageController();
+  final PageController _instructionPageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +129,15 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
               onTap: () {
                 Navigator.of(context)
                     .pushReplacement(MaterialPageRoute(builder: (context) {
-                  if (done!)
+                  if (done!) {
                     return FwPassportPage(
                       onboarding: widget.onboarding,
                     );
-                  else
+                  } else {
                     return FwIntroPage(
                       deviceId: widget.deviceId,
                     );
+                  }
                 }));
               })
       ],

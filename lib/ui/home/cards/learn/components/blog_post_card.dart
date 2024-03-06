@@ -39,7 +39,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
   Widget build(BuildContext context) {
     final bool _isBlogRead =
         ref.watch(readBlogStreamProvider(widget.blog.id)).value ?? false;
-    return Container(
+    return SizedBox(
       width: containerWidth,
       child: Column(
         children: [
@@ -66,7 +66,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                                 height: blogThumbnailHeight,
                               ),
                             )
-                          : Container(
+                          : SizedBox(
                               height: blogThumbnailHeight,
                               width: containerWidth,
                               child: Opacity(
@@ -219,12 +219,12 @@ class BlogPostCardState extends State<BlogPostCard> {
                     ),
                   );
                 } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                    child: Container(
+                  return const Padding(
+                    padding: EdgeInsets.all(EnvoySpacing.medium1),
+                    child: SizedBox(
                         height: 60,
                         width: 60,
-                        child: const CircularProgressIndicator()),
+                        child: CircularProgressIndicator()),
                   );
                 }
               },

@@ -173,7 +173,7 @@ class HomePageState extends ConsumerState<HomePage>
       backgroundColor: Colors.lightBlue,
       replaceExisting: true,
       message: S().tor_connectivity_toast_warning,
-      icon: EnvoyIcon(
+      icon: const EnvoyIcon(
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,
       ),
@@ -348,7 +348,7 @@ class HomePageState extends ConsumerState<HomePage>
                 curve: Curves.easeIn,
                 duration: Duration(
                     milliseconds: _animationsDuration.inMilliseconds - 50),
-                child: AppBackground()),
+                child: const AppBackground()),
             // Variable background
             SafeArea(
               child: AnimatedSwitcher(

@@ -57,7 +57,7 @@ class PpSetupIntroPage extends StatelessWidget {
             height: MediaQuery.of(context).size.height / 1.3,
           ),
         ),
-        bottomNavigationBar: EnvoyScaffoldShieldScrollView(
+        bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
               padding: const EdgeInsets.symmetric(
@@ -75,7 +75,7 @@ class PpSetupIntroPage extends StatelessWidget {
                           children: [
                             const Padding(
                                 padding:
-                                    const EdgeInsets.all(EnvoySpacing.small)),
+                                    EdgeInsets.all(EnvoySpacing.small)),
                             Text(
                               S().envoy_pp_setup_intro_heading,
                               textAlign: TextAlign.center,
@@ -101,7 +101,7 @@ class PpSetupIntroPage extends StatelessWidget {
                                 S().envoy_pp_setup_intro_cta3, onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return PpRestoreBackupPage();
+                                return const PpRestoreBackupPage();
                               }));
                             }),
                             const Padding(
@@ -112,7 +112,7 @@ class PpSetupIntroPage extends StatelessWidget {
                                 S().envoy_pp_setup_intro_cta2, onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return PpRestoreSeedPage();
+                                return const PpRestoreSeedPage();
                               }));
                             }),
                             const Padding(
@@ -122,7 +122,7 @@ class PpSetupIntroPage extends StatelessWidget {
                                 onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return PpNewSeedPage();
+                                return const PpNewSeedPage();
                               }));
                             }),
                           ],

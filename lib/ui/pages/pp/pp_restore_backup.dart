@@ -13,7 +13,7 @@ class PpRestoreBackupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("pp_restore_backup"),
+      key: const Key("pp_restore_backup"),
       clipArt: Image.asset("assets/pp_restore_backup.png"),
       text: [
         OnboardingText(
@@ -27,7 +27,7 @@ class PpRestoreBackupPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return PpRestoreBackupPasswordPage();
+                return const PpRestoreBackupPasswordPage();
               }));
             }),
       ],

@@ -13,7 +13,7 @@ class PpRestoreSeedSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("pp_restore_seed_success"),
+      key: const Key("pp_restore_seed_success"),
       clipArt: Center(
         child: Image.asset(
           "assets/circle_ok.png",
@@ -32,7 +32,7 @@ class PpRestoreSeedSuccessPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleImportPpIntroPage(
+                return const SingleImportPpIntroPage(
                   isExistingDevice: false,
                 );
               }));

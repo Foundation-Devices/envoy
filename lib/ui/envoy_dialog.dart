@@ -22,7 +22,7 @@ class EnvoyDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
         minHeight: 270,
         maxWidth: MediaQuery.of(context).size.width * 0.80,

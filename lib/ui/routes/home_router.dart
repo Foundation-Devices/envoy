@@ -35,14 +35,14 @@ final homeRouter = StatefulShellRoute.indexedStack(
       StatefulShellBranch(restorationScopeId: "privacyScopeId", routes: [
         GoRoute(
           path: ROUTE_PRIVACY,
-          pageBuilder: (context, state) => MaterialPage(child: PrivacyCard()),
+          pageBuilder: (context, state) => const MaterialPage(child: PrivacyCard()),
         ),
       ]),
       accountsRouter,
       StatefulShellBranch(restorationScopeId: 'activityScopeId', routes: [
         GoRoute(
           path: ROUTE_ACTIVITY,
-          pageBuilder: (context, state) => MaterialPage(child: ActivityCard()),
+          pageBuilder: (context, state) => const MaterialPage(child: ActivityCard()),
         ),
       ]),
       StatefulShellBranch(restorationScopeId: 'learnScopeId', routes: [

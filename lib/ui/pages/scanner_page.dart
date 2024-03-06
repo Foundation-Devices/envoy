@@ -96,7 +96,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
   double _progress = 0.0;
 
-  Completer<void> _permissionsCompleter = Completer();
+  final Completer<void> _permissionsCompleter = Completer();
   late Future<void> _permissionsGranted;
 
   QRViewController? controller;
@@ -206,7 +206,7 @@ class _ScannerPageState extends State<ScannerPage> {
                 return const SizedBox.shrink();
               }
             }),
-        ViewFinder(),
+        const ViewFinder(),
         Center(
             child: SizedBox(
                 height: 200,
@@ -367,7 +367,7 @@ class _ScannerPageState extends State<ScannerPage> {
         } else {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
-            return ScvResultFailPage();
+            return const ScvResultFailPage();
           }));
         }
       });

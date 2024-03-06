@@ -83,7 +83,7 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
                 _typingTimer!.cancel();
               }
 
-              _typingTimer = Timer(Duration(seconds: 2), () {
+              _typingTimer = Timer(const Duration(seconds: 2), () {
                 if (address.isNotEmpty) {
                   _onAddressChanged(parseNodeUrl(address));
                 }
@@ -123,7 +123,7 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
           _state = ElectrumServerEntryState.valid;
           _isError = false;
           _textBelow =
-              "${S().privacy_node_connectedTo} " + features.serverVersion;
+              "${S().privacy_node_connectedTo} ${features.serverVersion}";
         });
       }
     }, onError: (e) {

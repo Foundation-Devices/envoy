@@ -23,12 +23,12 @@ class SeedPassphraseEntry extends StatefulWidget {
 }
 
 class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
-  TextEditingController _textEditingController = TextEditingController();
-  PageController _pageController = PageController();
+  final TextEditingController _textEditingController = TextEditingController();
+  final PageController _pageController = PageController();
   bool verify = false;
   String passPhrase = "";
   bool hasError = false;
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
 
   Widget _buildInput(String heading, String subheading, BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
         minHeight: 360,
         maxWidth: MediaQuery.of(context).size.width * 0.80,
@@ -160,12 +160,12 @@ void showInvalidSeedDialog({required BuildContext context}) {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Align(
+                      alignment: Alignment.topRight,
                       child: IconButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: const Icon(Icons.close)),
-                      alignment: Alignment.topRight),
+                          icon: const Icon(Icons.close))),
                 ),
                 const Icon(EnvoyIcons.exclamation_warning,
                     color: EnvoyColors.darkCopper, size: 58),

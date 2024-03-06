@@ -127,7 +127,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
       data = await Backup.restore(
           seed, Settings().envoyServerAddress, Tor.instance);
       setState(() {
-        if (data != null)
+        if (data != null) {
           showEnvoyPopUp(
               context,
               title: S().manual_setup_magicBackupDetected_heading,
@@ -143,8 +143,9 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
                 Navigator.pop(context);
               },
               dismissible: false);
-        else
+        } else {
           recoverManually(seedList, context);
+        }
       });
     } catch (e) {
       recoverManually(seedList, context);
@@ -193,10 +194,11 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return const WalletSetupSuccess();
     }));
-  } else
+  } else {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return const ManualSetup();
     }));
+  }
 }
 
 Future<void> recoverManually(
@@ -208,8 +210,9 @@ Future<void> recoverManually(
         context,
         MaterialPageRoute(
             builder: (context) => const ManualSetupImportBackup()));
-  } else
+  } else {
     showInvalidSeedDialog(
       context: context,
     );
+  }
 }

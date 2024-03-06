@@ -71,8 +71,8 @@ class AmountWidgetTestCases extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const fxRateFiat = 34743.76026697552;
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.large1),
+    return const Padding(
+      padding: EdgeInsets.all(EnvoySpacing.large1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -89,7 +89,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.btc,
@@ -99,7 +99,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: 0,
                   primaryUnit: AmountDisplayUnit.btc,
@@ -109,7 +109,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: 0,
                   primaryUnit: AmountDisplayUnit.sat,
@@ -119,7 +119,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: -421,
                   primaryUnit: AmountDisplayUnit.btc,
@@ -129,7 +129,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: -421,
                   primaryUnit: AmountDisplayUnit.sat,
@@ -139,7 +139,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: 0,
                   primaryUnit: AmountDisplayUnit.fiat,
@@ -248,7 +248,7 @@ class AmountWidgetTestCases extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(width: 2),
+          SizedBox(width: 2),
           Column(//Column for sats
               children: [
             AmountWidget(
@@ -287,7 +287,7 @@ class AmountWidgetTestCases extends StatelessWidget {
               fxRateFiat: fxRateFiat,
               symbolFiat: "\$",
             ),
-            const SizedBox(height: 100),
+            SizedBox(height: 100),
             // section for EU
             AmountWidget(
               amountSats: 512523722000,
@@ -317,7 +317,7 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
           ]),
-          const SizedBox(width: 2),
+          SizedBox(width: 2),
           Column(// Column for fiat
               children: [
             AmountWidget(
@@ -388,8 +388,8 @@ class AmountWidgetTestnetCases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.large1),
+    return const Padding(
+      padding: EdgeInsets.all(EnvoySpacing.large1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -404,7 +404,7 @@ class AmountWidgetTestnetCases extends StatelessWidget {
                   decimalDot: true,
                   badgeColor: Colors.blue,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.sat,
@@ -412,20 +412,20 @@ class AmountWidgetTestnetCases extends StatelessWidget {
                   decimalDot: true,
                   badgeColor: Colors.blue,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AmountWidget(
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.btc,
                   style: AmountWidgetStyle.singleLine,
                   decimalDot: true,
-                  badgeColor: const Color(0xFFBF755F),
+                  badgeColor: Color(0xFFBF755F),
                 ),
                 AmountWidget(
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.sat,
                   style: AmountWidgetStyle.singleLine,
                   decimalDot: true,
-                  badgeColor: const Color(0xFFBF755F),
+                  badgeColor: Color(0xFFBF755F),
                 ),
               ],
             ),

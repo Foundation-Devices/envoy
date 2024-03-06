@@ -20,41 +20,39 @@ class BtcPayFail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-              child: EnvoyIcon(EnvoyIcons.alert,
-                  size: EnvoyIconSize.big, color: EnvoyColors.danger),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+            child: EnvoyIcon(EnvoyIcons.alert,
+                size: EnvoyIconSize.big, color: EnvoyColors.danger),
+          ),
+          getMainErrorMessage(
+              voucher.errorType, voucher.expiresAt, voucher.link),
+          Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+            child: EnvoyButton(
+              S().component_continue,
+              type: EnvoyButtonTypes.primaryModal,
+              borderRadius: BorderRadius.circular(EnvoySpacing.small),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
             ),
-            getMainErrorMessage(
-                voucher.errorType, voucher.expiresAt, voucher.link),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-              child: EnvoyButton(
-                S().component_continue,
-                type: EnvoyButtonTypes.primaryModal,
-                borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

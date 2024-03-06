@@ -27,13 +27,29 @@ class MagicSetupTutorial extends StatefulWidget {
 }
 
 class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
-  GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
+  final GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
         child: EnvoyScaffold(
       removeAppBarPadding: true,
+      topBarLeading: CupertinoNavigationBarBackButton(
+        color: Colors.black,
+        onPressed: () => Navigator.pop(context),
+      ),
+      topBarActions: [
+        TextButton(
+          child: Text(S().component_skip,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black)),
+          onPressed: () {
+            OnboardingPage.popUntilHome(context);
+          },
+        ),
+      ],
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -110,22 +126,6 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
           ],
         ),
       ),
-      topBarLeading: CupertinoNavigationBarBackButton(
-        color: Colors.black,
-        onPressed: () => Navigator.pop(context),
-      ),
-      topBarActions: [
-        TextButton(
-          child: Text(S().component_skip,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black)),
-          onPressed: () {
-            OnboardingPage.popUntilHome(context);
-          },
-        ),
-      ],
     ));
   }
 

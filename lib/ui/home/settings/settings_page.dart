@@ -364,7 +364,7 @@ class TestnetInfoModal extends StatelessWidget {
           fontSize: 13,
         );
 
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.75,
       child: Column(
         mainAxisSize: MainAxisSize.min,

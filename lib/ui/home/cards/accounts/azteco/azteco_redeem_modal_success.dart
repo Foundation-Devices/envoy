@@ -60,7 +60,7 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const Padding(padding: const EdgeInsets.all(4)),
+              const Padding(padding: EdgeInsets.all(4)),
             ],
           ),
         ),

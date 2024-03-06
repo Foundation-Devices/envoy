@@ -62,7 +62,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Map>? logs = snapshot.data;
-            if (logs?.length == 0) {
+            if (logs !=null && logs.isEmpty) {
               return const Center(child: Text("No logs found")); // TODO: FIGMA
             }
             return Padding(

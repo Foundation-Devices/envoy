@@ -84,7 +84,7 @@ class _LoaderGhostState extends State<LoaderGhost>
                       decoration: const BoxDecoration(
                           color: Colors.grey,
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
+                              BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
                 ),

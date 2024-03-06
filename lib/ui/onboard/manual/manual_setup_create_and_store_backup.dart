@@ -85,8 +85,9 @@ class _ManualSetupCreateAndStoreBackupState
                             showEnvoyDialog(
                                 context: context,
                                 dialog: const EraseWalletsConfirmation());
-                          } else
+                          } else {
                             showWarningModal(context);
+                          }
                         }))
               ],
             ),
@@ -111,7 +112,7 @@ class BackupWarningModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),

@@ -19,7 +19,7 @@ class CoinRepository {
 
   factory CoinRepository() => _instance ??= CoinRepository._();
 
-  /** returns a stream of all utxo block state that stored in the [storage.utxoBlockState] database */
+  /// returns a stream of all utxo block state that stored in the [storage.utxoBlockState] database
   Stream<Map<String, bool?>> getCoinBlockStateStream() {
     return storage.utxoBlockState
         .query()

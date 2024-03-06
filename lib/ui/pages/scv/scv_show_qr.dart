@@ -26,7 +26,7 @@ class ScvShowQrPage extends StatelessWidget {
     });
 
     return OnboardingPage(
-      key: Key("scv_show_qr"),
+      key: const Key("scv_show_qr"),
       qrCodeUrCryptoRequest: cryptoRequest,
       text: [
         OnboardingText(

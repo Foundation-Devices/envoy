@@ -298,94 +298,93 @@ class _RBFWarningState extends State<RBFWarning> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: EnvoySpacing.medium1),
-            child: EnvoyIcon(
-              EnvoyIcons.info,
-              size: EnvoyIconSize.big,
-              color: EnvoyColors.accentPrimary,
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: EnvoySpacing.medium1),
+          child: EnvoyIcon(
+            EnvoyIcons.info,
+            size: EnvoyIconSize.big,
+            color: EnvoyColors.accentPrimary,
           ),
-          Text(
-            S().replaceByFee_coindetails_overlay_modal_heading,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16),
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(
-            S().replaceByFee_coindetails_overlay_modal_subheading,
+        ),
+        Text(
+          S().replaceByFee_coindetails_overlay_modal_heading,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16),
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        Text(
+          S().replaceByFee_coindetails_overlay_modal_subheading,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+          textAlign: TextAlign.center,
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        GestureDetector(
+          child: Text(
+            S().component_learnMore,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
+                  color: EnvoyColors.accentPrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
                 ),
-            textAlign: TextAlign.center,
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          GestureDetector(
-            child: Text(
-              S().component_learnMore,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: EnvoyColors.accentPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-            ),
+          onTap: () {
+            launchUrl(Uri.parse(
+                "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+          },
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              dismissed = !dismissed;
+            });
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                child: EnvoyCheckbox(
+                  value: dismissed,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        dismissed = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+              Text(
+                S().component_dontShowAgain,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color:
+                          dismissed ? Colors.black : const Color(0xff808080),
+                    ),
+              ),
+            ],
+          ),
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        EnvoyButton(
+            label: S().component_continue,
             onTap: () {
-              launchUrl(Uri.parse(
-                  "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+              if (dismissed) {
+                EnvoyStorage().addPromptState(DismissiblePrompt.rbfWarning);
+              }
+              widget.onConfirm();
             },
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                dismissed = !dismissed;
-              });
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  child: EnvoyCheckbox(
-                    value: dismissed,
-                    onChanged: (value) {
-                      if (value != null)
-                        setState(() {
-                          dismissed = value;
-                        });
-                    },
-                  ),
-                ),
-                Text(
-                  S().component_dontShowAgain,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            dismissed ? Colors.black : const Color(0xff808080),
-                      ),
-                ),
-              ],
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(
-              label: S().component_continue,
-              onTap: () {
-                if (dismissed) {
-                  EnvoyStorage().addPromptState(DismissiblePrompt.rbfWarning);
-                }
-                widget.onConfirm();
-              },
-              type: ButtonType.primary,
-              state: ButtonState.default_state),
-        ],
-      ),
+            type: ButtonType.primary,
+            state: ButtonState.default_state),
+      ],
     );
   }
 }
@@ -393,7 +392,7 @@ class _RBFWarningState extends State<RBFWarning> {
 void showNoBoostNoFundsDialog(BuildContext context) {
   showEnvoyDialog(
       context: context,
-      dialog: Container(
+      dialog: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: SingleChildScrollView(
           child: Padding(

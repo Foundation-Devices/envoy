@@ -63,19 +63,19 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                     _filterState = {}..addAll(LearnFilters.values);
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
+                ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
                 ),
               )
             ],
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          Container(
+          SizedBox(
             height: 34,
             child: ListView(
               scrollDirection: Axis.horizontal,

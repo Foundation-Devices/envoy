@@ -89,7 +89,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
     );
   }
 
-  TextEditingController _tagController = TextEditingController();
+  final TextEditingController _tagController = TextEditingController();
   String value = '';
 
   _tagWidget(BuildContext context) {

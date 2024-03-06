@@ -125,7 +125,7 @@ class _TransactionsDetailsWidgetState
             child: Stack(
               alignment: Alignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 100,
                   child: IndicatorShield(),
                 ),
@@ -225,7 +225,7 @@ class _TransactionsDetailsWidgetState
                                 shrinkWrap: true,
                                 padding: const EdgeInsets.all(0),
                                 children: [
-                                  CoinTagListItem(
+                                  coinTagListItem(
                                     title: S().coindetails_overlay_address,
                                     icon: SvgPicture.asset(
                                       "assets/icons/ic_spend.svg",
@@ -259,7 +259,7 @@ class _TransactionsDetailsWidgetState
                                       ),
                                     ),
                                   ),
-                                  CoinTagListItem(
+                                  coinTagListItem(
                                     title:
                                         S().coindetails_overlay_transactionID,
                                     icon: const Icon(
@@ -306,7 +306,7 @@ class _TransactionsDetailsWidgetState
                                           },
                                         )),
                                   ),
-                                  CoinTagListItem(
+                                  coinTagListItem(
                                     title: S().coindetails_overlay_date,
                                     icon: const Icon(
                                       Icons.calendar_today_outlined,
@@ -317,7 +317,7 @@ class _TransactionsDetailsWidgetState
                                         getTransactionDateAndTimeString(tx),
                                         style: trailingTextStyle),
                                   ),
-                                  CoinTagListItem(
+                                  coinTagListItem(
                                     title: S().coindetails_overlay_status,
                                     icon: SvgPicture.asset(
                                       "assets/icons/ic_status_icon.svg",
@@ -329,7 +329,7 @@ class _TransactionsDetailsWidgetState
                                         style: trailingTextStyle),
                                   ),
                                   RBFPossible
-                                      ? CoinTagListItem(
+                                      ? coinTagListItem(
                                           color: EnvoyColors.textTertiary,
                                           title: _getConfirmationTimeString(
                                               ref.watch(
@@ -370,7 +370,7 @@ class _TransactionsDetailsWidgetState
                                           alignment:
                                               const Alignment(0.0, -0.8));
                                     },
-                                    child: CoinTagListItem(
+                                    child: coinTagListItem(
                                       title: S()
                                           .coincontrol_tx_history_tx_detail_note,
                                       icon: SvgPicture.asset(
@@ -462,7 +462,7 @@ class _TransactionsDetailsWidgetState
       );
       feeTitle = S().replaceByFee_cancel_overlay_modal_cancelationFees;
     }
-    return CoinTagListItem(
+    return coinTagListItem(
       title: feeTitle,
       icon: icon,
       trailing: hideBalance
@@ -479,7 +479,7 @@ class _TransactionsDetailsWidgetState
     );
   }
 
-  Widget CoinTagListItem(
+  Widget coinTagListItem(
       {required String title,
       required Widget icon,
       required Widget trailing,

@@ -363,10 +363,11 @@ class _DotsIndicatorState extends State<DotsIndicator> {
     super.initState();
     widget.pageController.addListener(() {
       int value = widget.pageController.page?.ceil() ?? 0;
-      if (value != page && mounted)
+      if (value != page && mounted) {
         setState(() {
           page = value;
         });
+      }
     });
   }
 
@@ -377,12 +378,10 @@ class _DotsIndicatorState extends State<DotsIndicator> {
       widgets.add(_buildDot(i == page));
     }
 
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: widgets,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: widgets,
     );
   }
 
@@ -432,10 +431,11 @@ class _MnemonicInputState extends State<MnemonicInput> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.focusNode.addListener(() {
-        if (this.mounted)
+        if (mounted) {
           setState(() {
             _hasFocus = widget.focusNode.hasFocus;
           });
+        }
       });
       widget.controller.addListener(() {
         if (widget.controller.text.isEmpty) {
@@ -488,47 +488,45 @@ class _MnemonicInputState extends State<MnemonicInput> {
               children: [
                 Text("${widget.index + 1}. ", style: textTheme),
                 Expanded(
-                  child: Container(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        EditableText(
-                            controller: widget.controller,
-                            focusNode: widget.focusNode,
-                            enableIMEPersonalizedLearning: false,
-                            style: textTheme,
-                            textInputAction:
-                                (widget.index == 11 || widget.index == 23)
-                                    ? TextInputAction.done
-                                    : TextInputAction.next,
-                            onChanged: (value) {
-                              //Check words that start with the entered value
-                              //this will reduce unnecessary suggestions like "fat" for "fatigue"
-                              List<String> matches = seed_en
-                                  .where((element) =>
-                                      element.startsWith(value.toLowerCase()))
-                                  .toList();
-                              //If there is only one match and it is the same as the entered value, then the word is suggested
-                              if (matches.length == 1 &&
-                                  matches[0] == value &&
-                                  widget.focusNode.hasFocus) {
-                                widget.onWordDetected(
-                                    widget.focusNode, widget.controller, value);
-                              }
-                            },
-                            cursorColor: Theme.of(context).primaryColor,
-                            backgroundCursorColor: Colors.grey),
-                        Container(
-                          margin: const EdgeInsets.only(top: 14),
-                          child: Divider(
-                            thickness: 1,
-                            color: (_hasFocus || hasContent)
-                                ? Colors.transparent
-                                : Colors.black54,
-                          ),
-                        )
-                      ],
-                    ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      EditableText(
+                          controller: widget.controller,
+                          focusNode: widget.focusNode,
+                          enableIMEPersonalizedLearning: false,
+                          style: textTheme,
+                          textInputAction:
+                              (widget.index == 11 || widget.index == 23)
+                                  ? TextInputAction.done
+                                  : TextInputAction.next,
+                          onChanged: (value) {
+                            //Check words that start with the entered value
+                            //this will reduce unnecessary suggestions like "fat" for "fatigue"
+                            List<String> matches = seed_en
+                                .where((element) =>
+                                    element.startsWith(value.toLowerCase()))
+                                .toList();
+                            //If there is only one match and it is the same as the entered value, then the word is suggested
+                            if (matches.length == 1 &&
+                                matches[0] == value &&
+                                widget.focusNode.hasFocus) {
+                              widget.onWordDetected(
+                                  widget.focusNode, widget.controller, value);
+                            }
+                          },
+                          cursorColor: Theme.of(context).primaryColor,
+                          backgroundCursorColor: Colors.grey),
+                      Container(
+                        margin: const EdgeInsets.only(top: 14),
+                        child: Divider(
+                          thickness: 1,
+                          color: (_hasFocus || hasContent)
+                              ? Colors.transparent
+                              : Colors.black54,
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ],

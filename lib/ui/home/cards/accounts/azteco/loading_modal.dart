@@ -52,7 +52,7 @@ class AztecoLoadingModalState extends State<AztecoLoadingModal> {
     return SizedBox(
       height: MediaQuery.of(context).size.width * 0.75,
       child: const Center(
-        child: const SizedBox(
+        child: SizedBox(
           height: 60,
           width: 60,
           child: CircularProgressIndicator(

@@ -16,7 +16,7 @@ final fullscreenHomePageProvider = StateProvider<bool>((ref) => false);
 final homePageBackdropModeProvider = StateProvider<bool>((ref) => false);
 
 // final homepageOptionsWidgetProvider = StateProvider<Widget>((ref) => Container());
-final backdropWidgetProvider = StateProvider<Widget>((ref) => SettingsMenu());
+final backdropWidgetProvider = StateProvider<Widget>((ref) => const SettingsMenu());
 
 class HomeShellOptions {
   final Widget? optionsWidget;

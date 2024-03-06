@@ -65,7 +65,7 @@ class TransactionModel {
       this.belowDustLimit = false,
       this.canProceed = false,
       this.broadcastProgress = BroadcastProgress.staging,
-      this.error = null,
+      this.error,
       this.mode = SpendMode.normal,
       this.uneconomicSpends = false});
 
@@ -230,12 +230,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } on InsufficientFunds {
       // FIXME: This is to avoid redraws while we search for a valid PSBT
       // FIXME: See setFee in fee_slider
-      if (!settingFee)
+      if (!settingFee) {
         state = state.clone()
           ..loading = false
           ..rawTransaction = null
           ..psbt = null
           ..canProceed = false;
+      }
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
     } on BelowDustLimit {
@@ -249,7 +250,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           S().send_keyboard_amount_too_low_info;
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        kPrint("Error ${e}");
+        kPrint("Error $e");
         debugPrintStack(stackTrace: stackTrace);
       }
 

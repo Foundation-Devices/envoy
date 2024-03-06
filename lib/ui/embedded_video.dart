@@ -101,6 +101,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
           ),
         ),
         Align(
+          alignment: Alignment.topRight,
           child: Material(
             color: Colors.transparent,
             child: IconButton(
@@ -118,7 +119,6 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
               },
             ),
           ),
-          alignment: Alignment.topRight,
         )
       ],
     );

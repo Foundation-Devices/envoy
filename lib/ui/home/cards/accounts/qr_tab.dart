@@ -33,7 +33,7 @@ class QrTab extends StatelessWidget {
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              stops: [
+              stops: const [
                 0.0,
                 0.4
               ],

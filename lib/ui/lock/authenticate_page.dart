@@ -1,3 +1,4 @@
+// ignore_for_file: missing_provider_scope
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -39,7 +40,7 @@ class AuthenticateApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
-        localizationsDelegates: [
+        localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -67,10 +68,10 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: EnvoyColors.textPrimaryInverse,
-        image: new DecorationImage(
-            image: new ExactAssetImage('assets/splash_blank.png'),
+        image: DecorationImage(
+            image: ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,
             filterQuality: FilterQuality.high),
       ),
@@ -95,7 +96,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           if (Platform.isIOS) {
             await Future.delayed(const Duration(milliseconds: 800));
           }
-          runApp(EnvoyApp());
+          runApp(const EnvoyApp());
           return;
         } else {
           showAuthLockedOutDialog(
@@ -167,7 +168,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           ),
           localizedReason: 'Authenticate to Access Envoy');
       if (didAuthenticate) {
-        runApp(EnvoyApp());
+        runApp(const EnvoyApp());
         return;
       } else {
         showAuthLockedOutDialog(
@@ -189,7 +190,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       {required String title,
       required String subtitle,
       required String ctaButtonTitle,
-      GestureTapCallback? ctaTapCallback = null,
+      GestureTapCallback? ctaTapCallback,
       required EnvoyIcons icon}) {
     showEnvoyDialog(
         dismissible: false,
@@ -203,7 +204,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                 height: 310,
                 width: MediaQuery.of(context).size.width * .8,
                 padding: const EdgeInsets.all(EnvoySpacing.medium2)
-                    .add(EdgeInsets.only(top: -6)),
+                    .add(const EdgeInsets.only(top: -6)),
                 constraints: const BoxConstraints(
                   minHeight: 270,
                 ),
@@ -264,7 +265,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       if (useAuth == true) {
         initiateAuth();
       } else {
-        runApp(EnvoyApp());
+        runApp(const EnvoyApp());
       }
     });
   }

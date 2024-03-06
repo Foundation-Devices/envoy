@@ -239,7 +239,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
+              child: SizedBox(
                 height: 260,
                 child: Rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
@@ -482,10 +482,9 @@ class _TransactionReviewScreenState
         userHasChangedFees;
 
     if (account == null || transactionModel.psbt == null) {
-      return Container(
-          child: const Center(
-        child: Text("Unable to build transaction"), //TODO: figma
-      ));
+      return const Center(
+              child: Text("Unable to build transaction"), //TODO: figma
+            );
     }
 
     Psbt psbt = transactionModel.psbt!;
@@ -507,13 +506,58 @@ class _TransactionReviewScreenState
       extendBodyBehindAppBar: true,
       removeAppBarPadding: true,
       topBarLeading: IconButton(
-        icon: EnvoyIcon(
+        icon: const EnvoyIcon(
           EnvoyIcons.chevron_left,
           color: EnvoyColors.textPrimary,
         ),
         onPressed: () {
           GoRouter.of(context).pop();
         },
+      ),
+      bottom: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(7),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Container(
+            color: Colors.white12,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (!transactionModel.isPSBTFinalized)
+                    EnvoyButton(
+                      S().coincontrol_tx_detail_cta2,
+                      type: EnvoyButtonTypes.secondary,
+                      onTap: () {
+                        ref.read(userHasChangedFeesProvider.notifier).state =
+                            false;
+                        editTransaction(context);
+                      },
+                    ),
+                  const Padding(padding: EdgeInsets.all(6)),
+                  EnvoyButton(
+                    readOnly: transactionModel.loading,
+                    (account.wallet.hot || transactionModel.isPSBTFinalized)
+                        ? S().coincontrol_tx_detail_cta1
+                        : S().coincontrol_txDetail_cta1_passport,
+                    onTap: transactionModel.loading
+                        ? null
+                        : () {
+                            widget.onBroadcast();
+                          },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
       child: SingleChildScrollView(
         child: Flexible(
@@ -621,51 +665,6 @@ class _TransactionReviewScreenState
           ),
         ),
       ),
-      bottom: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(7),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Container(
-            color: Colors.white12,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!transactionModel.isPSBTFinalized)
-                    EnvoyButton(
-                      S().coincontrol_tx_detail_cta2,
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        ref.read(userHasChangedFeesProvider.notifier).state =
-                            false;
-                        editTransaction(context);
-                      },
-                    ),
-                  const Padding(padding: EdgeInsets.all(6)),
-                  EnvoyButton(
-                    readOnly: transactionModel.loading,
-                    (account.wallet.hot || transactionModel.isPSBTFinalized)
-                        ? S().coincontrol_tx_detail_cta1
-                        : S().coincontrol_txDetail_cta1_passport,
-                    onTap: transactionModel.loading
-                        ? null
-                        : () {
-                            widget.onBroadcast();
-                          },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -673,12 +672,12 @@ class _TransactionReviewScreenState
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(right: EnvoySpacing.small),
+        const Padding(
+          padding: EdgeInsets.only(right: EnvoySpacing.small),
           child: EnvoyIcon(EnvoyIcons.alert,
               size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
         ),
-        Text("Over " + feePercentage.toString() + "%",
+        Text("Over $feePercentage%",
             // TODO: Figma
             style:
                 EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
@@ -755,7 +754,7 @@ class _DiscardTransactionDialogState
     Account? account = ref.watch(selectedAccountProvider);
 
     return Container(
-      padding: const EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
       constraints: const BoxConstraints(
         minHeight: 300,
         maxWidth: 280,
@@ -835,7 +834,7 @@ class TxReviewNoteDialog extends ConsumerStatefulWidget {
 }
 
 class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
   bool dismissed = false;
 
   @override
@@ -952,10 +951,11 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                       child: EnvoyCheckbox(
                         value: dismissed,
                         onChanged: (value) {
-                          if (value != null)
+                          if (value != null) {
                             setState(() {
                               dismissed = value;
                             });
+                          }
                         },
                       ),
                     ),

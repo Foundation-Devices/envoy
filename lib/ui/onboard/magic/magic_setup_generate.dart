@@ -30,7 +30,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   final walletGenerated = EnvoySeed().walletDerived();
 
   StateMachineController? stateMachineController;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   late int step;
 
   List<String> stepsHeadings = [
@@ -80,10 +80,11 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
     if (!walletGenerated) {
       await Future.delayed(const Duration(seconds: 2));
-      if (mounted)
+      if (mounted) {
         setState(() {
           step = 1;
         });
+      }
       _updateProgress();
       //delay
     }
@@ -115,6 +116,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       onPopInvoked: (didPop) {},
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
@@ -124,7 +126,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                     width: 280,
                     child: RiveAnimation.asset(
                       'assets/envoy_magic_setup.riv',
-                      stateMachines: ["STM"],
+                      stateMachines: const ["STM"],
                       onInit: _onRiveInit,
                       fit: BoxFit.contain,
                       alignment: Alignment.center,
@@ -175,14 +177,13 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                               ],
                             ),
                           );
-                        }).toList()
+                        })
                       ],
                     ),
                   ),
                 )
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }
@@ -254,12 +255,12 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               children: [
                 Container(
                   constraints: BoxConstraints.tight(const Size.fromHeight(240)),
+                  height: _iphoneSE ? 220 : 250,
                   child: Image.asset(
                     "assets/exclamation_icon.png",
                     height: 180,
                     width: 180,
                   ),
-                  height: _iphoneSE ? 220 : 250,
                 ),
                 Flexible(
                   child: SingleChildScrollView(
@@ -417,75 +418,74 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
   }
 
   _androidBackUPInfo(BuildContext context) {
-    return Container(
-        child: PageTransitionSwitcher(
-      reverse: _androidBackupInfoPage == 1,
-      duration: const Duration(milliseconds: 600),
-      transitionBuilder: (
-        Widget child,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return SharedAxisTransition(
-          animation: animation,
-          fillColor: Colors.transparent,
-          secondaryAnimation: secondaryAnimation,
-          transitionType: SharedAxisTransitionType.vertical,
-          child: child,
-        );
-      },
-      child: _androidBackupInfoPage == 0
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
+    return PageTransitionSwitcher(
+          reverse: _androidBackupInfoPage == 1,
+          duration: const Duration(milliseconds: 600),
+          transitionBuilder: (
+    Widget child,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+          ) {
+    return SharedAxisTransition(
+      animation: animation,
+      fillColor: Colors.transparent,
+      secondaryAnimation: secondaryAnimation,
+      transitionType: SharedAxisTransitionType.vertical,
+      child: child,
+    );
+          },
+          child: _androidBackupInfoPage == 0
+      ? Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Column(
               children: [
-                Column(
-                  children: [
-                    Text(
-                      S().android_backup_info_heading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium3)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
-                      child: LinkText(
-                        text: S().android_backup_info_subheading,
-                        onTap: () {
-                          openAndroidSettings();
-                        },
-                        linkStyle: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        textStyle: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontSize: 14),
-                      ),
-                    ),
-                  ],
+                Text(
+                  S().android_backup_info_heading,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
+                    padding: EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium3)),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.small,
-                  ),
-                  child: OnboardingButton(
-                    label: S().component_continue,
+                      horizontal: EnvoySpacing.medium1),
+                  child: LinkText(
+                    text: S().android_backup_info_subheading,
                     onTap: () {
-                      setState(() {
-                        _androidBackupInfoPage = 1;
-                      });
+                      openAndroidSettings();
                     },
+                    linkStyle: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary),
+                    textStyle: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontSize: 14),
                   ),
                 ),
               ],
-            )
-          : _recoverStepsInfo(context),
-    ));
+            ),
+            const Padding(
+                padding:
+                    EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.small,
+              ),
+              child: OnboardingButton(
+                label: S().component_continue,
+                onTap: () {
+                  setState(() {
+                    _androidBackupInfoPage = 1;
+                  });
+                },
+              ),
+            ),
+          ],
+        )
+      : _recoverStepsInfo(context),
+        );
   }
 }

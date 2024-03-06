@@ -17,7 +17,7 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("single_wallet_pair_success"),
+      key: const Key("single_wallet_pair_success"),
       clipArt: Padding(
         padding: const EdgeInsets.only(top: 50.0),
         child: Image.asset(

@@ -33,7 +33,7 @@ class FwMicrosdPage extends ConsumerWidget {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_microsd"),
+      key: const Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
       text: [
         OnboardingText(
@@ -66,7 +66,7 @@ class FwMicrosdPage extends ConsumerWidget {
                 }
 
                 if (Platform.isAndroid) {
-                  await Future.delayed(Duration(milliseconds: 500));
+                  await Future.delayed(const Duration(milliseconds: 500));
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwAndroidProgressPage(deviceId,
@@ -85,12 +85,13 @@ class FwMicrosdPage extends ConsumerWidget {
                     );
                   }));
 
-                if (Platform.isAndroid)
+                if (Platform.isAndroid) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwAndroidInstructionsPage(
                         onboarding: onboarding, deviceId: deviceId);
                   }));
+                }
               }
             }),
       ],

@@ -19,7 +19,7 @@ extension WeightBugWorkaroung on TextStyle {
 class EnvoyTypography {
   static TextStyle baseFont = GoogleFonts.montserrat(
     fontFeatures: [
-      FontFeature.tabularFigures(),
+      const FontFeature.tabularFigures(),
     ],
   );
 

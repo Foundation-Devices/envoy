@@ -55,8 +55,8 @@ class BtcPayDialog extends StatelessWidget {
   }
 }
 
-Container loadingSpinner(BuildContext context) {
-  return Container(
+Widget loadingSpinner(BuildContext context) {
+  return SizedBox(
     height: MediaQuery.of(context).size.width * 0.85,
     child: const Center(
       child: SizedBox(

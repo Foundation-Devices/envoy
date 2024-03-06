@@ -115,7 +115,7 @@ class OnboardingPage extends StatelessWidget {
                         child: RiveAnimation.asset(
                           "assets/envoy_loader.riv",
                           fit: BoxFit.contain,
-                          animations: ["indeterminate"],
+                          animations: const ["indeterminate"],
                           onInit: (artboard) {
                             var _stateMachineController =
                                 StateMachineController.fromArtboard(
@@ -148,10 +148,10 @@ class OnboardingPage extends StatelessWidget {
                 return AnimatedQrImage.fromUrCryptoRequest(snapshot.data!
                   ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
               } else {
-                return SizedBox(
+                return const SizedBox(
                   height: 150,
                   width: 150,
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     color: EnvoyColors.teal,
                     backgroundColor: EnvoyColors.greyLoadingSpinner,
                     strokeWidth: 8,
@@ -235,7 +235,7 @@ class OnboardingPage extends StatelessWidget {
                               size: Size.square(5.0),
                               activeSize: Size.square(5.0),
                               spacing:
-                                  const EdgeInsets.symmetric(horizontal: 5)),
+                                  EdgeInsets.symmetric(horizontal: 5)),
                           dotsCount: navigationDots,
                           position: navigationDotsIndex.toDouble(),
                         ),
@@ -411,7 +411,7 @@ class OnboardingButton extends StatelessWidget {
       required this.label,
       this.type = EnvoyButtonTypes.primary,
       this.textStyle,
-      this.fontWeight = null,
+      this.fontWeight,
       this.enabled = true,
       required this.onTap});
 

@@ -36,6 +36,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
       },
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,8 +94,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                   ),
                 ),
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }

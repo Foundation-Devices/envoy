@@ -16,7 +16,7 @@ class FwPassportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("fw_passport"),
+      key: const Key("fw_passport"),
       clipArt: Image.asset("assets/fw_passport.png"),
       rightFunction: (_) {
         onboarding
@@ -46,7 +46,7 @@ class FwPassportPage extends StatelessWidget {
               } else {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return PpSetupIntroPage();
+                  return const PpSetupIntroPage();
                 }));
               }
             }),

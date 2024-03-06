@@ -120,7 +120,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   @override
   void install() {
     _controller = AnimationController(
-      duration: Duration(milliseconds: 260),
+      duration: const Duration(milliseconds: 260),
       vsync: navigator!,
     );
     _filterBlurAnimation = createBlurFilterAnimation();

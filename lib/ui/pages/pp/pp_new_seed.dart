@@ -27,7 +27,7 @@ class PpNewSeedPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return PpNewSeedBackupPage();
+                return const PpNewSeedBackupPage();
               }));
             }),
       ],

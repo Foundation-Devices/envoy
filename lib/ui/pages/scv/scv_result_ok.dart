@@ -15,7 +15,7 @@ class ScvResultOkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("scv_result_ok"),
+      key: const Key("scv_result_ok"),
       clipArt: Image.asset("assets/shield_ok.png"),
       text: [
         OnboardingText(

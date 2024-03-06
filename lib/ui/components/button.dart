@@ -154,8 +154,9 @@ class EnvoyButtonState extends State<EnvoyButton> {
     }
 
     if (widget.type == ButtonType.secondary) return EnvoyColors.surface2;
-    if (widget.type == ButtonType.tertiary)
+    if (widget.type == ButtonType.tertiary) {
       return EnvoyColors.textPrimaryInverse;
+    }
     if (widget.type == ButtonType.copper) return EnvoyColors.accentSecondary;
     if (widget.type == ButtonType.danger) return EnvoyColors.danger;
     return EnvoyColors.accentPrimary;

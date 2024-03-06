@@ -204,7 +204,7 @@ class DevicesOptions extends ConsumerWidget {
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return TouPage();
+              return const TouPage();
             }));
           },
         ),
@@ -265,7 +265,7 @@ class GhostDevice extends StatelessWidget {
                       builder: (context) {
                         return BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: DeviceEmptyVideo());
+                            child: const DeviceEmptyVideo());
                       },
                     );
                   },
@@ -301,7 +301,7 @@ class DeviceEmptyVideo extends StatelessWidget {
         Color(0x00000000),
       ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: Column(children: [
-        Container(
+        SizedBox(
           height: 100,
           child: Stack(
             children: [

@@ -37,8 +37,9 @@ class BtcPayLoadingModalState extends State<BtcPayLoadingModal> {
       {
         widget.controller.jumpToPage(1);
       }
-    } else
+    } else {
       widget.controller.jumpToPage(3);
+    }
   }
 
   @override

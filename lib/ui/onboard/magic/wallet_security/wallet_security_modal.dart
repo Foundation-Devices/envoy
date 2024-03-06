@@ -31,7 +31,7 @@ class WalletSecurityModal extends StatefulWidget {
 }
 
 class _WalletSecurityModalState extends State<WalletSecurityModal> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   List<Widget> stepIllustration = [
     Image.asset(
@@ -252,7 +252,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   ],
                                 ),
                               );
-                            }).toList()
+                            })
                           ],
                         ),
                       ),

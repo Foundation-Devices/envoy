@@ -71,9 +71,9 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                     future: widget.video.thumbnail,
                     builder: (context, snapshot) {
                       return !snapshot.hasData || snapshot.data == null
-                          ? SizedBox(
+                          ? const SizedBox(
                               height: videoImageHeight,
-                              child: const Center(
+                              child: Center(
                                   child: Icon(
                                 Icons.play_arrow,
                                 color: EnvoyColors.textPrimaryInverse,
@@ -154,11 +154,9 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            (widget.video.duration / 60).toStringAsFixed(0) +
-                                ":" +
-                                (widget.video.duration % 60)
+                            "${(widget.video.duration / 60).toStringAsFixed(0)}:${(widget.video.duration % 60)
                                     .toString()
-                                    .padLeft(2, '0'),
+                                    .padLeft(2, '0')}",
                             style: EnvoyTypography.info
                                 .copyWith(color: EnvoyColors.textSecondary),
                           ),

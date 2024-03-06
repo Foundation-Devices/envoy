@@ -100,7 +100,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             gradient: LinearGradient(
               begin: const Alignment(0.00, 1.00),
               end: const Alignment(0, -1),
-              stops: [0, .65, 1],
+              stops: const [0, .65, 1],
               colors: [
                 Colors.black.withOpacity(0.65),
                 Colors.black.withOpacity(0.13),
@@ -255,8 +255,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               ),
                               const Padding(padding: EdgeInsets.all(4)),
                               Opacity(
-                                child: widget.feeChooserWidget,
                                 opacity: widget.psbtFinalized ? 0.0 : 1,
+                                child: widget.feeChooserWidget,
                               ),
                             ],
                           ),

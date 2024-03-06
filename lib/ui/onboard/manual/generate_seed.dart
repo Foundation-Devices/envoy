@@ -125,7 +125,7 @@ class _SeedScreenState extends State<SeedScreen> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
+              SizedBox(
                 width: 240,
                 height: 240,
                 child: RiveAnimation.asset(
@@ -254,7 +254,7 @@ class _SeedScreenState extends State<SeedScreen> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    final TextStyle textTheme = const TextStyle(
+    const TextStyle textTheme = TextStyle(
         fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
       children: list.map((word) {
@@ -268,7 +268,7 @@ class _SeedScreenState extends State<SeedScreen> {
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
-              Expanded(child: Text("${word.item2}", style: textTheme)),
+              Expanded(child: Text(word.item2, style: textTheme)),
             ],
           ),
         );

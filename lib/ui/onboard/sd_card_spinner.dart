@@ -41,7 +41,7 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
       if (newState == null) return;
       indeterminate?.change(false);
       if (newState) {
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(const Duration(seconds: 5));
         happy?.change(true);
       } else {
         happy?.change(false);

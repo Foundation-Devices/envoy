@@ -88,7 +88,7 @@ class PsbtCard extends StatelessWidget {
                               Text("PSBT copied to clipboard!"), //TODO: FIGMA
                         ));
                       },
-                      icon: EnvoyIcon(
+                      icon: const EnvoyIcon(
                         icon: "ic_copy.svg",
                         size: 21,
                         color: EnvoyColors.darkTeal,
@@ -122,7 +122,7 @@ class PsbtCard extends StatelessWidget {
                       onPressed: () {
                         Share.share(psbt.base64);
                       },
-                      icon: EnvoyIcon(
+                      icon: const EnvoyIcon(
                         icon: "ic_envoy_share.svg",
                         size: 21,
                         color: EnvoyColors.darkTeal,

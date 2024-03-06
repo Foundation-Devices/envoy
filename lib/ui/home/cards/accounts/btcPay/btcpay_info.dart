@@ -32,7 +32,7 @@ class BtcPayInfo extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -60,7 +60,7 @@ class BtcPayInfo extends StatelessWidget {
               account: account),
         if (voucher.amountSats ==
             null) // TODO: what if amount is in strange currency
-          Text(voucher.amount! + " " + voucher.currency!,
+          Text("${voucher.amount!} ${voucher.currency!}",
               style: EnvoyTypography.body),
         if (voucher.name != "")
           Padding(

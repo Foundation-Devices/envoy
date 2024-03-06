@@ -18,7 +18,7 @@ final devicesRouter =
     StatefulShellBranch(restorationScopeId: 'devicesScopeId', routes: [
   GoRoute(
       path: ROUTE_DEVICES,
-      pageBuilder: (context, state) => MaterialPage(child: DevicesCard()),
+      pageBuilder: (context, state) => const MaterialPage(child: DevicesCard()),
       routes: [
         GoRoute(
             path: _DEVICE_DETAIL,

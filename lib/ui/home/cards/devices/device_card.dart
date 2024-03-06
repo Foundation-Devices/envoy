@@ -188,7 +188,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   content: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      EnvoyIcon(
+                      const EnvoyIcon(
                         EnvoyIcons.alert,
                         color: EnvoyColors.darkCopper,
                         size: EnvoyIconSize.big,

@@ -48,7 +48,7 @@ Alignment _startAlignment = const Alignment(0.0, 1.99);
 
 Alignment? _currentOverlyAlignment = const Alignment(0.0, 1.99);
 
-OverlayEntry? overlayEntry = null;
+OverlayEntry? overlayEntry;
 Animation<Alignment>? _appearAnimation;
 
 Future showSpendRequirementOverlay(
@@ -82,8 +82,9 @@ Future showSpendRequirementOverlay(
   overlayEntry = OverlayEntry(builder: (context) {
     return SpendRequirementOverlay(account: account);
   });
-  if (context.mounted)
+  if (context.mounted) {
     Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
+  }
 }
 
 Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
@@ -379,7 +380,7 @@ class SpendRequirementOverlayState
                                                           0xff808080),
                                                     )),
                                                 Text(
-                                                  "${getFormattedAmount(requiredAmount, trailingZeroes: true)}",
+                                                  getFormattedAmount(requiredAmount, trailingZeroes: true),
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .titleSmall,
@@ -409,14 +410,14 @@ class SpendRequirementOverlayState
                                                 width: 20,
                                                 margin: const EdgeInsets.only(
                                                     right: EnvoySpacing.xs),
-                                                child: const Icon(Icons.close,
-                                                    size: 14),
                                                 decoration: BoxDecoration(
                                                   color: EnvoyColors.surface2,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           EnvoySpacing.medium1),
                                                 ),
+                                                child: const Icon(Icons.close,
+                                                    size: 14),
                                               ),
                                             ),
                                           ));
@@ -749,7 +750,7 @@ class _SpendSelectionCancelWarningState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24).add(EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.all(24).add(const EdgeInsets.only(top: -6)),
       constraints: const BoxConstraints(
         minHeight: 300,
         maxWidth: 300,
@@ -783,10 +784,11 @@ class _SpendSelectionCancelWarningState
                   child: EnvoyCheckbox(
                     value: dismissed,
                     onChanged: (value) {
-                      if (value != null)
+                      if (value != null) {
                         setState(() {
                           dismissed = value;
                         });
+                      }
                     },
                   ),
                 ),

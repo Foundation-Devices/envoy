@@ -60,7 +60,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
             height: MediaQuery.of(context).size.height / 1.2,
           ),
         ),
-        bottomNavigationBar: EnvoyScaffoldShieldScrollView(
+        bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
               padding: const EdgeInsets.only(
@@ -80,14 +80,12 @@ class SingleImportPpIntroPage extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.medium1),
-                        child: Container(
-                          child: OnboardingText(
-                            header: S().pair_existing_device_intro_heading,
-                            text: isExistingDevice
-                                ? S().pair_existing_device_intro_subheading
-                                : S()
-                                    .pair_new_device_intro_connect_envoy_subheading,
-                          ),
+                        child: OnboardingText(
+                          header: S().pair_existing_device_intro_heading,
+                          text: isExistingDevice
+                              ? S().pair_existing_device_intro_subheading
+                              : S()
+                                  .pair_new_device_intro_connect_envoy_subheading,
                         ),
                       ),
                       const Padding(
@@ -118,7 +116,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return SingleImportPpScanPage();
+                                  return const SingleImportPpScanPage();
                                 }));
                               },
                             )

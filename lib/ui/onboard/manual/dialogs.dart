@@ -16,7 +16,7 @@ void showRestoreFailedDialog(BuildContext context) {
     context: context,
     dismissible: false,
     builder: Builder(builder: (context) {
-      return Container(
+      return SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),

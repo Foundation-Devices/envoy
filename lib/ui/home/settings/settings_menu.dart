@@ -67,21 +67,21 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
           break;
         case HomePageBackgroundState.settings:
           setState(() {
-            _currentPage = SettingsPage();
+            _currentPage = const SettingsPage();
             HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state = S().menu_settings;
           });
           break;
         case HomePageBackgroundState.backups:
           setState(() {
-            _currentPage = BackupPage();
+            _currentPage = const BackupPage();
             HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state = S().menu_backups;
           });
           break;
         case HomePageBackgroundState.support:
           setState(() {
-            _currentPage = SupportPage();
+            _currentPage = const SupportPage();
             HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state =
                 S().menu_support.toUpperCase();
@@ -89,7 +89,7 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
           break;
         case HomePageBackgroundState.about:
           setState(() {
-            _currentPage = AboutPage();
+            _currentPage = const AboutPage();
             HomePageNotification(leftFunction: _goBackToMenu).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state = S().menu_about;
           });

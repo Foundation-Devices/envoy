@@ -208,7 +208,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                                 decoration: const BoxDecoration(
                                                     color: Color(0xffEEEEEE),
                                                     borderRadius:
-                                                        const BorderRadius.all(
+                                                        BorderRadius.all(
                                                             Radius.circular(
                                                                 22)))),
                                           ),

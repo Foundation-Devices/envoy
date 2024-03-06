@@ -138,11 +138,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                   ),
                 ),
                 Container(
-                  child: Container(
-                      child: const PrivacyOptionSelect(),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.small)),
-                ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small),
+                    child: const PrivacyOptionSelect()),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: EnvoySpacing.xs,

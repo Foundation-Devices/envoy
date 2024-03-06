@@ -73,7 +73,7 @@ final accountsRouter = StatefulShellBranch(
       GoRoute(
           path: ROUTE_ACCOUNTS_HOME,
           pageBuilder: (context, state) =>
-              wrapWithVerticalAxisAnimation(AccountsCard()),
+              wrapWithVerticalAxisAnimation(const AccountsCard()),
           routes: [
             GoRoute(
               onExit: (context) async {

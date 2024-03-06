@@ -76,13 +76,7 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
               Padding(
                 padding: const EdgeInsets.only(top: 1 * 4),
                 child: Text(
-                  widget.voucher.code[0] +
-                      " " +
-                      widget.voucher.code[1] +
-                      " " +
-                      widget.voucher.code[2] +
-                      " " +
-                      widget.voucher.code[3],
+                  "${widget.voucher.code[0]} ${widget.voucher.code[1]} ${widget.voucher.code[2]} ${widget.voucher.code[3]}",
                   textAlign: TextAlign.center,
                   style: voucherCodeTextStyle,
                 ),

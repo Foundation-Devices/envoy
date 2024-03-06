@@ -94,7 +94,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           ),
                           showDragHandle: true,
                           builder: (context) {
-                            return LearnFilterWidget();
+                            return const LearnFilterWidget();
                           });
                     },
                     child: Container(

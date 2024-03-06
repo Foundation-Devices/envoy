@@ -25,7 +25,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
     final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
 
     return OnboardingPage(
-      key: Key("fw_ios_instructions"),
+      key: const Key("fw_ios_instructions"),
       clipArt: Image.asset("assets/fw_ios_instructions.png"),
       rightFunction: (_) {
         onboarding

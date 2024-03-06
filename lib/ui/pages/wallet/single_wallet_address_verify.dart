@@ -15,7 +15,7 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("single_wallet_address_verify"),
+      key: const Key("single_wallet_address_verify"),
       qrCode: pairedWallet.getAddress(),
       text: [
         OnboardingText(
@@ -27,7 +27,7 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleWalletAddressVerifyConfirmPage();
+                return const SingleWalletAddressVerifyConfirmPage();
               }));
             }),
       ],

@@ -145,7 +145,7 @@ class AboutButton extends StatelessWidget {
           height: 25.0,
           decoration: const BoxDecoration(
               color: EnvoyColors.darkTeal,
-              borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+              borderRadius: BorderRadius.all(Radius.circular(15.0))),
           child: Center(
               child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),

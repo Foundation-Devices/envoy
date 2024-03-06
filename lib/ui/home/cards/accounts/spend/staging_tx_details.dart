@@ -51,7 +51,7 @@ class StagingTxDetails extends ConsumerStatefulWidget {
 }
 
 class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
-  GlobalKey _key = GlobalKey();
+  final GlobalKey _key = GlobalKey();
 
   bool loading = true;
   int totalReceiveAmount = 0;
@@ -155,7 +155,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
       }
 
       final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id!));
-      if (userSelectedCoins.length != 0) {}
+      if (userSelectedCoins.isNotEmpty) {}
       setState(() {
         totalReceiveAmount = receiveOutPut.amount;
         totalChangeAmount = changeOutPut?.amount ?? 0;
@@ -249,7 +249,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Container(
+                      const SizedBox(
                         height: 100,
                         child: IndicatorShield(),
                       ),
@@ -746,7 +746,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                       if (uneconomicSpends) ...[
                         const Padding(
                           padding: EdgeInsets.all(EnvoySpacing.medium1),
-                          child: const EnvoyIcon(
+                          child: EnvoyIcon(
                             EnvoyIcons.info,
                             size: EnvoyIconSize.big,
                             color: EnvoyColors.solidWhite,
@@ -764,7 +764,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                          child: Container(
+                          child: SizedBox(
                             height: 40,
                             width: 200,
                             child: LinkText(

@@ -111,7 +111,7 @@ class Faq extends ConsumerWidget {
                           links: e.links,
                         );
                       },
-                      body: Container(
+                      body: const SizedBox(
                         height: 0,
                         width: 0,
                       ),
@@ -221,7 +221,7 @@ class FaqItemWidget extends StatelessWidget {
                     ),
                     Transform.rotate(
                         angle: isExpanded ? (180 * math.pi / 180) : 0,
-                        child: EnvoyIcon(
+                        child: const EnvoyIcon(
                           EnvoyIcons.chevron_down,
                           color: EnvoyColors.accentPrimary,
                         ))

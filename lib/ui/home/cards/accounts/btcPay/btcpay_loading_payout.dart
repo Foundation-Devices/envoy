@@ -40,8 +40,9 @@ class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
         addPendingTx(widget.voucher.id, address, widget.account);
         widget.controller.jumpToPage(4);
       }
-    } else
+    } else {
       widget.controller.jumpToPage(3);
+    }
   }
 
   @override

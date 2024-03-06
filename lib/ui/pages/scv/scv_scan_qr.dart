@@ -17,7 +17,7 @@ class ScvScanQrPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("scv_scan_qr"),
+      key: const Key("scv_scan_qr"),
       clipArt: Image.asset("assets/scv_scan_qr.png"),
       text: [
         OnboardingText(

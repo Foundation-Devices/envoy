@@ -33,7 +33,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
   String passPhrase = "";
   int currentPage = 0;
   bool finishSeedEntries = false;
-  GlobalKey<MnemonicEntryGridState> _mnemonicEntryGridKey =
+  final GlobalKey<MnemonicEntryGridState> _mnemonicEntryGridKey =
       GlobalKey<MnemonicEntryGridState>();
   List<String> currentWords = [];
 
@@ -45,6 +45,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
       },
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,8 +148,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                   ],
                 )
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }
@@ -164,7 +164,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
 
   void showPassphraseDialog(BuildContext context) {
     showEnvoyDialog(
-            dialog: Container(
+            dialog: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.85,
                 height: 330,
                 child: SeedPassphraseEntry(onPassphraseEntered: (value) {

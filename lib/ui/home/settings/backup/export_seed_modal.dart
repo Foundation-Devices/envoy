@@ -45,7 +45,7 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                EnvoyIcon(
+                const EnvoyIcon(
                   EnvoyIcons.alert,
                   size: EnvoyIconSize.big,
                   color: EnvoyColors.copper,

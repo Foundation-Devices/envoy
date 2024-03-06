@@ -81,7 +81,7 @@ class _OnboardEnvoyWelcomeScreenState
             height: MediaQuery.of(context).size.height * 0.55,
           ),
         ),
-        bottomNavigationBar: EnvoyScaffoldShieldScrollView(
+        bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
               padding: const EdgeInsets.only(
@@ -102,34 +102,32 @@ class _OnboardEnvoyWelcomeScreenState
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: EnvoySpacing.medium1),
-                          child: Container(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  S().envoy_welcome_screen_heading,
-                                  textAlign: TextAlign.center,
-                                  style: EnvoyTypography.body.copyWith(
-                                    fontSize: 20,
-                                    color: EnvoyColors.gray1000,
-                                    decoration: TextDecoration.none,
-                                  ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                S().envoy_welcome_screen_heading,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.body.copyWith(
+                                  fontSize: 20,
+                                  color: EnvoyColors.gray1000,
+                                  decoration: TextDecoration.none,
                                 ),
-                                const Padding(
-                                    padding: EdgeInsets.all(EnvoySpacing.xs)),
-                                LinkText(
-                                  text: S().envoy_welcome_screen_subheading,
-                                  textStyle: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.inactiveDark,
-                                  ),
-                                  linkStyle: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.inactiveDark,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.xs)),
+                              LinkText(
+                                text: S().envoy_welcome_screen_subheading,
+                                textStyle: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.inactiveDark,
                                 ),
-                              ],
-                            ),
+                                linkStyle: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.inactiveDark,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(

@@ -31,7 +31,7 @@ class PinIntroPage extends StatelessWidget {
                 if (mustUpdateFirmware) {
                   return FwIntroPage();
                 } else {
-                  return PpSetupIntroPage();
+                  return const PpSetupIntroPage();
                 }
               }));
             }),

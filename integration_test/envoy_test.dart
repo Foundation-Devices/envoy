@@ -317,11 +317,7 @@ class Passport {
           ":$passportPath/simulator/sim_modules:$passportPath/ports/stm32/boards/Passport/modules:$passportPath/extmod"
     };
 
-    kPrint("Command: " +
-        "MICROPYPATH=" +
-        env["MICROPYPATH"]! +
-        " " +
-        '$passportPath/ports/unix/passport-mpy -X heapsize=30m -i $passportPath/simulator/sim_boot.py $oledHandleNum $numpadHandleNum $ledHandleNum $camCmdHandleNum $camImgHandleNum color');
+    kPrint("Command:  MICROPYPATH=${env['MICROPYPATH']!} $passportPath/ports/unix/passport-mpy -X heapsize=30m -i $passportPath/simulator/sim_boot.py $oledHandleNum $numpadHandleNum $ledHandleNum $camCmdHandleNum $camImgHandleNum color");
 
     Process.start(
       '$passportPath/ports/unix/passport-mpy',
