@@ -27,7 +27,8 @@ class AddressEntry extends ConsumerStatefulWidget {
   final Function(ParseResult)? onPaste;
 
   const AddressEntry(
-      {super.key, this.initalAddress,
+      {super.key,
+      this.initalAddress,
       this.onAddressChanged,
       this.onAmountChanged,
       this.canEdit = true,

@@ -289,8 +289,7 @@ Wallet getWallet(Directory dir) {
       "copper december enlist body dove discover cross help evidence fall rich clean";
   const path = "m/84'/0'/0'";
 
-  var walletsDir =
-      dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+  var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
 
   var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
       privateKey: false,

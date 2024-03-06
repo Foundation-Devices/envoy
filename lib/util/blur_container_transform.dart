@@ -91,11 +91,11 @@ class BlurContainerTransform<T extends Object?> extends StatefulWidget {
   /// All arguments except for [key] must not be null. The arguments
   /// [openBuilder] and [closedBuilder] are required.
   const BlurContainerTransform({
-    Key? key,
+    super.key,
     this.closedColor = Colors.white,
     this.openColor = Colors.white,
     this.middleColor,
-    this.onTap = null,
+    this.onTap,
     this.closedElevation = 1.0,
     this.openElevation = 4.0,
     this.closedShape = const RoundedRectangleBorder(
@@ -111,7 +111,7 @@ class BlurContainerTransform<T extends Object?> extends StatefulWidget {
     this.useRootNavigator = false,
     this.routeSettings,
     this.clipBehavior = Clip.antiAlias,
-  }) : super(key: key);
+  });
 
   /// Background color of the container while it is closed.
   ///
@@ -296,7 +296,7 @@ class _BlurContainerTransformState<T>
   Future<void> openContainer() async {
     final Color middleColor =
         widget.middleColor ?? Theme.of(context).canvasColor;
-    this.widget.onTap?.call();
+    widget.onTap?.call();
     final T? data = await Navigator.of(
       context,
       rootNavigator: widget.useRootNavigator,
@@ -360,9 +360,9 @@ class _BlurContainerTransformState<T>
 ///    `isVisible` is ignored).
 class _Hideable extends StatefulWidget {
   const _Hideable({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

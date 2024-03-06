@@ -52,8 +52,7 @@ class EnvoyDialog extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
-                          ?.copyWith(
-                              fontWeight: FontWeight.w500, fontSize: 24))
+                          ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24))
                   : const SizedBox(),
               Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
               content ?? Container(),

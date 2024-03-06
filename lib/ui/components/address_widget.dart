@@ -20,7 +20,8 @@ class AddressWidget extends StatelessWidget {
       )
       .setWeight(FontWeight.w400);
 
-  AddressWidget({super.key,
+  AddressWidget({
+    super.key,
     required this.address,
     this.short = false,
     this.widgetKey,

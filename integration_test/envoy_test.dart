@@ -69,8 +69,8 @@ void main() {
           wCamImgPipe);
 
       await initSingletons();
-      await tester.pumpWidget(
-          Screenshot(controller: envoyScreenshotController, child: const EnvoyApp()));
+      await tester.pumpWidget(Screenshot(
+          controller: envoyScreenshotController, child: const EnvoyApp()));
 
       await tester.pump();
 

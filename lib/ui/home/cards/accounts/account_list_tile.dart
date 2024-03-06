@@ -182,8 +182,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final hide = ref.watch(
-                                    balanceHideStateStatusProvider(
-                                        account.id));
+                                    balanceHideStateStatusProvider(account.id));
                                 if (hide || account.dateSynced == null) {
                                   return Container(
                                     decoration: ShapeDecoration(
@@ -206,15 +205,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                             child: Container(
                                                 width: double.infinity,
                                                 height: double.infinity,
-                                                decoration:
-                                                    const BoxDecoration(
-                                                        color:
-                                                            Color(0xffEEEEEE),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(Radius
-                                                                    .circular(
-                                                                        22)))),
+                                                decoration: const BoxDecoration(
+                                                    color: Color(0xffEEEEEE),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                22)))),
                                           ),
                                           SizedBox(
                                               width: 50,
@@ -222,13 +218,15 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                               child: Container(
                                                   width: double.infinity,
                                                   height: double.infinity,
-                                                  decoration: const BoxDecoration(
-                                                      color:
-                                                          Color(0xffEEEEEE),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  22)))))
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color:
+                                                              Color(0xffEEEEEE),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          22)))))
                                         ],
                                       ),
                                     ),
@@ -238,8 +236,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                   decoration: ShapeDecoration(
                                     color: const Color(0xFFF8F8F8),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          cardRadius + 8),
+                                      borderRadius:
+                                          BorderRadius.circular(cardRadius + 8),
                                     ),
                                   ),
                                   child: Padding(

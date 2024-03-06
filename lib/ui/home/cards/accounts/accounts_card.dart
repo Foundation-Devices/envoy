@@ -95,7 +95,7 @@ class AccountsList extends ConsumerStatefulWidget {
 class _AccountsListState extends ConsumerState<AccountsList> {
   late FadingEdgeScrollView _scrollView;
   final ScrollController _scrollController = ScrollController();
-  double _accountHeight = 124;
+  final double _accountHeight = 124;
   bool _onReOrderStart = false;
   double _listWidgetHeight = 0;
 
@@ -126,40 +126,42 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
   @override
   Widget build(BuildContext context) {
-    final _accounts = ref.watch(accountsProvider);
-    final _listContentHeight = _accounts.length * _accountHeight;
+    final accounts = ref.watch(accountsProvider);
+    final listContentHeight = accounts.length * _accountHeight;
 
-    final _isFadingEnabled = _listContentHeight > _listWidgetHeight;
+    final isFadingEnabled = listContentHeight > _listWidgetHeight;
 
     ref.listen(accountsProvider, (List<Account>? previous, List<Account> next) {
       if (previous!.length < next.length) {
-        if (_scrollController.hasClients)
+        if (_scrollController.hasClients) {
           _scrollController.animateTo(
-            _listContentHeight, //when new acc, go to bottom to see the acc
+            listContentHeight, //when new acc, go to bottom to see the acc
             duration: const Duration(milliseconds: 1),
             curve: Curves.ease,
           );
+        }
       }
 
       if (previous.length > next.length) {
-        if (_scrollController.hasClients)
+        if (_scrollController.hasClients) {
           _scrollController.animateTo(
             0, //when delete acc go to top
             duration: const Duration(seconds: 1),
             curve: Curves.ease,
           );
+        }
       }
     });
 
     _scrollView = FadingEdgeScrollView.fromScrollView(
       scrollController: _scrollController,
-      gradientFractionOnStart: _isFadingEnabled ? 0.03 : 0.0,
-      gradientFractionOnEnd: _isFadingEnabled ? 0.06 : 0.0,
+      gradientFractionOnStart: isFadingEnabled ? 0.03 : 0.0,
+      gradientFractionOnEnd: isFadingEnabled ? 0.06 : 0.0,
       child: ReorderableListView(
           key: widget._listKey,
           footer: Opacity(
-            child: const AccountPrompts(),
             opacity: _onReOrderStart ? 0.0 : 1.0,
+            child: const AccountPrompts(),
           ),
           shrinkWrap: true,
           scrollController: _scrollController,
@@ -186,10 +188,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           onReorder: (oldIndex, newIndex) async {
             // SFT-2488: dismiss the drag and drop prompt after dragging
             EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-            await AccountManager().moveAccount(oldIndex, newIndex, _accounts);
+            await AccountManager().moveAccount(oldIndex, newIndex, accounts);
           },
           children: [
-            for (final account in _accounts)
+            for (final account in accounts)
               SizedBox(
                   key: ValueKey(account.id),
                   height: _accountHeight,
@@ -206,7 +208,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           ]),
     );
 
-    return _accounts.isEmpty
+    return accounts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
@@ -328,7 +330,7 @@ void showSecurityDialog(BuildContext context) {
   showEnvoyDialog(
       context: context,
       dismissible: false,
-      dialog: Container(
+      dialog: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),

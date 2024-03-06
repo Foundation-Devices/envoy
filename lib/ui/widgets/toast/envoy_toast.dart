@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 typedef OnTap = void Function(EnvoyToast toast);
 
 //Store the last toast
-EnvoyToast<dynamic>? _toast = null;
+EnvoyToast<dynamic>? _toast;
 
 class EnvoyToast<T> extends StatefulWidget {
   late final EnvoyToastRoute<T?> envoyToastRoute;
@@ -35,7 +35,9 @@ class EnvoyToast<T> extends StatefulWidget {
 
   final bool isDismissible;
 
+  // ignore: prefer_const_constructors_in_immutables
   EnvoyToast({
+    super.key,
     this.onTap,
     this.onActionTap,
     this.builder,
@@ -67,7 +69,6 @@ class EnvoyToast<T> extends StatefulWidget {
         return null;
       }
     }
-    ;
     _toast = this;
     T? result = await Navigator.of(context, rootNavigator: false)
         .push(envoyToastRoute as Route<T>);
@@ -91,7 +92,7 @@ class EnvoyToastState extends State<EnvoyToast> {
     return Container(
         constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
         decoration: const BoxDecoration(
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 stops: [

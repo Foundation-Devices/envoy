@@ -19,7 +19,8 @@ class EnvoyButton extends StatefulWidget {
   final bool enabled;
 
   const EnvoyButton(
-    this.label, {super.key,
+    this.label, {
+    super.key,
     this.onTap,
     this.readOnly = false,
     this.type = EnvoyButtonTypes.primary,
@@ -59,8 +60,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
       _textStyle = Theme.of(context).textTheme.bodySmall!.copyWith(
             color: textColor,
             fontSize: 14.0,
-            fontWeight:
-                widget.fontWeight ?? FontWeight.w700,
+            fontWeight: widget.fontWeight ?? FontWeight.w700,
           );
     }
     return AnimatedScale(

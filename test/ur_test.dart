@@ -312,7 +312,7 @@ void main() {
     assert(reader.decoded is CryptoRequest);
 
     var request = reader.decoded as CryptoRequest;
-    assert(ListEquality().equals(request.uuid, [
+    assert(const ListEquality().equals(request.uuid, [
       47,
       95,
       192,

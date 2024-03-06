@@ -16,7 +16,7 @@ class AztecoDialog extends StatelessWidget {
   final AztecoVoucher voucher;
   final Account account;
 
-  AztecoDialog(this.voucher, this.account);
+  const AztecoDialog(this.voucher, this.account, {super.key});
 
   @override
   Widget build(BuildContext context) {

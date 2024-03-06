@@ -11,10 +11,10 @@ class EmailTextField extends StatefulWidget {
   });
 
   @override
-  _EmailTextFieldState createState() => _EmailTextFieldState();
+  EmailTextFieldState createState() => EmailTextFieldState();
 }
 
-class _EmailTextFieldState extends State<EmailTextField> {
+class EmailTextFieldState extends State<EmailTextField> {
   bool _isValid = false;
   final emailController = TextEditingController();
   final validationCodeController = TextEditingController();

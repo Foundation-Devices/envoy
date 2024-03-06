@@ -62,7 +62,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.onSecondaryButtonTap,
     this.typeOfMessage = PopUpState.deafult,
     this.checkBoxText,
-    this.onCheckBoxChanged,
+    required this.onCheckBoxChanged,
     this.checkedValue = true,
   });
 
@@ -75,7 +75,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(BuildContext context)? onSecondaryButtonTap;
   final PopUpState? typeOfMessage;
   final String? checkBoxText;
-  final Function(bool checked) onCheckBoxChanged;
+  final Function(bool? checked) onCheckBoxChanged;
   bool? checkedValue;
 
   @override

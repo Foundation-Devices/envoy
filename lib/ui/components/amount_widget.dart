@@ -25,7 +25,8 @@ class AmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final bool alignToEnd;
 
-  AmountWidget({super.key,
+  AmountWidget({
+    super.key,
     required this.amountSats,
     required this.primaryUnit,
     this.style = AmountWidgetStyle.normal,

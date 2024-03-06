@@ -475,6 +475,7 @@ class TransactionListTile extends StatelessWidget {
             action();
           },
           onLongPress: () async {
+            final scaffoldMessenger = ScaffoldMessenger.of(context);
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.copyTxId);
             if (!dismissed) {
@@ -508,7 +509,7 @@ class TransactionListTile extends StatelessWidget {
                   });
             } else {
               Clipboard.setData(ClipboardData(text: transaction.txId)); // here
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              scaffoldMessenger.showSnackBar(const SnackBar(
                 content:
                     Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
               ));

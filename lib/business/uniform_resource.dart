@@ -201,7 +201,8 @@ class CryptoRequest extends UniformResourceWriter {
 
     var buffer = inst.output.getData().cast<int>();
 
-    _urEncoder ??= Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
+    _urEncoder ??=
+        Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
 
     return _urEncoder!.nextPart();
   }

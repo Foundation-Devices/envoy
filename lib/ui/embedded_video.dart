@@ -11,7 +11,8 @@ class EmbeddedVideo extends StatefulWidget {
   final String path;
   final double aspectRatio;
 
-  const EmbeddedVideo({super.key, required this.path, this.aspectRatio = 4 / 3});
+  const EmbeddedVideo(
+      {super.key, required this.path, this.aspectRatio = 4 / 3});
 
   @override
   State<EmbeddedVideo> createState() => EmbeddedVideoState();
