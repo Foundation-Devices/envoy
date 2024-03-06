@@ -17,6 +17,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -755,7 +756,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
         });
       }
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 }

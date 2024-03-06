@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
 import 'package:webfeed/webfeed.dart';
@@ -32,7 +33,7 @@ class FeedManager {
   }
 
   FeedManager._internal() {
-    print("Instance of FeedManager created!");
+    kPrint("Instance of FeedManager created!");
     _restoreVideos();
     _restoreBlogs();
 

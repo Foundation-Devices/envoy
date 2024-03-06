@@ -5,6 +5,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -110,7 +112,7 @@ class Fees {
   }
 
   Fees._internal() {
-    print("Instance of Fees created!");
+    kPrint("Instance of Fees created!");
 
     // Fetch the latest from mempool.space
     _getRates();

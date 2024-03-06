@@ -5,6 +5,7 @@
 library envoy.scv_server;
 
 import 'dart:convert';
+import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
@@ -34,7 +35,7 @@ class ScvServer {
   }
 
   ScvServer._internal() {
-    print("Instance of ScvServer created!");
+    kPrint("Instance of ScvServer created!");
 
     // Get the SCV challenge from storage
     // If not there, get it from Server and store it

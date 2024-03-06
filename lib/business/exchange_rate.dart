@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:envoy/business/settings.dart';
@@ -75,7 +76,7 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   ExchangeRate._internal() {
-    print("Instance of ExchangeRate created!");
+    kPrint("Instance of ExchangeRate created!");
 
     // Get rate from storage and set currency from Settings
     restore();

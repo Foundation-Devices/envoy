@@ -5,6 +5,7 @@
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -238,7 +239,7 @@ class Settings extends ChangeNotifier {
   }
 
   Settings._internal() {
-    print("Instance of Settings created!");
+    kPrint("Instance of Settings created!");
   }
 
   static String getFiatFromLocale() {

@@ -13,6 +13,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -320,7 +321,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
       //Reset the selection
       Haptics.lightImpact();
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
 
     widget.onTagUpdate();

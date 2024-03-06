@@ -15,6 +15,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -273,7 +274,7 @@ class _ScannerPageState extends State<ScannerPage> {
         // BIP-21 amounts are in BTC
         amount = (bip21.amount * 100000000.0).toInt();
       } catch (e, s) {
-        print(e);
+        kPrint(e);
         debugPrintStack(stackTrace: s);
         // TODO
       }

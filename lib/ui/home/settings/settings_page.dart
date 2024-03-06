@@ -17,6 +17,7 @@ import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -340,7 +341,7 @@ class _DevOptions extends StatelessWidget {
                         loading = false;
                       });
                       Navigator.pop(context);
-                      print(e);
+                      kPrint(e);
                     }
                   },
                   child: const Text("Wipe Envoy Wallet")); // TODO: FIGMA

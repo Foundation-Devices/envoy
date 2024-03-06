@@ -6,6 +6,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -241,9 +242,7 @@ Future prunePendingTransactions(
     transactions
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualAztecoTx) {
-      if (kDebugMode) {
-        print("Pruning Azteco tx: ${actualAztecoTx.txId}");
-      }
+      kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
       EnvoyStorage()
           .addTxNote("Azteco voucher", actualAztecoTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
@@ -255,9 +254,7 @@ Future prunePendingTransactions(
     transactions
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualBtcPayTx) {
-      if (kDebugMode) {
-        print("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
-      }
+      kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
       EnvoyStorage()
           .addTxNote("BTCPay voucher", actualBtcPayTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
@@ -269,9 +266,7 @@ Future prunePendingTransactions(
     transactions
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualRampTx) {
-      if (kDebugMode) {
-        print("Pruning Ramp tx: ${actualRampTx.txId}");
-      }
+      kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
       EnvoyStorage()
           .addTxNote("Ramp transaction", actualRampTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
@@ -285,9 +280,7 @@ Future prunePendingTransactions(
     bool deleted = false;
     transactions.where((tx) => tx.txId == pendingTx.txId).forEach((actualRBF) {
       deleted = true;
-      if (kDebugMode) {
-        print("Pruning pending tx: ${pendingTx.txId}");
-      }
+      kPrint("Pruning pending tx: ${pendingTx.txId}");
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
 
@@ -303,7 +296,7 @@ Future prunePendingTransactions(
 
         if (rbfTx != null && rbfState.newTxId == pendingTx.txId) {
           if (kDebugMode) {
-            print("Pruning orphan RBF tx : ${pendingTx.txId} ");
+            kPrint("Pruning orphan RBF tx : ${pendingTx.txId} ");
           }
           EnvoyStorage().deletePendingTx(pendingTx.txId);
         }

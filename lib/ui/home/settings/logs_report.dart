@@ -5,6 +5,7 @@
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +45,7 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                     ),
                   ).show(context);
                 } catch (e) {
-                  print(e);
+                  kPrint(e);
                 }
               },
               icon: const Icon(Icons.copy)),

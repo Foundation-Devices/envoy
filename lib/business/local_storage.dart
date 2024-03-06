@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,13 +27,13 @@ class LocalStorage {
   }
 
   LocalStorage._internal() {
-    print("Instance of LocalStorage created!");
+    kPrint("Instance of LocalStorage created!");
   }
 
   _initAsync() async {
     appSupportDir = await getApplicationSupportDirectory();
     appDocumentsDir = await getApplicationDocumentsDirectory();
-    print("Async members initialized!");
+    kPrint("Async members initialized!");
   }
 
   Future<bool> containsSecure(String key) async {

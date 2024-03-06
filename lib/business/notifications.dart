@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -95,7 +96,7 @@ class Notifications {
   }
 
   Notifications._internal() {
-    print("Instance of Notifications created!");
+    kPrint("Instance of Notifications created!");
     restoreNotifications();
   }
 

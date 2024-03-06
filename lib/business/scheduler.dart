@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'dart:math';
+import 'package:envoy/util/console.dart';
 import 'package:schedulers/schedulers.dart';
 
 class EnvoyScheduler {
@@ -25,7 +26,7 @@ class EnvoyScheduler {
   }
 
   EnvoyScheduler._internal() {
-    print(
+    kPrint(
         "Instance of EnvoyScheduler created! Phone has ${Platform.numberOfProcessors} CPUs.");
   }
 }

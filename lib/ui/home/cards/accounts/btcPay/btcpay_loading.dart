@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 
@@ -30,7 +31,7 @@ class _BtcPayLoadingModalState extends State<BtcPayLoadingModal> {
 
   Future<void> _checkVoucher() async {
     BtcPayVoucherRedeemResult result = await widget.voucher.getinfo();
-    print(result);
+    kPrint(result);
 
     if (result == BtcPayVoucherRedeemResult.success) {
       {

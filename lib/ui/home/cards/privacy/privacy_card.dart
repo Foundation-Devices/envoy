@@ -6,6 +6,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/settings_header.dart';
@@ -241,7 +242,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                                               });
                                             }
                                           } catch (e) {
-                                            print(e);
+                                            kPrint(e);
                                           }
                                         },
                                       ),

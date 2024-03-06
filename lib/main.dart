@@ -16,6 +16,7 @@ import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,11 +48,11 @@ Future<void> main() async {
 
 Future<void> initSingletons() async {
   // This is notoriously low on iOS, causing 'too many open files errors'
-  print("Process nofile_limit: ${getNofileLimit()}");
+  kPrint("Process nofile_limit: ${getNofileLimit()}");
 
   // Requesting a high number. The API will return the best we can get
   // ~10k on iPhone 11 which is much better than the default 256
-  print("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
+  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
   await EnvoyStorage().init();
   await LocalStorage.init();

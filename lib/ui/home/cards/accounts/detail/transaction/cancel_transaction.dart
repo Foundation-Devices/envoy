@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
@@ -189,7 +190,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                   cancelTx: psbt)));
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
-      print(e);
+      kPrint(e);
       String message = "$e";
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
@@ -547,7 +548,7 @@ class _CancelTransactionProgressState
       setState(() {
         broadcastProgress = BroadcastProgress.failed;
       });
-      print(e);
+      kPrint(e);
     }
   }
 

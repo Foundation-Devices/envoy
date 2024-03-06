@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -42,7 +43,7 @@ class HideStateNotifier extends ChangeNotifier {
     try {
       LocalStorage().saveSecure("balance_hidden", jsonEncode(stateAsList));
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 }

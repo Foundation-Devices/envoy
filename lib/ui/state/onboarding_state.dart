@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,11 +68,11 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
       debugPrintStack(stackTrace: c);
       ConnectivityManager().electrumFailure();
       if (e is InvalidPort) {
-        print("Your port is invalid");
+        kPrint("Your port is invalid");
       }
       state = NodeConnectionState(
           isConnected: false, isConnecting: false, error: "${e}");
-      print(e);
+      kPrint(e);
     }
   }
 

@@ -22,6 +22,7 @@ import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
@@ -56,7 +57,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   AccountManager._internal() {
-    print("Instance of AccountManager created!");
+    kPrint("Instance of AccountManager created!");
     restore();
   }
 
@@ -510,7 +511,7 @@ class AccountManager extends ChangeNotifier {
       notifyListeners();
       await storeAccounts();
     } catch (e) {
-      print(e);
+      kPrint(e);
     } finally {
       _accountSchedulerMutex = false;
     }

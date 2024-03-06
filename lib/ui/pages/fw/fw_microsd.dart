@@ -7,6 +7,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_android_progress.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -73,7 +74,7 @@ class FwMicrosdPage extends ConsumerWidget {
                   }));
                 }
               } catch (e) {
-                print("SD: error " + e.toString());
+                kPrint("SD: error $e");
                 if (Platform.isIOS) // TODO: this needs to be smarter
                   // ignore: curly_braces_in_flow_control_structures
                   Navigator.of(context)

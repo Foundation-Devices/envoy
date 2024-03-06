@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
@@ -64,7 +65,7 @@ class ConnectivityManager {
   }
 
   ConnectivityManager._internal() {
-    print("Instance of ConnectivityManager created!");
+    kPrint("Instance of ConnectivityManager created!");
 
     Tor.instance.events.stream.listen((event) {
       // Nudge listeners

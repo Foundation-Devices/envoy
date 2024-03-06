@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
@@ -173,9 +174,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                 fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
                 minFeeRate: 1,
                 maxFeeRate: maxFeeRate.clamp(2, 5000));
-        if (kDebugMode) {
-          print("Max fee Rate $maxFeeRate");
-        }
+        kPrint("Max fee Rate $maxFeeRate");
       }
 
       ///get max fee rate that we can use on this transaction
@@ -252,7 +251,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           S().send_keyboard_amount_too_low_info;
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print("Error ${e}");
+        kPrint("Error ${e}");
         debugPrintStack(stackTrace: stackTrace);
       }
 
@@ -670,10 +669,8 @@ Future<Psbt> getPsbt(
           initialAddress, amount - fee, feeRate,
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
     } on InsufficientFunds catch (e) {
-      print("Insufficient funds! Available: " +
-          e.available.toString() +
-          " Needed: " +
-          e.needed.toString());
+      kPrint(
+          "Insufficient funds! Available: ${e.available} Needed: ${e.needed}");
 
       rethrow;
     }

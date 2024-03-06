@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/server.dart';
@@ -32,7 +33,7 @@ class UpdatesManager {
   }
 
   UpdatesManager._internal() {
-    print("Instance of UpdatesManager created!");
+    kPrint("Instance of UpdatesManager created!");
 
     // Go fetch the latest from Server
     _fetchUpdates();
@@ -48,14 +49,14 @@ class UpdatesManager {
         .fetchFirmwareUpdateInfo(0) // Gen1
         .then((fw) => _processFw(fw))
         .catchError((e) {
-      print("Couldn't fetch firmware: $e");
+      kPrint("Couldn't fetch firmware: $e");
     });
 
     Server()
         .fetchFirmwareUpdateInfo(1) // Gen2
         .then((fw) => _processFw(fw))
         .catchError((e) {
-      print("Couldn't fetch firmware: $e");
+      kPrint("Couldn't fetch firmware: $e");
     });
   }
 

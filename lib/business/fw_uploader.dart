@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
@@ -88,10 +90,10 @@ class FwUploader {
   }
 
   _iosUpload() {
-    print("SD: trying to access folder");
+    kPrint("SD: trying to access folder");
     _accessFolder();
 
-    print("SD: trying to copy file to " + _sdCardPath);
+    kPrint("SD: trying to copy file to " + _sdCardPath);
     fw.copySync(_sdCardPath + basename(fw.path));
   }
 

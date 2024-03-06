@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
@@ -53,7 +54,7 @@ class Devices extends ChangeNotifier {
   }
 
   Devices._internal() {
-    print("Instance of Devices created!");
+    kPrint("Instance of Devices created!");
     //_clearDevices();
     restore();
   }

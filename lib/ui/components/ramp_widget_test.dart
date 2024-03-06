@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:ramp_flutter/configuration.dart';
@@ -61,7 +62,7 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
 
   Future<void> initializeAsync() async {
     address = await widget.account.wallet.getAddress();
-    print(address);
+    kPrint(address);
     _configuration.hostAppName = "Ramp Flutter";
     _configuration.url = "https://app.ramp.network";
     _configuration.hostApiKey = rampApiKey;

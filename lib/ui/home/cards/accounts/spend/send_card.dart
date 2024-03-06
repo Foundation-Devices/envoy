@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -206,7 +207,7 @@ class _SendCardState extends ConsumerState<SendCard>
                                       GoRouter.of(context)
                                           .push(ROUTE_ACCOUNT_SEND_CONFIRM);
                                   } catch (e) {
-                                    print(e);
+                                    kPrint(e);
                                   }
                                 }
                                 if (spendAmount == 0) {

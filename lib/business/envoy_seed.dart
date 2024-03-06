@@ -12,6 +12,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
@@ -48,7 +49,7 @@ class EnvoySeed {
   }
 
   EnvoySeed._internal() {
-    print("Instance of EnvoySeed created!");
+    kPrint("Instance of EnvoySeed created!");
   }
 
   static const _platform = MethodChannel('envoy');
@@ -431,7 +432,7 @@ class EnvoySeed {
       FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
           encryptedBackupFileExtension, MimeType.TEXT);
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 

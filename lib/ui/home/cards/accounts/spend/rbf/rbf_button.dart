@@ -20,6 +20,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,7 +84,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         return;
       }
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 
@@ -171,12 +172,12 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         return;
       }
     } catch (e, stackTrace) {
-      print(stackTrace);
+      kPrint(stackTrace);
       showNoBoostNoFundsDialog(context);
       setState(() {
         _isLoading = false;
       });
-      print(e);
+      kPrint(e);
     } finally {
       setState(() {
         _isLoading = false;

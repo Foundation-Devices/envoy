@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/util/console.dart';
 import 'package:typed_data/typed_data.dart';
 import 'package:ur/ur.dart';
 import 'package:uuid/uuid.dart';
@@ -278,7 +279,7 @@ class UniformResourceReader {
       try {
         payload = urDecoder.receive(data);
       } on Exception catch (_) {
-        print("Couldn't decode UR!");
+        kPrint("Couldn't decode UR!");
       }
     }
 
