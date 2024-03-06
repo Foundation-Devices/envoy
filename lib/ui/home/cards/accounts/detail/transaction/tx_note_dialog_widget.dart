@@ -33,7 +33,7 @@ class TxNoteDialog extends ConsumerStatefulWidget {
 }
 
 class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {

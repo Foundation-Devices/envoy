@@ -388,7 +388,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
     ///toggle to coins view for coin control
     ref.read(accountToggleStateProvider.notifier).state =
-        AccountToggleState.Coins;
+        AccountToggleState.coins;
 
     ///pop review
     router.pop();
@@ -711,7 +711,7 @@ class _TransactionReviewScreenState
 
     ///toggle to coins view for coin control
     ref.read(accountToggleStateProvider.notifier).state =
-        AccountToggleState.Coins;
+        AccountToggleState.coins;
 
     ///pop review
     router.pop();

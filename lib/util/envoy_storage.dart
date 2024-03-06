@@ -231,7 +231,7 @@ class EnvoyStorage {
     //returns boolean stream that updates when provided key is updated
     return dismissedPromptsStore
         .find(db, finder: filter)
-        .then((event) => event.length != 0);
+        .then((event) => event.isNotEmpty);
   }
 
   Future addPendingTx(String key, String accountId, DateTime timestamp,

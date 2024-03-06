@@ -33,6 +33,8 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   ConsumerState<SettingsPage> createState() => _SettingsPageState();
 }

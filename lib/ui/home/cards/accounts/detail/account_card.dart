@@ -327,7 +327,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
     AccountToggleState accountToggleState =
         ref.watch(accountToggleStateProvider);
     return PageTransitionSwitcher(
-      reverse: accountToggleState == AccountToggleState.Tx,
+      reverse: accountToggleState == AccountToggleState.tx,
       transitionBuilder: (
         Widget child,
         Animation<double> animation,
@@ -341,7 +341,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
           child: child,
         );
       },
-      child: accountToggleState == AccountToggleState.Tx
+      child: accountToggleState == AccountToggleState.tx
           ? _buildTransactionListWidget(transactions, txFiltersEnabled)
           : CoinsList(account: account),
     );

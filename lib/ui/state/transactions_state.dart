@@ -35,15 +35,15 @@ final filteredTransactionsProvider =
 
   List<Transaction> transactions = ref.watch(transactionsProvider(accountId));
 
-  if (txFilterState.contains(TransactionFilters.Sent) &&
-      txFilterState.contains(TransactionFilters.Received)) {
+  if (txFilterState.contains(TransactionFilters.sent) &&
+      txFilterState.contains(TransactionFilters.received)) {
     //do nothing
   } else {
-    if (txFilterState.contains(TransactionFilters.Sent)) {
+    if (txFilterState.contains(TransactionFilters.sent)) {
       transactions =
           transactions.where((element) => element.amount < 0).toList();
     }
-    if (txFilterState.contains(TransactionFilters.Received)) {
+    if (txFilterState.contains(TransactionFilters.received)) {
       transactions =
           transactions.where((element) => element.amount > 0).toList();
     }

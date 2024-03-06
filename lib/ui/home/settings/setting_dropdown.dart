@@ -10,7 +10,7 @@ class SettingDropdown extends StatefulWidget {
   final String? Function() getter;
   final Map<String, String?> options;
 
-  SettingDropdown(this.options, this.getter, this.setter);
+  const SettingDropdown(this.options, this.getter, this.setter, {super.key});
 
   @override
   State<SettingDropdown> createState() => _SettingDropdownState();

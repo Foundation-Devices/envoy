@@ -22,7 +22,7 @@ class EmptyAccountsCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: ColorFiltered(
             colorFilter: const ColorFilter.mode(
-              const Color.fromRGBO(255, 255, 255, 0.7),
+              Color.fromRGBO(255, 255, 255, 0.7),
               BlendMode.hardLight,
             ),
             child: ColorFiltered(

@@ -132,7 +132,7 @@ class CoinItemWidget extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${tag.name}",
+                                tag.name,
                                 style: _textStyleWallet,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
@@ -149,7 +149,7 @@ class CoinItemWidget extends ConsumerWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 5, horizontal: 4.5),
-                        child: Container(
+                        child: SizedBox(
                           height: 34,
                           child: CoinTagBalanceWidget(
                             coinTag: tag,

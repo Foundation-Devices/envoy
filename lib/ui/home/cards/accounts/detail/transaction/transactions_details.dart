@@ -52,7 +52,7 @@ class _TransactionsDetailsWidgetState
     extends ConsumerState<TransactionsDetailsWidget> {
   bool showTxIdExpanded = false;
   bool showAddressExpanded = false;
-  GlobalKey _detailWidgetKey = GlobalKey();
+  final GlobalKey _detailWidgetKey = GlobalKey();
 
   String _getConfirmationTimeString(int minutes) {
     String confirmationTime = "";
@@ -125,7 +125,7 @@ class _TransactionsDetailsWidgetState
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Container(
+                SizedBox(
                   height: 100,
                   child: IndicatorShield(),
                 ),
@@ -183,7 +183,7 @@ class _TransactionsDetailsWidgetState
                             margin: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 4),
                             decoration: const BoxDecoration(
-                              borderRadius: const BorderRadius.all(
+                              borderRadius: BorderRadius.all(
                                   Radius.circular(EnvoySpacing.medium2)),
                               color: Colors.white,
                             ),
@@ -445,7 +445,7 @@ class _TransactionsDetailsWidgetState
         : S().coincontrol_tx_detail_fee;
 
     Widget icon = isBoosted
-        ? EnvoyIcon(
+        ? const EnvoyIcon(
             EnvoyIcons.rbf_boost,
             size: EnvoyIconSize.extraSmall,
           )

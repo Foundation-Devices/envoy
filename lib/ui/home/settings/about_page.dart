@@ -11,6 +11,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class AboutPage extends StatefulWidget {
+  const AboutPage({super.key});
+
   @override
   State<AboutPage> createState() => _AboutPageState();
 }

@@ -308,12 +308,13 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
         }
       }
 
-      coinsRemovedTags.forEach((element) async {
-        if (!element.untagged) {
+      for (var coin in coinsRemovedTags){
+        if (!coin.untagged) {
           await Future.delayed(const Duration(milliseconds: 10));
-          await CoinRepository().updateCoinTag(element);
+          await CoinRepository().updateCoinTag(coin);
         }
-      });
+      }
+
       final _ = ref.refresh(accountsProvider);
       //Wait for the refresh to propagate
       await Future.delayed(const Duration(milliseconds: 180));
@@ -335,20 +336,20 @@ Widget tagItem(context, String item, Function() onTap) {
         borderRadius: BorderRadius.circular(20),
         onTap: onTap,
         child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: EnvoyColors.accentPrimary, width: 1),
+            ),
+            height: 34,
             child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
                 alignment: Alignment.center,
                 child: Text(
-                  item.length > 9 ? item.substring(0, 7) + '...' : item,
+                  item.length > 9 ? '${item.substring(0, 7)}...' : item,
                   style: EnvoyTypography.info
                       .copyWith(color: EnvoyColors.accentPrimary),
-                )),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: EnvoyColors.accentPrimary, width: 1),
-            ),
-            height: 34)),
+                )))),
   );
 }
 

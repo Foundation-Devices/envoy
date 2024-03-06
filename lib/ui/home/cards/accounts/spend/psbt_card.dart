@@ -106,12 +106,12 @@ class PsbtCard extends StatelessWidget {
                                   color: EnvoyColors.darkTeal,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(MaterialPageRoute(builder: (_) {
+                                  final navigator =     Navigator.of(context,rootNavigator: true);
+                                  navigator.push(MaterialPageRoute(builder: (_) {
                                     return ScannerPage.tx((psbt) async {
-                                      Psbt PsbtParsed =
+                                      Psbt psbtParsed =
                                           await account.wallet.decodePsbt(psbt);
-                                      Navigator.pop(context, PsbtParsed);
+                                      navigator.pop(psbtParsed);
                                     });
                                   }));
                                 },

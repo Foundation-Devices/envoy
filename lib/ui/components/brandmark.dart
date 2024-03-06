@@ -41,7 +41,7 @@ class Brandmark extends StatelessWidget {
 
     return Center(
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(100)),
+        borderRadius: const BorderRadius.all(Radius.circular(100)),
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(
             filterColor,

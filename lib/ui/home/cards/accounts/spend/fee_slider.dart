@@ -126,6 +126,15 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                               ],
                             ),
                             child: Card(
+                              elevation: 0,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                      EnvoySpacing.medium2),
+                                  topRight:
+                                      Radius.circular(EnvoySpacing.medium2),
+                                ),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Consumer(
@@ -138,15 +147,6 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                       },
                                     );
                                   },
-                                ),
-                              ),
-                              elevation: 0,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: const Radius.circular(
-                                      EnvoySpacing.medium2),
-                                  topRight:
-                                      Radius.circular(EnvoySpacing.medium2),
                                 ),
                               ),
                             ));
@@ -234,7 +234,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
   bool _disableHaptic = false;
   bool _initializationFinished = false;
-  FixedExtentScrollController _controller =
+  final FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
   @override
@@ -450,8 +450,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     setState(() {
       selectedItem = widget.fees[index].toInt();
     });
-    if (_initializationFinished)
+    if (_initializationFinished) {
       ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
           selectedItem;
+    }
   }
 }

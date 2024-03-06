@@ -551,7 +551,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                                               .notifier)
                                                                           .state =
                                                                       AccountToggleState
-                                                                          .Coins;
+                                                                          .coins;
 
                                                                   ///pop review
                                                                   router.pop();

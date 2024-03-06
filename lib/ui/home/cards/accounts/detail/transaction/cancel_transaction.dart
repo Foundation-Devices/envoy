@@ -311,8 +311,8 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     ),
                   ],
                 )),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+            const Padding(
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
               child: EnvoyIcon(
                 EnvoyIcons.alert,
                 size: EnvoyIconSize.big,
@@ -416,7 +416,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     if (account.wallet.hot == false) {
                       Psbt? psbt = await navigator.push(MaterialPageRoute(
                           builder: (context) => Builder(builder: (context) {
-                                return _Background(
+                                return background(
                                     child: PsbtCard(widget.cancelTx, account),
                                     context: context);
                               })));
@@ -559,7 +559,7 @@ class _CancelTransactionProgressState
       onPopInvoked: (didPop) {
         clearSpendState(ProviderScope.containerOf(context));
       },
-      child: _Background(
+      child: background(
         child: MediaQuery.removePadding(
           removeTop: true,
           removeBottom: true,
@@ -695,17 +695,17 @@ class _CancelTransactionProgressState
   }
 }
 
-Widget _Background({required Widget child, required BuildContext context}) {
-  double _appBarHeight = AppBar().preferredSize.height;
-  double _topAppBarOffset = _appBarHeight + 10;
+Widget background({required Widget child, required BuildContext context})  {
+  double appBarHeight = AppBar().preferredSize.height;
+  double topAppBarOffset = appBarHeight + 10;
 
   return Scaffold(
     resizeToAvoidBottomInset: true,
     body: Stack(
       children: [
-        AppBackground(),
+        const AppBackground(),
         Positioned(
-          top: _topAppBarOffset,
+          top: topAppBarOffset,
           left: 5,
           bottom: const BottomAppBar().height ?? 20 + 8,
           right: 5,

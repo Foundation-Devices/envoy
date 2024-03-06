@@ -93,7 +93,7 @@ final accountsRouter = StatefulShellBranch(
                 }
                 ProviderScope.containerOf(context)
                     .read(accountToggleStateProvider.notifier)
-                    .state = AccountToggleState.Tx;
+                    .state = AccountToggleState.tx;
                 return true;
               },
               path: _ACCOUNT_DETAIL,

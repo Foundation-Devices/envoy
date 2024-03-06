@@ -18,7 +18,7 @@ class QrTab extends StatelessWidget {
   final Widget qr;
 
   QrTab(
-      {required this.account,
+      {super.key, required this.account,
       required this.title,
       required this.subtitle,
       required this.qr});
@@ -106,7 +106,7 @@ class QrTab extends StatelessWidget {
                         decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(16))),
+                                BorderRadius.all(Radius.circular(16))),
                         child: AspectRatio(
                           aspectRatio: 1.0,
                           child: Align(
