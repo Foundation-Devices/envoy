@@ -47,12 +47,12 @@ class AztecoVoucher {
   Future<AztecoVoucherRedeemResult> redeem(String address) async {
     String url = getRedeemUrl(address);
 
-    HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
     Response? response;
 
     try {
-      response = await _http.get(url);
+      response = await http.get(url);
     } on TimeoutException {
       return AztecoVoucherRedeemResult.timeout;
     }
@@ -71,16 +71,7 @@ class AztecoVoucher {
   }
 
   String getRedeemUrl(String address) {
-    return "https://azte.co/fd_despatch.php?CODE_1=" +
-        code[0] +
-        "&CODE_2=" +
-        code[1] +
-        "&CODE_3=" +
-        code[2] +
-        "&CODE_4=" +
-        code[3] +
-        "&ADDRESS=" +
-        address;
+    return "https://azte.co/fd_despatch.php?CODE_1=${code[0]}&CODE_2=${code[1]}&CODE_3=${code[2]}&CODE_4=${code[3]}&ADDRESS=$address";
   }
 
   static bool isVoucher(String url) {

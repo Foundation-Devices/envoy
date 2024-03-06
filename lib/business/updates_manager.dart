@@ -38,7 +38,7 @@ class UpdatesManager {
     _fetchUpdates();
 
     // Check once an hour
-    Timer.periodic(Duration(hours: 1), (_) {
+    Timer.periodic(const Duration(hours: 1), (_) {
       _fetchUpdates();
     });
   }
@@ -60,8 +60,8 @@ class UpdatesManager {
   }
 
   _processFw(FirmwareUpdate fw) async {
-    var StoredInfo = await es.getStoredFirmware(fw.deviceId);
-    String? storedVersion = StoredInfo?.storedVersion;
+    var storedInfo = await es.getStoredFirmware(fw.deviceId);
+    String? storedVersion = storedInfo?.storedVersion;
 
     if (fw.version != storedVersion) {
       final fwBinary = await http.get(fw.url);
@@ -110,8 +110,8 @@ class UpdatesManager {
   }
 
   Future<String?> getStoredFwVersionString(int deviceId) async {
-    var StoredInfo = await es.getStoredFirmware(deviceId);
-    String? storedVersion = StoredInfo?.storedVersion;
+    var storedInfo = await es.getStoredFirmware(deviceId);
+    String? storedVersion = storedInfo?.storedVersion;
     return storedVersion;
   }
 

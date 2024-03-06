@@ -75,7 +75,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(BuildContext context)? onSecondaryButtonTap;
   final PopUpState? typeOfMessage;
   final String? checkBoxText;
-  final onCheckBoxChanged;
+  final Function(bool checked) onCheckBoxChanged;
   bool? checkedValue;
 
   @override

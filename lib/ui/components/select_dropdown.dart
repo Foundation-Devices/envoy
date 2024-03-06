@@ -23,7 +23,7 @@ class EnvoyDropdown extends StatefulWidget {
   final Function(EnvoyDropdownOption?)? onOptionChanged;
   final int initialIndex;
 
-  EnvoyDropdown({
+  const EnvoyDropdown({
     super.key,
     required this.options,
     this.isDropdownActive = true,
@@ -32,16 +32,16 @@ class EnvoyDropdown extends StatefulWidget {
   });
 
   @override
-  _EnvoyDropdownState createState() => _EnvoyDropdownState();
+  EnvoyDropdownState createState() => EnvoyDropdownState();
 }
 
-class _EnvoyDropdownState extends State<EnvoyDropdown> {
+class EnvoyDropdownState extends State<EnvoyDropdown> {
   int _selectedIndex = 0;
   EnvoyDropdownOption? _selectedOption;
   bool _isTapped = true;
   late FocusNode _focusNode;
 
-  _EnvoyDropdownState() {
+  EnvoyDropdownState() {
     _focusNode = FocusNode();
   }
 

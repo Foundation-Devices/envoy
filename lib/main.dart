@@ -40,18 +40,18 @@ Future<void> main() async {
   if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
   } else {
-    runApp(EnvoyApp());
+    runApp(const EnvoyApp());
   }
   listenToRouteChanges();
 }
 
 Future<void> initSingletons() async {
   // This is notoriously low on iOS, causing 'too many open files errors'
-  print("Process nofile_limit: " + getNofileLimit().toString());
+  print("Process nofile_limit: ${getNofileLimit()}");
 
   // Requesting a high number. The API will return the best we can get
   // ~10k on iPhone 11 which is much better than the default 256
-  print("Process nofile_limit bumped to: " + setNofileLimit(16384).toString());
+  print("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
   await EnvoyStorage().init();
   await LocalStorage.init();

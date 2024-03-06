@@ -25,7 +25,7 @@ class AmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final bool alignToEnd;
 
-  AmountWidget({
+  AmountWidget({super.key,
     required this.amountSats,
     required this.primaryUnit,
     this.style = AmountWidgetStyle.normal,
@@ -167,7 +167,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (unit == AmountDisplayUnit.fiat && fxRateFiat == null) {
-      return LoaderGhost(
+      return const LoaderGhost(
         width: 30,
         height: 15,
         animate: true,

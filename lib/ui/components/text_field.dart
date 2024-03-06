@@ -11,7 +11,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EnvoyTextField extends StatefulWidget {
   const EnvoyTextField({
-    Key? key,
+    super.key,
     this.defaultText,
     this.informationalText,
     this.additionalButtons = false,
@@ -21,7 +21,7 @@ class EnvoyTextField extends StatefulWidget {
     this.isError = false,
     this.isLoading,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final dynamic defaultText;
   final String? informationalText;
@@ -76,7 +76,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                     : Border.all(color: EnvoyColors.accentPrimary))
                 : Border.all(color: Colors.transparent),
             borderRadius: const BorderRadius.all(
-              const Radius.circular(EnvoySpacing.small),
+              Radius.circular(EnvoySpacing.small),
             ),
           ),
           child: Row(
@@ -118,10 +118,10 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                   children: [
                     const SizedBox(width: EnvoySpacing.medium1),
                     if (widget.isLoading ?? false)
-                      Container(
+                      const SizedBox(
                         width: EnvoySpacing.medium1,
                         height: EnvoySpacing.medium1,
-                        child: const CircularProgressIndicator(
+                        child: CircularProgressIndicator(
                           strokeWidth: 1.5,
                           color: EnvoyColors.textPrimary,
                         ),

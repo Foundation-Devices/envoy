@@ -41,7 +41,7 @@ Future<void> _setupNotifications() async {
 }
 
 class RampFlutterApp extends StatefulWidget {
-  const RampFlutterApp({Key? key, required this.account}) : super(key: key);
+  const RampFlutterApp({super.key, required this.account});
   final Account account;
 
   @override
@@ -125,7 +125,7 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  "Address: " + address,
+                  "Address: $address",
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                 ),

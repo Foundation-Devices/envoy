@@ -9,11 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EnvoyListToggle extends StatefulWidget {
+  const EnvoyListToggle({super.key});
+
   @override
-  _EnvoyListToggleState createState() => _EnvoyListToggleState();
+  EnvoyListToggleState createState() => EnvoyListToggleState();
 }
 
-class _EnvoyListToggleState extends State<EnvoyListToggle> {
+class EnvoyListToggleState extends State<EnvoyListToggle> {
   var isEnabled = false;
 
   @override
@@ -32,7 +34,7 @@ class _EnvoyListToggleState extends State<EnvoyListToggle> {
       size: EnvoyIconSize.small,
     );
 
-    final toggleWidth = 60.0;
+    const toggleWidth = 60.0;
     final widgetWidth = 2 +
         toggleWidth +
         EnvoySpacing.xs +

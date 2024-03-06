@@ -287,7 +287,7 @@ class Notifications {
 
   _startPeriodicSync() {
     // Sync periodically
-    _syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
       _checkForNotificationsToAdd();
     });
   }

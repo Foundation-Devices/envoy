@@ -88,7 +88,7 @@ dependencies:
   pub_semver: ^2.1.1
   flutter_riverpod: ^2.3.6
   cupertino_icons: ^1.0.5
-  rive: ^0.11.1
+  rive: ^0.12.4
   local_auth: ^2.1.6
   file_saver: ^0.1.1
   file_picker: ^5.2.5

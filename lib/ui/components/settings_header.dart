@@ -10,15 +10,14 @@ import 'package:flutter/material.dart';
 
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.linkText,
       this.onTap,
-      required this.icon})
-      : super(key: key);
+      required this.icon});
 
   final String title;
-  final linkText;
+  final String linkText;
   final Function()? onTap;
   final EnvoyIcons icon;
 
@@ -32,7 +31,7 @@ class SettingsHeader extends StatelessWidget {
           child: Row(
             children: [
               EnvoyIcon(icon),
-              SizedBox(
+              const SizedBox(
                 width: EnvoySpacing.small,
               ),
               Text(
@@ -59,5 +58,10 @@ class SettingsHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('linkText', linkText));
   }
 }

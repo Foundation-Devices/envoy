@@ -223,7 +223,7 @@ class CryptoRequest extends UniformResourceWriter {
 
     // UUIDs are 128 bit
     Uint8Buffer uuidBuffer = Uint8Buffer(16);
-    uuid = Uuid().v4buffer(uuidBuffer);
+    uuid = const Uuid().v4buffer(uuidBuffer);
 
     tlMap.writeBytes(uuidBuffer);
   }

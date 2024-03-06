@@ -11,10 +11,10 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EnvoySearch extends StatefulWidget {
   const EnvoySearch({
-    Key? key,
+    super.key,
     required this.filterSearchResults,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final void Function(String) filterSearchResults;
   final TextEditingController controller;
@@ -57,7 +57,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
             ? Border.all(color: EnvoyColors.accentPrimary)
             : Border.all(color: Colors.transparent),
         borderRadius: const BorderRadius.all(
-          const Radius.circular(EnvoySpacing.medium3),
+          Radius.circular(EnvoySpacing.medium3),
         ),
       ),
       child: TextFormField(

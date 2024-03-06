@@ -70,7 +70,7 @@ void main() {
 
       await initSingletons();
       await tester.pumpWidget(
-          Screenshot(controller: envoyScreenshotController, child: EnvoyApp()));
+          Screenshot(controller: envoyScreenshotController, child: const EnvoyApp()));
 
       await tester.pump();
 
@@ -362,7 +362,7 @@ class Passport {
 
     const fileToDelete = 'spi_flash.bin';
     try {
-      File(passportPath + "/" + fileToDelete).deleteSync();
+      File("$passportPath/$fileToDelete").deleteSync();
     } on Exception catch (e) {
       print("Couldn't reset Passport: $e");
     }
@@ -421,7 +421,7 @@ class Passport {
         print(event);
       });
       ffmpeg.stderr.listen((event) {
-        print("ffmpeg :" + utf8.decode(event));
+        print("ffmpeg :${utf8.decode(event)}");
       });
     });
   }
@@ -468,7 +468,7 @@ class Passport {
       return false;
     }
 
-    print("CAPTURE: " + process.stdout);
+    print(process.stdout + "CAPTURE: ");
 
     for (final text in texts) {
       if (process.stdout.contains(text)) {

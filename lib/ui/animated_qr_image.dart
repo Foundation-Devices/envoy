@@ -22,7 +22,7 @@ class AnimatedQrImage extends StatefulWidget {
   final double? size;
 
   AnimatedQrImage(Uint8List message,
-      {this.refreshRate = 3,
+      {super.key, this.refreshRate = 3,
       int maxFragmentLength = 100,
       this.size,
       this.cryptoRequest,
@@ -49,8 +49,8 @@ class AnimatedQrImage extends StatefulWidget {
         urType, Uint8List.fromList(completeMessage), maxFragmentLength);
   }
 
-  AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
-      {this.refreshRate = 5, this.size, this.urEncoder})
+  const AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
+      {super.key, this.refreshRate = 5, this.size, this.urEncoder})
       : cryptoRequest = request;
 
   void onLoad(BuildContext context) {}

@@ -33,13 +33,12 @@ class AmountEntry extends ConsumerStatefulWidget {
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
 
-  AmountEntry(
+  const AmountEntry(
       {this.account,
       this.onAmountChanged,
       this.initalSatAmount = 0,
       this.onPaste,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   ConsumerState<AmountEntry> createState() => AmountEntryState();
@@ -225,7 +224,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                   ((enteredAmount.length -
                           enteredAmount.indexOf(fiatDecimalSeparator)) ==
                       2)) {
-                enteredAmount = enteredAmount + "0";
+                enteredAmount = "${enteredAmount}0";
               }
               _enteredAmount = enteredAmount;
             },
@@ -384,10 +383,10 @@ class NumpadButton extends StatelessWidget {
   const NumpadButton(
     this.type, {
     this.text,
-    Key? key,
+    super.key,
     required this.onTap,
     this.onLongPressDown,
-  }) : super(key: key);
+  });
 
   void _handleLongPress() {
     // Check if onLongPressDown is provided and call it if it is
