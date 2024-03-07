@@ -701,7 +701,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
       }
-      if (context.mounted) {
+      if(context.mounted){
         EnvoyToast(
           replaceExisting: true,
           duration: const Duration(seconds: 4),
@@ -712,7 +712,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           ),
         ).show(context);
       }
-      ref.read(spendFeeRateProvider.notifier).state = existingFeeRate!;
+      if (existingFeeRate != null) {
+        ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
+      }
     } finally {
       setState(() {
         _rebuildingTx = false;

@@ -248,8 +248,11 @@ class Settings extends ChangeNotifier {
     String? currencyCode =
         NumberFormat.simpleCurrency(locale: Intl.getCurrentLocale())
             .currencyName;
+    if (currencyCode == null) {
+      return "USD";
+    }
 
-    if (supportedFiat.contains(FiatCurrency(currencyCode!, ""))) {
+    if (supportedFiat.contains(FiatCurrency(currencyCode, ""))) {
       return currencyCode;
     }
 
