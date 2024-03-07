@@ -129,8 +129,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                               elevation: 0,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                      EnvoySpacing.medium2),
+                                  topLeft:
+                                      Radius.circular(EnvoySpacing.medium2),
                                   topRight:
                                       Radius.circular(EnvoySpacing.medium2),
                                 ),

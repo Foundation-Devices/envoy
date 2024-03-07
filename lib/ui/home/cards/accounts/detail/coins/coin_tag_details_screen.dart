@@ -290,8 +290,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       ),
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(cardRadius)),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(cardRadius)),
                             border: Border.all(
                                 color: border,
                                 width: 2,
@@ -619,7 +619,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   _deleteEmptyTag(BuildContext context) {
-    final navigator =  Navigator.of(context);
+    final navigator = Navigator.of(context);
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,

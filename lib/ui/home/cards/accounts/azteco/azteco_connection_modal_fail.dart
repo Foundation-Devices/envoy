@@ -37,8 +37,7 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
           ),
         ),
         Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,8 +68,7 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1,
-              vertical: EnvoySpacing.medium2),
+              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium2),
           child: EnvoyButton(
             "Continue", // TODO: FIGMA
             //S().azteco_connection_modal_fail_cta,

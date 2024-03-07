@@ -10,7 +10,8 @@ class TextEntry extends StatelessWidget {
   final FocusNode? focusNode;
   final int? maxLength;
 
-  TextEntry({super.key, String placeholder = "", this.focusNode, this.maxLength}) {
+  TextEntry(
+      {super.key, String placeholder = "", this.focusNode, this.maxLength}) {
     _controller.text = placeholder;
   }
 

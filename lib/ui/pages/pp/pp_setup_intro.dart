@@ -74,8 +74,7 @@ class PpSetupIntroPage extends StatelessWidget {
                         child: Column(
                           children: [
                             const Padding(
-                                padding:
-                                    EdgeInsets.all(EnvoySpacing.small)),
+                                padding: EdgeInsets.all(EnvoySpacing.small)),
                             Text(
                               S().envoy_pp_setup_intro_heading,
                               textAlign: TextAlign.center,

@@ -76,8 +76,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                 child: Column(
                   children: [
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: EnvoySpacing.medium1),
+                      padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
                       child: SettingsHeader(
                         title: S().privacy_privacyMode_title,
                         linkText: S().component_learnMore,
@@ -151,8 +150,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                       options: [
                         EnvoyDropdownOption(
                             S().privacy_node_nodeType_foundation),
-                        EnvoyDropdownOption(
-                            S().privacy_node_nodeType_personal,
+                        EnvoyDropdownOption(S().privacy_node_nodeType_personal,
                             type: EnvoyDropdownOptionType.personalNode),
                       ],
                       onOptionChanged: (selectedOption) {
@@ -173,8 +171,7 @@ class PrivacyCardState extends State<PrivacyCard> {
                         padding:
                             const EdgeInsets.only(top: EnvoySpacing.medium1),
                         child: SingleChildScrollView(
-                            child: ElectrumServerEntry(
-                                s.customElectrumAddress,
+                            child: ElectrumServerEntry(s.customElectrumAddress,
                                 s.setCustomElectrumAddress)),
                       ),
                     if (!Platform.isLinux)
@@ -237,8 +234,9 @@ class PrivacyCardState extends State<PrivacyCard> {
                                           );
 
                                           if (authSuccess) {
-                                            LocalStorage().prefs.setBool(
-                                                "useLocalAuth", value);
+                                            LocalStorage()
+                                                .prefs
+                                                .setBool("useLocalAuth", value);
                                             setState(() {
                                               _useLocalAuth = value;
                                             });

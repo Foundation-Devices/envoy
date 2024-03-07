@@ -144,7 +144,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       List locked = await CoinRepository().getBlockedCoins();
 
-       for(var utxo in account.wallet.utxos) {
+      for (var utxo in account.wallet.utxos) {
         if (locked.contains(utxo.id)) {
           dontSpend ??= [];
           dontSpend.add(utxo);
@@ -331,7 +331,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           final tags = ref
               .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
 
-          for(var coin in inputCoins)  {
+          for (var coin in inputCoins) {
             final coinTag = coinTags.firstWhereOrNull((element) =>
                 element.coinsId.contains(coin.id) &&
                 element.account == account.id);

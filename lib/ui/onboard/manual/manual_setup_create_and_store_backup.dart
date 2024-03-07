@@ -81,12 +81,13 @@ class _ManualSetupCreateAndStoreBackupState
                         onTap: () async {
                           await EnvoySeed().saveOfflineData();
 
-                          if (globalState == GlobalState.nuclearDelete && context.mounted) {
+                          if (globalState == GlobalState.nuclearDelete &&
+                              context.mounted) {
                             showEnvoyDialog(
                                 context: context,
                                 dialog: const EraseWalletsConfirmation());
                           } else {
-                            if(context.mounted){
+                            if (context.mounted) {
                               showWarningModal(context);
                             }
                           }

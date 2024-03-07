@@ -144,13 +144,13 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
               },
               dismissible: false);
         } else {
-          if(mounted){
+          if (mounted) {
             recoverManually(seedList, context);
           }
         }
       });
     } catch (e) {
-      if(mounted){
+      if (mounted) {
         recoverManually(seedList, context);
       }
     }
@@ -190,7 +190,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
 
 Future<void> tryMagicRecover(List<String> seedList, String seed,
     Map<String, String>? data, BuildContext context) async {
-  final navigator =  Navigator.of(context);
+  final navigator = Navigator.of(context);
   await EnvoySeed().create(seedList);
   bool success = await EnvoySeed().processRecoveryData(seed, data);
 
@@ -216,7 +216,7 @@ Future<void> recoverManually(
         MaterialPageRoute(
             builder: (context) => const ManualSetupImportBackup()));
   } else {
-    if(context.mounted){
+    if (context.mounted) {
       showInvalidSeedDialog(
         context: context,
       );

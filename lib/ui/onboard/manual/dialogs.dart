@@ -80,8 +80,8 @@ void showRestoreFailedDialog(BuildContext context) {
 }
 
 Future<void> openBackupFile(BuildContext buildContext) async {
-  final navigator =   Navigator.of(buildContext);
-  final context  = buildContext;
+  final navigator = Navigator.of(buildContext);
+  final context = buildContext;
   var result = await FilePicker.platform.pickFiles();
 
   if (result != null) {
@@ -98,12 +98,12 @@ Future<void> openBackupFile(BuildContext buildContext) async {
         return const WalletSetupSuccess();
       }));
     } else {
-      if(context.mounted){
+      if (context.mounted) {
         showRestoreFailedDialog(context);
       }
     }
   } else {
-    if(context.mounted){
+    if (context.mounted) {
       showRestoreFailedDialog(context);
     }
   }

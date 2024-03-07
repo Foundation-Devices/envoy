@@ -205,8 +205,7 @@ class _SendCardState extends ConsumerState<SendCard>
                                         .validate(
                                             ProviderScope.containerOf(context));
                                     if (valid) {
-                                      router
-                                          .push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                                      router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
                                     }
                                   } catch (e) {
                                     kPrint(e);

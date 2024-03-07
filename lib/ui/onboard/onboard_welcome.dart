@@ -62,9 +62,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA
           ));
         } on Exception catch (_) {
-            scaffold.showSnackBar(const SnackBar(
-              content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
-            ));
+          scaffold.showSnackBar(const SnackBar(
+            content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
+          ));
         }
       }
     } else {

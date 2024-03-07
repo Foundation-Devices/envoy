@@ -268,7 +268,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
   void _showRBFDialog(BuildContext context) async {
     if (!(await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.rbfWarning)) && context.mounted) {
+            .checkPromptDismissed(DismissiblePrompt.rbfWarning)) &&
+        context.mounted) {
       showEnvoyDialog(
         context: context,
         dialog: EnvoyDialog(

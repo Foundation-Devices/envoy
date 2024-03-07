@@ -65,9 +65,9 @@ class FwMicrosdPage extends ConsumerWidget {
                   }));
                 }
 
-                if (Platform.isAndroid ) {
+                if (Platform.isAndroid) {
                   await Future.delayed(const Duration(milliseconds: 500));
-                  if(context.mounted){
+                  if (context.mounted) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return FwAndroidProgressPage(deviceId,
@@ -77,7 +77,8 @@ class FwMicrosdPage extends ConsumerWidget {
                 }
               } catch (e) {
                 kPrint("SD: error $e");
-                if (Platform.isIOS && context.mounted) // TODO: this needs to be smarter
+                if (Platform.isIOS &&
+                    context.mounted) // TODO: this needs to be smarter
                   // ignore: curly_braces_in_flow_control_structures
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {

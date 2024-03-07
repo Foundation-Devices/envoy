@@ -60,7 +60,7 @@ class OnboardingPage extends StatelessWidget {
     /// wait for the go router to push the route
     await Future.delayed(const Duration(milliseconds: 100));
 
-    if(context.mounted){
+    if (context.mounted) {
       /// Pop until we get to the home page (GoRouter Shell)
       popUntilGoRoute(context);
     }
@@ -236,8 +236,7 @@ class OnboardingPage extends StatelessWidget {
                           decorator: const DotsDecorator(
                               size: Size.square(5.0),
                               activeSize: Size.square(5.0),
-                              spacing:
-                                  EdgeInsets.symmetric(horizontal: 5)),
+                              spacing: EdgeInsets.symmetric(horizontal: 5)),
                           dotsCount: navigationDots,
                           position: navigationDotsIndex.toDouble(),
                         ),
@@ -312,7 +311,10 @@ class ActionText extends StatelessWidget {
   final Function() action;
 
   const ActionText(
-      {super.key, required this.header, required this.text, required this.action});
+      {super.key,
+      required this.header,
+      required this.text,
+      required this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +348,8 @@ class LinkText extends StatelessWidget {
   final TextStyle? linkStyle;
 
   const LinkText(
-      {super.key, required this.text,
+      {super.key,
+      required this.text,
       this.onTap,
       this.textStyle,
       this.linkStyle,

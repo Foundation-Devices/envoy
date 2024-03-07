@@ -132,7 +132,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
                   if ((userNote == null || userNote.isEmpty) &&
                       !dismissedNoteDialog &&
-                      !ref.read(spendTransactionProvider).isPSBTFinalized && context.mounted) {
+                      !ref.read(spendTransactionProvider).isPSBTFinalized &&
+                      context.mounted) {
                     await showEnvoyDialog(
                         context: context,
                         useRootNavigator: true,
@@ -161,25 +162,26 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   if (!userChosenTag &&
                       tagInputs != null &&
                       hasManyTagsAsInput &&
-                      hasChangeOutPutPresent && context.mounted) {
+                      hasChangeOutPutPresent &&
+                      context.mounted) {
                     await showTagDialog(
                         context, account, rootContext, transactionModel);
                   } else {
                     if (account.wallet.hot ||
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
-                      if(context.mounted){
+                      if (context.mounted) {
                         broadcastTx(context);
                       }
                     } else {
-                      if(rootContext.mounted){
-                        final psbt =
-                        await Navigator.of(rootContext, rootNavigator: false)
+                      if (rootContext.mounted) {
+                        final psbt = await Navigator.of(rootContext,
+                                rootNavigator: false)
                             .push(MaterialPageRoute(
-                            builder: (context) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: PsbtCard(
-                                  transactionModel.psbt!, account),
-                            )));
+                                builder: (context) => Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: PsbtCard(
+                                          transactionModel.psbt!, account),
+                                    )));
                         ref
                             .read(spendTransactionProvider.notifier)
                             .updateWithFinalPSBT(psbt);
@@ -487,8 +489,8 @@ class _TransactionReviewScreenState
 
     if (account == null || transactionModel.psbt == null) {
       return const Center(
-              child: Text("Unable to build transaction"), //TODO: figma
-            );
+        child: Text("Unable to build transaction"), //TODO: figma
+      );
     }
 
     Psbt psbt = transactionModel.psbt!;
@@ -787,13 +789,12 @@ class _DiscardTransactionDialogState
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
-              final router =   GoRouter.of(context);
+              final router = GoRouter.of(context);
               resetFeeChangeNoticeUserInteractionProviders(ref);
               router.pop(true);
               await Future.delayed(const Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
-              router
-                  .pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
+              router.pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
               await Future.delayed(const Duration(milliseconds: 50));
               router.pop();
             },

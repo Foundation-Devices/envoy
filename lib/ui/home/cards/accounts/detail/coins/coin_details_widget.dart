@@ -235,7 +235,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              final navigator =  Navigator.of(context);
+                              final navigator = Navigator.of(context);
                               showEnvoyDialog(
                                   context: context,
                                   useRootNavigator: true,

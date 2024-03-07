@@ -161,8 +161,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              margin: const EdgeInsets.symmetric(
-                  horizontal: EnvoySpacing.medium1),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               decoration: BoxDecoration(
                   color: const Color(0xffD9D9D9),
                   borderRadius: BorderRadius.circular(8)),
@@ -187,8 +187,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                     errorBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 16.0),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                   )),
             ),
             const Padding(padding: EdgeInsets.all(8)),
@@ -245,8 +245,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   account: widget.accountId,
                   untagged: false,
                 );
-                ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                    tag;
+                ref.read(stagingTxChangeOutPutTagProvider.notifier).state = tag;
               }
               widget.onTagUpdate();
             }),

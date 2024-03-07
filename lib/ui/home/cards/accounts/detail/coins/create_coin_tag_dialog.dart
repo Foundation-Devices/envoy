@@ -308,7 +308,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
         }
       }
 
-      for (var coin in coinsRemovedTags){
+      for (var coin in coinsRemovedTags) {
         if (!coin.untagged) {
           await Future.delayed(const Duration(milliseconds: 10));
           await CoinRepository().updateCoinTag(coin);

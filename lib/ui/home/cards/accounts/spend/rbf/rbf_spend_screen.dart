@@ -401,7 +401,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     final rawTx =
         await ref.read(rawWalletTransactionProvider(_psbt.rawTx).future);
 
-    if (rawTx != null && rawTx.inputs.length != _originalTx.inputs?.length &&  mounted) {
+    if (rawTx != null &&
+        rawTx.inputs.length != _originalTx.inputs?.length &&
+        mounted) {
       showEnvoyDialog(
           context: context,
           dialog: Builder(builder: (context) {
@@ -499,19 +501,19 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       return;
     }
     if (account.wallet.hot) {
-      broadcastTx(account, _psbt,context);
+      broadcastTx(account, _psbt, context);
     } else {
       final psbt = await Navigator.of(context, rootNavigator: false).push(
           MaterialPageRoute(
               builder: (context) => background(
                   child: PsbtCard(_psbt, account), context: context)));
-      if(context.mounted) {
+      if (context.mounted) {
         broadcastTx(account, psbt, context);
       }
     }
   }
 
-  Future broadcastTx(Account account, Psbt psbt,BuildContext context) async {
+  Future broadcastTx(Account account, Psbt psbt, BuildContext context) async {
     try {
       setState(() {
         broadcastProgress = BroadcastProgress.inProgress;
@@ -607,7 +609,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
         ///move new change output to tags based on user selection or from the original selection
         if (rawTx != null && tag != null) {
-          for (var output in  rawTx.outputs ){
+          for (var output in rawTx.outputs) {
             if (output.path == TxOutputPath.Internal) {
               final coin = Coin(
                   Utxo(
@@ -627,7 +629,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       } catch (e) {
         kPrint(e);
       }
-      if(context.mounted){
+      if (context.mounted) {
         clearSpendState(ProviderScope.containerOf(context));
       }
 
@@ -699,7 +701,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
       }
-      if(context.mounted){
+      if (context.mounted) {
         EnvoyToast(
           replaceExisting: true,
           duration: const Duration(seconds: 4),

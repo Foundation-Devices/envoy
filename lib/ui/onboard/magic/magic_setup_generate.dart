@@ -419,73 +419,73 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
 
   _androidBackUPInfo(BuildContext context) {
     return PageTransitionSwitcher(
-          reverse: _androidBackupInfoPage == 1,
-          duration: const Duration(milliseconds: 600),
-          transitionBuilder: (
-    Widget child,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-          ) {
-    return SharedAxisTransition(
-      animation: animation,
-      fillColor: Colors.transparent,
-      secondaryAnimation: secondaryAnimation,
-      transitionType: SharedAxisTransitionType.vertical,
-      child: child,
-    );
-          },
-          child: _androidBackupInfoPage == 0
-      ? Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
+      reverse: _androidBackupInfoPage == 1,
+      duration: const Duration(milliseconds: 600),
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return SharedAxisTransition(
+          animation: animation,
+          fillColor: Colors.transparent,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.vertical,
+          child: child,
+        );
+      },
+      child: _androidBackupInfoPage == 0
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  S().android_backup_info_heading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
+                Column(
+                  children: [
+                    Text(
+                      S().android_backup_info_heading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium3)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: LinkText(
+                        text: S().android_backup_info_subheading,
+                        onTap: () {
+                          openAndroidSettings();
+                        },
+                        linkStyle: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.accentPrimary),
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontSize: 14),
+                      ),
+                    ),
+                  ],
                 ),
                 const Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium3)),
+                    padding:
+                        EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1),
-                  child: LinkText(
-                    text: S().android_backup_info_subheading,
+                    horizontal: EnvoySpacing.small,
+                  ),
+                  child: OnboardingButton(
+                    label: S().component_continue,
                     onTap: () {
-                      openAndroidSettings();
+                      setState(() {
+                        _androidBackupInfoPage = 1;
+                      });
                     },
-                    linkStyle: EnvoyTypography.button
-                        .copyWith(color: EnvoyColors.accentPrimary),
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontSize: 14),
                   ),
                 ),
               ],
-            ),
-            const Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.small,
-              ),
-              child: OnboardingButton(
-                label: S().component_continue,
-                onTap: () {
-                  setState(() {
-                    _androidBackupInfoPage = 1;
-                  });
-                },
-              ),
-            ),
-          ],
-        )
-      : _recoverStepsInfo(context),
-        );
+            )
+          : _recoverStepsInfo(context),
+    );
   }
 }

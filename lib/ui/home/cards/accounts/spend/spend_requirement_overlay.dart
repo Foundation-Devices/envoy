@@ -380,7 +380,9 @@ class SpendRequirementOverlayState
                                                           0xff808080),
                                                     )),
                                                 Text(
-                                                  getFormattedAmount(requiredAmount, trailingZeroes: true),
+                                                  getFormattedAmount(
+                                                      requiredAmount,
+                                                      trailingZeroes: true),
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .titleSmall,
@@ -467,8 +469,11 @@ class SpendRequirementOverlayState
                                             ? S().tagged_tagDetails_sheet_cta1
                                             : S().component_continue,
                                         onTap: () async {
-                                          final scope = ProviderScope.containerOf(context);
-                                          final router =   GoRouter.of(context);
+                                          final scope =
+                                              ProviderScope.containerOf(
+                                                  context);
+                                          final router = GoRouter.of(context);
+
                                           /// if the user is in utxo details screen we need to wait animations to finish
                                           /// before we can pop back to home screen
                                           if (Navigator.canPop(context)) {
@@ -506,8 +511,7 @@ class SpendRequirementOverlayState
                                             router.push(
                                                 ROUTE_ACCOUNT_SEND_CONFIRM);
                                           } else {
-                                            router
-                                                .push(ROUTE_ACCOUNT_SEND);
+                                            router.push(ROUTE_ACCOUNT_SEND);
                                           }
                                           ref
                                               .read(spendEditModeProvider
@@ -560,7 +564,7 @@ class SpendRequirementOverlayState
               : S().component_cancel,
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
-            final router =  GoRouter.of(context);
+            final router = GoRouter.of(context);
             ref
                 .read(coinSelectionStateProvider.notifier)
                 .addAll(walletSelection.toList());
@@ -619,7 +623,7 @@ class SpendRequirementOverlayState
           buttonText,
           onTap: () async {
             NavigatorState navigator =
-            Navigator.of(context, rootNavigator: true);
+                Navigator.of(context, rootNavigator: true);
             if (!inTagSelectionMode) {
               cancel(context);
               return;
@@ -640,6 +644,7 @@ class SpendRequirementOverlayState
                       onTagUpdate: () async {
                         ref.read(coinSelectionStateProvider.notifier).reset();
                         await Future.delayed(const Duration(milliseconds: 100));
+
                         /// Pop until we get to the go router
                         navigator.popUntil((route) {
                           return route.settings is MaterialPage;
@@ -649,7 +654,7 @@ class SpendRequirementOverlayState
                   ),
                   alignment: const Alignment(0.0, -.6));
             } else {
-              if(context.mounted){
+              if (context.mounted) {
                 showEnvoyDialog(
                     useRootNavigator: true,
                     context: context,
@@ -668,8 +673,9 @@ class SpendRequirementOverlayState
                                   ref
                                       .read(coinSelectionStateProvider.notifier)
                                       .reset();
-                                  NavigatorState navigator =
-                                  Navigator.of(context, rootNavigator: true);
+                                  NavigatorState navigator = Navigator.of(
+                                      context,
+                                      rootNavigator: true);
                                   await Future.delayed(
                                       const Duration(milliseconds: 100));
 
@@ -706,7 +712,7 @@ class SpendRequirementOverlayState
     setState(() {
       _hideOverlay = true;
     });
-    if(context.mounted){
+    if (context.mounted) {
       bool discard = await showEnvoyDialog(
           dismissible: false,
           context: context,
@@ -725,7 +731,6 @@ class SpendRequirementOverlayState
       }
     }
   }
-
 }
 
 class SpendSelectionCancelWarning extends ConsumerStatefulWidget {

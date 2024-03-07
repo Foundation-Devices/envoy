@@ -198,23 +198,20 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                             //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
                             try {
                               if (await EnvoySeed().get() != null) {
-                                navigator.push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MagicRecoverWallet()));
+                                navigator.push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MagicRecoverWallet()));
                               } else {
-                                navigator.push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OnboardEnvoyWelcomeScreen(),
-                                    ));
+                                navigator.push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const OnboardEnvoyWelcomeScreen(),
+                                ));
                               }
                             } catch (e) {
-                              navigator.push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const OnboardEnvoyWelcomeScreen(),
-                                  ));
+                              navigator.push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const OnboardEnvoyWelcomeScreen(),
+                              ));
                             }
                           }
                         },

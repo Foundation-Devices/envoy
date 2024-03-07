@@ -377,7 +377,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                       setPortraitMode();
 
                       await Future.delayed(const Duration(milliseconds: 300));
-                      if(context.mounted){
+                      if (context.mounted) {
                         Navigator.of(context).pop();
                       }
                     },

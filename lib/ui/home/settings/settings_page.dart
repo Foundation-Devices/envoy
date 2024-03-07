@@ -218,7 +218,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SettingText(S().settings_advanced_taproot),
                   SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
                       onEnabled: () async {
-                    if (await shouldShowPassportTaprootDialog() && context.mounted) {
+                    if (await shouldShowPassportTaprootDialog() &&
+                        context.mounted) {
                       showEnvoyPopUp(
                         context,
                         title: S().taproot_passport_dialog_heading,

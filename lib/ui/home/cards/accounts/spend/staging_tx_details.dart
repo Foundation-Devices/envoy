@@ -115,7 +115,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         });
 
         /// if the RBF tx include any other inputs, then find tags belongs to that inputs
-        for(var input in rawTransaction.inputs){
+        for (var input in rawTransaction.inputs) {
           final id = input.id;
           final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
           if (tag != null) {
@@ -125,7 +125,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         }
       } else {
         /// find inputs that belongs to the tags
-        for(var input in   rawTransaction.inputs) {
+        for (var input in rawTransaction.inputs) {
           final id = input.id;
           final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
           if (tag != null) {

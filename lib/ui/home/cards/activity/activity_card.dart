@@ -45,8 +45,7 @@ class ActivityCardState extends State<ActivityCard> {
     // ignore: unused_local_variable
 
     return const AnimatedSwitcher(
-        duration: Duration(milliseconds: 250),
-        child: TopLevelActivityCard());
+        duration: Duration(milliseconds: 250), child: TopLevelActivityCard());
   }
 }
 

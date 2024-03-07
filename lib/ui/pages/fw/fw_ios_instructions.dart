@@ -17,7 +17,6 @@ class FwIosInstructionsPage extends ConsumerWidget {
   bool onboarding;
   int deviceId;
 
-
   FwIosInstructionsPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
@@ -48,7 +47,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () async {
-              final navigator =   Navigator.of(context);
+              final navigator = Navigator.of(context);
               final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
               final uploader = FwUploader(firmwareFile);
               final folderPath = await uploader.promptUserForFolderAccess();
@@ -58,15 +57,13 @@ class FwIosInstructionsPage extends ConsumerWidget {
                 Devices()
                     .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                navigator
-                    .push(MaterialPageRoute(builder: (context) {
+                navigator.push(MaterialPageRoute(builder: (context) {
                   return FwIosSuccessPage(
                     onboarding: onboarding,
                   );
                 }));
               } else {
-                navigator
-                    .push(MaterialPageRoute(builder: (context) {
+                navigator.push(MaterialPageRoute(builder: (context) {
                   return FwMicrosdPage(onboarding: onboarding);
                 }));
               }

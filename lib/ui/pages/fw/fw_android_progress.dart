@@ -20,7 +20,8 @@ class FwAndroidProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
   final int deviceId;
 
-  const FwAndroidProgressPage(this.deviceId, {super.key, this.onboarding = true});
+  const FwAndroidProgressPage(this.deviceId,
+      {super.key, this.onboarding = true});
 
   @override
   ConsumerState<FwAndroidProgressPage> createState() =>

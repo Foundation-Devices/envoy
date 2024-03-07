@@ -154,9 +154,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "${(widget.video.duration / 60).toStringAsFixed(0)}:${(widget.video.duration % 60)
-                                    .toString()
-                                    .padLeft(2, '0')}",
+                            "${(widget.video.duration / 60).toStringAsFixed(0)}:${(widget.video.duration % 60).toString().padLeft(2, '0')}",
                             style: EnvoyTypography.info
                                 .copyWith(color: EnvoyColors.textSecondary),
                           ),

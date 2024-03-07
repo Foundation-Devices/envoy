@@ -252,8 +252,8 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 6),
                         alignment: Alignment.center,
-                        constraints: const BoxConstraints(
-                            maxWidth: 200, maxHeight: 40),
+                        constraints:
+                            const BoxConstraints(maxWidth: 200, maxHeight: 40),
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(8)),

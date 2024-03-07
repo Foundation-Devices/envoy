@@ -180,7 +180,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       final originalTxRaw = await selectedAccount.wallet
           .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
 
-      if(context.mounted){
+      if (context.mounted) {
         showEnvoyDialog(
             context: context,
             builder: Builder(
@@ -190,7 +190,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                     originalRawTx: originalTxRaw,
                     cancelTx: psbt)));
       }
-
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
@@ -198,7 +197,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
       }
-      if(context.mounted){
+      if (context.mounted) {
         EnvoyToast(
           backgroundColor: EnvoyColors.danger,
           replaceExisting: true,
@@ -210,7 +209,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
           ),
         ).show(context);
       }
-
     } finally {
       setState(() {
         _loading = false;
@@ -701,7 +699,7 @@ class _CancelTransactionProgressState
   }
 }
 
-Widget background({required Widget child, required BuildContext context})  {
+Widget background({required Widget child, required BuildContext context}) {
   double appBarHeight = AppBar().preferredSize.height;
   double topAppBarOffset = appBarHeight + 10;
 

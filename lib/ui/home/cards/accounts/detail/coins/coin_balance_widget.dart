@@ -310,10 +310,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                         (element) => coins.contains(element),
                       )
                       .toList();
-                  CoinTagSwitchState coinTagSwitchState =
-                      selectedItems.isEmpty
-                          ? CoinTagSwitchState.off
-                          : CoinTagSwitchState.partial;
+                  CoinTagSwitchState coinTagSwitchState = selectedItems.isEmpty
+                      ? CoinTagSwitchState.off
+                      : CoinTagSwitchState.partial;
                   if (selectedItems.length == coinTag.numOfCoins) {
                     coinTagSwitchState = CoinTagSwitchState.on;
                   }

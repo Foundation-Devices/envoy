@@ -11,8 +11,8 @@ enum LearnSortTypes {
   oldestFirst,
 }
 
-final learnFilterStateProvider = StateProvider<Set<LearnFilters>>(
-    (ref) =>  {}..addAll(LearnFilters.values));
+final learnFilterStateProvider =
+    StateProvider<Set<LearnFilters>>((ref) => {}..addAll(LearnFilters.values));
 
 final learnSortStateProvider =
     StateProvider<LearnSortTypes>((ref) => LearnSortTypes.newestFirst);

@@ -19,8 +19,8 @@ class Server {
   }
 
   Future<FirmwareUpdate> fetchFirmwareUpdateInfo(int deviceId) async {
-    final response = await http!
-        .get('$_serverAddress/firmware/device?id=$deviceId');
+    final response =
+        await http!.get('$_serverAddress/firmware/device?id=$deviceId');
 
     if (response.statusCode == 202) {
       var fw = FirmwareUpdate.fromJson(jsonDecode(response.body));

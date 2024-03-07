@@ -458,7 +458,10 @@ class CheckBoxFilterItem extends StatelessWidget {
   final GestureTapCallback onTap;
 
   const CheckBoxFilterItem(
-      {super.key, required this.checked, required this.text, required this.onTap});
+      {super.key,
+      required this.checked,
+      required this.text,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {

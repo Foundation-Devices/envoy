@@ -244,9 +244,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                               fwInfo.hasValue &&
                                                                       fwInfo.value !=
                                                                           null
-                                                                  ? ("FW ${fwInfo
-                                                                          .value!
-                                                                          .storedVersion}")
+                                                                  ? ("FW ${fwInfo.value!.storedVersion}")
                                                                   : "Loading",
                                                               // TODO: FIGMA
                                                               style: Theme.of(

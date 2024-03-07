@@ -83,8 +83,7 @@ class _LoaderGhostState extends State<LoaderGhost>
                       height: 10,
                       decoration: const BoxDecoration(
                           color: Colors.grey,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(20))),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
                     ),
                   ),
                 ),

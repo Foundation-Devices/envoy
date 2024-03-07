@@ -51,11 +51,10 @@ final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
 
   List<Transaction> transactionsToSum = [];
 
-  for (var tx in pendingTransactions ){
+  for (var tx in pendingTransactions) {
     final isTxIdExist = walletTransactions.any((tx) => tx.txId == tx.txId);
     if (!isTxIdExist) transactionsToSum.add(tx);
   }
-
 
   final pendingTxSum = transactionsToSum
       .where((tx) => tx.type == TransactionType.pending)
