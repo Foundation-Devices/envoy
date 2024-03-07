@@ -30,6 +30,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
@@ -424,7 +425,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       addHapticFeedback();
       await Future.delayed(const Duration(milliseconds: 500));
-    } catch (e) {
+    } catch (e, s) {
+      kPrint(e, stackTrace: s);
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
@@ -565,110 +567,101 @@ class _TransactionReviewScreenState
           ),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Flexible(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 160),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.small,
-                      horizontal: EnvoySpacing.medium1),
-                  child: ListTile(
-                    title: Text(header,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.small),
-                      child: Text(
-                        subHeading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w400),
-                      ),
-                    ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.small,
+                  horizontal: EnvoySpacing.medium1),
+              child: ListTile(
+                title: Text(header,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading),
+                subtitle: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                  child: Text(
+                    subHeading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
                   ),
                 ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Consumer(builder: (context, ref, child) {
-                        return TransactionReviewCard(
-                          psbt: psbt,
-                          onTxDetailTap: () {
-                            if (transactionModel.psbt == null) return;
-                            Navigator.of(context, rootNavigator: true).push(
-                                PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return StagingTxDetails(
-                                        psbt: transactionModel.psbt!,
-                                      );
-                                    },
-                                    transitionDuration:
-                                        const Duration(milliseconds: 100),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                    opaque: false,
-                                    fullscreenDialog: true));
-                          },
-                          psbtFinalized: transactionModel.isPSBTFinalized,
-                          loading: transactionModel.loading,
-                          address: address,
-                          feeTitle: S().coincontrol_tx_detail_fee,
-                          feeChooserWidget: FeeChooser(
-                            onFeeSelect: (fee, context, bool customFee) {
-                              setFee(fee, context, customFee);
-                              ref
-                                  .read(userHasChangedFeesProvider.notifier)
-                                  .state = true;
-                            },
-                          ),
-                        );
-                      }),
-                      if (feePercentage >= 25)
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: EnvoySpacing.small),
-                          child: feeOverSpendWarning(feePercentage),
-                        ),
-                    ]),
-
-                // Special warning if we are sending max or the fee changed the TX
-                if (transactionModel.mode == SpendMode.sendMax ||
-                    showFeeChangeNotice)
-                  ListTile(
-                    subtitle: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: EnvoySpacing.small),
-                        child: Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.small),
-                          child: Text(
-                            showFeeChangeNotice
-                                ? S()
-                                    .coincontrol_tx_detail_feeChange_information
-                                : S().send_reviewScreen_sendMaxWarning,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                            textAlign: TextAlign.center,
-                          ),
-                        )),
-                  ),
-              ],
+              ),
             ),
-          ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Consumer(builder: (context, ref, child) {
+                    return TransactionReviewCard(
+                      psbt: psbt,
+                      onTxDetailTap: () {
+                        if (transactionModel.psbt == null) return;
+                        Navigator.of(context, rootNavigator: true).push(
+                            PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return StagingTxDetails(
+                                    psbt: transactionModel.psbt!,
+                                  );
+                                },
+                                transitionDuration:
+                                    const Duration(milliseconds: 100),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                                opaque: false,
+                                fullscreenDialog: true));
+                      },
+                      psbtFinalized: transactionModel.isPSBTFinalized,
+                      loading: transactionModel.loading,
+                      address: address,
+                      feeTitle: S().coincontrol_tx_detail_fee,
+                      feeChooserWidget: FeeChooser(
+                        onFeeSelect: (fee, context, bool customFee) {
+                          setFee(fee, context, customFee);
+                          ref.read(userHasChangedFeesProvider.notifier).state =
+                              true;
+                        },
+                      ),
+                    );
+                  }),
+                  if (feePercentage >= 25)
+                    Padding(
+                      padding: const EdgeInsets.only(top: EnvoySpacing.small),
+                      child: feeOverSpendWarning(feePercentage),
+                    ),
+                ]),
+            // Special warning if we are sending max or the fee changed the TX
+            if (transactionModel.mode == SpendMode.sendMax ||
+                showFeeChangeNotice)
+              ListTile(
+                subtitle: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: EnvoySpacing.small),
+                    child: Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.small),
+                      child: Text(
+                        showFeeChangeNotice
+                            ? S().coincontrol_tx_detail_feeChange_information
+                            : S().send_reviewScreen_sendMaxWarning,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 13, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                    )),
+              ),
+          ],
         ),
       ),
     );
