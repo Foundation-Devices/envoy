@@ -180,8 +180,6 @@ class MarkersPageState extends State<MarkersPage> {
             markerVenueWidgets.add(venueMarker);
           });
 
-          var loc = transformer.constraints;
-
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onDoubleTapDown: (details) => _onDoubleTap(
