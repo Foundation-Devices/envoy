@@ -319,7 +319,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
       RawTransaction? transaction = ref.read(rawTransactionProvider);
 
-      await EnvoyStorage().addTxNote(note!, psbt.txid);
+      if (note != null) {
+        await EnvoyStorage().addTxNote(note, psbt.txid);
+      }
 
       try {
         /// add change output to selected/default tag
@@ -366,8 +368,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             ref.refresh(coinsTagProvider(account.id!));
           }
         }
-      } catch (e) {
-        kPrint(e);
+      } catch (e, s) {
+        kPrint(e, stackTrace: s);
       }
       ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
       ref.read(stagingTxNoteProvider.notifier).state = null;
