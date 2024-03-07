@@ -16,7 +16,7 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
-  const ManualSetupCreateAndStoreBackup({Key? key}) : super(key: key);
+  const ManualSetupCreateAndStoreBackup({super.key});
 
   @override
   ConsumerState<ManualSetupCreateAndStoreBackup> createState() =>
@@ -38,8 +38,8 @@ class _ManualSetupCreateAndStoreBackupState
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
+                const Padding(
+                  padding: EdgeInsets.all(12.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -52,13 +52,13 @@ class _ManualSetupCreateAndStoreBackupState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(padding: EdgeInsets.all(6)),
+                      const Padding(padding: EdgeInsets.all(6)),
                       Text(
                         S().manual_setup_create_and_store_backup_heading,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(8)),
+                      const Padding(padding: EdgeInsets.all(8)),
                       Text(
                         S().manual_setup_create_and_store_backup_subheading,
                         textAlign: TextAlign.center,
@@ -70,8 +70,8 @@ class _ManualSetupCreateAndStoreBackupState
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
+                const Padding(
+                  padding: EdgeInsets.all(4.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -81,12 +81,16 @@ class _ManualSetupCreateAndStoreBackupState
                         onTap: () async {
                           await EnvoySeed().saveOfflineData();
 
-                          if (globalState == GlobalState.nuclearDelete) {
+                          if (globalState == GlobalState.nuclearDelete &&
+                              context.mounted) {
                             showEnvoyDialog(
                                 context: context,
-                                dialog: EraseWalletsConfirmation());
-                          } else
-                            showWarningModal(context);
+                                dialog: const EraseWalletsConfirmation());
+                          } else {
+                            if (context.mounted) {
+                              showWarningModal(context);
+                            }
+                          }
                         }))
               ],
             ),
@@ -98,18 +102,20 @@ class _ManualSetupCreateAndStoreBackupState
 
   void showWarningModal(BuildContext context) {
     showEnvoyDialog(
-        context: context, dismissible: false, dialog: BackupWarningModal());
+        context: context,
+        dismissible: false,
+        dialog: const BackupWarningModal());
   }
 }
 
 class BackupWarningModal extends ConsumerWidget {
   const BackupWarningModal({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -117,12 +123,13 @@ class BackupWarningModal extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(8)),
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.info_outline, color: EnvoyColors.darkTeal, size: 68),
-                Padding(padding: EdgeInsets.all(4)),
+                const Icon(Icons.info_outline,
+                    color: EnvoyColors.darkTeal, size: 68),
+                const Padding(padding: EdgeInsets.all(4)),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -131,22 +138,23 @@ class BackupWarningModal extends ConsumerWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(2)),
+                const Padding(padding: EdgeInsets.all(2)),
               ],
             ),
             OnboardingButton(
                 type: EnvoyButtonTypes.primaryModal,
                 label: S().manual_setup_create_and_store_backup_modal_CTA,
                 onTap: () async {
-                  Navigator.pop(context);
+                  final navigator = Navigator.of(context);
+                  navigator.pop();
                   //make sure system filepicker shown before navigating to success screen
-                  await Future.delayed(Duration(milliseconds: 200));
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return WalletSetupSuccess();
+                  await Future.delayed(const Duration(milliseconds: 200));
+                  navigator.push(MaterialPageRoute(builder: (context) {
+                    return const WalletSetupSuccess();
                   }));
                   //}
                 }),
-            Padding(padding: EdgeInsets.all(12)),
+            const Padding(padding: EdgeInsets.all(12)),
           ],
         ),
       ),

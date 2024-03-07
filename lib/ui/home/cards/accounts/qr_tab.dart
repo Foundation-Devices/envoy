@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as DesignSystem;
+import 'package:envoy/ui/theme/envoy_colors.dart' as design_system;
 
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +17,9 @@ class QrTab extends StatelessWidget {
   final Account account;
   final Widget qr;
 
-  QrTab(
-      {required this.account,
+  const QrTab(
+      {super.key,
+      required this.account,
       required this.title,
       required this.subtitle,
       required this.qr});
@@ -27,13 +28,13 @@ class QrTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           border: Border.all(
               color: Colors.black, width: 2, style: BorderStyle.solid),
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              stops: [
+              stops: const [
                 0.0,
                 0.4
               ],
@@ -44,11 +45,11 @@ class QrTab extends StatelessWidget {
         ),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
               border: Border.all(
                   color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
               child: Stack(children: [
                 Positioned.fill(
                   child: CustomPaint(
@@ -88,7 +89,7 @@ class QrTab extends StatelessWidget {
                             Text(
                               title,
                               style: EnvoyTypography.body.copyWith(
-                                  color: DesignSystem.EnvoyColors.solidWhite),
+                                  color: design_system.EnvoyColors.solidWhite),
                             ),
                             Text(
                               subtitle,
@@ -99,11 +100,11 @@ class QrTab extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Flexible(
                       child: Container(
                         width: double.infinity,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(16))),

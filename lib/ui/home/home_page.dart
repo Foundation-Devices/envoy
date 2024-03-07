@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -58,7 +60,7 @@ class HomePageNotification extends Notification {
 class HomePage extends ConsumerStatefulWidget {
   final StatefulNavigationShell mainNavigationShell;
 
-  HomePage({required this.mainNavigationShell});
+  const HomePage({super.key, required this.mainNavigationShell});
 
   @override
   ConsumerState<HomePage> createState() => HomePageState();
@@ -69,24 +71,35 @@ final backButtonDispatcher = RootBackButtonDispatcher();
 class HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
   bool _backgroundShown = false;
-  bool _modalShown = false;
+  final bool _modalShown = false;
 
   final _optionsKey = GlobalKey();
-  bool _optionsShown = false;
+  final bool _optionsShown = false;
   double _optionsHeight = 0;
 
-  double _bottomTabBarHeight = 70.0;
+  final double _bottomTabBarHeight = 70.0;
 
   Function()? _rightAction;
 
   IconData? _rightActionIcon;
 
-  final _animationsDuration = Duration(milliseconds: 350);
+  final _animationsDuration = const Duration(milliseconds: 350);
 
+  Timer? _torWarningTimer;
+  bool _torWarningDisplayedMoreThan5minAgo = true;
+
+  void _resetTorWarningTimer() {
+    _torWarningTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
+      _torWarningDisplayedMoreThan5minAgo = true;
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
+    _resetTorWarningTimer();
 
-    Future.delayed(Duration(milliseconds: 10), () {
+    Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
       backButtonDispatcher.addCallback(_handleHomePageBackPress);
     });
@@ -94,9 +107,11 @@ class HomePageState extends ConsumerState<HomePage>
     // Home is there for the lifetime of the app so no need to dispose stream
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
-      if (event == ConnectivityManagerEvent.TorConnectedDoesntWork) {
-        if (Settings().usingTor) {
+      if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
+        if (_torWarningDisplayedMoreThan5minAgo && Settings().usingTor) {
           _notifyAboutTor();
+          _torWarningDisplayedMoreThan5minAgo = false;
+          _resetTorWarningTimer();
         }
       }
     });
@@ -127,28 +142,29 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     EnvoySeed().backupCompletedStream.stream.listen((bool success) {
-      if (success)
+      if (success) {
         EnvoyToast(
           backgroundColor: Colors.lightBlue,
           replaceExisting: true,
-          duration: Duration(seconds: 4),
+          duration: const Duration(seconds: 4),
           message: S().manual_toggle_on_seed_backup_in_progress_toast_heading,
-          icon: Icon(
+          icon: const Icon(
             Icons.info_outline,
             color: EnvoyColors.accentPrimary,
           ),
         ).show(context);
-      else
+      } else {
         EnvoyToast(
           backgroundColor: Colors.lightBlue,
           replaceExisting: true,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
           message: S().manualToggleOnSeed_toastHeading_failedText,
-          icon: Icon(
+          icon: const Icon(
             Icons.error_outline_rounded,
             color: EnvoyColors.accentSecondary,
           ),
         ).show(context);
+      }
     });
   }
 
@@ -157,14 +173,14 @@ class HomePageState extends ConsumerState<HomePage>
       backgroundColor: Colors.lightBlue,
       replaceExisting: true,
       message: S().tor_connectivity_toast_warning,
-      icon: EnvoyIcon(
+      icon: const EnvoyIcon(
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,
       ),
       actionButtonText: S().component_learnMore,
       onActionTap: () {
         EnvoyToast.dismissPreviousToasts(context);
-        showEnvoyDialog(dialog: TorWarning(), context: context);
+        showEnvoyDialog(dialog: const TorWarning(), context: context);
       },
     ).show(context);
   }
@@ -206,6 +222,7 @@ class HomePageState extends ConsumerState<HomePage>
 
   @override
   void dispose() {
+    _torWarningTimer?.cancel();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
     super.dispose();
   }
@@ -227,49 +244,49 @@ class HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
+    bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
 
-    double _screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
     // ignore: unused_local_variable
-    double _screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
 
-    double _topOffset = MediaQuery.of(context).padding.top;
-    double _bottomOffset = MediaQuery.of(context).padding.bottom;
+    double topOffset = MediaQuery.of(context).padding.top;
+    double bottomOffset = MediaQuery.of(context).padding.bottom;
     //double _totalOffset = _topOffset + _bottomOffset;
 
-    double _appBarHeight = AppBar().preferredSize.height;
-    double _topAppBarOffset = _appBarHeight + 10;
-    double _shieldTop = _topOffset + _topAppBarOffset;
-    double _shieldTopOptionsShown =
-        _shieldTop + _optionsHeight; // TODO: This needs to be programmatic
+    double appBarHeight = AppBar().preferredSize.height;
+    double topAppBarOffset = appBarHeight + 10;
+    double shieldTop = topOffset + topAppBarOffset;
+    double shieldTopOptionsShown =
+        shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double _bottomTabBarShieldOffset = 15;
-    double _shieldHeight = _screenHeight -
+    double bottomTabBarShieldOffset = 15;
+    double shieldHeight = screenHeight -
         _bottomTabBarHeight -
-        _bottomOffset -
-        _shieldTop -
-        _bottomTabBarShieldOffset;
+        bottomOffset -
+        shieldTop -
+        bottomTabBarShieldOffset;
 
-    double _shieldHeightModalShown = _screenHeight * 0.85 - _bottomOffset;
-    double _shieldHeightOptionsShown = _screenHeight * 0.76 - _bottomOffset;
+    double shieldHeightModalShown = screenHeight * 0.85 - bottomOffset;
+    double shieldHeightOptionsShown = screenHeight * 0.76 - bottomOffset;
 
     // ignore: unused_local_variable
-    double _shieldGlowOffset = 30;
+    double shieldGlowOffset = 30;
 
-    bool _modalShown = ref.watch(_fullScreenProvider);
-    bool _fullScreen = ref.watch(fullscreenHomePageProvider);
+    bool modalShown = ref.watch(_fullScreenProvider);
+    bool fullScreen = ref.watch(fullscreenHomePageProvider);
 
-    HomePageBackgroundState _homepageBackDropState =
+    HomePageBackgroundState homepageBackDropState =
         ref.watch(homePageBackgroundProvider);
 
-    _backgroundShown = _homepageBackDropState != HomePageBackgroundState.hidden;
-    Widget _background = ref.watch(backdropWidgetProvider);
+    _backgroundShown = homepageBackDropState != HomePageBackgroundState.hidden;
+    Widget background = ref.watch(backdropWidgetProvider);
 
     HomeShellOptions? homeShellOptions = ref.watch(homeShellOptionsProvider);
 
     Widget? optionsWidget = homeShellOptions?.optionsWidget;
 
-    Widget _options = Container(
+    Widget options = Container(
       key: _optionsKey,
       child: optionsWidget,
     );
@@ -286,18 +303,18 @@ class HomePageState extends ConsumerState<HomePage>
     );
 
     double shieldTotalTop = _backgroundShown
-        ? _screenHeight + 20
-        : _optionsShown
-            ? _shieldTopOptionsShown
-            : _shieldTop;
+        ? screenHeight + 20
+        : optionsShown
+            ? shieldTopOptionsShown
+            : shieldTop;
 
-    double shieldTotalHeight = _modalShown
-        ? _shieldHeightModalShown
-        : _optionsShown
-            ? _shieldHeightOptionsShown
-            : _shieldHeight;
+    double shieldTotalHeight = modalShown
+        ? shieldHeightModalShown
+        : optionsShown
+            ? shieldHeightOptionsShown
+            : shieldHeight;
 
-    if (_fullScreen) {
+    if (fullScreen) {
       shieldTotalTop = AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight;
       shieldTotalHeight = MediaQuery.of(context).size.height * 0.88;
     }
@@ -310,34 +327,34 @@ class HomePageState extends ConsumerState<HomePage>
         extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
-            child: IgnorePointer(
-              ignoring: _fullScreen,
-              child: AnimatedOpacity(
-                  child: HomeAppBar(backGroundShown: false),
-                  opacity: _fullScreen ? 0.0 : 1.0,
-                  duration: _animationsDuration),
-            ),
             preferredSize: Size.fromHeight(
-                AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
+                AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight),
+            child: IgnorePointer(
+              ignoring: fullScreen,
+              child: AnimatedOpacity(
+                  opacity: fullScreen ? 0.0 : 1.0,
+                  duration: _animationsDuration,
+                  child: const HomeAppBar(backGroundShown: false)),
+            )),
         body: // Something behind
             Stack(
           children: [
             // Main background
             AnimatedPositioned(
                 top: 0,
-                height: _backgroundShown ? _screenHeight + 1500 : _screenHeight,
+                height: _backgroundShown ? screenHeight + 1500 : screenHeight,
                 left: 0,
                 right: 0,
                 curve: Curves.easeIn,
                 duration: Duration(
                     milliseconds: _animationsDuration.inMilliseconds - 50),
-                child: AppBackground()),
+                child: const AppBackground()),
             // Variable background
             SafeArea(
               child: AnimatedSwitcher(
                   duration: _animationsDuration,
                   child: Container(
-                    child: _backgroundShown ? _background : Container(),
+                    child: _backgroundShown ? background : Container(),
                   )),
             ),
             // Tab bar
@@ -347,13 +364,13 @@ class HomePageState extends ConsumerState<HomePage>
                 offset: Offset(
                     0,
                     _backgroundShown ||
-                            (_modalShown || _optionsShown || _fullScreen)
+                            (modalShown || optionsShown || fullScreen)
                         ? 0.5
                         : 0.0),
                 child: Container(
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    ignoring: _backgroundShown || _modalShown || _fullScreen,
+                    ignoring: _backgroundShown || modalShown || fullScreen,
                     child: EnvoyBottomNavigation(
                       onIndexChanged: (selectedIndex) {
                         widget.mainNavigationShell.goBranch(selectedIndex);
@@ -362,16 +379,16 @@ class HomePageState extends ConsumerState<HomePage>
                   ),
                 )),
             Positioned(
-                top: _shieldTop - 20,
+                top: shieldTop - 20,
                 left: 0,
                 right: 0,
                 child: IgnorePointer(
-                    ignoring: !_optionsShown,
+                    ignoring: !optionsShown,
                     child: AnimatedOpacity(
-                        opacity: _optionsShown ? 1.0 : 0.0,
+                        opacity: optionsShown ? 1.0 : 0.0,
                         duration: _animationsDuration,
                         child: AnimatedSwitcher(
-                            duration: _animationsDuration, child: _options)))),
+                            duration: _animationsDuration, child: options)))),
             // Shield
             AnimatedPositioned(
               duration: _animationsDuration,
@@ -415,7 +432,7 @@ class HomePageState extends ConsumerState<HomePage>
                 duration: _animationsDuration,
                 child: _optionsShown
                     ? IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.close,
                         ),
                         onPressed: toggleOptions,

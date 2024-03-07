@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'package:envoy/business/btcPay_voucher.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
@@ -13,18 +13,17 @@ class BtcPayLoadingPayout extends StatefulWidget {
   final PageController controller;
   final Account account;
 
-  BtcPayLoadingPayout(
-      {Key? key,
+  const BtcPayLoadingPayout(
+      {super.key,
       required this.voucher,
       required this.controller,
-      required this.account})
-      : super(key: key);
+      required this.account});
 
   @override
-  _BtcPayLoadingPayoutState createState() => _BtcPayLoadingPayoutState();
+  BtcPayLoadingPayoutState createState() => BtcPayLoadingPayoutState();
 }
 
-class _BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
+class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
   @override
   void initState() {
     super.initState();
@@ -36,13 +35,14 @@ class _BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
     BtcPayVoucherRedeemResult result =
         await widget.voucher.createPayout(address);
 
-    if (result == BtcPayVoucherRedeemResult.Success) {
+    if (result == BtcPayVoucherRedeemResult.success) {
       {
         addPendingTx(widget.voucher.id, address, widget.account);
         widget.controller.jumpToPage(4);
       }
-    } else
+    } else {
       widget.controller.jumpToPage(3);
+    }
   }
 
   @override

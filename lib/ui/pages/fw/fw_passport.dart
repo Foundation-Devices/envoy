@@ -11,12 +11,12 @@ import 'package:envoy/generated/l10n.dart';
 class FwPassportPage extends StatelessWidget {
   bool onboarding;
 
-  FwPassportPage({this.onboarding = true});
+  FwPassportPage({super.key, this.onboarding = true});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("fw_passport"),
+      key: const Key("fw_passport"),
       clipArt: Image.asset("assets/fw_passport.png"),
       rightFunction: (_) {
         onboarding
@@ -24,11 +24,15 @@ class FwPassportPage extends StatelessWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       text: [
-        OnboardingText(
-          header: S().envoy_fw_passport_heading,
-          text: onboarding
-              ? S().envoy_fw_passport_subheading
-              : S().envoy_fw_passport_onboarded_subheading,
+        Flexible(
+          child: SingleChildScrollView(
+            child: OnboardingText(
+              header: S().envoy_fw_passport_heading,
+              text: onboarding
+                  ? S().envoy_fw_passport_subheading
+                  : S().envoy_fw_passport_onboarded_subheading,
+            ),
+          ),
         )
       ],
       navigationDots: 6,
@@ -42,7 +46,7 @@ class FwPassportPage extends StatelessWidget {
               } else {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return PpSetupIntroPage();
+                  return const PpSetupIntroPage();
                 }));
               }
             }),

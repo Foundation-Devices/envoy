@@ -9,16 +9,16 @@ class SizeReportingWidget extends StatefulWidget {
   final ValueChanged<Size> onSizeChange;
 
   const SizeReportingWidget({
-    Key? key,
+    super.key,
     required this.child,
     required this.onSizeChange,
-  }) : super(key: key);
+  });
 
   @override
-  _SizeReportingWidgetState createState() => _SizeReportingWidgetState();
+  SizeReportingWidgetState createState() => SizeReportingWidgetState();
 }
 
-class _SizeReportingWidgetState extends State<SizeReportingWidget> {
+class SizeReportingWidgetState extends State<SizeReportingWidget> {
   final _widgetKey = GlobalKey();
   Size? _oldSize;
 

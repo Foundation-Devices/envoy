@@ -17,13 +17,13 @@ import 'package:envoy/ui/components/amount_widget.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
-    Key? key,
+    super.key,
     required this.textLeft1,
     this.textLeft2,
     this.leftIcon,
     this.iconColor = EnvoyColors.textPrimary,
     this.unitIcon,
-  }) : super(key: key);
+  });
 
   final String textLeft1;
   final String? textLeft2;
@@ -36,7 +36,7 @@ class EnvoyListTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
           minLeadingWidth: 0,
           horizontalTitleGap: EnvoySpacing.small,
           title: Padding(
@@ -47,7 +47,7 @@ class EnvoyListTile extends StatelessWidget {
             ),
           ),
           subtitle: textLeft2 == null
-              ? Text("")
+              ? const Text("")
               : Text(
                   textLeft2!,
                   style: EnvoyTypography.info
@@ -63,7 +63,7 @@ class EnvoyListTile extends StatelessWidget {
                   ],
                 ),
           trailing: unitIcon == null
-              ? Text("")
+              ? const Text("")
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -116,8 +116,8 @@ class ListHeader extends StatelessWidget {
 class ActivityListTile extends StatelessWidget {
   const ActivityListTile(
     this.notification, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final EnvoyNotification notification;
 

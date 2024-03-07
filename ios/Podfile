@@ -33,6 +33,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  pod 'Ramp', :git => 'https://github.com/RampNetwork/ramp-sdk-ios', :tag => '4.0.1'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 

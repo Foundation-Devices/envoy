@@ -6,21 +6,6 @@
 // file for details. All rights reserved. Use of this source code is governed
 // by a BSD-style license that can be found in the LICENSE file.
 
-/// ## Usage example
-///
-/// ```dart
-/// const t = const Tuple2<String, int>('a', 10);
-///
-/// print(t.item1); // prints 'a'
-/// print(t.item2); // prints '10'
-/// ```
-///
-/// ```dart
-/// const t1 = const Tuple2<String, int>('a', 10);
-/// final t2 = t1.withItem1('c');
-/// // t2 is a new [Tuple2] object with item1 is 'c' and item2 is 10.
-/// ```
-
 /// Represents a 2-tuple, or pair.
 class Tuple<T1, T2> {
   /// Returns the first item of the tuple

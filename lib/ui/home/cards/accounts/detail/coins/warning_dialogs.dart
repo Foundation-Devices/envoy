@@ -35,14 +35,14 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
     return Container(
         width: 280,
         height: 400,
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Stack(
           fit: StackFit.passthrough,
           children: [
             Align(
-              alignment: Alignment(1.15, -1.1),
+              alignment: const Alignment(1.15, -1.1),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -52,13 +52,13 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(8)),
                 Image.asset(
                   "assets/exclamation_triangle.png",
                   height: 68,
                   width: 68,
                 ),
-                Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(8)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(widget.warningMessage,
@@ -68,7 +68,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                           ?.copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                       textAlign: TextAlign.center),
                 ),
-                Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(8)),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -83,24 +83,26 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                         child: EnvoyCheckbox(
                           value: dismissed,
                           onChanged: (value) {
-                            if (value != null)
+                            if (value != null) {
                               setState(() {
                                 dismissed = value;
                               });
+                            }
                           },
                         ),
                       ),
                       Text(
                         S().component_dontShowAgain,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color:
-                                  dismissed ? Colors.black : Color(0xff808080),
+                              color: dismissed
+                                  ? Colors.black
+                                  : const Color(0xff808080),
                             ),
                       ),
                     ],
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(8)),
                 EnvoyButton(
                   S().component_back,
                   onTap: () {
@@ -108,7 +110,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                   },
                   type: EnvoyButtonTypes.tertiary,
                 ),
-                Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(8)),
                 EnvoyButton(
                   widget.buttonTitle,
                   onTap: () {
@@ -156,7 +158,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      padding: EdgeInsets.all(EnvoySpacing.medium1),
+      padding: const EdgeInsets.all(EnvoySpacing.medium1),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -164,8 +166,8 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              padding: EdgeInsets.all(EnvoySpacing.small),
-              icon: Icon(Icons.close),
+              padding: const EdgeInsets.all(EnvoySpacing.small),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -176,7 +178,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             height: 68,
             width: 68,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Text(
             S().change_output_from_multiple_tags_modal_heading,
             style: Theme.of(context)
@@ -184,7 +186,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                 .titleMedium
                 ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
@@ -195,7 +197,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                     ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           GestureDetector(
             onTap: () {
               setState(() {
@@ -210,17 +212,19 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                   child: EnvoyCheckbox(
                     value: dismissed,
                     onChanged: (value) {
-                      if (value != null)
+                      if (value != null) {
                         setState(() {
                           dismissed = value;
                         });
+                      }
                     },
                   ),
                 ),
                 Text(
                   S().component_dontShowAgain,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: dismissed ? Colors.black : Color(0xff808080),
+                        color:
+                            dismissed ? Colors.black : const Color(0xff808080),
                       ),
                 ),
               ],
@@ -233,7 +237,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             },
             type: EnvoyButtonTypes.tertiary,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
             S().component_continue,
             onTap: () {

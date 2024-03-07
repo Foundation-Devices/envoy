@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -110,13 +113,13 @@ class Fees {
   }
 
   Fees._internal() {
-    print("Instance of Fees created!");
+    kPrint("Instance of Fees created!");
 
     // Fetch the latest from mempool.space
     _getRates();
 
     // Refresh from time to time
-    Timer.periodic(Duration(minutes: 5), (_) {
+    Timer.periodic(const Duration(minutes: 5), (_) {
       _getRates();
     });
   }

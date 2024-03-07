@@ -31,7 +31,7 @@ class Coin {
   int get amount => utxo.value;
 
   void setLock(bool bool) async {
-    this.locked = bool;
+    locked = bool;
     CoinRepository().addUtxoBlockState(id, bool);
   }
 
@@ -40,12 +40,10 @@ class Coin {
   Map<String, dynamic> toJson() => _$CoinToJson(this);
 }
 
-/**
- * Extension that adds id getter to Wallet.Utxo
- * Utxo is a freezed class, so we can't add the getter directly to
- * the class
- */
-extension utxoExtension on Utxo {
+/// Extension that adds id getter to Wallet.Utxo
+/// Utxo is a freezed class, so we can't add the getter directly to
+/// the class
+extension UtxoExtension on Utxo {
   get id => '$txid:$vout';
 }
 

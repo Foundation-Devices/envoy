@@ -13,7 +13,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal_qr_code.dart';
 
 class ExportSeedModal extends StatefulWidget {
-  const ExportSeedModal({Key? key}) : super(key: key);
+  const ExportSeedModal({super.key});
 
   @override
   State<ExportSeedModal> createState() => _ExportSeedModalState();
@@ -22,7 +22,7 @@ class ExportSeedModal extends StatefulWidget {
 class _ExportSeedModalState extends State<ExportSeedModal> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.80,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -32,7 +32,7 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -40,12 +40,12 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+            padding: const EdgeInsets.symmetric(horizontal: 48),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                EnvoyIcon(
+                const EnvoyIcon(
                   EnvoyIcons.alert,
                   size: EnvoyIconSize.big,
                   color: EnvoyColors.copper,
@@ -66,12 +66,12 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
                     style: EnvoyTypography.info,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(4)),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 28),
             child: Column(
               children: [
                 Padding(
@@ -82,7 +82,8 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
                     onTap: () {
                       Navigator.of(context).pop();
                       showEnvoyDialog(
-                          context: context, dialog: ExportSeedModalQrCode());
+                          context: context,
+                          dialog: const ExportSeedModalQrCode());
                     },
                   ),
                 ),

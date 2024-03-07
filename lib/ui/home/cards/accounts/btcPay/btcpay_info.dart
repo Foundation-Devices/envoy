@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/btcPay_voucher.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -17,12 +17,12 @@ class BtcPayInfo extends StatelessWidget {
   final PageController controller;
   final Account account;
 
-  BtcPayInfo({
-    Key? key,
+  const BtcPayInfo({
+    super.key,
     required this.voucher,
     required this.controller,
     required this.account,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class BtcPayInfo extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -60,7 +60,7 @@ class BtcPayInfo extends StatelessWidget {
               account: account),
         if (voucher.amountSats ==
             null) // TODO: what if amount is in strange currency
-          Text(voucher.amount! + " " + voucher.currency!,
+          Text("${voucher.amount!} ${voucher.currency!}",
               style: EnvoyTypography.body),
         if (voucher.name != "")
           Padding(
@@ -99,7 +99,7 @@ class BtcPayInfo extends StatelessWidget {
           child: EnvoyButton(
             label: S().component_back,
             type: ButtonType.secondary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
             onTap: () {
               Navigator.of(context).pop();
             },
@@ -110,7 +110,7 @@ class BtcPayInfo extends StatelessWidget {
           child: EnvoyButton(
             label: S().component_redeem,
             type: ButtonType.primary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
             onTap: () {
               controller.jumpToPage(2);
             },

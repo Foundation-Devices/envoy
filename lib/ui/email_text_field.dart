@@ -7,14 +7,14 @@ import 'package:email_validator/email_validator.dart';
 
 class EmailTextField extends StatefulWidget {
   const EmailTextField({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _EmailTextFieldState createState() => _EmailTextFieldState();
+  EmailTextFieldState createState() => EmailTextFieldState();
 }
 
-class _EmailTextFieldState extends State<EmailTextField> {
+class EmailTextFieldState extends State<EmailTextField> {
   bool _isValid = false;
   final emailController = TextEditingController();
   final validationCodeController = TextEditingController();

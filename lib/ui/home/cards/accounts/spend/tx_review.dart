@@ -37,12 +37,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
-  TxReview() : super(key: UniqueKey()) {}
+  TxReview() : super(key: UniqueKey());
 
   @override
   ConsumerState<TxReview> createState() => _TxReviewState();
@@ -66,7 +66,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.close,
                     color: EnvoyColors.textPrimary,
                   ),
@@ -74,7 +74,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     GoRouter.of(context).pop();
                   },
                 )),
-            body: Center(
+            body: const Center(
               child: Text("Unable to build transaction"), //TODO: figma
             )),
       );
@@ -91,11 +91,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
       },
       child: transactionModel.broadcastProgress == BroadcastProgress.staging
           ? Padding(
-              key: Key("review"),
+              key: const Key("review"),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
                 onBroadcast: () async {
-                  BuildContext _rootContext = context;
+                  BuildContext rootContext = context;
                   List<Tuple<CoinTag, Coin>>? spendingTagSet =
                       ref.read(spendInputTagsProvider);
                   List<CoinTag> spendingTags = spendingTagSet
@@ -132,7 +132,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
                   if ((userNote == null || userNote.isEmpty) &&
                       !dismissedNoteDialog &&
-                      !ref.read(spendTransactionProvider).isPSBTFinalized) {
+                      !ref.read(spendTransactionProvider).isPSBTFinalized &&
+                      context.mounted) {
                     await showEnvoyDialog(
                         context: context,
                         useRootNavigator: true,
@@ -146,10 +147,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           noteTitle: S().add_note_modal_heading,
                           value: ref.read(stagingTxNoteProvider),
                         ),
-                        alignment: Alignment(0.0, -0.5));
+                        alignment: const Alignment(0.0, -0.5));
 
                     ///wait for the dialog to pop
-                    await Future.delayed(Duration(milliseconds: 200));
+                    await Future.delayed(const Duration(milliseconds: 200));
                   }
 
                   Tuple<String, int>? changeOutPut =
@@ -161,26 +162,31 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   if (!userChosenTag &&
                       tagInputs != null &&
                       hasManyTagsAsInput &&
-                      hasChangeOutPutPresent) {
+                      hasChangeOutPutPresent &&
+                      context.mounted) {
                     await showTagDialog(
-                        context, account, _rootContext, transactionModel);
+                        context, account, rootContext, transactionModel);
                   } else {
                     if (account.wallet.hot ||
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
-                      broadcastTx(context);
+                      if (context.mounted) {
+                        broadcastTx(context);
+                      }
                     } else {
-                      final psbt =
-                          await Navigator.of(_rootContext, rootNavigator: false)
-                              .push(MaterialPageRoute(
-                                  builder: (context) => Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: PsbtCard(
-                                            transactionModel.psbt!, account),
-                                      )));
-                      ref
-                          .read(spendTransactionProvider.notifier)
-                          .updateWithFinalPSBT(psbt);
-                      await Future.delayed(Duration(milliseconds: 200));
+                      if (rootContext.mounted) {
+                        final psbt = await Navigator.of(rootContext,
+                                rootNavigator: false)
+                            .push(MaterialPageRoute(
+                                builder: (context) => Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: PsbtCard(
+                                          transactionModel.psbt!, account),
+                                    )));
+                        ref
+                            .read(spendTransactionProvider.notifier)
+                            .updateWithFinalPSBT(psbt);
+                        await Future.delayed(const Duration(milliseconds: 200));
+                      }
                     }
                   }
                 },
@@ -191,7 +197,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   Future<void> showTagDialog(BuildContext context, Account account,
-      BuildContext _rootContext, TransactionModel transactionModel) async {
+      BuildContext rootContext, TransactionModel transactionModel) async {
     await showEnvoyDialog(
         useRootNavigator: true,
         context: context,
@@ -209,7 +215,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   ref.read(spendTransactionProvider).isPSBTFinalized) {
                 broadcastTx(context);
               } else {
-                final psbt = await Navigator.of(_rootContext,
+                final psbt = await Navigator.of(rootContext,
                         rootNavigator: false)
                     .push(MaterialPageRoute(
                         builder: (context) => Padding(
@@ -219,34 +225,34 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 ref
                     .read(spendTransactionProvider.notifier)
                     .updateWithFinalPSBT(psbt);
-                await Future.delayed(Duration(milliseconds: 200));
+                await Future.delayed(const Duration(milliseconds: 200));
               }
             },
           ),
         ),
-        alignment: Alignment(0.0, -.6));
+        alignment: const Alignment(0.0, -.6));
   }
 
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
 
   Widget _buildBroadcastProgress() {
     final spendState = ref.watch(spendTransactionProvider);
     return Padding(
-      key: Key("progress"),
+      key: const Key("progress"),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
+              child: SizedBox(
                 height: 260,
-                child: Rive.RiveAnimation.asset(
+                child: rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
                     _stateMachineController =
-                        Rive.StateMachineController.fromArtboard(
+                        rive.StateMachineController.fromArtboard(
                             artboard, 'STM');
                     artboard.addController(_stateMachineController!);
                     _stateMachineController
@@ -257,7 +263,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 ),
               ),
             ),
-            SliverPadding(padding: EdgeInsets.all(28)),
+            const SliverPadding(padding: EdgeInsets.all(28)),
             SliverToBoxAdapter(
               child: Builder(
                 builder: (context) {
@@ -289,7 +295,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.all(18)),
+                        const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
@@ -305,7 +311,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
             SliverFillRemaining(
                 hasScrollBody: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 44),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
                   child: _ctaButtons(context),
                 ))
           ],
@@ -317,7 +324,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   Widget _ctaButtons(BuildContext context) {
     final spendState = ref.watch(spendTransactionProvider);
     if (spendState.broadcastProgress == BroadcastProgress.inProgress) {
-      return SizedBox();
+      return const SizedBox();
     }
     if (spendState.broadcastProgress == BroadcastProgress.success) {
       return Column(
@@ -348,7 +355,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             broadcastTx(context);
           },
         ),
-        Padding(padding: EdgeInsets.all(6)),
+        const Padding(padding: EdgeInsets.all(6)),
         EnvoyButton(
           enabled: spendState.broadcastProgress != BroadcastProgress.inProgress,
           S().coincontrol_txDetail_ReviewTransaction,
@@ -387,11 +394,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
     ///toggle to coins view for coin control
     ref.read(accountToggleStateProvider.notifier).state =
-        AccountToggleState.Coins;
+        AccountToggleState.coins;
 
     ///pop review
     router.pop();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     ///pop spend form
     router.pop();
@@ -416,12 +423,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       addHapticFeedback();
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
     } catch (e) {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
-      await Future.delayed(Duration(milliseconds: 800));
+      await Future.delayed(const Duration(milliseconds: 800));
     }
   }
 
@@ -429,9 +436,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
   void addHapticFeedback() async {
     if (hapticCalled) return;
     hapticCalled = true;
-    await Future.delayed(Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 700));
     HapticFeedback.lightImpact();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     HapticFeedback.mediumImpact();
   }
 }
@@ -481,10 +488,9 @@ class _TransactionReviewScreenState
         userHasChangedFees;
 
     if (account == null || transactionModel.psbt == null) {
-      return Container(
-          child: Center(
+      return const Center(
         child: Text("Unable to build transaction"), //TODO: figma
-      ));
+      );
     }
 
     Psbt psbt = transactionModel.psbt!;
@@ -506,7 +512,7 @@ class _TransactionReviewScreenState
       extendBodyBehindAppBar: true,
       removeAppBarPadding: true,
       topBarLeading: IconButton(
-        icon: EnvoyIcon(
+        icon: const EnvoyIcon(
           EnvoyIcons.chevron_left,
           color: EnvoyColors.textPrimary,
         ),
@@ -514,100 +520,8 @@ class _TransactionReviewScreenState
           GoRouter.of(context).pop();
         },
       ),
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.small,
-                  horizontal: EnvoySpacing.medium1),
-              child: ListTile(
-                title: Text(header,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.heading),
-                subtitle: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                  child: Text(
-                    subHeading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Consumer(builder: (context, ref, child) {
-              return TransactionReviewCard(
-                psbt: psbt,
-                onTxDetailTap: () {
-                  if (transactionModel.psbt == null) return;
-                  Navigator.of(context, rootNavigator: true).push(
-                      PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return StagingTxDetails(
-                              psbt: transactionModel.psbt!,
-                            );
-                          },
-                          transitionDuration: Duration(milliseconds: 100),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                          opaque: false,
-                          fullscreenDialog: true));
-                },
-                psbtFinalized: transactionModel.isPSBTFinalized,
-                loading: transactionModel.loading,
-                address: address,
-                feeTitle: S().coincontrol_tx_detail_fee,
-                feeChooserWidget: FeeChooser(
-                  onFeeSelect: (fee, context, bool customFee) {
-                    setFee(fee, context, customFee);
-                    ref.read(userHasChangedFeesProvider.notifier).state = true;
-                  },
-                ),
-              );
-            }),
-          ),
-          if (feePercentage >= 25)
-            SliverToBoxAdapter(
-                child: Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.small),
-              child: feeOverSpendWarning(feePercentage),
-            )),
-          // Special warning if we are sending max or the fee changed the TX
-          if (transactionModel.mode == SpendMode.sendMax || showFeeChangeNotice)
-            SliverToBoxAdapter(
-              child: ListTile(
-                subtitle: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        showFeeChangeNotice
-                            ? S().coincontrol_tx_detail_feeChange_information
-                            : S().send_reviewScreen_sendMaxWarning,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.center,
-                      ),
-                    )),
-              ),
-            ),
-        ],
-      ),
       bottom: ClipRRect(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           topRight: Radius.circular(7),
         ),
@@ -618,7 +532,7 @@ class _TransactionReviewScreenState
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
-              ).add(EdgeInsets.only(bottom: EnvoySpacing.large1)),
+              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -633,7 +547,7 @@ class _TransactionReviewScreenState
                         editTransaction(context);
                       },
                     ),
-                  Padding(padding: EdgeInsets.all(6)),
+                  const Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
                     readOnly: transactionModel.loading,
                     (account.wallet.hot || transactionModel.isPSBTFinalized)
@@ -651,6 +565,112 @@ class _TransactionReviewScreenState
           ),
         ),
       ),
+      child: SingleChildScrollView(
+        child: Flexible(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 160),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.small,
+                      horizontal: EnvoySpacing.medium1),
+                  child: ListTile(
+                    title: Text(header,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small),
+                      child: Text(
+                        subHeading,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 13, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                ),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Consumer(builder: (context, ref, child) {
+                        return TransactionReviewCard(
+                          psbt: psbt,
+                          onTxDetailTap: () {
+                            if (transactionModel.psbt == null) return;
+                            Navigator.of(context, rootNavigator: true).push(
+                                PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return StagingTxDetails(
+                                        psbt: transactionModel.psbt!,
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 100),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                    opaque: false,
+                                    fullscreenDialog: true));
+                          },
+                          psbtFinalized: transactionModel.isPSBTFinalized,
+                          loading: transactionModel.loading,
+                          address: address,
+                          feeTitle: S().coincontrol_tx_detail_fee,
+                          feeChooserWidget: FeeChooser(
+                            onFeeSelect: (fee, context, bool customFee) {
+                              setFee(fee, context, customFee);
+                              ref
+                                  .read(userHasChangedFeesProvider.notifier)
+                                  .state = true;
+                            },
+                          ),
+                        );
+                      }),
+                      if (feePercentage >= 25)
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: EnvoySpacing.small),
+                          child: feeOverSpendWarning(feePercentage),
+                        ),
+                    ]),
+
+                // Special warning if we are sending max or the fee changed the TX
+                if (transactionModel.mode == SpendMode.sendMax ||
+                    showFeeChangeNotice)
+                  ListTile(
+                    subtitle: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: EnvoySpacing.small),
+                        child: Padding(
+                          padding: const EdgeInsets.all(EnvoySpacing.small),
+                          child: Text(
+                            showFeeChangeNotice
+                                ? S()
+                                    .coincontrol_tx_detail_feeChange_information
+                                : S().send_reviewScreen_sendMaxWarning,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontSize: 13, fontWeight: FontWeight.w400),
+                            textAlign: TextAlign.center,
+                          ),
+                        )),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -658,12 +678,12 @@ class _TransactionReviewScreenState
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(right: EnvoySpacing.small),
+        const Padding(
+          padding: EdgeInsets.only(right: EnvoySpacing.small),
           child: EnvoyIcon(EnvoyIcons.alert,
               size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
         ),
-        Text("Over " + feePercentage.toString() + "%",
+        Text("Over $feePercentage%",
             // TODO: Figma
             style:
                 EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
@@ -696,18 +716,18 @@ class _TransactionReviewScreenState
 
     ///toggle to coins view for coin control
     ref.read(accountToggleStateProvider.notifier).state =
-        AccountToggleState.Coins;
+        AccountToggleState.coins;
 
     ///pop review
     router.pop();
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     ///pop spend form
     router.pop();
   }
 
   void setFee(int fee, BuildContext context, bool customFee) async {
-    if (!this.mounted) {
+    if (!mounted) {
       return;
     }
     // Set the fee
@@ -719,7 +739,7 @@ class _TransactionReviewScreenState
         .validate(ProviderScope.containerOf(context), settingFee: true);
     ref.read(spendFeeProcessing.notifier).state = false;
     //hide fee slider bottom-sheet
-    if (customFee) {
+    if (customFee && context.mounted) {
       Navigator.pop(context);
     }
   }
@@ -740,8 +760,8 @@ class _DiscardTransactionDialogState
     Account? account = ref.watch(selectedAccountProvider);
 
     return Container(
-      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
-      constraints: BoxConstraints(
+      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
+      constraints: const BoxConstraints(
         minHeight: 300,
         maxWidth: 280,
       ),
@@ -750,36 +770,36 @@ class _DiscardTransactionDialogState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Icon(
+          const Icon(
             Icons.warning_amber_rounded,
             color: EnvoyColors.accentSecondary,
             size: 42,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(S().manage_account_remove_heading,
               style: Theme.of(context).textTheme.titleSmall),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             S().coincontrol_tx_detail_passport_subheading,
             style: Theme.of(context).textTheme.titleSmall,
             textAlign: TextAlign.center,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().coincontrol_tx_detail_passport_cta2,
             type: EnvoyButtonTypes.secondary,
             onTap: () async {
+              final router = GoRouter.of(context);
               resetFeeChangeNoticeUserInteractionProviders(ref);
-              GoRouter.of(context).pop(true);
-              await Future.delayed(Duration(milliseconds: 50));
+              router.pop(true);
+              await Future.delayed(const Duration(milliseconds: 50));
               ref.read(selectedAccountProvider.notifier).state = account;
-              GoRouter.of(context)
-                  .pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
-              await Future.delayed(Duration(milliseconds: 50));
-              GoRouter.of(context).pop();
+              router.pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
+              await Future.delayed(const Duration(milliseconds: 50));
+              router.pop();
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().coincontrol_txDetail_ReviewTransaction,
             type: EnvoyButtonTypes.primaryModal,
@@ -820,7 +840,7 @@ class TxReviewNoteDialog extends ConsumerStatefulWidget {
 }
 
 class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
   bool dismissed = false;
 
   @override
@@ -850,13 +870,13 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
     return Container(
       width: 280,
       height: 380,
-      padding: EdgeInsets.all(EnvoySpacing.small),
+      padding: const EdgeInsets.all(EnvoySpacing.small),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
                 top: EnvoySpacing.medium1),
@@ -878,10 +898,10 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: EnvoySpacing.xs),
+                  margin: const EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Color(0xffD9D9D9),
+                        color: const Color(0xffD9D9D9),
                         borderRadius:
                             BorderRadius.circular(EnvoySpacing.small)),
                     child: TextFormField(
@@ -894,7 +914,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                           .textTheme
                           .bodySmall
                           ?.copyWith(fontSize: 14),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(EnvoySpacing.small),
                         border: InputBorder.none,
                         counter: SizedBox.shrink(),
@@ -916,7 +936,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
         bottomNavigationBar: Container(
           height: 180,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: EnvoySpacing.medium1,
             vertical: EnvoySpacing.small,
           ),
@@ -937,23 +957,26 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                       child: EnvoyCheckbox(
                         value: dismissed,
                         onChanged: (value) {
-                          if (value != null)
+                          if (value != null) {
                             setState(() {
                               dismissed = value;
                             });
+                          }
                         },
                       ),
                     ),
                     Text(
                       S().component_dontShowAgain,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: dismissed ? Colors.black : Color(0xff808080),
+                            color: dismissed
+                                ? Colors.black
+                                : const Color(0xff808080),
                           ),
                     ),
                   ],
                 ),
               ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
                   onTap: () {
                 Navigator.of(context).pop(false);
@@ -962,7 +985,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                       .addPromptState(DismissiblePrompt.addTxNoteWarning);
                 }
               }, type: EnvoyButtonTypes.tertiary),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(
                 S().component_save,
                 onTap: () {

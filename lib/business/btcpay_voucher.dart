@@ -13,9 +13,9 @@ import 'dart:async';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/business/account.dart';
 
-enum BtcPayVoucherRedeemResult { Success, Timeout, VoucherInvalid }
+enum BtcPayVoucherRedeemResult { success, timeout, voucherInvalid }
 
-enum BtcPayVoucherErrorType { Invalid, Expired, OnChain }
+enum BtcPayVoucherErrorType { invalid, expired, onChain }
 
 class BtcPayVoucher {
   String id = "";
@@ -27,7 +27,7 @@ class BtcPayVoucher {
   bool? autoApproveClaims;
   String errorMessage = "";
   int? amountSats;
-  BtcPayVoucherErrorType errorType = BtcPayVoucherErrorType.Invalid;
+  BtcPayVoucherErrorType errorType = BtcPayVoucherErrorType.invalid;
   String link = "";
   DateTime? expiresAt;
 
@@ -79,16 +79,16 @@ class BtcPayVoucher {
   }
 
   Future<BtcPayVoucherRedeemResult> getinfo() async {
-    String url = "https://" + uri + "/api/v1/pull-payments/" + id;
+    String url = "https://$uri/api/v1/pull-payments/$id";
 
-    HttpTor _http = await HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-    Response? response = null;
+    Response? response;
 
     try {
-      response = await _http.get(url);
+      response = await http.get(url);
     } on TimeoutException {
-      return BtcPayVoucherRedeemResult.Timeout;
+      return BtcPayVoucherRedeemResult.timeout;
     }
 
     switch (response.statusCode) {
@@ -96,16 +96,16 @@ class BtcPayVoucher {
         {
           final json = jsonDecode(response.body);
           id = json['id'];
-          amount = json['amount'] ?? null;
-          currency = json['currency'] ?? null;
-          autoApproveClaims = json['autoApproveClaims'] ?? null;
-          name = json['name'] ?? null;
-          description = json['description'] ?? null;
+          amount = json['amount'];
+          currency = json['currency'];
+          autoApproveClaims = json['autoApproveClaims'];
+          name = json['name'];
+          description = json['description'];
           link = json['viewLink'] ?? "";
           amountSats = getAmountInSats();
-          int? unixTimestamp = json['expiresAt'] ?? null;
+          int? unixTimestamp = json['expiresAt'];
           expiresAt = convertUnixTimestampToDateTime(unixTimestamp);
-          return BtcPayVoucherRedeemResult.Success;
+          return BtcPayVoucherRedeemResult.success;
         }
 
       default:
@@ -113,15 +113,15 @@ class BtcPayVoucher {
         break;
     }
 
-    return BtcPayVoucherRedeemResult.VoucherInvalid;
+    return BtcPayVoucherRedeemResult.voucherInvalid;
   }
 
   Future<BtcPayVoucherRedeemResult> createPayout(String address) async {
-    String url = "https://" + uri + "/api/v1/pull-payments/" + id + "/payouts";
+    String url = "https://$uri/api/v1/pull-payments/$id/payouts";
 
-    HttpTor _http = await HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-    Response? response = null;
+    Response? response;
     Map<String, dynamic> data = {
       "destination": address,
       "amount": amount,
@@ -131,33 +131,35 @@ class BtcPayVoucher {
     var requestBody = json.encode(data);
 
     try {
-      response = await _http.post(url,
+      response = await http.post(url,
           headers: {
             'Content-Type': 'application/json', // Set the content type to JSON
           },
           body: requestBody);
     } on TimeoutException {
-      return BtcPayVoucherRedeemResult.VoucherInvalid;
+      return BtcPayVoucherRedeemResult.voucherInvalid;
     }
 
     switch (response.statusCode) {
       case 200:
         {
           //final json = jsonDecode(response.body); // do something with data if needed
-          return BtcPayVoucherRedeemResult.Success;
+          return BtcPayVoucherRedeemResult.success;
         }
       case 400 || 422:
         {
           final json = jsonDecode(response.body);
           errorMessage = json[0]['message'] ?? "";
           errorMessage = errorMessage.toLowerCase();
-          if (errorMessage.contains("onchain"))
-            errorType = BtcPayVoucherErrorType.OnChain;
+          if (errorMessage.contains("onchain")) {
+            errorType = BtcPayVoucherErrorType.onChain;
+          }
 
-          if (errorMessage.contains("expired"))
-            errorType = BtcPayVoucherErrorType.Expired;
+          if (errorMessage.contains("expired")) {
+            errorType = BtcPayVoucherErrorType.expired;
+          }
 
-          return BtcPayVoucherRedeemResult.VoucherInvalid;
+          return BtcPayVoucherRedeemResult.voucherInvalid;
         }
 
       default:
@@ -165,7 +167,7 @@ class BtcPayVoucher {
         break;
     }
 
-    return BtcPayVoucherRedeemResult.VoucherInvalid;
+    return BtcPayVoucherRedeemResult.voucherInvalid;
   }
 }
 

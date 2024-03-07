@@ -13,6 +13,8 @@ import 'package:envoy/generated/l10n.dart';
 class ScvShowQrPage extends StatelessWidget {
   Challenge? _challenge;
 
+  ScvShowQrPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     Future<CryptoRequest> cryptoRequest =
@@ -24,7 +26,7 @@ class ScvShowQrPage extends StatelessWidget {
     });
 
     return OnboardingPage(
-      key: Key("scv_show_qr"),
+      key: const Key("scv_show_qr"),
       qrCodeUrCryptoRequest: cryptoRequest,
       text: [
         OnboardingText(

@@ -16,7 +16,7 @@ class BlogPost extends Media {
   BlogPost(String title, String? description, DateTime publicationDate,
       String url, String id, this.read,
       {String? thumbnailUrl})
-      : super(title, description, thumbnailUrl, publicationDate, url, id) {}
+      : super(title, description, thumbnailUrl, publicationDate, url, id);
 
   // Generated
   factory BlogPost.fromJson(Map<String, dynamic> json) =>

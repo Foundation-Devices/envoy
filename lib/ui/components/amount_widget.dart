@@ -25,13 +25,14 @@ class AmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final bool alignToEnd;
 
-  AmountWidget({
+  const AmountWidget({
+    super.key,
     required this.amountSats,
     required this.primaryUnit,
     this.style = AmountWidgetStyle.normal,
-    this.secondaryUnit = null,
+    this.secondaryUnit,
     this.symbolFiat = "",
-    this.fxRateFiat = null,
+    this.fxRateFiat,
     this.decimalDot = true,
     this.badgeColor,
     this.alignToEnd = true,
@@ -158,7 +159,7 @@ class PrimaryAmountWidget extends StatelessWidget {
     this.decimalDot = true,
     this.fiatDecimals = 2,
     this.symbolFiat = "",
-    this.fxRateFiat = null,
+    this.fxRateFiat,
     this.style = PrimaryAmountWidgetStyle.normal,
     this.badgeColor,
     this.sendScreen = false,
@@ -167,7 +168,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (unit == AmountDisplayUnit.fiat && fxRateFiat == null) {
-      return LoaderGhost(
+      return const LoaderGhost(
         width: 30,
         height: 15,
         animate: true,
@@ -248,12 +249,12 @@ class SecondaryAmountWidget extends StatelessWidget {
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
 
-  SecondaryAmountWidget(
+  const SecondaryAmountWidget(
       {super.key,
       required this.unit,
       required this.amountSats,
       this.symbolFiat = "",
-      this.fxRateFiat = null,
+      this.fxRateFiat,
       this.decimalDot = true,
       this.style = SecondaryAmountWidgetStyle.normal,
       this.badgeColor});
@@ -261,7 +262,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (unit == AmountDisplayUnit.fiat && fxRateFiat == null) {
-      return LoaderGhost(
+      return const LoaderGhost(
         width: 30,
         height: 15,
         animate: true,
@@ -273,7 +274,7 @@ class SecondaryAmountWidget extends StatelessWidget {
           ? EnvoyColors.textPrimary
           : EnvoyColors.accentPrimary,
     );
-    final iconColor = style == PrimaryAmountWidgetStyle.normal
+    final iconColor = style == SecondaryAmountWidgetStyle.normal
         ? EnvoyColors.textPrimary
         : EnvoyColors.accentPrimary;
 
@@ -372,7 +373,6 @@ List<TextSpan> buildPrimaryBtcTextSpans(int amountSats, bool decimalDot,
       }
     }
   }
-  ;
 
   return changeDecimalMark(
       AmountDisplayUnit.btc,
@@ -435,8 +435,9 @@ List<TextSpan> buildTextSpansWithSpaces(bool isAmountBtcUnder1,
       }
     }
   }
-  if (negativeAmount)
+  if (negativeAmount) {
     textSpansWithSpaces.insert(0, _createTextSpan('-', textStyleSpace!));
+  }
 
   return textSpansWithSpaces;
 }
@@ -466,8 +467,9 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
 
   // Reverse the list to get the original order
   textSpans = textSpans.reversed.toList();
-  if (negativeAmount)
+  if (negativeAmount) {
     textSpans.insert(0, _createTextSpan("-", textStyleBlack!));
+  }
 
   return changeDecimalMark(
       AmountDisplayUnit.sat,
@@ -494,12 +496,12 @@ List<TextSpan> buildPrimaryFiatTextSpans(
   if (amountValue >= 1000000000) {
     // Convert to billions and round to 1 decimal point
     double valueInBillion = amountValue / 1000000000.0;
-    String formattedValue = valueInBillion.toStringAsFixed(1) + ' B';
+    String formattedValue = '${valueInBillion.toStringAsFixed(1)} B';
     textSpans.add(_createTextSpan(formattedValue, textStyleBlack!));
   } else if (amountValue >= 1000000) {
     // Convert to millions and round to 1 decimal point
     double valueInMillion = amountValue / 1000000.0;
-    String formattedValue = valueInMillion.toStringAsFixed(1) + ' M';
+    String formattedValue = '${valueInMillion.toStringAsFixed(1)} M';
     textSpans.add(_createTextSpan(formattedValue, textStyleBlack!));
   } else {
     // Display the original amount
@@ -600,8 +602,8 @@ String formatAmountWithCommas(double amount, bool trailingZeroes) {
   }
 
   // Join the integer and decimal parts
-  String formattedAmount = integerDigits.join('') +
-      (decimalPart.isNotEmpty ? '.' + decimalPart : '');
+  String formattedAmount =
+      integerDigits.join('') + (decimalPart.isNotEmpty ? '.$decimalPart' : '');
 
   // Add trailing zeroes if specified and btcAmount is less than 999
   if (trailingZeroes && amount < 1000) {
@@ -692,8 +694,9 @@ Widget getTestnetSatsIcon(Color badgeColor,
 
 Widget displayTestnetIcon(AmountDisplayUnit unit, Color color,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
-  if (unit == AmountDisplayUnit.btc)
+  if (unit == AmountDisplayUnit.btc) {
     return getTestnetBtcIcon(color, iconSize: iconSize, iconColor: iconColor);
-  else
+  } else {
     return getTestnetSatsIcon(color, iconSize: iconSize, iconColor: iconColor);
+  }
 }

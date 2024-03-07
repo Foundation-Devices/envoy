@@ -18,6 +18,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+// ignore: implementation_imports
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -235,7 +236,7 @@ class EnvoyStorage {
     //returns boolean stream that updates when provided key is updated
     return dismissedPromptsStore
         .find(db, finder: filter)
-        .then((event) => event.length != 0);
+        .then((event) => event.isNotEmpty);
   }
 
   Future addPendingTx(String key, String accountId, DateTime timestamp,
@@ -323,10 +324,11 @@ class EnvoyStorage {
   }
 
   Future<String?> getTxNote(String txId) async {
-    if (await txNotesStore.record(txId).exists(_db))
+    if (await txNotesStore.record(txId).exists(_db)) {
       return txNotesStore.record(txId).get(_db);
-    else
+    } else {
       return null;
+    }
   }
 
   Future<bool> deleteTxNote(String txId) async {
@@ -439,24 +441,25 @@ class EnvoyStorage {
   }
 
   Future<bool> setString(String key, String value) async {
-    final record = await preferencesStore.record(key);
+    final record = preferencesStore.record(key);
     await record.put(_db, value);
     _updatePreferencesCache(_db);
     return true;
   }
 
   Future<bool> setExchangeRate(Map<dynamic, dynamic> data) async {
-    final record = await exchangeRateStore.record(exchangeRateKey);
+    final record = exchangeRateStore.record(exchangeRateKey);
     await record.put(_db, data);
 
     return true;
   }
 
   Future<Map?>? getExchangeRate() async {
-    if (await exchangeRateStore.record(exchangeRateKey).exists(_db))
+    if (await exchangeRateStore.record(exchangeRateKey).exists(_db)) {
       return exchangeRateStore.record(exchangeRateKey).get(_db);
-    else
+    } else {
       return null;
+    }
   }
 
   Future<bool> clearVideosStore() async {

@@ -10,7 +10,8 @@ class TextEntry extends StatelessWidget {
   final FocusNode? focusNode;
   final int? maxLength;
 
-  TextEntry({String placeholder = "", this.focusNode, this.maxLength}) {
+  TextEntry(
+      {super.key, String placeholder = "", this.focusNode, this.maxLength}) {
     _controller.text = placeholder;
   }
 
@@ -26,11 +27,11 @@ class TextEntry extends StatelessWidget {
           child: TextFormField(
               focusNode: focusNode,
               controller: _controller,
-              maxLength: this.maxLength,
+              maxLength: maxLength,
               validator: (value) {
                 return null;
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 // Disable the borders
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,

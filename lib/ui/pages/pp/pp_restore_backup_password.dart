@@ -8,10 +8,12 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class PpRestoreBackupPasswordPage extends StatelessWidget {
+  const PpRestoreBackupPasswordPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("pp_restore_backup_password"),
+      key: const Key("pp_restore_backup_password"),
       clipArt: Image.asset("assets/pp_backup_code.png"),
       text: [
         OnboardingText(
@@ -25,7 +27,7 @@ class PpRestoreBackupPasswordPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return PpRestoreBackupSuccessPage();
+                return const PpRestoreBackupSuccessPage();
               }));
             }),
       ],

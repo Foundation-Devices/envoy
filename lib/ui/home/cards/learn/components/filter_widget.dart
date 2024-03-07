@@ -15,11 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LearnFilterWidget extends ConsumerStatefulWidget {
+  const LearnFilterWidget({super.key});
+
   @override
-  _LearnFilterWidgetState createState() => _LearnFilterWidgetState();
+  LearnFilterWidgetState createState() => LearnFilterWidgetState();
 }
 
-class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
+class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
   LearnSortTypes? _sortState;
   Set<LearnFilters>? _filterState;
 
@@ -35,22 +37,18 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             fontWeight: FontWeight.w600,
             fontSize: 14);
 
-    if (_sortState == null) {
-      _sortState = learnSortState;
-    }
-    if (_filterState == null) {
-      _filterState = learnFilterState;
-    }
+    _sortState ??= learnSortState;
+    _filterState ??= learnFilterState;
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium1,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -62,119 +60,119 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               TextButton(
                 onPressed: () {
                   setState(() {
-                    _filterState = Set()..addAll(LearnFilters.values);
+                    _filterState = {}..addAll(LearnFilters.values);
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
                 ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
+                ),
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          Container(
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          SizedBox(
             height: 34,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
                 EnvoyFilterChip(
                   text: S().learning_center_filter_all,
-                  selected: _filterState?.contains(LearnFilters.All) ?? false,
+                  selected: _filterState?.contains(LearnFilters.all) ?? false,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
-                      newState.remove(LearnFilters.All);
-                      newState.remove(LearnFilters.Videos);
-                      newState.remove(LearnFilters.Blogs);
-                      newState.remove(LearnFilters.FAQs);
+                    if (_filterState!.contains(LearnFilters.all)) {
+                      newState.remove(LearnFilters.all);
+                      newState.remove(LearnFilters.videos);
+                      newState.remove(LearnFilters.blogs);
+                      newState.remove(LearnFilters.faqs);
                     } else {
-                      newState.add(LearnFilters.All);
-                      newState.add(LearnFilters.Videos);
-                      newState.add(LearnFilters.Blogs);
-                      newState.add(LearnFilters.FAQs);
+                      newState.add(LearnFilters.all);
+                      newState.add(LearnFilters.videos);
+                      newState.add(LearnFilters.blogs);
+                      newState.add(LearnFilters.faqs);
                     }
                     setState(() {
                       _filterState = newState;
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
-                      ((_filterState?.contains(LearnFilters.Videos) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                      ((_filterState?.contains(LearnFilters.videos) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.all) ?? true)),
                   text: S().learning_center_title_video,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
+                    if (_filterState!.contains(LearnFilters.all)) {
                       newState.removeAll(_filterState!);
                     }
-                    if (newState.contains(LearnFilters.Videos)) {
-                      newState.remove(LearnFilters.Videos);
+                    if (newState.contains(LearnFilters.videos)) {
+                      newState.remove(LearnFilters.videos);
                     } else {
-                      newState.add(LearnFilters.Videos);
+                      newState.add(LearnFilters.videos);
                     }
                     setState(() {
                       _filterState = newState;
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
-                      ((_filterState?.contains(LearnFilters.FAQs) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                      ((_filterState?.contains(LearnFilters.faqs) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.all) ?? true)),
                   text: S().learning_center_title_faq,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
+                    if (_filterState!.contains(LearnFilters.all)) {
                       newState.removeAll(_filterState!);
                     }
-                    if (newState.contains(LearnFilters.FAQs)) {
-                      newState.remove(LearnFilters.FAQs);
+                    if (newState.contains(LearnFilters.faqs)) {
+                      newState.remove(LearnFilters.faqs);
                     } else {
-                      newState.add(LearnFilters.FAQs);
+                      newState.add(LearnFilters.faqs);
                     }
                     setState(() {
                       _filterState = newState;
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 EnvoyFilterChip(
                   selected:
-                      ((_filterState?.contains(LearnFilters.Blogs) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.All) ?? true)),
+                      ((_filterState?.contains(LearnFilters.blogs) ?? false) &&
+                          !(_filterState?.contains(LearnFilters.all) ?? true)),
                   text: S().learning_center_title_blog,
                   onTap: () {
-                    final Set<LearnFilters> newState = Set()
+                    final Set<LearnFilters> newState = {}
                       ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.All)) {
+                    if (_filterState!.contains(LearnFilters.all)) {
                       newState.removeAll(_filterState!);
                     }
-                    if (newState.contains(LearnFilters.Blogs)) {
-                      newState.remove(LearnFilters.Blogs);
+                    if (newState.contains(LearnFilters.blogs)) {
+                      newState.remove(LearnFilters.blogs);
                     } else {
-                      newState.add(LearnFilters.Blogs);
+                      newState.add(LearnFilters.blogs);
                     }
                     setState(() {
                       _filterState = newState;
                     });
                   },
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(S().account_details_filter_tags_sortBy,
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
@@ -197,7 +195,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -213,7 +211,7 @@ class _LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               }
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );

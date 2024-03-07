@@ -19,7 +19,7 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColors;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -43,9 +43,9 @@ class CoinTagDetailsScreen extends ConsumerStatefulWidget {
 
 class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   bool _menuVisible = false;
-  double _menuHeight = 80;
-  Coin? _selectedCoin = null;
-  GlobalKey _detailWidgetKey = GlobalKey();
+  final double _menuHeight = 80;
+  Coin? _selectedCoin;
+  final GlobalKey _detailWidgetKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         }
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
             gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -125,7 +125,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Container(
+                    const SizedBox(
                       height: 100,
                       child: IndicatorShield(),
                     ),
@@ -154,7 +154,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                         icon: Icon(_menuVisible
                             ? Icons.close
                             : CupertinoIcons.ellipsis))
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ],
             ),
             body: PageTransitionSwitcher(
@@ -178,7 +178,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       child: Align(
                           alignment: Alignment.topCenter,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.medium2),
                             child: CoinDetailsWidget(
                               coin: _selectedCoin!,
@@ -186,7 +186,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                             ),
                           )),
                     )
-                  : CoinTagDetails(context),
+                  : coinTagDetails(context),
             ),
           ),
         ),
@@ -194,7 +194,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  Widget CoinTagDetails(BuildContext context) {
+  Widget coinTagDetails(BuildContext context) {
     final tag = widget.coinTag;
     final maxContainerHeight = MediaQuery.of(context).size.height * 0.50;
     double totalTagHeight = tag.coins.length == 1 ? 98 : 108;
@@ -207,10 +207,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       totalTagHeight += coinListHeight + extraSpace;
     }
     Color border = tag.untagged
-        ? Color(0xff808080)
+        ? const Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
     Color cardBackground = tag.untagged
-        ? Color(0xff808080)
+        ? const Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
 
     if (tag.coins.isEmpty) {
@@ -223,7 +223,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       ///only show header of the tag
       totalTagHeight = 108;
     }
-    final cardRadius = 24.0;
+    const cardRadius = 24.0;
     return RawScrollbar(
       thumbColor: Colors.white38,
       thumbVisibility: totalTagHeight >= maxContainerHeight,
@@ -233,7 +233,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       ///sets up top margin for scroller
       mainAxisMargin: -100,
       thickness: 6,
-      trackRadius: Radius.circular(EnvoySpacing.medium1),
+      trackRadius: const Radius.circular(EnvoySpacing.medium1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
       ),
@@ -246,7 +246,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               children: [
                 Container(
                   height: _menuHeight,
-                  padding: EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Column(
                     children: _getMenuItems(context, tag),
                   ),
@@ -260,21 +260,22 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             left: 0,
             bottom: 0,
             curve: EnvoyEasing.easeInOut,
-            duration: Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
               child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       height: totalTagHeight,
                       key: _detailWidgetKey,
                       decoration: BoxDecoration(
                         borderRadius:
-                            BorderRadius.all(Radius.circular(cardRadius)),
+                            const BorderRadius.all(Radius.circular(cardRadius)),
                         border: Border.all(
                             color: Colors.black,
                             width: 2,
@@ -289,14 +290,14 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       ),
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(cardRadius)),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(cardRadius)),
                             border: Border.all(
                                 color: border,
                                 width: 2,
                                 style: BorderStyle.solid)),
                         child: ClipRRect(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                                 Radius.circular(cardRadius - 2)),
                             child: StripesBackground(
                               child: tag.coins.length == 1
@@ -309,21 +310,22 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                 tag.coins.length >= 2)
                                             ? Expanded(
                                                 child: Container(
-                                                  margin: EdgeInsets.symmetric(
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
                                                       vertical: 4,
                                                       horizontal: 4),
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   cardRadius -
                                                                       5.5))),
-                                                  child: Container(
+                                                  child: SizedBox(
                                                     height: coinListHeight,
                                                     child: ListView.builder(
                                                       physics:
-                                                          BouncingScrollPhysics(),
+                                                          const BouncingScrollPhysics(),
                                                       itemCount:
                                                           tag.coins.length,
                                                       itemBuilder:
@@ -352,7 +354,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                       },
                                                       padding:
                                                           tag.coins.length >= 8
-                                                              ? EdgeInsets.only(
+                                                              ? const EdgeInsets
+                                                                  .only(
                                                                   bottom: 4,
                                                                   top: 4)
                                                               : EdgeInsets.zero,
@@ -360,21 +363,25 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   ),
                                                 ),
                                               )
-                                            : SizedBox.shrink(),
+                                            : const SizedBox.shrink(),
                                         tag.coins.isEmpty
                                             ? Expanded(
                                                 child: Container(
                                                   alignment: Alignment.center,
-                                                  margin: EdgeInsets.symmetric(
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
                                                       vertical: 4,
                                                       horizontal: 4),
-                                                  padding: EdgeInsets.all(16),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  16))),
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          16))),
                                                   child: Column(
                                                     mainAxisSize:
                                                         MainAxisSize.min,
@@ -382,7 +389,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      GhostListTile(
+                                                      const GhostListTile(
                                                         animate: false,
                                                       ),
                                                       Text(
@@ -395,7 +402,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   ),
                                                 ),
                                               )
-                                            : SizedBox.shrink()
+                                            : const SizedBox.shrink()
                                       ],
                                     ),
                             )),
@@ -413,7 +420,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget singleCoinWidget(BuildContext context) {
     CoinTag tag = widget.coinTag;
-    TextStyle _textStyleWallet =
+    TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
               fontSize: 16,
@@ -443,8 +450,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        "${widget.coinTag.name}",
-                        style: _textStyleWallet,
+                        widget.coinTag.name,
+                        style: textStyleWallet,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -479,7 +486,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
               S().tagged_coin_details_menu_cta1,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           onTap: () => _editTagName(context),
@@ -490,14 +497,15 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
               S().delete_tag_modal_cta2.toUpperCase(),
-              style: TextStyle(color: EnvoyColors.lightCopper),
+              style: const TextStyle(color: EnvoyColors.lightCopper),
             ),
           ),
           onTap: () {
-            if (tag.coins.isEmpty)
+            if (tag.coins.isEmpty) {
               _deleteEmptyTag(context);
-            else
+            } else {
               _deleteTag(context);
+            }
           },
         ),
       ];
@@ -509,7 +517,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
               S().tagged_coin_details_menu_cta1,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           onTap: () {},
@@ -520,7 +528,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget _coinHeader(BuildContext context) {
     CoinTag tag = widget.coinTag;
-    TextStyle _textStyleWallet =
+    TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
               fontSize: 16,
@@ -551,8 +559,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${widget.coinTag.name}",
-                            style: _textStyleWallet,
+                            widget.coinTag.name,
+                            style: textStyleWallet,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -582,6 +590,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   _deleteTag(BuildContext context) {
+    final navigator = Navigator.of(context);
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,
@@ -593,15 +602,16 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               primaryButtonText: S().component_back,
               secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
-                Navigator.pop(context);
+                navigator.pop();
               },
               onSecondaryButtonTap: () async {
                 await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
-                final __ = ref.refresh(coinsProvider(widget.coinTag.account));
-                Navigator.pop(context);
+                // ignore: unused_result
+                ref.refresh(coinsProvider(widget.coinTag.account));
+                navigator.pop();
                 _menuVisible = false;
-                Navigator.pop(context);
+                navigator.pop();
               });
         },
       ),
@@ -609,6 +619,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   _deleteEmptyTag(BuildContext context) {
+    final navigator = Navigator.of(context);
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,
@@ -620,15 +631,16 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               primaryButtonText: S().component_back,
               secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
-                Navigator.pop(context);
+                navigator.pop();
               },
               onSecondaryButtonTap: () async {
                 await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
-                final __ = ref.refresh(coinsProvider(widget.coinTag.account));
-                Navigator.pop(context);
+                // ignore: unused_result
+                ref.refresh(coinsProvider(widget.coinTag.account));
+                navigator.pop();
                 _menuVisible = false;
-                Navigator.pop(context);
+                navigator.pop();
               });
         },
       ),
@@ -675,6 +687,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               EnvoyButton(
                 S().component_save,
                 onTap: () async {
+                  final navigator = Navigator.of(context);
                   widget.coinTag.name = textEntry.enteredText;
                   int updated =
                       await CoinRepository().updateCoinTag(widget.coinTag);
@@ -683,7 +696,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     setState(() {
                       widget.coinTag.name = textEntry.enteredText;
                     });
-                    Navigator.pop(context);
+                    navigator.pop();
                   }
                 },
               ),
@@ -707,9 +720,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       EnvoyToast(
         backgroundColor: EnvoyColors.danger,
         replaceExisting: true,
-        duration: Duration(seconds: 4),
+        duration: const Duration(seconds: 4),
         message: "Error: Transaction Not found",
-        icon: Icon(
+        icon: const Icon(
           Icons.info_outline,
           color: Colors.white,
         ),
@@ -747,9 +760,9 @@ class DeleteTagDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Align(
-              alignment: Alignment.centerRight.add(Alignment(.1, 0)),
+              alignment: Alignment.centerRight.add(const Alignment(.1, 0)),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -766,7 +779,7 @@ class DeleteTagDialog extends StatelessWidget {
                 dialogSubheading,
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.info
-                    .copyWith(color: newColors.EnvoyColors.textPrimary),
+                    .copyWith(color: new_colors.EnvoyColors.textPrimary),
               ),
             ),
             EnvoyButton(
@@ -785,7 +798,7 @@ class DeleteTagDialog extends StatelessWidget {
                 textStyle: EnvoyTypography.body
                     .copyWith(color: EnvoyColors.white100, fontSize: 16),
                 type: EnvoyButtonTypes.primaryModal,
-                borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                 onTap: () async {
                   await onPrimaryButtonTap();
                 },

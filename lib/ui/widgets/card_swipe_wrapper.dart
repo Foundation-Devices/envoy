@@ -18,11 +18,10 @@ class CardSwipeWrapper extends ConsumerStatefulWidget {
   final Account account;
 
   const CardSwipeWrapper(
-      {Key? key,
+      {super.key,
       required this.child,
       required this.height,
-      required this.account})
-      : super(key: key);
+      required this.account});
 
   @override
   ConsumerState<CardSwipeWrapper> createState() => _CardSwipeWrapperState();
@@ -75,7 +74,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
     _controller = AnimationController(vsync: this);
     _iconController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
     _iconColorAnimation = ColorTween(
       begin: EnvoyColors.grey,
@@ -127,7 +126,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
           child: Consumer(
             builder: (context, ref, child) {
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 24),
+                margin: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,

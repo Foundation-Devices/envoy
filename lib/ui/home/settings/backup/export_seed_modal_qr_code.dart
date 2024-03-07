@@ -14,7 +14,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'export_seed_modal_words.dart';
 
 class ExportSeedModalQrCode extends StatefulWidget {
-  const ExportSeedModalQrCode({Key? key}) : super(key: key);
+  const ExportSeedModalQrCode({super.key});
 
   @override
   State<ExportSeedModalQrCode> createState() => _ExportSeedModalQrCodeState();
@@ -41,7 +41,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
           fontWeight: FontWeight.w500,
         );
 
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.80,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -51,7 +51,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -59,7 +59,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 68),
+            padding: const EdgeInsets.symmetric(horizontal: 68),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,7 +80,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                           dimension: 150,
                         );
                       } else {
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       }
                     }),
                 Padding(
@@ -104,7 +104,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 18),
             child: Column(
               children: [
                 EnvoyButton(

@@ -33,7 +33,7 @@ class TxNoteDialog extends ConsumerStatefulWidget {
 }
 
 class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -55,13 +55,13 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
     return Container(
       width: 280,
       height: 380,
-      padding: EdgeInsets.all(EnvoySpacing.medium1),
+      padding: const EdgeInsets.all(EnvoySpacing.medium1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Text(widget.noteTitle, style: Theme.of(context).textTheme.titleLarge),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             widget.noteSubTitle,
             style: Theme.of(context).textTheme.bodyLarge,
@@ -69,12 +69,12 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
             //maxLines: 2,
           ),
           Container(
-            margin: EdgeInsets.only(top: EnvoySpacing.medium1),
+            margin: const EdgeInsets.only(top: EnvoySpacing.medium1),
             child: Container(
               decoration: BoxDecoration(
                   color: EnvoyColors.gray200,
                   borderRadius: BorderRadius.circular(15)),
-              padding: EdgeInsets.all(EnvoySpacing.xs),
+              padding: const EdgeInsets.all(EnvoySpacing.xs),
               child: TextFormField(
                 maxLines: 2,
                 maxLength: 34,
@@ -86,7 +86,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
                     .bodySmall
                     ?.copyWith(fontSize: 14),
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(EnvoySpacing.medium1),
+                  contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
                   hintText: widget.noteHintText,
                   labelStyle: EnvoyTypography.body
                       .copyWith(color: EnvoyColors.textTertiary),
@@ -100,11 +100,11 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(S().component_cancel, onTap: () {
             Navigator.of(context).pop();
           }, type: EnvoyButtonTypes.tertiary),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
             S().component_save,
             onTap: () {

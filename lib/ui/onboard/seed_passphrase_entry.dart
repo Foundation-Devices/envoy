@@ -15,27 +15,26 @@ class SeedPassphraseEntry extends StatefulWidget {
   final Function(String passphrase) onPassphraseEntered;
   final bool recovering;
 
-  SeedPassphraseEntry(
-      {Key? key, required this.onPassphraseEntered, this.recovering = false})
-      : super(key: key);
+  const SeedPassphraseEntry(
+      {super.key, required this.onPassphraseEntered, this.recovering = false});
 
   @override
   State<SeedPassphraseEntry> createState() => _SeedPassphraseEntryState();
 }
 
 class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
-  TextEditingController _textEditingController = TextEditingController();
-  PageController _pageController = PageController();
+  final TextEditingController _textEditingController = TextEditingController();
+  final PageController _pageController = PageController();
   bool verify = false;
   String passPhrase = "";
   bool hasError = false;
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildInput(
             S().manual_setup_verify_enterYourPassphrase,
@@ -54,7 +53,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
 
   Widget _buildInput(String heading, String subheading, BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
         minHeight: 360,
         maxWidth: MediaQuery.of(context).size.width * 0.80,
@@ -65,16 +64,16 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Align(
-            alignment: Alignment.centerRight.add(Alignment(.1, 0)),
+            alignment: Alignment.centerRight.add(const Alignment(.1, 0)),
             child: IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
           ),
           Container(
-            margin: EdgeInsets.only(right: 0),
+            margin: const EdgeInsets.only(right: 0),
             child: Text(heading,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
@@ -82,9 +81,9 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
                     .bodyLarge
                     ?.copyWith(fontWeight: FontWeight.w500, fontSize: 22)),
           ),
-          Padding(padding: EdgeInsets.all(8)),
+          const Padding(padding: EdgeInsets.all(8)),
           Text(subheading, textAlign: TextAlign.center),
-          Padding(padding: EdgeInsets.all(8)),
+          const Padding(padding: EdgeInsets.all(8)),
           Container(
             decoration: BoxDecoration(
                 color: Colors.black12, borderRadius: BorderRadius.circular(15)),
@@ -98,7 +97,7 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
                     return null;
                   },
                   textAlign: TextAlign.center,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     // Disable the borders
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -114,18 +113,19 @@ class _SeedPassphraseEntryState extends State<SeedPassphraseEntry> {
                       .textTheme
                       .bodySmall
                       ?.copyWith(color: Colors.red))
-              : SizedBox.shrink(),
-          Padding(padding: EdgeInsets.all(12)),
+              : const SizedBox.shrink(),
+          const Padding(padding: EdgeInsets.all(12)),
           EnvoyButton(
             S().component_continue,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
             onTap: () {
               if (!verify && _textEditingController.text.isNotEmpty) {
                 verify = true;
                 passPhrase = _textEditingController.text;
                 _textEditingController.text = "";
                 _pageController.animateToPage(1,
-                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease);
               } else {
                 setState(() {
                   hasError = passPhrase != _textEditingController.text;
@@ -147,7 +147,7 @@ void showInvalidSeedDialog({required BuildContext context}) {
     context: context,
     dismissible: true,
     builder: Builder(builder: (context) {
-      return Container(
+      return SizedBox(
         width: 300,
         height: 344,
         child: Column(
@@ -160,16 +160,16 @@ void showInvalidSeedDialog({required BuildContext context}) {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Align(
+                      alignment: Alignment.topRight,
                       child: IconButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(Icons.close)),
-                      alignment: Alignment.topRight),
+                          icon: const Icon(Icons.close))),
                 ),
-                Icon(EnvoyIcons.exclamation_warning,
+                const Icon(EnvoyIcons.exclamationWarning,
                     color: EnvoyColors.darkCopper, size: 58),
-                Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(8)),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 38),

@@ -20,7 +20,8 @@ class FwAndroidProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
   final int deviceId;
 
-  FwAndroidProgressPage(this.deviceId, {this.onboarding = true});
+  const FwAndroidProgressPage(this.deviceId,
+      {super.key, this.onboarding = true});
 
   @override
   ConsumerState<FwAndroidProgressPage> createState() =>
@@ -28,29 +29,32 @@ class FwAndroidProgressPage extends ConsumerStatefulWidget {
 }
 
 class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
-  bool done = false;
+  bool? done;
   int currentDotIndex = 3;
   int navigationDots = 6;
 
-  PageController _instructionPageController = PageController();
+  final PageController _instructionPageController = PageController();
 
   @override
   Widget build(BuildContext context) {
     final fwInfo = ref.watch(firmwareStreamProvider(widget.deviceId));
     ref.listen<bool?>(
       sdFwUploadProgressProvider,
-      (previous, next) {
+      (previous, next) async {
         if (next is bool) {
           if (next) {
+            await Future.delayed(const Duration(seconds: 5));
             _instructionPageController.animateToPage(1,
-                duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut);
           } else {
             _instructionPageController.animateToPage(2,
-                duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut);
           }
           setState(() {
             done = next;
-            if (done) {
+            if (done!) {
               Devices().markDeviceUpdated(
                   widget.deviceId, fwInfo.value!.storedVersion);
             }
@@ -68,11 +72,11 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_progress"),
+      key: const Key("fw_progress"),
       text: [
         Expanded(
           child: PageView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: _instructionPageController,
               onPageChanged: (index) {
                 setState(() {
@@ -81,18 +85,24 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                 });
               },
               children: [
-                OnboardingText(
-                  header: S().envoy_fw_progress_heading,
-                  text: S().envoy_fw_progress_subheading,
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_progress_heading,
+                    text: S().envoy_fw_progress_subheading,
+                  ),
                 ),
-                OnboardingText(
-                  header: S().envoy_fw_success_heading,
-                  text: S().envoy_fw_success_subheading,
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_success_heading,
+                    text: S().envoy_fw_success_subheading,
+                  ),
                 ),
                 Column(
                   children: [
-                    OnboardingText(
-                      header: S().envoy_fw_fail_heading,
+                    SingleChildScrollView(
+                      child: OnboardingText(
+                        header: S().envoy_fw_fail_heading,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -110,25 +120,27 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
               ]),
         ),
       ],
-      clipArt: SdCardSpinner(),
+      clipArt: const SdCardSpinner(),
       navigationDots: navigationDots,
       navigationDotsIndex: currentDotIndex,
       buttons: [
-        OnboardingButton(
-            label: done ? S().component_continue : S().component_tryAgain,
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(builder: (context) {
-                if (done)
-                  return FwPassportPage(
-                    onboarding: widget.onboarding,
-                  );
-                else
-                  return FwIntroPage(
-                    deviceId: widget.deviceId,
-                  );
-              }));
-            })
+        if (done != null)
+          OnboardingButton(
+              label: done! ? S().component_continue : S().component_tryAgain,
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) {
+                  if (done!) {
+                    return FwPassportPage(
+                      onboarding: widget.onboarding,
+                    );
+                  } else {
+                    return FwIntroPage(
+                      deviceId: widget.deviceId,
+                    );
+                  }
+                }));
+              })
       ],
     );
   }

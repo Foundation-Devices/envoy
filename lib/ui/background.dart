@@ -10,7 +10,7 @@ class AppBackground extends StatefulWidget {
   @override
   State<AppBackground> createState() => AppBackgroundState();
 
-  AppBackground({Key? key}) : super(key: key);
+  const AppBackground({super.key});
 }
 
 class AppBackgroundState extends State<AppBackground> {
@@ -44,7 +44,7 @@ class AppBackgroundState extends State<AppBackground> {
               child: Opacity(
                   opacity: 0.92,
                   child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           gradient: RadialGradient(
                     radius: 0.5,
                     colors: [
@@ -112,8 +112,8 @@ class StripesBackground extends StatelessWidget {
           child: CustomPaint(
             isComplex: true,
             willChange: false,
-            child: child,
             painter: LinesPainter(color: EnvoyColors.gray1000, opacity: 0.4),
+            child: child,
           ),
         );
       },

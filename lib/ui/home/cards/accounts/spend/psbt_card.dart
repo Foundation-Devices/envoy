@@ -24,7 +24,7 @@ class PsbtCard extends StatelessWidget {
   final Psbt psbt;
   final Account account;
 
-  PsbtCard(this.psbt, this.account) : super(key: UniqueKey()) {}
+  PsbtCard(this.psbt, this.account) : super(key: UniqueKey());
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class PsbtCard extends StatelessWidget {
       topBarLeading: Padding(
         padding: const EdgeInsets.all(12),
         child: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.close,
             color: Colors.black,
           ),
@@ -73,7 +73,8 @@ class PsbtCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
+              padding:
+                  const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 30.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,12 +82,13 @@ class PsbtCard extends StatelessWidget {
                   IconButton(
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: psbt.base64));
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           content:
                               Text("PSBT copied to clipboard!"), //TODO: FIGMA
                         ));
                       },
-                      icon: EnvoyIcon(
+                      icon: const EnvoyIcon(
                         icon: "ic_copy.svg",
                         size: 21,
                         color: EnvoyColors.darkTeal,
@@ -98,18 +100,20 @@ class PsbtCard extends StatelessWidget {
                             builder: (context, ref, child) {
                               return IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(
-                                  EnvoyIcons.qr_scan,
+                                icon: const Icon(
+                                  EnvoyIcons.qrScan,
                                   size: 30,
                                   color: EnvoyColors.darkTeal,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
+                                  final navigator = Navigator.of(context,
+                                      rootNavigator: true);
+                                  navigator
                                       .push(MaterialPageRoute(builder: (_) {
                                     return ScannerPage.tx((psbt) async {
-                                      Psbt PsbtParsed =
+                                      Psbt psbtParsed =
                                           await account.wallet.decodePsbt(psbt);
-                                      Navigator.pop(context, PsbtParsed);
+                                      navigator.pop(psbtParsed);
                                     });
                                   }));
                                 },
@@ -120,7 +124,7 @@ class PsbtCard extends StatelessWidget {
                       onPressed: () {
                         Share.share(psbt.base64);
                       },
-                      icon: EnvoyIcon(
+                      icon: const EnvoyIcon(
                         icon: "ic_envoy_share.svg",
                         size: 21,
                         color: EnvoyColors.darkTeal,

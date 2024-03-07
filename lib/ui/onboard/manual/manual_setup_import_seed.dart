@@ -21,8 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ManualSetupImportSeed extends ConsumerStatefulWidget {
   final SeedLength seedLength;
 
-  const ManualSetupImportSeed({Key? key, required this.seedLength})
-      : super(key: key);
+  const ManualSetupImportSeed({super.key, required this.seedLength});
 
   @override
   ConsumerState<ManualSetupImportSeed> createState() =>
@@ -34,7 +33,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
   String passPhrase = "";
   int currentPage = 0;
   bool finishSeedEntries = false;
-  GlobalKey<MnemonicEntryGridState> _mnemonicEntryGridKey =
+  final GlobalKey<MnemonicEntryGridState> _mnemonicEntryGridKey =
       GlobalKey<MnemonicEntryGridState>();
   List<String> currentWords = [];
 
@@ -46,6 +45,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
       },
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,9 +56,11 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: Icon(Icons.chevron_left, color: Colors.black),
+                        icon:
+                            const Icon(Icons.chevron_left, color: Colors.black),
                         onPressed: () async {
-                          if (await handleBackPress(context)) {
+                          if (await handleBackPress(context) &&
+                              context.mounted) {
                             Navigator.pop(context);
                           }
                         },
@@ -72,7 +74,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         )),
                     Expanded(
                         child: Container(
-                      margin: EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(top: 8),
                       height: MediaQuery.of(context).size.height * 0.59,
                       child: MnemonicEntryGrid(
                           key: _mnemonicEntryGridKey,
@@ -80,7 +82,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                           onSeedWordAdded: (List<String> words) {
                             currentWords = words;
                             bool isValid = currentWords
-                                .map((e) => seed_en.contains(e))
+                                .map((e) => seedEn.contains(e))
                                 .reduce((value, element) => value && element);
                             setState(() {
                               finishSeedEntries = isValid;
@@ -91,7 +93,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                 )),
                 Column(
                   children: [
-                    Padding(padding: EdgeInsets.all(2)),
+                    const Padding(padding: EdgeInsets.all(2)),
                     // SFT-1749: disable passphrases for beta
                     // InkWell(
                     //   onTap: () {
@@ -131,7 +133,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                     //   ),
                     // ),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: IgnorePointer(
                           ignoring: finishSeedEntries == false,
                           child: Opacity(
@@ -147,8 +149,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                   ],
                 )
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }
@@ -164,7 +165,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
 
   void showPassphraseDialog(BuildContext context) {
     showEnvoyDialog(
-            dialog: Container(
+            dialog: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.85,
                 height: 330,
                 child: SeedPassphraseEntry(onPassphraseEntered: (value) {
@@ -198,7 +199,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
 
   Widget _buildPassphraseWarning(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(minWidth: 300, minHeight: 420),
+      constraints: const BoxConstraints(minWidth: 300, minHeight: 420),
       child: SingleChildScrollView(
         child: Container(
           constraints: BoxConstraints(
@@ -209,7 +210,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   mainAxisSize: MainAxisSize.max,
@@ -220,7 +221,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () {
                             Navigator.of(context).pop();
                             setState(() {
@@ -230,12 +231,12 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         ),
                       ),
                     ),
-                    Icon(EnvoyIcons.exclamation_warning,
+                    const Icon(EnvoyIcons.exclamationWarning,
                         color: EnvoyColors.darkCopper, size: 60),
-                    Padding(padding: EdgeInsets.all(4)),
+                    const Padding(padding: EdgeInsets.all(4)),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -247,13 +248,13 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                               text: S()
                                   .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,
                               textStyle: EnvoyTypography.info,
-                              linkStyle: TextStyle(
+                              linkStyle: const TextStyle(
                                   decoration: TextDecoration.underline),
                               onTap: () {
                                 launchUrl(Uri.parse(
                                     "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
                               }),
-                          Padding(padding: EdgeInsets.all(8)),
+                          const Padding(padding: EdgeInsets.all(8)),
                           Text(
                             S().manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading,
                             textAlign: TextAlign.center,
@@ -265,7 +266,8 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                 child: EnvoyButton(
                   S().component_continue,
                   type: EnvoyButtonTypes.primaryModal,

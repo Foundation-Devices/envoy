@@ -6,17 +6,17 @@ import 'dart:math';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
 
-Widget EnvoyScaffoldShieldScrollView(BuildContext context, Widget child) {
-  double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
+  double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
   return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.53,
           child: Container(
-              padding: EdgeInsets.only(bottom: _shieldBottom),
-              decoration: BoxDecoration(
+              padding: EdgeInsets.only(bottom: shieldBottom),
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
-                Color(0x0),
+                Color(0x00000000),
                 Color(0xff686868),
                 Color(0xffFFFFFF),
               ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
@@ -32,14 +32,13 @@ class EnvoyPatternScaffold extends StatefulWidget {
   final double gradientHeight;
 
   const EnvoyPatternScaffold(
-      {Key? key,
+      {super.key,
       this.animate = true,
       this.child,
       this.appBar,
       this.shield,
       this.header,
-      this.gradientHeight = 1.5})
-      : super(key: key);
+      this.gradientHeight = 1.5});
 
   @override
   State<EnvoyPatternScaffold> createState() => _EnvoyPatternScaffoldState();
@@ -74,7 +73,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   void didChangeDependencies() {
-    if (this.widget.animate == false) {
+    if (widget.animate == false) {
       controller?.stop(canceled: false);
     }
     super.didChangeDependencies();
@@ -82,43 +81,39 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   Widget build(BuildContext context) {
-    double _shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+    double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
         SizedBox.expand(
-            child: Container(
-          child: CustomPaint(
-            size: const Size(double.infinity, double.infinity),
-            painter: StripePainter(stripeCount: 428),
-          ),
+            child: CustomPaint(
+          size: const Size(double.infinity, double.infinity),
+          painter: StripePainter(stripeCount: 428),
         )),
         SizedBox.expand(
-            child: Container(
-          child: CustomPaint(
-            painter: GradientPainter(
-                gradientRadius: animation?.value ?? 0.8,
-                gradientHeight: widget.gradientHeight),
-          ),
+            child: CustomPaint(
+          painter: GradientPainter(
+              gradientRadius: animation?.value ?? 0.8,
+              gradientHeight: widget.gradientHeight),
         )),
-        this.widget.child != null
-            ? this.widget.child!
+        widget.child != null
+            ? widget.child!
             : Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: widget.appBar,
                 body: Align(
                   alignment: Alignment.center,
-                  child: this.widget.header,
+                  child: widget.header,
                 ),
-                bottomNavigationBar: Container(
+                bottomNavigationBar: SizedBox(
                   width: double.infinity,
                   height: (MediaQuery.of(context).size.height * 0.5)
                       .clamp(350, 580),
                   child: Container(
-                    padding: EdgeInsets.only(bottom: _shieldBottom),
-                    decoration: BoxDecoration(
+                    padding: EdgeInsets.only(bottom: shieldBottom),
+                    decoration: const BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
-                          Color(0x0),
+                          Color(0x00000000),
                           Color(0xff686868),
                           Color(0xffFFFFFF),
                         ],
@@ -146,8 +141,8 @@ class StripePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     //stripes Pattern rect.
-    final rect = new Rect.fromPoints(new Offset(size.width / 2, -size.height),
-        new Offset(size.width, size.height));
+    final rect = Rect.fromPoints(
+        Offset(size.width / 2, -size.height), Offset(size.width, size.height));
 
     canvas.save();
     canvas.clipRect(rect);
@@ -199,25 +194,25 @@ class GradientPainter extends CustomPainter {
     final paint = Paint()
       ..shader = RadialGradient(
         colors: [
-          Color(0xff965C4B),
-          Color(0xffD68B6E),
-          Color(0xcfd68b6e),
-          Color(0xffF0BBA4).withOpacity(0.4),
-          Color(0xffF0BBA4).withOpacity(0.1),
-          Color(0xffF0BBA4).withOpacity(0.002),
+          const Color(0xff965C4B),
+          const Color(0xffD68B6E),
+          const Color(0xcfd68b6e),
+          const Color(0xffF0BBA4).withOpacity(0.4),
+          const Color(0xffF0BBA4).withOpacity(0.1),
+          const Color(0xffF0BBA4).withOpacity(0.002),
         ],
       ).createShader(Rect.fromCircle(
-          center: new Offset(size.width / 2, size.height / gradientHeight),
+          center: Offset(size.width / 2, size.height / gradientHeight),
           radius: min(size.width, size.width * gradientRadius)));
 
-    final rxect = new Rect.fromPoints(
-        new Offset(0, -size.height), new Offset(size.width, size.height));
+    final rxect = Rect.fromPoints(
+        Offset(0, -size.height), Offset(size.width, size.height));
     canvas.drawRRect(RRect.fromRectXY(rxect, 0, 0), paint);
 
     canvas.drawPath(
         Path()
-          ..addRect(Rect.fromPoints(new Offset(size.width / 2, -size.height),
-              new Offset(size.width, size.height)))
+          ..addRect(Rect.fromPoints(Offset(size.width / 2, -size.height),
+              Offset(size.width, size.height)))
           ..fillType = PathFillType.evenOdd,
         Paint()
           ..color = Colors.black.withAlpha(50)
@@ -227,7 +222,7 @@ class GradientPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant GradientPainter oldDelegate) {
-    return oldDelegate.gradientRadius != this.gradientRadius;
+    return oldDelegate.gradientRadius != gradientRadius;
   }
 
   static double convertRadiusToSigma(double radius) {

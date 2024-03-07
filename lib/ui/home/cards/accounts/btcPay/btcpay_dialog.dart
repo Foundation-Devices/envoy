@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/btcPay_voucher.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_info.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_fail.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading_payout.dart';
@@ -18,7 +18,10 @@ class BtcPayDialog extends StatelessWidget {
   final BtcPayVoucher voucher;
   final Account account;
 
-  BtcPayDialog(this.voucher, this.account);
+  BtcPayDialog(this.voucher, this.account, {super.key}) {
+    // TODO: implement BtcPayDialog
+    throw UnimplementedError();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class BtcPayDialog extends StatelessWidget {
       ),
       child: ExpandablePageView(
         controller: controller,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           BtcPayLoadingModal(voucher: voucher, controller: controller),
           BtcPayInfo(
@@ -45,17 +48,17 @@ class BtcPayDialog extends StatelessWidget {
           BtcPayFail(
             voucher: voucher,
           ),
-          BtcPayRedeemModalSuccess(),
+          const BtcPayRedeemModalSuccess(),
         ],
       ),
     );
   }
 }
 
-Container loadingSpinner(BuildContext context) {
-  return Container(
+Widget loadingSpinner(BuildContext context) {
+  return SizedBox(
     height: MediaQuery.of(context).size.width * 0.85,
-    child: Center(
+    child: const Center(
       child: SizedBox(
         height: EnvoySpacing.xl,
         width: EnvoySpacing.xl,

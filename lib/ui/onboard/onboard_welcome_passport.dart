@@ -18,7 +18,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
-  const OnboardPassportWelcomeScreen({Key? key}) : super(key: key);
+  const OnboardPassportWelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +26,15 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
       gradientHeight: 1.8,
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
-        margin: EdgeInsets.all(EnvoySpacing.medium1),
-        padding: EdgeInsets.only(top: EnvoySpacing.large1),
+        margin: const EdgeInsets.all(EnvoySpacing.medium1),
+        padding: const EdgeInsets.only(top: EnvoySpacing.large1),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-              child: Container(
+              child: SizedBox(
                 width: 380,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -45,7 +45,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                     Text(
                       S().passport_welcome_screen_subheading,
                       style: Theme.of(context).textTheme.bodySmall,
@@ -62,7 +62,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   LinkText(
                     text: S().passport_welcome_screen_cta3,
                     textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -75,7 +75,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                           Uri.parse("https://foundationdevices.com/passport"));
                     },
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   EnvoyButton(
                     S().passport_welcome_screen_cta2,
                     type: EnvoyButtonTypes.secondary,
@@ -84,11 +84,11 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                OnboardPassportWelcomeScreen(),
+                                const OnboardPassportWelcomeScreen(),
                           ));
                     },
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   EnvoyButton(
                     S().passport_welcome_screen_cta1,
                     onTap: () {
@@ -96,7 +96,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                OnboardPassportWelcomeScreen(),
+                                const OnboardPassportWelcomeScreen(),
                           ));
                     },
                   )
@@ -147,7 +147,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: Offset(0, 75),
+          offset: const Offset(0, 75),
           child: Image.asset(
             "assets/passport_envoy.png",
             alignment: Alignment.bottomCenter,
@@ -155,7 +155,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.8,
           ),
         ),
-        bottomNavigationBar: EnvoyScaffoldShieldScrollView(
+        bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
               padding: const EdgeInsets.only(
@@ -166,14 +166,14 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Flexible(
                   child: Container(
-                    margin: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(
                       vertical: EnvoySpacing.large1,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(height: EnvoySpacing.small),
+                        const SizedBox(height: EnvoySpacing.small),
                         Column(
                           children: [
                             Padding(
@@ -193,7 +193,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                       decoration: TextDecoration.none,
                                     ),
                                   ),
-                                  Padding(
+                                  const Padding(
                                       padding:
                                           EdgeInsets.all(EnvoySpacing.small)),
                                   Text(
@@ -207,7 +207,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(height: EnvoySpacing.medium3),
+                            const SizedBox(height: EnvoySpacing.medium3),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: EnvoySpacing.medium1),
@@ -215,7 +215,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Padding(
+                                  const Padding(
                                       padding: EdgeInsets.all(EnvoySpacing.xs)),
                                   LinkText(
                                     text: S().passport_welcome_screen_cta3,
@@ -229,7 +229,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                           "https://foundationdevices.com/passport"));
                                     },
                                   ),
-                                  Padding(
+                                  const Padding(
                                       padding:
                                           EdgeInsets.all(EnvoySpacing.medium1)),
                                   EnvoyButton(
@@ -238,11 +238,11 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
-                                        return SingleImportPpIntroPage();
+                                        return const SingleImportPpIntroPage();
                                       }));
                                     },
                                   ),
-                                  Padding(
+                                  const Padding(
                                       padding:
                                           EdgeInsets.all(EnvoySpacing.small)),
                                   EnvoyButton(
@@ -250,7 +250,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
-                                        return TouPage();
+                                        return const TouPage();
                                       }));
                                     },
                                   )

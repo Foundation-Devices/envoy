@@ -4,6 +4,7 @@
 
 import 'dart:typed_data';
 
+import 'package:envoy/util/console.dart';
 import 'package:test/test.dart';
 import 'package:ur/ur.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -177,7 +178,7 @@ void main() {
           "e824467caffeaf3bbc3e0ca095e660a9bad80ddb6a919433a37161908b9a3986")));
 
     var encoded = request.nextPart();
-    print(encoded);
+    kPrint(encoded);
   });
 
   test('crypto-response decode test', () {
@@ -312,7 +313,7 @@ void main() {
     assert(reader.decoded is CryptoRequest);
 
     var request = reader.decoded as CryptoRequest;
-    assert(ListEquality().equals(request.uuid, [
+    assert(const ListEquality().equals(request.uuid, [
       47,
       95,
       192,
@@ -397,6 +398,6 @@ void main() {
           "e824467caffeaf3bbc3e0ca095e660a9bad80ddb6a919433a37161908b9a3986"))); // TODO: get this guy from the wallet
 
     var encoded = request.nextPart();
-    print(encoded);
+    kPrint(encoded);
   });
 }

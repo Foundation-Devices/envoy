@@ -4,6 +4,7 @@
 
 import 'dart:io';
 
+import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,7 +49,7 @@ class EnvoyReport {
   }
 
   writeReport(FlutterErrorDetails? details) {
-    Map<String, String?> report = Map();
+    Map<String, String?> report = {};
     if (details != null) {
       report["exception"] = details.exceptionAsString();
       report["lib"] = details.library;
@@ -68,7 +69,7 @@ class EnvoyReport {
   }
 
   log(String category, String message) {
-    Map<String, String?> report = Map();
+    Map<String, String?> report = {};
     report["category"] = category;
     report["message"] = message;
     report["time"] = DateTime.now().toIso8601String();
@@ -122,33 +123,33 @@ class EnvoyReport {
   }
 
   Future<String> getLogAsString() async {
-    final allLogs = await this.getAllLogs();
+    final allLogs = await getAllLogs();
     String logs = "";
-    allLogs.forEach((element) {
+    for (var logMap in allLogs) {
       String log = "";
       try {
-        String category = (element["category"] ?? "None") as String;
-        String message = (element["message"] ?? "None") as String;
-        String exception = (element["exception"] ?? "None") as String;
-        String stackTrace = (element["stackTrace"] ?? "None") as String;
-        String lib = (element["lib"] ?? "None") as String;
-        String time = (element["time"] ?? "") as String;
+        String category = (logMap["category"] ?? "None") as String;
+        String message = (logMap["message"] ?? "None") as String;
+        String exception = (logMap["exception"] ?? "None") as String;
+        String stackTrace = (logMap["stackTrace"] ?? "None") as String;
+        String lib = (logMap["lib"] ?? "None") as String;
+        String time = (logMap["time"] ?? "") as String;
 
-        log = "\nTime       : ${time} \n"
-            "Category    : ${category} \n"
-            "Message     : ${message} \n"
-            "Library     : ${lib} \n"
-            "Exception   : ${exception} \n"
+        log = "\nTime       : $time \n"
+            "Category    : $category \n"
+            "Message     : $message \n"
+            "Library     : $lib \n"
+            "Exception   : $exception \n"
             ""
-            "Stack Trace : ${stackTrace} \n"
+            "Stack Trace : $stackTrace \n"
             "";
       } catch (e) {
-        print(e);
+        kPrint(e);
       }
-      if (log.isNotEmpty)
-        logs =
-            "$logs\n" + List.generate(20, (index) => "-").join("") + "\n${log}";
-    });
+      if (log.isNotEmpty) {
+        logs = "$logs\n${List.generate(20, (index) => "-").join("")}\n$log";
+      }
+    }
     return logs;
   }
 

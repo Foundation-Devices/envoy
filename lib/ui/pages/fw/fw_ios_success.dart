@@ -11,7 +11,7 @@ import 'package:rive/rive.dart';
 class FwIosSuccessPage extends StatelessWidget {
   final bool onboarding;
 
-  FwIosSuccessPage({required this.onboarding});
+  const FwIosSuccessPage({super.key, required this.onboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,14 @@ class FwIosSuccessPage extends StatelessWidget {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_ios_success"),
+      key: const Key("fw_ios_success"),
       text: [
         OnboardingText(
           header: S().envoy_fw_success_heading,
           text: S().envoy_fw_success_subheading_ios,
         ),
       ],
-      clipArt: RiveAnimation.asset(
+      clipArt: const RiveAnimation.asset(
         "assets/envoy_loader.riv",
         fit: BoxFit.contain,
         animations: ["happy"],

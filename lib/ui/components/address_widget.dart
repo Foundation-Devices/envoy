@@ -21,6 +21,7 @@ class AddressWidget extends StatelessWidget {
       .setWeight(FontWeight.w400);
 
   AddressWidget({
+    super.key,
     required this.address,
     this.short = false,
     this.widgetKey,
@@ -42,7 +43,7 @@ class AddressWidget extends StatelessWidget {
   List<TextSpan> _buildShortAddressTextSpans(String address) {
     List<TextSpan> fullTextSpans = _buildAddressChunks(address);
     List<TextSpan> shortTextSpans = [];
-    final int numOfSideChunks = 2;
+    const int numOfSideChunks = 2;
 
     if (fullTextSpans.length <= numOfSideChunks) {
       return fullTextSpans;

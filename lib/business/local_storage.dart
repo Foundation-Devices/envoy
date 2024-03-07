@@ -3,12 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LocalStorage {
-  final secureStorage = new FlutterSecureStorage();
+  final secureStorage = const FlutterSecureStorage();
   final EnvoyStorage prefs = EnvoyStorage();
   late final Directory appSupportDir;
   late final Directory appDocumentsDir;
@@ -26,13 +27,13 @@ class LocalStorage {
   }
 
   LocalStorage._internal() {
-    print("Instance of LocalStorage created!");
+    kPrint("Instance of LocalStorage created!");
   }
 
   _initAsync() async {
     appSupportDir = await getApplicationSupportDirectory();
     appDocumentsDir = await getApplicationDocumentsDirectory();
-    print("Async members initialized!");
+    kPrint("Async members initialized!");
   }
 
   Future<bool> containsSecure(String key) async {
@@ -79,39 +80,39 @@ class LocalStorage {
   }
 
   Future<File> saveFile(String name, String content) async {
-    return File(appSupportDir.path + '/' + name).writeAsString(content);
+    return File('${appSupportDir.path}/$name').writeAsString(content);
   }
 
   Future<String> readFile(String name) async {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file.readAsStringSync();
   }
 
   Future<void> deleteFile(String name) async {
-    await File(appSupportDir.path + '/' + name).delete();
+    await File('${appSupportDir.path}/$name').delete();
   }
 
   Future<File> saveFileBytes(String name, List<int> content) async {
-    return File(appSupportDir.path + '/' + name).writeAsBytes(content);
+    return File('${appSupportDir.path}/$name').writeAsBytes(content);
   }
 
   File saveFileBytesSync(String name, List<int> content) {
-    var file = File(appSupportDir.path + '/' + name)..writeAsBytesSync(content);
+    var file = File('${appSupportDir.path}/$name')..writeAsBytesSync(content);
     return file;
   }
 
   Future<List<int>> readFileBytes(String name) async {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file.readAsBytes();
   }
 
   File openFileBytes(String name) {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file;
   }
 
   Future<bool> fileExists(String name) async {
-    final file = File(appSupportDir.path + '/' + name);
+    final file = File('${appSupportDir.path}/$name');
     return file.exists();
   }
 }

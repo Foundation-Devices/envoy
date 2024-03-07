@@ -13,18 +13,17 @@ class AztecoLoadingModal extends StatefulWidget {
   final PageController controller;
   final Account account;
 
-  AztecoLoadingModal(
-      {Key? key,
+  const AztecoLoadingModal(
+      {super.key,
       required this.voucher,
       required this.controller,
-      required this.account})
-      : super(key: key);
+      required this.account});
 
   @override
-  _AztecoLoadingModalState createState() => _AztecoLoadingModalState();
+  AztecoLoadingModalState createState() => AztecoLoadingModalState();
 }
 
-class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
+class AztecoLoadingModalState extends State<AztecoLoadingModal> {
   @override
   void initState() {
     super.initState();
@@ -35,24 +34,24 @@ class _AztecoLoadingModalState extends State<AztecoLoadingModal> {
     String address = await widget.account.wallet.getAddress();
     AztecoVoucherRedeemResult result = await widget.voucher.redeem(address);
     switch (result) {
-      case AztecoVoucherRedeemResult.Success:
+      case AztecoVoucherRedeemResult.success:
         {
           addPendingTx(address, widget.account);
           widget.controller.jumpToPage(3);
         }
 
-      case AztecoVoucherRedeemResult.Timeout:
+      case AztecoVoucherRedeemResult.timeout:
         widget.controller.jumpToPage(4);
-      case AztecoVoucherRedeemResult.VoucherInvalid:
+      case AztecoVoucherRedeemResult.voucherInvalid:
         widget.controller.jumpToPage(2);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.width * 0.75,
-      child: Center(
+      child: const Center(
         child: SizedBox(
           height: 60,
           width: 60,

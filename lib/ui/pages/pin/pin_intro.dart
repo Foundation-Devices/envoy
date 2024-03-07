@@ -11,12 +11,12 @@ import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 //ignore: must_be_immutable
 class PinIntroPage extends StatelessWidget {
   bool mustUpdateFirmware;
-  PinIntroPage({this.mustUpdateFirmware = true});
+  PinIntroPage({super.key, this.mustUpdateFirmware = true});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("pin_intro"),
+      key: const Key("pin_intro"),
       clipArt: Image.asset("assets/pin_intro.png"),
       text: [
         OnboardingText(
@@ -31,7 +31,7 @@ class PinIntroPage extends StatelessWidget {
                 if (mustUpdateFirmware) {
                   return FwIntroPage();
                 } else {
-                  return PpSetupIntroPage();
+                  return const PpSetupIntroPage();
                 }
               }));
             }),

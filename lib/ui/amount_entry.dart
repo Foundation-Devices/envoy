@@ -15,6 +15,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
@@ -32,13 +33,12 @@ class AmountEntry extends ConsumerStatefulWidget {
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
 
-  AmountEntry(
+  const AmountEntry(
       {this.account,
       this.onAmountChanged,
       this.initalSatAmount = 0,
       this.onPaste,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   ConsumerState<AmountEntry> createState() => AmountEntryState();
@@ -61,7 +61,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     var unit = ref.read(sendScreenUnitProvider);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
-    String? text = cdata?.text ?? null;
+    String? text = cdata?.text;
     var decodedInfo = await BitcoinParser.parse(text!,
         fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
         wallet: widget.account?.wallet,
@@ -101,7 +101,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         case NumpadEvents.backspace:
           {
             setState(() {
-              if (_enteredAmount.length > 0) {
+              if (_enteredAmount.isNotEmpty) {
                 _enteredAmount =
                     _enteredAmount.substring(0, _enteredAmount.length - 1);
               }
@@ -224,7 +224,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                   ((enteredAmount.length -
                           enteredAmount.indexOf(fiatDecimalSeparator)) ==
                       2)) {
-                enteredAmount = enteredAmount + "0";
+                enteredAmount = "${enteredAmount}0";
               }
               _enteredAmount = enteredAmount;
             },
@@ -235,13 +235,12 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 24,
+            vertical: EnvoySpacing.medium2,
           ),
           child: SpendableAmountWidget(widget.account!),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: EnvoySpacing.small),
           child: numpad,
         ),
       ],
@@ -261,7 +260,7 @@ class SpendableAmountWidget extends ConsumerWidget {
     final isCoinsSelected = ref.watch(isCoinsSelectedProvider);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -297,9 +296,7 @@ class Numpad extends StatefulWidget {
   late final AmountDisplayUnit amountDisplayUnit;
   final bool isAmountZero;
 
-  Numpad(AmountDisplayUnit amountDisplayUnit, {required this.isAmountZero}) {
-    this.amountDisplayUnit = amountDisplayUnit;
-  }
+  Numpad(this.amountDisplayUnit, {super.key, required this.isAmountZero});
 
   @override
   State<Numpad> createState() => _NumpadState();
@@ -320,7 +317,7 @@ class _NumpadState extends State<Numpad> {
       shrinkWrap: true,
       // For some reason GridView has a default padding
       padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         ...(List.generate(9, (index) {
           String digit = (index + 1).toString();
@@ -342,7 +339,7 @@ class _NumpadState extends State<Numpad> {
                   widget.events.sink.add(NumpadEvents.dot);
                 },
               )
-            : SizedBox.shrink(),
+            : const SizedBox.shrink(),
         NumpadButton(
           NumpadButtonType.text,
           text: "0",
@@ -386,10 +383,10 @@ class NumpadButton extends StatelessWidget {
   const NumpadButton(
     this.type, {
     this.text,
-    Key? key,
+    super.key,
     required this.onTap,
     this.onLongPressDown,
-  }) : super(key: key);
+  });
 
   void _handleLongPress() {
     // Check if onLongPressDown is provided and call it if it is
@@ -407,9 +404,9 @@ class NumpadButton extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
 
       child: Padding(
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: EnvoyColors.border2,
           ),
@@ -427,12 +424,12 @@ class NumpadButton extends StatelessWidget {
                   ),
                 );
               case NumpadButtonType.backspace:
-                return Padding(
-                    padding: const EdgeInsets.only(right: 3, top: 2),
+                return const Padding(
+                    padding: EdgeInsets.only(right: 3, top: 2),
                     child: EnvoyIcon(EnvoyIcons.delete,
                         color: EnvoyColors.accentPrimary));
               case NumpadButtonType.clipboard:
-                return EnvoyIcon(
+                return const EnvoyIcon(
                   EnvoyIcons.clipboard,
                   color: EnvoyColors.accentPrimary,
                 );

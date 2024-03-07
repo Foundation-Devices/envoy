@@ -21,7 +21,7 @@ import 'package:envoy/ui/components/address_widget.dart';
 class AddressCard extends ConsumerStatefulWidget {
   final Account account;
 
-  AddressCard(this.account) : super(key: UniqueKey()) {}
+  AddressCard(this.account) : super(key: UniqueKey());
 
   @override
   ConsumerState<AddressCard> createState() => _AddressCardState();
@@ -32,7 +32,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_qr_code_heading;
     });
@@ -86,8 +86,10 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: 50.0, right: 50.0, bottom: 40.0),
+                      padding: const EdgeInsets.only(
+                          left: EnvoySpacing.large2,
+                          right: EnvoySpacing.large2,
+                          bottom: EnvoySpacing.large1),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -97,7 +99,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                 _copyAddressToClipboard(
                                     context, snapshot.data!);
                               },
-                              icon: EnvoyIcon(
+                              icon: const EnvoyIcon(
                                 icon: "ic_copy.svg",
                                 size: 21,
                                 color: EnvoyColors.darkTeal,
@@ -110,9 +112,9 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                           ),
                           IconButton(
                               onPressed: () {
-                                Share.share("bitcoin:" + snapshot.data!);
+                                Share.share("bitcoin:${snapshot.data!}");
                               },
-                              icon: EnvoyIcon(
+                              icon: const EnvoyIcon(
                                 icon: "ic_envoy_share.svg",
                                 size: 21,
                                 color: EnvoyColors.darkTeal,
@@ -123,7 +125,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                   ]),
             );
           } else {
-            return Center(
+            return const Center(
               child: SizedBox(
                 height: 100,
                 width: 100,
@@ -137,11 +139,12 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   }
 
   void _copyAddressToClipboard(BuildContext context, String address) async {
+    final scaffold = ScaffoldMessenger.of(context);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-    String? text = cdata?.text ?? null;
+    String? text = cdata?.text;
     if (text != address) {
       Clipboard.setData(ClipboardData(text: address));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      scaffold.showSnackBar(const SnackBar(
         content: Text("Address copied to clipboard!"), //TODO: FIGMA
       ));
     }

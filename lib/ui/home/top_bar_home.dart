@@ -33,7 +33,7 @@ class HomeAppBar extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomeAppBarState();
 }
 
-final _animationsDuration = Duration(milliseconds: 350);
+const _animationsDuration = Duration(milliseconds: 350);
 
 class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
@@ -41,7 +41,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       _setOptionWidgetsForTabWidgets(
           GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
     });
@@ -49,13 +49,13 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    HomeShellOptions? _homeShellState = ref.watch(homeShellOptionsProvider);
-    bool _modalShown = ref.watch(hideBottomNavProvider);
-    bool _optionsShown = ref.watch(homePageOptionsVisibilityProvider);
-    bool _inEditMode = ref.watch(spendEditModeProvider);
+    HomeShellOptions? homeShellState = ref.watch(homeShellOptionsProvider);
+    bool modalShown = ref.watch(hideBottomNavProvider);
+    bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
+    bool inEditMode = ref.watch(spendEditModeProvider);
 
-    Widget rightAction = _homeShellState?.rightAction ??
-        SizedBox(
+    Widget rightAction = homeShellState?.rightAction ??
+        const SizedBox(
           height: 55,
           width: 55,
         );
@@ -138,7 +138,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       backgroundColor: Colors.transparent,
       leading: AnimatedOpacity(
         duration: _animationsDuration,
-        opacity: (_optionsShown || _inEditMode) ? 0.0 : 1.0,
+        opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
         child: HamburgerMenu(
           iconState: state,
           onPressed: () {
@@ -182,25 +182,25 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ),
               )),
         ),
-        SizedBox(height: 50, child: IndicatorShield())
+        const SizedBox(height: 50, child: IndicatorShield())
       ]),
       actions: [
 // Right action
-        if (!_inEditMode)
+        if (!inEditMode)
           AnimatedSwitcher(
               duration: _animationsDuration,
               child: AbsorbPointer(
-                  absorbing: backDropEnabled || _modalShown,
+                  absorbing: backDropEnabled || modalShown,
                   child: AnimatedOpacity(
-                      opacity: backDropEnabled || _modalShown ? 0.0 : 1.0,
+                      opacity: backDropEnabled || modalShown ? 0.0 : 1.0,
                       duration: _animationsDuration,
                       child: AnimatedSwitcher(
                           duration: _animationsDuration,
-                          child: backDropEnabled || _optionsShown
+                          child: backDropEnabled || optionsShown
                               ? GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    if (_optionsShown) {
+                                    if (optionsShown) {
                                       ref
                                           .read(
                                               homePageOptionsVisibilityProvider
@@ -219,7 +219,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                                     height: 55,
                                     width: 55,
                                     color: Colors.transparent,
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.close,
                                     ),
                                   ),
@@ -244,7 +244,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   }
 
   String _getTitle(String path, String defaultTitle) {
-    if (defaultTitle.length != 0) return defaultTitle;
+    if (defaultTitle.isNotEmpty) return defaultTitle;
     switch (path) {
       case ROUTE_DEVICES:
         return S().bottomNav_devices;
@@ -284,12 +284,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               height: 55,
               width: 55,
               color: Colors.transparent,
-              child: Icon(
+              child: const Icon(
                 Icons.add,
               ),
             ),
           ),
-          optionsWidget: DevicesOptions(),
+          optionsWidget: const DevicesOptions(),
         );
         break;
       case ROUTE_PRIVACY:
@@ -303,9 +303,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   if (EnvoySeed().walletDerived()) {
-                    return OnboardPassportWelcomeScreen();
+                    return const OnboardPassportWelcomeScreen();
                   } else {
-                    return WelcomeScreen();
+                    return const WelcomeScreen();
                   }
                 },
               ));
@@ -314,7 +314,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               height: 55,
               width: 55,
               color: Colors.transparent,
-              child: Icon(
+              child: const Icon(
                 Icons.add,
               ),
             ),
@@ -421,13 +421,13 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         onTap: widget.onPressed,
         child: Center(
           child: SizedBox.fromSize(
+            size: const Size.square(24),
             child: _menuArtBoard != null
                 ? Rive(
                     artboard: _menuArtBoard!,
                     fit: BoxFit.contain,
                   )
-                : SizedBox.square(),
-            size: Size.square(24),
+                : const SizedBox.square(),
           ),
         ),
       ),

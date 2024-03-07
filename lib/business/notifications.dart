@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -79,9 +80,9 @@ class Notifications {
   StreamController<List<EnvoyNotification>> streamController =
       StreamController();
   List<EnvoyNotification> notifications = [];
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
 
-  static const String NOTIFICATIONS_PREFS = "notifications";
+  static const String notificationPrefs = "notifications";
 
   static final Notifications _instance = Notifications._internal();
 
@@ -95,7 +96,7 @@ class Notifications {
   }
 
   Notifications._internal() {
-    print("Instance of Notifications created!");
+    kPrint("Instance of Notifications created!");
     restoreNotifications();
   }
 
@@ -107,8 +108,8 @@ class Notifications {
   }
 
   _checkForNotificationsToAdd() async {
-    bool _notificationsAdded = false;
-    bool _newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
+    bool notificationsAdded = false;
+    bool newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
 
     for (var account in AccountManager().accounts) {
       for (var tx in account.wallet.transactions) {
@@ -131,7 +132,7 @@ class Notifications {
                 tx.txId,
                 amount: tx.amount,
                 accountId: account.id));
-            _notificationsAdded = true;
+            notificationsAdded = true;
           }
         }
       }
@@ -139,19 +140,19 @@ class Notifications {
 
     for (var device in Devices().devices) {
       final version = Devices().getDeviceFirmwareVersion(device.serial);
-      bool _fwUpdateAvailable =
+      bool fwUpdateAvailable =
           await UpdatesManager().shouldUpdate(version, device.type);
       final newVersion =
           await UpdatesManager().getStoredFwVersionString(device.type.index);
       for (var notification in notifications) {
         if (notification.id == device.type.toString().split('.').last) {
           if (notification.body == newVersion!) {
-            _fwUpdateAvailable = false;
+            fwUpdateAvailable = false;
           }
         }
       }
 
-      if (_fwUpdateAvailable) {
+      if (fwUpdateAvailable) {
         add(EnvoyNotification(
           "Firmware", // TODO: FIGMA
           DateTime.now(),
@@ -159,11 +160,11 @@ class Notifications {
           newVersion!,
           device.type.toString().split('.').last,
         ));
-        _notificationsAdded = true;
+        notificationsAdded = true;
       }
     }
 
-    if (_newEnvoyVersionAvailable) {
+    if (newEnvoyVersionAvailable) {
       var latestEnvoyVersion = await fetchLatestEnvoyVersionFromGit();
       bool skip = false;
       for (var notification in notifications) {
@@ -181,11 +182,11 @@ class Notifications {
           latestEnvoyVersion,
           EnvoyNotificationType.envoyUpdate.name,
         ));
-        _notificationsAdded = true;
+        notificationsAdded = true;
       }
     }
 
-    if (_notificationsAdded) {
+    if (notificationsAdded) {
       lastUpdated = DateTime.now();
     }
   }
@@ -202,7 +203,7 @@ class Notifications {
 
   //ignore:unused_element
   _clearNotifications() {
-    _ls.prefs.remove(NOTIFICATIONS_PREFS);
+    _ls.prefs.remove(notificationPrefs);
   }
 
   dispose() {
@@ -216,7 +217,7 @@ class Notifications {
     };
 
     String json = jsonEncode(jsonMap);
-    _ls.prefs.setString(NOTIFICATIONS_PREFS, json);
+    _ls.prefs.setString(notificationPrefs, json);
   }
 
   restoreNotifications() {
@@ -226,8 +227,8 @@ class Notifications {
 
     notifications.clear();
 
-    if (_ls.prefs.containsKey(NOTIFICATIONS_PREFS)) {
-      var jsonMap = jsonDecode(_ls.prefs.getString(NOTIFICATIONS_PREFS)!);
+    if (_ls.prefs.containsKey(notificationPrefs)) {
+      var jsonMap = jsonDecode(_ls.prefs.getString(notificationPrefs)!);
 
       lastUpdated = DateTime.parse(jsonMap["last_updated"]);
 
@@ -239,8 +240,9 @@ class Notifications {
         notificationToRestore = addMissingAccountId(notificationToRestore);
 
         // Only add tx notifications that link to an account
-        if (!_shouldBeRemoved(notificationToRestore))
+        if (!_shouldBeRemoved(notificationToRestore)) {
           add(notificationToRestore);
+        }
       }
     }
 
@@ -286,7 +288,7 @@ class Notifications {
 
   _startPeriodicSync() {
     // Sync periodically
-    _syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
       _checkForNotificationsToAdd();
     });
   }
@@ -302,8 +304,9 @@ class Notifications {
       if (data.containsKey('tag_name')) {
         final version = data['tag_name'];
         return version;
-      } else
+      } else {
         throw Exception("Couldn't find tag_name in GitHub response");
+      }
     } else {
       throw Exception("Couldn't reach GitHub");
     }

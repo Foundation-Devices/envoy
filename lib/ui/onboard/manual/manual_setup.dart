@@ -14,8 +14,8 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';
@@ -23,20 +23,36 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'manual_setup_import_backup.dart';
 
 class ManualSetup extends StatefulWidget {
-  const ManualSetup({Key? key}) : super(key: key);
+  const ManualSetup({super.key});
 
   @override
   State<ManualSetup> createState() => _ManualSetupState();
 }
 
 class _ManualSetupState extends State<ManualSetup> {
-  GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
+  final GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
         child: EnvoyScaffold(
       removeAppBarPadding: true,
+      topBarLeading: CupertinoNavigationBarBackButton(
+        color: Colors.black,
+        onPressed: () => Navigator.pop(context),
+      ),
+      topBarActions: [
+        TextButton(
+          child: Text(S().component_skip,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black)),
+          onPressed: () {
+            OnboardingPage.popUntilHome(context);
+          },
+        ),
+      ],
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -55,7 +71,7 @@ class _ManualSetupState extends State<ManualSetup> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.only(bottom: 6)),
+            const Padding(padding: EdgeInsets.only(bottom: 6)),
             Text(
               S().manual_setup_tutorial_heading,
               textAlign: TextAlign.center,
@@ -77,7 +93,7 @@ class _ManualSetupState extends State<ManualSetup> {
                       _playerKey.currentState?.pause();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return SeedIntroScreen(
+                        return const SeedIntroScreen(
                           mode: SeedIntroScreenType.import,
                         );
                       }));
@@ -90,32 +106,16 @@ class _ManualSetupState extends State<ManualSetup> {
                           _playerKey.currentState?.pause();
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return SeedIntroScreen(
+                            return const SeedIntroScreen(
                                 mode: SeedIntroScreenType.generate);
                           }));
                         })
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ],
             )
           ],
         ),
       ),
-      topBarLeading: CupertinoNavigationBarBackButton(
-        color: Colors.black,
-        onPressed: () => Navigator.pop(context),
-      ),
-      topBarActions: [
-        TextButton(
-          child: Text(S().component_skip,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black)),
-          onPressed: () {
-            OnboardingPage.popUntilHome(context);
-          },
-        ),
-      ],
     ));
   }
 }
@@ -129,7 +129,7 @@ enum SeedIntroScreenType {
 class SeedIntroScreen extends StatelessWidget {
   final SeedIntroScreenType mode;
 
-  const SeedIntroScreen({Key? key, required this.mode}) : super(key: key);
+  const SeedIntroScreen({super.key, required this.mode});
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +145,7 @@ class SeedIntroScreen extends StatelessWidget {
             ),
             IconButton(
               color: Colors.black,
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 OnboardingPage.popUntilHome(context);
               },
@@ -160,6 +160,7 @@ class SeedIntroScreen extends StatelessWidget {
                 children: [
                   Flexible(
                       child: Container(
+                    padding: const EdgeInsets.only(bottom: 6),
                     child: mode == SeedIntroScreenType.generate ||
                             mode == SeedIntroScreenType.verify
                         ? Image.asset(
@@ -172,7 +173,6 @@ class SeedIntroScreen extends StatelessWidget {
                             width: 250,
                             height: 250,
                           ),
-                    padding: EdgeInsets.only(bottom: 6),
                   )),
                   Container(
                     padding: const EdgeInsets.all(5.0),
@@ -187,7 +187,7 @@ class SeedIntroScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.only(bottom: 20)),
+                        const Padding(padding: EdgeInsets.only(bottom: 20)),
                         Text(
                           mode == SeedIntroScreenType.generate ||
                                   mode == SeedIntroScreenType.verify
@@ -199,7 +199,7 @@ class SeedIntroScreen extends StatelessWidget {
                               .bodySmall!
                               .copyWith(fontSize: 13),
                         ),
-                        Padding(padding: EdgeInsets.only(top: 24)),
+                        const Padding(padding: EdgeInsets.only(top: 24)),
                         if (mode == SeedIntroScreenType.import)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -218,7 +218,7 @@ class SeedIntroScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Padding(padding: EdgeInsets.only(bottom: 20)),
+                  const Padding(padding: EdgeInsets.only(bottom: 20)),
                   mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? OnboardingButton(
@@ -248,8 +248,8 @@ class SeedIntroScreen extends StatelessWidget {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
-                                      return ManualSetupImportSeed(
-                                        seedLength: SeedLength.MNEMONIC_12,
+                                      return const ManualSetupImportSeed(
+                                        seedLength: SeedLength.mnemonic_12,
                                       );
                                     });
                                   }));
@@ -262,8 +262,8 @@ class SeedIntroScreen extends StatelessWidget {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                     return Builder(builder: (context) {
-                                      return ManualSetupImportSeed(
-                                        seedLength: SeedLength.MNEMONIC_24,
+                                      return const ManualSetupImportSeed(
+                                        seedLength: SeedLength.mnemonic_24,
                                       );
                                     });
                                   }));
@@ -275,12 +275,12 @@ class SeedIntroScreen extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return ScannerPage([ScannerType.seed],
+                                    return ScannerPage(const [ScannerType.seed],
                                         onSeedValidated: (result) async {
                                       List<String> seedWords =
                                           result.split(" ");
                                       bool isValid = seedWords
-                                          .map((e) => seed_en.contains(e))
+                                          .map((e) => seedEn.contains(e))
                                           .reduce((value, element) =>
                                               value && element);
                                       if (!isValid) {
@@ -290,10 +290,8 @@ class SeedIntroScreen extends StatelessWidget {
                                         return;
                                       }
 
-                                      if (kDebugMode) {
-                                        print(
-                                            "isValid ${isValid} ${seedWords}");
-                                      }
+                                      kPrint("isValid $isValid $seedWords");
+
                                       //TODO: Passphrase
 
                                       Future.delayed(Duration.zero, () {
@@ -315,7 +313,7 @@ class SeedIntroScreen extends StatelessWidget {
 }
 
 Future<void> checkSeed(BuildContext context, String seed) async {
-  if (!await EnvoySeed().create(seed.split(" "))) {
+  if (!await EnvoySeed().create(seed.split(" ")) && context.mounted) {
     showInvalidSeedDialog(
       context: context,
     );

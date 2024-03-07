@@ -15,12 +15,12 @@ class FwIntroPage extends StatelessWidget {
   bool onboarding;
   int deviceId;
 
-  FwIntroPage({this.onboarding = true, this.deviceId = 1});
+  FwIntroPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("fw_intro"),
+      key: const Key("fw_intro"),
       rightFunction: (_) {
         onboarding
             ? OnboardingPage.popUntilHome(context)

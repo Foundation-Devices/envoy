@@ -22,11 +22,12 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
@@ -94,12 +95,12 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Divider(),
+          const Divider(),
           GestureDetector(
             onTapDown: (_) {
               setState(() {
@@ -128,7 +129,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _loading
-                      ? SizedBox.square(
+                      ? const SizedBox.square(
                           dimension: EnvoySpacing.medium1,
                           child: CircularProgressIndicator(
                             strokeWidth: 1,
@@ -138,8 +139,9 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                         )
                       : Row(
                           children: [
-                            Icon(Icons.close, color: Colors.white, size: 18),
-                            SizedBox(width: EnvoySpacing.xs),
+                            const Icon(Icons.close,
+                                color: Colors.white, size: 18),
+                            const SizedBox(width: EnvoySpacing.xs),
                             Text(S().coincontrol_tx_detail_passport_cta2,
                                 style: EnvoyTypography.button.copyWith(
                                   color: Colors.white,
@@ -178,31 +180,35 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       final originalTxRaw = await selectedAccount.wallet
           .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
 
-      showEnvoyDialog(
-          context: context,
-          builder: Builder(
-              builder: (context) => TxCancelDialog(
-                  originalTx: widget.transaction,
-                  cancelRawTx: rawTx,
-                  originalRawTx: originalTxRaw,
-                  cancelTx: psbt)));
+      if (context.mounted) {
+        showEnvoyDialog(
+            context: context,
+            builder: Builder(
+                builder: (context) => TxCancelDialog(
+                    originalTx: widget.transaction,
+                    cancelRawTx: rawTx,
+                    originalRawTx: originalTxRaw,
+                    cancelTx: psbt)));
+      }
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
-      print(e);
+      kPrint(e);
       String message = "$e";
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
       }
-      EnvoyToast(
-        backgroundColor: EnvoyColors.danger,
-        replaceExisting: true,
-        duration: Duration(seconds: 4),
-        message: message,
-        icon: Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
-      ).show(context);
+      if (context.mounted) {
+        EnvoyToast(
+          backgroundColor: EnvoyColors.danger,
+          replaceExisting: true,
+          duration: const Duration(seconds: 4),
+          message: message,
+          icon: const Icon(
+            Icons.info_outline,
+            color: EnvoyColors.solidWhite,
+          ),
+        ).show(context);
+      }
     } finally {
       setState(() {
         _loading = false;
@@ -241,20 +247,20 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
 
   _findCancellationFee() {
     int originalSpendAmount = 0;
-    widget.originalRawTx.outputs.forEach((element) {
+    for (var element in widget.originalRawTx.outputs) {
       if (element.path == TxOutputPath.NotMine) {
         originalSpendAmount += element.amount;
       }
-    });
+    }
     _totalFeeAmount = widget.originalTx.fee;
 
     /// if the amount is 0, check if the tx is a self transfer
     if (originalSpendAmount == 0) {
-      widget.originalRawTx.outputs.forEach((element) {
+      for (var element in widget.originalRawTx.outputs) {
         if (element.path == TxOutputPath.External) {
           originalSpendAmount += element.amount;
         }
-      });
+      }
     }
 
     setState(() {
@@ -269,21 +275,21 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
   Widget build(BuildContext context) {
     Account? account = ref.read(selectedAccountProvider);
     if (account == null) {
-      return Center(
+      return const Center(
         child: Text("No account selected"),
       );
     }
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),
         ),
         color: EnvoyColors.textPrimaryInverse,
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
             vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -295,9 +301,10 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Transform.translate(
-                      offset: Offset(-EnvoySpacing.small, -EnvoySpacing.small),
+                      offset: const Offset(
+                          -EnvoySpacing.small, -EnvoySpacing.small),
                       child: IconButton(
-                        icon: Icon(Icons.chevron_left,
+                        icon: const Icon(Icons.chevron_left,
                             color: EnvoyColors.textPrimary),
                         iconSize: 32,
                         padding: EdgeInsets.zero,
@@ -308,8 +315,8 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     ),
                   ],
                 )),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+            const Padding(
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
               child: EnvoyIcon(
                 EnvoyIcons.alert,
                 size: EnvoyIconSize.big,
@@ -351,7 +358,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                           amountWidgetStyle: AmountWidgetStyle.normal),
                     ],
                   ),
-                  SizedBox(height: EnvoySpacing.medium1),
+                  const SizedBox(height: EnvoySpacing.medium1),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -368,7 +375,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       )
                     ],
                   ),
-                  SizedBox(height: EnvoySpacing.medium1),
+                  const SizedBox(height: EnvoySpacing.medium1),
                 ],
               ),
             ),
@@ -393,17 +400,17 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
 
                 ///wrap to the text and padding...
                 height: 0,
-                state: ButtonState.default_state,
+                state: ButtonState.defaultState,
                 onTap: () async {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   if (widget.originalTx.isConfirmed) {
                     EnvoyToast(
                       backgroundColor: EnvoyColors.danger,
                       replaceExisting: true,
-                      duration: Duration(seconds: 4),
+                      duration: const Duration(seconds: 4),
                       message: "Error: Transaction Confirmed",
                       // TODO: Figma
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.info_outline,
                         color: EnvoyColors.solidWhite,
                       ),
@@ -413,7 +420,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     if (account.wallet.hot == false) {
                       Psbt? psbt = await navigator.push(MaterialPageRoute(
                           builder: (context) => Builder(builder: (context) {
-                                return _Background(
+                                return background(
                                     child: PsbtCard(widget.cancelTx, account),
                                     context: context);
                               })));
@@ -465,7 +472,7 @@ class CancelTransactionProgress extends ConsumerStatefulWidget {
 
 class _CancelTransactionProgressState
     extends ConsumerState<CancelTransactionProgress> {
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
   BroadcastProgress broadcastProgress = BroadcastProgress.staging;
 
   @override
@@ -493,7 +500,7 @@ class _CancelTransactionProgressState
           Settings().electrumAddress(account.wallet.network),
           port,
           widget.cancelTx.rawTx);
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       await EnvoyStorage().addCancelState(RBFState(
               originalTxId: widget.originalTx.txId,
               newTxId: widget.cancelTx.txid,
@@ -504,21 +511,21 @@ class _CancelTransactionProgressState
               previousTxTimeStamp:
                   widget.originalTx.date.millisecondsSinceEpoch)
           .toJson());
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      ref.read(RBFBroadCastedTxProvider.notifier).state = [
-        ...ref.read(RBFBroadCastedTxProvider),
+      ref.read(rbfBroadCastedTxProvider.notifier).state = [
+        ...ref.read(rbfBroadCastedTxProvider),
         widget.originalTx.txId
       ];
 
       Psbt psbt = widget.cancelTx;
 
       String receiverAddress = "";
-      widget.cancelRawTx.outputs.forEach((element) {
+      for (var element in widget.cancelRawTx.outputs) {
         if (element.path == TxOutputPath.Internal) {
           receiverAddress = element.address;
         }
-      });
+      }
 
       await EnvoyStorage().addPendingTx(
         psbt.txid,
@@ -533,7 +540,7 @@ class _CancelTransactionProgressState
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
         broadcastProgress = BroadcastProgress.success;
       });
@@ -541,11 +548,11 @@ class _CancelTransactionProgressState
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
         broadcastProgress = BroadcastProgress.failed;
       });
-      print(e);
+      kPrint(e);
     }
   }
 
@@ -556,7 +563,7 @@ class _CancelTransactionProgressState
       onPopInvoked: (didPop) {
         clearSpendState(ProviderScope.containerOf(context));
       },
-      child: _Background(
+      child: background(
         child: MediaQuery.removePadding(
           removeTop: true,
           removeBottom: true,
@@ -564,21 +571,21 @@ class _CancelTransactionProgressState
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
             child: Padding(
-              key: Key("progress"),
+              key: const Key("progress"),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 body: CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(
-                      child: Container(
+                      child: SizedBox(
                         height: 260,
-                        child: Rive.RiveAnimation.asset(
+                        child: rive.RiveAnimation.asset(
                           "assets/envoy_loader.riv",
                           fit: BoxFit.contain,
                           onInit: (artboard) {
                             _stateMachineController =
-                                Rive.StateMachineController.fromArtboard(
+                                rive.StateMachineController.fromArtboard(
                                     artboard, 'STM');
                             artboard.addController(_stateMachineController!);
                             _stateMachineController
@@ -588,7 +595,7 @@ class _CancelTransactionProgressState
                         ),
                       ),
                     ),
-                    SliverPadding(padding: EdgeInsets.all(28)),
+                    const SliverPadding(padding: EdgeInsets.all(28)),
                     SliverToBoxAdapter(
                       child: Builder(
                         builder: (context) {
@@ -619,7 +626,7 @@ class _CancelTransactionProgressState
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                                Padding(padding: EdgeInsets.all(18)),
+                                const Padding(padding: EdgeInsets.all(18)),
                                 Text(subTitle,
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
@@ -636,7 +643,7 @@ class _CancelTransactionProgressState
                     SliverFillRemaining(
                         hasScrollBody: false,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 18, vertical: 44),
                           child: _ctaButtons(context),
                         ))
@@ -654,7 +661,7 @@ class _CancelTransactionProgressState
   Widget _ctaButtons(BuildContext context) {
     if (broadcastProgress == BroadcastProgress.inProgress ||
         broadcastProgress == BroadcastProgress.staging) {
-      return SizedBox();
+      return const SizedBox();
     }
     if (broadcastProgress == BroadcastProgress.success) {
       return Column(
@@ -669,7 +676,7 @@ class _CancelTransactionProgressState
               });
             },
             type: ButtonType.primary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
           ),
         ],
       );
@@ -684,7 +691,7 @@ class _CancelTransactionProgressState
               Navigator.pop(context);
             },
             type: ButtonType.secondary,
-            state: ButtonState.default_state,
+            state: ButtonState.defaultState,
           ),
         ],
       );
@@ -692,19 +699,19 @@ class _CancelTransactionProgressState
   }
 }
 
-Widget _Background({required Widget child, required BuildContext context}) {
-  double _appBarHeight = AppBar().preferredSize.height;
-  double _topAppBarOffset = _appBarHeight + 10;
+Widget background({required Widget child, required BuildContext context}) {
+  double appBarHeight = AppBar().preferredSize.height;
+  double topAppBarOffset = appBarHeight + 10;
 
   return Scaffold(
     resizeToAvoidBottomInset: true,
     body: Stack(
       children: [
-        AppBackground(),
+        const AppBackground(),
         Positioned(
-          top: _topAppBarOffset,
+          top: topAppBarOffset,
           left: 5,
-          bottom: BottomAppBar().height ?? 20 + 8,
+          bottom: const BottomAppBar().height ?? 20 + 8,
           right: 5,
           child: Shield(child: child),
         )

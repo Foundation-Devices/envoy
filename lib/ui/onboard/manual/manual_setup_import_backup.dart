@@ -21,7 +21,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
-  const ManualSetupImportBackup({Key? key}) : super(key: key);
+  const ManualSetupImportBackup({super.key});
 
   @override
   State<ManualSetupImportBackup> createState() =>
@@ -41,8 +41,8 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -55,13 +55,13 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(padding: EdgeInsets.all(8)),
+                      const Padding(padding: EdgeInsets.all(8)),
                       Text(
                         S().manual_setup_import_backup_CTA2,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(12)),
+                      const Padding(padding: EdgeInsets.all(12)),
                       Text(
                         S().manual_setup_import_backup_subheading,
                         textAlign: TextAlign.center,
@@ -73,8 +73,8 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: SizedBox.shrink(),
                 ),
                 Flexible(
@@ -95,7 +95,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return ManualSetupCreateAndStoreBackup();
+                            return const ManualSetupCreateAndStoreBackup();
                           }));
                         }),
                   ],
@@ -110,7 +110,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
 }
 
 class RecoverFromSeedLoader extends StatefulWidget {
-  RecoverFromSeedLoader({Key? key, required this.seed}) : super(key: key);
+  const RecoverFromSeedLoader({super.key, required this.seed});
 
   final String seed;
 
@@ -127,7 +127,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
       data = await Backup.restore(
           seed, Settings().envoyServerAddress, Tor.instance);
       setState(() {
-        if (data != null)
+        if (data != null) {
           showEnvoyPopUp(
               context,
               title: S().manual_setup_magicBackupDetected_heading,
@@ -143,11 +143,16 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
                 Navigator.pop(context);
               },
               dismissible: false);
-        else
-          recoverManually(seedList, context);
+        } else {
+          if (mounted) {
+            recoverManually(seedList, context);
+          }
+        }
       });
     } catch (e) {
-      recoverManually(seedList, context);
+      if (mounted) {
+        recoverManually(seedList, context);
+      }
     }
   }
 
@@ -165,7 +170,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Center(
+            child: const Center(
               child: SizedBox(
                 height: 60,
                 width: 60,
@@ -185,29 +190,36 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
 
 Future<void> tryMagicRecover(List<String> seedList, String seed,
     Map<String, String>? data, BuildContext context) async {
+  final navigator = Navigator.of(context);
   await EnvoySeed().create(seedList);
   bool success = await EnvoySeed().processRecoveryData(seed, data);
 
   if (success) {
     Settings().syncToCloud = true;
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return WalletSetupSuccess();
+    navigator.push(MaterialPageRoute(builder: (context) {
+      return const WalletSetupSuccess();
     }));
-  } else
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return ManualSetup();
+  } else {
+    navigator.push(MaterialPageRoute(builder: (context) {
+      return const ManualSetup();
     }));
+  }
 }
 
 Future<void> recoverManually(
     List<String> seedList, BuildContext context) async {
   bool success = await EnvoySeed().create(seedList);
 
-  if (success) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ManualSetupImportBackup()));
-  } else
-    showInvalidSeedDialog(
-      context: context,
-    );
+  if (success && context.mounted) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const ManualSetupImportBackup()));
+  } else {
+    if (context.mounted) {
+      showInvalidSeedDialog(
+        context: context,
+      );
+    }
+  }
 }
