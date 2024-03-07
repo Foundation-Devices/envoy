@@ -99,7 +99,9 @@ class _SeedScreenState extends State<SeedScreen> {
                   } else {
                     await Future.delayed(const Duration(milliseconds: 100));
                     Haptics.heavyImpact();
-                    showVerificationFailedDialog(context);
+                    if(context.mounted){
+                      showVerificationFailedDialog(context);
+                    }
                   }
                 }),
           ],

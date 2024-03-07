@@ -180,14 +180,17 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       final originalTxRaw = await selectedAccount.wallet
           .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
 
-      showEnvoyDialog(
-          context: context,
-          builder: Builder(
-              builder: (context) => TxCancelDialog(
-                  originalTx: widget.transaction,
-                  cancelRawTx: rawTx,
-                  originalRawTx: originalTxRaw,
-                  cancelTx: psbt)));
+      if(context.mounted){
+        showEnvoyDialog(
+            context: context,
+            builder: Builder(
+                builder: (context) => TxCancelDialog(
+                    originalTx: widget.transaction,
+                    cancelRawTx: rawTx,
+                    originalRawTx: originalTxRaw,
+                    cancelTx: psbt)));
+      }
+
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
@@ -195,16 +198,19 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
       }
-      EnvoyToast(
-        backgroundColor: EnvoyColors.danger,
-        replaceExisting: true,
-        duration: const Duration(seconds: 4),
-        message: message,
-        icon: const Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
-      ).show(context);
+      if(context.mounted){
+        EnvoyToast(
+          backgroundColor: EnvoyColors.danger,
+          replaceExisting: true,
+          duration: const Duration(seconds: 4),
+          message: message,
+          icon: const Icon(
+            Icons.info_outline,
+            color: EnvoyColors.solidWhite,
+          ),
+        ).show(context);
+      }
+
     } finally {
       setState(() {
         _loading = false;

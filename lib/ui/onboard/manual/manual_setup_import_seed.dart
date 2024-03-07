@@ -59,7 +59,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         icon:
                             const Icon(Icons.chevron_left, color: Colors.black),
                         onPressed: () async {
-                          if (await handleBackPress(context)) {
+                          if (await handleBackPress(context) && context.mounted) {
                             Navigator.pop(context);
                           }
                         },

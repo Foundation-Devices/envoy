@@ -235,6 +235,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           ),
                           GestureDetector(
                             onTap: () {
+                              final navigator =  Navigator.of(context);
                               showEnvoyDialog(
                                   context: context,
                                   useRootNavigator: true,
@@ -247,7 +248,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     onAdd: (note) async {
                                       await EnvoyStorage()
                                           .addTxNote(note, tx.txId);
-                                      Navigator.of(context).pop();
+                                      navigator.pop();
                                     },
                                   ),
                                   alignment: const Alignment(0.0, -0.8));

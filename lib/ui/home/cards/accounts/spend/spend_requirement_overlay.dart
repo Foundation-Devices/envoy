@@ -395,12 +395,12 @@ class SpendRequirementOverlayState
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: EnvoySpacing.small),
-                                      child: Builder(builder: (context) {
+                                      child: Builder(builder: (_) {
                                         List<Widget> sheetOptions = [];
                                         if (inTagSelectionMode) {
                                           sheetOptions.add(GestureDetector(
                                             onTap: () {
-                                              cancel();
+                                              cancel(context);
                                             },
                                             child: Padding(
                                               padding:
@@ -467,6 +467,8 @@ class SpendRequirementOverlayState
                                             ? S().tagged_tagDetails_sheet_cta1
                                             : S().component_continue,
                                         onTap: () async {
+                                          final scope = ProviderScope.containerOf(context);
+                                          final router =   GoRouter.of(context);
                                           /// if the user is in utxo details screen we need to wait animations to finish
                                           /// before we can pop back to home screen
                                           if (Navigator.canPop(context)) {
@@ -494,19 +496,17 @@ class SpendRequirementOverlayState
                                             ref
                                                 .read(spendTransactionProvider
                                                     .notifier)
-                                                .validate(
-                                                    ProviderScope.containerOf(
-                                                        context));
+                                                .validate(scope);
                                           }
                                           hideSpendRequirementOverlay();
                                           await Future.delayed(const Duration(
                                               milliseconds: 120));
 
                                           if (ref.read(spendEditModeProvider)) {
-                                            GoRouter.of(context).push(
+                                            router.push(
                                                 ROUTE_ACCOUNT_SEND_CONFIRM);
                                           } else {
-                                            GoRouter.of(context)
+                                            router
                                                 .push(ROUTE_ACCOUNT_SEND);
                                           }
                                           ref
@@ -584,7 +584,7 @@ class SpendRequirementOverlayState
   Widget coinSelectionButton(
       BuildContext context, bool valid, bool inTagSelectionMode) {
     return Consumer(
-      builder: (context, ref, child) {
+      builder: (_, ref, child) {
         Account? selectedAccount = ref.read(selectedAccountProvider);
         Set<String> selection = ref.watch(coinSelectionStateProvider);
 
@@ -618,8 +618,10 @@ class SpendRequirementOverlayState
           type: EnvoyButtonTypes.secondary,
           buttonText,
           onTap: () async {
+            NavigatorState navigator =
+            Navigator.of(context, rootNavigator: true);
             if (!inTagSelectionMode) {
-              cancel();
+              cancel(context);
               return;
             }
             Account? selectedAccount = ref.read(selectedAccountProvider);
@@ -628,7 +630,7 @@ class SpendRequirementOverlayState
             }
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
-            if (dismissed) {
+            if (dismissed && context.mounted) {
               showEnvoyDialog(
                   context: context,
                   useRootNavigator: true,
@@ -638,9 +640,6 @@ class SpendRequirementOverlayState
                       onTagUpdate: () async {
                         ref.read(coinSelectionStateProvider.notifier).reset();
                         await Future.delayed(const Duration(milliseconds: 100));
-                        NavigatorState navigator =
-                            Navigator.of(context, rootNavigator: true);
-
                         /// Pop until we get to the go router
                         navigator.popUntil((route) {
                           return route.settings is MaterialPage;
@@ -650,40 +649,42 @@ class SpendRequirementOverlayState
                   ),
                   alignment: const Alignment(0.0, -.6));
             } else {
-              showEnvoyDialog(
-                  useRootNavigator: true,
-                  context: context,
-                  builder: Builder(builder: (context) {
-                    return CreateCoinTagWarning(onContinue: () {
-                      //pop warning dialog
-                      Navigator.pop(context);
-                      //Shows Coin create dialog
-                      showEnvoyDialog(
-                          context: context,
-                          useRootNavigator: true,
-                          builder: Builder(
-                            builder: (context) => CreateCoinTag(
-                              accountId: selectedAccount.id ?? "",
-                              onTagUpdate: () async {
-                                ref
-                                    .read(coinSelectionStateProvider.notifier)
-                                    .reset();
-                                NavigatorState navigator =
-                                    Navigator.of(context, rootNavigator: true);
-                                await Future.delayed(
-                                    const Duration(milliseconds: 100));
+              if(context.mounted){
+                showEnvoyDialog(
+                    useRootNavigator: true,
+                    context: context,
+                    builder: Builder(builder: (context) {
+                      return CreateCoinTagWarning(onContinue: () {
+                        //pop warning dialog
+                        Navigator.pop(context);
+                        //Shows Coin create dialog
+                        showEnvoyDialog(
+                            context: context,
+                            useRootNavigator: true,
+                            builder: Builder(
+                              builder: (context) => CreateCoinTag(
+                                accountId: selectedAccount.id ?? "",
+                                onTagUpdate: () async {
+                                  ref
+                                      .read(coinSelectionStateProvider.notifier)
+                                      .reset();
+                                  NavigatorState navigator =
+                                  Navigator.of(context, rootNavigator: true);
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 100));
 
-                                /// Pop until we get to the home page (GoRouter Shell)
-                                navigator.popUntil((route) {
-                                  return route.settings is MaterialPage;
-                                });
-                              },
+                                  /// Pop until we get to the home page (GoRouter Shell)
+                                  navigator.popUntil((route) {
+                                    return route.settings is MaterialPage;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          alignment: const Alignment(0.0, -.6));
-                    });
-                  }),
-                  alignment: const Alignment(0.0, -.6));
+                            alignment: const Alignment(0.0, -.6));
+                      });
+                    }),
+                    alignment: const Alignment(0.0, -.6));
+              }
             }
           },
         );
@@ -691,7 +692,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  cancel() async {
+  cancel(BuildContext context) async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
     ProviderContainer container = ProviderScope.containerOf(context);
@@ -705,23 +706,26 @@ class SpendRequirementOverlayState
     setState(() {
       _hideOverlay = true;
     });
-    bool discard = await showEnvoyDialog(
-        dismissible: false,
-        context: context,
-        useRootNavigator: true,
-        dialog: const SpendSelectionCancelWarning());
-    await Future.delayed(const Duration(milliseconds: 130));
-    setState(() {
-      _hideOverlay = false;
-    });
-    if (discard) {
-      ref.read(coinSelectionStateProvider.notifier).reset();
-      ref.read(hideBottomNavProvider.notifier).state = false;
-      ref.read(spendEditModeProvider.notifier).state = false;
-      clearSpendState(container);
-      hideSpendRequirementOverlay();
+    if(context.mounted){
+      bool discard = await showEnvoyDialog(
+          dismissible: false,
+          context: context,
+          useRootNavigator: true,
+          dialog: const SpendSelectionCancelWarning());
+      await Future.delayed(const Duration(milliseconds: 130));
+      setState(() {
+        _hideOverlay = false;
+      });
+      if (discard) {
+        ref.read(coinSelectionStateProvider.notifier).reset();
+        ref.read(hideBottomNavProvider.notifier).state = false;
+        ref.read(spendEditModeProvider.notifier).state = false;
+        clearSpendState(container);
+        hideSpendRequirementOverlay();
+      }
     }
   }
+
 }
 
 class SpendSelectionCancelWarning extends ConsumerStatefulWidget {

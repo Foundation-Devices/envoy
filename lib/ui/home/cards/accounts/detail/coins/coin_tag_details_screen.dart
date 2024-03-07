@@ -590,6 +590,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   _deleteTag(BuildContext context) {
+    final navigator = Navigator.of(context);
     showEnvoyDialog(
       context: context,
       useRootNavigator: true,
@@ -601,16 +602,16 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               primaryButtonText: S().component_back,
               secondaryButtonText: S().delete_tag_modal_cta2,
               onPrimaryButtonTap: () {
-                Navigator.pop(context);
+                navigator.pop();
               },
               onSecondaryButtonTap: () async {
                 await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
                 // ignore: unused_result
                 ref.refresh(coinsProvider(widget.coinTag.account));
-                Navigator.pop(context);
+                navigator.pop();
                 _menuVisible = false;
-                Navigator.pop(context);
+                navigator.pop();
               });
         },
       ),
@@ -686,6 +687,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               EnvoyButton(
                 S().component_save,
                 onTap: () async {
+                  final navigator = Navigator.of(context);
                   widget.coinTag.name = textEntry.enteredText;
                   int updated =
                       await CoinRepository().updateCoinTag(widget.coinTag);
@@ -694,7 +696,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     setState(() {
                       widget.coinTag.name = textEntry.enteredText;
                     });
-                    Navigator.pop(context);
+                    navigator.pop();
                   }
                 },
               ),

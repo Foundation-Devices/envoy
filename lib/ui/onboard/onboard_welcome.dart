@@ -46,6 +46,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   List<EscapeHatchTap> escapeHatchTaps = [];
 
   registerEscapeTap(EscapeHatchTap tap) async {
+    final scaffold = ScaffoldMessenger.of(context);
     escapeHatchTaps.add(tap);
 
     if (listEquals(
@@ -57,13 +58,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         escapeHatchTaps.clear();
         try {
           await EnvoySeed().removeSeedFromNonSecure();
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          scaffold.showSnackBar(const SnackBar(
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA
           ));
         } on Exception catch (_) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
-          ));
+            scaffold.showSnackBar(const SnackBar(
+              content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
+            ));
         }
       }
     } else {

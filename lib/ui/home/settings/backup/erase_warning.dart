@@ -404,6 +404,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
   _onInit() async {
     try {
+      final navigator = Navigator.of(context);
       setState(() {
         _deleteInProgress = true;
       });
@@ -424,13 +425,15 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //Show android backup info
       if (Platform.isAndroid) {
         await Future.delayed(const Duration(milliseconds: 300));
-        await Navigator.of(context).push(MaterialPageRoute(
+        await navigator.push(MaterialPageRoute(
             builder: (context) => const AndroidBackupWarning()));
       } else {
         //wait for pop animation to finish
         await Future.delayed(const Duration(milliseconds: 300));
         // Show home page and navigate to accounts
-        OnboardingPage.popUntilHome(context);
+        if (mounted) {
+          OnboardingPage.popUntilHome(context);
+        }
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;
         ref.read(homePageTabProvider.notifier).state =

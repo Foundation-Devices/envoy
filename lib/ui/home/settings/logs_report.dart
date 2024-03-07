@@ -34,16 +34,18 @@ class _EnvoyLogsScreenState extends State<EnvoyLogsScreen> {
                 try {
                   String logs = await EnvoyReport().getLogAsString();
                   await Clipboard.setData(ClipboardData(text: logs));
-                  EnvoyToast(
-                    backgroundColor: Colors.lightBlue,
-                    replaceExisting: true,
-                    duration: const Duration(milliseconds: 2000),
-                    message: "Logs copied to clipboard", // TODO: FIGMA
-                    icon: const Icon(
-                      Icons.copy,
-                      color: EnvoyColors.teal,
-                    ),
-                  ).show(context);
+                  if(context.mounted){
+                    EnvoyToast(
+                      backgroundColor: Colors.lightBlue,
+                      replaceExisting: true,
+                      duration: const Duration(milliseconds: 2000),
+                      message: "Logs copied to clipboard", // TODO: FIGMA
+                      icon: const Icon(
+                        Icons.copy,
+                        color: EnvoyColors.teal,
+                      ),
+                    ).show(context);
+                  }
                 } catch (e) {
                   kPrint(e);
                 }

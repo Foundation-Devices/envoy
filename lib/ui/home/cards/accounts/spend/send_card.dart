@@ -194,6 +194,7 @@ class _SendCardState extends ConsumerState<SendCard>
 
                           return EnvoyTextButton(
                               onTap: () async {
+                                final router = GoRouter.of(context);
                                 if (formValidation) {
                                   try {
                                     ref
@@ -204,7 +205,7 @@ class _SendCardState extends ConsumerState<SendCard>
                                         .validate(
                                             ProviderScope.containerOf(context));
                                     if (valid) {
-                                      GoRouter.of(context)
+                                      router
                                           .push(ROUTE_ACCOUNT_SEND_CONFIRM);
                                     }
                                   } catch (e) {

@@ -177,6 +177,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                       EnvoyButton(
                         S().component_continue,
                         onTap: () async {
+                          final navigator = Navigator.of(context);
                           //tor is necessary if user selects onion node
                           bool torRequire = ref.read(isNodeRequiredTorProvider);
                           //tor is not required if user selects better performance
@@ -197,22 +198,19 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                             //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
                             try {
                               if (await EnvoySeed().get() != null) {
-                                Navigator.push(
-                                    context,
+                                navigator.push(
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const MagicRecoverWallet()));
                               } else {
-                                Navigator.push(
-                                    context,
+                                navigator.push(
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           const OnboardEnvoyWelcomeScreen(),
                                     ));
                               }
                             } catch (e) {
-                              Navigator.push(
-                                  context,
+                              navigator.push(
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         const OnboardEnvoyWelcomeScreen(),

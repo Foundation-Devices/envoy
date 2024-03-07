@@ -473,10 +473,12 @@ class TransactionListTile extends StatelessWidget {
             action();
           },
           onLongPress: () async {
+            final navigator = Navigator.of(context);
+            final scaffold = ScaffoldMessenger.of(context);
             final scaffoldMessenger = ScaffoldMessenger.of(context);
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.copyTxId);
-            if (!dismissed) {
+            if (!dismissed && context.mounted) {
               showEnvoyPopUp(
                   context,
                   S().coincontrol_coin_change_spendable_tate_modal_subheading,
@@ -484,11 +486,11 @@ class TransactionListTile extends StatelessWidget {
                   (BuildContext context) {
                     Clipboard.setData(
                         ClipboardData(text: transaction.txId)); // here
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    scaffold.showSnackBar(const SnackBar(
                       content: Text(
                           "Transaction ID copied to clipboard!"), //TODO: FIGMA
                     ));
-                    Navigator.pop(context);
+                    navigator.pop();
                   },
                   icon: EnvoyIcons.info,
                   secondaryButtonLabel: S().component_cancel,

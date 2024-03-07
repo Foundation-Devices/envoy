@@ -132,7 +132,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
                   if ((userNote == null || userNote.isEmpty) &&
                       !dismissedNoteDialog &&
-                      !ref.read(spendTransactionProvider).isPSBTFinalized) {
+                      !ref.read(spendTransactionProvider).isPSBTFinalized && context.mounted) {
                     await showEnvoyDialog(
                         context: context,
                         useRootNavigator: true,
@@ -161,26 +161,30 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   if (!userChosenTag &&
                       tagInputs != null &&
                       hasManyTagsAsInput &&
-                      hasChangeOutPutPresent) {
+                      hasChangeOutPutPresent && context.mounted) {
                     await showTagDialog(
                         context, account, rootContext, transactionModel);
                   } else {
                     if (account.wallet.hot ||
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
-                      broadcastTx(context);
+                      if(context.mounted){
+                        broadcastTx(context);
+                      }
                     } else {
-                      final psbt =
-                          await Navigator.of(rootContext, rootNavigator: false)
-                              .push(MaterialPageRoute(
-                                  builder: (context) => Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: PsbtCard(
-                                            transactionModel.psbt!, account),
-                                      )));
-                      ref
-                          .read(spendTransactionProvider.notifier)
-                          .updateWithFinalPSBT(psbt);
-                      await Future.delayed(const Duration(milliseconds: 200));
+                      if(rootContext.mounted){
+                        final psbt =
+                        await Navigator.of(rootContext, rootNavigator: false)
+                            .push(MaterialPageRoute(
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: PsbtCard(
+                                  transactionModel.psbt!, account),
+                            )));
+                        ref
+                            .read(spendTransactionProvider.notifier)
+                            .updateWithFinalPSBT(psbt);
+                        await Future.delayed(const Duration(milliseconds: 200));
+                      }
                     }
                   }
                 },
@@ -733,7 +737,7 @@ class _TransactionReviewScreenState
         .validate(ProviderScope.containerOf(context), settingFee: true);
     ref.read(spendFeeProcessing.notifier).state = false;
     //hide fee slider bottom-sheet
-    if (customFee) {
+    if (customFee && context.mounted) {
       Navigator.pop(context);
     }
   }

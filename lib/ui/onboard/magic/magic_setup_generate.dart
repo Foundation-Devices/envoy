@@ -71,6 +71,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _initiateWalletCreate() async {
+    final navigator = Navigator.of(context);
     if (!walletGenerated) {
       Settings().syncToCloud = true;
       Settings().store();
@@ -97,8 +98,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
     await Future.delayed(const Duration(seconds: 2));
 
-    Navigator.pushReplacement(
-      context,
+    navigator.pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) =>
             MagicRecoveryInfo(skipSuccessScreen: walletGenerated),

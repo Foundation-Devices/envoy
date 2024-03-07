@@ -200,7 +200,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                         .state = HomePageBackgroundState.hidden;
                                     await Future.delayed(
                                         const Duration(milliseconds: 200));
-                                    OnboardingPage.popUntilHome(context);
+                                    if(context.mounted){
+                                      OnboardingPage.popUntilHome(context);
+                                    }
                                   },
                                   icon: const Icon(Icons.close)),
                             );
@@ -284,7 +286,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 label: S().component_continue,
                 onTap: () async {
                   await Future.delayed(const Duration(milliseconds: 200));
-                  OnboardingPage.popUntilHome(context);
+                  if(context.mounted){
+                    OnboardingPage.popUntilHome(context);
+                  }
                 },
               ));
         },

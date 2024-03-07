@@ -130,7 +130,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         if (!coin.locked) {
           bool dismissed = await EnvoyStorage()
               .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
-          if (!dismissed) {
+          if (!dismissed && context.mounted) {
             showEnvoyDialog(
                 context: context,
                 alignment: const Alignment(0.0, -.6),
@@ -157,7 +157,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         } else {
           bool dismissed = await EnvoyStorage()
               .checkPromptDismissed(DismissiblePrompt.coinUnlockWarning);
-          if (!dismissed) {
+          if (!dismissed && context.mounted) {
             showEnvoyDialog(
                 context: context,
                 alignment: const Alignment(0.0, -.6),
@@ -244,7 +244,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
           if (!coinTag.isAllCoinsLocked) {
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
-            if (!dismissed) {
+            if (!dismissed && context.mounted) {
               showEnvoyDialog(
                   context: context,
                   alignment: const Alignment(0.0, -.6),
@@ -272,7 +272,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
           } else {
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.coinUnlockWarning);
-            if (!dismissed) {
+            if (!dismissed && context.mounted) {
               showEnvoyDialog(
                   context: context,
                   alignment: const Alignment(0.0, -.6),

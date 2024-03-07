@@ -98,9 +98,13 @@ Future<void> openBackupFile(BuildContext buildContext) async {
         return const WalletSetupSuccess();
       }));
     } else {
-      showRestoreFailedDialog(context);
+      if(context.mounted){
+        showRestoreFailedDialog(context);
+      }
     }
   } else {
-    showRestoreFailedDialog(context);
+    if(context.mounted){
+      showRestoreFailedDialog(context);
+    }
   }
 }

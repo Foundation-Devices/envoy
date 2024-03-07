@@ -233,6 +233,7 @@ class ScannerPageState extends State<ScannerPage> {
 
   _onDetect(String code, BuildContext context) async {
     final NavigatorState navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
@@ -323,7 +324,7 @@ class ScannerPageState extends State<ScannerPage> {
           _binaryValidated(_urDecoder.decoded as Binary);
         } else {
           // Tell the user to use testnet
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          scaffold.showSnackBar(const SnackBar(
             content: Text("Please use Testnet"), // TODO: FIGMA
           ));
         }
@@ -391,21 +392,24 @@ class ScannerPageState extends State<ScannerPage> {
   }
 
   void _binaryValidated(Binary binary) async {
+    final navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     Account? pairedAccount;
     try {
       pairedAccount = await AccountManager().addPassportAccounts(binary);
     } on AccountAlreadyPaired catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      scaffold.showSnackBar(const SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
       ));
       return;
     }
 
     if (pairedAccount == null) {
-      OnboardingPage.popUntilHome(context);
+      if (mounted) {
+        OnboardingPage.popUntilHome(context);
+      }
     } else {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
+      navigator.pushReplacement(MaterialPageRoute(builder: (context) {
         return SingleWalletPairSuccessPage(pairedAccount!.wallet);
       }));
     }

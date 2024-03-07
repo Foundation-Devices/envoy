@@ -181,7 +181,7 @@ class _OnboardEnvoyWelcomeScreenState
           try {
             _checkedMagicBackUpInWelcomeScreen = true;
             //make sure automatic recovery only once
-            if (await EnvoySeed().get() != null) {
+            if (await EnvoySeed().get() != null &&  mounted) {
               Navigator.push(
                   context,
                   MaterialPageRoute(

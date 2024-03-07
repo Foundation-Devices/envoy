@@ -60,8 +60,10 @@ class OnboardingPage extends StatelessWidget {
     /// wait for the go router to push the route
     await Future.delayed(const Duration(milliseconds: 100));
 
-    /// Pop until we get to the home page (GoRouter Shell)
-    popUntilGoRoute(context);
+    if(context.mounted){
+      /// Pop until we get to the home page (GoRouter Shell)
+      popUntilGoRoute(context);
+    }
   }
 
   const OnboardingPage({

@@ -377,7 +377,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                       setPortraitMode();
 
                       await Future.delayed(const Duration(milliseconds: 300));
-                      Navigator.of(context).pop();
+                      if(context.mounted){
+                        Navigator.of(context).pop();
+                      }
                     },
                   )),
             // Black curtains

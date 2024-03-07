@@ -89,6 +89,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   }
 
   Future _checkRBF(BuildContext context) async {
+    final navigator = Navigator.of(context);
     setState(() {
       _isLoading = true;
     });
@@ -162,7 +163,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           minFeeRate: rates.min_fee_rate.ceil().toInt(),
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
-        Navigator.push(context, MaterialPageRoute(
+        navigator.push(MaterialPageRoute(
           builder: (context) {
             return RBFSpendScreen(
               rbfSpendState: rbfSpendState,
@@ -173,7 +174,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
     } catch (e, stackTrace) {
       kPrint(stackTrace);
-      showNoBoostNoFundsDialog(context);
+      if (context.mounted) {
+        showNoBoostNoFundsDialog(context);
+      }
       setState(() {
         _isLoading = false;
       });
@@ -265,7 +268,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
   void _showRBFDialog(BuildContext context) async {
     if (!(await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.rbfWarning))) {
+        .checkPromptDismissed(DismissiblePrompt.rbfWarning)) && context.mounted) {
       showEnvoyDialog(
         context: context,
         dialog: EnvoyDialog(
@@ -366,8 +369,7 @@ class _RBFWarningState extends State<RBFWarning> {
               Text(
                 S().component_dontShowAgain,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color:
-                          dismissed ? Colors.black : const Color(0xff808080),
+                      color: dismissed ? Colors.black : const Color(0xff808080),
                     ),
               ),
             ],

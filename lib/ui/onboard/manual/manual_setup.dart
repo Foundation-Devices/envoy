@@ -313,7 +313,7 @@ class SeedIntroScreen extends StatelessWidget {
 }
 
 Future<void> checkSeed(BuildContext context, String seed) async {
-  if (!await EnvoySeed().create(seed.split(" "))) {
+  if (!await EnvoySeed().create(seed.split(" ")) && context.mounted) {
     showInvalidSeedDialog(
       context: context,
     );

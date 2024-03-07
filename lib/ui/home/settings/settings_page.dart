@@ -218,7 +218,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SettingText(S().settings_advanced_taproot),
                   SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
                       onEnabled: () async {
-                    if (await shouldShowPassportTaprootDialog()) {
+                    if (await shouldShowPassportTaprootDialog() && context.mounted) {
                       showEnvoyPopUp(
                         context,
                         title: S().taproot_passport_dialog_heading,
@@ -329,6 +329,7 @@ class _DevOptions extends StatelessWidget {
               }
               return TextButton(
                   onPressed: () async {
+                    final navigator = Navigator.of(context);
                     try {
                       setState(() {
                         loading = true;
@@ -337,12 +338,12 @@ class _DevOptions extends StatelessWidget {
                       setState(() {
                         loading = false;
                       });
-                      Navigator.pop(context);
+                      navigator.pop();
                     } catch (e) {
                       setState(() {
                         loading = false;
                       });
-                      Navigator.pop(context);
+                      navigator.pop();
                       kPrint(e);
                     }
                   },

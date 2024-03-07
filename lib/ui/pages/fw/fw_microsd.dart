@@ -56,7 +56,7 @@ class FwMicrosdPage extends ConsumerWidget {
                 Devices()
                     .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                if (Platform.isIOS) {
+                if (Platform.isIOS && context.mounted) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwIosSuccessPage(
@@ -65,17 +65,19 @@ class FwMicrosdPage extends ConsumerWidget {
                   }));
                 }
 
-                if (Platform.isAndroid) {
+                if (Platform.isAndroid ) {
                   await Future.delayed(const Duration(milliseconds: 500));
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return FwAndroidProgressPage(deviceId,
-                        onboarding: onboarding);
-                  }));
+                  if(context.mounted){
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return FwAndroidProgressPage(deviceId,
+                          onboarding: onboarding);
+                    }));
+                  }
                 }
               } catch (e) {
                 kPrint("SD: error $e");
-                if (Platform.isIOS) // TODO: this needs to be smarter
+                if (Platform.isIOS && context.mounted) // TODO: this needs to be smarter
                   // ignore: curly_braces_in_flow_control_structures
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
@@ -85,7 +87,7 @@ class FwMicrosdPage extends ConsumerWidget {
                     );
                   }));
 
-                if (Platform.isAndroid) {
+                if (Platform.isAndroid && context.mounted) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwAndroidInstructionsPage(

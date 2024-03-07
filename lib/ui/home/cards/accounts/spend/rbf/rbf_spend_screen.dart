@@ -401,7 +401,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     final rawTx =
         await ref.read(rawWalletTransactionProvider(_psbt.rawTx).future);
 
-    if (rawTx != null && rawTx.inputs.length != _originalTx.inputs?.length) {
+    if (rawTx != null && rawTx.inputs.length != _originalTx.inputs?.length &&  mounted) {
       showEnvoyDialog(
           context: context,
           dialog: Builder(builder: (context) {
@@ -499,17 +499,19 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       return;
     }
     if (account.wallet.hot) {
-      broadcastTx(account, _psbt);
+      broadcastTx(account, _psbt,context);
     } else {
       final psbt = await Navigator.of(context, rootNavigator: false).push(
           MaterialPageRoute(
               builder: (context) => background(
                   child: PsbtCard(_psbt, account), context: context)));
-      broadcastTx(account, psbt);
+      if(context.mounted) {
+        broadcastTx(account, psbt, context);
+      }
     }
   }
 
-  Future broadcastTx(Account account, Psbt psbt) async {
+  Future broadcastTx(Account account, Psbt psbt,BuildContext context) async {
     try {
       setState(() {
         broadcastProgress = BroadcastProgress.inProgress;
@@ -625,7 +627,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       } catch (e) {
         kPrint(e);
       }
-      clearSpendState(ProviderScope.containerOf(context));
+      if(context.mounted){
+        clearSpendState(ProviderScope.containerOf(context));
+      }
 
       String receiverAddress = widget.rbfSpendState.receiveAddress;
 
@@ -685,7 +689,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       setState(() {
         _psbt = psbt;
       });
-      if (customFee) {
+      if (customFee && context.mounted) {
         /// hide the fee slider
         Navigator.of(context, rootNavigator: false).pop();
       }
@@ -695,15 +699,17 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
       }
-      EnvoyToast(
-        replaceExisting: true,
-        duration: const Duration(seconds: 4),
-        message: message,
-        icon: const Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
-      ).show(context);
+      if(context.mounted){
+        EnvoyToast(
+          replaceExisting: true,
+          duration: const Duration(seconds: 4),
+          message: message,
+          icon: const Icon(
+            Icons.info_outline,
+            color: EnvoyColors.solidWhite,
+          ),
+        ).show(context);
+      }
       ref.read(spendFeeRateProvider.notifier).state = existingFeeRate!;
     } finally {
       setState(() {

@@ -81,12 +81,14 @@ class _ManualSetupCreateAndStoreBackupState
                         onTap: () async {
                           await EnvoySeed().saveOfflineData();
 
-                          if (globalState == GlobalState.nuclearDelete) {
+                          if (globalState == GlobalState.nuclearDelete && context.mounted) {
                             showEnvoyDialog(
                                 context: context,
                                 dialog: const EraseWalletsConfirmation());
                           } else {
-                            showWarningModal(context);
+                            if(context.mounted){
+                              showWarningModal(context);
+                            }
                           }
                         }))
               ],
@@ -142,10 +144,11 @@ class BackupWarningModal extends ConsumerWidget {
                 type: EnvoyButtonTypes.primaryModal,
                 label: S().manual_setup_create_and_store_backup_modal_CTA,
                 onTap: () async {
-                  Navigator.pop(context);
+                  final navigator = Navigator.of(context);
+                  navigator.pop();
                   //make sure system filepicker shown before navigating to success screen
                   await Future.delayed(const Duration(milliseconds: 200));
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  navigator.push(MaterialPageRoute(builder: (context) {
                     return const WalletSetupSuccess();
                   }));
                   //}

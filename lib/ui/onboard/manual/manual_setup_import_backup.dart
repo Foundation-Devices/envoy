@@ -144,11 +144,15 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
               },
               dismissible: false);
         } else {
-          recoverManually(seedList, context);
+          if(mounted){
+            recoverManually(seedList, context);
+          }
         }
       });
     } catch (e) {
-      recoverManually(seedList, context);
+      if(mounted){
+        recoverManually(seedList, context);
+      }
     }
   }
 
@@ -186,16 +190,17 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
 
 Future<void> tryMagicRecover(List<String> seedList, String seed,
     Map<String, String>? data, BuildContext context) async {
+  final navigator =  Navigator.of(context);
   await EnvoySeed().create(seedList);
   bool success = await EnvoySeed().processRecoveryData(seed, data);
 
   if (success) {
     Settings().syncToCloud = true;
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    navigator.push(MaterialPageRoute(builder: (context) {
       return const WalletSetupSuccess();
     }));
   } else {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    navigator.push(MaterialPageRoute(builder: (context) {
       return const ManualSetup();
     }));
   }
@@ -205,14 +210,16 @@ Future<void> recoverManually(
     List<String> seedList, BuildContext context) async {
   bool success = await EnvoySeed().create(seedList);
 
-  if (success) {
+  if (success && context.mounted) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const ManualSetupImportBackup()));
   } else {
-    showInvalidSeedDialog(
-      context: context,
-    );
+    if(context.mounted){
+      showInvalidSeedDialog(
+        context: context,
+      );
+    }
   }
 }
