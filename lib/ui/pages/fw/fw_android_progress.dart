@@ -20,7 +20,8 @@ class FwAndroidProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
   final int deviceId;
 
-  FwAndroidProgressPage(this.deviceId, {this.onboarding = true});
+  const FwAndroidProgressPage(this.deviceId,
+      {super.key, this.onboarding = true});
 
   @override
   ConsumerState<FwAndroidProgressPage> createState() =>
@@ -32,7 +33,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   int currentDotIndex = 3;
   int navigationDots = 6;
 
-  PageController _instructionPageController = PageController();
+  final PageController _instructionPageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +43,14 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       (previous, next) async {
         if (next is bool) {
           if (next) {
-            await Future.delayed(Duration(seconds: 5));
+            await Future.delayed(const Duration(seconds: 5));
             _instructionPageController.animateToPage(1,
-                duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut);
           } else {
             _instructionPageController.animateToPage(2,
-                duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut);
           }
           setState(() {
             done = next;
@@ -69,11 +72,11 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_progress"),
+      key: const Key("fw_progress"),
       text: [
         Expanded(
           child: PageView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: _instructionPageController,
               onPageChanged: (index) {
                 setState(() {
@@ -117,7 +120,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
               ]),
         ),
       ],
-      clipArt: SdCardSpinner(),
+      clipArt: const SdCardSpinner(),
       navigationDots: navigationDots,
       navigationDotsIndex: currentDotIndex,
       buttons: [
@@ -127,14 +130,15 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
               onTap: () {
                 Navigator.of(context)
                     .pushReplacement(MaterialPageRoute(builder: (context) {
-                  if (done!)
+                  if (done!) {
                     return FwPassportPage(
                       onboarding: widget.onboarding,
                     );
-                  else
+                  } else {
                     return FwIntroPage(
                       deviceId: widget.deviceId,
                     );
+                  }
                 }));
               })
       ],

@@ -12,12 +12,12 @@ import 'package:envoy/business/scv_server.dart';
 class ScvScanQrPage extends StatelessWidget {
   final Challenge challenge;
 
-  ScvScanQrPage(this.challenge);
+  const ScvScanQrPage(this.challenge, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("scv_scan_qr"),
+      key: const Key("scv_scan_qr"),
       clipArt: Image.asset("assets/scv_scan_qr.png"),
       text: [
         OnboardingText(

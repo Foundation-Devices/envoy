@@ -8,9 +8,9 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class Shield extends StatelessWidget {
   const Shield({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 
@@ -22,16 +22,16 @@ class Shield extends StatelessWidget {
           child: ClipPath(
             clipper: ShieldClipper(),
             child: Container(
-                color: EnvoyColors.solidWhite, child: SizedBox.expand()),
+                color: EnvoyColors.solidWhite, child: const SizedBox.expand()),
           ),
         ),
         Positioned.fill(
           child: Container(
-            margin: EdgeInsets.all(1.5),
+            margin: const EdgeInsets.all(1.5),
             child: ClipPath(
               clipper: ShieldClipper(),
               child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -50,9 +50,9 @@ class Shield extends StatelessWidget {
 
 class QrShield extends StatelessWidget {
   const QrShield({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 
@@ -65,7 +65,7 @@ class QrShield extends StatelessWidget {
       shadowColor: EnvoyColors.border1,
       elevation: 4,
       child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

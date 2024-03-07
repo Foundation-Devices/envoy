@@ -41,7 +41,7 @@ class FadingEdgeScrollView extends StatefulWidget {
   final bool shouldDisposeScrollController;
 
   const FadingEdgeScrollView._internal({
-    Key? key,
+    super.key,
     required this.child,
     required this.scrollController,
     required this.reverse,
@@ -50,8 +50,7 @@ class FadingEdgeScrollView extends StatefulWidget {
     required this.gradientFractionOnEnd,
     required this.shouldDisposeScrollController,
   })  : assert(gradientFractionOnStart >= 0 && gradientFractionOnStart <= 1),
-        assert(gradientFractionOnEnd >= 0 && gradientFractionOnEnd <= 1),
-        super(key: key);
+        assert(gradientFractionOnEnd >= 0 && gradientFractionOnEnd <= 1);
 
   /// Constructor for creating [FadingEdgeScrollView] with [ScrollView] as child
   /// child must have [ScrollView.controller] set
@@ -70,13 +69,13 @@ class FadingEdgeScrollView extends StatefulWidget {
 
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: controller,
       scrollDirection: Axis.vertical,
       reverse: false,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -96,13 +95,13 @@ class FadingEdgeScrollView extends StatefulWidget {
 
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: controller,
       scrollDirection: child.scrollDirection,
       reverse: child.reverse,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -117,13 +116,13 @@ class FadingEdgeScrollView extends StatefulWidget {
   }) {
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: child.controller,
       scrollDirection: child.scrollDirection,
       reverse: child.reverse,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
@@ -143,21 +142,21 @@ class FadingEdgeScrollView extends StatefulWidget {
 
     return FadingEdgeScrollView._internal(
       key: key,
-      child: child,
       scrollController: controller,
       scrollDirection: Axis.vertical,
       reverse: false,
       gradientFractionOnStart: gradientFractionOnStart,
       gradientFractionOnEnd: gradientFractionOnEnd,
       shouldDisposeScrollController: shouldDisposeScrollController,
+      child: child,
     );
   }
 
   @override
-  _FadingEdgeScrollViewState createState() => _FadingEdgeScrollViewState();
+  FadingEdgeScrollViewState createState() => FadingEdgeScrollViewState();
 }
 
-class _FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
+class FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
     with WidgetsBindingObserver {
   late ScrollController _controller;
   bool? _isScrolledToStart;
@@ -281,8 +280,8 @@ class _FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
         bounds.shift(Offset(-bounds.left, -bounds.top)),
         textDirection: Directionality.of(context),
       ),
-      child: widget.child,
       blendMode: BlendMode.dstIn,
+      child: widget.child,
     );
   }
 

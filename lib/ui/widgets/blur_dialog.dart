@@ -25,14 +25,14 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 
   BlurDialogRoute({
     required this.builder,
-    RouteSettings? settings,
+    super.settings,
     this.blur = 6,
     this.blurColor = Colors.black,
     this.dismissible = true,
     this.alignment = Alignment.center,
     this.cardColor,
     this.borderRadius = 14,
-  }) : super(settings: settings);
+  });
 
   @override
   Future<RoutePopDisposition> willPop() async {
@@ -120,7 +120,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   @override
   void install() {
     _controller = AnimationController(
-      duration: Duration(milliseconds: 260),
+      duration: const Duration(milliseconds: 260),
       vsync: navigator!,
     );
     _filterBlurAnimation = createBlurFilterAnimation();

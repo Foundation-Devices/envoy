@@ -4,14 +4,15 @@
 
 import 'dart:async';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
 enum ConnectivityManagerEvent {
-  TorStatusChange,
-  TorConnectedDoesntWork,
-  ElectrumUnreachable,
-  ElectrumReachable
+  torStatusChange,
+  torConnectedDoesntWork,
+  electrumUnreachable,
+  electrumReachable
 }
 
 const Duration _tempDisablementTimeout = Duration(hours: 24);
@@ -64,11 +65,11 @@ class ConnectivityManager {
   }
 
   ConnectivityManager._internal() {
-    print("Instance of ConnectivityManager created!");
+    kPrint("Instance of ConnectivityManager created!");
 
     Tor.instance.events.stream.listen((event) {
       // Nudge listeners
-      events.add(ConnectivityManagerEvent.TorStatusChange);
+      events.add(ConnectivityManagerEvent.torStatusChange);
     });
   }
 
@@ -78,13 +79,13 @@ class ConnectivityManager {
 
   electrumSuccess() {
     electrumConnected = true;
-    events.add(ConnectivityManagerEvent.ElectrumReachable);
+    events.add(ConnectivityManagerEvent.electrumReachable);
     checkTor();
   }
 
   electrumFailure() {
     electrumConnected = false;
-    events.add(ConnectivityManagerEvent.ElectrumUnreachable);
+    events.add(ConnectivityManagerEvent.electrumUnreachable);
     checkTor();
   }
 
@@ -102,7 +103,7 @@ class ConnectivityManager {
     if (torEnabled && !nguConnected && !electrumConnected) {
       restartTor();
       EnvoyReport().log("tor", "Both Electrum and NGU unreachable through Tor");
-      events.add(ConnectivityManagerEvent.TorConnectedDoesntWork);
+      events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
     }
   }
 

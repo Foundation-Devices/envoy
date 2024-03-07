@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/btcPay_voucher.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -15,47 +15,44 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class BtcPayFail extends StatelessWidget {
-  BtcPayFail({Key? key, required this.voucher}) : super(key: key);
+  const BtcPayFail({super.key, required this.voucher});
   final BtcPayVoucher voucher;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-              child: EnvoyIcon(EnvoyIcons.alert,
-                  size: EnvoyIconSize.big, color: EnvoyColors.danger),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+            child: EnvoyIcon(EnvoyIcons.alert,
+                size: EnvoyIconSize.big, color: EnvoyColors.danger),
+          ),
+          getMainErrorMessage(
+              voucher.errorType, voucher.expiresAt, voucher.link),
+          Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+            child: EnvoyButton(
+              S().component_continue,
+              type: EnvoyButtonTypes.primaryModal,
+              borderRadius: BorderRadius.circular(EnvoySpacing.small),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
             ),
-            getMainErrorMessage(
-                voucher.errorType, voucher.expiresAt, voucher.link),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-              child: EnvoyButton(
-                S().component_continue,
-                type: EnvoyButtonTypes.primaryModal,
-                borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -64,20 +61,20 @@ class BtcPayFail extends StatelessWidget {
 Widget getMainErrorMessage(
     BtcPayVoucherErrorType errorType, DateTime? dateTime, String link) {
   switch (errorType) {
-    case BtcPayVoucherErrorType.Invalid:
+    case BtcPayVoucherErrorType.invalid:
       return errorMesage(
         S().azteco_connection_modal_fail_heading,
         S().btcpay_connection_modal_fail_subheading,
       );
 
-    case BtcPayVoucherErrorType.Expired:
+    case BtcPayVoucherErrorType.expired:
       return errorMesage(
           S().btcpay_connection_modal_fail_heading,
           S().btcpay_connection_modal_expired_subheading(
               DateFormat.yMd(currentLocale)
                   .format(dateTime ?? DateTime.now())));
 
-    case BtcPayVoucherErrorType.OnChain:
+    case BtcPayVoucherErrorType.onChain:
       return errorMesage(S().azteco_redeem_modal_fail_heading,
           S().btcpay_connection_modal_onchainOnly_subheading,
           link: link);

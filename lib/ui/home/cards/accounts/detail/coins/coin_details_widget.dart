@@ -8,7 +8,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
-import 'package:envoy/ui/envoy_colors.dart' as LegacyColors;
+import 'package:envoy/ui/envoy_colors.dart' as old_colors;
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
@@ -44,7 +44,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
   @override
   Widget build(BuildContext context) {
     Color accountAccentColor = widget.tag.getAccount()?.color ??
-        LegacyColors.EnvoyColors.listAccountTileColors[0];
+        old_colors.EnvoyColors.listAccountTileColors[0];
     final accountTransactions =
         ref.read(transactionsProvider(widget.tag.account));
     final tx = accountTransactions
@@ -64,15 +64,15 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         );
 
     if (coinTag.untagged) {
-      accountAccentColor = Color(0xff808080);
+      accountAccentColor = const Color(0xff808080);
     }
 
     double cardRadius = 26;
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
           border: Border.all(
@@ -101,9 +101,10 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   children: [
                     Container(
                       height: 36,
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 4),
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(
                             Radius.circular(EnvoySpacing.medium2)),
                         color: Colors.white,
@@ -114,9 +115,11 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                     ),
                     Flexible(
                         child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                      decoration: BoxDecoration(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 4),
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(18)),
                         color: Colors.white,
                       ),
@@ -124,7 +127,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         children: [
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_address,
                             icon: SvgPicture.asset(
                               "assets/icons/ic_spend.svg",
@@ -140,7 +143,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                               },
                               child: SingleChildScrollView(
                                 child: AnimatedSize(
-                                  duration: Duration(milliseconds: 200),
+                                  duration: const Duration(milliseconds: 200),
                                   curve: Curves.easeInOut,
                                   child: AddressWidget(
                                     widgetKey:
@@ -152,9 +155,9 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                               ),
                             ),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_transactionID,
-                            icon: Icon(
+                            icon: const Icon(
                               CupertinoIcons.compass,
                               size: 16,
                               color: Colors.black,
@@ -169,13 +172,20 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 child: TweenAnimationBuilder(
                                   tween: Tween<double>(
                                       begin: 0, end: showExpandedTxId ? 1 : 0),
-                                  duration: Duration(milliseconds: 200),
+                                  duration: const Duration(milliseconds: 200),
                                   builder: (context, value, child) {
                                     return Padding(
                                       padding: const EdgeInsets.only(
                                           left: EnvoySpacing.small),
                                       child: SelectableText(
-                                        "${truncateWithEllipsisInCenter(widget.coin.utxo.txid, lerpDouble(16, widget.coin.utxo.txid.length, value)!.toInt())}",
+                                        truncateWithEllipsisInCenter(
+                                            widget.coin.utxo.txid,
+                                            lerpDouble(
+                                                    16,
+                                                    widget
+                                                        .coin.utxo.txid.length,
+                                                    value)!
+                                                .toInt()),
                                         style: EnvoyTypography.info
                                             .copyWith(color: Colors.black),
                                         textAlign: TextAlign.end,
@@ -193,9 +203,9 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                   },
                                 )),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_date,
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.calendar_today_outlined,
                               size: 16,
                               color: Colors.black,
@@ -203,17 +213,17 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                             trailing: Text(getTransactionDateAndTimeString(tx),
                                 style: trailingTextStyle),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_tag,
                             icon: SvgPicture.asset(
                               "assets/icons/ic_tag.svg",
                               color: Colors.black,
                               height: 16,
                             ),
-                            trailing: Text("${coinTag.name}",
-                                style: trailingTextStyle),
+                            trailing:
+                                Text(coinTag.name, style: trailingTextStyle),
                           ),
-                          CoinTagListItem(
+                          coinTagListItem(
                             title: S().coindetails_overlay_status,
                             icon: SvgPicture.asset(
                               "assets/icons/ic_status_icon.svg",
@@ -225,6 +235,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                           ),
                           GestureDetector(
                             onTap: () {
+                              final navigator = Navigator.of(context);
                               showEnvoyDialog(
                                   context: context,
                                   useRootNavigator: true,
@@ -237,12 +248,12 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                     onAdd: (note) async {
                                       await EnvoyStorage()
                                           .addTxNote(note, tx.txId);
-                                      Navigator.of(context).pop();
+                                      navigator.pop();
                                     },
                                   ),
-                                  alignment: Alignment(0.0, -0.8));
+                                  alignment: const Alignment(0.0, -0.8));
                             },
-                            child: CoinTagListItem(
+                            child: coinTagListItem(
                               title: S().coindetails_overlay_notes,
                               icon: SvgPicture.asset(
                                 "assets/icons/ic_notes.svg",
@@ -255,14 +266,14 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Expanded(
-                                    child: Text("$note",
+                                    child: Text(note,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: trailingTextStyle?.copyWith(
                                             fontSize: 12),
                                         textAlign: TextAlign.end),
                                   ),
-                                  Padding(
+                                  const Padding(
                                       padding: EdgeInsets.all(EnvoySpacing.xs)),
                                   note.trim().isNotEmpty
                                       ? SvgPicture.asset(
@@ -272,7 +283,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                                           color: Theme.of(context).primaryColor,
                                           height: 14,
                                         )
-                                      : Icon(Icons.add_circle_rounded,
+                                      : const Icon(Icons.add_circle_rounded,
                                           color: EnvoyColors.accentPrimary,
                                           size: 16),
                                 ],
@@ -290,7 +301,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     );
   }
 
-  Widget CoinTagListItem(
+  Widget coinTagListItem(
       {required String title,
       required Widget icon,
       required Widget trailing,
@@ -305,28 +316,26 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         children: [
           Flexible(
             flex: 5,
-            child: Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                  child: icon,
+                ),
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.only(left: EnvoySpacing.xs),
-                    child: icon,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: EnvoySpacing.xs),
-                      child: Text(
-                        "$title",
-                        style: EnvoyTypography.body
-                            .copyWith(color: color ?? EnvoyColors.textPrimary),
-                      ),
+                    child: Text(
+                      title,
+                      style: EnvoyTypography.body
+                          .copyWith(color: color ?? EnvoyColors.textPrimary),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Flexible(

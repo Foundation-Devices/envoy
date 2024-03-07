@@ -9,10 +9,12 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScvResultFailPage extends StatelessWidget {
+  const ScvResultFailPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("scv_result_fail"),
+      key: const Key("scv_result_fail"),
       clipArt: Image.asset("assets/shield_bad.png"),
       text: [
         OnboardingText(

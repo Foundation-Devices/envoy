@@ -132,8 +132,8 @@ class ExpandablePageView extends StatefulWidget {
   /// This property defaults to true and must not be null.
   final bool padEnds;
 
-  ExpandablePageView({
-    required List<Widget> children,
+  const ExpandablePageView({
+    required List<Widget> this.children,
     this.controller,
     this.onPageChanged,
     this.reverse = false,
@@ -151,16 +151,14 @@ class ExpandablePageView extends StatefulWidget {
     this.scrollBehavior,
     this.scrollDirection = Axis.horizontal,
     this.padEnds = true,
-    Key? key,
+    super.key,
   })  : assert(estimatedPageSize >= 0.0),
-        children = children,
         itemBuilder = null,
-        itemCount = null,
-        super(key: key);
+        itemCount = null;
 
-  ExpandablePageView.builder({
-    required int itemCount,
-    required WidgetBuilder itemBuilder,
+  const ExpandablePageView.builder({
+    required int this.itemCount,
+    required WidgetBuilder this.itemBuilder,
     this.controller,
     this.onPageChanged,
     this.reverse = false,
@@ -178,18 +176,15 @@ class ExpandablePageView extends StatefulWidget {
     this.scrollBehavior,
     this.scrollDirection = Axis.horizontal,
     this.padEnds = true,
-    Key? key,
+    super.key,
   })  : assert(estimatedPageSize >= 0.0),
-        children = null,
-        itemCount = itemCount,
-        itemBuilder = itemBuilder,
-        super(key: key);
+        children = null;
 
   @override
-  _ExpandablePageViewState createState() => _ExpandablePageViewState();
+  ExpandablePageViewState createState() => ExpandablePageViewState();
 }
 
-class _ExpandablePageViewState extends State<ExpandablePageView> {
+class ExpandablePageViewState extends State<ExpandablePageView> {
   late PageController _pageController;
   late List<double> _sizes;
   int _currentPage = 0;
@@ -306,7 +301,6 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
     }
     return PageView(
       controller: _pageController,
-      children: _sizeReportingChildren(),
       onPageChanged: widget.onPageChanged,
       reverse: widget.reverse,
       physics: widget.physics,
@@ -318,6 +312,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       scrollBehavior: widget.scrollBehavior,
       scrollDirection: widget.scrollDirection,
       padEnds: widget.padEnds,
+      children: _sizeReportingChildren(),
     );
   }
 
@@ -346,9 +341,9 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       onSizeChange: (size) => setState(
         () => _sizes[index] = _isHorizontalScroll ? size.height : size.width,
       ),
-      child: item,
       alignment: widget.alignment,
       scrollDirection: widget.scrollDirection,
+      child: item,
     );
   }
 
@@ -362,9 +357,9 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
               () => _sizes[index] =
                   _isHorizontalScroll ? size.height : size.width,
             ),
-            child: child,
             alignment: widget.alignment,
             scrollDirection: widget.scrollDirection,
+            child: child,
           ),
         ),
       )
@@ -379,6 +374,7 @@ class OverflowPage extends StatelessWidget {
   final Axis scrollDirection;
 
   const OverflowPage({
+    super.key,
     required this.onSizeChange,
     required this.child,
     required this.alignment,

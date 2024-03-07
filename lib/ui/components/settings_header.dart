@@ -6,19 +6,19 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.linkText,
       this.onTap,
-      required this.icon})
-      : super(key: key);
+      required this.icon});
 
   final String title;
-  final linkText;
+  final String linkText;
   final Function()? onTap;
   final EnvoyIcons icon;
 
@@ -32,7 +32,7 @@ class SettingsHeader extends StatelessWidget {
           child: Row(
             children: [
               EnvoyIcon(icon),
-              SizedBox(
+              const SizedBox(
                 width: EnvoySpacing.small,
               ),
               Text(
@@ -59,5 +59,11 @@ class SettingsHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('linkText', linkText));
   }
 }

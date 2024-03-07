@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/main.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -68,8 +69,8 @@ void main() {
           wCamImgPipe);
 
       await initSingletons();
-      await tester.pumpWidget(
-          Screenshot(controller: envoyScreenshotController, child: EnvoyApp()));
+      await tester.pumpWidget(Screenshot(
+          controller: envoyScreenshotController, child: const EnvoyApp()));
 
       await tester.pump();
 
@@ -82,34 +83,34 @@ void main() {
       final setUpButtonFinder = find.text('Set Up Envoy Wallet');
       expect(setUpButtonFinder, findsOneWidget);
       await tester.tap(setUpButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       final continueButtonFinder = find.text('Continue');
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       final enableMagicButtonFinder = find.text('Enable Magic Backups');
       expect(enableMagicButtonFinder, findsOneWidget);
       await tester.tap(enableMagicButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       // video
       final createMagicButtonFinder = find.text('Create Magic Backup');
       expect(createMagicButtonFinder, findsOneWidget);
       await tester.tap(createMagicButtonFinder);
-      await tester.pump(Duration(milliseconds: 1500));
+      await tester.pump(const Duration(milliseconds: 1500));
 
       await tester.pumpAndSettle();
 
       // animations
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
 
       final devicesButton = find.text('Devices');
       await tester.tap(devicesButton);
@@ -248,7 +249,7 @@ Future<void> resetEnvoyData() async {
   final appSupportDir = await getApplicationSupportDirectory();
 
   // Database
-  final String dbName = 'envoy.db';
+  const String dbName = 'envoy.db';
   final appDocumentDir = await getApplicationDocumentsDirectory();
   final dbFile = File(join(appDocumentDir.path, dbName));
 
@@ -258,7 +259,7 @@ Future<void> resetEnvoyData() async {
     // Delete the database file
     await dbFile.delete();
   } catch (e) {
-    print('Error deleting app data: $e');
+    kPrint('Error deleting app data: $e');
   }
 }
 
@@ -316,11 +317,8 @@ class Passport {
           ":$passportPath/simulator/sim_modules:$passportPath/ports/stm32/boards/Passport/modules:$passportPath/extmod"
     };
 
-    print("Command: " +
-        "MICROPYPATH=" +
-        env["MICROPYPATH"]! +
-        " " +
-        '$passportPath/ports/unix/passport-mpy -X heapsize=30m -i $passportPath/simulator/sim_boot.py $oledHandleNum $numpadHandleNum $ledHandleNum $camCmdHandleNum $camImgHandleNum color');
+    kPrint(
+        "Command:  MICROPYPATH=${env['MICROPYPATH']!} $passportPath/ports/unix/passport-mpy -X heapsize=30m -i $passportPath/simulator/sim_boot.py $oledHandleNum $numpadHandleNum $ledHandleNum $camCmdHandleNum $camImgHandleNum color");
 
     Process.start(
       '$passportPath/ports/unix/passport-mpy',
@@ -340,10 +338,10 @@ class Passport {
       workingDirectory: passportPath,
     ).then((simulator) async {
       simulator.stdout.listen((event) {
-        print("simulator: " + utf8.decode(event));
+        kPrint("simulator: ${utf8.decode(event)}");
       });
       simulator.stderr.listen((event) {
-        print("simulator ERR:" + utf8.decode(event));
+        kPrint("simulator ERR: ${utf8.decode(event)}");
       });
       await Future.delayed(const Duration(seconds: 2), () {});
 
@@ -359,11 +357,11 @@ class Passport {
     // final directoryToDelete = '$currentPath/passport2/simulator/work';
     // Directory(directoryToDelete).deleteSync();
 
-    final fileToDelete = 'spi_flash.bin';
+    const fileToDelete = 'spi_flash.bin';
     try {
-      File(passportPath + "/" + fileToDelete).deleteSync();
+      File("$passportPath/$fileToDelete").deleteSync();
     } on Exception catch (e) {
-      print("Couldn't reset Passport: $e");
+      kPrint("Couldn't reset Passport: $e");
     }
   }
 
@@ -381,9 +379,9 @@ class Passport {
   }
 
   void displayOled(String oledV4lDeviceDuplicate) {
-    Process.start('ffplay', ['$oledV4lDeviceDuplicate'],
+    Process.start('ffplay', [oledV4lDeviceDuplicate],
         environment: {"DISPLAY": ":0"}).then((ffplay) {
-      print("ffplay started!");
+      kPrint("ffplay started!");
       // ffplay.stderr.listen((event) {
       //   print("ffplay: " + utf8.decode(event));
       // });
@@ -413,12 +411,12 @@ class Passport {
       'video4linux2',
       qrScannerDevice,
     ]).then((ffmpeg) {
-      print("v4l devices created!");
+      kPrint("v4l devices created!");
       ffmpeg.stdout.listen((event) {
-        print(event);
+        kPrint(event);
       });
       ffmpeg.stderr.listen((event) {
-        print("ffmpeg :" + utf8.decode(event));
+        kPrint("ffmpeg :${utf8.decode(event)}");
       });
     });
   }
@@ -437,7 +435,7 @@ class Passport {
   Future<void> sendFrameToPassport(
       ScreenshotController screenshotController, String camPipePath) async {
     final currentPath = Directory.current.path;
-    final screenshotFileName = "screenshot.png";
+    const screenshotFileName = "screenshot.png";
     await screenshotController.captureAndSave(currentPath,
         fileName: screenshotFileName);
 
@@ -465,16 +463,16 @@ class Passport {
       return false;
     }
 
-    print("CAPTURE: " + process.stdout);
+    kPrint(process.stdout + "CAPTURE: ");
 
     for (final text in texts) {
       if (process.stdout.contains(text)) {
-        print('This screen contains: $text');
+        kPrint('This screen contains: $text');
         return true;
       }
     }
 
-    print('This screen does not contain: $texts');
+    kPrint('This screen does not contain: $texts');
     return false;
   }
 

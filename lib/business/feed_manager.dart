@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
 import 'package:webfeed/webfeed.dart';
@@ -32,7 +33,7 @@ class FeedManager {
   }
 
   FeedManager._internal() {
-    print("Instance of FeedManager created!");
+    kPrint("Instance of FeedManager created!");
     _restoreVideos();
     _restoreBlogs();
 
@@ -89,7 +90,7 @@ class FeedManager {
   List<Video> _parseVideos(List<dynamic> videos) {
     List<Video> currentVideos = [];
 
-    videos.forEach((video) {
+    for (var video in videos) {
       var downloads = video["download"];
 
       Map<int, String> contentMap = {};
@@ -131,7 +132,7 @@ class FeedManager {
         tags,
         thumbnailUrl: (video["pictures"])["sizes"][3]["link"],
       ));
-    });
+    }
 
     return currentVideos;
   }
@@ -244,8 +245,8 @@ class FeedManager {
   }
 
   storeBlogPosts() {
-    for (var BlogPost in blogs) {
-      EnvoyStorage().insertBlogPost(BlogPost);
+    for (var blog in blogs) {
+      EnvoyStorage().insertBlogPost(blog);
     }
   }
 }

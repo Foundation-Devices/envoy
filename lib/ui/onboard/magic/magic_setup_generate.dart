@@ -20,7 +20,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
-  const MagicSetupGenerate({Key? key}) : super(key: key);
+  const MagicSetupGenerate({super.key});
 
   @override
   State<MagicSetupGenerate> createState() => _MagicSetupGenerateState();
@@ -30,7 +30,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   final walletGenerated = EnvoySeed().walletDerived();
 
   StateMachineController? stateMachineController;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   late int step;
 
   List<String> stepsHeadings = [
@@ -71,6 +71,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _initiateWalletCreate() async {
+    final navigator = Navigator.of(context);
     if (!walletGenerated) {
       Settings().syncToCloud = true;
       Settings().store();
@@ -79,29 +80,29 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     }
 
     if (!walletGenerated) {
-      await Future.delayed(Duration(seconds: 2));
-      if (mounted)
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) {
         setState(() {
           step = 1;
         });
+      }
       _updateProgress();
       //delay
     }
     _updateProgress();
-    await Future.delayed(Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 4));
     setState(() {
       step = 2;
     });
     _updateProgress();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
-    Navigator.pushReplacement(
-      context,
+    navigator.pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) =>
             MagicRecoveryInfo(skipSuccessScreen: walletGenerated),
-        transitionDuration: Duration(milliseconds: 300),
+        transitionDuration: const Duration(milliseconds: 300),
         transitionsBuilder: (_, a, __, c) =>
             FadeTransition(opacity: a, child: c),
       ),
@@ -115,6 +116,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       onPopInvoked: (didPop) {},
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
@@ -124,7 +126,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                     width: 280,
                     child: RiveAnimation.asset(
                       'assets/envoy_magic_setup.riv',
-                      stateMachines: ["STM"],
+                      stateMachines: const ["STM"],
                       onInit: _onRiveInit,
                       fit: BoxFit.contain,
                       alignment: Alignment.center,
@@ -135,12 +137,12 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                   child: SizedBox(
                     height: 280,
                     child: PageView(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       controller: _pageController,
                       children: [
                         ...stepsHeadings.map((heading) {
                           return Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: EnvoySpacing.xs,
                                 horizontal: EnvoySpacing.small),
                             child: Column(
@@ -175,14 +177,13 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                               ],
                             ),
                           );
-                        }).toList()
+                        })
                       ],
                     ),
                   ),
                 )
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }
@@ -198,7 +199,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
     }
     _pageController.animateToPage(step,
-        duration: Duration(milliseconds: 580), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 580), curve: Curves.easeInOut);
   }
 
   @override
@@ -212,9 +213,8 @@ class MagicRecoveryInfo extends ConsumerStatefulWidget {
   final bool skipSuccessScreen;
   final GestureTapCallback? onContinue;
 
-  MagicRecoveryInfo(
-      {Key? key, this.skipSuccessScreen = false, this.onContinue = null})
-      : super(key: key);
+  const MagicRecoveryInfo(
+      {super.key, this.skipSuccessScreen = false, this.onContinue});
 
   @override
   ConsumerState<MagicRecoveryInfo> createState() => _MagicRecoveryInfoState();
@@ -226,7 +226,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
   @override
   Widget build(BuildContext context) {
     bool isAndroid = Platform.isAndroid;
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
       canPop: false,
       onPopInvoked: (_) async {
@@ -242,24 +242,25 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
           Navigator.pop(context);
         } else {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return WalletSetupSuccess();
+            return const WalletSetupSuccess();
           }));
         }
       },
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  constraints: BoxConstraints.tight(Size.fromHeight(240)),
+                  constraints: BoxConstraints.tight(const Size.fromHeight(240)),
+                  height: iphoneSE ? 220 : 250,
                   child: Image.asset(
                     "assets/exclamation_icon.png",
                     height: 180,
                     width: 180,
                   ),
-                  height: _iphoneSE ? 220 : 250,
                 ),
                 Flexible(
                   child: SingleChildScrollView(
@@ -268,165 +269,158 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                           : _recoverStepsInfo(context)),
                 )
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }
 
   _recoverStepsInfo(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  S().recovery_scenario_heading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                S().recovery_scenario_heading,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
+              Text(
+                S().recovery_scenario_subheading,
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontSize: 13),
+              ),
+              const Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
+              ListTile(
+                minLeadingWidth: 20,
+                dense: true,
+                leading: Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.xs,
+                      horizontal: EnvoySpacing.small),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.accentPrimary,
+                    borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+                  ),
+                  child: Text(
+                    "1",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium2)),
-                Text(
-                  S().recovery_scenario_subheading,
-                  textAlign: TextAlign.center,
+                title: Text(
+                  Platform.isAndroid
+                      ? S().recovery_scenario_Android_instruction1
+                      : S().recovery_scenario_ios_instruction1,
+                  textAlign: TextAlign.start,
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
-                      ?.copyWith(fontSize: 13),
+                      ?.copyWith(fontSize: 14),
                 ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium3)),
-                ListTile(
-                  minLeadingWidth: 20,
-                  dense: true,
-                  leading: Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
-                    decoration: BoxDecoration(
-                      color: EnvoyColors.accentPrimary,
-                      borderRadius: BorderRadius.circular(EnvoySpacing.xs),
-                    ),
-                    child: Text(
-                      "1",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white,
-                          ),
-                    ),
+              ),
+              ListTile(
+                minLeadingWidth: 20,
+                dense: true,
+                leading: Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.xs,
+                      horizontal: EnvoySpacing.small),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.accentPrimary,
+                    borderRadius: BorderRadius.circular(EnvoySpacing.xs),
                   ),
-                  title: Text(
-                    Platform.isAndroid
-                        ? S().recovery_scenario_Android_instruction1
-                        : S().recovery_scenario_ios_instruction1,
-                    textAlign: TextAlign.start,
+                  child: Text(
+                    "2",
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(fontSize: 14),
+                        ?.copyWith(color: Colors.white),
                   ),
                 ),
-                ListTile(
-                  minLeadingWidth: 20,
-                  dense: true,
-                  leading: Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
-                    decoration: BoxDecoration(
-                      color: EnvoyColors.accentPrimary,
-                      borderRadius: BorderRadius.circular(EnvoySpacing.xs),
-                    ),
-                    child: Text(
-                      "2",
+                title: Text(
+                  S().recovery_scenario_instruction2,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontSize: 14),
+                ),
+              ),
+              ListTile(
+                minLeadingWidth: 20,
+                dense: true,
+                leading: Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.xs,
+                      horizontal: EnvoySpacing.small),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.accentPrimary,
+                    borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+                  ),
+                  child: Text("3",
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
-                          ?.copyWith(color: Colors.white),
-                    ),
-                  ),
-                  title: Text(
-                    S().recovery_scenario_instruction2,
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontSize: 14),
-                  ),
+                          ?.copyWith(color: Colors.white)),
                 ),
-                ListTile(
-                  minLeadingWidth: 20,
-                  dense: true,
-                  leading: Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
-                    decoration: BoxDecoration(
-                      color: EnvoyColors.accentPrimary,
-                      borderRadius: BorderRadius.circular(EnvoySpacing.xs),
-                    ),
-                    child: Text("3",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.white)),
-                  ),
-                  title: Text(
-                    Platform.isAndroid
-                        ? S().recovery_scenario_Android_instruction1
-                        : S().recovery_scenario_ios_instruction3,
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontSize: 14),
-                  ),
+                title: Text(
+                  Platform.isAndroid
+                      ? S().recovery_scenario_Android_instruction1
+                      : S().recovery_scenario_ios_instruction3,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontSize: 14),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                if (widget.onContinue != null) {
-                  widget.onContinue!.call();
-                  return;
-                }
-                if (widget.skipSuccessScreen) {
-                  //clear on-boarding routes and go to home
-                  OnboardingPage.popUntilHome(context);
-                } else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return WalletSetupSuccess();
-                  }));
-                }
-              },
-            ),
+        ),
+        const Padding(
+            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+          child: OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              if (widget.onContinue != null) {
+                widget.onContinue!.call();
+                return;
+              }
+              if (widget.skipSuccessScreen) {
+                //clear on-boarding routes and go to home
+                OnboardingPage.popUntilHome(context);
+              } else {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const WalletSetupSuccess();
+                }));
+              }
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   _androidBackUPInfo(BuildContext context) {
-    return Container(
-        child: PageTransitionSwitcher(
+    return PageTransitionSwitcher(
       reverse: _androidBackupInfoPage == 1,
-      duration: Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 600),
       transitionBuilder: (
         Widget child,
         Animation<double> animation,
@@ -452,8 +446,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
+                    const Padding(
+                        padding: EdgeInsets.symmetric(
                             vertical: EnvoySpacing.medium3)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -473,9 +467,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                     ),
                   ],
                 ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium3)),
+                const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.small,
@@ -492,6 +486,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               ],
             )
           : _recoverStepsInfo(context),
-    ));
+    );
   }
 }

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+// ignore_for_file: constant_identifier_names
 import 'dart:ui';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
@@ -38,7 +39,7 @@ class Device {
 
 class Devices extends ChangeNotifier {
   List<Device> devices = [];
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
 
   static const String DEVICES_PREFS = "devices";
   static final Devices _instance = Devices._internal();
@@ -53,7 +54,7 @@ class Devices extends ChangeNotifier {
   }
 
   Devices._internal() {
-    print("Instance of Devices created!");
+    kPrint("Instance of Devices created!");
     //_clearDevices();
     restore();
   }

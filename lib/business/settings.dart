@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -238,18 +241,15 @@ class Settings extends ChangeNotifier {
   }
 
   Settings._internal() {
-    print("Instance of Settings created!");
+    kPrint("Instance of Settings created!");
   }
 
   static String getFiatFromLocale() {
     String? currencyCode =
         NumberFormat.simpleCurrency(locale: Intl.getCurrentLocale())
             .currencyName;
-    if (currencyCode == null) {
-      return "USD";
-    }
 
-    if (supportedFiat.contains(FiatCurrency(currencyCode, ""))) {
+    if (supportedFiat.contains(FiatCurrency(currencyCode!, ""))) {
       return currencyCode;
     }
 

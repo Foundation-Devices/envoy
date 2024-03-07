@@ -33,8 +33,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       this.inputMode = false,
       this.onLongPress,
       required this.account,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
     displayedAmount = getDisplayAmount(amountSats!, unit);
@@ -57,12 +56,14 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       length--;
     }
 
-    if (currentIndex < length - 1)
+    if (currentIndex < length - 1) {
       ref.read(sendScreenUnitProvider.notifier).state =
           AmountDisplayUnit.values[currentIndex + 1];
-    if (currentIndex >= length - 1)
+    }
+    if (currentIndex >= length - 1) {
       ref.read(sendScreenUnitProvider.notifier).state =
           AmountDisplayUnit.values[0];
+    }
   }
 
   @override

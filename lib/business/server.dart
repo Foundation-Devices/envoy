@@ -12,17 +12,15 @@ import 'package:envoy/business/scheduler.dart';
 
 class Server {
   HttpTor? http;
-  String _serverAddress = Settings().envoyServerAddress;
+  final String _serverAddress = Settings().envoyServerAddress;
 
   Server({this.http}) {
-    if (http == null) {
-      http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
-    }
+    http ??= HttpTor(Tor.instance, EnvoyScheduler().parallel);
   }
 
   Future<FirmwareUpdate> fetchFirmwareUpdateInfo(int deviceId) async {
-    final response = await http!
-        .get(_serverAddress + '/firmware/device?id=' + deviceId.toString());
+    final response =
+        await http!.get('$_serverAddress/firmware/device?id=$deviceId');
 
     if (response.statusCode == 202) {
       var fw = FirmwareUpdate.fromJson(jsonDecode(response.body));

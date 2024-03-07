@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -20,6 +22,7 @@ import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
@@ -29,7 +32,7 @@ class AccountAlreadyPaired implements Exception {}
 
 class AccountManager extends ChangeNotifier {
   List<Account> accounts = [];
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
@@ -42,7 +45,7 @@ class AccountManager extends ChangeNotifier {
   static const String ACCOUNTS_PREFS = "accounts";
   static final AccountManager _instance = AccountManager._internal();
   static String walletsDirectory =
-      LocalStorage().appDocumentsDir.path + "/wallets/";
+      "${LocalStorage().appDocumentsDir.path}/wallets/";
 
   factory AccountManager() {
     return _instance;
@@ -54,7 +57,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   AccountManager._internal() {
-    print("Instance of AccountManager created!");
+    kPrint("Instance of AccountManager created!");
     restore();
   }
 
@@ -63,7 +66,7 @@ class AccountManager extends ChangeNotifier {
       _syncBlocked = true;
 
       // Rate limit syncs
-      Timer(Duration(seconds: 5), () {
+      Timer(const Duration(seconds: 5), () {
         _syncBlocked = false;
       });
 
@@ -125,7 +128,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   Future<Account> _syncAccount(Account account) async {
-    bool? changed = null;
+    bool? changed;
     int port = Settings().getPort(account.wallet.network);
 
     try {
@@ -137,7 +140,7 @@ class AccountManager extends ChangeNotifier {
         ConnectivityManager().electrumFailure();
       }
 
-      EnvoyReport().log("wallet", "Couldn't sync: ${e}");
+      EnvoyReport().log("wallet", "Couldn't sync: $e");
     }
 
     if (changed != null) {
@@ -155,7 +158,6 @@ class AccountManager extends ChangeNotifier {
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
     }
-    ;
 
     return account;
   }
@@ -238,7 +240,6 @@ class AccountManager extends ChangeNotifier {
         _initWallet(newAccount.wallet);
         addAccount(newAccount);
       }
-      ;
 
       if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
@@ -269,7 +270,7 @@ class AccountManager extends ChangeNotifier {
     int accountNumber = json["acct_num"];
 
     List<Account> accounts = [];
-    wallets.forEach((wallet) {
+    for (var wallet in wallets) {
       accounts.add(Account(
           wallet: wallet,
           name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
@@ -278,7 +279,7 @@ class AccountManager extends ChangeNotifier {
           number: accountNumber,
           id: Account.generateNewId(),
           dateSynced: null));
-    });
+    }
 
     return accounts;
   }
@@ -347,8 +348,8 @@ class AccountManager extends ChangeNotifier {
 
     var partialDescriptor = "$scriptType([$xfp$derivation]$xpub";
 
-    var externalDescriptor = partialDescriptor + "/0/*)";
-    var internalDescriptor = partialDescriptor + "/1/*)";
+    var externalDescriptor = "$partialDescriptor/0/*)";
+    var internalDescriptor = "$partialDescriptor/1/*)";
 
     var wallet = await _getWallet(xpub, externalDescriptor, internalDescriptor);
     return wallet;
@@ -382,7 +383,7 @@ class AccountManager extends ChangeNotifier {
 
   _startPeriodicSync() {
     // Sync periodically
-    _syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
       syncAll();
     });
   }
@@ -421,7 +422,9 @@ class AccountManager extends ChangeNotifier {
   }
 
   void addAccounts(List<Account> accounts) {
-    accounts.forEach((Account account) => addAccount(account));
+    for (var account in accounts) {
+      addAccount(account);
+    }
   }
 
   void addAccount(Account account) {
@@ -459,7 +462,6 @@ class AccountManager extends ChangeNotifier {
 
       Notifications().deleteFromAccount(accountToDelete);
     }
-    ;
   }
 
   deleteDeviceAccounts(Device device) {
@@ -482,13 +484,13 @@ class AccountManager extends ChangeNotifier {
     //sync might interfere with reordering so making a copy will prevent moving the same account
     try {
       final visibleAccountsIds = accountFromListView.map((e) => e.id);
-      final _accountCopy = [
+      final accountCopy = [
         ...accounts.where((element) => visibleAccountsIds.contains(element.id))
       ];
 
       //accounts that are not visible in the list (testnet). the move should not affect them,
       //so they are added to the end of the list
-      final _accountsThatNotVisible = [
+      final accountsThatNotVisible = [
         ...accounts.where((element) => !visibleAccountsIds.contains(element.id))
       ];
       //moving down, the list is shifted so the index is off by one
@@ -497,19 +499,19 @@ class AccountManager extends ChangeNotifier {
       }
       try {
         //Check if the items are not the same to prevent unnecessary duplication
-        if (_accountCopy[newIndex].id == _accountCopy[oldIndex].id) {
+        if (accountCopy[newIndex].id == accountCopy[oldIndex].id) {
           return;
         }
       } catch (_) {}
-      var movedAccount = _accountCopy.removeAt(oldIndex);
-      _accountCopy.insert(newIndex, movedAccount);
+      var movedAccount = accountCopy.removeAt(oldIndex);
+      accountCopy.insert(newIndex, movedAccount);
 
       // updated accounts with new order, testnet accounts are added to the end of the list if they are not visible
-      accounts = [..._accountCopy, ..._accountsThatNotVisible];
+      accounts = [...accountCopy, ...accountsThatNotVisible];
       notifyListeners();
       await storeAccounts();
     } catch (e) {
-      print(e);
+      kPrint(e);
     } finally {
       _accountSchedulerMutex = false;
     }

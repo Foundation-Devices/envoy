@@ -8,10 +8,12 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class PpNewSeedBackupPage extends StatelessWidget {
+  const PpNewSeedBackupPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("pp_new_seed_backup"),
+      key: const Key("pp_new_seed_backup"),
       clipArt: Center(
         child: Image.asset(
           "assets/pp_seed_backup.png",
@@ -30,7 +32,7 @@ class PpNewSeedBackupPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return PpNewSeedSuccessPage();
+                return const PpNewSeedSuccessPage();
               }));
             }),
       ],

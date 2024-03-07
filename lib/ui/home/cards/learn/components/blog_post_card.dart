@@ -15,7 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:html/parser.dart' as htmlParser;
+import 'package:html/parser.dart' as html_parser;
 import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -28,8 +28,7 @@ class BlogPostWidget extends ConsumerStatefulWidget {
   final BlogPost blog;
   final Function? onTap;
 
-  const BlogPostWidget({Key? key, required this.blog, this.onTap})
-      : super(key: key);
+  const BlogPostWidget({super.key, required this.blog, this.onTap});
 
   @override
   ConsumerState<BlogPostWidget> createState() => _BlogPostState();
@@ -38,15 +37,15 @@ class BlogPostWidget extends ConsumerStatefulWidget {
 class _BlogPostState extends ConsumerState<BlogPostWidget> {
   @override
   Widget build(BuildContext context) {
-    final bool _isBlogRead =
+    final bool isBlogRead =
         ref.watch(readBlogStreamProvider(widget.blog.id)).value ?? false;
-    return Container(
+    return SizedBox(
       width: containerWidth,
       child: Column(
         children: [
           ClipRRect(
             borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
             child: GestureDetector(
               onTap: () {
                 widget.blog.read = true;
@@ -67,11 +66,11 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                                 height: blogThumbnailHeight,
                               ),
                             )
-                          : Container(
+                          : SizedBox(
                               height: blogThumbnailHeight,
                               width: containerWidth,
                               child: Opacity(
-                                opacity: _isBlogRead ? 0.3 : 1.0,
+                                opacity: isBlogRead ? 0.3 : 1.0,
                                 child: Image.memory(
                                   Uint8List.fromList(snapshot.data!),
                                   fit: BoxFit.fitWidth,
@@ -101,7 +100,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: EnvoySpacing.xs),
+                    const SizedBox(height: EnvoySpacing.xs),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -109,13 +108,13 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                             DateFormat('MMMM dd, yyyy', currentLocale)
                                 .format(widget.blog.publicationDate),
                           ),
-                          _isBlogRead
+                          isBlogRead
                               ? Text(
                                   S().learningcenter_status_read,
                                   style: EnvoyTypography.info.copyWith(
                                       color: EnvoyColors.textSecondary),
                                 )
-                              : Text("")
+                              : const Text("")
                         ]),
                   ],
                 ),
@@ -129,18 +128,18 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
 }
 
 class BlogPostCard extends StatefulWidget {
-  BlogPostCard({
-    Key? key,
+  const BlogPostCard({
+    super.key,
     required this.blog,
-  }) : super(key: key);
+  });
 
   final BlogPost blog;
 
   @override
-  _BlogPostCardState createState() => _BlogPostCardState();
+  BlogPostCardState createState() => BlogPostCardState();
 }
 
-class _BlogPostCardState extends State<BlogPostCard> {
+class BlogPostCardState extends State<BlogPostCard> {
   double topGradientEnd = 0.0;
 
   @override
@@ -154,7 +153,7 @@ class _BlogPostCardState extends State<BlogPostCard> {
         ),
         child: ShaderMask(
           shaderCallback: (Rect rect) {
-            return LinearGradient(
+            return const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
@@ -170,7 +169,7 @@ class _BlogPostCardState extends State<BlogPostCard> {
           child: SingleChildScrollView(
             child: FutureBuilder<String>(
               future: Future(() async {
-                final document = htmlParser.parse(widget.blog.description);
+                final document = html_parser.parse(widget.blog.description);
                 final imageTags = document.getElementsByTagName('img');
                 final torClient =
                     HttpTor(Tor.instance, EnvoyScheduler().parallel);
@@ -220,9 +219,9 @@ class _BlogPostCardState extends State<BlogPostCard> {
                     ),
                   );
                 } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                    child: Container(
+                  return const Padding(
+                    padding: EdgeInsets.all(EnvoySpacing.medium1),
+                    child: SizedBox(
                         height: 60,
                         width: 60,
                         child: CircularProgressIndicator()),

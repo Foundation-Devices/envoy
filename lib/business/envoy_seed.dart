@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -10,6 +12,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
@@ -29,7 +32,7 @@ const String TAPROOT_WALLET_DERIVED_PREFS = "taproot_wallet_derived";
 const String LAST_BACKUP_PREFS = "last_backup";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
 const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
-    LOCAL_SECRET_FILE_NAME + ".backup_timestamp";
+    "$LOCAL_SECRET_FILE_NAME.backup_timestamp";
 
 const int SECRET_LENGTH_BYTES = 16;
 
@@ -46,18 +49,15 @@ class EnvoySeed {
   }
 
   EnvoySeed._internal() {
-    print("Instance of EnvoySeed created!");
+    kPrint("Instance of EnvoySeed created!");
   }
 
   static const _platform = MethodChannel('envoy');
 
   static String encryptedBackupFileExtension = "mla";
   static String encryptedBackupFileName = "envoy_backup";
-  static String encryptedBackupFilePath = LocalStorage().appDocumentsDir.path +
-      "/" +
-      encryptedBackupFileName +
-      "." +
-      encryptedBackupFileExtension;
+  static String encryptedBackupFilePath =
+      "${LocalStorage().appDocumentsDir.path}/$encryptedBackupFileName.$encryptedBackupFileExtension";
 
   static Map<WalletType, String> hotWalletDerivedPrefsString = {
     WalletType.witnessPublicKeyHash: WALLET_DERIVED_PREFS,
@@ -183,7 +183,9 @@ class EnvoySeed {
         await _storeLastBackupTimestamp();
       } else if (!Settings().syncToCloud && success) {
         await _storeLastBackupTimestamp();
-      } else if (cloud && !success) backupCompletedStream.sink.add(false);
+      } else if (cloud && !success) {
+        backupCompletedStream.sink.add(false);
+      }
     });
   }
 
@@ -265,7 +267,7 @@ class EnvoySeed {
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
-  Future<bool> restoreData({String? seed = null, String? filePath}) async {
+  Future<bool> restoreData({String? seed, String? filePath}) async {
     // Try to get seed from device
     try {
       if (seed == null) {
@@ -285,7 +287,7 @@ class EnvoySeed {
           return processRecoveryData(seed!, data);
         });
       } catch (e) {
-        throw e;
+        rethrow;
       }
     } else {
       try {
@@ -430,7 +432,7 @@ class EnvoySeed {
       FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
           encryptedBackupFileExtension, MimeType.TEXT);
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 

@@ -7,6 +7,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_android_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_instructions.dart';
 import 'package:envoy/ui/pages/fw/fw_android_progress.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -20,7 +21,7 @@ class FwMicrosdPage extends ConsumerWidget {
   final bool onboarding;
   final int deviceId;
 
-  FwMicrosdPage({this.onboarding = true, this.deviceId = 1});
+  const FwMicrosdPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(context, ref) {
@@ -32,7 +33,7 @@ class FwMicrosdPage extends ConsumerWidget {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      key: Key("fw_microsd"),
+      key: const Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
       text: [
         OnboardingText(
@@ -55,7 +56,7 @@ class FwMicrosdPage extends ConsumerWidget {
                 Devices()
                     .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                if (Platform.isIOS) {
+                if (Platform.isIOS && context.mounted) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwIosSuccessPage(
@@ -65,16 +66,20 @@ class FwMicrosdPage extends ConsumerWidget {
                 }
 
                 if (Platform.isAndroid) {
-                  await Future.delayed(Duration(milliseconds: 500));
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return FwAndroidProgressPage(deviceId,
-                        onboarding: onboarding);
-                  }));
+                  await Future.delayed(const Duration(milliseconds: 500));
+                  if (context.mounted) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return FwAndroidProgressPage(deviceId,
+                          onboarding: onboarding);
+                    }));
+                  }
                 }
               } catch (e) {
-                print("SD: error " + e.toString());
-                if (Platform.isIOS) // TODO: this needs to be smarter
+                kPrint("SD: error $e");
+                if (Platform.isIOS &&
+                    context.mounted) // TODO: this needs to be smarter
+                  // ignore: curly_braces_in_flow_control_structures
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwIosInstructionsPage(
@@ -83,12 +88,13 @@ class FwMicrosdPage extends ConsumerWidget {
                     );
                   }));
 
-                if (Platform.isAndroid)
+                if (Platform.isAndroid && context.mounted) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return FwAndroidInstructionsPage(
                         onboarding: onboarding, deviceId: deviceId);
                   }));
+                }
               }
             }),
       ],

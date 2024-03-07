@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+// ignore_for_file: constant_identifier_names
 library envoy.scv_server;
 
 import 'dart:convert';
+import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
@@ -18,7 +19,7 @@ class ScvServer {
   static HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   static String serverAddress = "https://validate.foundationdevices.com";
 
-  LocalStorage _ls = LocalStorage();
+  final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
   Challenge? storedChallenge;
 
@@ -34,7 +35,7 @@ class ScvServer {
   }
 
   ScvServer._internal() {
-    print("Instance of ScvServer created!");
+    kPrint("Instance of ScvServer created!");
 
     // Get the SCV challenge from storage
     // If not there, get it from Server and store it
@@ -72,7 +73,7 @@ class ScvServer {
       return storedChallenge!;
     }
 
-    final response = await http.get(serverAddress + '/challenge');
+    final response = await http.get('$serverAddress/challenge');
 
     if (response.statusCode == 200) {
       Challenge challenge = Challenge.fromJson(jsonDecode(response.body));
@@ -97,7 +98,7 @@ class ScvServer {
     };
 
     // TODO: parametrise the Passport batch?
-    final response = await http.post(serverAddress + '/validate?batch=2',
+    final response = await http.post('$serverAddress/validate?batch=2',
         body: jsonEncode(request),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=utf-8'

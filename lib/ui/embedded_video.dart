@@ -11,8 +11,8 @@ class EmbeddedVideo extends StatefulWidget {
   final String path;
   final double aspectRatio;
 
-  const EmbeddedVideo({Key? key, required this.path, this.aspectRatio = 4 / 3})
-      : super(key: key);
+  const EmbeddedVideo(
+      {super.key, required this.path, this.aspectRatio = 4 / 3});
 
   @override
   State<EmbeddedVideo> createState() => EmbeddedVideoState();
@@ -43,7 +43,8 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
   }
 
   void _periodicallyUpdatePosition() {
-    _updatePositionTimer = Timer.periodic(Duration(seconds: 1), (_) async {
+    _updatePositionTimer =
+        Timer.periodic(const Duration(seconds: 1), (_) async {
       _position = (await _videoPlayerController!.getPosition()).inSeconds;
       _duration = (await _videoPlayerController!.getDuration()).inSeconds;
 
@@ -69,15 +70,15 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
       children: [
         Card(
           elevation: 12,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
             child: VlcPlayer(
               controller: _videoPlayerController!,
               aspectRatio: widget.aspectRatio,
-              placeholder: Center(child: CircularProgressIndicator()),
+              placeholder: const Center(child: CircularProgressIndicator()),
             ),
           ),
         ),
@@ -90,8 +91,8 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
               alignment: Alignment.center,
               child: AnimatedOpacity(
                   opacity: _position >= _duration - 1 ? 1.0 : 0.0,
-                  duration: Duration(seconds: 1),
-                  child: Icon(
+                  duration: const Duration(seconds: 1),
+                  child: const Icon(
                     Icons.replay,
                     size: 60,
                     color: Colors.white,
@@ -100,6 +101,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
           ),
         ),
         Align(
+          alignment: Alignment.topRight,
           child: Material(
             color: Colors.transparent,
             child: IconButton(
@@ -117,7 +119,6 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
               },
             ),
           ),
-          alignment: Alignment.topRight,
         )
       ],
     );

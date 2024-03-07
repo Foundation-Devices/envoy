@@ -38,7 +38,7 @@ class EnvoyColors {
   static const Color grey15 = Color(0x26C0C0C0);
   static const Color grey22 = Color(0x38C0C0C0);
   static const Color grey85 = Color(0xD9C0C0C0);
-  static const Color greyLoadingSpinner = Color(0xD9D9D9);
+  static const Color greyLoadingSpinner = Color(0x00d9d9d9);
 
   static const Color darkTeal = Color(0xFF009DB9);
   static const Color teal = Color(0xFF00BDCD);
@@ -50,12 +50,12 @@ class EnvoyColors {
   static const Color danger = Color(0xFFBB6E5A);
 
   static List<Color> listAccountTileColors = [
-    Color(0xFFBF755F),
-    Color(0xFF009DB9),
-    Color(0xFF007A7A),
-    Color(0xFFD68B6E),
-    Color(0xFF00A5B2),
-    Color(0xFF2E9483),
+    const Color(0xFFBF755F),
+    const Color(0xFF009DB9),
+    const Color(0xFF007A7A),
+    const Color(0xFFD68B6E),
+    const Color(0xFF00A5B2),
+    const Color(0xFF2E9483),
     // Color(0xFF8A4F38),
     // Color(0xFF007A7A),
     // Color(0xFF004747),

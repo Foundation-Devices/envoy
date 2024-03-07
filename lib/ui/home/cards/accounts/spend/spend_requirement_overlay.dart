@@ -38,17 +38,17 @@ bool _overlayIsInViewTree = false;
 AnimationController? _spendOverlayAnimationController;
 
 ///overlay is visible in the viewport
-Alignment _endAlignment = Alignment(0.0, 1.01);
+Alignment _endAlignment = const Alignment(0.0, 1.01);
 
 ///overlay is minimized
-Alignment _minimizedAlignment = Alignment(0.0, 1.3);
+Alignment _minimizedAlignment = const Alignment(0.0, 1.3);
 
 ///hidden from the viewport
-Alignment _startAlignment = Alignment(0.0, 1.99);
+Alignment _startAlignment = const Alignment(0.0, 1.99);
 
-Alignment? _currentOverlyAlignment = Alignment(0.0, 1.99);
+Alignment? _currentOverlyAlignment = const Alignment(0.0, 1.99);
 
-OverlayEntry? overlayEntry = null;
+OverlayEntry? overlayEntry;
 Animation<Alignment>? _appearAnimation;
 
 Future showSpendRequirementOverlay(
@@ -56,7 +56,7 @@ Future showSpendRequirementOverlay(
   if (_overlayIsInViewTree) {
     /// if the view is in progress of hiding the overlay. wait and check if the view is disposed
     /// this is useful when user is moving really fast through the screens
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     if (_overlayIsInViewTree) {
       /// if the view still in the view tree return.
       return;
@@ -75,15 +75,16 @@ Future showSpendRequirementOverlay(
     if (_spendOverlayAnimationController?.status == AnimationStatus.completed) {
       overlayEntry?.remove();
       overlayEntry?.dispose();
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
   overlayEntry = OverlayEntry(builder: (context) {
     return SpendRequirementOverlay(account: account);
   });
-  if (context.mounted)
+  if (context.mounted) {
     Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
+  }
 }
 
 Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
@@ -97,7 +98,7 @@ Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
         _spendOverlayAnimationController != null &&
         _spendOverlayAnimationController?.isAnimating == false) {
       _runAnimation(_currentOverlyAlignment!, _startAlignment)
-          .then((value) => Future.delayed(Duration(milliseconds: 250)))
+          .then((value) => Future.delayed(const Duration(milliseconds: 250)))
           .then((value) {
         if (_spendOverlayAnimationController?.status ==
             AnimationStatus.completed) {
@@ -158,7 +159,7 @@ class SpendRequirementOverlayState
     }
     _spendOverlayAnimationController = AnimationController(
       vsync: this,
-      reverseDuration: Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 300),
     );
     _appearAnimation = AlignmentTween(
       begin: _dragAlignment,
@@ -177,7 +178,8 @@ class SpendRequirementOverlayState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _spendOverlayAnimationController?.animateTo(1,
-          duration: Duration(milliseconds: 250), curve: EnvoyEasing.easeInOut);
+          duration: const Duration(milliseconds: 250),
+          curve: EnvoyEasing.easeInOut);
     });
   }
 
@@ -246,7 +248,7 @@ class SpendRequirementOverlayState
 
     return AnimatedOpacity(
       opacity: _hideOverlay ? 0 : 1,
-      duration: Duration(milliseconds: 120),
+      duration: const Duration(milliseconds: 120),
       child: GestureDetector(
         onPanDown: (details) {
           _spendOverlayAnimationController!.stop();
@@ -293,10 +295,10 @@ class SpendRequirementOverlayState
         onTap: () {
           if (_isInMinimizedState) {
             _isInMinimizedState = false;
-            _runSpringSimulation(Offset(0, 0), _endAlignment, size);
+            _runSpringSimulation(const Offset(0, 0), _endAlignment, size);
           } else {
             _isInMinimizedState = true;
-            _runSpringSimulation(Offset(0, 0), _minimizedAlignment, size);
+            _runSpringSimulation(const Offset(0, 0), _minimizedAlignment, size);
           }
         },
         child: Align(
@@ -313,14 +315,15 @@ class SpendRequirementOverlayState
                         color: Colors.black.withOpacity(0.2),
                         spreadRadius: 0,
                         blurRadius: 10,
-                        offset: Offset(0, 0), // changes position of shadow
+                        offset:
+                            const Offset(0, 0), // changes position of shadow
                       ),
                     ],
                   ),
                   child: Card(
                     elevation: 100,
                     shadowColor: Colors.black,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(EnvoySpacing.medium1),
                       ),
@@ -334,7 +337,7 @@ class SpendRequirementOverlayState
                         Container(
                             width: 40,
                             height: 4,
-                            margin: EdgeInsets.only(
+                            margin: const EdgeInsets.only(
                                 top: EnvoySpacing.xs,
                                 bottom: EnvoySpacing.small),
                             decoration: BoxDecoration(
@@ -347,15 +350,15 @@ class SpendRequirementOverlayState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: EnvoySpacing.small,
                                   vertical: EnvoySpacing.small,
                                 ),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Padding(
-                                        padding: const EdgeInsets.symmetric(
+                                    const Padding(
+                                        padding: EdgeInsets.symmetric(
                                             horizontal: EnvoySpacing.xs)),
                                     !inTagSelectionMode
                                         ? Padding(
@@ -365,7 +368,7 @@ class SpendRequirementOverlayState
                                               children: [
                                                 Text(S()
                                                     .coincontrol_edit_transaction_requiredAmount),
-                                                Spacer(),
+                                                const Spacer(),
                                                 SizedBox.square(
                                                     dimension: 12,
                                                     child: SvgPicture.asset(
@@ -373,10 +376,13 @@ class SpendRequirementOverlayState
                                                               DisplayUnit.btc
                                                           ? "assets/icons/ic_bitcoin_straight.svg"
                                                           : "assets/icons/ic_sats.svg",
-                                                      color: Color(0xff808080),
+                                                      color: const Color(
+                                                          0xff808080),
                                                     )),
                                                 Text(
-                                                  "${getFormattedAmount(requiredAmount, trailingZeroes: true)}",
+                                                  getFormattedAmount(
+                                                      requiredAmount,
+                                                      trailingZeroes: true),
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .titleSmall,
@@ -384,19 +390,19 @@ class SpendRequirementOverlayState
                                               ],
                                             ),
                                           )
-                                        : SizedBox(),
-                                    Padding(
+                                        : const SizedBox(),
+                                    const Padding(
                                         padding:
                                             EdgeInsets.all(EnvoySpacing.xs)),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: EnvoySpacing.small),
-                                      child: Builder(builder: (context) {
+                                      child: Builder(builder: (_) {
                                         List<Widget> sheetOptions = [];
                                         if (inTagSelectionMode) {
                                           sheetOptions.add(GestureDetector(
                                             onTap: () {
-                                              cancel();
+                                              cancel(context);
                                             },
                                             child: Padding(
                                               padding:
@@ -404,16 +410,16 @@ class SpendRequirementOverlayState
                                               child: Container(
                                                 height: 20,
                                                 width: 20,
-                                                margin: EdgeInsets.only(
+                                                margin: const EdgeInsets.only(
                                                     right: EnvoySpacing.xs),
-                                                child:
-                                                    Icon(Icons.close, size: 14),
                                                 decoration: BoxDecoration(
                                                   color: EnvoyColors.surface2,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           EnvoySpacing.medium1),
                                                 ),
+                                                child: const Icon(Icons.close,
+                                                    size: 14),
                                               ),
                                             ),
                                           ));
@@ -426,7 +432,7 @@ class SpendRequirementOverlayState
                                                 .textTheme
                                                 .titleSmall,
                                           ),
-                                          Spacer(),
+                                          const Spacer(),
                                           EnvoyAmount(
                                               amountSats: totalSelectedAmount,
                                               amountWidgetStyle:
@@ -445,10 +451,10 @@ class SpendRequirementOverlayState
                                 ),
                               ),
                               AnimatedOpacity(
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 opacity: _isInMinimizedState ? 0 : 1,
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: EnvoySpacing.small,
                                   ),
                                   child: Column(
@@ -463,6 +469,11 @@ class SpendRequirementOverlayState
                                             ? S().tagged_tagDetails_sheet_cta1
                                             : S().component_continue,
                                         onTap: () async {
+                                          final scope =
+                                              ProviderScope.containerOf(
+                                                  context);
+                                          final router = GoRouter.of(context);
+
                                           /// if the user is in utxo details screen we need to wait animations to finish
                                           /// before we can pop back to home screen
                                           if (Navigator.canPop(context)) {
@@ -471,8 +482,8 @@ class SpendRequirementOverlayState
                                               return route.settings
                                                   is MaterialPage;
                                             });
-                                            await Future.delayed(
-                                                Duration(milliseconds: 320));
+                                            await Future.delayed(const Duration(
+                                                milliseconds: 320));
                                           }
 
                                           ///if the user changed the selection, validate the transaction
@@ -490,20 +501,17 @@ class SpendRequirementOverlayState
                                             ref
                                                 .read(spendTransactionProvider
                                                     .notifier)
-                                                .validate(
-                                                    ProviderScope.containerOf(
-                                                        context));
+                                                .validate(scope);
                                           }
                                           hideSpendRequirementOverlay();
-                                          await Future.delayed(
-                                              Duration(milliseconds: 120));
+                                          await Future.delayed(const Duration(
+                                              milliseconds: 120));
 
                                           if (ref.read(spendEditModeProvider)) {
-                                            GoRouter.of(context).push(
+                                            router.push(
                                                 ROUTE_ACCOUNT_SEND_CONFIRM);
                                           } else {
-                                            GoRouter.of(context)
-                                                .push(ROUTE_ACCOUNT_SEND);
+                                            router.push(ROUTE_ACCOUNT_SEND);
                                           }
                                           ref
                                               .read(spendEditModeProvider
@@ -511,7 +519,7 @@ class SpendRequirementOverlayState
                                               .state = false;
                                         },
                                       ),
-                                      Padding(
+                                      const Padding(
                                           padding:
                                               EdgeInsets.all(EnvoySpacing.xs)),
                                       inTagSelectionMode
@@ -556,6 +564,7 @@ class SpendRequirementOverlayState
               : S().component_cancel,
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
+            final router = GoRouter.of(context);
             ref
                 .read(coinSelectionStateProvider.notifier)
                 .addAll(walletSelection.toList());
@@ -564,12 +573,12 @@ class SpendRequirementOverlayState
               Navigator.of(context).popUntil((route) {
                 return route.settings is MaterialPage;
               });
-              await Future.delayed(Duration(milliseconds: 200));
+              await Future.delayed(const Duration(milliseconds: 200));
             }
             hideSpendRequirementOverlay();
-            await Future.delayed(Duration(milliseconds: 120));
+            await Future.delayed(const Duration(milliseconds: 120));
             ref.read(spendEditModeProvider.notifier).state = false;
-            GoRouter.of(context).push(ROUTE_ACCOUNT_SEND_CONFIRM);
+            router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
           },
         );
       },
@@ -579,7 +588,7 @@ class SpendRequirementOverlayState
   Widget coinSelectionButton(
       BuildContext context, bool valid, bool inTagSelectionMode) {
     return Consumer(
-      builder: (context, ref, child) {
+      builder: (_, ref, child) {
         Account? selectedAccount = ref.read(selectedAccountProvider);
         Set<String> selection = ref.watch(coinSelectionStateProvider);
 
@@ -597,7 +606,7 @@ class SpendRequirementOverlayState
 
             /// check if selected coins are only part of untagged coins
             selection.toList().forEach((selectionId) {
-              if (!untagged.coins_id.contains(selectionId)) {
+              if (!untagged.coinsId.contains(selectionId)) {
                 isCoinsOnlyPartOfUntagged = false;
               }
             });
@@ -613,8 +622,10 @@ class SpendRequirementOverlayState
           type: EnvoyButtonTypes.secondary,
           buttonText,
           onTap: () async {
+            NavigatorState navigator =
+                Navigator.of(context, rootNavigator: true);
             if (!inTagSelectionMode) {
-              cancel();
+              cancel(context);
               return;
             }
             Account? selectedAccount = ref.read(selectedAccountProvider);
@@ -623,7 +634,7 @@ class SpendRequirementOverlayState
             }
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
-            if (dismissed) {
+            if (dismissed && context.mounted) {
               showEnvoyDialog(
                   context: context,
                   useRootNavigator: true,
@@ -632,9 +643,7 @@ class SpendRequirementOverlayState
                       accountId: selectedAccount.id ?? "",
                       onTagUpdate: () async {
                         ref.read(coinSelectionStateProvider.notifier).reset();
-                        await Future.delayed(Duration(milliseconds: 100));
-                        NavigatorState navigator =
-                            Navigator.of(context, rootNavigator: true);
+                        await Future.delayed(const Duration(milliseconds: 100));
 
                         /// Pop until we get to the go router
                         navigator.popUntil((route) {
@@ -643,42 +652,45 @@ class SpendRequirementOverlayState
                       },
                     ),
                   ),
-                  alignment: Alignment(0.0, -.6));
+                  alignment: const Alignment(0.0, -.6));
             } else {
-              showEnvoyDialog(
-                  useRootNavigator: true,
-                  context: context,
-                  builder: Builder(builder: (context) {
-                    return CreateCoinTagWarning(onContinue: () {
-                      //pop warning dialog
-                      Navigator.pop(context);
-                      //Shows Coin create dialog
-                      showEnvoyDialog(
-                          context: context,
-                          useRootNavigator: true,
-                          builder: Builder(
-                            builder: (context) => CreateCoinTag(
-                              accountId: selectedAccount.id ?? "",
-                              onTagUpdate: () async {
-                                ref
-                                    .read(coinSelectionStateProvider.notifier)
-                                    .reset();
-                                NavigatorState navigator =
-                                    Navigator.of(context, rootNavigator: true);
-                                await Future.delayed(
-                                    Duration(milliseconds: 100));
+              if (context.mounted) {
+                showEnvoyDialog(
+                    useRootNavigator: true,
+                    context: context,
+                    builder: Builder(builder: (context) {
+                      return CreateCoinTagWarning(onContinue: () {
+                        //pop warning dialog
+                        Navigator.pop(context);
+                        //Shows Coin create dialog
+                        showEnvoyDialog(
+                            context: context,
+                            useRootNavigator: true,
+                            builder: Builder(
+                              builder: (context) => CreateCoinTag(
+                                accountId: selectedAccount.id ?? "",
+                                onTagUpdate: () async {
+                                  ref
+                                      .read(coinSelectionStateProvider.notifier)
+                                      .reset();
+                                  NavigatorState navigator = Navigator.of(
+                                      context,
+                                      rootNavigator: true);
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 100));
 
-                                /// Pop until we get to the home page (GoRouter Shell)
-                                navigator.popUntil((route) {
-                                  return route.settings is MaterialPage;
-                                });
-                              },
+                                  /// Pop until we get to the home page (GoRouter Shell)
+                                  navigator.popUntil((route) {
+                                    return route.settings is MaterialPage;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          alignment: Alignment(0.0, -.6));
-                    });
-                  }),
-                  alignment: Alignment(0.0, -.6));
+                            alignment: const Alignment(0.0, -.6));
+                      });
+                    }),
+                    alignment: const Alignment(0.0, -.6));
+              }
             }
           },
         );
@@ -686,7 +698,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  cancel() async {
+  cancel(BuildContext context) async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
     ProviderContainer container = ProviderScope.containerOf(context);
@@ -700,21 +712,23 @@ class SpendRequirementOverlayState
     setState(() {
       _hideOverlay = true;
     });
-    bool discard = await showEnvoyDialog(
-        dismissible: false,
-        context: context,
-        useRootNavigator: true,
-        dialog: SpendSelectionCancelWarning());
-    await Future.delayed(Duration(milliseconds: 130));
-    setState(() {
-      _hideOverlay = false;
-    });
-    if (discard) {
-      ref.read(coinSelectionStateProvider.notifier).reset();
-      ref.read(hideBottomNavProvider.notifier).state = false;
-      ref.read(spendEditModeProvider.notifier).state = false;
-      clearSpendState(container);
-      hideSpendRequirementOverlay();
+    if (context.mounted) {
+      bool discard = await showEnvoyDialog(
+          dismissible: false,
+          context: context,
+          useRootNavigator: true,
+          dialog: const SpendSelectionCancelWarning());
+      await Future.delayed(const Duration(milliseconds: 130));
+      setState(() {
+        _hideOverlay = false;
+      });
+      if (discard) {
+        ref.read(coinSelectionStateProvider.notifier).reset();
+        ref.read(hideBottomNavProvider.notifier).state = false;
+        ref.read(spendEditModeProvider.notifier).state = false;
+        clearSpendState(container);
+        hideSpendRequirementOverlay();
+      }
     }
   }
 }
@@ -746,8 +760,8 @@ class _SpendSelectionCancelWarningState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24).add(EdgeInsets.only(top: -6)),
-      constraints: BoxConstraints(
+      padding: const EdgeInsets.all(24).add(const EdgeInsets.only(top: -6)),
+      constraints: const BoxConstraints(
         minHeight: 300,
         maxWidth: 300,
       ),
@@ -756,16 +770,16 @@ class _SpendSelectionCancelWarningState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Icon(
+          const Icon(
             Icons.warning_amber_rounded,
             color: EnvoyColors.accentSecondary,
             size: 68,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
           Text(S().manual_coin_preselection_dialog_description,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleSmall),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
           GestureDetector(
             onTap: () {
               setState(() {
@@ -780,23 +794,25 @@ class _SpendSelectionCancelWarningState
                   child: EnvoyCheckbox(
                     value: dismissed,
                     onChanged: (value) {
-                      if (value != null)
+                      if (value != null) {
                         setState(() {
                           dismissed = value;
                         });
+                      }
                     },
                   ),
                 ),
                 Text(
                   S().component_dontShowAgain,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: dismissed ? Colors.black : Color(0xff808080),
+                        color:
+                            dismissed ? Colors.black : const Color(0xff808080),
                       ),
                 ),
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
             S().component_no,
             type: EnvoyButtonTypes.tertiary,
@@ -805,7 +821,7 @@ class _SpendSelectionCancelWarningState
               Navigator.of(context).pop(false);
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_yes,
             type: EnvoyButtonTypes.primaryModal,

@@ -2,10 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:envoy/business/settings.dart';
@@ -51,15 +54,15 @@ class ExchangeRate extends ChangeNotifier {
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";
 
-  double? _selectedCurrencyRate = null;
+  double? _selectedCurrencyRate;
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
-  double? _usdRate = null;
+  double? _usdRate;
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
-  HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
-  String _serverAddress = Settings().nguServerAddress;
+  final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  final String _serverAddress = Settings().nguServerAddress;
 
   static final ExchangeRate _instance = ExchangeRate._internal();
 
@@ -73,13 +76,13 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   ExchangeRate._internal() {
-    print("Instance of ExchangeRate created!");
+    kPrint("Instance of ExchangeRate created!");
 
     // Get rate from storage and set currency from Settings
     restore();
 
     // Refresh from time to time
-    Timer.periodic(Duration(seconds: 30), (_) {
+    Timer.periodic(const Duration(seconds: 30), (_) {
       _getRate();
     });
   }
@@ -138,8 +141,8 @@ class ExchangeRate extends ChangeNotifier {
 
   _getRate() async {
     String selectedCurrencyCode = _currency?.code ?? ("USD");
-    double? selectedRate = null;
-    double? usdRate = null;
+    double? selectedRate;
+    double? usdRate;
 
     try {
       if (selectedCurrencyCode != "USD") {
@@ -159,20 +162,16 @@ class ExchangeRate extends ChangeNotifier {
       return;
     }
 
-    if (selectedRate == null) {
-      selectedRate = usdRate;
-    }
-
+    selectedRate ??= usdRate;
     _storeRate(selectedRate, selectedCurrencyCode, usdRate);
   }
 
   Future<double> _getRateForCode(String currencyCode) async {
     try {
-      final response =
-          await _http.get(_serverAddress + '/price/' + currencyCode);
+      final response = await _http.get('$_serverAddress/price/$currencyCode');
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        var rate = json['reply']['BTC' + currencyCode]["last"];
+        var rate = json['reply']['BTC$currencyCode']["last"];
         ConnectivityManager().nguSuccess();
         return rate.toDouble();
       } else {

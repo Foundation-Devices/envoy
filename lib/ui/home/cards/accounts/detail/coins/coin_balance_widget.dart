@@ -19,7 +19,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
@@ -66,15 +66,16 @@ class BalanceWidget extends ConsumerWidget {
     if (switchWidget != null) {
       rowItems.add(AnimatedOpacity(
           opacity: locked ? 0.2 : 1,
-          duration: Duration(milliseconds: 250),
+          duration: const Duration(milliseconds: 250),
           child: IgnorePointer(
-              ignoring: locked, child: switchWidget ?? SizedBox.shrink())));
+              ignoring: locked,
+              child: switchWidget ?? const SizedBox.shrink())));
     }
 
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(left: EnvoySpacing.xs),
-      padding: EdgeInsets.only(left: EnvoySpacing.xs),
+      margin: const EdgeInsets.only(left: EnvoySpacing.xs),
+      padding: const EdgeInsets.only(left: EnvoySpacing.xs),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +83,7 @@ class BalanceWidget extends ConsumerWidget {
           Flexible(
               child: Container(
             child: hide
-                ? LoaderGhost(width: 100, height: 20)
+                ? const LoaderGhost(width: 100, height: 20)
                 : EnvoyAmount(
                     account: account!,
                     amountSats: amount,
@@ -129,10 +130,10 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         if (!coin.locked) {
           bool dismissed = await EnvoyStorage()
               .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
-          if (!dismissed) {
+          if (!dismissed && context.mounted) {
             showEnvoyDialog(
                 context: context,
-                alignment: Alignment(0.0, -.6),
+                alignment: const Alignment(0.0, -.6),
                 useRootNavigator: true,
                 builder: Builder(
                   builder: (context) {
@@ -144,7 +145,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                       onContinue: () async {
                         Navigator.pop(context);
                         //wait for dialog to close so that the lock icon animation is not interrupted
-                        await Future.delayed(Duration(milliseconds: 250));
+                        await Future.delayed(const Duration(milliseconds: 250));
                         _lockUnLockCoin(coin);
                       },
                     );
@@ -156,10 +157,10 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         } else {
           bool dismissed = await EnvoyStorage()
               .checkPromptDismissed(DismissiblePrompt.coinUnlockWarning);
-          if (!dismissed) {
+          if (!dismissed && context.mounted) {
             showEnvoyDialog(
                 context: context,
-                alignment: Alignment(0.0, -.6),
+                alignment: const Alignment(0.0, -.6),
                 builder: Builder(
                   builder: (context) {
                     return CoinLockWarning(
@@ -170,7 +171,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                       onContinue: () async {
                         Navigator.pop(context);
                         //wait for dialog to close so that the lock icon animation is not interrupted
-                        await Future.delayed(Duration(milliseconds: 250));
+                        await Future.delayed(const Duration(milliseconds: 250));
                         _lockUnLockCoin(coin);
                       },
                     );
@@ -209,7 +210,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         ref.read(coinSelectionStateProvider.notifier).remove(coin.id);
       }
     });
-    Future.delayed(Duration(milliseconds: 100))
+    Future.delayed(const Duration(milliseconds: 100))
         .then((value) => Haptics.lightImpact());
   }
 }
@@ -229,9 +230,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
     bool hideSwitch = (coinTag.isAllCoinsLocked && isListScreen) ||
         (coinTag.totalAmount == 0);
 
-    final cardRadius = 26.0;
+    const cardRadius = 26.0;
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(cardRadius))),
       child: BalanceWidget(
@@ -243,10 +244,10 @@ class CoinTagBalanceWidget extends ConsumerWidget {
           if (!coinTag.isAllCoinsLocked) {
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
-            if (!dismissed) {
+            if (!dismissed && context.mounted) {
               showEnvoyDialog(
                   context: context,
-                  alignment: Alignment(0.0, -.6),
+                  alignment: const Alignment(0.0, -.6),
                   useRootNavigator: true,
                   builder: Builder(
                     builder: (context) {
@@ -258,7 +259,8 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                         onContinue: () async {
                           Navigator.pop(context);
                           //wait for dialog to close so that the lock icon animation is not interrupted
-                          await Future.delayed(Duration(milliseconds: 250));
+                          await Future.delayed(
+                              const Duration(milliseconds: 250));
                           coinTag.updateLockState(true);
                         },
                       );
@@ -270,10 +272,10 @@ class CoinTagBalanceWidget extends ConsumerWidget {
           } else {
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.coinUnlockWarning);
-            if (!dismissed) {
+            if (!dismissed && context.mounted) {
               showEnvoyDialog(
                   context: context,
-                  alignment: Alignment(0.0, -.6),
+                  alignment: const Alignment(0.0, -.6),
                   useRootNavigator: true,
                   builder: Builder(
                     builder: (context) {
@@ -285,7 +287,8 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                         onContinue: () async {
                           Navigator.pop(context);
                           //wait for dialog to close so that the lock icon animation is not interrupted
-                          await Future.delayed(Duration(milliseconds: 250));
+                          await Future.delayed(
+                              const Duration(milliseconds: 250));
                           coinTag.updateLockState(false);
                         },
                       );
@@ -300,17 +303,16 @@ class CoinTagBalanceWidget extends ConsumerWidget {
             ? null
             : Consumer(
                 builder: (context, ref, child) {
-                  final coins = coinTag.coins_id;
+                  final coins = coinTag.coinsId;
                   final selectedItems = ref
                       .watch(coinSelectionStateProvider)
                       .where(
                         (element) => coins.contains(element),
                       )
                       .toList();
-                  CoinTagSwitchState coinTagSwitchState =
-                      selectedItems.length == 0
-                          ? CoinTagSwitchState.off
-                          : CoinTagSwitchState.partial;
+                  CoinTagSwitchState coinTagSwitchState = selectedItems.isEmpty
+                      ? CoinTagSwitchState.off
+                      : CoinTagSwitchState.partial;
                   if (selectedItems.length == coinTag.numOfCoins) {
                     coinTagSwitchState = CoinTagSwitchState.on;
                   }
@@ -369,8 +371,8 @@ class CoinLockButton extends StatefulWidget {
 }
 
 class _CoinLockButtonState extends State<CoinLockButton> {
-  Rive.StateMachineController? _controller;
-  late Rive.RiveFile riveFile;
+  rive.StateMachineController? _controller;
+  late rive.RiveFile riveFile;
 
   void _onInit(Artboard art) {
     var ctrl = StateMachineController.fromArtboard(art, 'CoinStateMachine')
@@ -395,11 +397,11 @@ class _CoinLockButtonState extends State<CoinLockButton> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
                 child: riveFile != null
-                    ? Rive.RiveAnimation.direct(
+                    ? rive.RiveAnimation.direct(
                         riveFile,
                         onInit: _onInit,
                       )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               )));
     });
   }
@@ -414,7 +416,7 @@ class _CoinLockButtonState extends State<CoinLockButton> {
 class CoinSubTitleText extends ConsumerWidget {
   final CoinTag tag;
 
-  CoinSubTitleText(this.tag);
+  const CoinSubTitleText(this.tag, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -429,11 +431,11 @@ class CoinSubTitleText extends ConsumerWidget {
 String getMessage(CoinTag tag, WidgetRef ref) {
   final selections = ref.watch(coinSelectionStateProvider);
   final selectedCoins =
-      selections.where((element) => tag.coins_id.contains(element));
+      selections.where((element) => tag.coinsId.contains(element));
   final lockedCoins = tag.coins.where((element) => element.locked);
   final availableCoins = tag.numOfCoins - lockedCoins.length;
   String selectionMessage =
-      "${selectedCoins.length} ${S().card_label_of} ${availableCoins} ${S().card_coins_selected}";
+      "${selectedCoins.length} ${S().card_label_of} $availableCoins ${S().card_coins_selected}";
 
   if (availableCoins == 0 || availableCoins == selectedCoins.length) {
     selectionMessage =
@@ -449,7 +451,7 @@ String getMessage(CoinTag tag, WidgetRef ref) {
           "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";
     }
   } else {
-    message = "${selectionMessage}";
+    message = selectionMessage;
     if (lockedCoins.isNotEmpty) {
       message =
           "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";

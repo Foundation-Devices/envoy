@@ -8,7 +8,7 @@ import 'package:rive/rive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SdCardSpinner extends ConsumerStatefulWidget {
-  const SdCardSpinner({Key? key}) : super(key: key);
+  const SdCardSpinner({super.key});
 
   @override
   ConsumerState<SdCardSpinner> createState() => _SdCardSpinnerState();
@@ -41,7 +41,7 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
       if (newState == null) return;
       indeterminate?.change(false);
       if (newState) {
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(const Duration(seconds: 5));
         happy?.change(true);
       } else {
         happy?.change(false);

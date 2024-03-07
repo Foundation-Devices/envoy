@@ -12,10 +12,10 @@ enum BrandmarkStyle {
 
 class Brandmark extends StatelessWidget {
   const Brandmark({
-    Key? key,
+    super.key,
     required this.logoSize,
     required this.style,
-  }) : super(key: key);
+  });
 
   final double logoSize;
   final BrandmarkStyle style;
@@ -41,7 +41,7 @@ class Brandmark extends StatelessWidget {
 
     return Center(
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(100)),
+        borderRadius: const BorderRadius.all(Radius.circular(100)),
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(
             filterColor,

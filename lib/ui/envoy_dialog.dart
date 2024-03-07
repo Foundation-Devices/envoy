@@ -11,8 +11,9 @@ class EnvoyDialog extends StatelessWidget {
   final List<Widget>? actions;
   final double paddingBottom;
 
-  EnvoyDialog(
-      {this.title,
+  const EnvoyDialog(
+      {super.key,
+      this.title,
       this.content,
       this.paddingBottom = 12,
       this.actions,
@@ -21,7 +22,7 @@ class EnvoyDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(28).add(EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
       constraints: BoxConstraints(
         minHeight: 270,
         maxWidth: MediaQuery.of(context).size.width * 0.80,
@@ -35,32 +36,30 @@ class EnvoyDialog extends StatelessWidget {
             children: [
               dismissible
                   ? Align(
-                      alignment: Alignment.centerRight.add(Alignment(.1, 0)),
+                      alignment:
+                          Alignment.centerRight.add(const Alignment(.1, 0)),
                       child: IconButton(
-                        icon: Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
                     )
-                  : SizedBox(),
-              this.title != null
-                  ? Container(
-                      child: Text(this.title ?? '',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w500, fontSize: 24)),
-                    )
-                  : SizedBox(),
-              Padding(padding: EdgeInsets.all(this.title != null ? 8 : 0)),
+                  : const SizedBox(),
+              title != null
+                  ? Text(title ?? '',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24))
+                  : const SizedBox(),
+              Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
               content ?? Container(),
               Padding(padding: EdgeInsets.all(paddingBottom)),
               ...actions?.map((widget) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: widget,
                     );
                   }).toList() ??

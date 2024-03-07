@@ -16,6 +16,8 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/business/locale.dart';
 
 class ActivityCard extends StatefulWidget {
+  const ActivityCard({super.key});
+
   @override
   State<ActivityCard> createState() => ActivityCardState();
 }
@@ -27,7 +29,7 @@ class ActivityCardState extends State<ActivityCard> {
   void initState() {
     super.initState();
 
-    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       setState(() {});
     });
   }
@@ -42,14 +44,14 @@ class ActivityCardState extends State<ActivityCard> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
 
-    return AnimatedSwitcher(
+    return const AnimatedSwitcher(
         duration: Duration(milliseconds: 250), child: TopLevelActivityCard());
   }
 }
 
 //ignore: must_be_immutable
 class TopLevelActivityCard extends ConsumerWidget {
-  TopLevelActivityCard() {}
+  const TopLevelActivityCard({super.key});
 
   @override
   Widget build(context, ref) {
@@ -59,7 +61,7 @@ class TopLevelActivityCard extends ConsumerWidget {
 
     return ShaderMask(
       shaderCallback: (Rect rect) {
-        return LinearGradient(
+        return const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
@@ -73,7 +75,7 @@ class TopLevelActivityCard extends ConsumerWidget {
       },
       blendMode: BlendMode.dstOut,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [
           notifications.isEmpty
               ? SliverFillRemaining(
@@ -83,13 +85,13 @@ class TopLevelActivityCard extends ConsumerWidget {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: EnvoySpacing.small,
                           ),
                           ListHeader(
                             title: S().activity_listHeader_Today,
                           ),
-                          ActivityGhostListTile(
+                          const ActivityGhostListTile(
                             animate: false,
                           ),
                         ],
@@ -99,7 +101,7 @@ class TopLevelActivityCard extends ConsumerWidget {
                         style: EnvoyTypography.body
                             .copyWith(color: EnvoyColors.textSecondary),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: EnvoySpacing.medium2,
                       ),
                     ],
@@ -111,9 +113,9 @@ class TopLevelActivityCard extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       ListView.builder(
-                          padding: EdgeInsets.only(top: 15.0),
+                          padding: const EdgeInsets.only(top: 15.0),
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: [
@@ -123,7 +125,7 @@ class TopLevelActivityCard extends ConsumerWidget {
                                   Column(
                                     children: [
                                       if (index != 0)
-                                        SizedBox(
+                                        const SizedBox(
                                           height: EnvoySpacing.medium2,
                                         ),
                                       ListHeader(
@@ -136,7 +138,7 @@ class TopLevelActivityCard extends ConsumerWidget {
                             );
                           },
                           itemCount: notifications.length),
-                      SizedBox(height: EnvoySpacing.large2)
+                      const SizedBox(height: EnvoySpacing.large2)
                     ],
                   ),
                 )
@@ -161,13 +163,13 @@ class ActivityGhostListTile extends StatelessWidget {
 
   const ActivityGhostListTile({
     this.animate = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       minLeadingWidth: 0,
       horizontalTitleGap: EnvoySpacing.small,
       title: Padding(

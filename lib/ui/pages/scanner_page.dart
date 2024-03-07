@@ -2,12 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'dart:async';
 import 'dart:io';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
-import 'package:envoy/business/btcPay_voucher.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
@@ -15,6 +17,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -39,11 +42,11 @@ enum ScannerType {
   btcPay,
 }
 
-final SnackBar invalidAddressSnackbar = SnackBar(
+const SnackBar invalidAddressSnackbar = SnackBar(
   content: Text("Not a valid address"), // TODO: FIGMA
 );
 
-final SnackBar invalidSeedSnackbar = SnackBar(
+const SnackBar invalidSeedSnackbar = SnackBar(
   content: Text("Not a valid seed"), // TODO: FIGMA
 );
 
@@ -59,7 +62,8 @@ class ScannerPage extends StatefulWidget {
   final Function(String, int)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
-      {this.account,
+      {super.key,
+      this.account,
       this.challengeToValidate,
       this.onTxParsed,
       this.onSeedValidated,
@@ -82,17 +86,19 @@ class ScannerPage extends StatefulWidget {
   ScannerPage.scv(Challenge challengeToValidate)
       : this([ScannerType.scv], challengeToValidate: challengeToValidate);
 
+  //TODO: fix scanner widget with proper widget convention
   @override
-  State<StatefulWidget> createState() => _ScannerPageState(_urDecoder);
+  // ignore: no_logic_in_create_state
+  State<StatefulWidget> createState() => ScannerPageState(_urDecoder);
 }
 
-class _ScannerPageState extends State<ScannerPage> {
+class ScannerPageState extends State<ScannerPage> {
   late UniformResourceReader _urDecoder;
   bool _processing = false;
 
   double _progress = 0.0;
 
-  Completer<void> _permissionsCompleter = Completer();
+  final Completer<void> _permissionsCompleter = Completer();
   late Future<void> _permissionsGranted;
 
   QRViewController? controller;
@@ -102,7 +108,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
   Timer? _snackbarTimer;
 
-  _ScannerPageState(UniformResourceReader urDecoder) {
+  ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
   }
 
@@ -158,7 +164,7 @@ class _ScannerPageState extends State<ScannerPage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.close_rounded,
                 size: 25,
                 color: Colors.white54,
@@ -199,10 +205,10 @@ class _ScannerPageState extends State<ScannerPage> {
                       _onQRViewCreated(controller, context),
                 );
               } else {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             }),
-        ViewFinder(),
+        const ViewFinder(),
         Center(
             child: SizedBox(
                 height: 200,
@@ -226,11 +232,12 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   _onDetect(String code, BuildContext context) async {
-    final _navigator = Navigator.of(context);
+    final NavigatorState navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
-        _navigator.pop();
+        navigator.pop();
         showEnvoyDialog(
             context: context, dialog: AztecoDialog(voucher, widget.account!));
         return;
@@ -252,7 +259,7 @@ class _ScannerPageState extends State<ScannerPage> {
       // TODO: account for passphrases (when we reenable that feature)
       if ((seedLength == 12 || seedLength == 24) && Wallet.validateSeed(code)) {
         widget.onSeedValidated!(code);
-        _navigator.pop();
+        navigator.pop();
         return;
       }
       showSnackbar(invalidSeedSnackbar);
@@ -272,7 +279,7 @@ class _ScannerPageState extends State<ScannerPage> {
         // BIP-21 amounts are in BTC
         amount = (bip21.amount * 100000000.0).toInt();
       } catch (e, s) {
-        print(e);
+        kPrint(e);
         debugPrintStack(stackTrace: s);
         // TODO
       }
@@ -284,7 +291,7 @@ class _ScannerPageState extends State<ScannerPage> {
         showSnackbar(invalidAddressSnackbar);
       } else {
         widget.onAddressValidated!(address, amount);
-        _navigator.pop();
+        navigator.pop();
         return;
       }
     }
@@ -293,7 +300,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
     if (widget._acceptableTypes.contains(ScannerType.nodeUrl)) {
       widget.onNodeUrlParsed!(scannedData);
-      _navigator.pop();
+      navigator.pop();
       return;
     }
 
@@ -310,14 +317,14 @@ class _ScannerPageState extends State<ScannerPage> {
         await widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
 
         ///popping this page
-        _navigator.pop();
+        navigator.pop();
       } else if (widget._acceptableTypes.contains(ScannerType.pair)) {
         if (_validatePairData(_urDecoder.decoded) &&
             _urDecoder.decoded is Binary) {
           _binaryValidated(_urDecoder.decoded as Binary);
         } else {
           // Tell the user to use testnet
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          scaffold.showSnackBar(const SnackBar(
             content: Text("Please use Testnet"), // TODO: FIGMA
           ));
         }
@@ -329,7 +336,7 @@ class _ScannerPageState extends State<ScannerPage> {
     if ((_snackbarTimer == null || !_snackbarTimer!.isActive) &&
         _progress == 0.0) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      _snackbarTimer = Timer(Duration(seconds: 5), () {});
+      _snackbarTimer = Timer(const Duration(seconds: 5), () {});
     }
   }
 
@@ -363,7 +370,7 @@ class _ScannerPageState extends State<ScannerPage> {
         } else {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
-            return ScvResultFailPage();
+            return const ScvResultFailPage();
           }));
         }
       });
@@ -385,21 +392,24 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void _binaryValidated(Binary binary) async {
-    Account? pairedAccount = null;
+    final navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
+    Account? pairedAccount;
     try {
       pairedAccount = await AccountManager().addPassportAccounts(binary);
     } on AccountAlreadyPaired catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      scaffold.showSnackBar(const SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
       ));
       return;
     }
 
     if (pairedAccount == null) {
-      OnboardingPage.popUntilHome(context);
+      if (mounted) {
+        OnboardingPage.popUntilHome(context);
+      }
     } else {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
+      navigator.pushReplacement(MaterialPageRoute(builder: (context) {
         return SingleWalletPairSuccessPage(pairedAccount!.wallet);
       }));
     }
@@ -407,10 +417,12 @@ class _ScannerPageState extends State<ScannerPage> {
 }
 
 class ViewFinder extends StatelessWidget {
+  const ViewFinder({super.key});
+
   @override
   Widget build(BuildContext context) {
     final stroke = Padding(
-        padding: EdgeInsets.all(65),
+        padding: const EdgeInsets.all(65),
         child: SvgPicture.asset("assets/viewfinder_stroke.svg"));
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Row(

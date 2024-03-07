@@ -1,3 +1,4 @@
+// ignore_for_file: missing_provider_scope
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -15,6 +16,7 @@ import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,20 +39,20 @@ Future<void> main() async {
   await initSingletons();
 
   if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
-    runApp(AuthenticateApp());
+    runApp(const AuthenticateApp());
   } else {
-    runApp(EnvoyApp());
+    runApp(const EnvoyApp());
   }
   listenToRouteChanges();
 }
 
 Future<void> initSingletons() async {
   // This is notoriously low on iOS, causing 'too many open files errors'
-  print("Process nofile_limit: " + getNofileLimit().toString());
+  kPrint("Process nofile_limit: ${getNofileLimit()}");
 
   // Requesting a high number. The API will return the best we can get
   // ~10k on iPhone 11 which is much better than the default 256
-  print("Process nofile_limit bumped to: " + setNofileLimit(16384).toString());
+  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
   await EnvoyStorage().init();
   await LocalStorage.init();
@@ -77,6 +79,8 @@ Future<void> initSingletons() async {
 }
 
 class EnvoyApp extends StatelessWidget {
+  const EnvoyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Portrait mode only outside of video player
@@ -85,7 +89,7 @@ class EnvoyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: true,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
@@ -95,8 +99,8 @@ class EnvoyApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
         overlays: [SystemUiOverlay.top]);
 
-    final envoyAccentColor = EnvoyColors.darkTeal;
-    final envoyBaseColor = Colors.transparent;
+    const envoyAccentColor = EnvoyColors.darkTeal;
+    const envoyBaseColor = Colors.transparent;
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
@@ -105,7 +109,7 @@ class EnvoyApp extends StatelessWidget {
 
     return ProviderScope(
       child: MaterialApp.router(
-        localizationsDelegates: [
+        localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -117,7 +121,7 @@ class EnvoyApp extends StatelessWidget {
         themeMode: ThemeMode.light,
         theme: ThemeData(
             textTheme: envoyTextTheme,
-            pageTransitionsTheme: PageTransitionsTheme(builders: {
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
               TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
               TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),

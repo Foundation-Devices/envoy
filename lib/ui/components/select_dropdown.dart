@@ -23,7 +23,7 @@ class EnvoyDropdown extends StatefulWidget {
   final Function(EnvoyDropdownOption?)? onOptionChanged;
   final int initialIndex;
 
-  EnvoyDropdown({
+  const EnvoyDropdown({
     super.key,
     required this.options,
     this.isDropdownActive = true,
@@ -32,16 +32,16 @@ class EnvoyDropdown extends StatefulWidget {
   });
 
   @override
-  _EnvoyDropdownState createState() => _EnvoyDropdownState();
+  EnvoyDropdownState createState() => EnvoyDropdownState();
 }
 
-class _EnvoyDropdownState extends State<EnvoyDropdown> {
+class EnvoyDropdownState extends State<EnvoyDropdown> {
   int _selectedIndex = 0;
   EnvoyDropdownOption? _selectedOption;
   bool _isTapped = true;
   late FocusNode _focusNode;
 
-  _EnvoyDropdownState() {
+  EnvoyDropdownState() {
     _focusNode = FocusNode();
   }
 
@@ -83,7 +83,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(EnvoySpacing.small),
+          padding: const EdgeInsets.all(EnvoySpacing.small),
           child: DropdownButton<EnvoyDropdownOption>(
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
@@ -118,7 +118,7 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                 );
               }).toList();
             },
-            underline: Container(height: 0, width: 0),
+            underline: const SizedBox.shrink(),
             // _selected index becomes -1 for some reason
             value: widget.options[_selectedIndex],
             isExpanded: true,
@@ -164,8 +164,8 @@ class _EnvoyDropdownState extends State<EnvoyDropdown> {
                 );
               },
             ).toList(),
-            icon: Padding(
-              padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+            icon: const Padding(
+              padding: EdgeInsets.only(left: EnvoySpacing.medium1),
               child: EnvoyIcon(
                 EnvoyIcons.chevron_down,
                 color: EnvoyColors.textPrimary,

@@ -14,18 +14,17 @@ class ExportSeedModalWords extends StatefulWidget {
   final bool hasPassphrase;
 
   const ExportSeedModalWords(
-      {Key? key, required this.seed, required this.hasPassphrase})
-      : super(key: key);
+      {super.key, required this.seed, required this.hasPassphrase});
 
   @override
   State<ExportSeedModalWords> createState() => _ExportSeedModalWordsState();
 }
 
 class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.80,
       //height: MediaQuery.of(context).size.height * 0.70,
       child: LayoutBuilder(
@@ -36,7 +35,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -56,7 +55,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                           padding: EdgeInsets.symmetric(
                               horizontal: constraints.maxWidth < 250 ? 0 : 34),
                           sliver: SliverToBoxAdapter(
-                            child: Container(
+                            child: SizedBox(
                               height: 400,
                               child: PageView.builder(
                                 controller: _pageController,
@@ -130,7 +129,8 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                   ),
                   if (widget.hasPassphrase)
                     Padding(
-                      padding: EdgeInsets.only(left: 34, right: 34, top: 25),
+                      padding:
+                          const EdgeInsets.only(left: 34, right: 34, top: 25),
                       child: Text(
                           S().export_seed_modal_QR_code_subheading_passphrase,
                           style: Theme.of(context)
@@ -142,7 +142,8 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                           textAlign: TextAlign.center),
                     ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 34, vertical: 28),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 34, vertical: 28),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -177,7 +178,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    final TextStyle textTheme = TextStyle(
+    const TextStyle textTheme = TextStyle(
         overflow: TextOverflow.fade,
         fontSize: 15,
         color: Colors.black87,
@@ -186,9 +187,9 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
       children: list.map((word) {
         return Container(
           height: 32,
-          margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
+          margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          constraints: const BoxConstraints(maxWidth: 200, maxHeight: 80),
           decoration: BoxDecoration(
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
@@ -196,7 +197,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
               Text("${word.item1}. ", style: textTheme),
               Flexible(
                   child: Text(
-                "${word.item2}",
+                word.item2,
                 style: textTheme,
                 maxLines: 1,
                 softWrap: false,

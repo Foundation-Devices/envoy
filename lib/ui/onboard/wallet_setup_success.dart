@@ -12,7 +12,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
-  const WalletSetupSuccess({Key? key}) : super(key: key);
+  const WalletSetupSuccess({super.key});
 
   @override
   ConsumerState<WalletSetupSuccess> createState() => _WalletSetupSuccessState();
@@ -21,7 +21,7 @@ class WalletSetupSuccess extends ConsumerStatefulWidget {
 class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   @override
   void initState() {
-    Future.delayed(Duration(milliseconds: 100)).then((_) {
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
       ref.read(successfulSetupWallet.notifier).state = true;
     });
 
@@ -36,66 +36,65 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
       },
       child: OnboardPageBackground(
         child: Material(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Transform.scale(
-                    scale: 1.2,
-                    child: Container(
-                      constraints: BoxConstraints.tight(Size.fromHeight(280)),
-                      // margin: EdgeInsets.only(top: 24),
-                      child: RiveAnimation.asset(
-                        "assets/envoy_loader.riv",
-                        fit: BoxFit.contain,
-                        animations: ["happy"],
-                      ),
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Transform.scale(
+                  scale: 1.2,
+                  child: Container(
+                    constraints:
+                        BoxConstraints.tight(const Size.fromHeight(280)),
+                    // margin: EdgeInsets.only(top: 24),
+                    child: const RiveAnimation.asset(
+                      "assets/envoy_loader.riv",
+                      fit: BoxFit.contain,
+                      animations: ["happy"],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium2,
-                        horizontal: EnvoySpacing.medium1),
-                    child: Column(
-                      children: [
-                        Text(
-                          S().wallet_setup_success_heading,
-                          style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium2,
+                      horizontal: EnvoySpacing.medium1),
+                  child: Column(
+                    children: [
+                      Text(
+                        S().wallet_setup_success_heading,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium3),
+                        child: Text(
+                          S().wallet_setup_success_subheading,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.medium3),
-                          child: Text(
-                            S().wallet_setup_success_subheading,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontSize: 12),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1),
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        return OnboardingButton(
-                            label: S().component_continue,
-                            onTap: () async {
-                              OnboardingPage.popUntilHome(context);
-                            });
-                      },
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium1),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return OnboardingButton(
+                          label: S().component_continue,
+                          onTap: () async {
+                            OnboardingPage.popUntilHome(context);
+                          });
+                    },
                   ),
-                ],
-              ),
-            ),
-            color: Colors.transparent),
+                ),
+              ],
+            )),
       ),
     );
   }

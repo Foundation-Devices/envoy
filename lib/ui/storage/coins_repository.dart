@@ -19,7 +19,7 @@ class CoinRepository {
 
   factory CoinRepository() => _instance ??= CoinRepository._();
 
-  /** returns a stream of all utxo block state that stored in the [storage.utxoBlockState] database */
+  /// returns a stream of all utxo block state that stored in the [storage.utxoBlockState] database
   Stream<Map<String, bool?>> getCoinBlockStateStream() {
     return storage.utxoBlockState
         .query()
@@ -28,13 +28,13 @@ class CoinRepository {
   }
 
   /// Transforms the stream of records to a stream of map
-  var _coinBlockStateTransformer = StreamTransformer<
+  final _coinBlockStateTransformer = StreamTransformer<
       List<RecordSnapshot<String, bool>>,
       Map<String, bool?>>.fromHandlers(handleData: (snapshot, sink) {
     Map<String, bool> map = {};
-    snapshot.forEach((element) {
+    for (var element in snapshot) {
       map[element.key] = element.value;
-    });
+    }
     sink.add(map);
   });
 

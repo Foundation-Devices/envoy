@@ -17,14 +17,14 @@ class FwIosInstructionsPage extends ConsumerWidget {
   bool onboarding;
   int deviceId;
 
-  FwIosInstructionsPage({this.onboarding = true, this.deviceId = 1});
+  FwIosInstructionsPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
   Widget build(context, ref) {
     final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
 
     return OnboardingPage(
-      key: Key("fw_ios_instructions"),
+      key: const Key("fw_ios_instructions"),
       clipArt: Image.asset("assets/fw_ios_instructions.png"),
       rightFunction: (_) {
         onboarding
@@ -47,6 +47,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () async {
+              final navigator = Navigator.of(context);
               final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
               final uploader = FwUploader(firmwareFile);
               final folderPath = await uploader.promptUserForFolderAccess();
@@ -56,15 +57,13 @@ class FwIosInstructionsPage extends ConsumerWidget {
                 Devices()
                     .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
+                navigator.push(MaterialPageRoute(builder: (context) {
                   return FwIosSuccessPage(
                     onboarding: onboarding,
                   );
                 }));
               } else {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
+                navigator.push(MaterialPageRoute(builder: (context) {
                   return FwMicrosdPage(onboarding: onboarding);
                 }));
               }

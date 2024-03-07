@@ -140,12 +140,11 @@ void main() async {
   });
 
   test('Get derived private wallet address', () async {
-    final seed =
+    const seed =
         "copper december enlist body dove discover cross help evidence fall rich clean";
-    final path = "m/84'/0'/0'";
+    const path = "m/84'/0'/0'";
 
-    var walletsDir =
-        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+    var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
 
     var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true, type: WalletType.witnessPublicKeyHash);
@@ -164,12 +163,11 @@ void main() async {
   });
 
   test('Get derived taproot wallet address', () async {
-    final seed =
+    const seed =
         "copper december enlist body dove discover cross help evidence fall rich clean";
-    final path = "m/86'/0'/0'";
+    const path = "m/86'/0'/0'";
 
-    var walletsDir =
-        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+    var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
 
     var wallet1 = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true, type: WalletType.taproot);
@@ -186,12 +184,11 @@ void main() async {
   });
 
   test('Get derived testnet wallet address', () async {
-    final seed =
+    const seed =
         "copper december enlist body dove discover cross help evidence fall rich clean";
-    final path = "m/84'/0'/0'";
+    const path = "m/84'/0'/0'";
 
-    var walletsDir =
-        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+    var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Testnet,
         privateKey: true, type: WalletType.witnessPublicKeyHash);
@@ -202,12 +199,11 @@ void main() async {
   });
 
   test('Derive public wallet from seed and path', () async {
-    final seed =
+    const seed =
         "copper december enlist body dove discover cross help evidence fall rich clean";
-    final path = "m/84'/0'/0'";
+    const path = "m/84'/0'/0'";
 
-    var walletsDir =
-        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+    var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: false, type: WalletType.witnessPublicKeyHash);
@@ -215,12 +211,11 @@ void main() async {
   });
 
   test('Derive private wallet from seed and path', () async {
-    final seed =
+    const seed =
         "copper december enlist body dove discover cross help evidence fall rich clean";
-    final path = "m/84'/0'/0'";
+    const path = "m/84'/0'/0'";
 
-    var walletsDir =
-        dir.path + "/test_wallets_" + Random().nextInt(9999).toString() + "/";
+    var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
 
     var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
         privateKey: true, type: WalletType.witnessPublicKeyHash);
@@ -228,7 +223,7 @@ void main() async {
   });
 
   test('Decode raw transaction', () async {
-    final rawtx =
+    const rawtx =
         "01000000000101f5ed2be11f13de37bf31e22517d4ca5c5d9cd4eaaef7aa55d9de425de27fc2920100000000fdffffff022003000000000000160014467773c555e53962facffa55abff15e3912309eaa3bf000000000000160014a15b3b2165c6b0b61dace7d849d4aafb810d140c02463043021f1b88a64f7e455d654b9ef87b56c9726151e3875bd54602a0cfa659331fdf38022010afd343e00b425cef896fb468845727c1958048bdd17d3732b1f81923f5d64a0121028138a91e835576d89266482e4c2300647c792f5a8c69d01cd490e4e6b15f5a689fa12600";
 
     final decoded = await Wallet.decodeRawTx(rawtx, Network.Testnet);

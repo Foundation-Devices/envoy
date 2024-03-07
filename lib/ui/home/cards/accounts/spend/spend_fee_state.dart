@@ -9,9 +9,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 
-/**
- * Shared Fee rate state for both normal spend and RBF spend screens
- */
+/// Shared Fee rate state for both normal spend and RBF spend screens
 
 class FeeChooserState {
   final num standardFeeRate;

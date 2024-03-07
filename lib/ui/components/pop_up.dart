@@ -62,7 +62,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.onSecondaryButtonTap,
     this.typeOfMessage = PopUpState.deafult,
     this.checkBoxText,
-    this.onCheckBoxChanged,
+    required this.onCheckBoxChanged,
     this.checkedValue = true,
   });
 
@@ -75,7 +75,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(BuildContext context)? onSecondaryButtonTap;
   final PopUpState? typeOfMessage;
   final String? checkBoxText;
-  final onCheckBoxChanged;
+  final Function(bool? checked) onCheckBoxChanged;
   bool? checkedValue;
 
   @override
@@ -120,14 +120,14 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
     }
     return Container(
       width: MediaQuery.of(context).size.width * 0.75,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),
         ),
         color: EnvoyColors.textPrimaryInverse,
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
             vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +180,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 child: EnvoyButton(
                     label: widget.secondaryButtonLabel!,
                     type: ButtonType.secondary,
-                    state: ButtonState.default_state,
+                    state: ButtonState.defaultState,
                     onTap: () {
                       if (widget.onSecondaryButtonTap != null) {
                         widget.onSecondaryButtonTap!(context);
@@ -190,7 +190,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             EnvoyButton(
                 label: widget.primaryButtonLabel,
                 type: ButtonType.primary,
-                state: ButtonState.default_state,
+                state: ButtonState.defaultState,
                 onTap: () {
                   widget.onPrimaryButtonTap?.call(context);
                 }),

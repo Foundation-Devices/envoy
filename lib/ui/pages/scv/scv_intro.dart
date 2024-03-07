@@ -8,10 +8,12 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class ScvIntroPage extends StatelessWidget {
+  const ScvIntroPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("scv_intro"),
+      key: const Key("scv_intro"),
       clipArt: Center(child: Image.asset("assets/shield_inspect.png")),
       text: [
         OnboardingText(

@@ -21,10 +21,10 @@ class EnvoyBottomNavigation extends ConsumerStatefulWidget {
       {super.key, this.onIndexChanged, this.initialIndex = 2});
 
   @override
-  _EnvoyBottomNavigationState createState() => _EnvoyBottomNavigationState();
+  EnvoyBottomNavigationState createState() => EnvoyBottomNavigationState();
 }
 
-class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
+class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   int _selectedIndex = 2;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;
@@ -39,7 +39,7 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   @override
   Widget build(BuildContext context) {
     ref.listen<List<String>>(routeMatchListProvider, (previous, next) {
-      homeTabRoutes.forEach((homeRoute) {
+      for (var homeRoute in homeTabRoutes) {
         if (next.contains(homeRoute)) {
           if (homeTabRoutes.indexOf(homeRoute) != _selectedIndex) {
             setState(() {
@@ -47,7 +47,7 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
             });
           }
         }
-      });
+      }
     });
     return Padding(
       padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
@@ -58,8 +58,8 @@ class _EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: labelStyle,
         unselectedLabelStyle: labelStyle,
-        unselectedIconTheme: IconThemeData(size: 20),
-        selectedIconTheme: IconThemeData(size: 40),
+        unselectedIconTheme: const IconThemeData(size: 20),
+        selectedIconTheme: const IconThemeData(size: 40),
         backgroundColor: Colors.transparent,
         enableFeedback: true,
         elevation: 0.0,

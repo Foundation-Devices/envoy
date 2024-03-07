@@ -21,7 +21,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
-  const OnboardEnvoyWelcomeScreen({Key? key}) : super(key: key);
+  const OnboardEnvoyWelcomeScreen({super.key});
 
   @override
   ConsumerState<OnboardEnvoyWelcomeScreen> createState() =>
@@ -39,9 +39,9 @@ class _OnboardEnvoyWelcomeScreenState
       gradientHeight: 1.8,
       shield: Container(
         height: max(MediaQuery.of(context).size.height * 0.38, 300),
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
             vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
-        padding: EdgeInsets.only(top: EnvoySpacing.large1),
+        padding: const EdgeInsets.only(top: EnvoySpacing.large1),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -73,7 +73,7 @@ class _OnboardEnvoyWelcomeScreenState
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: Offset(-8, 70),
+          offset: const Offset(-8, 70),
           child: Image.asset(
             "assets/envoy_on_device.png",
             alignment: Alignment.bottomCenter,
@@ -81,7 +81,7 @@ class _OnboardEnvoyWelcomeScreenState
             height: MediaQuery.of(context).size.height * 0.55,
           ),
         ),
-        bottomNavigationBar: EnvoyScaffoldShieldScrollView(
+        bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
               padding: const EdgeInsets.only(
@@ -91,70 +91,69 @@ class _OnboardEnvoyWelcomeScreenState
               child: SingleChildScrollView(
                 child: Flexible(
                   child: Container(
-                    margin: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(
                       vertical: EnvoySpacing.large2,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(height: EnvoySpacing.medium1),
+                        const SizedBox(height: EnvoySpacing.medium1),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: EnvoySpacing.medium1),
-                          child: Container(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  S().envoy_welcome_screen_heading,
-                                  textAlign: TextAlign.center,
-                                  style: EnvoyTypography.body.copyWith(
-                                    fontSize: 20,
-                                    color: EnvoyColors.gray1000,
-                                    decoration: TextDecoration.none,
-                                  ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                S().envoy_welcome_screen_heading,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.body.copyWith(
+                                  fontSize: 20,
+                                  color: EnvoyColors.gray1000,
+                                  decoration: TextDecoration.none,
                                 ),
-                                Padding(
-                                    padding: EdgeInsets.all(EnvoySpacing.xs)),
-                                LinkText(
-                                  text: S().envoy_welcome_screen_subheading,
-                                  textStyle: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.inactiveDark,
-                                  ),
-                                  linkStyle: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.inactiveDark,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.xs)),
+                              LinkText(
+                                text: S().envoy_welcome_screen_subheading,
+                                textStyle: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.inactiveDark,
                                 ),
-                              ],
-                            ),
+                                linkStyle: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.inactiveDark,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.medium2),
                           child: Column(
                             children: [
-                              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                              const Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.xs)),
                               EnvoyButton(
                                 S().envoy_welcome_screen_cta2,
                                 type: EnvoyButtonTypes.secondary,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return ManualSetup();
+                                    return const ManualSetup();
                                   }));
                                 },
                               ),
-                              Padding(
+                              const Padding(
                                   padding: EdgeInsets.all(EnvoySpacing.small)),
                               EnvoyButton(
                                 S().envoy_welcome_screen_cta1,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return MagicSetupTutorial();
+                                    return const MagicSetupTutorial();
                                   }));
                                 },
                               ),
@@ -174,7 +173,7 @@ class _OnboardEnvoyWelcomeScreenState
   @override
   void initState() {
     if (mounted) {
-      Future.delayed(Duration(milliseconds: 100)).then((value) async {
+      Future.delayed(const Duration(milliseconds: 100)).then((value) async {
         //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
         if (!ref.read(triedAutomaticRecovery) &&
             !ref.read(successfulSetupWallet) &&
@@ -182,11 +181,11 @@ class _OnboardEnvoyWelcomeScreenState
           try {
             _checkedMagicBackUpInWelcomeScreen = true;
             //make sure automatic recovery only once
-            if (await EnvoySeed().get() != null) {
+            if (await EnvoySeed().get() != null && mounted) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MagicRecoverWallet()));
+                      builder: (context) => const MagicRecoverWallet()));
             }
           } catch (e) {
             //no-op

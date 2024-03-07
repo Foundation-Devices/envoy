@@ -9,10 +9,12 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
+  const SingleWalletAddressVerifyConfirmPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("single_wallet_verify_confirm"),
+      key: const Key("single_wallet_verify_confirm"),
       clipArt: Image.asset("assets/address_verify.png"),
       text: [
         Flexible(

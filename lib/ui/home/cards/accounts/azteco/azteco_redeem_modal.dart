@@ -13,8 +13,7 @@ class AztecoRedeemModal extends StatefulWidget {
   final PageController controller;
 
   const AztecoRedeemModal(
-      {Key? key, required this.voucher, required this.controller})
-      : super(key: key);
+      {super.key, required this.voucher, required this.controller});
 
   @override
   State<AztecoRedeemModal> createState() => _AztecoRedeemModalState();
@@ -33,97 +32,90 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
         .bodyMedium
         ?.copyWith(fontWeight: FontWeight.w900, fontSize: 12);
 
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 4 * 4, vertical: 4 * 4),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 4 * 4, vertical: 4 * 4),
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8 * 4),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8 * 4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(4 * 4),
+                child: Image.asset("assets/azteco_logo.png", scale: 1),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4 * 4),
+                child: Text(
+                  S().azteco_redeem_modal_heading,
+                  textAlign: TextAlign.center,
+                  style: headingTextStyle,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 2 * 4),
+                child: Text(
+                  S().azteco_redeem_modal__voucher_code,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 1 * 4),
+                child: Text(
+                  "${widget.voucher.code[0]} ${widget.voucher.code[1]} ${widget.voucher.code[2]} ${widget.voucher.code[3]}",
+                  textAlign: TextAlign.center,
+                  style: voucherCodeTextStyle,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(4)),
+            ],
+          ),
+        ),
+        Flexible(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(4 * 4),
-                  child: Image.asset("assets/azteco_logo.png", scale: 1),
+                EnvoyButton(
+                  S().component_back,
+                  type: EnvoyButtonTypes.tertiary,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(4 * 4),
-                  child: Text(
-                    S().azteco_redeem_modal_heading,
-                    textAlign: TextAlign.center,
-                    style: headingTextStyle,
+                  padding: const EdgeInsets.only(top: 4 * 4),
+                  child: EnvoyButton(
+                    S().component_redeem,
+                    type: EnvoyButtonTypes.primaryModal,
+                    onTap: () {
+                      widget.controller.nextPage(
+                          duration: const Duration(microseconds: 100),
+                          curve: Curves.linear);
+                    },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2 * 4),
-                  child: Text(
-                    S().azteco_redeem_modal__voucher_code,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 1 * 4),
-                  child: Text(
-                    widget.voucher.code[0] +
-                        " " +
-                        widget.voucher.code[1] +
-                        " " +
-                        widget.voucher.code[2] +
-                        " " +
-                        widget.voucher.code[3],
-                    textAlign: TextAlign.center,
-                    style: voucherCodeTextStyle,
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(4)),
               ],
             ),
           ),
-          Flexible(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  EnvoyButton(
-                    S().component_back,
-                    type: EnvoyButtonTypes.tertiary,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4 * 4),
-                    child: EnvoyButton(
-                      S().component_redeem,
-                      type: EnvoyButtonTypes.primaryModal,
-                      onTap: () {
-                        widget.controller.nextPage(
-                            duration: Duration(microseconds: 100),
-                            curve: Curves.linear);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

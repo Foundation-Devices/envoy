@@ -89,18 +89,18 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
         color: account.color,
         border:
             Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+            borderRadius: const BorderRadius.all(Radius.circular(22)),
             gradient: LinearGradient(
-              begin: Alignment(0.00, 1.00),
-              end: Alignment(0, -1),
-              stops: [0, .65, 1],
+              begin: const Alignment(0.00, 1.00),
+              end: const Alignment(0, -1),
+              stops: const [0, .65, 1],
               colors: [
                 Colors.black.withOpacity(0.65),
                 Colors.black.withOpacity(0.13),
@@ -110,7 +110,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             border: Border.all(
                 width: 2, color: account.color, style: BorderStyle.solid)),
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           child: CustomPaint(
             isComplex: true,
             willChange: false,
@@ -142,8 +142,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (uneconomicSpends)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
                                       horizontal: EnvoySpacing.xs),
                                   child: EnvoyIcon(EnvoyIcons.info,
                                       color: EnvoyColors.solidWhite),
@@ -152,7 +152,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                 S().coincontrol_tx_detail_amount_details,
                                 style: trailingStyle,
                               ),
-                              Icon(
+                              const Icon(
                                 Icons.chevron_right_outlined,
                                 color: EnvoyColors.textPrimaryInverse,
                               )
@@ -168,7 +168,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           amountSats: amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: EnvoySpacing.xs,
@@ -195,9 +195,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                 style: trailingStyle,
                               ),
                               AnimatedRotation(
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 turns: _showFullAddress ? -.25 : 0,
-                                child: Icon(
+                                child: const Icon(
                                   Icons.chevron_right_outlined,
                                   color: EnvoyColors.textPrimaryInverse,
                                 ),
@@ -209,12 +209,12 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     ),
                   ),
                   AnimatedContainer(
-                    duration: Duration(milliseconds: 120),
+                    duration: const Duration(milliseconds: 120),
                     height: _showFullAddress ? 56 : 44,
                     child: _whiteContainer(
                       child: SingleChildScrollView(
                         child: AnimatedSize(
-                          duration: Duration(milliseconds: 200),
+                          duration: const Duration(milliseconds: 200),
                           curve: Curves.easeInOut,
                           child: AddressWidget(
                             widgetKey: ValueKey<bool>(_showFullAddress),
@@ -225,7 +225,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       ),
                     ),
                   ),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: EnvoySpacing.xs,
@@ -238,14 +238,14 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           widget.feeTitle,
                           style: titleStyle,
                         ),
-                        Padding(padding: EdgeInsets.all(12)),
+                        const Padding(padding: EdgeInsets.all(12)),
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Opacity(
                                 opacity: widget.loading ? 1 : 0,
-                                child: SizedBox.square(
+                                child: const SizedBox.square(
                                   dimension: 8,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 1,
@@ -253,10 +253,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                   ),
                                 ),
                               ),
-                              Padding(padding: EdgeInsets.all(4)),
+                              const Padding(padding: EdgeInsets.all(4)),
                               Opacity(
-                                child: widget.feeChooserWidget,
                                 opacity: widget.psbtFinalized ? 0.0 : 1,
+                                child: widget.feeChooserWidget,
                               ),
                             ],
                           ),
@@ -270,7 +270,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           amountSats: psbt.fee,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
-                  Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: EnvoySpacing.small,
@@ -288,7 +288,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.timer_outlined,
                                 size: 14,
                                 color: EnvoyColors.textPrimaryInverse,
@@ -326,7 +326,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   Widget _whiteContainer({required Widget child}) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           minHeight: 44,
         ),
         alignment: Alignment.centerLeft,
@@ -335,8 +335,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             borderRadius:
                 BorderRadius.all(Radius.circular(constraints.maxWidth)),
             color: EnvoyColors.textPrimaryInverse),
-        padding:
-            EdgeInsets.symmetric(vertical: 6, horizontal: EnvoySpacing.small),
+        padding: const EdgeInsets.symmetric(
+            vertical: 6, horizontal: EnvoySpacing.small),
         child: child,
       );
     });

@@ -48,7 +48,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         }
       }
     });
-    Future.delayed(Duration(milliseconds: 10))
+    Future.delayed(const Duration(milliseconds: 10))
         .then((value) => calculateFeeBoundary());
   }
 
@@ -79,11 +79,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         }
       }
       _tabController.animateTo(index.toInt(),
-          duration: Duration(milliseconds: 200));
+          duration: const Duration(milliseconds: 200));
     });
 
     return Container(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           maxWidth: 180,
           minWidth: 180,
           maxHeight: 24,
@@ -114,7 +114,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       barrierColor: Colors.transparent,
                       builder: (context) {
                         return Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black12,
@@ -126,6 +126,15 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                               ],
                             ),
                             child: Card(
+                              elevation: 0,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft:
+                                      Radius.circular(EnvoySpacing.medium2),
+                                  topRight:
+                                      Radius.circular(EnvoySpacing.medium2),
+                                ),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Consumer(
@@ -138,15 +147,6 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                       },
                                     );
                                   },
-                                ),
-                              ),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft:
-                                      Radius.circular(EnvoySpacing.medium2),
-                                  topRight:
-                                      Radius.circular(EnvoySpacing.medium2),
                                 ),
                               ),
                             ));
@@ -164,9 +164,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                 }
               },
               indicatorColor: Colors.white,
-              labelPadding: EdgeInsets.symmetric(horizontal: 0),
-              padding: EdgeInsets.symmetric(horizontal: 0),
-              indicatorPadding: EdgeInsets.symmetric(horizontal: 0),
+              labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              indicatorPadding: const EdgeInsets.symmetric(horizontal: 0),
               labelColor: Colors.white,
               indicatorWeight: 1,
               tabAlignment: TabAlignment.fill,
@@ -234,7 +234,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
   bool _disableHaptic = false;
   bool _initializationFinished = false;
-  FixedExtentScrollController _controller =
+  final FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
   @override
@@ -259,7 +259,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       }
       _controller
           .animateToItem(jumpIndex,
-              duration: Duration(milliseconds: 60), curve: Curves.easeInOut)
+              duration: const Duration(milliseconds: 60),
+              curve: Curves.easeInOut)
           .then((value) {
         _disableHaptic = false;
         _initializationFinished = true;
@@ -278,13 +279,13 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
           initializeSelectedRate();
         });
         return Container(
-            constraints: BoxConstraints(minHeight: 190, maxHeight: 210),
+            constraints: const BoxConstraints(minHeight: 190, maxHeight: 210),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   height: 100,
                   width: MediaQuery.of(context).size.width,
                   child: RotatedBox(
@@ -295,7 +296,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                           child: ListWheelScrollView.useDelegate(
                             controller: _controller,
                             renderChildrenOutsideViewport: false,
-                            physics: FixedExtentScrollPhysics(
+                            physics: const FixedExtentScrollPhysics(
                                 parent: ClampingScrollPhysics()),
                             diameterRatio: 2.8,
                             offAxisFraction: -.3,
@@ -309,7 +310,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                 children: widget.fees
                                     .map((feeRate) => RotatedBox(
                                           quarterTurns: 3,
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 68,
                                             child: Column(
                                               mainAxisSize: MainAxisSize.max,
@@ -317,7 +318,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 AnimatedScale(
-                                                  duration: Duration(
+                                                  duration: const Duration(
                                                       milliseconds: 200),
                                                   scale: selectedItem == feeRate
                                                       ? 1.2
@@ -339,7 +340,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                                   ),
                                                 ),
                                                 AnimatedContainer(
-                                                  duration: Duration(
+                                                  duration: const Duration(
                                                       milliseconds: 120),
                                                   height:
                                                       selectedItem == feeRate
@@ -374,8 +375,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                           child: RotatedBox(
                             quarterTurns: 3,
                             child: Container(
-                                alignment: Alignment(0.0, 1.3),
-                                margin: EdgeInsets.only(top: 4),
+                                alignment: const Alignment(0.0, 1.3),
+                                margin: const EdgeInsets.only(top: 4),
                                 child: Text(
                                   "sats/Vb",
                                   style: Theme.of(context)
@@ -395,7 +396,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
                                   gradient: RadialGradient(
-                                    transform: GradientRotation(1.6),
+                                    transform: const GradientRotation(1.6),
                                     radius: 3,
                                     focal: Alignment.center,
                                     colors: [
@@ -418,23 +419,23 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                     ),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
                   child: EnvoyButton(
                       label: S().coincontrol_tx_detail_custom_fee_cta,
                       onTap: () {
-                        if (processingFee != ButtonState.loading) {
+                        if (!processingFee) {
                           widget.onFeeSelect(selectedItem);
                         }
                       },
                       type: ButtonType.primary,
                       state: processingFee
                           ? ButtonState.loading
-                          : ButtonState.default_state),
+                          : ButtonState.defaultState),
                 ),
-                Padding(padding: EdgeInsets.only(bottom: 8)),
+                const Padding(padding: EdgeInsets.only(bottom: 8)),
               ],
             ));
       },
@@ -449,8 +450,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     setState(() {
       selectedItem = widget.fees[index].toInt();
     });
-    if (_initializationFinished)
+    if (_initializationFinished) {
       ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
           selectedItem;
+    }
   }
 }

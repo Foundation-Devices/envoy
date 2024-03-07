@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
@@ -64,7 +65,7 @@ class TransactionModel {
       this.belowDustLimit = false,
       this.canProceed = false,
       this.broadcastProgress = BroadcastProgress.staging,
-      this.error = null,
+      this.error,
       this.mode = SpendMode.normal,
       this.uneconomicSpends = false});
 
@@ -143,14 +144,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       List locked = await CoinRepository().getBlockedCoins();
 
-      account.wallet.utxos.forEach((utxo) async {
+      for (var utxo in account.wallet.utxos) {
         if (locked.contains(utxo.id)) {
-          if (dontSpend == null) {
-            dontSpend = [];
-          }
-          dontSpend?.add(utxo);
+          dontSpend ??= [];
+          dontSpend.add(utxo);
         }
-      });
+      }
 
       //remove if there is any duplicates
       dontSpend = dontSpend?.unique((e) => e.id).toList();
@@ -173,9 +172,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                 fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
                 minFeeRate: 1,
                 maxFeeRate: maxFeeRate.clamp(2, 5000));
-        if (kDebugMode) {
-          print("Max fee Rate $maxFeeRate");
-        }
+        kPrint("Max fee Rate $maxFeeRate");
       }
 
       ///get max fee rate that we can use on this transaction
@@ -199,20 +196,20 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       /// in the case of sendMax we need, receive amount might be different from the amount we are sending
       /// Make sure psbt is the source of truth for the amount
       bool foundOutput = false;
-      rawTransaction.outputs.forEach((output) {
+      for (var output in rawTransaction.outputs) {
         if (output.path == TxOutputPath.NotMine) {
           foundOutput = true;
           state = state.clone()..amount = output.amount;
         }
-      });
+      }
 
       ///if user is trying to send it themself
       if (!foundOutput) {
-        rawTransaction.outputs.forEach((output) {
+        for (var output in rawTransaction.outputs) {
           if (output.path == TxOutputPath.External) {
             state = state.clone()..amount = output.amount;
           }
-        });
+        }
       }
 
       if (sendMax) {
@@ -224,7 +221,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
       container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
         ///if current inputs are part of a single tag, use that tag as change output tag
-        if (element.coins_id.containsAll(utxoSet)) {
+        if (element.coinsId.containsAll(utxoSet)) {
           container.read(stagingTxChangeOutPutTagProvider.notifier).state =
               element;
         }
@@ -233,12 +230,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } on InsufficientFunds {
       // FIXME: This is to avoid redraws while we search for a valid PSBT
       // FIXME: See setFee in fee_slider
-      if (!settingFee)
+      if (!settingFee) {
         state = state.clone()
           ..loading = false
           ..rawTransaction = null
           ..psbt = null
           ..canProceed = false;
+      }
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
     } on BelowDustLimit {
@@ -252,7 +250,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           S().send_keyboard_amount_too_low_info;
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print("Error ${e}");
+        kPrint("Error $e");
         debugPrintStack(stackTrace: stackTrace);
       }
 
@@ -300,8 +298,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       // Increment the change index before broadcasting
       await account.wallet.getChangeAddress();
-      this.state = state.clone()
-        ..broadcastProgress = BroadcastProgress.inProgress;
+      state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
       Psbt psbt = state.psbt!;
       //Broadcast transaction
       int port = Settings().getPort(account.wallet.network);
@@ -322,9 +319,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
       RawTransaction? transaction = ref.read(rawTransactionProvider);
 
-      if (note != null) {
-        await EnvoyStorage().addTxNote(note, psbt.txid);
-      }
+      await EnvoyStorage().addTxNote(note!, psbt.txid);
 
       try {
         /// add change output to selected/default tag
@@ -336,9 +331,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           final tags = ref
               .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
 
-          inputCoins.forEach((coin) async {
+          for (var coin in inputCoins) {
             final coinTag = coinTags.firstWhereOrNull((element) =>
-                element.coins_id.contains(coin.id) &&
+                element.coinsId.contains(coin.id) &&
                 element.account == account.id);
             await EnvoyStorage().addCoinHistory(
                 coin.id,
@@ -347,13 +342,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                     coinTag?.name ?? S().account_details_untagged_card,
                     psbt.txid,
                     coin));
-          });
+          }
 
           ///add change tag if its new and if it is not already added to the database
           if (tags.map((e) => e.id).contains(tag.id) == false &&
               tag.untagged == false) {
             await CoinRepository().addCoinTag(tag);
-            await Future.delayed(Duration(milliseconds: 100));
+            await Future.delayed(const Duration(milliseconds: 100));
           }
 
           int index = transaction.outputs.indexWhere((element) =>
@@ -367,34 +362,36 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                 account: account.id!));
             await CoinRepository().updateCoinTag(changeOutPutTag);
             final _ = ref.refresh(accountsProvider);
-            await Future.delayed(Duration(seconds: 1));
-            await ref.refresh(coinsTagProvider(account.id!));
+            await Future.delayed(const Duration(seconds: 1));
+            ref.refresh(coinsTagProvider(account.id!));
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        kPrint(e);
+      }
       ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
       ref.read(stagingTxNoteProvider.notifier).state = null;
       ref.read(spendEditModeProvider.notifier).state = false;
 
       /// wait for bdk to update the transaction list and utxos list
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       /// clear staging transaction states
-      this.state = state.clone()..broadcastProgress = BroadcastProgress.success;
+      state = state.clone()..broadcastProgress = BroadcastProgress.success;
       return true;
     } catch (e) {
-      this.state = state.clone()..broadcastProgress = BroadcastProgress.failed;
-      throw e;
+      state = state.clone()..broadcastProgress = BroadcastProgress.failed;
+      rethrow;
     }
   }
 
   resetBroadcastState() {
-    this.state = state.clone()..broadcastProgress = BroadcastProgress.staging;
+    state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 
   //for RBF review screen
   void setAmount(int amount) {
-    this.state = state.clone()..amount = amount;
+    state = state.clone()..amount = amount;
   }
 }
 
@@ -515,13 +512,13 @@ final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
       .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
       .toList();
   List<Tuple<CoinTag, Coin>> items = [];
-  coinTags.forEach((coinTag) {
-    coinTag.coins.forEach((coin) {
+  for (var coinTag in coinTags) {
+    for (var coin in coinTag.coins) {
       if (inputs.contains(coin.id)) {
         items.add(Tuple(coinTag, coin));
       }
-    });
-  });
+    }
+  }
   return items;
 });
 
@@ -540,9 +537,9 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
       .toList();
   if (selectedUtxos.isNotEmpty) {
     int amount = 0;
-    selectedUtxos.forEach((element) {
+    for (var element in selectedUtxos) {
       amount = amount + element.value;
-    });
+    }
     return amount;
   }
   final lockedCoinsIds = await CoinRepository().getBlockedCoins();
@@ -656,33 +653,31 @@ void clearSpendState(ProviderContainer ref) {
 Future<Psbt> getPsbt(
     double feeRate, Account account, String initialAddress, int amount,
     {List<Utxo>? dontSpend, List<Utxo>? mustSpend}) async {
-  Psbt _returnPsbt = Psbt(0, 0, 0, "", "", "");
+  Psbt returnPsbt = Psbt(0, 0, 0, "", "", "");
 
   try {
-    _returnPsbt = await account.wallet.createPsbt(
+    returnPsbt = await account.wallet.createPsbt(
         initialAddress, amount, feeRate,
         dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
   } on InsufficientFunds catch (e) {
     // TODO: figure out why this can happen
-    if (e.available < 0) throw e;
+    if (e.available < 0) rethrow;
 
     // Get another one with correct amount
     var fee = e.needed - e.available;
     try {
-      _returnPsbt = await account.wallet.createPsbt(
+      returnPsbt = await account.wallet.createPsbt(
           initialAddress, amount - fee, feeRate,
           dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
     } on InsufficientFunds catch (e) {
-      print("Insufficient funds! Available: " +
-          e.available.toString() +
-          " Needed: " +
-          e.needed.toString());
+      kPrint(
+          "Insufficient funds! Available: ${e.available} Needed: ${e.needed}");
 
-      throw e;
+      rethrow;
     }
   }
 
-  return _returnPsbt;
+  return returnPsbt;
 }
 
 ///Will return the raw transaction for a given txId

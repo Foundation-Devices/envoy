@@ -18,7 +18,7 @@ enum ButtonType {
 }
 
 enum ButtonState {
-  default_state,
+  defaultState,
   loading,
   hover,
   focus,
@@ -28,13 +28,14 @@ enum ButtonState {
 
 class EnvoyButton extends StatefulWidget {
   final String label;
-  late final ButtonType type;
+  final ButtonType type;
   final ButtonState state;
-  final icon;
+  final EnvoyIcons? icon;
   final double height;
   final Function? onTap;
 
-  EnvoyButton({
+  const EnvoyButton({
+    super.key,
     required this.label,
     required this.type,
     required this.state,
@@ -44,12 +45,12 @@ class EnvoyButton extends StatefulWidget {
   });
 
   @override
-  _EnvoyButtonState createState() => _EnvoyButtonState();
+  EnvoyButtonState createState() => EnvoyButtonState();
 }
 
-class _EnvoyButtonState extends State<EnvoyButton> {
+class EnvoyButtonState extends State<EnvoyButton> {
   bool isPressed = false;
-  final _animationsDuration = Duration(milliseconds: 200);
+  final _animationsDuration = const Duration(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +91,13 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                 alignment: Alignment.center,
                 children: [
                   AnimatedOpacity(
-                    duration: Duration(milliseconds: 230),
+                    duration: const Duration(milliseconds: 230),
                     opacity: widget.state == ButtonState.loading ? 1 : 0,
                     child: SizedBox.square(
                       dimension: widget.height,
                       child: Container(
-                        margin: EdgeInsets.all(8),
-                        child: CircularProgressIndicator(
+                        margin: const EdgeInsets.all(8),
+                        child: const CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 1,
                           strokeCap: StrokeCap.round,
@@ -105,10 +106,10 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                     ),
                   ),
                   AnimatedOpacity(
-                    duration: Duration(milliseconds: 180),
+                    duration: const Duration(milliseconds: 180),
                     opacity: widget.state == ButtonState.loading ? 0 : 1,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.xs,
                           vertical: EnvoySpacing.small),
                       child: Row(
@@ -119,7 +120,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                               padding: const EdgeInsets.only(
                                   right: EnvoySpacing.small),
                               child: EnvoyIcon(
-                                widget.icon,
+                                widget.icon!,
                                 size: EnvoyIconSize.small,
                                 color: _getMainColor(),
                               ),
@@ -154,8 +155,9 @@ class _EnvoyButtonState extends State<EnvoyButton> {
     }
 
     if (widget.type == ButtonType.secondary) return EnvoyColors.surface2;
-    if (widget.type == ButtonType.tertiary)
+    if (widget.type == ButtonType.tertiary) {
       return EnvoyColors.textPrimaryInverse;
+    }
     if (widget.type == ButtonType.copper) return EnvoyColors.accentSecondary;
     if (widget.type == ButtonType.danger) return EnvoyColors.danger;
     return EnvoyColors.accentPrimary;

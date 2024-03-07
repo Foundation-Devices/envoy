@@ -20,18 +20,18 @@ class WalletSecurityModal extends StatefulWidget {
   final Function? onDenyBackup;
 
   const WalletSecurityModal({
-    Key? key,
+    super.key,
     required this.onLastStep,
     this.onDenyBackup,
     this.onConfirmBackup,
-  }) : super(key: key);
+  });
 
   @override
   State<WalletSecurityModal> createState() => _WalletSecurityModalState();
 }
 
 class _WalletSecurityModalState extends State<WalletSecurityModal> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   List<Widget> stepIllustration = [
     Image.asset(
@@ -85,12 +85,12 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       height: MediaQuery.of(context).size.height * 0.75,
       child: Scrollbar(
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.85,
             height: MediaQuery.of(context).size.height * 0.75,
             child: Column(
@@ -103,7 +103,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
                     child: IconButton(
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -137,11 +137,10 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: EnvoySpacing
-                                                            .small)),
+                                            const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        EnvoySpacing.small)),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -155,19 +154,18 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                                     .titleLarge,
                                               ),
                                             ),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: EnvoySpacing
-                                                            .small)),
+                                            const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        EnvoySpacing.small)),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal:
                                                           EnvoySpacing.medium1),
                                               child: AnimatedSwitcher(
-                                                duration:
-                                                    Duration(milliseconds: 400),
+                                                duration: const Duration(
+                                                    milliseconds: 400),
                                                 child: LinkText(
                                                   text: stepSubHeadings[i],
                                                   linkStyle: EnvoyTypography
@@ -184,21 +182,21 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                                 ),
                                               ),
                                             ),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: EnvoySpacing
-                                                            .medium2)),
+                                            const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        EnvoySpacing.medium2)),
                                             DotsIndicator(
                                               totalPages: stepHeadings.length,
                                               pageController: _pageController,
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      EnvoySpacing.medium1,
-                                                  vertical:
-                                                      EnvoySpacing.medium2),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          EnvoySpacing.medium1,
+                                                      vertical:
+                                                          EnvoySpacing.medium2),
                                               child: Column(
                                                 children: [
                                                   AnimatedCrossFade(
@@ -228,19 +226,21 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                                             widget.onLastStep();
                                                           } else {
                                                             _pageController.nextPage(
-                                                                duration: Duration(
-                                                                    milliseconds:
-                                                                        600),
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            600),
                                                                 curve: Curves
                                                                     .easeInOut);
                                                           }
                                                         },
                                                       ),
-                                                      secondChild: SizedBox(),
+                                                      secondChild:
+                                                          const SizedBox(),
                                                       crossFadeState:
                                                           CrossFadeState
                                                               .showFirst,
-                                                      duration: Duration(
+                                                      duration: const Duration(
                                                           milliseconds: 400))
                                                 ],
                                               ),
@@ -252,7 +252,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   ],
                                 ),
                               );
-                            }).toList()
+                            })
                           ],
                         ),
                       ),

@@ -66,18 +66,19 @@ class Faq extends ConsumerWidget {
   final String? searchText;
 
   const Faq({
-    Key? key,
+    super.key,
     this.searchText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(context, ref) {
     var faqs = ref.watch(faqsProvider);
-    if (searchText != null || searchText != "")
+    if (searchText != null || searchText != "") {
       faqs = faqs
           .where((entry) =>
               entry.question.toLowerCase().contains(searchText!.toLowerCase()))
           .toList();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,7 +111,7 @@ class Faq extends ConsumerWidget {
                           links: e.links,
                         );
                       },
-                      body: Container(
+                      body: const SizedBox(
                         height: 0,
                         width: 0,
                       ),
@@ -119,9 +120,9 @@ class Faq extends ConsumerWidget {
                 .toList(),
           ),
         ),
-        Padding(padding: const EdgeInsets.only(top: EnvoySpacing.medium2)),
-        Padding(
-          padding: const EdgeInsets.only(
+        const Padding(padding: EdgeInsets.only(top: EnvoySpacing.medium2)),
+        const Padding(
+          padding: EdgeInsets.only(
             top: EnvoySpacing.large2,
             bottom: EnvoySpacing.small,
             left: EnvoySpacing.small,
@@ -138,7 +139,7 @@ class FaqBodyText extends StatelessWidget {
   final String text;
   final List<dynamic> links;
 
-  const FaqBodyText(this.text, {required this.links});
+  const FaqBodyText(this.text, {super.key, required this.links});
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +197,8 @@ class FaqItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: EnvoySpacing.small), //EnvoySpacing.small)
+      padding:
+          const EdgeInsets.only(top: EnvoySpacing.small), //EnvoySpacing.small)
       child: ClipRRect(
         borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
         child: Container(
@@ -219,14 +221,14 @@ class FaqItemWidget extends StatelessWidget {
                     ),
                     Transform.rotate(
                         angle: isExpanded ? (180 * math.pi / 180) : 0,
-                        child: EnvoyIcon(
+                        child: const EnvoyIcon(
                           EnvoyIcons.chevron_down,
                           color: EnvoyColors.accentPrimary,
                         ))
                   ],
                 ),
                 if (isExpanded)
-                  SizedBox(
+                  const SizedBox(
                     height: EnvoySpacing.small,
                   ),
                 if (isExpanded)

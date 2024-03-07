@@ -115,8 +115,8 @@ class Backup {
 
     Map<String, String> backupData = {};
     for (var i = 0; i < payload.keys_nr * 2; i += 2) {
-      var key = data.elementAt(i).value.cast<Utf8>().toDartString();
-      var value = data.elementAt(i + 1).value.cast<Utf8>().toDartString();
+      var key = (data + i).value.cast<Utf8>().toDartString();
+      var value = (data + i + 1).value.cast<Utf8>().toDartString();
       backupData[key] = value;
     }
 

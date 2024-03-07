@@ -30,22 +30,22 @@ class EnvoyFilterChip extends StatelessWidget {
       mouseCursor: SystemMouseCursors.click,
       onTap: onTap,
       child: AnimatedContainer(
-        constraints: BoxConstraints(minWidth: 48),
+        constraints: const BoxConstraints(minWidth: 48),
         alignment: Alignment.center,
-        padding: EdgeInsets.all(EnvoySpacing.xs),
+        padding: const EdgeInsets.all(EnvoySpacing.xs),
         decoration: BoxDecoration(
             color: selected
                 ? Theme.of(context).primaryColor
                 : EnvoyColors.surface2,
             borderRadius: chipBorder),
-        duration: Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
           child: Row(
             children: [
               if (icon != null)
                 Padding(
-                  padding: EdgeInsets.all(EnvoySpacing.xs),
+                  padding: const EdgeInsets.all(EnvoySpacing.xs),
                   child: Icon(
                     icon,
                     size: 18,

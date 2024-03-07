@@ -9,7 +9,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/haptics.dart';
 
 enum ButtonState {
-  default_state,
+  defaultState,
   active,
   disabled,
 }
@@ -17,23 +17,22 @@ enum ButtonState {
 class EnvoyIconButton extends StatefulWidget {
   final ButtonState state;
   final Function? onTap;
-  final icon;
-  final Key? key;
+  final EnvoyIcons? icon;
 
-  EnvoyIconButton({
+  const EnvoyIconButton({
     required this.onTap,
-    this.state = ButtonState.default_state,
+    this.state = ButtonState.defaultState,
     this.icon,
-    this.key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _EnvoyIconButtonState createState() => _EnvoyIconButtonState();
+  EnvoyIconButtonState createState() => EnvoyIconButtonState();
 }
 
-class _EnvoyIconButtonState extends State<EnvoyIconButton> {
+class EnvoyIconButtonState extends State<EnvoyIconButton> {
   bool isPressed = false;
-  final _animationsDuration = Duration(milliseconds: 200);
+  final _animationsDuration = const Duration(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
@@ -74,14 +73,14 @@ class _EnvoyIconButtonState extends State<EnvoyIconButton> {
               borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                   horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.xs),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (widget.icon != null)
                     EnvoyIcon(
-                      widget.icon,
+                      widget.icon!,
                       size: EnvoyIconSize.small,
                       color: _getMainColor(),
                     ),
@@ -101,7 +100,7 @@ class _EnvoyIconButtonState extends State<EnvoyIconButton> {
       return EnvoyColors.accentPrimary;
     } else if (widget.state == ButtonState.active) {
       return EnvoyColors.accentPrimary;
-    } else if (widget.state == ButtonState.default_state) {
+    } else if (widget.state == ButtonState.defaultState) {
       return EnvoyColors.surface2;
     }
 
@@ -115,7 +114,7 @@ class _EnvoyIconButtonState extends State<EnvoyIconButton> {
       return EnvoyColors.textPrimaryInverse;
     } else if (widget.state == ButtonState.active) {
       return EnvoyColors.textPrimaryInverse;
-    } else if (widget.state == ButtonState.default_state) {
+    } else if (widget.state == ButtonState.defaultState) {
       return EnvoyColors.textTertiary;
     }
 

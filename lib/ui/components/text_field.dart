@@ -11,7 +11,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EnvoyTextField extends StatefulWidget {
   const EnvoyTextField({
-    Key? key,
+    super.key,
     this.defaultText,
     this.informationalText,
     this.additionalButtons = false,
@@ -21,7 +21,7 @@ class EnvoyTextField extends StatefulWidget {
     this.isError = false,
     this.isLoading,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final dynamic defaultText;
   final String? informationalText;
@@ -75,7 +75,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                     ? Border.all(color: EnvoyColors.danger)
                     : Border.all(color: EnvoyColors.accentPrimary))
                 : Border.all(color: Colors.transparent),
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(EnvoySpacing.small),
             ),
           ),
@@ -116,9 +116,9 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
               if (widget.additionalButtons)
                 Row(
                   children: [
-                    SizedBox(width: EnvoySpacing.medium1),
+                    const SizedBox(width: EnvoySpacing.medium1),
                     if (widget.isLoading ?? false)
-                      Container(
+                      const SizedBox(
                         width: EnvoySpacing.medium1,
                         height: EnvoySpacing.medium1,
                         child: CircularProgressIndicator(
@@ -130,7 +130,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                       padding:
                           const EdgeInsets.only(left: EnvoySpacing.medium1),
                       child: GestureDetector(
-                        child: EnvoyIcon(EnvoyIcons.scan),
+                        child: const EnvoyIcon(EnvoyIcons.scan),
                         onTap: () {
                           widget.onQrScan!();
                         },
@@ -140,11 +140,11 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                       padding:
                           const EdgeInsets.only(left: EnvoySpacing.medium1),
                       child: GestureDetector(
-                        child: EnvoyIcon(EnvoyIcons.clipboard),
+                        child: const EnvoyIcon(EnvoyIcons.clipboard),
                         onTap: () async {
                           final cdata =
                               await Clipboard.getData(Clipboard.kTextPlain);
-                          final text = cdata?.text ?? null;
+                          final text = cdata?.text;
                           if (text != null) {
                             widget.controller.text = text;
                           }

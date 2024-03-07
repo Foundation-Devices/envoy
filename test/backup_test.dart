@@ -9,7 +9,7 @@ import 'dart:io';
 void main() {
   test("Test offline restore wrong file", () {
     // Create bogus file
-    final filename = 'bogus.mpa';
+    const filename = 'bogus.mpa';
     var file = File(filename);
     file.writeAsStringSync('bogus');
 
