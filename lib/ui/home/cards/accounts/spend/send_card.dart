@@ -14,7 +14,9 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -125,11 +127,13 @@ class _SendCardState extends ConsumerState<SendCard>
                         }),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 26),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
                     child: _amountEntry,
                   ),
                   Padding(
-                      padding: const EdgeInsets.all(50.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.medium1),
                       child: Consumer(
                         builder: (context, ref, child) {
                           final isCoinSelected =
@@ -191,7 +195,6 @@ class _SendCardState extends ConsumerState<SendCard>
                           if (tx.loading) {
                             buttonText = S().send_keyboard_address_loading;
                           }
-
                           return EnvoyTextButton(
                               onTap: () async {
                                 final router = GoRouter.of(context);
