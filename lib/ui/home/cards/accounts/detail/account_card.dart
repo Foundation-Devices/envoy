@@ -52,6 +52,7 @@ import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/components/ramp_widget_test.dart';
+import 'package:envoy/ui/components/map_test.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -178,6 +179,21 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     },
                     child: Text("Buy Bitcoin via Ramp")),
               ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+              child: ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(builder: (context) {
+                        return MediaQuery.removePadding(
+                          context: context,
+                          child: MarkersPage(),
+                        );
+                      }),
+                    );
+                  },
+                  child: Text("Where can I find Bitcoin ATMs?")),
+            ),
             AnimatedSwitcher(
               duration: Duration(milliseconds: 200),
               child: (transactions.isNotEmpty || txFiltersEnabled)

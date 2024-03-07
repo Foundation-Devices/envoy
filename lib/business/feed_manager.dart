@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
@@ -19,6 +20,7 @@ class FeedManager {
 
   List<Video> videos = [];
   List<BlogPost> blogs = [];
+  List<Venue> venues = [];
 
   static final FeedManager _instance = FeedManager._internal();
 
@@ -35,8 +37,11 @@ class FeedManager {
     print("Instance of FeedManager created!");
     _restoreVideos();
     _restoreBlogs();
+    _restoreVenues();
 
     _addVideosFromVimeo();
+
+    addVenues();
 
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get("https://foundationdevices.com/feed/")
@@ -164,12 +169,25 @@ class FeedManager {
     blogs.clear();
   }
 
+  _dropVenues() {
+    venues.clear();
+  }
+
   _restoreVideos() async {
     _dropVideos();
 
     var storedVideos = await EnvoyStorage().getAllVideos();
     for (var video in storedVideos!) {
       videos.add(video!);
+    }
+  }
+
+  _restoreVenues() async {
+    _dropVenues();
+
+    var storedVenues = await EnvoyStorage().getAllLocations();
+    for (var venue in storedVenues!) {
+      venues.add(venue!);
     }
   }
 
@@ -243,9 +261,56 @@ class FeedManager {
     }
   }
 
+  storeVenues() {
+    for (var venue in venues) {
+      EnvoyStorage().insertLocation(venue);
+    }
+  }
+
   storeBlogPosts() {
     for (var BlogPost in blogs) {
       EnvoyStorage().insertBlogPost(BlogPost);
     }
+  }
+
+  addVenues() async {
+    final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+      "https://coinmap.org/api/v1/venues/?category=atm",
+    ); // fetch only atms
+
+    final data = json.decode(response.body);
+    List myVenues = data["venues"];
+
+    List<Venue> updatedVenues = [];
+    myVenues.forEach((venue) {
+      final id = venue["id"];
+      final double lat = venue["lat"];
+      final double lon = venue["lon"];
+      final String category = venue["category"];
+      final String name = venue["name"];
+      final myVenue = Venue(id, lat, lon, category, name);
+      updatedVenues.add(myVenue);
+    });
+    venues = updatedVenues;
+
+    storeVenues();
+
+    print("storing locations finished");
+  }
+
+  List<Venue> getLocallyVenues(
+      double radius, double longitude, double latitude) {
+    List<Venue> locallyVenues = [];
+
+    venues.forEach((venue) {
+      final double lonDifference = (venue.lon - longitude).abs();
+      final double latDifference = (venue.lat - latitude).abs();
+
+      if (lonDifference <= radius && latDifference <= radius) {
+        locallyVenues.add(venue);
+      }
+    });
+
+    return locallyVenues;
   }
 }
