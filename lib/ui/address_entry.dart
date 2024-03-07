@@ -141,8 +141,10 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                       await Clipboard.getData(
                                           Clipboard.kTextPlain);
                                   String? text = cdata?.text;
-                                  widget.controller?.text = text!;
-                                  validate(text!);
+                                  if (text != null) {
+                                    widget.controller?.text = text;
+                                    validate(text);
+                                  }
                                 }
                               },
                             ),

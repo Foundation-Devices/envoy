@@ -712,7 +712,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           ),
         ).show(context);
       }
-      ref.read(spendFeeRateProvider.notifier).state = existingFeeRate!;
+      if (existingFeeRate != null) {
+        ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
+      }
     } finally {
       setState(() {
         _rebuildingTx = false;
