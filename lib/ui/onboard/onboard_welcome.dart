@@ -96,111 +96,111 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             left: EnvoySpacing.medium1,
             top: EnvoySpacing.medium1,
           ),
-          child: SingleChildScrollView(
-            child: Flexible(
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.small,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(height: EnvoySpacing.small),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            S().welcome_screen_heading,
-                            style: Theme.of(context).textTheme.titleLarge,
-                            textAlign: TextAlign.center,
-                          ),
-                          Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                          GestureDetector(
-                            onTap: () {
-                              registerEscapeTap(EscapeHatchTap.text);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.xs),
-                              child: Text(
-                                S().welcome_screen_subheading,
-                                style: Theme.of(context).textTheme.bodySmall,
+          child: Column(
+            children: [
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.small,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(height: EnvoySpacing.small),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                S().welcome_screen_heading,
+                                style: Theme.of(context).textTheme.titleLarge,
                                 textAlign: TextAlign.center,
                               ),
-                            ),
+                              Padding(
+                                  padding:
+                                      EdgeInsets.all(EnvoySpacing.medium1)),
+                              GestureDetector(
+                                onTap: () {
+                                  registerEscapeTap(EscapeHatchTap.text);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.xs),
+                                  child: Text(
+                                    S().welcome_screen_subheading,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: EnvoySpacing.medium3),
+                      ],
                     ),
-                    SizedBox(height: EnvoySpacing.medium3),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          EnvoyButton(
-                            S().welcome_screen_cta2,
-                            type: EnvoyButtonTypes.secondary,
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  // Don't set up privacy if previously onboarded
-                                  if (LocalStorage()
-                                          .prefs
-                                          .getBool(PREFS_ONBOARDED) ==
-                                      null) {
-                                    return OnboardPrivacySetup(
-                                        setUpEnvoyWallet: false);
-                                  }
-                                  return LocalStorage()
-                                          .prefs
-                                          .getBool(PREFS_ONBOARDED)!
-                                      ? OnboardPassportWelcomeScreen()
-                                      : OnboardPrivacySetup(
-                                          setUpEnvoyWallet: false);
-                                },
-                              ));
-                            },
-                          ),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                          EnvoyButton(
-                            S().welcome_screen_ctA1,
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  // Don't set up privacy if previously onboarded
-                                  if (LocalStorage()
-                                          .prefs
-                                          .getBool(PREFS_ONBOARDED) ==
-                                      null) {
-                                    return OnboardPrivacySetup(
-                                        setUpEnvoyWallet: true);
-                                  }
-                                  return LocalStorage()
-                                          .prefs
-                                          .getBool(PREFS_ONBOARDED)!
-                                      ? OnboardEnvoyWelcomeScreen()
-                                      : OnboardPrivacySetup(
-                                          setUpEnvoyWallet: true);
-                                },
-                              ));
-                            },
-                          )
-                        ],
-                      ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    EnvoyButton(
+                      S().welcome_screen_cta2,
+                      type: EnvoyButtonTypes.secondary,
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            // Don't set up privacy if previously onboarded
+                            if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
+                                null) {
+                              return OnboardPrivacySetup(
+                                  setUpEnvoyWallet: false);
+                            }
+                            return LocalStorage()
+                                    .prefs
+                                    .getBool(PREFS_ONBOARDED)!
+                                ? OnboardPassportWelcomeScreen()
+                                : OnboardPrivacySetup(setUpEnvoyWallet: false);
+                          },
+                        ));
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                    EnvoyButton(
+                      S().welcome_screen_ctA1,
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            // Don't set up privacy if previously onboarded
+                            if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
+                                null) {
+                              return OnboardPrivacySetup(
+                                  setUpEnvoyWallet: true);
+                            }
+                            return LocalStorage()
+                                    .prefs
+                                    .getBool(PREFS_ONBOARDED)!
+                                ? OnboardEnvoyWelcomeScreen()
+                                : OnboardPrivacySetup(setUpEnvoyWallet: true);
+                          },
+                        ));
+                      },
                     )
                   ],
                 ),
-              ),
-            ),
+              )
+            ],
           ),
         ),
       ),

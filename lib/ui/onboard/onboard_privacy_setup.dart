@@ -81,152 +81,152 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
         ],
       ),
       header: PrivacyShieldAnimated(),
-      shield: SingleChildScrollView(
-        child: Flexible(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      NodeConnectionState nodeConnectionState =
-                          ref.watch(nodeConnectionStateProvider);
-                      bool usingTor =
-                          !ref.watch(privacyOnboardSelectionProvider);
-                      String heading = S().privacy_setting_perfomance_heading;
-                      String subheading =
-                          S().privacy_setting_perfomance_subheading;
-                      if (nodeConnectionState.isConnected && usingTor) {
-                        heading = S().privacySetting_nodeConnected;
-                        subheading = S().privacy_setting_onion_node_sbheading;
-                      }
-                      if (nodeConnectionState.isConnected && !usingTor) {
-                        heading = S().privacySetting_nodeConnected;
-                        subheading =
-                            S().privacy_setting_clearnet_node_subheading;
-                      }
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                          Text(
-                            heading,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                          Container(
-                            width: 250,
-                            child: Text(
-                              subheading,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                Container(
-                  child: Container(
-                      child: PrivacyOptionSelect(),
-                      padding:
-                          EdgeInsets.symmetric(vertical: EnvoySpacing.small)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.xs,
-                      horizontal: EnvoySpacing.medium3),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      bool _betterPerformance =
-                          ref.watch(privacyOnboardSelectionProvider);
-                      return _betterPerformance
-                          ? LinkText(
-                              text: S().privacy_privacyMode_torSuggestionOff,
-                              linkStyle: _messageStyle?.copyWith(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  color: EnvoyColors.listAccountTileColors[0]))
-                          : LinkText(
-                              text: S().privacy_privacyMode_torSuggestionOn,
-                              linkStyle: _messageStyle?.copyWith(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  color: EnvoyColors.listAccountTileColors[1]));
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: EnvoySpacing.medium1,
-                      right: EnvoySpacing.medium1,
-                      top: EnvoySpacing.xs),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      EnvoyButton(
-                        S().component_continue,
-                        onTap: () async {
-                          //tor is necessary if user selects onion node
-                          bool torRequire = ref.read(isNodeRequiredTorProvider);
-                          //tor is not required if user selects better performance
-                          bool betterPerformance =
-                              ref.read(privacyOnboardSelectionProvider);
-                          //based on both conditions, set tor enabled or disabled. before entering to the main screen
-                          Settings()
-                              .setTorEnabled(torRequire || !betterPerformance);
-                          LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-                          if (!widget.setUpEnvoyWallet) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      OnboardPassportWelcomeScreen(),
-                                ));
-                          } else {
-                            //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
-                            try {
-                              if (await EnvoySeed().get() != null) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MagicRecoverWallet()));
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          OnboardEnvoyWelcomeScreen(),
-                                    ));
-                              }
-                            } catch (e) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        OnboardEnvoyWelcomeScreen(),
-                                  ));
-                            }
+      shield: Column(
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          NodeConnectionState nodeConnectionState =
+                              ref.watch(nodeConnectionStateProvider);
+                          bool usingTor =
+                              !ref.watch(privacyOnboardSelectionProvider);
+                          String heading =
+                              S().privacy_setting_perfomance_heading;
+                          String subheading =
+                              S().privacy_setting_perfomance_subheading;
+                          if (nodeConnectionState.isConnected && usingTor) {
+                            heading = S().privacySetting_nodeConnected;
+                            subheading =
+                                S().privacy_setting_onion_node_sbheading;
                           }
+                          if (nodeConnectionState.isConnected && !usingTor) {
+                            heading = S().privacySetting_nodeConnected;
+                            subheading =
+                                S().privacy_setting_clearnet_node_subheading;
+                          }
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              Text(
+                                heading,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              Container(
+                                width: 250,
+                                child: Text(
+                                  subheading,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          );
                         },
-                      )
-                    ],
-                  ),
-                )
-              ],
+                      ),
+                    ),
+                    Container(
+                      child: Container(
+                          child: PrivacyOptionSelect(),
+                          padding: EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.small)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.xs,
+                          horizontal: EnvoySpacing.medium3),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          bool _betterPerformance =
+                              ref.watch(privacyOnboardSelectionProvider);
+                          return _betterPerformance
+                              ? LinkText(
+                                  text:
+                                      S().privacy_privacyMode_torSuggestionOff,
+                                  linkStyle: _messageStyle?.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w900,
+                                      color:
+                                          EnvoyColors.listAccountTileColors[0]))
+                              : LinkText(
+                                  text: S().privacy_privacyMode_torSuggestionOn,
+                                  linkStyle: _messageStyle?.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w900,
+                                      color: EnvoyColors
+                                          .listAccountTileColors[1]));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: EnvoySpacing.medium1,
+                right: EnvoySpacing.medium1,
+                top: EnvoySpacing.xs),
+            child: EnvoyButton(
+              S().component_continue,
+              onTap: () async {
+                //tor is necessary if user selects onion node
+                bool torRequire = ref.read(isNodeRequiredTorProvider);
+                //tor is not required if user selects better performance
+                bool betterPerformance =
+                    ref.read(privacyOnboardSelectionProvider);
+                //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                Settings().setTorEnabled(torRequire || !betterPerformance);
+                LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+                if (!widget.setUpEnvoyWallet) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OnboardPassportWelcomeScreen(),
+                      ));
+                } else {
+                  //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
+                  try {
+                    if (await EnvoySeed().get() != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MagicRecoverWallet()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OnboardEnvoyWelcomeScreen(),
+                          ));
+                    }
+                  } catch (e) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OnboardEnvoyWelcomeScreen(),
+                        ));
+                  }
+                }
+              },
+            ),
+          )
+        ],
       ),
     );
   }
@@ -599,6 +599,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                           .bodyMedium
                           ?.copyWith(fontSize: 10.5),
                       textAlign: TextAlign.center,
+                      maxLines: 2,
                     ),
                   )
                 ],
@@ -642,6 +643,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                         .bodyMedium
                         ?.copyWith(fontSize: 10.5),
                     textAlign: TextAlign.center,
+                    maxLines: 2,
                   )
                 ],
               )),

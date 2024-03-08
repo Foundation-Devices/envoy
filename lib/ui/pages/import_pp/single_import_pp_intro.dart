@@ -68,67 +68,77 @@ class SingleImportPpIntroPage extends StatelessWidget {
                   right: EnvoySpacing.medium1,
                   left: EnvoySpacing.medium1,
                   top: EnvoySpacing.medium1),
-              child: SingleChildScrollView(
-                  child: Flexible(
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: EnvoySpacing.large1),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: EnvoySpacing.small),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
-                        child: Container(
-                          child: OnboardingText(
-                            header: S().pair_existing_device_intro_heading,
-                            text: isExistingDevice
-                                ? S().pair_existing_device_intro_subheading
-                                : S()
-                                    .pair_new_device_intro_connect_envoy_subheading,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.medium2)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium2),
+              child: Column(
+                children: [
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: EnvoySpacing.large1),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            SizedBox(height: EnvoySpacing.small),
                             Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium2),
-                              child: DotsIndicator(
-                                decorator: DotsDecorator(
-                                    size: Size.square(EnvoySpacing.xs),
-                                    activeSize: Size.square(EnvoySpacing.xs),
-                                    spacing: EdgeInsets.symmetric(
-                                        horizontal: EnvoySpacing.xs)),
-                                dotsCount: 2,
-                                position: 0.toDouble(),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.medium1),
+                              child: Container(
+                                child: OnboardingText(
+                                  header:
+                                      S().pair_existing_device_intro_heading,
+                                  text: isExistingDevice
+                                      ? S()
+                                          .pair_existing_device_intro_subheading
+                                      : S()
+                                          .pair_new_device_intro_connect_envoy_subheading,
+                                ),
                               ),
                             ),
-                            EnvoyButton(
-                              S().accounts_empty_text_learn_more,
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return SingleImportPpScanPage();
-                                }));
-                              },
-                            )
+                            Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: EnvoySpacing.medium2)),
                           ],
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ))),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: EnvoySpacing.medium1,
+                        right: EnvoySpacing.medium1,
+                        top: EnvoySpacing.medium1,
+                        bottom: EnvoySpacing.large2),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                          child: DotsIndicator(
+                            decorator: DotsDecorator(
+                                size: Size.square(EnvoySpacing.xs),
+                                activeSize: Size.square(EnvoySpacing.xs),
+                                spacing: EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.xs)),
+                            dotsCount: 2,
+                            position: 0.toDouble(),
+                          ),
+                        ),
+                        EnvoyButton(
+                          S().accounts_empty_text_learn_more,
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return SingleImportPpScanPage();
+                            }));
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              )),
         ),
       ),
     );

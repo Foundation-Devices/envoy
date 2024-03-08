@@ -362,16 +362,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: 64,
-                      width: 64,
-                    ),
-                    Padding(padding: EdgeInsets.all(8)),
-                    SingleChildScrollView(
-                      child: Flexible(
+                    Flexible(
+                      child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            Image.asset(
+                              "assets/exclamation_icon.png",
+                              height: 64,
+                              width: 64,
+                            ),
+                            Padding(padding: EdgeInsets.all(8)),
                             Container(
                               constraints: BoxConstraints(maxWidth: 200),
                               padding: const EdgeInsets.all(EnvoySpacing.small),
@@ -394,17 +394,15 @@ class _BackupPageState extends ConsumerState<BackupPage>
                         ),
                       ),
                     ),
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.primaryModal,
+                        label: S().component_continue,
+                        onTap: () {
+                          Navigator.pop(context);
+                          createBackup();
+                        }),
                   ],
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                OnboardingButton(
-                    type: EnvoyButtonTypes.primaryModal,
-                    label: S().component_continue,
-                    onTap: () {
-                      Navigator.pop(context);
-                      createBackup();
-                    }),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               ],
             ),
           ),

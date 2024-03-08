@@ -92,6 +92,8 @@ class _EnvoyButtonState extends State<EnvoyButton> {
               widget.label,
               style: _textStyle,
               textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ))),
       ),
     );
