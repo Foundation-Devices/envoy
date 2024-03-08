@@ -46,6 +46,14 @@ enum EnvoyIcons {
   spend,
   receive,
   btcPay,
+  send,
+  note,
+  transfer,
+  utxo,
+  clock,
+  compass,
+  edit,
+  tag
 }
 
 class EnvoyIcon extends StatelessWidget {
