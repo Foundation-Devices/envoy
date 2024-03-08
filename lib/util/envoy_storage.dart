@@ -648,5 +648,14 @@ class EnvoyStorage {
     return venues.map((e) => transformLocation(e)).toList();
   }
 
+  Future<Venue?> getLocationById(int id) async {
+    var finder = Finder(filter: Filter.byKey(id));
+    var venue = await locationStore.findFirst(_db, finder: finder);
+    if (venue != null) {
+      return transformLocation(venue);
+    }
+    return null;
+  }
+
   Database get db => _db;
 }

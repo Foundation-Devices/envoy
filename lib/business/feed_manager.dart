@@ -262,9 +262,18 @@ class FeedManager {
     }
   }
 
-  storeVenues() {
+  storeVenues() async {
     for (var venue in venues) {
-      EnvoyStorage().insertLocation(venue);
+      var storedVenue = await EnvoyStorage().getLocationById(venue.id);
+      if (storedVenue != null) {
+        if (storedVenue.name != venue.name ||
+            storedVenue.lon != venue.lon ||
+            storedVenue.lat != venue.lat) {
+          EnvoyStorage().updateLocation(venue);
+        }
+      } else {
+        EnvoyStorage().insertLocation(venue);
+      }
     }
   }
 
@@ -294,7 +303,7 @@ class FeedManager {
     }
     venues = updatedVenues;
 
-    storeVenues();
+    if (updatedVenues.isNotEmpty) storeVenues();
   }
 
   List<Venue> getLocallyVenues(
