@@ -140,7 +140,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                     EnvoyIcon(EnvoyIcons.rbf_boost,
                         color: EnvoyColors.textPrimaryInverse,
                         size: EnvoyIconSize.small),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    Padding(padding: const EdgeInsets.all(EnvoySpacing.xs)),
                     Text(S().coindetails_overlay_confirmation_boost,
                         style: EnvoyTypography.button.copyWith(
                           color: EnvoyColors.textPrimaryInverse,
@@ -216,7 +216,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                         .copyWith(color: EnvoyColors.textPrimary),
                     textAlign: TextAlign.end),
               ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Padding(padding: const EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyIcon(EnvoyIcons.edit,
                   color: EnvoyColors.accentPrimary, size: EnvoyIconSize.small),
             ],
@@ -235,7 +235,7 @@ Widget _coinTag(String title) {
       children: [
         EnvoyIcon(EnvoyIcons.tag,
             color: EnvoyColors.accentPrimary, size: EnvoyIconSize.superSmall),
-        Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
+        Padding(padding: const EdgeInsets.only(left: EnvoySpacing.xs)),
         Text(
           "${title}",
           style:
