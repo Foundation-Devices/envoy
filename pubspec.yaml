@@ -111,6 +111,7 @@ dependencies:
   html: any
   crypto: any
   typed_data: any
+  latlng: any
 dependency_overrides:
   watcher: ^1.1.0
 

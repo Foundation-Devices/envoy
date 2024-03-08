@@ -742,7 +742,7 @@ packages:
     source: hosted
     version: "6.7.1"
   latlng:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: latlng
       sha256: a324c80073ef959d67ead88b57a717b7b87f182da1b980ccae92b3555ac82712

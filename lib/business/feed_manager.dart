@@ -283,7 +283,7 @@ class FeedManager {
     List myVenues = data["venues"];
 
     List<Venue> updatedVenues = [];
-    myVenues.forEach((venue) {
+    for (var venue in myVenues) {
       final id = venue["id"];
       final double lat = venue["lat"];
       final double lon = venue["lon"];
@@ -291,26 +291,24 @@ class FeedManager {
       final String name = venue["name"];
       final myVenue = Venue(id, lat, lon, category, name);
       updatedVenues.add(myVenue);
-    });
+    }
     venues = updatedVenues;
 
     storeVenues();
-
-    print("storing locations finished");
   }
 
   List<Venue> getLocallyVenues(
       double radius, double longitude, double latitude) {
     List<Venue> locallyVenues = [];
 
-    venues.forEach((venue) {
+    for (var venue in venues) {
       final double lonDifference = (venue.lon - longitude).abs();
       final double latDifference = (venue.lat - latitude).abs();
 
       if (lonDifference <= radius && latDifference <= radius) {
         locallyVenues.add(venue);
       }
-    });
+    }
 
     return locallyVenues;
   }

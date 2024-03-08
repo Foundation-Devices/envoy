@@ -188,12 +188,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
                       MaterialPageRoute(builder: (context) {
                         return MediaQuery.removePadding(
                           context: context,
-                          child: MarkersPage(),
+                          child: const MarkersPage(),
                         );
                       }),
                     );
                   },
-                  child: Text("Where can I find Bitcoin ATMs?")),
+                  child: const Text("Where can I find Bitcoin ATMs?")),
             ),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),

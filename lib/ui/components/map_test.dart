@@ -16,10 +16,10 @@ import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/venue.dart';
 
-const home = const LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
+const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
 
 class MarkersPage extends StatefulWidget {
-  const MarkersPage({Key? key}) : super(key: key);
+  const MarkersPage({super.key});
 
   @override
   MarkersPageState createState() => MarkersPageState();
@@ -94,6 +94,7 @@ class MarkersPageState extends State<MarkersPage> {
   Widget _buildVenueMarkerWidget(Venue venue, MapTransformer transformer,
       [IconData icon = Icons.location_pin]) {
     var pos = transformer.toOffset(LatLng.degree(venue.lat, venue.lon));
+
     return Positioned(
       left: pos.dx - 24,
       top: pos.dy - 24,
@@ -106,24 +107,26 @@ class MarkersPageState extends State<MarkersPage> {
           size: 48,
         ),
         onTap: () async {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(), // Loading spinner
-                  SizedBox(height: 10),
-                  Text('Loading...'),
-                ],
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (context) => const AlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(), // Loading spinner
+                    SizedBox(height: 10),
+                    Text('Loading...'),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          }
 
           try {
             final response =
                 await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-              "https://coinmap.org/api/v1/venues/" + venue.id.toString(),
+              "https://coinmap.org/api/v1/venues/${venue.id}",
             );
             final data = json.decode(response.body);
             final venueInfo = data["venue"];
@@ -131,36 +134,37 @@ class MarkersPageState extends State<MarkersPage> {
             final String? email = venueInfo["email"];
             final String? description = venueInfo["description"];
             final String? phone = venueInfo["phone"];
+            if (mounted) {
+              Navigator.pop(context);
 
-            Navigator.pop(context);
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      name ?? "No name info",
-                      textAlign: TextAlign.center,
-                    ),
-                    if (phone != null)
-                      Text('Phone: ' + (phone), textAlign: TextAlign.center),
-                    if (email != null)
-                      Text('Email: ' + (email), textAlign: TextAlign.center),
-                    if (description != null)
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        description,
+                        name ?? "No name info",
                         textAlign: TextAlign.center,
                       ),
-                    if (phone == null && description == null && email == null)
-                      Text("No extra details available for this atm."),
-                  ],
+                      if (phone != null)
+                        Text('Phone: $phone', textAlign: TextAlign.center),
+                      if (email != null)
+                        Text('Email: $email', textAlign: TextAlign.center),
+                      if (description != null)
+                        Text(
+                          description,
+                          textAlign: TextAlign.center,
+                        ),
+                      if (phone == null && description == null && email == null)
+                        const Text("No extra details available for this atm."),
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           } catch (error) {
-            print("Error fetching data: $error");
-            Navigator.pop(context);
+            if (mounted) Navigator.pop(context);
           }
         },
       ),
@@ -179,10 +183,10 @@ class MarkersPageState extends State<MarkersPage> {
         controller: controller,
         builder: (context, transformer) {
           final markerVenueWidgets = [];
-          venueMarkers.forEach((venue) {
+          for (var venue in venueMarkers) {
             var venueMarker = _buildVenueMarkerWidget(venue, transformer);
             markerVenueWidgets.add(venueMarker);
-          });
+          }
 
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
