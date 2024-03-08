@@ -134,12 +134,12 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         final originalRawTxDecoded = await account.wallet
             .decodeWalletRawTx(originalRawTx, account.wallet.network);
         //if the original tx is a self spend, we need to find the amount
-        originalRawTxDecoded.outputs.forEach((output) {
+        for (var output in originalRawTxDecoded.outputs) {
           //if the output is external, this will be the original amount
           if (output.path == TxOutputPath.External) {
             originalAmount = output.amount;
           }
-        });
+        }
       }
       if (rates.min_fee_rate > 0) {
         double minFeeRate = rates.min_fee_rate.ceil().toDouble();
