@@ -68,7 +68,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _checkInputsChanged();
       ref
           .read(spendTransactionProvider.notifier)
-          .setAmount(_originalTx.amount.abs() - _originalTx.fee);
+          .setAmount(widget.rbfSpendState.originalAmount);
     });
   }
 

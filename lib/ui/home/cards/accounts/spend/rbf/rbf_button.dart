@@ -35,6 +35,7 @@ class RBFSpendState {
   String receiveAddress;
   num receiveAmount;
   int feeRate;
+  int originalAmount;
   Transaction originalTx;
 
   RBFSpendState(
@@ -43,6 +44,7 @@ class RBFSpendState {
       required this.receiveAddress,
       required this.receiveAmount,
       required this.feeRate,
+      required this.originalAmount,
       required this.originalTx});
 }
 
@@ -118,9 +120,27 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
       final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
 
-      rust.RBFfeeRates? rates = await account.wallet
-          .getBumpedPSBTMaxFeeRate(widget.tx.txId, lockedUtxos);
+      final originalTx = widget.tx;
+      int originalAmount = originalTx.amount - originalTx.fee;
 
+      rust.RBFfeeRates? rates = await account.wallet
+          .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
+
+      //if the amount is the same as the fee, this is a self spend
+      if (originalTx.amount.abs() == originalTx.fee) {
+        //since the transaction object doesn't have the raw the tx we need to get it
+        final originalRawTx =
+            await account.wallet.getRawTxFromTxId(originalTx.txId);
+        final originalRawTxDecoded = await account.wallet
+            .decodeWalletRawTx(originalRawTx, account.wallet.network);
+        //if the original tx is a self spend, we need to find the amount
+        for (var output in originalRawTxDecoded.outputs) {
+          //if the output is external, this will be the original amount
+          if (output.path == TxOutputPath.External) {
+            originalAmount = output.amount;
+          }
+        }
+      }
       if (rates.min_fee_rate > 0) {
         double minFeeRate = rates.min_fee_rate.ceil().toDouble();
         Psbt? psbt = await account.wallet.getBumpedPSBT(
@@ -139,6 +159,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
             rbfFeeRates: rates,
             receiveAddress: receiveOutPut.address,
             receiveAmount: 0,
+            originalAmount: originalAmount,
             feeRate: minFeeRate.toInt(),
             originalTx: widget.tx);
 
