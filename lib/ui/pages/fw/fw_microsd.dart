@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 
 class FwMicrosdPage extends ConsumerWidget {
   final bool onboarding;
@@ -77,6 +78,8 @@ class FwMicrosdPage extends ConsumerWidget {
                 }
               } catch (e) {
                 kPrint("SD: error $e");
+                EnvoyReport().log("uploading",
+                    "Couldn't upload file to SD card: ${e.toString()}");
                 if (Platform.isIOS &&
                     context.mounted) // TODO: this needs to be smarter
                   // ignore: curly_braces_in_flow_control_structures
