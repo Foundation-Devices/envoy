@@ -17,6 +17,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
   final Color? color;
 
   const EnvoyInfoCardListItem({
+    super.key,
     required this.title,
     required this.icon,
     required this.trailing,

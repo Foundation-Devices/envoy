@@ -13,6 +13,7 @@ class EnvoyTag extends StatelessWidget {
   final EnvoyIcons icon;
 
   const EnvoyTag({
+    super.key,
     required this.title,
     required this.icon,
   });
@@ -20,13 +21,13 @@ class EnvoyTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: EnvoySpacing.small),
+      margin: const EdgeInsets.only(right: EnvoySpacing.small),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           EnvoyIcon(icon,
               color: EnvoyColors.accentPrimary, size: EnvoyIconSize.superSmall),
-          Padding(padding: const EdgeInsets.only(left: EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
           Text(
             title,
             style: EnvoyTypography.label

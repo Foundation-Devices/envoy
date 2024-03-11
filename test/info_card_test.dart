@@ -32,9 +32,8 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Container(
               color: Colors.white,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10.0, horizontal: 400),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 400),
                 child: DetailsWidgetTestCases(),
               )),
         ),
@@ -54,11 +53,11 @@ class DetailsWidgetTestCases extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String confirmationTime = "2.5h";
-    final fxRateFiat = 34743.76026697552;
+    const fxRateFiat = 34743.76026697552;
 
     return EnvoyInfoCard(
       backgroundColor: EnvoyColors.accentSecondary,
-      topWidget: AmountWidget(
+      topWidget: const AmountWidget(
         amountSats: 12345678,
         primaryUnit: AmountDisplayUnit.btc,
         secondaryUnit: AmountDisplayUnit.fiat,
@@ -70,9 +69,9 @@ class DetailsWidgetTestCases extends StatelessWidget {
       bottomWidgets: [
         EnvoyInfoCardListItem(
           title: S().coincontrol_tx_detail_expand_spentFrom,
-          icon: EnvoyIcon(EnvoyIcons.utxo,
+          icon: const EnvoyIcon(EnvoyIcons.utxo,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+          trailing: const Row(mainAxisSize: MainAxisSize.min, children: [
             AmountWidget(
               amountSats: 12345678,
               primaryUnit: AmountDisplayUnit.btc,
@@ -89,9 +88,9 @@ class DetailsWidgetTestCases extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
           child: Container(
             height: 16,
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
                 left: EnvoySpacing.medium1, bottom: EnvoySpacing.medium1),
-            child: ListView(scrollDirection: Axis.horizontal, children: [
+            child: ListView(scrollDirection: Axis.horizontal, children: const [
               EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
               EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
               EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
@@ -103,14 +102,14 @@ class DetailsWidgetTestCases extends StatelessWidget {
         EnvoyInfoCardListItem(
             flexAlignment: FlexAlignment.flexLeft,
             title: S().coindetails_overlay_address,
-            icon: EnvoyIcon(EnvoyIcons.send,
+            icon: const EnvoyIcon(EnvoyIcons.send,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: AddressWidget(
                 address: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
                 short: true)),
         EnvoyInfoCardListItem(
           title: S().coindetails_overlay_transactionID,
-          icon: EnvoyIcon(EnvoyIcons.compass,
+          icon: const EnvoyIcon(EnvoyIcons.compass,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
           trailing: Text(
             "e0fe6c3e08a30b62314f7d20f66007ee440fff975491665c9d255315a0f66ecc",
@@ -123,7 +122,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
         EnvoyInfoCardListItem(
             title:
                 '${S().coindetails_overlay_confirmationIn} ~$confirmationTime',
-            icon: EnvoyIcon(EnvoyIcons.clock,
+            icon: const EnvoyIcon(EnvoyIcons.clock,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: Container(
               height: EnvoySpacing.medium2,
@@ -137,10 +136,10 @@ class DetailsWidgetTestCases extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    EnvoyIcon(EnvoyIcons.rbf_boost,
+                    const EnvoyIcon(EnvoyIcons.rbf_boost,
                         color: EnvoyColors.textPrimaryInverse,
                         size: EnvoyIconSize.small),
-                    Padding(padding: const EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Text(S().coindetails_overlay_confirmation_boost,
                         style: EnvoyTypography.button.copyWith(
                           color: EnvoyColors.textPrimaryInverse,
@@ -149,7 +148,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 ),
               ),
             )),
-        EnvoyInfoCardListItem(
+        const EnvoyInfoCardListItem(
           title: "Boosted Fee",
           icon: EnvoyIcon(EnvoyIcons.rbf_boost,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
@@ -168,7 +167,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
         ),
         EnvoyInfoCardListItem(
             title: S().coincontrol_tx_detail_change,
-            icon: EnvoyIcon(EnvoyIcons.transfer,
+            icon: const EnvoyIcon(EnvoyIcons.transfer,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: Text(
               S().coincontrol_tx_detail_no_change,
@@ -178,9 +177,9 @@ class DetailsWidgetTestCases extends StatelessWidget {
             )),
         EnvoyInfoCardListItem(
           title: S().coincontrol_tx_detail_change,
-          icon: EnvoyIcon(EnvoyIcons.transfer,
+          icon: const EnvoyIcon(EnvoyIcons.transfer,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
-          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+          trailing: const Row(mainAxisSize: MainAxisSize.min, children: [
             AmountWidget(
               amountSats: 12345678,
               primaryUnit: AmountDisplayUnit.btc,
@@ -195,13 +194,13 @@ class DetailsWidgetTestCases extends StatelessWidget {
         ),
         EnvoyInfoCardListItem(
             title: S().coindetails_overlay_address,
-            icon: EnvoyIcon(EnvoyIcons.send,
+            icon: const EnvoyIcon(EnvoyIcons.send,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: AddressWidget(
                 address: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq")),
         EnvoyInfoCardListItem(
           title: S().coincontrol_tx_history_tx_detail_note,
-          icon: EnvoyIcon(EnvoyIcons.note,
+          icon: const EnvoyIcon(EnvoyIcons.note,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
           trailing: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -216,8 +215,8 @@ class DetailsWidgetTestCases extends StatelessWidget {
                         .copyWith(color: EnvoyColors.textPrimary),
                     textAlign: TextAlign.end),
               ),
-              Padding(padding: const EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyIcon(EnvoyIcons.edit,
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              const EnvoyIcon(EnvoyIcons.edit,
                   color: EnvoyColors.accentPrimary, size: EnvoyIconSize.small),
             ],
           ),

@@ -16,8 +16,8 @@ class EnvoyInfoCard extends StatelessWidget {
     required this.backgroundColor,
     required this.topWidget,
     required this.bottomWidgets,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +45,7 @@ class EnvoyInfoCard extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
             decoration: BoxDecoration(
-              borderRadius:
-                  const BorderRadius.all(const Radius.circular(cardRadius)),
+              borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
               border: Border.all(
                 color: EnvoyColors.textPrimary,
                 width: 2,
@@ -63,8 +62,8 @@ class EnvoyInfoCard extends StatelessWidget {
             ),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                    const Radius.circular(cardRadius - 3)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(cardRadius - 3)),
                 border: Border.all(
                   color: backgroundColor,
                   width: 2,
@@ -72,8 +71,8 @@ class EnvoyInfoCard extends StatelessWidget {
                 ),
               ),
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                    const Radius.circular(cardRadius - 2)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(cardRadius - 2)),
                 child: StripesBackground(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -90,8 +89,8 @@ class EnvoyInfoCard extends StatelessWidget {
                           horizontal: EnvoySpacing.xs,
                         ),
                         decoration: const BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(EnvoySpacing.medium1),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium1),
                           ),
                           color: EnvoyColors.textPrimaryInverse,
                         ),
