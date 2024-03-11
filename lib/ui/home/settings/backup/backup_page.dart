@@ -17,7 +17,9 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/string_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -338,73 +340,64 @@ class _BackupPageState extends ConsumerState<BackupPage>
         dismissible: false,
         dialog: Container(
           width: MediaQuery.of(context).size.width * 0.8,
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              Image.asset(
+                "assets/exclamation_icon.png",
+                height: 64,
+                width: 64,
+              ),
+              Padding(padding: EdgeInsets.all(8)),
+              Container(
+                constraints: BoxConstraints(maxWidth: 200),
+                padding: const EdgeInsets.all(EnvoySpacing.small),
+                child: Text(S().manual_toggle_on_seed_backup_now_modal_heading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge),
+              ),
+              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
                   children: [
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "assets/exclamation_icon.png",
-                              height: 64,
-                              width: 64,
-                            ),
-                            Padding(padding: EdgeInsets.all(8)),
-                            Container(
-                              constraints: BoxConstraints(maxWidth: 200),
-                              padding: const EdgeInsets.all(EnvoySpacing.small),
-                              child: Text(
-                                  S().manual_toggle_on_seed_backup_now_modal_heading,
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.titleLarge),
-                            ),
-                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                            Padding(
-                              padding: const EdgeInsets.all(EnvoySpacing.small),
-                              child: Text(
-                                S().manual_toggle_on_seed_backup_now_modal_subheading,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          ],
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.small),
+                      child: Text(
+                        S().manual_toggle_on_seed_backup_now_modal_subheading,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    OnboardingButton(
-                        type: EnvoyButtonTypes.primaryModal,
-                        label: S().component_continue,
-                        onTap: () {
-                          Navigator.pop(context);
-                          createBackup();
-                        }),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: OnboardingButton(
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.pop(context);
+                      createBackup();
+                    }),
+              ),
+            ],
           ),
         ));
   }
