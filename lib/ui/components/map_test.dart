@@ -18,6 +18,7 @@ import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/map_data.dart';
 
 String mapApiKey = Platform.environment['MAP_API_KEY'] ?? "";
+const String mapType = "positron";
 
 const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
 
@@ -96,7 +97,7 @@ class MarkersPageState extends State<MarkersPage> {
 
   String _openStreetMap(int z, int x, int y) {
     final url =
-        "https://maps.geoapify.com/v1/tile/carto/$z/$x/$y.png?&apiKey=$mapApiKey";
+        "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=$mapApiKey";
     return url;
   }
 
