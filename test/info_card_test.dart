@@ -15,18 +15,17 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'util/preload_fonts.dart';
-import 'package:envoy/ui/components/coin_tag.dart';
+import 'package:envoy/ui/components/envoy_tag.dart';
 
 void main() {
   testWidgets('DetailsWidget', (tester) async {
     tester.view.physicalSize = const Size(1200, 700);
     tester.view.devicePixelRatio = 1.0;
 
-    await preloadFonts(tester);
-
     // WORKAROUND: pump the widget twice to load the icons
     // I have no idea why this works
     for (var i = 0; i < 2; i++) {
+      await preloadFonts(tester);
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
@@ -113,8 +112,11 @@ class DetailsWidgetTestCases extends StatelessWidget {
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
           trailing: Text(
             "e0fe6c3e08a30b62314f7d20f66007ee440fff975491665c9d255315a0f66ecc",
-            style:
-                EnvoyTypography.info.copyWith(color: EnvoyColors.textPrimary),
+            style: EnvoyTypography.body
+                .copyWith(
+                  color: EnvoyColors.textTertiary,
+                )
+                .setWeight(FontWeight.w400),
             textAlign: TextAlign.end,
             maxLines: 4,
           ),
@@ -171,8 +173,9 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: Text(
               S().coincontrol_tx_detail_no_change,
-              style:
-                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.body.copyWith(
+                color: EnvoyColors.textTertiary,
+              ),
               textAlign: TextAlign.end,
             )),
         EnvoyInfoCardListItem(
