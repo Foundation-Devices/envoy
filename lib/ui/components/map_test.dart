@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:core';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,9 +13,11 @@ import 'package:http_tor/http_tor.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
 import 'package:tor/tor.dart';
-import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/venue.dart';
+import 'package:envoy/business/map_data.dart';
+
+String mapApiKey = Platform.environment['MAP_API_KEY'] ?? "";
 
 const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
 
@@ -64,7 +67,7 @@ class MarkersPageState extends State<MarkersPage> {
     double longitude = center.longitude.degrees;
     double latitude = center.latitude.degrees;
     List<Venue> locallyVenues =
-        FeedManager().getLocallyVenues(0.25, longitude, latitude);
+        MapData().getLocallyVenues(0.25, longitude, latitude);
     if (locallyVenues.isNotEmpty) {
       setState(() {
         venueMarkers.addAll(locallyVenues);
@@ -89,6 +92,12 @@ class MarkersPageState extends State<MarkersPage> {
       transformer.drag(diff.dx, diff.dy);
       setState(() {});
     }
+  }
+
+  String _openStreetMap(int z, int x, int y) {
+    final url =
+        "https://maps.geoapify.com/v1/tile/carto/$z/$x/$y.png?&apiKey=$mapApiKey";
+    return url;
   }
 
   Widget _buildVenueMarkerWidget(Venue venue, MapTransformer transformer,
@@ -222,7 +231,7 @@ class MarkersPageState extends State<MarkersPage> {
                       x %= tilesInZoom;
                       y %= tilesInZoom;
                       return CachedNetworkImage(
-                        imageUrl: openStreetMap(z, x, y),
+                        imageUrl: _openStreetMap(z, x, y),
                         fit: BoxFit.cover,
                       );
                     },
@@ -254,9 +263,4 @@ class MarkersPageState extends State<MarkersPage> {
       ),
     );
   }
-}
-
-String openStreetMap(int z, int x, int y) {
-  final url = "https://tile.openstreetmap.org/$z/$x/$y.png";
-  return url;
 }
