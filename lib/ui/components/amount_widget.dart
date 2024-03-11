@@ -90,6 +90,7 @@ class AmountWidget extends StatelessWidget {
         );
       case AmountWidgetStyle.singleLine:
         return Row(
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -198,6 +199,7 @@ class PrimaryAmountWidget extends StatelessWidget {
         style == PrimaryAmountWidgetStyle.normal ? 2.0 : EnvoySpacing.xs;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
@@ -278,6 +280,7 @@ class SecondaryAmountWidget extends StatelessWidget {
         : EnvoyColors.accentPrimary;
 
     return Row(
+      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(

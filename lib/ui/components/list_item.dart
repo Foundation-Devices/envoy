@@ -36,40 +36,34 @@ class EnvoyListTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          minLeadingWidth: 0,
-          horizontalTitleGap: EnvoySpacing.small,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-            child: Text(
-              textLeft1,
-              style: EnvoyTypography.body,
-            ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 0),
+        minLeadingWidth: 0,
+        horizontalTitleGap: EnvoySpacing.small,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+          child: Text(
+            textLeft1,
+            style: EnvoyTypography.body,
           ),
-          subtitle: textLeft2 == null
-              ? Text("")
-              : Text(
-                  textLeft2!,
-                  style: EnvoyTypography.info
-                      .copyWith(color: EnvoyColors.textSecondary),
-                ),
-          leading: leftIcon == null
-              ? null
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    EnvoyIcon(leftIcon!, color: iconColor),
-                  ],
-                ),
-          trailing: unitIcon == null
-              ? Text("")
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    unitIcon!,
-                  ],
-                )),
+        ),
+        subtitle: textLeft2 == null
+            ? Text("")
+            : Text(
+                textLeft2!,
+                style: EnvoyTypography.info
+                    .copyWith(color: EnvoyColors.textSecondary),
+              ),
+        leading: leftIcon == null
+            ? null
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  EnvoyIcon(leftIcon!, color: iconColor),
+                ],
+              ),
+        trailing: unitIcon,
+      ),
     );
   }
 }
@@ -140,11 +134,16 @@ class ActivityListTile extends StatelessWidget {
           .format(notification.date, locale: activeLocale.languageCode)
           .capitalize();
       iconColor = EnvoyColors.textTertiary;
-      unitIcon = EnvoyAmount(
-        account: AccountManager().getAccountById(notification.accountId!)!,
-        amountSats: notification.amount!,
-        amountWidgetStyle: AmountWidgetStyle.normal,
-        alignToEnd: true,
+      unitIcon = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          EnvoyAmount(
+            account: AccountManager().getAccountById(notification.accountId!)!,
+            amountSats: notification.amount!,
+            amountWidgetStyle: AmountWidgetStyle.normal,
+            alignToEnd: true,
+          ),
+        ],
       );
     }
 
