@@ -7,12 +7,12 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 
-class DetailsWidget extends StatelessWidget {
+class EnvoyInfoCard extends StatelessWidget {
   final Color backgroundColor;
   final Widget topWidget;
   final List<Widget> bottomWidgets;
 
-  const DetailsWidget({
+  const EnvoyInfoCard({
     required this.backgroundColor,
     required this.topWidget,
     required this.bottomWidgets,
@@ -21,14 +21,14 @@ class DetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey _detailWidgetKey = GlobalKey();
+    final GlobalKey detailWidgetKey = GlobalKey();
 
     const double cardRadius = EnvoySpacing.medium2;
 
     return GestureDetector(
       onTapDown: (details) {
         final RenderBox? box =
-            _detailWidgetKey.currentContext?.findRenderObject() as RenderBox?;
+            detailWidgetKey.currentContext?.findRenderObject() as RenderBox?;
         final Offset localOffset = box!.globalToLocal(details.globalPosition);
 
         if (!box.paintBounds.contains(localOffset)) {
@@ -37,7 +37,7 @@ class DetailsWidget extends StatelessWidget {
       },
       child: Scaffold(
         body: Container(
-          key: _detailWidgetKey,
+          key: detailWidgetKey,
           padding: const EdgeInsets.symmetric(
             horizontal: EnvoySpacing.medium2,
             vertical: EnvoySpacing.medium2,
@@ -45,7 +45,8 @@ class DetailsWidget extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+              borderRadius:
+                  const BorderRadius.all(const Radius.circular(cardRadius)),
               border: Border.all(
                 color: EnvoyColors.textPrimary,
                 width: 2,
@@ -62,7 +63,8 @@ class DetailsWidget extends StatelessWidget {
             ),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
+                borderRadius: const BorderRadius.all(
+                    const Radius.circular(cardRadius - 3)),
                 border: Border.all(
                   color: backgroundColor,
                   width: 2,
@@ -70,7 +72,8 @@ class DetailsWidget extends StatelessWidget {
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
+                borderRadius: const BorderRadius.all(
+                    const Radius.circular(cardRadius - 2)),
                 child: StripesBackground(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -86,9 +89,9 @@ class DetailsWidget extends StatelessWidget {
                           vertical: EnvoySpacing.xs,
                           horizontal: EnvoySpacing.xs,
                         ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(EnvoySpacing.medium1),
+                        decoration: const BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(EnvoySpacing.medium1),
                           ),
                           color: EnvoyColors.textPrimaryInverse,
                         ),

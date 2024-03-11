@@ -9,14 +9,14 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 
 enum FlexAlignment { flexLeft, flexRight, noFlex }
 
-class CoinTagListItem extends StatelessWidget {
+class EnvoyInfoCardListItem extends StatelessWidget {
   final String title;
   final Widget icon;
   final Widget trailing;
   final FlexAlignment flexAlignment;
   final Color? color;
 
-  const CoinTagListItem({
+  const EnvoyInfoCardListItem({
     required this.title,
     required this.icon,
     required this.trailing,

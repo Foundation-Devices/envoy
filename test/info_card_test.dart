@@ -6,7 +6,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/components/coin_tag_list_item.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -15,10 +15,11 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'util/preload_fonts.dart';
+import 'package:envoy/ui/components/coin_tag.dart';
 
 void main() {
   testWidgets('DetailsWidget', (tester) async {
-    tester.view.physicalSize = Size(1200, 700);
+    tester.view.physicalSize = const Size(1200, 700);
     tester.view.devicePixelRatio = 1.0;
 
     await preloadFonts(tester);
@@ -41,7 +42,7 @@ void main() {
     }
 
     await expectLater(
-        find.byType(Directionality), matchesGoldenFile('details_widget.png'));
+        find.byType(Directionality), matchesGoldenFile('envoy_info_card.png'));
   });
 }
 
@@ -55,7 +56,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
     String confirmationTime = "2.5h";
     final fxRateFiat = 34743.76026697552;
 
-    return DetailsWidget(
+    return EnvoyInfoCard(
       backgroundColor: EnvoyColors.accentSecondary,
       topWidget: AmountWidget(
         amountSats: 12345678,
@@ -67,7 +68,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
         symbolFiat: "\$",
       ),
       bottomWidgets: [
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
           title: S().coincontrol_tx_detail_expand_spentFrom,
           icon: EnvoyIcon(EnvoyIcons.utxo,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
@@ -91,15 +92,15 @@ class DetailsWidgetTestCases extends StatelessWidget {
             margin: EdgeInsets.only(
                 left: EnvoySpacing.medium1, bottom: EnvoySpacing.medium1),
             child: ListView(scrollDirection: Axis.horizontal, children: [
-              _coinTag("Tag"),
-              _coinTag("Tag"),
-              _coinTag("Tag"),
-              _coinTag("Tag"),
-              _coinTag("Tag"),
+              EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
+              EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
+              EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
+              EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
+              EnvoyTag(title: "Tag", icon: EnvoyIcons.tag),
             ]),
           ),
         ),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
             flexAlignment: FlexAlignment.flexLeft,
             title: S().coindetails_overlay_address,
             icon: EnvoyIcon(EnvoyIcons.send,
@@ -107,7 +108,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
             trailing: AddressWidget(
                 address: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
                 short: true)),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
           title: S().coindetails_overlay_transactionID,
           icon: EnvoyIcon(EnvoyIcons.compass,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
@@ -119,10 +120,9 @@ class DetailsWidgetTestCases extends StatelessWidget {
             maxLines: 4,
           ),
         ),
-        CoinTagListItem(
-            title: S().coindetails_overlay_confirmationIn +
-                " ~" +
-                confirmationTime,
+        EnvoyInfoCardListItem(
+            title:
+                '${S().coindetails_overlay_confirmationIn} ~$confirmationTime',
             icon: EnvoyIcon(EnvoyIcons.clock,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: Container(
@@ -149,7 +149,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 ),
               ),
             )),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
           title: "Boosted Fee",
           icon: EnvoyIcon(EnvoyIcons.rbf_boost,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
@@ -166,7 +166,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
             ),
           ]),
         ),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
             title: S().coincontrol_tx_detail_change,
             icon: EnvoyIcon(EnvoyIcons.transfer,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
@@ -176,7 +176,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                   EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
               textAlign: TextAlign.end,
             )),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
           title: S().coincontrol_tx_detail_change,
           icon: EnvoyIcon(EnvoyIcons.transfer,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
@@ -193,13 +193,13 @@ class DetailsWidgetTestCases extends StatelessWidget {
             ),
           ]),
         ),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
             title: S().coindetails_overlay_address,
             icon: EnvoyIcon(EnvoyIcons.send,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
             trailing: AddressWidget(
                 address: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq")),
-        CoinTagListItem(
+        EnvoyInfoCardListItem(
           title: S().coincontrol_tx_history_tx_detail_note,
           icon: EnvoyIcon(EnvoyIcons.note,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
@@ -225,23 +225,4 @@ class DetailsWidgetTestCases extends StatelessWidget {
       ],
     );
   }
-}
-
-Widget _coinTag(String title) {
-  return Container(
-    margin: EdgeInsets.only(right: EnvoySpacing.small),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        EnvoyIcon(EnvoyIcons.tag,
-            color: EnvoyColors.accentPrimary, size: EnvoyIconSize.superSmall),
-        Padding(padding: const EdgeInsets.only(left: EnvoySpacing.xs)),
-        Text(
-          "${title}",
-          style:
-              EnvoyTypography.label.copyWith(color: EnvoyColors.accentPrimary),
-        ),
-      ],
-    ),
-  );
 }
